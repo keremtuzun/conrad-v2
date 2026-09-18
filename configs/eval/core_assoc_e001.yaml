@@ -1,0 +1,9 @@
+# CORE-ASSOC-E001 small CPU config (SYNTHETIC_ONLY sandbox)
+experiment: {id: CORE-ASSOC-E001}
+seeds: [2026201, 2026202, 2026203]
+model2_core: {evidence_dim: 32, belief_dim: 32, heads: 4}
+sandbox: {n_entities: 10, steps: 25, clutter_rate: 0.5, birth_prob: 0.1, near_pair_fraction: 0.4}
+train_episodes: 4
+test_episodes: 2
+epochs: 15
+batch_size: 64

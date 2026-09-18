@@ -81,17 +81,17 @@ def test_goal_below_max_depth_is_rejected_and_vehicle_holds():
     assert np.linalg.norm(hw.truth_access().true_state().position_world_m - [0, 0, -4]) < 0.3
 
 
-def test_leak_overrides_autonomy_and_no_command_is_authorized():
+def test_leak_overrides_autonomy_and_only_explicit_stop_is_authorized():
     ids, hw, stack, gw = setup()
     stack.set_goal(goal(ids, (5.0, 0.0, -4.0)))
     run(hw, stack, gw, 1.0)
     hw.inject_fault(FaultType.LEAK_SIGNAL)
-    before = gw.accepted
     res = stack.step()
-    assert res.assessment.state is SafetyState.RECOVER and not res.decision.authorized
+    assert res.assessment.state is SafetyState.RECOVER and res.assessment.zero_thrust_required
+    # autonomy is overridden: the only thing that may pass is an explicit all-zero stop command
+    assert res.decision.authorized and all(v == 0.0 for v in res.command.thruster_commands.values())
     run(hw, stack, gw, 1.0)
-    assert gw.accepted == before
-    assert hw.kernel.thrusters.applied_command.max() == 0.0  # command timeout watchdog zeroed thrust
+    assert abs(hw.kernel.thrusters.applied_command).max() == 0.0
 
 
 def test_imu_dropout_makes_state_stale_and_forces_zero_thrust():

@@ -1,0 +1,6 @@
+# CORE-FULL-E001 small CPU config (SYNTHETIC_ONLY)
+experiment: {id: CORE-FULL-E001}
+seeds: [2026201, 2026202, 2026203]
+model2_core: {evidence_dim: 16, belief_dim: 16}
+sandbox: {n_entities: 8, steps: 24, observe_prob: 0.5, clutter_rate: 0.2, coupled_pairs: 2, near_pair_fraction: 0.0, rate_scale: 0.001, process_noise_per_s: 0.00002, change_prob: 0.03, outlier_prob: 0.08, embedding_dim: 16}
+process_noise_per_s: 0.00002

@@ -1,0 +1,10 @@
+# CORE-PERSIST-E001 small CPU config (SYNTHETIC_ONLY)
+experiment: {id: CORE-PERSIST-E001}
+seeds: [2026201, 2026202, 2026203]
+model2_core: {evidence_dim: 16, belief_dim: 16}
+sandbox: {n_entities: 6, steps: 24, observe_prob: 0.5, clutter_rate: 0.4, birth_prob: 0.05, death_prob: 0.01, reappear_gap_steps: 4, near_pair_fraction: 0.3, embedding_dim: 16}
+process_noise_per_s: 0.00001
+reid_gap_steps: 3
+redeliver_prob: 0.2
+merge_distance_m: 0.5
+reset_every: 4

@@ -1,0 +1,7 @@
+# CORE-RBP-E001 small CPU config (SYNTHETIC_ONLY)
+experiment: {id: CORE-RBP-E001}
+seeds: [2026201, 2026202, 2026203]
+model2_core: {evidence_dim: 16, belief_dim: 16}
+groups: 16
+train_steps: 250
+test_graphs: 10

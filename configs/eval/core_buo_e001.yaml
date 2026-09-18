@@ -1,0 +1,8 @@
+# CORE-BUO-E001 small CPU config (SYNTHETIC_ONLY)
+experiment: {id: CORE-BUO-E001}
+seeds: [2026201, 2026202, 2026203]
+model2_core: {evidence_dim: 16, belief_dim: 16}
+steps: 16
+sequences_per_scenario: 8
+train_per_scenario: 6
+epochs: 6

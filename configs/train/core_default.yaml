@@ -1,0 +1,22 @@
+# Model 2 Core V0.2 defaults (spec ch33). Load with conrad.core.config.load_core_config.
+# Every value is EXPERIMENTAL configuration, not an architectural truth.
+model2_core:
+  architecture_id: conrad_v2_impl_freeze_v0_2
+  evidence_dim: 256
+  belief_dim: 256
+  uncertainty_dim: 64
+  temporal_dim: 64
+  history_dim: 128
+  relation_dim: 64
+  mechanism_dim: 128
+  heads: 8
+  ffn_hidden: 1024
+  dropout: 0.10
+  learning_rate: 0.0003
+  finetune_learning_rate: 0.0001
+  weight_decay: 0.01
+  grad_clip_norm: 1.0
+  seed_set: [2026201, 2026202, 2026203]
+  association: {max_candidates: 32, accept_probability: 0.60, accept_margin: 0.15, ranking_margin: 0.20}
+  rbp: {layers: 3, adaptive_stop: false}
+  tbd: {unroll_length: 32}

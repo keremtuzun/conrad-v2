@@ -1,0 +1,12 @@
+# Tiny CPU configuration for smoke training (tests use conrad.core.config.tiny_config()).
+model2_core:
+  evidence_dim: 16
+  belief_dim: 16
+  uncertainty_dim: 8
+  temporal_dim: 8
+  history_dim: 8
+  relation_dim: 8
+  mechanism_dim: 8
+  heads: 2
+  ffn_hidden: 32
+  dropout: 0.0
