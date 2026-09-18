@@ -1,0 +1,15 @@
+# 2E-E001 field reconstruction vs sensor count (SYNTHETIC_ONLY Twin2E small world)
+experiment: {id: 2E-E001}
+seeds: [2026201, 2026202, 2026203]
+twin_config: configs/sim/twin2e_test_small.yaml
+sensor_counts: [1, 2, 4, 8]
+variants: [cefd, field_only, static_field]
+n_steps: 96
+dt_s: 900.0
+eval_every_steps: 12
+anomaly_c: 3.0
+spike_ntu: 8.0
+event_radius_m: 25.0
+pose_sigma_m: 0.3
+model2e:
+  entity: {cover_process_sd_per_sqrt_day: 0.35}

@@ -1,0 +1,16 @@
+# 2E-E002 entity cover estimation under turbidity (SYNTHETIC_ONLY Twin2E small world)
+experiment: {id: 2E-E002}
+seeds: [2026201, 2026202, 2026203]
+twin_config: configs/sim/twin2e_test_small.yaml
+turbidity_levels_ntu: [1.0, 4.0, 10.0, 25.0]
+variants: [cefd, uncoupled, entity_only]
+n_steps: 96
+dt_s: 900.0
+eval_every_steps: 12
+n_moorings: 3
+footprint_radius_m: 6.0
+survey_altitude_m: 2.5
+pose_sigma_m: 0.3
+# Belief process noise matched to the twin's LOGGED ecology.time_scale (50x): 0.05 * sqrt(50) ~= 0.35
+model2e:
+  entity: {cover_process_sd_per_sqrt_day: 0.35}

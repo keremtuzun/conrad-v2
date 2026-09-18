@@ -1,0 +1,19 @@
+# 2E-E003 CEFD coupling benefit vs uncoupled + counterfactual/confounded worlds (SYNTHETIC_ONLY)
+experiment: {id: 2E-E003}
+seeds: [2026201, 2026202, 2026203]
+twin_config: configs/sim/twin2e_test_small.yaml
+variants: [cefd, uncoupled]
+n_steps: 96
+dt_s: 900.0
+eval_every_steps: 12
+n_moorings: 4
+base_temperature_c: 14.0
+hot_delta_c: 8.0
+confounder_magnitude: 8.0
+spike_ntu: 15.0
+spike_radius_m: 30.0
+spike_time_s: 21600.0
+pose_sigma_m: 0.3
+model2e:
+  entity: {cover_process_sd_per_sqrt_day: 0.35}
+  coupling: {stress_threshold_c: 20.0}   # ENGINEERING_ESTIMATE; the registry gives no thresholds
