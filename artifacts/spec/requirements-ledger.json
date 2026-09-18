@@ -33,14 +33,12 @@
       "requirement_summary": "Zero dependency on the legacy repository; operation proven with it absent",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "tests/leakage/test_static_boundaries.py",
         "scripts/legacy_independence_check.py"
       ],
-      "missing_paths": [
-        "scripts/legacy_independence_check.py"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/leakage/test_static_boundaries.py"
       ],
@@ -51,7 +49,7 @@
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-REPO-003",
@@ -59,16 +57,13 @@
       "requirement_summary": "Read-only legacy audit and salvage ledger",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "IMPLEMENTED",
       "implementation_paths": [
         "docs/migration/DIGITAL_TWIN_LEGACY_AUDIT.md",
         "artifacts/migration/digital-twin-salvage-ledger.json",
         "docs/migration/DIGITAL_TWIN_SALVAGE_REPORT.md"
       ],
-      "missing_paths": [
-        "artifacts/migration/digital-twin-salvage-ledger.json",
-        "docs/migration/DIGITAL_TWIN_SALVAGE_REPORT.md"
-      ],
+      "missing_paths": [],
       "test_ids": [],
       "missing_tests": [],
       "experiment_ids": [],
@@ -77,7 +72,7 @@
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-SPEC-001",
@@ -85,17 +80,13 @@
       "requirement_summary": "Requirements ledger and implementation map",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "IMPLEMENTED",
       "implementation_paths": [
         "docs/specification/CONRAD_V2_REQUIREMENTS_LEDGER.md",
         "artifacts/spec/requirements-ledger.json",
         "docs/IMPLEMENTATION_MAP.md"
       ],
-      "missing_paths": [
-        "docs/specification/CONRAD_V2_REQUIREMENTS_LEDGER.md",
-        "artifacts/spec/requirements-ledger.json",
-        "docs/IMPLEMENTATION_MAP.md"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/contract/test_requirements_ledger.py"
       ],
@@ -108,7 +99,7 @@
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-SPEC-002",
@@ -356,9 +347,7 @@
         "tests/contract/test_p0_contracts.py",
         "tests/unit/core"
       ],
-      "missing_tests": [
-        "tests/unit/core"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "CORE-UNC-E001"
       ],
@@ -423,26 +412,22 @@
       "requirement_summary": "Evidence is not belief; ECMER emits evidence only",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/core/ecmer"
       ],
-      "missing_paths": [
-        "conrad/core/ecmer"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/unit/core"
       ],
-      "missing_tests": [
-        "tests/unit/core"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-RHI-001",
@@ -601,19 +586,15 @@
       "requirement_summary": "ECMER encoders, fusion, quality head, missing modalities, staged training E1-E4, baselines/ablations",
       "authority": "EXPERIMENTAL_CANDIDATE",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/core/ecmer"
       ],
-      "missing_paths": [
-        "conrad/core/ecmer"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/unit/core"
       ],
-      "missing_tests": [
-        "tests/unit/core"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "ECMER-E001"
       ],
@@ -624,7 +605,7 @@
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-CORE-ASSOC",
@@ -632,7 +613,7 @@
       "requirement_summary": "Deterministic candidate retrieval, learned scorer, NO_MATCH",
       "authority": "EXPERIMENTAL_CANDIDATE",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/core/association.py"
       ],
@@ -640,9 +621,7 @@
       "test_ids": [
         "tests/unit/core"
       ],
-      "missing_tests": [
-        "tests/unit/core"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "CORE-ASSOC-E001"
       ],
@@ -661,7 +640,7 @@
       "requirement_summary": "BUO: trust != innovation, contradiction memory, uncertainty update, no artificial certainty",
       "authority": "EXPERIMENTAL_CANDIDATE",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/core/buo.py",
         "conrad/core/buo_analytic.py"
@@ -670,9 +649,7 @@
       "test_ids": [
         "tests/unit/core"
       ],
-      "missing_tests": [
-        "tests/unit/core"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "CORE-BUO-E001"
       ],
@@ -691,7 +668,7 @@
       "requirement_summary": "Relational propagation labelled INFERRED with provenance; anti-contamination",
       "authority": "EXPERIMENTAL_CANDIDATE",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/core/rbp.py"
       ],
@@ -699,9 +676,7 @@
       "test_ids": [
         "tests/unit/core"
       ],
-      "missing_tests": [
-        "tests/unit/core"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "CORE-RBP-E001"
       ],
@@ -720,7 +695,7 @@
       "requirement_summary": "Temporal dynamics on physical delta_t; baselines first; temporal surprise",
       "authority": "EXPERIMENTAL_CANDIDATE",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/core/tbd.py",
         "conrad/core/tbd_analytic.py"
@@ -729,9 +704,7 @@
       "test_ids": [
         "tests/unit/core"
       ],
-      "missing_tests": [
-        "tests/unit/core"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "CORE-TBD-E001"
       ],
@@ -750,7 +723,7 @@
       "requirement_summary": "Working graph, persistent store, evidence archive, full lifecycle, CC-09 reset",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/core/pmbl.py",
         "conrad/core/belief_graph.py"
@@ -759,9 +732,7 @@
       "test_ids": [
         "tests/unit/core"
       ],
-      "missing_tests": [
-        "tests/unit/core"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "CORE-PERSIST-E001"
       ],
@@ -778,7 +749,7 @@
       "requirement_summary": "Abstract synthetic hidden-state sandbox and CORE-* experiments vs baselines",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/evaluation/core_experiments"
       ],
@@ -786,9 +757,7 @@
       "test_ids": [
         "tests/unit/core"
       ],
-      "missing_tests": [
-        "tests/unit/core"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "CORE-FULL-E001"
       ],
@@ -805,7 +774,7 @@
       "requirement_summary": "Masked loss zero denominator; padding/permutation invariance",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/core/primitives.py"
       ],
@@ -813,9 +782,7 @@
       "test_ids": [
         "tests/property/core"
       ],
-      "missing_tests": [
-        "tests/property/core"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
@@ -830,7 +797,7 @@
       "requirement_summary": "Twin2S canonical geometry, observability truth, OCPWE controls, counterfactual worlds",
       "authority": "EXPERIMENTAL_CANDIDATE",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/twins/twin2s"
       ],
@@ -839,10 +806,7 @@
         "tests/unit/twins/twin2s",
         "tests/simulation/twin2s"
       ],
-      "missing_tests": [
-        "tests/unit/twins/twin2s",
-        "tests/simulation/twin2s"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [
         "sim.twin2s"
@@ -859,7 +823,7 @@
       "requirement_summary": "Model2S persistent spatial belief, observed/inferred/unknown, pose uncertainty, free-space evidence",
       "authority": "EXPERIMENTAL_CANDIDATE",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/domains/spatial"
       ],
@@ -867,9 +831,7 @@
       "test_ids": [
         "tests/unit/domains/spatial"
       ],
-      "missing_tests": [
-        "tests/unit/domains/spatial"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "2S-E001"
       ],
@@ -888,7 +850,7 @@
       "requirement_summary": "Twin2T hierarchy, corrosion + fatigue with validity masks, MCDE coupling, interventions",
       "authority": "EXPERIMENTAL_CANDIDATE",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/twins/twin2t"
       ],
@@ -897,10 +859,7 @@
         "tests/unit/twins/twin2t",
         "tests/simulation/twin2t"
       ],
-      "missing_tests": [
-        "tests/unit/twins/twin2t",
-        "tests/simulation/twin2t"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [
         "sim.twin2t"
@@ -917,7 +876,7 @@
       "requirement_summary": "Model2T persistent structural belief, direct vs propagated support, TCDP constrained propagation",
       "authority": "EXPERIMENTAL_CANDIDATE",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/domains/technical"
       ],
@@ -925,9 +884,7 @@
       "test_ids": [
         "tests/unit/domains/technical"
       ],
-      "missing_tests": [
-        "tests/unit/domains/technical"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "2T-E001"
       ],
@@ -946,7 +903,7 @@
       "requirement_summary": "Twin2E fields + entities, MEIFE, disturbances, counterfactuals",
       "authority": "EXPERIMENTAL_CANDIDATE",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/twins/twin2e"
       ],
@@ -955,10 +912,7 @@
         "tests/unit/twins/twin2e",
         "tests/simulation/twin2e"
       ],
-      "missing_tests": [
-        "tests/unit/twins/twin2e",
-        "tests/simulation/twin2e"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [
         "sim.twin2e"
@@ -975,7 +929,7 @@
       "requirement_summary": "Model2E separate entity/field beliefs and CEFD coupling with provenance",
       "authority": "EXPERIMENTAL_CANDIDATE",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/domains/ecological"
       ],
@@ -983,9 +937,7 @@
       "test_ids": [
         "tests/unit/domains/ecological"
       ],
-      "missing_tests": [
-        "tests/unit/domains/ecological"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "2E-E001"
       ],
@@ -1004,7 +956,7 @@
       "requirement_summary": "Asynchronous versioned bus, availability states, failure isolation, cross-domain context only",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/orchestration/belief_bus.py"
       ],
@@ -1012,9 +964,7 @@
       "test_ids": [
         "tests/unit/orchestration"
       ],
-      "missing_tests": [
-        "tests/unit/orchestration"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
@@ -1029,7 +979,7 @@
       "requirement_summary": "Children never mutate each other; typed uncertain cross-domain relations; biofouling != corrosion",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/schemas/belief.py",
         "conrad/orchestration/belief_bus.py"
@@ -1040,7 +990,6 @@
         "tests/integration/test_multidomain.py"
       ],
       "missing_tests": [
-        "tests/unit/orchestration",
         "tests/integration/test_multidomain.py"
       ],
       "experiment_ids": [],
@@ -1082,14 +1031,12 @@
       "requirement_summary": "Unity V2 C# project (8 modules) and Python bridge adapter",
       "authority": "INTERFACE_FROZEN",
       "owner": "software",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "unity/ConradUnityV2",
         "conrad/adapters/unity"
       ],
-      "missing_paths": [
-        "unity/ConradUnityV2"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/contract/unity",
         "tests/unit/adapters/unity"
@@ -1105,7 +1052,7 @@
       ],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-EST-001",
@@ -1148,9 +1095,7 @@
         "tests/unit/robotics",
         "tests/simulation/nav"
       ],
-      "missing_tests": [
-        "tests/simulation/nav"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "NAV-001",
         "NAV-002",
@@ -1221,7 +1166,7 @@
       "requirement_summary": "Model1/EGDC: claim graph, grounded proposals, closed action vocabulary, deterministic constraints, UIR",
       "authority": "EXPERIMENTAL_CANDIDATE",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/decision"
       ],
@@ -1229,9 +1174,7 @@
       "test_ids": [
         "tests/unit/decision"
       ],
-      "missing_tests": [
-        "tests/unit/decision"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "M1-UIR-E001"
       ],
@@ -1250,7 +1193,7 @@
       "requirement_summary": "MCBR: InformationNeed -> ObservationPlan, cause-specific strategies, feasibility before ranking, baselines, never moves the robot",
       "authority": "EXPERIMENTAL_CANDIDATE",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/active"
       ],
@@ -1258,9 +1201,7 @@
       "test_ids": [
         "tests/unit/active"
       ],
-      "missing_tests": [
-        "tests/unit/active"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "ACTIVE-MCBR-E001"
       ],
@@ -1279,7 +1220,7 @@
       "requirement_summary": "BAAC: receiver model, semantic deltas, progressive fidelity, store-and-forward, channel simulator, baselines",
       "authority": "EXPERIMENTAL_CANDIDATE",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/communication"
       ],
@@ -1287,9 +1228,7 @@
       "test_ids": [
         "tests/unit/communication"
       ],
-      "missing_tests": [
-        "tests/unit/communication"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "COM-BAAC-E001"
       ],
@@ -1333,13 +1272,11 @@
       "requirement_summary": "Twin2S -> sim -> sensors -> ECMER -> Model2S persistent spatial belief, no leakage",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "IMPLEMENTED",
       "implementation_paths": [
         "conrad/orchestration/mission.py"
       ],
-      "missing_paths": [
-        "conrad/orchestration/mission.py"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/integration/test_i1_spatial_loop.py"
       ],
@@ -1354,7 +1291,7 @@
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-INT-I2",
@@ -1362,19 +1299,15 @@
       "requirement_summary": "Autonomous movement on estimated state; nav benchmarks",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/evaluation/nav_benchmarks"
       ],
-      "missing_paths": [
-        "conrad/evaluation/nav_benchmarks"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/simulation/nav"
       ],
-      "missing_tests": [
-        "tests/simulation/nav"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "NAV-001",
         "NAV-002",
@@ -1390,7 +1323,7 @@
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-INT-I3",
@@ -1398,13 +1331,11 @@
       "requirement_summary": "Structural inspection with partial observations and persistent uncertain 2T state",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "IMPLEMENTED",
       "implementation_paths": [
         "conrad/orchestration/mission.py"
       ],
-      "missing_paths": [
-        "conrad/orchestration/mission.py"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/integration/test_i3_structural.py"
       ],
@@ -1419,7 +1350,7 @@
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-INT-I4",
@@ -1427,13 +1358,11 @@
       "requirement_summary": "Flagship closed active inspection, quantified and replayable",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "IMPLEMENTED",
       "implementation_paths": [
         "conrad/orchestration/mission.py"
       ],
-      "missing_paths": [
-        "conrad/orchestration/mission.py"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/acceptance/test_flagship_mission.py"
       ],
@@ -1448,7 +1377,7 @@
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-INT-I5",
@@ -1456,13 +1385,11 @@
       "requirement_summary": "Model1 decision autonomy integrated; hard constraints deterministic",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "IMPLEMENTED",
       "implementation_paths": [
         "conrad/orchestration/mission.py"
       ],
-      "missing_paths": [
-        "conrad/orchestration/mission.py"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/acceptance/test_flagship_mission.py"
       ],
@@ -1477,7 +1404,7 @@
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-INT-I6",
@@ -1485,13 +1412,11 @@
       "requirement_summary": "2E integrated into multi-domain belief through the bus",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "IMPLEMENTED",
       "implementation_paths": [
         "conrad/orchestration/mission.py"
       ],
-      "missing_paths": [
-        "conrad/orchestration/mission.py"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/integration/test_multidomain.py"
       ],
@@ -1506,7 +1431,7 @@
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-INT-I7",
@@ -1514,13 +1439,11 @@
       "requirement_summary": "Constrained BAAC communication in missions: low bandwidth, loss, outage, reconnection",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "IMPLEMENTED",
       "implementation_paths": [
         "conrad/orchestration/mission.py"
       ],
-      "missing_paths": [
-        "conrad/orchestration/mission.py"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/acceptance/test_flagship_mission.py"
       ],
@@ -1535,7 +1458,7 @@
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-HW-012",
@@ -1543,19 +1466,15 @@
       "requirement_summary": "Hardware characterization ingestion with value/units/frame/time/uncertainty/provenance/source type",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/robotics/hardware/characterization"
       ],
-      "missing_paths": [
-        "conrad/robotics/hardware/characterization"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/unit/characterization"
       ],
-      "missing_tests": [
-        "tests/unit/characterization"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
@@ -1564,7 +1483,7 @@
       ],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-HW-013",
@@ -1572,19 +1491,15 @@
       "requirement_summary": "Parameter identification tooling; identification data separated from validation data",
       "authority": "EXPERIMENTAL_CANDIDATE",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/robotics/hardware/identification"
       ],
-      "missing_paths": [
-        "conrad/robotics/hardware/identification"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/unit/identification"
       ],
-      "missing_tests": [
-        "tests/unit/identification"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
@@ -1593,7 +1508,7 @@
       ],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-HIL-014",
@@ -1632,15 +1547,11 @@
       "implementation_paths": [
         "conrad/robotics/hardware/characterization"
       ],
-      "missing_paths": [
-        "conrad/robotics/hardware/characterization"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/unit/characterization"
       ],
-      "missing_tests": [
-        "tests/unit/characterization"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
@@ -1657,7 +1568,7 @@
       "requirement_summary": "Dataset registry, manifests, adapters; models never own dataset loading",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/data/manifest.py",
         "conrad/data/adapters"
@@ -1666,9 +1577,7 @@
       "test_ids": [
         "tests/unit/data"
       ],
-      "missing_tests": [
-        "tests/unit/data"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [
         "data.manifest_ids"
@@ -1685,7 +1594,7 @@
       "requirement_summary": "Lineage-aware splits; OOD holds out structural families",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/data/splits.py"
       ],
@@ -1694,10 +1603,7 @@
         "tests/unit/data",
         "tests/property/data"
       ],
-      "missing_tests": [
-        "tests/unit/data",
-        "tests/property/data"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [
         "data.split_hash"
@@ -1714,7 +1620,7 @@
       "requirement_summary": "DATA-CONRAD-SSL-01 corpus tooling and acceptance report",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/data/ssl_corpus.py"
       ],
@@ -1722,9 +1628,7 @@
       "test_ids": [
         "tests/unit/data"
       ],
-      "missing_tests": [
-        "tests/unit/data"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
@@ -1741,7 +1645,7 @@
       "requirement_summary": "SIMREAL-LEDGER-01 randomization ledger",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/data/simreal_ledger.py",
         "datasets/simreal_ledger.yaml"
@@ -1750,9 +1654,7 @@
       "test_ids": [
         "tests/unit/data"
       ],
-      "missing_tests": [
-        "tests/unit/data"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
@@ -1767,7 +1669,7 @@
       "requirement_summary": "Deterministic trainer, curriculum C0-C9, truncated persistent training, resume",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/training/trainer.py"
       ],
@@ -1775,9 +1677,7 @@
       "test_ids": [
         "tests/unit/training"
       ],
-      "missing_tests": [
-        "tests/unit/training"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [
         "train"
@@ -1794,7 +1694,7 @@
       "requirement_summary": "Checkpoint identity; incompatible load rejected",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/training/checkpoint.py"
       ],
@@ -1802,9 +1702,7 @@
       "test_ids": [
         "tests/unit/training"
       ],
-      "missing_tests": [
-        "tests/unit/training"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
@@ -1819,7 +1717,7 @@
       "requirement_summary": "Compute-aware execution; smoke runs; full-scale configs marked compute-blocked",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/training/trainer.py",
         "configs/train"
@@ -1828,9 +1726,7 @@
       "test_ids": [
         "tests/unit/training"
       ],
-      "missing_tests": [
-        "tests/unit/training"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [
         "device"
@@ -1849,26 +1745,22 @@
       "requirement_summary": "Experiment registry with stable IDs; failed experiments retained",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/evaluation/registry"
       ],
-      "missing_paths": [
-        "conrad/evaluation/registry"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/unit/evaluation"
       ],
-      "missing_tests": [
-        "tests/unit/evaluation"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-EXP-002",
@@ -1876,26 +1768,22 @@
       "requirement_summary": "Acceptance records; OPEN threshold -> NOT_EVALUABLE",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/evaluation/acceptance.py"
       ],
-      "missing_paths": [
-        "conrad/evaluation/acceptance.py"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/unit/evaluation"
       ],
-      "missing_tests": [
-        "tests/unit/evaluation"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-EXP-003",
@@ -1903,28 +1791,23 @@
       "requirement_summary": "Maturity ladder and claim ladder enforcement",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/evaluation/maturity.py",
         "conrad/evaluation/claims.py"
       ],
-      "missing_paths": [
-        "conrad/evaluation/maturity.py",
-        "conrad/evaluation/claims.py"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/unit/evaluation"
       ],
-      "missing_tests": [
-        "tests/unit/evaluation"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-EXP-004",
@@ -1936,15 +1819,11 @@
       "implementation_paths": [
         "conrad/evaluation/claims.py"
       ],
-      "missing_paths": [
-        "conrad/evaluation/claims.py"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/unit/evaluation"
       ],
-      "missing_tests": [
-        "tests/unit/evaluation"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
@@ -2096,26 +1975,22 @@
       "requirement_summary": "Deterministic replay with digest verification, fail closed; backup/restore",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/persistence/replay_store.py"
       ],
-      "missing_paths": [
-        "conrad/persistence/replay_store.py"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/replay"
       ],
-      "missing_tests": [
-        "tests/replay"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-SEC-001",
@@ -2151,13 +2026,11 @@
       "requirement_summary": "Release lanes dev/candidate/physical with manifest; physical requires I-gate evidence",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "IMPLEMENTED",
       "implementation_paths": [
         "conrad/runtime/release.py"
       ],
-      "missing_paths": [
-        "conrad/runtime/release.py"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/unit/runtime/test_release.py"
       ],
@@ -2170,7 +2043,7 @@
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-DASH-001",
@@ -2178,26 +2051,22 @@
       "requirement_summary": "Operator and replay console: explanatory surface, never a source of truth",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/console"
       ],
-      "missing_paths": [
-        "conrad/console"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/unit/console"
       ],
-      "missing_tests": [
-        "tests/unit/console"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-ADV-001",
@@ -2259,9 +2128,7 @@
       "implementation_paths": [
         "conrad/evaluation/acceptance.py"
       ],
-      "missing_paths": [
-        "conrad/evaluation/acceptance.py"
-      ],
+      "missing_paths": [],
       "test_ids": [],
       "missing_tests": [],
       "experiment_ids": [],

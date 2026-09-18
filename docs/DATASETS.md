@@ -1,0 +1,52 @@
+# Datasets
+
+`conrad/data` holds the tooling that makes a dataset usable: manifests, verification, lineage splits, the SSL
+corpus report and the sim/real ledger. The manifests on disk and their status are listed in
+[DATASET_REGISTER.md](DATASET_REGISTER.md); this page describes the code.
+
+**No real dataset is downloaded, licensed or used.** Every experiment so far used synthetic generators.
+
+## Manifests (`manifest_model.py`, `manifest.py`)
+
+- `DatasetManifest` records source, release, license (default `REVIEW_REQUIRED`) and evidence, rights,
+  `training_allowed` / `deployment_allowed` / `redistribution_allowed` (default False), modalities, labels, units,
+  frames, timestamps, split strategy, transformations, adapter version and a file inventory with sha256.
+- `check_manifest_declarations` flags STATUS_NOT_USABLE, LICENSE_MISSING, RIGHTS_NOT_CLEARED,
+  TRAINING_NOT_PERMITTED, ADAPTER_VERSION_MISSING, SPLIT_STRATEGY_MISSING, NO_FILES.
+- `verify_manifest(path, data_root)` also checks files and checksums and fails closed.
+- `find_manifest("id[@version]")` searches `datasets/**/*.manifest.yaml`; data lives at
+  `$CONRAD_DATA_ROOT/<id>` or `artifacts/data/<id>`.
+
+CLI:
+
+```
+uv run conrad data verify --manifest subpipe            # id, id@version, or a .yaml path
+```
+
+It prints each problem and `RESULT: OK` or `RESULT: FAIL (n problems)`. The public manifests are templates, so
+they fail today. `conrad doctor` verifies every ID in `data.manifest_ids`.
+
+## Splits (`splits.py`)
+
+`build_splits` groups samples into lineage groups (connected components over shared split-unit values such as
+dive, site, asset or trajectory) so related samples never cross splits. Splits: train, validation, test,
+test_ood. `compute_split_hash` is recorded in checkpoints; `assert_no_lineage_leakage` raises
+`LineageLeakageError`. No experiment uses these splits yet.
+
+## Other modules
+
+- `ssl_corpus.py`: DATA-CONRAD-SSL-01 acceptance report. An empty real partition is `EMPTY_BLOCKED_EXTERNAL`.
+- `simreal_ledger.py`: SIMREAL-LEDGER-01. `datasets/simreal_ledger.yaml` (revision `0.1.0-unmeasured`) marks
+  every row unmeasured; UNMEASURED parameters are never treated as calibrated.
+- `inventory.py`: hashes files into manifest rows.
+- `adapters/`: `ImageFolderSequenceAdapter` (bytes unchanged, no labels), `PublicDatasetAdapter` (every access
+  raises `DatasetNotAvailableError`), `SyntheticTwinAdapter`.
+
+## Forbidden data
+
+The legacy Model 2 datasets must never be used: their observation confidence was computed from the true severity
+([migration/DIGITAL_TWIN_SALVAGE_REPORT.md](migration/DIGITAL_TWIN_SALVAGE_REPORT.md)).
+
+## Blocked
+
+Rights-cleared real data: BLOCKED_EXTERNAL (EXT-DATA-01). Tests: `uv run pytest tests/unit/data tests/property/data -q`.
