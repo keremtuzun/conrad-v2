@@ -8,7 +8,7 @@ from __future__ import annotations
 import json
 from collections.abc import Callable, Iterator
 from pathlib import Path
-from typing import Any
+from typing import Any, TextIO
 from uuid import UUID
 
 from conrad.schemas.base import digest_of
@@ -73,11 +73,10 @@ class EventLog:
         self._sink = sink
         self._sequence = 0
         self.events: list[RuntimeEvent] = []
+        self._handle: TextIO | None = None
         if path is not None:
             path.parent.mkdir(parents=True, exist_ok=True)
             self._handle = path.open("a", encoding="utf-8")
-        else:
-            self._handle = None
 
     def emit(
         self,
