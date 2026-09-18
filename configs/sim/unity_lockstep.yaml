@@ -1,0 +1,19 @@
+# Unity V2 in deterministic lock-step: Python owns time, Unity advances one fixed step per STEP request.
+extends: [configs/sim/default.yaml]
+sim:
+  unity:
+    physics_dt_ns: 5000000
+    player_path: null            # machine-local; set in configs/local.yaml (paths) if needed
+    robot_config_export: artifacts/unity/robot_config.json
+    truth_endpoint: tcp://127.0.0.1:5593   # training/evaluation only
+    bridge:
+      control_endpoint: tcp://127.0.0.1:5591
+      stream_endpoint: null
+      allowed_peers: ["127.0.0.1"]
+      allowed_simulator_ids: ["conrad-unity-v2"]
+      clock_domain: SIM
+      lock_step: true
+      request_timeout_ms: 2000
+      client_name: conrad-python
+      require_safety_authorization: true
+      minimum_validity_level: L1_APPROXIMATE_PHYSICS

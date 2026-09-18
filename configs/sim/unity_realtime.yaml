@@ -1,0 +1,7 @@
+# Unity V2 free-running: Unity owns time and publishes sensor packets on the PUB stream.
+extends: [configs/sim/unity_lockstep.yaml]
+sim:
+  unity:
+    bridge:
+      stream_endpoint: tcp://127.0.0.1:5592
+      lock_step: false

@@ -1,0 +1,34 @@
+{
+  "format": "conrad.unity.experiment.v1",
+  "experiment_name": "nav001_straight_waypoint_example",
+  "seed": 2026201,
+  "clock_domain": "SIM",
+  "physics_dt_ns": 5000000,
+  "lock_step": true,
+  "validation_report_ref": null,
+  "truth_endpoint_enabled": true,
+  "replay_log_path": "artifacts/unity/replay_nav001.jsonl",
+  "replay_truth_every_n_steps": 10,
+  "thruster_noise_fraction": 0.0,
+  "power": {
+    "source": "SYNTHETIC_ONLY",
+    "compute_w": 15.0,
+    "sensors_w": 5.0,
+    "comms_w": 2.0,
+    "thruster_coefficient": 0.8
+  },
+  "sensor_rendering": {
+    "camera": {"source": "SYNTHETIC_ONLY", "width_px": 320, "height_px": 240, "vertical_fov_deg": 60.0},
+    "sonar": {"source": "SYNTHETIC_ONLY", "beams": 64, "bins": 128, "range_max_m": 20.0,
+              "horizontal_fov_rad": 2.0, "attenuation_per_m": 0.02, "false_return_prob": 0.01}
+  },
+  "bridge": {
+    "control_endpoint": "tcp://127.0.0.1:5591",
+    "stream_endpoint": null,
+    "truth_endpoint": "tcp://127.0.0.1:5593"
+  },
+  "faults": [
+    {"fault_id": "f-h1", "fault_type": "THRUSTER_DEGRADATION", "target": "H1", "start_time_ns": 20000000000,
+     "duration_ns": 10000000000, "magnitude": 0.5, "parameters": {}}
+  ]
+}

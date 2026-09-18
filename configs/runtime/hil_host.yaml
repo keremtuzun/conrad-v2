@@ -1,0 +1,28 @@
+# Host-HIL (ladder R1): the deployment stack on the development host against a simulated vehicle.
+# Thresholds are ENGINEERING_ESTIMATE gate settings, not spec values; hardware owners tighten them.
+extends: [configs/base/default.yaml]
+run:
+  mode: hil
+  lane: hil
+runtime:
+  command_mode: simulated
+  required_adapters: ["sim_kernel"]
+sim:
+  hil:
+    mode: HOST
+    rate_hz: 50.0
+    cycles: 3000
+    warmup_cycles: 100
+    sensor_rates_hz: {imu: 100.0, depth: 20.0}
+    stale_tolerance: 1.5
+    target_platform_id: null
+    criteria:
+      max_missed_deadline_fraction: 0.01
+      max_loop_overrun_fraction: 0.01
+      max_frame_drop_fraction: 0.01
+      max_end_to_end_p99_ms: 20.0
+      max_stage_p99_ms: {acquire: 5.0, stack: 15.0}
+      max_python_heap_growth_bytes: 16777216
+      max_queue_backlog: 8
+      require_fault_recovery: true
+      min_cycles: 1000

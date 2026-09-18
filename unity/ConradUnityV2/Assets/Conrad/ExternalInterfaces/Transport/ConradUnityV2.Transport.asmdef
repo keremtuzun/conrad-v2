@@ -1,0 +1,14 @@
+{
+    "name": "ConradUnityV2.Transport",
+    "rootNamespace": "Conrad.UnityV2.ExternalInterfaces.Transport",
+    "references": ["ConradUnityV2"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": ["NetMQ.dll", "AsyncIO.dll", "NaCl.dll"],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

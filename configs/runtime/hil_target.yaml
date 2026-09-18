@@ -1,0 +1,11 @@
+# Target-HIL (ladder R2): the stack on the REAL onboard computer, vehicle simulated (Unity or kernel).
+# BLOCKED_EXTERNAL until the onboard computer exists: set target_platform_id to the value printed by
+# `python -c "from conrad.sim.hil import default_platform_id; print(default_platform_id())"` ON the target.
+extends: [configs/runtime/hil_host.yaml]
+runtime:
+  command_mode: simulated
+  required_adapters: ["unity_v2"]
+sim:
+  hil:
+    mode: TARGET
+    target_platform_id: null
