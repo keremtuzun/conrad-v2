@@ -1,0 +1,29 @@
+__pycache__/
+*.py[cod]
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.hypothesis/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+# artifacts are never source authority (ch34). Small tracked ledgers live under artifacts/spec and artifacts/migration.
+artifacts/*
+!artifacts/spec/
+!artifacts/migration/
+!artifacts/README.md
+mlruns/
+# secrets and machine-local overrides
+.env
+.env.*
+*.pem
+*.key
+configs/local.yaml
+# unity generated
+unity/**/Library/
+unity/**/Temp/
+unity/**/Obj/
+unity/**/Logs/

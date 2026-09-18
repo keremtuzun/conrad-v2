@@ -1,0 +1,25 @@
+# Base layer. Composition is explicit: base -> mode -> experiment -> local override (configs/local.yaml, gitignored).
+run:
+  architecture_id: conrad_v2_impl_freeze_v0_2
+  stack_id: conrad_v2_stack_freeze_v0_2
+  seed: 2026201
+  mode: sim
+  lane: simulation
+data:
+  manifest_ids: []
+  split_hash: null
+paths:
+  artifacts_dir: artifacts
+  database: artifacts/conrad.sqlite
+  object_store: artifacts/objects
+  runs_dir: artifacts/runs
+runtime:
+  persistence_mode: sqlite_wal_single_writer
+  command_mode: disabled
+  hardware_enable: false
+  robot_config: configs/robot/sim_reference.yaml
+  bind_address: 127.0.0.1
+  allowed_peers: ["127.0.0.1"]
+  late_evidence_policy: EXPLICIT_LATE
+  required_adapters: ["sim_kernel"]
+device: cpu

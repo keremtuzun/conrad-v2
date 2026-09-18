@@ -1,0 +1,229 @@
+# PHYSICAL ROBOT TEMPLATE. Owner: hardware (Burak). Every parameter is OPEN until measured.
+# Thruster layout intentionally empty: software must not assume a layout (EXT-HW-02).
+robot_id: 0197c0de-0000-7000-8000-00000000c0de
+config_name: physical_template
+config_version: 0.2.0
+mass_kg:
+  value: null
+  units: kg
+  source: OPEN
+displaced_volume_m3:
+  value: null
+  units: m^3
+  source: OPEN
+center_of_mass_body_m:
+  value: null
+  units: m
+  source: OPEN
+center_of_buoyancy_body_m:
+  value: null
+  units: m
+  source: OPEN
+inertia_diag_kgm2:
+  value: null
+  units: kg*m^2
+  source: OPEN
+dimensions_m:
+  value: null
+  units: m
+  source: OPEN
+linear_drag:
+  value: null
+  units: N*s/m|N*m*s/rad
+  source: OPEN
+quadratic_drag:
+  value: null
+  units: N*s^2/m^2|N*m*s^2/rad^2
+  source: OPEN
+added_mass_diag:
+  value: null
+  units: kg|kg*m^2
+  source: OPEN
+thrusters: []
+sensors:
+- sensor_name: imu
+  modality: IMU
+  frame_id: SENSOR_IMU
+  mount_pose_body:
+    value: null
+    units: m,quat_wxyz
+    source: OPEN
+  rate_hz:
+    value: null
+    units: Hz
+    source: OPEN
+  noise_std:
+    value: null
+    units: native
+    source: OPEN
+  bias:
+    value: null
+    units: native
+    source: OPEN
+  drift_per_s:
+    value: null
+    units: native/s
+    source: OPEN
+  latency_s:
+    value: null
+    units: s
+    source: OPEN
+- sensor_name: depth
+  modality: PRESSURE_DEPTH
+  frame_id: SENSOR_DEPTH
+  mount_pose_body:
+    value: null
+    units: m,quat_wxyz
+    source: OPEN
+  rate_hz:
+    value: null
+    units: Hz
+    source: OPEN
+  noise_std:
+    value: null
+    units: native
+    source: OPEN
+  bias:
+    value: null
+    units: native
+    source: OPEN
+  drift_per_s:
+    value: null
+    units: native/s
+    source: OPEN
+  latency_s:
+    value: null
+    units: s
+    source: OPEN
+- sensor_name: camera
+  modality: RGB
+  frame_id: SENSOR_CAMERA
+  mount_pose_body:
+    value: null
+    units: m,quat_wxyz
+    source: OPEN
+  rate_hz:
+    value: null
+    units: Hz
+    source: OPEN
+  noise_std:
+    value: null
+    units: native
+    source: OPEN
+  bias:
+    value: null
+    units: native
+    source: OPEN
+  drift_per_s:
+    value: null
+    units: native/s
+    source: OPEN
+  latency_s:
+    value: null
+    units: s
+    source: OPEN
+- sensor_name: sonar
+  modality: SONAR
+  frame_id: SENSOR_SONAR
+  mount_pose_body:
+    value: null
+    units: m,quat_wxyz
+    source: OPEN
+  rate_hz:
+    value: null
+    units: Hz
+    source: OPEN
+  noise_std:
+    value: null
+    units: native
+    source: OPEN
+  bias:
+    value: null
+    units: native
+    source: OPEN
+  drift_per_s:
+    value: null
+    units: native/s
+    source: OPEN
+  latency_s:
+    value: null
+    units: s
+    source: OPEN
+battery:
+  capacity_j:
+    value: null
+    units: J
+    source: OPEN
+  nominal_voltage_v:
+    value: null
+    units: V
+    source: OPEN
+  max_current_a:
+    value: null
+    units: A
+    source: OPEN
+  reserve_fraction:
+    value: null
+    units: unitless
+    source: OPEN
+compute:
+  description: simulation host
+  ram_bytes:
+    value: null
+    units: bytes
+    source: OPEN
+  thermal_limit_c:
+    value: null
+    units: degC
+    source: OPEN
+communications:
+- link_name: acoustic
+  bandwidth_bps:
+    value: null
+    units: bit/s
+    source: OPEN
+  latency_s:
+    value: null
+    units: s
+    source: OPEN
+  packet_loss:
+    value: null
+    units: unitless
+    source: OPEN
+  bit_error_rate:
+    value: null
+    units: unitless
+    source: OPEN
+safety:
+  safe_hold_action:
+    value: null
+    units: enum
+    source: OPEN
+  max_depth_m:
+    value: null
+    units: m
+    source: OPEN
+  min_altitude_m:
+    value: null
+    units: m
+    source: OPEN
+  max_speed_mps:
+    value: null
+    units: m/s
+    source: OPEN
+  max_pose_sigma_m:
+    value: null
+    units: m
+    source: OPEN
+  min_battery_fraction:
+    value: null
+    units: unitless
+    source: OPEN
+  state_stale_after_s:
+    value: null
+    units: s
+    source: OPEN
+  command_timeout_s:
+    value: null
+    units: s
+    source: OPEN

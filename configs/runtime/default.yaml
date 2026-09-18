@@ -1,0 +1,6 @@
+extends: [configs/base/default.yaml]
+run:
+  mode: runtime
+  lane: simulation
+runtime:
+  command_mode: simulated

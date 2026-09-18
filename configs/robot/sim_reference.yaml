@@ -1,0 +1,599 @@
+# SIMULATION REFERENCE ONLY. Every value is SYNTHETIC_ONLY: a labelled simulator input, not a
+# measurement of the physical vehicle. Physical values arrive through hardware characterization (Phase 12).
+robot_id: 0197c0de-0000-7000-8000-00000000c0de
+config_name: sim_reference
+config_version: 0.2.0
+mass_kg:
+  value: 11.5
+  units: kg
+  source: SYNTHETIC_ONLY
+displaced_volume_m3:
+  value: 0.01125
+  units: m^3
+  source: SYNTHETIC_ONLY
+center_of_mass_body_m:
+  value:
+  - 0
+  - 0
+  - 0
+  units: m
+  source: SYNTHETIC_ONLY
+center_of_buoyancy_body_m:
+  value:
+  - 0
+  - 0
+  - 0.02
+  units: m
+  source: SYNTHETIC_ONLY
+inertia_diag_kgm2:
+  value:
+  - 0.16
+  - 0.16
+  - 0.16
+  units: kg*m^2
+  source: SYNTHETIC_ONLY
+dimensions_m:
+  value:
+  - 0.46
+  - 0.34
+  - 0.25
+  units: m
+  source: SYNTHETIC_ONLY
+linear_drag:
+  value:
+  - 4.0
+  - 6.2
+  - 5.2
+  - 0.07
+  - 0.07
+  - 0.07
+  units: N*s/m|N*m*s/rad
+  source: SYNTHETIC_ONLY
+quadratic_drag:
+  value:
+  - 18.2
+  - 21.7
+  - 37.0
+  - 1.55
+  - 1.55
+  - 1.55
+  units: N*s^2/m^2|N*m*s^2/rad^2
+  source: SYNTHETIC_ONLY
+added_mass_diag:
+  value:
+  - 5.5
+  - 12.7
+  - 14.6
+  - 0.12
+  - 0.12
+  - 0.12
+  units: kg|kg*m^2
+  source: SYNTHETIC_ONLY
+thrusters:
+- thruster_id: H1
+  position_body_m:
+    value:
+    - 0.2
+    - 0.15
+    - 0.0
+    units: m
+    source: SYNTHETIC_ONLY
+  direction_body:
+    value:
+    - 0.7071067811865476
+    - -0.7071067811865476
+    - 0.0
+    units: unit
+    source: SYNTHETIC_ONLY
+  max_forward_thrust_n:
+    value: 40.0
+    units: N
+    source: SYNTHETIC_ONLY
+  max_reverse_thrust_n:
+    value: 30.0
+    units: N
+    source: SYNTHETIC_ONLY
+  deadzone_command:
+    value: 0.05
+    units: unitless
+    source: SYNTHETIC_ONLY
+  time_constant_s:
+    value: 0.15
+    units: s
+    source: SYNTHETIC_ONLY
+  latency_s:
+    value: 0.02
+    units: s
+    source: SYNTHETIC_ONLY
+  thrust_coefficient:
+    value: 40.0
+    units: N
+    source: SYNTHETIC_ONLY
+- thruster_id: H2
+  position_body_m:
+    value:
+    - 0.2
+    - -0.15
+    - 0.0
+    units: m
+    source: SYNTHETIC_ONLY
+  direction_body:
+    value:
+    - 0.7071067811865476
+    - 0.7071067811865476
+    - 0.0
+    units: unit
+    source: SYNTHETIC_ONLY
+  max_forward_thrust_n:
+    value: 40.0
+    units: N
+    source: SYNTHETIC_ONLY
+  max_reverse_thrust_n:
+    value: 30.0
+    units: N
+    source: SYNTHETIC_ONLY
+  deadzone_command:
+    value: 0.05
+    units: unitless
+    source: SYNTHETIC_ONLY
+  time_constant_s:
+    value: 0.15
+    units: s
+    source: SYNTHETIC_ONLY
+  latency_s:
+    value: 0.02
+    units: s
+    source: SYNTHETIC_ONLY
+  thrust_coefficient:
+    value: 40.0
+    units: N
+    source: SYNTHETIC_ONLY
+- thruster_id: H3
+  position_body_m:
+    value:
+    - -0.2
+    - 0.15
+    - 0.0
+    units: m
+    source: SYNTHETIC_ONLY
+  direction_body:
+    value:
+    - 0.7071067811865476
+    - 0.7071067811865476
+    - 0.0
+    units: unit
+    source: SYNTHETIC_ONLY
+  max_forward_thrust_n:
+    value: 40.0
+    units: N
+    source: SYNTHETIC_ONLY
+  max_reverse_thrust_n:
+    value: 30.0
+    units: N
+    source: SYNTHETIC_ONLY
+  deadzone_command:
+    value: 0.05
+    units: unitless
+    source: SYNTHETIC_ONLY
+  time_constant_s:
+    value: 0.15
+    units: s
+    source: SYNTHETIC_ONLY
+  latency_s:
+    value: 0.02
+    units: s
+    source: SYNTHETIC_ONLY
+  thrust_coefficient:
+    value: 40.0
+    units: N
+    source: SYNTHETIC_ONLY
+- thruster_id: H4
+  position_body_m:
+    value:
+    - -0.2
+    - -0.15
+    - 0.0
+    units: m
+    source: SYNTHETIC_ONLY
+  direction_body:
+    value:
+    - 0.7071067811865476
+    - -0.7071067811865476
+    - 0.0
+    units: unit
+    source: SYNTHETIC_ONLY
+  max_forward_thrust_n:
+    value: 40.0
+    units: N
+    source: SYNTHETIC_ONLY
+  max_reverse_thrust_n:
+    value: 30.0
+    units: N
+    source: SYNTHETIC_ONLY
+  deadzone_command:
+    value: 0.05
+    units: unitless
+    source: SYNTHETIC_ONLY
+  time_constant_s:
+    value: 0.15
+    units: s
+    source: SYNTHETIC_ONLY
+  latency_s:
+    value: 0.02
+    units: s
+    source: SYNTHETIC_ONLY
+  thrust_coefficient:
+    value: 40.0
+    units: N
+    source: SYNTHETIC_ONLY
+- thruster_id: V1
+  position_body_m:
+    value:
+    - 0.12
+    - 0.2
+    - 0.05
+    units: m
+    source: SYNTHETIC_ONLY
+  direction_body:
+    value:
+    - 0.0
+    - 0.0
+    - 1.0
+    units: unit
+    source: SYNTHETIC_ONLY
+  max_forward_thrust_n:
+    value: 40.0
+    units: N
+    source: SYNTHETIC_ONLY
+  max_reverse_thrust_n:
+    value: 30.0
+    units: N
+    source: SYNTHETIC_ONLY
+  deadzone_command:
+    value: 0.05
+    units: unitless
+    source: SYNTHETIC_ONLY
+  time_constant_s:
+    value: 0.15
+    units: s
+    source: SYNTHETIC_ONLY
+  latency_s:
+    value: 0.02
+    units: s
+    source: SYNTHETIC_ONLY
+  thrust_coefficient:
+    value: 40.0
+    units: N
+    source: SYNTHETIC_ONLY
+- thruster_id: V2
+  position_body_m:
+    value:
+    - 0.12
+    - -0.2
+    - 0.05
+    units: m
+    source: SYNTHETIC_ONLY
+  direction_body:
+    value:
+    - 0.0
+    - 0.0
+    - 1.0
+    units: unit
+    source: SYNTHETIC_ONLY
+  max_forward_thrust_n:
+    value: 40.0
+    units: N
+    source: SYNTHETIC_ONLY
+  max_reverse_thrust_n:
+    value: 30.0
+    units: N
+    source: SYNTHETIC_ONLY
+  deadzone_command:
+    value: 0.05
+    units: unitless
+    source: SYNTHETIC_ONLY
+  time_constant_s:
+    value: 0.15
+    units: s
+    source: SYNTHETIC_ONLY
+  latency_s:
+    value: 0.02
+    units: s
+    source: SYNTHETIC_ONLY
+  thrust_coefficient:
+    value: 40.0
+    units: N
+    source: SYNTHETIC_ONLY
+- thruster_id: V3
+  position_body_m:
+    value:
+    - -0.12
+    - 0.2
+    - 0.05
+    units: m
+    source: SYNTHETIC_ONLY
+  direction_body:
+    value:
+    - 0.0
+    - 0.0
+    - 1.0
+    units: unit
+    source: SYNTHETIC_ONLY
+  max_forward_thrust_n:
+    value: 40.0
+    units: N
+    source: SYNTHETIC_ONLY
+  max_reverse_thrust_n:
+    value: 30.0
+    units: N
+    source: SYNTHETIC_ONLY
+  deadzone_command:
+    value: 0.05
+    units: unitless
+    source: SYNTHETIC_ONLY
+  time_constant_s:
+    value: 0.15
+    units: s
+    source: SYNTHETIC_ONLY
+  latency_s:
+    value: 0.02
+    units: s
+    source: SYNTHETIC_ONLY
+  thrust_coefficient:
+    value: 40.0
+    units: N
+    source: SYNTHETIC_ONLY
+- thruster_id: V4
+  position_body_m:
+    value:
+    - -0.12
+    - -0.2
+    - 0.05
+    units: m
+    source: SYNTHETIC_ONLY
+  direction_body:
+    value:
+    - 0.0
+    - 0.0
+    - 1.0
+    units: unit
+    source: SYNTHETIC_ONLY
+  max_forward_thrust_n:
+    value: 40.0
+    units: N
+    source: SYNTHETIC_ONLY
+  max_reverse_thrust_n:
+    value: 30.0
+    units: N
+    source: SYNTHETIC_ONLY
+  deadzone_command:
+    value: 0.05
+    units: unitless
+    source: SYNTHETIC_ONLY
+  time_constant_s:
+    value: 0.15
+    units: s
+    source: SYNTHETIC_ONLY
+  latency_s:
+    value: 0.02
+    units: s
+    source: SYNTHETIC_ONLY
+  thrust_coefficient:
+    value: 40.0
+    units: N
+    source: SYNTHETIC_ONLY
+sensors:
+- sensor_name: imu
+  modality: IMU
+  frame_id: SENSOR_IMU
+  mount_pose_body:
+    value:
+    - 0.25
+    - 0
+    - 0
+    - 1
+    - 0
+    - 0
+    - 0
+    units: m,quat_wxyz
+    source: SYNTHETIC_ONLY
+  rate_hz:
+    value: 100.0
+    units: Hz
+    source: SYNTHETIC_ONLY
+  noise_std:
+    value: 0.01
+    units: native
+    source: SYNTHETIC_ONLY
+  bias:
+    value: 0.0
+    units: native
+    source: SYNTHETIC_ONLY
+  drift_per_s:
+    value: 0.0
+    units: native/s
+    source: SYNTHETIC_ONLY
+  latency_s:
+    value: 0.01
+    units: s
+    source: SYNTHETIC_ONLY
+- sensor_name: depth
+  modality: PRESSURE_DEPTH
+  frame_id: SENSOR_DEPTH
+  mount_pose_body:
+    value:
+    - 0.25
+    - 0
+    - 0
+    - 1
+    - 0
+    - 0
+    - 0
+    units: m,quat_wxyz
+    source: SYNTHETIC_ONLY
+  rate_hz:
+    value: 20.0
+    units: Hz
+    source: SYNTHETIC_ONLY
+  noise_std:
+    value: 0.02
+    units: native
+    source: SYNTHETIC_ONLY
+  bias:
+    value: 0.0
+    units: native
+    source: SYNTHETIC_ONLY
+  drift_per_s:
+    value: 0.0
+    units: native/s
+    source: SYNTHETIC_ONLY
+  latency_s:
+    value: 0.01
+    units: s
+    source: SYNTHETIC_ONLY
+- sensor_name: camera
+  modality: RGB
+  frame_id: SENSOR_CAMERA
+  mount_pose_body:
+    value:
+    - 0.25
+    - 0
+    - 0
+    - 1
+    - 0
+    - 0
+    - 0
+    units: m,quat_wxyz
+    source: SYNTHETIC_ONLY
+  rate_hz:
+    value: 5.0
+    units: Hz
+    source: SYNTHETIC_ONLY
+  noise_std:
+    value: 0.02
+    units: native
+    source: SYNTHETIC_ONLY
+  bias:
+    value: 0.0
+    units: native
+    source: SYNTHETIC_ONLY
+  drift_per_s:
+    value: 0.0
+    units: native/s
+    source: SYNTHETIC_ONLY
+  latency_s:
+    value: 0.01
+    units: s
+    source: SYNTHETIC_ONLY
+- sensor_name: sonar
+  modality: SONAR
+  frame_id: SENSOR_SONAR
+  mount_pose_body:
+    value:
+    - 0.25
+    - 0
+    - 0
+    - 1
+    - 0
+    - 0
+    - 0
+    units: m,quat_wxyz
+    source: SYNTHETIC_ONLY
+  rate_hz:
+    value: 2.0
+    units: Hz
+    source: SYNTHETIC_ONLY
+  noise_std:
+    value: 0.05
+    units: native
+    source: SYNTHETIC_ONLY
+  bias:
+    value: 0.0
+    units: native
+    source: SYNTHETIC_ONLY
+  drift_per_s:
+    value: 0.0
+    units: native/s
+    source: SYNTHETIC_ONLY
+  latency_s:
+    value: 0.01
+    units: s
+    source: SYNTHETIC_ONLY
+battery:
+  capacity_j:
+    value: 960000.0
+    units: J
+    source: SYNTHETIC_ONLY
+  nominal_voltage_v:
+    value: 14.8
+    units: V
+    source: SYNTHETIC_ONLY
+  max_current_a:
+    value: 60.0
+    units: A
+    source: SYNTHETIC_ONLY
+  reserve_fraction:
+    value: 0.2
+    units: unitless
+    source: SYNTHETIC_ONLY
+compute:
+  description: simulation host
+  ram_bytes:
+    value: 8000000000.0
+    units: bytes
+    source: SYNTHETIC_ONLY
+  thermal_limit_c:
+    value: 85.0
+    units: degC
+    source: SYNTHETIC_ONLY
+communications:
+- link_name: acoustic
+  bandwidth_bps:
+    value: 2000.0
+    units: bit/s
+    source: SYNTHETIC_ONLY
+  latency_s:
+    value: 1.0
+    units: s
+    source: SYNTHETIC_ONLY
+  packet_loss:
+    value: 0.1
+    units: unitless
+    source: SYNTHETIC_ONLY
+  bit_error_rate:
+    value: 0.0001
+    units: unitless
+    source: SYNTHETIC_ONLY
+safety:
+  safe_hold_action:
+    value: STATION_KEEP
+    units: enum
+    source: SYNTHETIC_ONLY
+  max_depth_m:
+    value: 60.0
+    units: m
+    source: SYNTHETIC_ONLY
+  min_altitude_m:
+    value: 0.5
+    units: m
+    source: SYNTHETIC_ONLY
+  max_speed_mps:
+    value: 1.0
+    units: m/s
+    source: SYNTHETIC_ONLY
+  max_pose_sigma_m:
+    value: 1.5
+    units: m
+    source: SYNTHETIC_ONLY
+  min_battery_fraction:
+    value: 0.15
+    units: unitless
+    source: SYNTHETIC_ONLY
+  state_stale_after_s:
+    value: 0.5
+    units: s
+    source: SYNTHETIC_ONLY
+  command_timeout_s:
+    value: 0.25
+    units: s
+    source: SYNTHETIC_ONLY

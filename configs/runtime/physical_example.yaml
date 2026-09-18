@@ -1,0 +1,11 @@
+# Example only. Fails `conrad doctor` by design until hardware prerequisites exist (SS-10).
+extends: [configs/base/default.yaml]
+run:
+  mode: runtime
+  lane: physical
+runtime:
+  command_mode: hardware
+  hardware_enable: false
+  hil_evidence_ref: null
+  robot_config: configs/robot/physical_template.yaml
+  required_adapters: ["physical"]
