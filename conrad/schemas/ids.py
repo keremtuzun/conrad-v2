@@ -5,6 +5,7 @@ implementation_status: FROZEN_CONTRACT
 
 from __future__ import annotations
 
+import hashlib
 import os
 import random
 import threading
@@ -44,12 +45,26 @@ class IdFactory:
     (logical millisecond counter + seeded PRNG) so that replays reproduce identical identifiers.
     """
 
-    def __init__(self, seed: int | None = None, start_ms: int = 1_700_000_000_000) -> None:
+    def __init__(self, seed: int | None = None, start_ms: int = 1_700_000_000_000, namespace: str = "") -> None:
         self._seed = seed
-        self._rng = random.Random(seed) if seed is not None else None
+        self._namespace = namespace
+        if seed is None:
+            self._rng: random.Random | None = None
+        elif namespace:
+            # Salted stream: two components sharing a run seed never mint the same UUIDs.
+            self._rng = random.Random(hashlib.sha256(f"{seed}:{namespace}".encode()).digest())
+        else:
+            self._rng = random.Random(seed)
         self._logical_ms = start_ms
         self._lock = threading.Lock()
         self._issued: int = 0
+
+    def child(self, namespace: str) -> IdFactory:
+        """Independent deterministic factory for one component (twin, model, logger...)."""
+        if self._seed is None:
+            return IdFactory()
+        full = f"{self._namespace}/{namespace}" if self._namespace else namespace
+        return IdFactory(seed=self._seed, namespace=full)
 
     @property
     def deterministic(self) -> bool:

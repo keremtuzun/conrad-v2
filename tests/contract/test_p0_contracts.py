@@ -230,3 +230,14 @@ def test_robot_config_validation() -> None:
 
 def test_truth_is_not_part_of_the_public_schema_surface() -> None:
     assert "TruthState" not in schemas.__all__ and not hasattr(schemas, "TruthState")
+
+
+def test_namespaced_id_factories_never_collide() -> None:
+    root = IdFactory(seed=21)
+    a, b = root.child("twin2s"), root.child("twin2t")
+    ids_a = {a.new() for _ in range(500)}
+    ids_b = {b.new() for _ in range(500)}
+    assert not ids_a & ids_b
+    assert [IdFactory(seed=21).child("twin2s").new() for _ in range(3)] == [
+        IdFactory(seed=21).child("twin2s").new() for _ in range(3)
+    ]
