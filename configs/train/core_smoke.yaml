@@ -1,0 +1,13 @@
+# CPU smoke run of the learned CORE-TBD GRU candidate (EXPERIMENTAL_CANDIDATE). Not a validation run.
+job: core_tbd_smoke
+scale: smoke
+seed: 2026201
+dims: tiny
+train_sequences: 48
+val_sequences: 16
+sequence_length: 24
+process_noise: 0.02
+batch_size: 64
+accumulation: 1
+max_epochs: 6
+patience: 6

@@ -1,0 +1,14 @@
+# Full-scale ch33 configuration (De=Dz=256 ...). Executable only with the declared compute.
+job: core_tbd_smoke
+scale: full
+required_compute: "1x CUDA GPU >= 16 GB (EXT-COMPUTE-01)"
+seed: 2026201
+dims: full
+train_sequences: 20000
+val_sequences: 2000
+sequence_length: 64
+process_noise: 0.02
+batch_size: 16
+accumulation: 4
+max_epochs: 200
+patience: 25
