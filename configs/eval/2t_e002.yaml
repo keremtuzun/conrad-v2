@@ -1,0 +1,9 @@
+# 2T-E002 persistent updating under partial coverage (SYNTHETIC_ONLY)
+experiment: {id: 2T-E002}
+seeds: [2026201, 2026202, 2026203]
+scenario: {kind: tier, tier: 3}
+coverages: [0.5, 0.2, 0.05]
+episodes_per_seed: 2
+steps: 20
+dt_days: 45
+gru: {hidden: 16, epochs: 150, lr: 0.01, train_episodes: 6}

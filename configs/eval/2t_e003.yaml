@@ -1,0 +1,11 @@
+# 2T-E003 TCDP relational benefit vs contamination (SYNTHETIC_ONLY; coupled/misleading kinds inject states)
+experiment: {id: 2T-E003}
+seeds: [2026201, 2026202, 2026203]
+kinds: [coupled, misleading, natural]
+episodes_per_kind: 3
+n_segments: 6
+observed_fraction: 0.5
+steps: 12
+dt_days: 60
+burn_in_steps: 2
+degraded_threshold_m: {corrosion_depth_m: 0.001, crack_length_m: 0.005}

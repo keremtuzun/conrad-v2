@@ -1,0 +1,9 @@
+# 2T-E001 direct inference + calibration (SYNTHETIC_ONLY, Twin2T tier-3 scenarios, T0 observations)
+experiment: {id: 2T-E001}
+seeds: [2026201, 2026202, 2026203]
+scenario: {kind: tier, tier: 3}
+episodes_per_seed: 3
+steps: 16
+dt_days: 60
+coverage: 0.8
+degradation_levels: [0.0, 0.4]

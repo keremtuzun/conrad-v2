@@ -1,0 +1,10 @@
+# 2T-E004 temporal benefit under sparse inspections (SYNTHETIC_ONLY)
+experiment: {id: 2T-E004}
+seeds: [2026201, 2026202, 2026203]
+scenarios:
+  - {kind: small, n_segments: 4}
+  - {kind: tier, tier: 3}
+episodes_per_scenario: 2
+tick_days: 30
+horizon_days: 1800
+inspection_days: [30, 180, 360, 720, 1080, 1440, 1800]
