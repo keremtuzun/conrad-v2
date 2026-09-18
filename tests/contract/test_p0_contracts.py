@@ -11,7 +11,13 @@ from pydantic import ValidationError
 
 import conrad.schemas as schemas
 from conrad.robotics.hardware.config import load_robot_config, validate_for_lane
-from conrad.schemas.base import ARCHITECTURE_ID, SCHEMA_VERSION, STACK_ID, SchemaVersionError, check_schema_compatible
+from conrad.schemas.base import (
+    ARCHITECTURE_ID,
+    SCHEMA_VERSION,
+    STACK_ID,
+    SchemaVersionError,
+    check_schema_compatible,
+)
 from conrad.schemas.belief import KnowledgeStatus, PropertyClaim
 from conrad.schemas.frames import (
     FramedPoint,
@@ -90,13 +96,23 @@ def test_evidence_cannot_predate_observation(ids: IdFactory) -> None:
 
 
 def test_frame_contract() -> None:
-    t_ab = Transform(parent_frame="A", child_frame="B", translation_m=(1.0, -2.0, 0.5), rotation_wxyz=quat_from_euler(0.2, -0.4, 1.1))
+    t_ab = Transform(
+        parent_frame="A",
+        child_frame="B",
+        translation_m=(1.0, -2.0, 0.5),
+        rotation_wxyz=quat_from_euler(0.2, -0.4, 1.1),
+    )
     t_ba = t_ab.inverse()
     assert (t_ba.parent_frame, t_ba.child_frame) == ("B", "A")
     assert np.allclose(t_ab.rotation @ t_ba.rotation, np.eye(3), atol=1e-9)
     assert np.allclose(t_ab.rotation @ t_ba.translation + t_ab.translation, 0, atol=1e-9)
     # unit-axis probe: 90 deg yaw maps +X to +Y in a right-handed Z-up frame
-    yaw = Transform(parent_frame="A", child_frame="B", translation_m=(0, 0, 0), rotation_wxyz=quat_from_euler(0, 0, math.pi / 2))
+    yaw = Transform(
+        parent_frame="A",
+        child_frame="B",
+        translation_m=(0, 0, 0),
+        rotation_wxyz=quat_from_euler(0, 0, math.pi / 2),
+    )
     out = transform_point(FramedPoint(frame_id="B", xyz_m=(1, 0, 0)), yaw)
     assert out.frame_id == "A" and np.allclose(out.xyz_m, (0, 1, 0), atol=1e-9)
     with pytest.raises(FrameError):
@@ -107,8 +123,22 @@ def test_frame_contract() -> None:
 
 def test_frame_graph_round_trip() -> None:
     g = FrameGraph()
-    g.set(Transform(parent_frame="WORLD", child_frame="ROBOT", translation_m=(3, 4, -5), rotation_wxyz=quat_from_euler(0, 0, 0.7)))
-    g.set(Transform(parent_frame="ROBOT", child_frame="CAM", translation_m=(0.2, 0, 0.1), rotation_wxyz=quat_from_euler(0, 0.3, 0)))
+    g.set(
+        Transform(
+            parent_frame="WORLD",
+            child_frame="ROBOT",
+            translation_m=(3, 4, -5),
+            rotation_wxyz=quat_from_euler(0, 0, 0.7),
+        )
+    )
+    g.set(
+        Transform(
+            parent_frame="ROBOT",
+            child_frame="CAM",
+            translation_m=(0.2, 0, 0.1),
+            rotation_wxyz=quat_from_euler(0, 0.3, 0),
+        )
+    )
     p = FramedPoint(frame_id="CAM", xyz_m=(1.0, 0.5, 2.0))
     world = transform_point(p, g.lookup("WORLD", "CAM"))
     back = transform_point(world, g.lookup("CAM", "WORLD"))
@@ -147,8 +177,14 @@ def test_unknown_is_a_status_not_a_value(ids: IdFactory) -> None:
 def test_provenance_dag(ids: IdFactory) -> None:
     def rec(parents: tuple = ()) -> ProvenanceRecord:
         return ProvenanceRecord(
-            record_id=ids.new(), source_type=SourceType.DIRECT_OBSERVATION, source_ids=(ids.new(),),
-            operation="x", module="m", model_version="v", timestamp=ts(1.0), parent_records=parents,
+            record_id=ids.new(),
+            source_type=SourceType.DIRECT_OBSERVATION,
+            source_ids=(ids.new(),),
+            operation="x",
+            module="m",
+            model_version="v",
+            timestamp=ts(1.0),
+            parent_records=parents,
         )
 
     a = rec()
@@ -175,13 +211,19 @@ def test_relational_and_predicted_updates_cannot_claim_evidence(ids: IdFactory) 
 def test_robot_config_validation() -> None:
     sim = load_robot_config("configs/robot/sim_reference.yaml")
     assert validate_for_lane(sim, ExecutionLane.SIMULATION) == []
-    assert validate_for_lane(sim, ExecutionLane.PHYSICAL), "synthetic values must never satisfy the physical lane"
+    assert validate_for_lane(sim, ExecutionLane.PHYSICAL), (
+        "synthetic values must never satisfy the physical lane"
+    )
     phys = load_robot_config("configs/robot/physical_template.yaml")
-    assert phys.open_parameters() and any("thruster layout unknown" in p for p in validate_for_lane(phys, ExecutionLane.PHYSICAL))
+    assert phys.open_parameters() and any(
+        "thruster layout unknown" in p for p in validate_for_lane(phys, ExecutionLane.PHYSICAL)
+    )
     with pytest.raises(ValidationError):
         Sourced[float](value=3.0, units="kg", source=SourceKind.OPEN)
     with pytest.raises(ValidationError):
-        Sourced[float](value=3.0, units="kg", source=SourceKind.MEASURED)  # measured without raw-log provenance
+        Sourced[float](
+            value=3.0, units="kg", source=SourceKind.MEASURED
+        )  # measured without raw-log provenance
     with pytest.raises(ValidationError):
         Sourced[float](value=None, units="kg", source=SourceKind.ENGINEERING_ESTIMATE)
 

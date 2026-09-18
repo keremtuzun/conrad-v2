@@ -14,7 +14,16 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent.parent
 PKG = ROOT / "conrad"
 
-DEPLOYMENT_PACKAGES = ("core", "domains", "decision", "active", "communication", "robotics", "runtime", "orchestration")
+DEPLOYMENT_PACKAGES = (
+    "core",
+    "domains",
+    "decision",
+    "active",
+    "communication",
+    "robotics",
+    "runtime",
+    "orchestration",
+)
 FORBIDDEN_FOR_DEPLOYMENT = (
     "conrad.twins",
     "conrad.schemas.truth",
@@ -24,9 +33,35 @@ FORBIDDEN_FOR_DEPLOYMENT = (
 )
 # runtime may construct the simulated adapter, and only there.
 ALLOWED_EXCEPTIONS = {("runtime", "conrad.sim.kernel"), ("runtime", "conrad.sim.scenarios")}
-VENDOR_MODULES = ("rclpy", "rospy", "UnityEngine", "mlagents", "pymavlink", "brping", "pyrealsense2", "PySpin", "zmq")
-CORE_NO_VENDOR = ("schemas", "core", "domains", "twins", "decision", "active", "communication", "robotics", "runtime")
-LEGACY_MARKERS = ("rov_digital_twin", "Digital Twin", "digital_twin", "ChatGPT/conrad", "ChatGPT" + chr(92) + "conrad")
+VENDOR_MODULES = (
+    "rclpy",
+    "rospy",
+    "UnityEngine",
+    "mlagents",
+    "pymavlink",
+    "brping",
+    "pyrealsense2",
+    "PySpin",
+    "zmq",
+)
+CORE_NO_VENDOR = (
+    "schemas",
+    "core",
+    "domains",
+    "twins",
+    "decision",
+    "active",
+    "communication",
+    "robotics",
+    "runtime",
+)
+LEGACY_MARKERS = (
+    "rov_digital_twin",
+    "Digital Twin",
+    "digital_twin",
+    "ChatGPT/conrad",
+    "ChatGPT" + chr(92) + "conrad",
+)
 OBSOLETE_PATTERN = re.compile(r"twin_?1(?![0-9])|model_?2[abc](?![a-z])")
 
 
@@ -67,7 +102,13 @@ def test_deployment_planes_never_name_truth_types() -> None:
         for path in _modules(package):
             tree = ast.parse(path.read_text(encoding="utf-8"))
             for node in ast.walk(tree):
-                ident = node.id if isinstance(node, ast.Name) else node.attr if isinstance(node, ast.Attribute) else None
+                ident = (
+                    node.id
+                    if isinstance(node, ast.Name)
+                    else node.attr
+                    if isinstance(node, ast.Attribute)
+                    else None
+                )
                 if ident in banned:
                     violations.append(f"{path.relative_to(ROOT)}:{node.lineno} references {ident}")
     assert not violations, "\n".join(violations)
@@ -96,10 +137,16 @@ def test_only_the_gateway_calls_hardware_send() -> None:
             continue
         tree = ast.parse(path.read_text(encoding="utf-8"))
         for node in ast.walk(tree):
-            if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr in ("send", "set_thruster_commands"):
+            if (
+                isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Attribute)
+                and node.func.attr in ("send", "set_thruster_commands")
+            ):
                 target = ast.unparse(node.func.value)
                 if any(tok in target.lower() for tok in ("hw", "hardware", "robot", "rhi")):
-                    violations.append(f"{path.relative_to(ROOT)}:{node.lineno} calls {target}.{node.func.attr}")
+                    violations.append(
+                        f"{path.relative_to(ROOT)}:{node.lineno} calls {target}.{node.func.attr}"
+                    )
     assert not violations, "actuator path bypasses the Command Gateway:\n" + "\n".join(violations)
 
 

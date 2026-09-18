@@ -21,13 +21,28 @@ def system(repo: Repository) -> FakeFullSystem:
 def good(system: FakeFullSystem, **over) -> AllocatedCommand:
     now = system.clock.ns()
     cid = system.ids.new()
-    fields = dict(
-        command_id=cid, mission_id=system.mission_id, run_id=system.run_id, trace_id=system.ids.new(), belief_snapshot_id=None,
-        robot_config_digest=system.config.content_digest(), clock_domain="SIM", issued_time_ns=now, deadline_ns=now + 250_000_000,
-        thruster_commands={t.thruster_id: 0.1 for t in system.config.thrusters}, source_wrench_id=system.ids.new(),
-        provenance_root=system.ids.new(), producer=ALLOCATOR_PRODUCER,
-        safety_authorization=SafetyAuthorization(authorization_id=system.ids.new(), command_id=cid, supervisor_version="t", issued_time_ns=now, safety_state="NORMAL"),
-    )
+    fields = {
+        "command_id": cid,
+        "mission_id": system.mission_id,
+        "run_id": system.run_id,
+        "trace_id": system.ids.new(),
+        "belief_snapshot_id": None,
+        "robot_config_digest": system.config.content_digest(),
+        "clock_domain": "SIM",
+        "issued_time_ns": now,
+        "deadline_ns": now + 250_000_000,
+        "thruster_commands": {t.thruster_id: 0.1 for t in system.config.thrusters},
+        "source_wrench_id": system.ids.new(),
+        "provenance_root": system.ids.new(),
+        "producer": ALLOCATOR_PRODUCER,
+        "safety_authorization": SafetyAuthorization(
+            authorization_id=system.ids.new(),
+            command_id=cid,
+            supervisor_version="t",
+            issued_time_ns=now,
+            safety_state="NORMAL",
+        ),
+    }
     fields.update(over)
     return AllocatedCommand(**fields)
 
@@ -50,8 +65,14 @@ def test_valid_command_is_accepted_once(system: FakeFullSystem) -> None:
         (lambda s: {"safety_authorization": None}, GatewayReason.NO_AUTH),
         (lambda s: {"producer": "conrad.decision.egdc"}, GatewayReason.PRODUCER),
         (lambda s: {"thruster_commands": {"H1": 0.1}}, GatewayReason.ACTUATOR_COUNT),
-        (lambda s: {"thruster_commands": {t.thruster_id: 1.7 for t in s.config.thrusters}}, GatewayReason.ENVELOPE),
-        (lambda s: {"thruster_commands": {t.thruster_id: float("nan") for t in s.config.thrusters}}, GatewayReason.ENVELOPE),
+        (
+            lambda s: {"thruster_commands": {t.thruster_id: 1.7 for t in s.config.thrusters}},
+            GatewayReason.ENVELOPE,
+        ),
+        (
+            lambda s: {"thruster_commands": {t.thruster_id: float("nan") for t in s.config.thrusters}},
+            GatewayReason.ENVELOPE,
+        ),
         (lambda s: {"schema_version": "9.0.0"}, GatewayReason.SCHEMA),
     ],
 )
@@ -70,9 +91,21 @@ def test_expired_command_rejected(system: FakeFullSystem) -> None:
 
 def test_safety_state_forbidding_motion_and_mismatched_authorization(system: FakeFullSystem) -> None:
     cmd = good(system)
-    stop = cmd.model_copy(update={"safety_authorization": cmd.safety_authorization.model_copy(update={"safety_state": "EMERGENCY_STOP"})})
+    stop = cmd.model_copy(
+        update={
+            "safety_authorization": cmd.safety_authorization.model_copy(
+                update={"safety_state": "EMERGENCY_STOP"}
+            )
+        }
+    )
     assert GatewayReason.AUTH_STATE in system.gateway.submit(stop).reason_codes
-    other = cmd.model_copy(update={"safety_authorization": cmd.safety_authorization.model_copy(update={"command_id": system.ids.new()})})
+    other = cmd.model_copy(
+        update={
+            "safety_authorization": cmd.safety_authorization.model_copy(
+                update={"command_id": system.ids.new()}
+            )
+        }
+    )
     assert GatewayReason.AUTH_MISMATCH in system.gateway.submit(other).reason_codes
 
 
@@ -89,17 +122,35 @@ def test_unknown_peer_rejected(system: FakeFullSystem) -> None:
 
 
 def test_stale_state_rejected(system: FakeFullSystem) -> None:
-    gw = CommandGateway(system.robot, system.config, RuntimeSettings(command_mode=CommandMode.SIMULATED), ExecutionLane.SIMULATION,
-                        system.mission_id, system.run_id, state_age_s=lambda: 5.0)
+    gw = CommandGateway(
+        system.robot,
+        system.config,
+        RuntimeSettings(command_mode=CommandMode.SIMULATED),
+        ExecutionLane.SIMULATION,
+        system.mission_id,
+        system.run_id,
+        state_age_s=lambda: 5.0,
+    )
     assert GatewayReason.STALE_STATE in gw.submit(good(system)).reason_codes
-    gw_unknown = CommandGateway(system.robot, system.config, RuntimeSettings(command_mode=CommandMode.SIMULATED), ExecutionLane.SIMULATION,
-                                system.mission_id, system.run_id, state_age_s=lambda: None)
+    gw_unknown = CommandGateway(
+        system.robot,
+        system.config,
+        RuntimeSettings(command_mode=CommandMode.SIMULATED),
+        ExecutionLane.SIMULATION,
+        system.mission_id,
+        system.run_id,
+        state_age_s=lambda: None,
+    )
     assert GatewayReason.STALE_STATE in gw_unknown.submit(good(system)).reason_codes
 
 
 def test_command_mode_defaults_to_disabled(system: FakeFullSystem) -> None:
-    assert RuntimeSettings().command_mode is CommandMode.DISABLED and RuntimeSettings().hardware_enable is False
-    gw = CommandGateway(system.robot, system.config, RuntimeSettings(), ExecutionLane.DEV, system.mission_id, system.run_id)
+    assert (
+        RuntimeSettings().command_mode is CommandMode.DISABLED and RuntimeSettings().hardware_enable is False
+    )
+    gw = CommandGateway(
+        system.robot, system.config, RuntimeSettings(), ExecutionLane.DEV, system.mission_id, system.run_id
+    )
     assert GatewayReason.MODE_DISABLED in gw.submit(good(system)).reason_codes
 
 
@@ -108,7 +159,9 @@ def test_ss10_physical_hardware_is_unreachable_without_every_prerequisite(system
     with pytest.raises(HardwareUnavailableError):
         physical.send(good(system))
     with pytest.raises(ValueError):  # simulation lane cannot select hardware command mode
-        ConradSettings.model_validate({"run": {"lane": "simulation"}, "runtime": {"command_mode": "hardware"}})
+        ConradSettings.model_validate(
+            {"run": {"lane": "simulation"}, "runtime": {"command_mode": "hardware"}}
+        )
     with pytest.raises(ValueError):
         RuntimeSettings(bind_address="0.0.0.0")
     example = load_settings("configs/runtime/physical_example.yaml")

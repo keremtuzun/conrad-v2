@@ -8,7 +8,14 @@ import pytest
 from conrad.persistence.db import make_engine, migrate
 from conrad.persistence.object_store import ObjectStore
 from conrad.persistence.repository import Repository
-from conrad.schemas.belief import BeliefCell, BeliefRevision, KnowledgeStatus, Lifecycle, PropertyClaim, UpdateKind
+from conrad.schemas.belief import (
+    BeliefCell,
+    BeliefRevision,
+    KnowledgeStatus,
+    Lifecycle,
+    PropertyClaim,
+    UpdateKind,
+)
 from conrad.schemas.ids import IdFactory
 from conrad.schemas.observation import Evidence, Modality
 from conrad.schemas.provenance import ProvenanceRecord, SourceType
@@ -40,7 +47,9 @@ def ts(t: float, seq: int = 0) -> TimeStamp:
     return stamp(t, "SIM", seq)
 
 
-def make_evidence(ids: IdFactory, run_id: UUID, t: float = 1.0, group: str | None = None) -> tuple[Evidence, ProvenanceRecord]:
+def make_evidence(
+    ids: IdFactory, run_id: UUID, t: float = 1.0, group: str | None = None
+) -> tuple[Evidence, ProvenanceRecord]:
     eid, oid, pid = ids.new(), ids.new(), ids.new()
     prov = ProvenanceRecord(
         record_id=pid,
@@ -115,7 +124,16 @@ def make_revision(
         revision=revision,
         timestamp=ts(t),
         state_embedding=(0.0, 1.0),
-        claims=(PropertyClaim(name="severity", value=0.4, units="unitless", status=status, uncertainty=unc, provenance_id=pid),),
+        claims=(
+            PropertyClaim(
+                name="severity",
+                value=0.4,
+                units="unitless",
+                status=status,
+                uncertainty=unc,
+                provenance_id=pid,
+            ),
+        ),
         knowledge_status=status,
         uncertainty=unc,
         provenance_root=pid,
