@@ -205,7 +205,9 @@ class SafetySupervisor:
             refuse.append(Reason.ACTUATOR_FAULTED)
         if assessment.zero_thrust_required and any(abs(v) > 0 for v in values.values()):
             refuse.append(Reason.ZERO_REQUIRED)
-        if assessment.state not in MOTION_STATES:
+        all_zero = all(v == 0.0 for v in values.values())
+        if assessment.state not in MOTION_STATES and not all_zero:
+            # EMERGENCY_STOP / RECOVER / RETURN may still receive an explicit all-zero command.
             refuse.append(Reason.STATE_FORBIDS_MOTION)
         reasons = tuple(dict.fromkeys([*assessment.reason_codes, *refuse]))
         if refuse:

@@ -13,7 +13,9 @@ PATTERNS = {
     "github token": re.compile(r"\bgh[pousr]_[A-Za-z0-9]{36,}\b"),
     "anthropic/openai style key": re.compile(r"\bsk-[A-Za-z0-9_-]{24,}\b"),
     "slack token": re.compile(r"\bxox[abprs]-[A-Za-z0-9-]{10,}\b"),
-    "assigned secret": re.compile(r"(?i)\b(password|passwd|secret|api_key|apikey|token)\b\s*[:=]\s*[\"'][^\"'\s]{12,}[\"']"),
+    "assigned secret": re.compile(
+        r"(?i)\b(password|passwd|secret|api_key|apikey|token)\b\s*[:=]\s*[\"'][^\"'\s]{12,}[\"']"
+    ),
 }
 FORBIDDEN_NAMES = re.compile(r"(^|/)(\.env(\..*)?|.*\.pem|.*\.key|id_rsa|credentials\.json)$")
 FORBIDDEN_PREFIXES = ("artifacts/runs/", "artifacts/objects/", "mlruns/")

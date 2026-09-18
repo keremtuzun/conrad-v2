@@ -22,7 +22,17 @@ OUT_MD = ROOT / "docs" / "specification" / "CONRAD_V2_REQUIREMENTS_LEDGER.md"
 OUT_JSON = ROOT / "artifacts" / "spec" / "requirements-ledger.json"
 BLOCKED = {"BLOCKED_EXTERNAL", "BLOCKED_OPEN_DECISION"}
 PROMOTED = {"INTEGRATED", "EVALUATED", "VALIDATED"}
-ORDER = ["MISSING", "PARTIAL", "IMPLEMENTED", "TESTED", "INTEGRATED", "EVALUATED", "VALIDATED", "BLOCKED_EXTERNAL", "BLOCKED_OPEN_DECISION"]
+ORDER = [
+    "MISSING",
+    "PARTIAL",
+    "IMPLEMENTED",
+    "TESTED",
+    "INTEGRATED",
+    "EVALUATED",
+    "VALIDATED",
+    "BLOCKED_EXTERNAL",
+    "BLOCKED_OPEN_DECISION",
+]
 
 
 def _split(cell: str) -> list[str]:
@@ -55,9 +65,7 @@ def parse() -> list[dict[str, object]]:
             derived = "IMPLEMENTED"
         else:
             derived = "TESTED"
-        if override in BLOCKED:
-            status = override
-        elif override in PROMOTED and derived == "TESTED":
+        if override in BLOCKED or (override in PROMOTED and derived == "TESTED"):
             status = override
         else:
             status = derived
@@ -92,7 +100,10 @@ def main() -> int:
         print("duplicate requirement ids", file=sys.stderr)
         return 1
     OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
-    OUT_JSON.write_text(json.dumps({"source": str(SOURCE.relative_to(ROOT)), "requirements": rows}, indent=2) + "\n", encoding="utf-8")
+    OUT_JSON.write_text(
+        json.dumps({"source": str(SOURCE.relative_to(ROOT)), "requirements": rows}, indent=2) + "\n",
+        encoding="utf-8",
+    )
     counts = {s: sum(1 for r in rows if r["implementation_status"] == s) for s in ORDER}
     lines = [
         "# Conrad V2 requirements ledger",

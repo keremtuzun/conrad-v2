@@ -50,6 +50,9 @@ class GatewayReason:
 
 
 MOTION_PERMITTED_STATES = frozenset({"NORMAL", "DEGRADED", "HOLD"})
+# Explicit stop commands (every thruster exactly 0) are accepted in these states. RETURN/RECOVER
+# motion stays refused until the hardware safety contract defines those behaviours (OPEN, EXT-HW-05).
+ZERO_ONLY_STATES = frozenset({"EMERGENCY_STOP", "RECOVER", "RETURN"})
 
 
 class CommandGateway:
@@ -133,7 +136,10 @@ class CommandGateway:
         else:
             if auth.command_id != command.command_id:
                 reasons.append(GatewayReason.AUTH_MISMATCH)
-            if auth.safety_state not in MOTION_PERMITTED_STATES:
+            all_zero = all(v == 0.0 for v in command.thruster_commands.values())
+            if auth.safety_state not in MOTION_PERMITTED_STATES and not (
+                auth.safety_state in ZERO_ONLY_STATES and all_zero
+            ):
                 reasons.append(GatewayReason.AUTH_STATE)
         expected = {t.thruster_id for t in self._config.thrusters}
         if not expected or set(command.thruster_commands) != expected:

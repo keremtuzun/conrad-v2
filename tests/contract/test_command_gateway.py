@@ -168,3 +168,21 @@ def test_ss10_physical_hardware_is_unreachable_without_every_prerequisite(system
     assert example.runtime.hardware_enable is False and example.runtime.hil_evidence_ref is None
     template = load_robot_config(example.runtime.robot_config)
     assert template.ungrounded_parameters() and not template.thrusters
+
+
+def test_explicit_zero_command_accepted_in_stop_states_but_motion_refused(system: FakeFullSystem) -> None:
+    for state in ("EMERGENCY_STOP", "RECOVER", "RETURN"):
+        cmd = good(system, thruster_commands={t.thruster_id: 0.0 for t in system.config.thrusters})
+        stop = cmd.model_copy(
+            update={
+                "safety_authorization": cmd.safety_authorization.model_copy(update={"safety_state": state})
+            }
+        )
+        assert system.gateway.submit(stop).accepted, state
+        move = good(system)
+        moving = move.model_copy(
+            update={
+                "safety_authorization": move.safety_authorization.model_copy(update={"safety_state": state})
+            }
+        )
+        assert GatewayReason.AUTH_STATE in system.gateway.submit(moving).reason_codes
