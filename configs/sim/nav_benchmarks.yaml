@@ -1,0 +1,75 @@
+# Navigation benchmark suite NAV-001..008 (ch20/ch21). SYNTHETIC_ONLY scenarios for the L1 Python kernel.
+# Frame: SIMULATION_DEFAULT (WORLD right-handed, +Z up, depth = -z). Position fixes are a synthetic
+# USBL-like sensor rendered on the "sonar" slot (sensor_context.kind = POSITION_FIX).
+defaults:
+  control_period_s: 0.02
+  fixes: {period_s: 1.0, sigma_m: 0.10, outages: []}
+  current_mps: [0.0, 0.0, 0.0]
+  obstacles: []
+  faults: []
+  success: {final_tolerance_m: 0.3, max_collisions: 0}
+scenarios:
+  NAV-001:
+    description: straight waypoint at constant depth
+    duration_s: 40
+    start: [0.0, 0.0, -5.0]
+    goal: {primitive: GO_TO, target: [10.0, 0.0, -5.0], tolerance_m: 0.3}
+  NAV-002:
+    description: 3D waypoint sequence
+    duration_s: 70
+    start: [0.0, 0.0, -3.0]
+    goal: {primitive: GO_TO, target: [0.0, 6.0, -4.0], via: [[6.0, 0.0, -6.0], [6.0, 6.0, -8.0]], tolerance_m: 0.3}
+  NAV-003:
+    description: obstacle field with a known map (cylinders)
+    duration_s: 60
+    start: [0.0, 0.0, -5.0]
+    goal: {primitive: GO_TO, target: [14.0, 0.5, -5.0], tolerance_m: 0.3}
+    obstacles:
+      - {type: vertical_cylinder, center_xy: [4.0, 0.0], radius_m: 1.0}
+      - {type: vertical_cylinder, center_xy: [8.0, 1.5], radius_m: 1.0}
+      - {type: vertical_cylinder, center_xy: [10.5, -1.0], radius_m: 0.8}
+    planner_inflation_m: 0.7
+  NAV-004:
+    description: pipeline following at 1.5 m standoff above a pipe on the seabed
+    duration_s: 70
+    start: [-1.0, 0.0, -9.0]
+    goal:
+      primitive: PIPELINE_FOLLOW
+      polyline: [[0.0, 0.0, -11.7], [8.0, 0.0, -11.7], [14.0, 4.0, -11.7], [20.0, 4.0, -11.7]]
+      standoff_m: 1.5
+      tolerance_m: 0.3
+    obstacles:
+      - {type: pipe, radius_m: 0.3}
+      - {type: seabed, z_m: -12.0}
+    success: {final_tolerance_m: 0.3, max_collisions: 0, standoff_rms_max_m: 0.25}
+  NAV-005:
+    description: station keeping in a weak current
+    duration_s: 60
+    start: [0.0, 0.0, -6.0]
+    goal: {primitive: STATION_KEEP, target: [0.0, 0.0, -6.0], duration_s: 50, tolerance_m: 0.3}
+    current_mps: [0.1, 0.05, 0.0]
+    success: {final_tolerance_m: 0.3, max_collisions: 0, station_rms_max_m: 0.15}
+  NAV-006:
+    description: straight transit against a strong cross current with a gust
+    duration_s: 60
+    start: [0.0, 0.0, -5.0]
+    goal: {primitive: GO_TO, target: [12.0, 0.0, -5.0], tolerance_m: 0.3}
+    current_mps: [-0.2, 0.5, 0.0]
+    faults:
+      - {t_s: 15.0, type: CURRENT_GUST, vector: [0.0, 0.3, 0.0], duration_s: 5.0}
+  NAV-007:
+    description: pose degradation (fix outage + IMU noise) mid-transit
+    duration_s: 90
+    start: [0.0, 0.0, -5.0]
+    goal: {primitive: GO_TO, target: [15.0, 0.0, -5.0], tolerance_m: 0.3}
+    current_mps: [0.0, 0.15, 0.0]
+    fixes: {period_s: 1.0, sigma_m: 0.10, outages: [[8.0, 50.0]]}
+    faults:
+      - {t_s: 8.0, type: SENSOR_NOISE, target: imu, magnitude: 5.0}
+  NAV-008:
+    description: horizontal thruster H1 fails mid-transit
+    duration_s: 60
+    start: [0.0, 0.0, -5.0]
+    goal: {primitive: GO_TO, target: [12.0, 3.0, -5.0], tolerance_m: 0.3}
+    faults:
+      - {t_s: 6.0, type: THRUSTER_FAILURE, target: H1}

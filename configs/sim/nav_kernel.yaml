@@ -1,0 +1,13 @@
+# SYNTHETIC_ONLY simulator inputs for conrad.sim.kernel (SimKernelConfig). Not measurements.
+label: SYNTHETIC_ONLY
+physics_dt_s: 0.01
+water_density_kgm3: 1025.0
+gravity_mps2: 9.80665
+thrust_noise_fraction: 0.01
+thruster_power_w_per_n15: 6.0
+hotel_power_w: 25.0
+imu_gyro_noise_rps: 0.002
+imu_orientation_noise_rad: 0.005
+imu_provides_orientation: true
+report_thruster_faults: true
+collision_restitution: 0.0
