@@ -1,0 +1,15 @@
+# 2S-E003 pose uncertainty (SYNTHETIC_ONLY). Estimated pose = true pose + N(0, sigma), covariance declared.
+experiment: {id: 2S-E003}
+seeds: [2026201, 2026202, 2026203]
+scenario: {family: pipeline_with_supports}
+target_group: segments
+pose_sigmas_m: [0.0, 0.05, 0.15, 0.3]
+rotation_sigma_rad_per_m: 0.1
+conditions:
+  style: coverage
+  target_coverage: 0.8
+  n_views: 6
+  modalities: [DEPTH_RANGE, SONAR]
+eval_margin_m: 1.0
+models: [uahsm, uahsm_no_pose_cov, plain_grid]
+model: {}

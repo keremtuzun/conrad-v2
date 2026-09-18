@@ -1,0 +1,15 @@
+# 2S-E001 coverage / occlusion (SYNTHETIC_ONLY Twin2S worlds). Spec ch14: coverage 100/50/20/5 %.
+experiment: {id: 2S-E001}
+seeds: [2026201, 2026202, 2026203]
+scenario: {family: pipeline_with_supports}
+target_group: segments
+coverage_levels: [1.0, 0.5, 0.2, 0.05]
+conditions:
+  style: coverage
+  n_views: 8
+  modalities: [DEPTH_RANGE, SONAR]
+  pose_sigma_m: 0.02
+  pose_sigma_rad: 0.005
+eval_margin_m: 1.0
+models: [uahsm, plain_grid, ml_fill]
+model: {}

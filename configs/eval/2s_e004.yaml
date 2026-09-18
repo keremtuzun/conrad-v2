@@ -1,0 +1,28 @@
+# 2S-E004 modality dropout / sonar + RGB degradation (SYNTHETIC_ONLY; Twin2S degradation keys).
+experiment: {id: 2S-E004}
+seeds: [2026201, 2026202, 2026203]
+scenario: {family: pipeline_with_supports}
+target_group: segments
+conditions:
+  style: coverage
+  target_coverage: 0.8
+  n_views: 6
+  pose_sigma_m: 0.02
+  pose_sigma_rad: 0.005
+variants:
+  depth_sonar: {modalities: [DEPTH_RANGE, SONAR]}
+  depth_only: {modalities: [DEPTH_RANGE]}
+  sonar_only: {modalities: [SONAR]}
+  sonar_only_degraded:
+    modalities: [SONAR]
+    degradation: {SONAR: {speckle: 1.0, multipath: 0.6, attenuation: 1.0}}
+  depth_dropout_plus_sonar:
+    modalities: [DEPTH_RANGE, SONAR]
+    degradation: {DEPTH_RANGE: {dropout: 0.6}}
+  depth_sonar_rgb_degraded:
+    modalities: [DEPTH_RANGE, SONAR, RGB]
+    degradation: {RGB: {blur: 1.0, low_light: 0.8, backscatter: 0.5}}
+  rgb_only: {modalities: [RGB]}
+eval_margin_m: 1.0
+models: [uahsm, plain_grid, ml_fill]
+model: {}
