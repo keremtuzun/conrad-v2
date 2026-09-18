@@ -1,0 +1,3 @@
+# H-T2T-01 baseline: independent-mechanism stochastic twin (no mechanism or topology coupling).
+twin2t:
+  generator: INDEPENDENT_STOCHASTIC

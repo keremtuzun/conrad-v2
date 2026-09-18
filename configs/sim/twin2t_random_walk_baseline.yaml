@@ -1,0 +1,3 @@
+# H-T2T-01 baseline: random-walk degradation twin (SYNTHETIC_ONLY dynamics, same state layout and masks).
+twin2t:
+  generator: RANDOM_WALK
