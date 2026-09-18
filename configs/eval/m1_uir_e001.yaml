@@ -1,0 +1,4 @@
+# M1-UIR-E001: UIR and safe behaviour under injected upstream faults (SYNTHETIC_ONLY belief fixtures).
+experiment_id: M1-UIR-E001
+seeds: [2026201, 2026202, 2026203]
+n_per_fault: 20

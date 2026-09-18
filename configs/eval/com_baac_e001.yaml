@@ -1,0 +1,13 @@
+# COM-BAAC-E001: bandwidth collapse 100/50/10/1/0.1/0 % + outage/reconnection (SYNTHETIC_ONLY channel).
+experiment_id: COM-BAAC-E001
+seeds: [2026201, 2026202, 2026203]
+duration_s: 300.0
+n_routine_tech: 4
+n_eco: 15
+outage_s: [60.0, 180.0]
+link:
+  bandwidth_bps: 20000.0
+  latency_s: 1.0
+  packet_loss: 0.05
+  bit_error_rate: 1.0e-6
+  energy_per_bit_j: 1.0e-4

@@ -1,0 +1,7 @@
+# ACTIVE-MCBR-E001: MCBR vs baselines in the abstract 3D occlusion world (SYNTHETIC_ONLY).
+experiment_id: ACTIVE-MCBR-E001
+seeds: [2026201, 2026202, 2026203]
+episodes_per_scenario: 6
+steps: 4
+mcbr:
+  n_azimuth: 8   # 2 sensors x 3 standoffs x 2 elevations x 8 azimuths = 96 candidates (<= 128)
