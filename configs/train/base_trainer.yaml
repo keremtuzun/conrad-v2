@@ -1,0 +1,27 @@
+# Base training layer (spec ch33 "Training configuration and implementation gates").
+# Values are the specified defaults; experiments override them in their own layer.
+extends: [configs/base/default.yaml]
+run:
+  mode: sim_train
+  lane: simulation
+train:
+  trainer:
+    lr_new: 3.0e-4            # new MLP/GNN/Transformer parameters
+    lr_pretrained: 1.0e-4     # in-house self-supervised pretrained image backbones
+    pretrained_patterns: []   # parameter-name globs that receive lr_pretrained
+    weight_decay: 0.01        # ASSUMPTION: not fixed by the spec
+    warmup_fraction: 0.05
+    min_lr_ratio: 0.0
+    grad_clip_norm: 1.0
+    batch_size: 16            # sequence episodes per device
+    effective_batch_size: 64
+    max_epochs: 200
+    early_stopping_patience: 25
+    primary_metric: val_loss  # checkpoints are selected on validation only; test/OOD are final-only
+    metric_direction: lower
+    deterministic: true
+  truncated:
+    window_steps: 32          # ASSUMPTION: not fixed by the spec
+  mlflow:
+    enabled: false
+    tracking_dir: artifacts/mlruns

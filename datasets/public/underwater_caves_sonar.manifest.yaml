@@ -1,0 +1,55 @@
+# TEMPLATE ONLY. Conrad has NOT downloaded, licensed, inspected or verified this dataset.
+# Candidate name and role come from specification ch24; every OPEN field must be closed by a
+# DATA-VERIFY / DATA-RIGHTS-01 / DATA-SPLIT-01 task with evidence before status may change.
+# No statistic, URL, license or label in this file may be filled from memory or by analogy.
+schema_version: 1.0.0
+dataset_id: public.underwater_caves_sonar
+version: UNPINNED
+manifest_version: 1
+status: UNVERIFIED_NOT_DOWNLOADED
+source_category: PUBLIC_REAL
+source: OPEN
+release_id: OPEN
+retrieved_at: OPEN
+license: REVIEW_REQUIRED
+license_evidence_ref: OPEN
+usage_rights: REVIEW_REQUIRED
+rights_review_status: REVIEW_REQUIRED
+rights_by_asset_ref: OPEN
+redistribution_allowed: false
+deployment_allowed: false
+training_allowed: false
+checksum: OPEN
+modalities: []
+labels: []
+label_schema_ref: OPEN
+label_quality_report_ref: OPEN
+units: {}
+frames: {}
+coordinate_frames_ref: OPEN
+calibration_ref: OPEN
+timestamps:
+  clock_domain: OPEN
+  units: OPEN
+  semantics: OPEN
+  offset_evidence_ref: null
+synchronization: []
+truth_availability: UNVERIFIED
+missingness_policy: OPEN
+split_strategy: []
+split_manifest_ref: OPEN
+duplicate_audit_ref: OPEN
+transformations: []
+corruptions: []
+adapter_version: OPEN
+transform_config_hash: OPEN
+permitted_tasks: []
+unsupported_claims: []
+intended_role: 'Underwater Caves sonar datasets: Spatial mapping, sonar geometry and sequence robustness.'
+remaining_verification:
+- 'OPEN: identify exact dataset and truth support'
+- document operating-domain mismatch
+- source_audit_state=OPEN_SOURCE_AUDIT
+required_files_note: 'DATA-VERIFY must produce: source URL, paper/release identifier, asset inventory
+  with sha256, license evidence, task-label audit, adapter smoke test'
+files: []

@@ -1,0 +1,225 @@
+# SIMREAL-LEDGER-01 (spec ch35 Priority 4).
+# Every range below is an ENGINEERING_ESTIMATE chosen to bracket plausible operating conditions.
+# NOTHING here was measured on Conrad hardware: every row is UNMEASURED and must not be treated
+# as calibrated. When characterization logs arrive, attach raw_log_provenance, a versioned
+# identification_report_ref and a calibration_revision, and change source_of_range accordingly.
+schema_version: 1.0.0
+ledger_id: SIMREAL-LEDGER-01
+revision: "0.1.0-unmeasured"
+parameters:
+  - semantic_name: water_beam_attenuation_coefficient
+    category: OPTICS
+    unit: "1/m"
+    range_low: 0.05
+    range_high: 2.0
+    sampling_law: LOG_UNIFORM
+    source_of_range: ENGINEERING_ESTIMATE
+    physical_explanation: >-
+      Beam attenuation sets how fast image contrast decays with range. The low end brackets very clear
+      open water and the high end brackets turbid harbour water where a target fades within a few metres.
+    affected_simulator_module: conrad.twins.twin2s
+    physical_measurement_status: UNMEASURED
+  - semantic_name: backscatter_veiling_fraction
+    category: OPTICS
+    unit: "ratio"
+    range_low: 0.0
+    range_high: 0.6
+    sampling_law: UNIFORM
+    source_of_range: ENGINEERING_ESTIMATE
+    physical_explanation: >-
+      Fraction of image radiance that is veiling light scattered back from particles lit by the vehicle
+      lamps. Zero is particle-free water; above roughly half the scene is dominated by haze.
+    affected_simulator_module: conrad.twins.twin2s
+    physical_measurement_status: UNMEASURED
+  - semantic_name: artificial_light_intensity_scale
+    category: OPTICS
+    unit: "ratio"
+    range_low: 0.3
+    range_high: 1.5
+    sampling_law: UNIFORM
+    source_of_range: ENGINEERING_ESTIMATE
+    physical_explanation: >-
+      Relative lamp output versus the nominal setting, covering battery sag, dimming and lamp ageing at
+      the low end and a brighter lamp setting at the high end.
+    affected_simulator_module: conrad.sim.unity
+    physical_measurement_status: UNMEASURED
+  - semantic_name: sonar_range_noise_std
+    category: SONAR
+    unit: "m"
+    range_low: 0.005
+    range_high: 0.15
+    sampling_law: LOG_UNIFORM
+    source_of_range: ENGINEERING_ESTIMATE
+    physical_explanation: >-
+      Standard deviation of a single sonar range return. It is bounded below by range-bin resolution of a
+      short-range imaging sonar and above by multipath and low signal-to-noise returns near clutter.
+    affected_simulator_module: conrad.twins.twin2s
+    physical_measurement_status: UNMEASURED
+  - semantic_name: sonar_false_return_probability
+    category: SONAR
+    unit: "probability"
+    range_low: 0.0
+    range_high: 0.2
+    sampling_law: BERNOULLI
+    source_of_range: ENGINEERING_ESTIMATE
+    physical_explanation: >-
+      Per-beam probability of a spurious return caused by multipath, bubbles or surface reflection.
+      The upper bound represents heavy clutter close to structures.
+    affected_simulator_module: conrad.twins.twin2s
+    physical_measurement_status: UNMEASURED
+  - semantic_name: camera_focal_length_scale
+    category: CAMERA
+    unit: "ratio"
+    range_low: 0.97
+    range_high: 1.03
+    sampling_law: UNIFORM
+    source_of_range: ENGINEERING_ESTIMATE
+    physical_explanation: >-
+      Relative error of the effective focal length. Refraction at a flat underwater port and an in-air
+      calibration reused in water both shift the effective focal length by a few percent.
+    affected_simulator_module: conrad.sim.unity
+    physical_measurement_status: UNMEASURED
+  - semantic_name: camera_frame_latency
+    category: CAMERA
+    unit: "s"
+    range_low: 0.02
+    range_high: 0.25
+    sampling_law: UNIFORM
+    source_of_range: ENGINEERING_ESTIMATE
+    physical_explanation: >-
+      Delay between exposure and availability of the frame to software, covering sensor readout,
+      encoding and transport over the vehicle link for a typical embedded camera pipeline.
+    affected_simulator_module: conrad.sim.kernel.hardware
+    physical_measurement_status: UNMEASURED
+  - semantic_name: pose_estimate_position_error_std
+    category: POSE
+    unit: "m"
+    range_low: 0.01
+    range_high: 0.5
+    sampling_law: LOG_UNIFORM
+    source_of_range: ENGINEERING_ESTIMATE
+    physical_explanation: >-
+      Standard deviation of the position error in the estimated robot pose. The low end is a well
+      aided short-baseline fix; the high end is dead reckoning drift accumulated between fixes.
+    affected_simulator_module: conrad.sim.kernel.truth
+    physical_measurement_status: UNMEASURED
+  - semantic_name: ambient_current_speed
+    category: CURRENT
+    unit: "m/s"
+    range_low: 0.0
+    range_high: 0.8
+    sampling_law: UNIFORM
+    source_of_range: ENGINEERING_ESTIMATE
+    physical_explanation: >-
+      Magnitude of the steady water current acting on the hull. Zero is a test tank and the upper bound
+      is a current a small inspection vehicle can still hold station against with thrust margin.
+    affected_simulator_module: conrad.sim.kernel.dynamics
+    physical_measurement_status: UNMEASURED
+  - semantic_name: vehicle_mass_scale
+    category: RIGID_BODY
+    unit: "ratio"
+    range_low: 0.9
+    range_high: 1.1
+    sampling_law: UNIFORM
+    source_of_range: ENGINEERING_ESTIMATE
+    physical_explanation: >-
+      Relative error of vehicle dry mass versus the RobotConfig value, covering payload changes,
+      trapped water and ballast adjustments that are made between dives.
+    affected_simulator_module: conrad.sim.kernel.dynamics
+    physical_measurement_status: UNMEASURED
+  - semantic_name: net_buoyancy_offset
+    category: RIGID_BODY
+    unit: "N"
+    range_low: -5.0
+    range_high: 5.0
+    sampling_law: UNIFORM
+    source_of_range: ENGINEERING_ESTIMATE
+    physical_explanation: >-
+      Residual net buoyancy after trimming. Water density changes with salinity and temperature and
+      imperfect ballast trimming leave a small positive or negative residual force on the hull.
+    affected_simulator_module: conrad.sim.kernel.dynamics
+    physical_measurement_status: UNMEASURED
+  - semantic_name: thruster_gain_scale
+    category: THRUSTER
+    unit: "ratio"
+    range_low: 0.8
+    range_high: 1.1
+    sampling_law: UNIFORM
+    source_of_range: ENGINEERING_ESTIMATE
+    physical_explanation: >-
+      Relative thrust produced per command versus the nominal curve. Supply voltage sag, propeller
+      fouling and unit-to-unit spread reduce thrust more often than they increase it.
+    affected_simulator_module: conrad.sim.kernel.thrusters
+    physical_measurement_status: UNMEASURED
+  - semantic_name: thruster_deadzone_fraction
+    category: THRUSTER
+    unit: "ratio"
+    range_low: 0.0
+    range_high: 0.1
+    sampling_law: UNIFORM
+    source_of_range: ENGINEERING_ESTIMATE
+    physical_explanation: >-
+      Fraction of the normalized command range around zero that produces no thrust because the speed
+      controller does not start the motor below a minimum command.
+    affected_simulator_module: conrad.sim.kernel.thrusters
+    physical_measurement_status: UNMEASURED
+  - semantic_name: thruster_response_latency
+    category: THRUSTER
+    unit: "s"
+    range_low: 0.02
+    range_high: 0.3
+    sampling_law: UNIFORM
+    source_of_range: ENGINEERING_ESTIMATE
+    physical_explanation: >-
+      Delay from command to developed thrust, combining command transport, speed controller update
+      period and the time the propeller needs to spin up against water load.
+    affected_simulator_module: conrad.sim.kernel.thrusters
+    physical_measurement_status: UNMEASURED
+  - semantic_name: available_power_limit_scale
+    category: POWER
+    unit: "ratio"
+    range_low: 0.6
+    range_high: 1.0
+    sampling_law: UNIFORM
+    source_of_range: ENGINEERING_ESTIMATE
+    physical_explanation: >-
+      Fraction of nominal electrical power that can be drawn. A cold or partly discharged battery and
+      a current-limited tether supply both lower the usable power below the nominal figure.
+    affected_simulator_module: conrad.sim.kernel.hardware
+    physical_measurement_status: UNMEASURED
+  - semantic_name: comms_packet_loss_probability
+    category: COMMUNICATION
+    unit: "probability"
+    range_low: 0.0
+    range_high: 0.9
+    sampling_law: BERNOULLI
+    source_of_range: ENGINEERING_ESTIMATE
+    physical_explanation: >-
+      Per-packet loss probability on the vehicle link. Zero is a healthy tether; the high end is an
+      acoustic link near the edge of its range where most packets fail their checksum.
+    affected_simulator_module: conrad.communication
+    physical_measurement_status: UNMEASURED
+  - semantic_name: comms_one_way_latency
+    category: COMMUNICATION
+    unit: "s"
+    range_low: 0.005
+    range_high: 4.0
+    sampling_law: LOG_UNIFORM
+    source_of_range: ENGINEERING_ESTIMATE
+    physical_explanation: >-
+      One-way message delay. The low end is a wired tether; the high end follows from the speed of
+      sound in water, about one and a half kilometres per second, over kilometre-scale acoustic paths.
+    affected_simulator_module: conrad.communication
+    physical_measurement_status: UNMEASURED
+  - semantic_name: sensor_dropout_probability
+    category: SENSOR_FAULT
+    unit: "probability"
+    range_low: 0.0
+    range_high: 0.3
+    sampling_law: BERNOULLI
+    source_of_range: ENGINEERING_ESTIMATE
+    physical_explanation: >-
+      Per-sample probability that a sensor delivers nothing, representing connector faults, driver
+      stalls and bus contention. The high end is a badly degraded sensor that is still nominally alive.
+    affected_simulator_module: conrad.sim.kernel.faults
+    physical_measurement_status: UNMEASURED

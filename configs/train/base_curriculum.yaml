@@ -1,0 +1,18 @@
+# Core progressive curriculum C0..C9 (spec ch3 "Core training sequence").
+# trainable_patterns are parameter-name globs. ASSUMPTION: top-level module names
+# encoder / association / buo / rbp / tbd. A pattern that matches nothing fails the stage.
+extends: [configs/train/base_trainer.yaml]
+train:
+  curriculum:
+    curriculum_id: core_c0_c9_v1
+    stages:
+      - {stage_id: C0, name: encoder initialization, trainable_patterns: ["encoder.*"], max_epochs: 200}
+      - {stage_id: C1, name: association, trainable_patterns: ["association.*"], max_epochs: 200}
+      - {stage_id: C2, name: BUO, trainable_patterns: ["buo.*"], max_epochs: 200}
+      - {stage_id: C3, name: contradiction/uncertainty, trainable_patterns: ["buo.*"], max_epochs: 200}
+      - {stage_id: C4, name: RBP, trainable_patterns: ["rbp.*"], max_epochs: 200}
+      - {stage_id: C5, name: TBD, trainable_patterns: ["tbd.*"], max_epochs: 200}
+      - {stage_id: C6, name: sequential BUO/TBD, trainable_patterns: ["buo.*", "tbd.*"], max_epochs: 200}
+      - {stage_id: C7, name: BUO + RBP + TBD, trainable_patterns: ["buo.*", "rbp.*", "tbd.*"], max_epochs: 200}
+      - {stage_id: C8, name: persistent long sequences, trainable_patterns: ["association.*", "buo.*", "rbp.*", "tbd.*"], max_epochs: 200}
+      - {stage_id: C9, name: real-domain adaptation, trainable_patterns: ["*"], max_epochs: 200, requires_real_data: true}
