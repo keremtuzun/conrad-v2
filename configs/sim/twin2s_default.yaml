@@ -1,0 +1,21 @@
+# Twin2S / OCPWE simulation defaults (ch33). SYNTHETIC_ONLY: these are simulation configuration
+# defaults, not physical-map or sensor-calibration claims.
+twin2s:
+  octree:
+    base_voxel_m: 0.25
+    refinement_voxels_m: [0.125, 0.0625]
+    max_leaf_cells: 2000000
+  raycast:
+    max_steps: 96
+    hit_epsilon_m: 0.004
+    min_step_m: 0.002
+    start_offset_m: 0.02
+    refine_iterations: 6
+  observed:
+    min_quality: 0.35
+    min_incidence_cos: 0.17
+    diversity_angle_rad: 0.35
+    visibility_tolerance_m: 0.05
+  water_attenuation_per_m: 0.12
+  clock_domain: SIM
+  source_kind: SYNTHETIC_ONLY
