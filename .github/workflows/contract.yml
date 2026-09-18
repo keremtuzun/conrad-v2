@@ -1,0 +1,13 @@
+name: contract
+on:
+  pull_request:
+    paths: ["conrad/schemas/**", "conrad/persistence/**", "tests/contract/**"]
+jobs:
+  contract:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with: { python-version: "3.11" }
+      - run: uv sync --all-groups --locked
+      - run: uv run pytest tests/contract tests/leakage -q

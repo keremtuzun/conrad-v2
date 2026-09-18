@@ -1,0 +1,42 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  cpu:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with: { python-version: "3.11" }
+      - name: legacy repository must be absent
+        run: test ! -e "../Digital Twin" && test ! -e ../conrad
+      - run: uv lock --check
+      - run: uv sync --all-groups --locked
+      - name: format-and-lint
+        run: |
+          uv run ruff format --check .
+          uv run ruff check .
+      - name: type-check
+        run: uv run mypy conrad tests
+      - name: security-hygiene
+        run: uv run python scripts/secret_scan.py
+      - name: unit-property
+        run: uv run pytest tests/unit tests/property -q
+      - name: contract (incl. schema-compat, migration drift)
+        run: uv run pytest tests/contract -q
+      - name: truth-leakage and legacy-independence
+        run: uv run pytest tests/leakage -q
+      - run: uv run conrad doctor
+  main-integration:
+    if: github.ref == 'refs/heads/main'
+    needs: cpu
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with: { python-version: "3.11" }
+      - run: uv sync --all-groups --locked
+      - run: uv run pytest tests/integration tests/replay tests/simulation tests/regression tests/acceptance -q
+# Physical hardware is never controlled by CI: no job sets command_mode hardware and the gateway refuses it.

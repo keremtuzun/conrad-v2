@@ -1,0 +1,16 @@
+name: nightly
+on:
+  schedule: [{ cron: "0 3 * * *" }]
+  workflow_dispatch:
+jobs:
+  regression:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with: { python-version: "3.11" }
+      - run: uv sync --all-groups --locked
+      - run: uv run pytest -q
+      - name: fixed-seed Core training smoke (CPU; a GPU runner may replace this job)
+        run: uv run conrad train run --config configs/train/core_smoke.yaml
+# Nightly detects regressions against fixed fixtures; it does not redefine research success.
