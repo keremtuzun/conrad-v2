@@ -73,6 +73,6 @@ addopts = "-ra --strict-markers"
 markers = [
   "slow: long-running test",
   "gpu: requires CUDA device",
-  "legacy_independence: verifies operation without the Digital Twin legacy repository",
+  "legacy_independence: verifies operation with the legacy reference repository absent",
 ]
 filterwarnings = ["ignore::DeprecationWarning"]
