@@ -24,7 +24,7 @@ IMPLEMENTATION_METADATA = {
         "spatial support of evidence is the robot pose estimate; entity localisation is child-specific",
     ],
     "baselines": ["single_rgb", "single_sonar", "concat", "early", "late", "cross_attention"],
-    "acceptance_tests": ["tests/unit/core/test_ecmer.py"],
+    "acceptance_tests": ["tests/unit/core/test_core_ecmer.py"],
     "claim_status": "IMPLEMENTED",
 }
 

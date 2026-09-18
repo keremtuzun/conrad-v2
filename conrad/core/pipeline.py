@@ -60,7 +60,7 @@ class Model2Core:
         dynamics: Mapping[str, PropertyDynamics] | None = None,
         latent: LatentModules | None = None,
         persist_predictions: bool = True,
-        use_rbp: bool = True,
+        use_rbp: bool = False,  # ADR-0006: off by default after CORE-RBP-E001 contamination result
     ) -> None:
         self.cfg = cfg
         self.domain = domain

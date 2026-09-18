@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-uv run conrad eval run --run "$1" --config "${2:-configs/eval/default.yaml}"
+# usage: scripts/eval.sh <EXPERIMENT_ID> [config]
+uv run conrad eval run --experiment "$1" ${2:+--config "$2"}

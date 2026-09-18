@@ -23,7 +23,7 @@ def provenance_check(cfg: CoreConfig, seed: int) -> dict[str, Any]:
         ids = IdFactory(seed)
         fac = EvidenceFactory(ids, cfg.evidence_dim)
         assert fac.run_id is not None
-        core = Model2Core(cfg, repo, fac.run_id, ids, Domain.TECHNICAL, "component")
+        core = Model2Core(cfg, repo, fac.run_id, ids, Domain.TECHNICAL, "component", use_rbp=True)
         a = fac.make(1.0, {"p0": 0.4}, center_m=(0.0, 0.0, 0.0), independence_group="a1")
         b = fac.make(1.0, {"p1": 0.7}, center_m=(10.0, 0.0, 0.0), independence_group="b1")
         step = core.forward_step([(a[0], [a[1]]), (b[0], [b[1]])], stamp(1.0, CLOCK))

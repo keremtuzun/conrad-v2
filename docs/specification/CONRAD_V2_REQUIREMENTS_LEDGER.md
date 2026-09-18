@@ -6,8 +6,8 @@ Statuses are derived from the files present in the repository; do not edit this 
 | status | count |
 |---|---|
 | MISSING | 3 |
-| IMPLEMENTED | 11 |
-| TESTED | 64 |
+| IMPLEMENTED | 10 |
+| TESTED | 65 |
 | INTEGRATED | 1 |
 | BLOCKED_EXTERNAL | 2 |
 | BLOCKED_OPEN_DECISION | 4 |
@@ -17,7 +17,7 @@ Statuses are derived from the files present in the repository; do not edit this 
 | REQ-REPO-001 | prompt s3; ch34 | FROZEN_CONTRACT | TESTED | New standalone repository with own git history, lock, CI, README, migrations, docs |  |
 | REQ-REPO-002 | prompt s4-s6,s128 | FROZEN_CONTRACT | TESTED | Zero dependency on the legacy repository; operation proven with it absent |  |
 | REQ-REPO-003 | prompt s4,s5,s117 | FROZEN_CONTRACT | IMPLEMENTED | Read-only legacy audit and salvage ledger |  |
-| REQ-SPEC-001 | prompt s7; ch29-30 | FROZEN_CONTRACT | IMPLEMENTED | Requirements ledger and implementation map | tests/contract/test_requirements_ledger.py |
+| REQ-SPEC-001 | prompt s7; ch29-30 | FROZEN_CONTRACT | TESTED | Requirements ledger and implementation map |  |
 | REQ-SPEC-002 | prompt s8; ch30 | FROZEN_CONTRACT | IMPLEMENTED | Implementation metadata on every substantial package | tests/contract/test_package_metadata.py |
 | REQ-ARCH-001 | ch1; ch2; INV-ARCH-01 | FROZEN_CONTRACT | TESTED | Twins = truth, Model2 = belief, Model1 = decision; no truth in deployment-equivalent inference | tests/leakage/test_dynamic_leakage.py |
 | REQ-ARCH-002 | INV-ARCH-04; prompt s118,s122 | FROZEN_CONTRACT | TESTED | Twin1 scrapped; no obsolete architecture identifiers; no extra subsystem |  |

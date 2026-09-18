@@ -80,7 +80,7 @@
       "requirement_summary": "Requirements ledger and implementation map",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "docs/specification/CONRAD_V2_REQUIREMENTS_LEDGER.md",
         "artifacts/spec/requirements-ledger.json",
@@ -90,9 +90,7 @@
       "test_ids": [
         "tests/contract/test_requirements_ledger.py"
       ],
-      "missing_tests": [
-        "tests/contract/test_requirements_ledger.py"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],

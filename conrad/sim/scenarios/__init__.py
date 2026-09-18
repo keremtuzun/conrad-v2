@@ -8,6 +8,6 @@ IMPLEMENTATION_METADATA: dict[str, Any] = {
     "configuration_keys": ["configs/sim/twin2s_default.yaml"],
     "assumptions": ["Material labels are generic SYNTHETIC_ONLY names, not measured material data."],
     "baselines": [],
-    "acceptance_tests": ["tests/simulation/twin2s/test_shared_scenario.py"],
+    "acceptance_tests": ["tests/simulation/twin2s/test_twin2s_scenario_and_observations.py"],
     "claim_status": "IMPLEMENTED",
 }

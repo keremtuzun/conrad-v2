@@ -27,6 +27,7 @@ from conrad.settings import REPO_ROOT, CommandMode, ConradSettings, ExecutionLan
 ADAPTERS = {
     "sim_kernel": "conrad.sim.kernel",
     "unity": "conrad.adapters.unity",
+    "unity_v2": "conrad.adapters.unity",
     "physical": None,  # supplied by the hardware owner (EXT-HW-01); never importable by default
 }
 

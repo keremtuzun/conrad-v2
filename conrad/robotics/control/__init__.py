@@ -10,7 +10,7 @@ from conrad.robotics.control.pid import CascadedPidController, ControlConfig, Co
 IMPLEMENTATION_METADATA = {
     "implementation_status": "EXPERIMENTAL_CANDIDATE",
     "source_sections": ["ch20 Controller input", "ch20 Controller V1", "ch20 Controller baselines"],
-    "configuration_keys": ["ControlConfig", "RobotConfig.safety.max_speed_mps", "configs/sim/nav_stack.yaml"],
+    "configuration_keys": ["ControlConfig", "RobotConfig.safety.max_speed_mps", "configs/sim/nav_kernel.yaml"],
     "assumptions": [
         "gains tuned on the SYNTHETIC_ONLY sim_reference vehicle",
         "water density / gravity for buoyancy feedforward are configured environment assumptions",

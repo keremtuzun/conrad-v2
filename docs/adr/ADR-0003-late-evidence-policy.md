@@ -12,3 +12,7 @@ V0.2 implements (b) as default `EXPLICIT_LATE` and (c) `REJECT` as a config alte
 tests/contract/test_cc_persistence.py::test_cc02_late_observation_never_masquerades_as_current.
 ## Approval
 Kerem: PENDING REVIEW
+
+## Naming note
+
+`runtime.late_evidence_policy: EXPLICIT_LATE` in settings is implemented in the Core as `PmblConfig.late_policy = REVISE_LATE`. They name the same behaviour: a late revision keeps its measurement time and never advances the head.

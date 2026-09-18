@@ -48,7 +48,7 @@ def pmbl(repo, fac, cfg, ids):
 
 @pytest.fixture
 def core(repo, fac, cfg, ids):
-    return Model2Core(cfg, repo, fac.run_id, ids, Domain.TECHNICAL, "component")
+    return Model2Core(cfg, repo, fac.run_id, ids, Domain.TECHNICAL, "component", use_rbp=True)
 
 
 def _archived(pmbl, fac, *args, **kwargs):
