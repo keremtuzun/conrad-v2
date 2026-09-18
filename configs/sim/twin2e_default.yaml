@@ -1,0 +1,21 @@
+# Twin2E / MEIFE defaults (ch33 freeze: regional 64x64x8, local 32x32x16). EXPERIMENTAL_CANDIDATE.
+# All numbers are engineering defaults, not calibrated values.
+twin2e:
+  regional_grid: {frame_id: WORLD, origin_m: [-1600.0, -1600.0, -80.0], spacing_m: [50.0, 50.0, 10.0], shape: [64, 64, 8]}
+  local_grid: {frame_id: WORLD, origin_m: [-80.0, -80.0, -80.0], spacing_m: [5.0, 5.0, 5.0], shape: [32, 32, 16]}
+  switches:
+    field_dynamics: true
+    entity_dynamics: true
+    field_to_entity: true
+    entity_to_field: true
+    multi_scale: true
+    disturbances: true
+    recovery: true
+    stochasticity: true
+    random_ecology: false
+  solver: {cfl_max: 0.8, max_substeps: 4000, boundary: OPEN, nudging_time_s: 1800.0, upward_nudging_time_s: 21600.0, field_noise_fraction: 0.002}
+  ecology: {time_scale: 1.0, max_cover_rate_per_day: 0.05, max_condition_rate_per_day: 0.1, max_transition_rate_per_day: 6.0}
+  observation: {level: E0_ABSTRACT, survey_range_m: 6.0, detection_p0: 0.95, cover_sigma: 0.04}
+  learned_residual: {enabled: false, calibration_data_ref: null}
+  clock_domain: SIM
+  allow_prior_sampling: true

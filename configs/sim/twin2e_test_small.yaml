@@ -1,0 +1,6 @@
+# Tiny, shallow Twin2E grids for fast tests (same physics, smaller tensors). SYNTHETIC_ONLY.
+twin2e:
+  regional_grid: {frame_id: WORLD, origin_m: [-400.0, -400.0, -20.0], spacing_m: [50.0, 50.0, 5.0], shape: [16, 16, 4]}
+  local_grid: {frame_id: WORLD, origin_m: [-40.0, -40.0, -20.0], spacing_m: [10.0, 10.0, 2.5], shape: [8, 8, 8]}
+  ecology: {time_scale: 50.0, max_cover_rate_per_day: 0.05}
+  clock_domain: SIM
