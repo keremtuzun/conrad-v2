@@ -64,6 +64,18 @@ MEASURED/IDENTIFIED. The physical lane requires the latter list to be empty.
 
 ## 2. Identification logs (experiments A..F, ch22)
 
+**Physical sessions follow [`docs/IDENTIFICATION_LOG_PROTOCOL.md`](IDENTIFICATION_LOG_PROTOCOL.md)
+(EXT-HW-04).** It defines the raw delivery (commands, independent motion reference, load cell, current
+meter, IMU, pressure, power, clock, split plan), and the intake checker
+(`--intake-only`) rejects anything incomplete. The protocol pipeline (`--protocol --robot-config ...`)
+derives the fit-ready signals below from those raw logs. The manoeuvre runner
+(`conrad.robotics.hardware.identification.runner`) executes the profiles through the command gateway
+and refuses a physical adapter unless hardware control is enabled, a safety envelope is set and the
+operator has acknowledged the run. The chain was rehearsed on the Python kernel as `ID-REHEARSAL-E001`
+(SYNTHETIC_TOOLING_CHECK, tooling only).
+
+The fit-ready format below is still accepted by the plain CLI for logs that are already reduced.
+
 Deliver `logs/manifest.yaml` plus one CSV per trajectory. The first CSV column is `time_s`, strictly
 increasing. **Identification and validation trajectories must be different runs**: the tooling refuses
 overlapping ids or byte-identical logs, and validating on identification data raises.
@@ -124,6 +136,7 @@ it.
 |---|---|
 | characterization ingestion, merge, unit conversion, gate ledger | implemented, tested on labelled synthetic fixtures |
 | identification tooling A..F with uncertainty and split enforcement | implemented, recovers known parameters from synthetic logs |
+| identification log protocol, intake checker, manoeuvre runner (EXT-HW-04 software side) | implemented; rehearsed end to end on the Python kernel (`ID-REHEARSAL-E001`, SYNTHETIC_TOOLING_CHECK) |
 | real characterization data | **BLOCKED_EXTERNAL** (hardware owner) |
 | real identification | **BLOCKED_EXTERNAL** (hardware owner, controlled-water access) |
 | target-HIL on the onboard computer | **BLOCKED_EXTERNAL** (onboard computer) |

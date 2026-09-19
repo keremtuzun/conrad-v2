@@ -16,7 +16,9 @@ from conrad.evaluation.claims import ClaimLevel
 from conrad.evaluation.metrics.bootstrap import PairedComparison
 from conrad.schemas.base import ConradModel, digest_of
 
-EXPERIMENT_ID_PATTERN = r"^(CORE|2S|2T|2E|M1|ACTIVE|COM|NAV|SYS|XFER|X|ECMER|DATA)-[A-Z0-9]+(-[A-Z0-9.]+)*$"
+EXPERIMENT_ID_PATTERN = (
+    r"^(CORE|2S|2T|2E|M1|ACTIVE|COM|NAV|SYS|XFER|X|ECMER|DATA|ID)-[A-Z0-9]+(-[A-Z0-9.]+)*$"
+)
 GENESIS = "0" * 64
 
 

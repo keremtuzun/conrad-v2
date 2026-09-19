@@ -25,6 +25,13 @@ from conrad.robotics.hardware.identification.fitting import (
     IdentificationError,
     fit,
 )
+from conrad.robotics.hardware.identification.intake import (
+    IntakeConfig,
+    IntakeFinding,
+    IntakeReport,
+    RepeatabilityStat,
+    check_delivery,
+)
 from conrad.robotics.hardware.identification.logio import LogFormatError, load_csv_segment, load_manifest
 from conrad.robotics.hardware.identification.models import (
     G0,
@@ -46,7 +53,9 @@ from conrad.robotics.hardware.identification.validation import (
     ValidationMetric,
     ValidationResult,
     validate_axis,
+    validate_station_keeping,
     validate_thruster,
+    validate_trim,
 )
 
 IMPLEMENTATION_METADATA = {
@@ -55,17 +64,26 @@ IMPLEMENTATION_METADATA = {
         "ch20 Dynamic parameter identification / Identification objective / Parameter uncertainty",
         "ch21 Parameter identification / Parameter uncertainty",
         "ch22 Identification experiment sequence A..F / Validation trajectories",
+        "ch25 Phase 13 Parameter Identification (S2R-ID-01, S2R-VALIDATE-01); EXT-HW-04 log protocol",
     ],
-    "configuration_keys": ["validation envelope_rmse (per experiment, caller supplied)"],
+    "configuration_keys": [
+        "validation envelope_rmse (per experiment, caller supplied; OPEN)",
+        "IntakeConfig (repetitions, clock offset, gap factor, outlier z; ENGINEERING_ESTIMATE)",
+        "RunnerConfig (hardware_control_enabled=False, safety_envelope, operator_acknowledged, attitude_hold)",
+        "PipelineConfig (fit_rate_hz, settled fractions, envelope_rmse)",
+    ],
     "assumptions": [
         "thruster: hard deadzone, T = k u|u| with separate forward/reverse gains, first-order lag, pure delay"
         " (same form as conrad.sim.kernel)",
         "single-axis decoupled dynamics per experiment; cross-coupling is not identified",
         "deadzone is bracketed from step amplitudes (uniform-interval sigma), not least-squares fitted",
         "static trim: pitch-plane moment balance M = B (z_BG sin(theta) + x_BG cos(theta))",
+        "axis forces are derived from logged commands through the identified B thruster models and the"
+        " RobotConfig thruster geometry",
+        "station keeping: the current is along the body surge axis and the hold force balances surge drag",
     ],
     "baselines": ["parameters from RobotConfig ENGINEERING_ESTIMATE / SYNTHETIC_ONLY values"],
-    "acceptance_tests": ["tests/unit/identification"],
+    "acceptance_tests": ["tests/unit/identification", "tests/unit/robotics/identification"],
     "claim_status": "IMPLEMENTED",
     "real_identification_status": "BLOCKED_EXTERNAL",
 }
@@ -81,9 +99,13 @@ __all__ = [
     "IdentificationDataset",
     "IdentificationError",
     "IdentificationReport",
+    "IntakeConfig",
+    "IntakeFinding",
+    "IntakeReport",
     "LogFormatError",
     "LogSegment",
     "ParameterMapping",
+    "RepeatabilityStat",
     "ReportStatus",
     "SplitLeakageError",
     "SyntheticDataError",
@@ -91,6 +113,7 @@ __all__ = [
     "ValidationResult",
     "bracket_deadzone",
     "build_report",
+    "check_delivery",
     "fit",
     "identify_axis",
     "identify_displaced_volume",
@@ -105,5 +128,7 @@ __all__ = [
     "to_characterization_records",
     "trim_moment",
     "validate_axis",
+    "validate_station_keeping",
     "validate_thruster",
+    "validate_trim",
 ]

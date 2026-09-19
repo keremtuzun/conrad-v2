@@ -14,7 +14,7 @@ import numpy as np
 
 from conrad.robotics.hardware.identification.dataset import ExperimentKind, IdentificationDataset, LogSegment
 from conrad.robotics.hardware.identification.fitting import FitResult
-from conrad.robotics.hardware.identification.models import simulate_axis, thruster_response
+from conrad.robotics.hardware.identification.models import simulate_axis, thruster_response, trim_moment
 from conrad.schemas.base import ConradModel
 
 _UNITS = {
@@ -122,3 +122,42 @@ def validate_thruster(
         metrics.append(_metric(s, pred, thrust, "N"))
         sizes.append(thrust.size)
     return _pool(ExperimentKind.THRUSTER_STEP, metrics, sizes, envelope_rmse)
+
+
+def validate_trim(
+    dataset: IdentificationDataset,
+    segments: Sequence[LogSegment],
+    buoyancy_n: float,
+    fit: FitResult,
+    envelope_rmse: float | None = None,
+) -> ValidationResult:
+    """A (tilt): held-out applied pitch moment vs the moment the fitted CoB-CoG offset predicts."""
+    dataset.assert_validation_only(segments)
+    metrics, sizes = [], []
+    for s in segments:
+        m = s.signal("applied_pitch_moment_nm", "N*m")
+        pred = trim_moment(s.signal("pitch_rad", "rad"), buoyancy_n, fit.value("z_bg_m"), fit.value("x_bg_m"))
+        metrics.append(_metric(s, pred, m, "N*m"))
+        sizes.append(m.size)
+    return _pool(ExperimentKind.STATIC_TRIM, metrics, sizes, envelope_rmse)
+
+
+def validate_station_keeping(
+    dataset: IdentificationDataset,
+    segments: Sequence[LogSegment],
+    d1: float,
+    d2: float,
+    envelope_rmse: float | None = None,
+) -> ValidationResult:
+    """F: held-out hold force vs the drag the identified model predicts at the MEASURED current.
+
+    Each segment carries ``hold_force_n`` [N] and ``measured_current_mps`` [m/s] along the same body axis.
+    """
+    dataset.assert_validation_only(segments)
+    metrics, sizes = [], []
+    for s in segments:
+        f = s.signal("hold_force_n", "N")
+        c = s.signal("measured_current_mps", "m/s")
+        metrics.append(_metric(s, d1 * c + d2 * np.abs(c) * c, f, "N"))
+        sizes.append(f.size)
+    return _pool(ExperimentKind.STATION_KEEPING, metrics, sizes, envelope_rmse)

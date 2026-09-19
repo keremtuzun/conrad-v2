@@ -5,12 +5,21 @@
 
 Each experiment kind present in the identification split is fitted; every kind present in the validation
 split is scored on held-out logs only. Mass/inertia are the MEASURED rigid-body values from characterization.
+
+Protocol deliveries (docs/IDENTIFICATION_LOG_PROTOCOL.md)::
+
+    python -m conrad.robotics.hardware.identification --manifest delivery/manifest.yaml --intake-only         --out artifacts/identification/intake.json          # exit 0 accepted, 3 rejected
+    python -m conrad.robotics.hardware.identification --manifest delivery/manifest.yaml --protocol         --robot-config configs/robot/<measured>.yaml --out artifacts/identification/report.json
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import sys
+from pathlib import Path
+
+import yaml
 
 from conrad.robotics.hardware.identification.dataset import ExperimentKind
 from conrad.robotics.hardware.identification.experiments import (
@@ -19,6 +28,7 @@ from conrad.robotics.hardware.identification.experiments import (
     identify_thruster,
 )
 from conrad.robotics.hardware.identification.fitting import FitResult
+from conrad.robotics.hardware.identification.intake import check_delivery
 from conrad.robotics.hardware.identification.logio import load_manifest
 from conrad.robotics.hardware.identification.report import build_report
 from conrad.robotics.hardware.identification.validation import (
@@ -38,7 +48,11 @@ _AXES = (
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="python -m conrad.robotics.hardware.identification")
     ap.add_argument("--manifest", required=True)
-    ap.add_argument("--mass-kg", type=float, required=True)
+    ap.add_argument("--mass-kg", type=float, default=None, help="required unless --intake-only/--protocol")
+    ap.add_argument("--intake-only", action="store_true", help="check a protocol delivery and stop")
+    ap.add_argument("--protocol", action="store_true", help="intake + derive + fit + validate a delivery")
+    ap.add_argument("--robot-config", default=None, help="RobotConfig with measured geometry (--protocol)")
+    ap.add_argument("--pipeline-config", default=None, help="YAML PipelineConfig (--protocol)")
     ap.add_argument(
         "--yaw-inertia", type=float, default=None, help="kg*m^2, required for E_YAW_ROTATION logs"
     )
@@ -47,6 +61,46 @@ def main(argv: list[str] | None = None) -> int:
     )
     ap.add_argument("--out", required=True)
     args = ap.parse_args(argv)
+    if args.intake_only:
+        intake = check_delivery(args.manifest)
+        out = Path(args.out)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(intake.model_dump(mode="json"), indent=2), encoding="utf-8")
+        for f in intake.findings:
+            if f.severity != "INFO":
+                print(f"{f.severity} {f.code} {f.trajectory_id or '-'}: {f.message}", file=sys.stderr)
+        print(f"{'ACCEPTED' if intake.accepted else 'REJECTED'}: {len(intake.failures())} failures -> {out}")
+        return 0 if intake.accepted else 3
+    if args.protocol:
+        from conrad.robotics.hardware.config import load_robot_config
+        from conrad.robotics.hardware.identification.pipeline import (
+            IntakeRejectedError,
+            PipelineConfig,
+            run_pipeline,
+        )
+
+        if args.robot_config is None:
+            print("--protocol needs --robot-config", file=sys.stderr)
+            return 2
+        if args.envelope_rmse is not None:
+            print("protocol runs declare envelope_rmse per fit in --pipeline-config", file=sys.stderr)
+            return 2
+        pcfg = PipelineConfig()
+        if args.pipeline_config:
+            pcfg = PipelineConfig.model_validate(
+                yaml.safe_load(Path(args.pipeline_config).read_text("utf-8"))
+            )
+        try:
+            result = run_pipeline(args.manifest, load_robot_config(args.robot_config), pcfg)
+        except IntakeRejectedError as exc:
+            print(str(exc), file=sys.stderr)
+            return 3
+        path = result.report.write(args.out)
+        print(f"{result.report.status.value}: {len(result.report.fits)} fits -> {path}")
+        return 0
+    if args.mass_kg is None:
+        print("--mass-kg is required", file=sys.stderr)
+        return 2
 
     ds = load_manifest(args.manifest)
     fits: dict[str, FitResult] = {}

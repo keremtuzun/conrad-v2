@@ -1,0 +1,47 @@
+# ID-REHEARSAL-E001: SYNTHETIC_TOOLING_CHECK of the identification protocol on the Python kernel.
+# Every number below is a SYNTHETIC_ONLY rehearsal setting (profile timing, noise, controller gains),
+# not a property of the vehicle. The protocol defaults for real runs live in
+# conrad/robotics/hardware/identification/protocol.py and docs/IDENTIFICATION_LOG_PROTOCOL.md.
+hypothesis: "The runner -> intake -> identification -> held-out validation chain recovers the Python kernel's known parameters within their fit uncertainty."
+primary_metric: "rel_error per parameter; held_out_rmse per fit"
+direction: lower
+seeds: [2026201]
+limitations:
+  - "SYNTHETIC_TOOLING_CHECK: validates the identification tooling only"
+  - "never produces IDENTIFIED RobotConfig values"
+  - "true values are Python-kernel SYNTHETIC_ONLY simulator inputs, not vehicle measurements"
+  - "reference (motion, load cell, current meter) is simulator truth plus synthetic noise"
+  - "real identification stays BLOCKED_EXTERNAL (EXT-HW-04)"
+robot_config: configs/robot/sim_reference.yaml
+kernel:
+  physics_dt_s: 0.01
+start_position_world_m: [0.0, 0.0, -20.0]
+control_period_s: 0.02
+thruster_step_period_s: 0.01   # load-cell channel must reach the protocol's 100 Hz minimum
+settle_s: 5.0                  # unrecorded attitude hold before each wrench segment
+attitude_hold: {kp_nm_per_rad: 15.0, kd_nms_per_rad: 5.0}   # rehearsal controller tuning (not vehicle data)
+onboard_fix: {sigma_m: 0.1, period_s: 1.0}   # the simulated robot's own positioning aid for its EKF
+repetitions: 4          # 3 identification + 1 held-out per group
+reference_noise:        # SYNTHETIC measurement noise (1-sigma)
+  position_m: 0.005
+  angle_rad: 0.002
+  velocity_mps: 0.005
+  rate_rps: 0.002
+  thrust_n: 0.05
+  current_mps: 0.005
+profiles:
+  B_THRUSTER_STEP: {levels: [0.03, -0.03, 0.045, -0.045, 0.055, -0.055, 0.07, -0.07, 0.2, -0.2, 0.45, -0.45, 0.7, -0.7], on_s: 0.6, off_s: 0.6}
+  C_SURGE_ACCELERATION: {fractions: [0.1, -0.1, 0.2, -0.2, 0.3, -0.3], on_s: 3.0, off_s: 5.0}
+  D_SWAY: {fractions: [0.1, -0.1, 0.2, -0.2, 0.3, -0.3], on_s: 3.0, off_s: 5.0}
+  D_HEAVE: {fractions: [0.1, -0.1, 0.2, -0.2, 0.3, -0.3], on_s: 3.0, off_s: 5.0}
+  E_YAW_ROTATION: {fractions: [0.05, -0.05, 0.1, -0.1, 0.15, -0.15], on_s: 3.0, off_s: 5.0}
+  A_TILT_THRUSTERS: {fractions: [0.02, -0.02, 0.04, -0.04, 0.06, -0.06], on_s: 14.0, off_s: 8.0}
+  F_STATION_KEEPING:
+    duration_s: 40.0
+    settled_fraction: 0.5
+    current_world_mps: [0.2, 0.0, 0.0]
+    gains: {kp: 20.0, kd: 30.0, kp_yaw: 15.0, kd_yaw: 5.0}
+pipeline:
+  fit_rate_hz: null        # fit at the logged 50 Hz (10 Hz decimation biased the fast yaw fit)
+  plateau_settled_fraction: 0.3
+  station_settled_fraction: 0.5
