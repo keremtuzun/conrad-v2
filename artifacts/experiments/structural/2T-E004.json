@@ -1,0 +1,512 @@
+{
+  "experiment_id": "2T-E004",
+  "data": "SYNTHETIC_ONLY: Twin2T (MCDE) scenarios, T0 abstract observations",
+  "seeds": [
+    2026201,
+    2026202,
+    2026203
+  ],
+  "config": {
+    "experiment": {
+      "id": "2T-E004"
+    },
+    "seeds": [
+      2026201,
+      2026202,
+      2026203
+    ],
+    "scenarios": [
+      {
+        "kind": "small",
+        "n_segments": 4
+      },
+      {
+        "kind": "tier",
+        "tier": 3
+      }
+    ],
+    "episodes_per_scenario": 2,
+    "tick_days": 30,
+    "horizon_days": 1800,
+    "inspection_days": [
+      30,
+      180,
+      360,
+      720,
+      1080,
+      1440,
+      1800
+    ]
+  },
+  "per_seed": {
+    "2026201": {
+      "between.MODEL2T_TEMPORAL.corrosion_depth_m.mae_mm": 0.10910337109651835,
+      "between.MODEL2T_TEMPORAL.corrosion_depth_m.cov95": 1.0,
+      "between.MODEL2T_TEMPORAL.corrosion_depth_m.nll": -0.3748056282436564,
+      "between.NO_RATE_PRIOR.corrosion_depth_m.mae_mm": 0.10593229840889065,
+      "between.NO_RATE_PRIOR.corrosion_depth_m.cov95": 1.0,
+      "between.NO_RATE_PRIOR.corrosion_depth_m.nll": -0.36011749629144235,
+      "between.LATEST_OBSERVATION.corrosion_depth_m.mae_mm": 0.14666822050614656,
+      "between.LATEST_OBSERVATION.corrosion_depth_m.cov95": 0.9988901220865705,
+      "between.LATEST_OBSERVATION.corrosion_depth_m.nll": -0.05713251863486392,
+      "between.MODEL2T_TEMPORAL.crack_length_m.mae_mm": 28.61033319912944,
+      "between.MODEL2T_TEMPORAL.crack_length_m.cov95": 0.894811320754717,
+      "between.MODEL2T_TEMPORAL.crack_length_m.nll": 753.2864482629948,
+      "between.NO_RATE_PRIOR.crack_length_m.mae_mm": 28.629106965427482,
+      "between.NO_RATE_PRIOR.crack_length_m.cov95": 0.8891509433962265,
+      "between.NO_RATE_PRIOR.crack_length_m.nll": 750.7588679885887,
+      "between.LATEST_OBSERVATION.crack_length_m.mae_mm": 28.514042279272463,
+      "between.LATEST_OBSERVATION.crack_length_m.cov95": 0.9061320754716982,
+      "between.LATEST_OBSERVATION.crack_length_m.nll": 4878.406890428967,
+      "before_next.MODEL2T_TEMPORAL.corrosion_depth_m.mae_mm": 0.1207454970316107,
+      "before_next.MODEL2T_TEMPORAL.corrosion_depth_m.cov95": 1.0,
+      "before_next.MODEL2T_TEMPORAL.corrosion_depth_m.nll": -0.2761705789435889,
+      "before_next.NO_RATE_PRIOR.corrosion_depth_m.mae_mm": 0.12093201599292697,
+      "before_next.NO_RATE_PRIOR.corrosion_depth_m.cov95": 1.0,
+      "before_next.NO_RATE_PRIOR.corrosion_depth_m.nll": -0.25429713531130643,
+      "before_next.LATEST_OBSERVATION.corrosion_depth_m.mae_mm": 0.1492377762767719,
+      "before_next.LATEST_OBSERVATION.corrosion_depth_m.cov95": 0.9967320261437909,
+      "before_next.LATEST_OBSERVATION.corrosion_depth_m.nll": -0.05049135328821512,
+      "before_next.MODEL2T_TEMPORAL.crack_length_m.mae_mm": 42.39786292925372,
+      "before_next.MODEL2T_TEMPORAL.crack_length_m.cov95": 0.8583333333333333,
+      "before_next.MODEL2T_TEMPORAL.crack_length_m.nll": 1149.4049610819818,
+      "before_next.NO_RATE_PRIOR.crack_length_m.mae_mm": 42.41316419723382,
+      "before_next.NO_RATE_PRIOR.crack_length_m.cov95": 0.8458333333333333,
+      "before_next.NO_RATE_PRIOR.crack_length_m.nll": 1143.7845891763684,
+      "before_next.LATEST_OBSERVATION.crack_length_m.mae_mm": 42.28969733175321,
+      "before_next.LATEST_OBSERVATION.crack_length_m.cov95": 0.8666666666666667,
+      "before_next.LATEST_OBSERVATION.crack_length_m.nll": 7294.086977878457,
+      "between.MODEL2T_TEMPORAL.corrosion_depth_m.median_ae_mm": 0.09502898021376205,
+      "between.NO_RATE_PRIOR.corrosion_depth_m.median_ae_mm": 0.08158239394061229,
+      "between.LATEST_OBSERVATION.corrosion_depth_m.median_ae_mm": 0.12461784607165399,
+      "between.MODEL2T_TEMPORAL.crack_length_m.median_ae_mm": 0.7470602369972866,
+      "between.NO_RATE_PRIOR.crack_length_m.median_ae_mm": 0.7469611255852218,
+      "between.LATEST_OBSERVATION.crack_length_m.median_ae_mm": 0.7465873829488601,
+      "before_next.MODEL2T_TEMPORAL.corrosion_depth_m.median_ae_mm": 0.10430874723432348,
+      "before_next.NO_RATE_PRIOR.corrosion_depth_m.median_ae_mm": 0.09609252500457899,
+      "before_next.LATEST_OBSERVATION.corrosion_depth_m.median_ae_mm": 0.1263604573472013,
+      "before_next.MODEL2T_TEMPORAL.crack_length_m.median_ae_mm": 0.8479285711625036,
+      "before_next.NO_RATE_PRIOR.crack_length_m.median_ae_mm": 0.8122882108765386,
+      "before_next.LATEST_OBSERVATION.crack_length_m.median_ae_mm": 0.8406239165610256,
+      "between.corrosion_depth_m.TB_mm": 0.037564849409628204,
+      "between.corrosion_depth_m.TB_no_rate_prior_mm": 0.040735922097255906,
+      "between.crack_length_m.TB_mm": -0.09629091985697613,
+      "between.crack_length_m.TB_no_rate_prior_mm": -0.1150646861550193,
+      "before_next.corrosion_depth_m.TB_mm": 0.028492279245161206,
+      "before_next.corrosion_depth_m.TB_no_rate_prior_mm": 0.028305760283844933,
+      "before_next.crack_length_m.TB_mm": -0.10816559750050914,
+      "before_next.crack_length_m.TB_no_rate_prior_mm": -0.12346686548060859
+    },
+    "2026202": {
+      "between.MODEL2T_TEMPORAL.corrosion_depth_m.mae_mm": 0.0996255331502599,
+      "between.MODEL2T_TEMPORAL.corrosion_depth_m.cov95": 1.0,
+      "between.MODEL2T_TEMPORAL.corrosion_depth_m.nll": -0.3911615470230794,
+      "between.NO_RATE_PRIOR.corrosion_depth_m.mae_mm": 0.11421071384832383,
+      "between.NO_RATE_PRIOR.corrosion_depth_m.cov95": 1.0,
+      "between.NO_RATE_PRIOR.corrosion_depth_m.nll": -0.3594532844422259,
+      "between.LATEST_OBSERVATION.corrosion_depth_m.mae_mm": 0.16055303450367173,
+      "between.LATEST_OBSERVATION.corrosion_depth_m.cov95": 1.0,
+      "between.LATEST_OBSERVATION.corrosion_depth_m.nll": -0.029913766232102037,
+      "between.MODEL2T_TEMPORAL.crack_length_m.mae_mm": 28.03952758667046,
+      "between.MODEL2T_TEMPORAL.crack_length_m.cov95": 0.8863636363636364,
+      "between.MODEL2T_TEMPORAL.crack_length_m.nll": 128.6667147074365,
+      "between.NO_RATE_PRIOR.crack_length_m.mae_mm": 28.171291729106652,
+      "between.NO_RATE_PRIOR.crack_length_m.cov95": 0.8795025728987993,
+      "between.NO_RATE_PRIOR.crack_length_m.nll": 123.85985786300648,
+      "between.LATEST_OBSERVATION.crack_length_m.mae_mm": 28.118330775054872,
+      "between.LATEST_OBSERVATION.crack_length_m.cov95": 0.8897941680960549,
+      "between.LATEST_OBSERVATION.crack_length_m.nll": 4268.023294903128,
+      "before_next.MODEL2T_TEMPORAL.corrosion_depth_m.mae_mm": 0.11313277891842603,
+      "before_next.MODEL2T_TEMPORAL.corrosion_depth_m.cov95": 1.0,
+      "before_next.MODEL2T_TEMPORAL.corrosion_depth_m.nll": -0.28872853308832824,
+      "before_next.NO_RATE_PRIOR.corrosion_depth_m.mae_mm": 0.12812503297101216,
+      "before_next.NO_RATE_PRIOR.corrosion_depth_m.cov95": 1.0,
+      "before_next.NO_RATE_PRIOR.corrosion_depth_m.nll": -0.2552669615325589,
+      "before_next.LATEST_OBSERVATION.corrosion_depth_m.mae_mm": 0.16447551263673102,
+      "before_next.LATEST_OBSERVATION.corrosion_depth_m.cov95": 1.0,
+      "before_next.LATEST_OBSERVATION.corrosion_depth_m.nll": -0.019679216079019617,
+      "before_next.MODEL2T_TEMPORAL.crack_length_m.mae_mm": 50.425844210446094,
+      "before_next.MODEL2T_TEMPORAL.crack_length_m.cov95": 0.8636363636363636,
+      "before_next.MODEL2T_TEMPORAL.crack_length_m.nll": 564.9941172310681,
+      "before_next.NO_RATE_PRIOR.crack_length_m.mae_mm": 50.57700165097258,
+      "before_next.NO_RATE_PRIOR.crack_length_m.cov95": 0.8446969696969697,
+      "before_next.NO_RATE_PRIOR.crack_length_m.nll": 550.2056916452204,
+      "before_next.LATEST_OBSERVATION.crack_length_m.mae_mm": 50.55806817767653,
+      "before_next.LATEST_OBSERVATION.crack_length_m.cov95": 0.8636363636363636,
+      "before_next.LATEST_OBSERVATION.crack_length_m.nll": 8499.125361912527,
+      "between.MODEL2T_TEMPORAL.corrosion_depth_m.median_ae_mm": 0.07966635900689012,
+      "between.NO_RATE_PRIOR.corrosion_depth_m.median_ae_mm": 0.101828965020726,
+      "between.LATEST_OBSERVATION.corrosion_depth_m.median_ae_mm": 0.1360942289196354,
+      "between.MODEL2T_TEMPORAL.crack_length_m.median_ae_mm": 0.7189839745926783,
+      "between.NO_RATE_PRIOR.crack_length_m.median_ae_mm": 0.8289749032318385,
+      "between.LATEST_OBSERVATION.crack_length_m.median_ae_mm": 0.8571989232915479,
+      "before_next.MODEL2T_TEMPORAL.corrosion_depth_m.median_ae_mm": 0.09075385344670259,
+      "before_next.NO_RATE_PRIOR.corrosion_depth_m.median_ae_mm": 0.11394733099972815,
+      "before_next.LATEST_OBSERVATION.corrosion_depth_m.median_ae_mm": 0.13497967929892118,
+      "before_next.MODEL2T_TEMPORAL.crack_length_m.median_ae_mm": 0.7849126461125713,
+      "before_next.NO_RATE_PRIOR.crack_length_m.median_ae_mm": 0.9124063735678811,
+      "before_next.LATEST_OBSERVATION.crack_length_m.median_ae_mm": 1.0110499987530215,
+      "between.corrosion_depth_m.TB_mm": 0.06092750135341182,
+      "between.corrosion_depth_m.TB_no_rate_prior_mm": 0.04634232065534789,
+      "between.crack_length_m.TB_mm": 0.07880318838441269,
+      "between.crack_length_m.TB_no_rate_prior_mm": -0.05296095405178036,
+      "before_next.corrosion_depth_m.TB_mm": 0.051342733718304986,
+      "before_next.corrosion_depth_m.TB_no_rate_prior_mm": 0.03635047966571886,
+      "before_next.crack_length_m.TB_mm": 0.13222396723043772,
+      "before_next.crack_length_m.TB_no_rate_prior_mm": -0.018933473296051773
+    },
+    "2026203": {
+      "between.MODEL2T_TEMPORAL.corrosion_depth_m.mae_mm": 0.11415021993155704,
+      "between.MODEL2T_TEMPORAL.corrosion_depth_m.cov95": 1.0,
+      "between.MODEL2T_TEMPORAL.corrosion_depth_m.nll": -0.35617604482666404,
+      "between.NO_RATE_PRIOR.corrosion_depth_m.mae_mm": 0.12047012486496807,
+      "between.NO_RATE_PRIOR.corrosion_depth_m.cov95": 1.0,
+      "between.NO_RATE_PRIOR.corrosion_depth_m.nll": -0.3271255953114034,
+      "between.LATEST_OBSERVATION.corrosion_depth_m.mae_mm": 0.15155148737686766,
+      "between.LATEST_OBSERVATION.corrosion_depth_m.cov95": 1.0,
+      "between.LATEST_OBSERVATION.corrosion_depth_m.nll": -0.053212903881386296,
+      "between.MODEL2T_TEMPORAL.crack_length_m.mae_mm": 24.52301558930725,
+      "between.MODEL2T_TEMPORAL.crack_length_m.cov95": 0.9222641509433962,
+      "between.MODEL2T_TEMPORAL.crack_length_m.nll": 1323.1892306150276,
+      "between.NO_RATE_PRIOR.crack_length_m.mae_mm": 24.576434924598896,
+      "between.NO_RATE_PRIOR.crack_length_m.cov95": 0.919622641509434,
+      "between.NO_RATE_PRIOR.crack_length_m.nll": 1317.391470673438,
+      "between.LATEST_OBSERVATION.crack_length_m.mae_mm": 24.569196334544497,
+      "between.LATEST_OBSERVATION.crack_length_m.cov95": 0.9233962264150943,
+      "between.LATEST_OBSERVATION.crack_length_m.nll": 3883.745080521925,
+      "before_next.MODEL2T_TEMPORAL.corrosion_depth_m.mae_mm": 0.12436684908160706,
+      "before_next.MODEL2T_TEMPORAL.corrosion_depth_m.cov95": 1.0,
+      "before_next.MODEL2T_TEMPORAL.corrosion_depth_m.nll": -0.26289203550933454,
+      "before_next.NO_RATE_PRIOR.corrosion_depth_m.mae_mm": 0.13396397701518906,
+      "before_next.NO_RATE_PRIOR.corrosion_depth_m.cov95": 1.0,
+      "before_next.NO_RATE_PRIOR.corrosion_depth_m.nll": -0.23036279384197755,
+      "before_next.LATEST_OBSERVATION.corrosion_depth_m.mae_mm": 0.15746911026624907,
+      "before_next.LATEST_OBSERVATION.corrosion_depth_m.cov95": 1.0,
+      "before_next.LATEST_OBSERVATION.corrosion_depth_m.nll": -0.03928286559991584,
+      "before_next.MODEL2T_TEMPORAL.crack_length_m.mae_mm": 44.89044411504931,
+      "before_next.MODEL2T_TEMPORAL.crack_length_m.cov95": 0.8933333333333333,
+      "before_next.MODEL2T_TEMPORAL.crack_length_m.nll": 4330.550509556186,
+      "before_next.NO_RATE_PRIOR.crack_length_m.mae_mm": 44.9554795377026,
+      "before_next.NO_RATE_PRIOR.crack_length_m.cov95": 0.8966666666666666,
+      "before_next.NO_RATE_PRIOR.crack_length_m.nll": 4317.7040626511,
+      "before_next.LATEST_OBSERVATION.crack_length_m.mae_mm": 44.93523722274001,
+      "before_next.LATEST_OBSERVATION.crack_length_m.cov95": 0.8933333333333333,
+      "before_next.LATEST_OBSERVATION.crack_length_m.nll": 8025.6028620041225,
+      "between.MODEL2T_TEMPORAL.corrosion_depth_m.median_ae_mm": 0.10319231626499226,
+      "between.NO_RATE_PRIOR.corrosion_depth_m.median_ae_mm": 0.10202059770139574,
+      "between.LATEST_OBSERVATION.corrosion_depth_m.median_ae_mm": 0.1272161796257224,
+      "between.MODEL2T_TEMPORAL.crack_length_m.median_ae_mm": 0.6492522270288419,
+      "between.NO_RATE_PRIOR.crack_length_m.median_ae_mm": 0.7461967150584767,
+      "between.LATEST_OBSERVATION.crack_length_m.median_ae_mm": 0.789524337946085,
+      "before_next.MODEL2T_TEMPORAL.corrosion_depth_m.median_ae_mm": 0.1101537402398498,
+      "before_next.NO_RATE_PRIOR.corrosion_depth_m.median_ae_mm": 0.11351962350811431,
+      "before_next.LATEST_OBSERVATION.corrosion_depth_m.median_ae_mm": 0.12859841112246584,
+      "before_next.MODEL2T_TEMPORAL.crack_length_m.median_ae_mm": 0.7005765740777695,
+      "before_next.NO_RATE_PRIOR.crack_length_m.median_ae_mm": 0.8019380230197866,
+      "before_next.LATEST_OBSERVATION.crack_length_m.median_ae_mm": 0.8775456313364584,
+      "between.corrosion_depth_m.TB_mm": 0.037401267445310624,
+      "between.corrosion_depth_m.TB_no_rate_prior_mm": 0.031081362511899593,
+      "between.crack_length_m.TB_mm": 0.04618074523724758,
+      "between.crack_length_m.TB_no_rate_prior_mm": -0.0072385900543991966,
+      "before_next.corrosion_depth_m.TB_mm": 0.03310226118464202,
+      "before_next.corrosion_depth_m.TB_no_rate_prior_mm": 0.023505133251060017,
+      "before_next.crack_length_m.TB_mm": 0.044793107690694,
+      "before_next.crack_length_m.TB_no_rate_prior_mm": -0.02024231496259432
+    }
+  },
+  "summary": {
+    "before_next.LATEST_OBSERVATION.corrosion_depth_m.cov95": {
+      "mean": 0.9989106753812637,
+      "std": 0.0018867655855870056,
+      "n": 3.0
+    },
+    "before_next.LATEST_OBSERVATION.corrosion_depth_m.mae_mm": {
+      "mean": 0.15706079972658402,
+      "std": 0.0076270695857915335,
+      "n": 3.0
+    },
+    "before_next.LATEST_OBSERVATION.corrosion_depth_m.median_ae_mm": {
+      "mean": 0.12997951592286278,
+      "std": 0.0044725087608088665,
+      "n": 3.0
+    },
+    "before_next.LATEST_OBSERVATION.corrosion_depth_m.nll": {
+      "mean": -0.03648447832238352,
+      "std": 0.015595517893480279,
+      "n": 3.0
+    },
+    "before_next.LATEST_OBSERVATION.crack_length_m.cov95": {
+      "mean": 0.8745454545454546,
+      "std": 0.01634117425783363,
+      "n": 3.0
+    },
+    "before_next.LATEST_OBSERVATION.crack_length_m.mae_mm": {
+      "mean": 45.92766757738991,
+      "std": 4.222579498132817,
+      "n": 3.0
+    },
+    "before_next.LATEST_OBSERVATION.crack_length_m.median_ae_mm": {
+      "mean": 0.9097398488835018,
+      "std": 0.08965831308600447,
+      "n": 3.0
+    },
+    "before_next.LATEST_OBSERVATION.crack_length_m.nll": {
+      "mean": 7939.605067265035,
+      "std": 607.1046798319466,
+      "n": 3.0
+    },
+    "before_next.MODEL2T_TEMPORAL.corrosion_depth_m.cov95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "before_next.MODEL2T_TEMPORAL.corrosion_depth_m.mae_mm": {
+      "mean": 0.1194150416772146,
+      "std": 0.005733992212703943,
+      "n": 3.0
+    },
+    "before_next.MODEL2T_TEMPORAL.corrosion_depth_m.median_ae_mm": {
+      "mean": 0.10173878030695864,
+      "std": 0.009952007305189433,
+      "n": 3.0
+    },
+    "before_next.MODEL2T_TEMPORAL.corrosion_depth_m.nll": {
+      "mean": -0.2759303825137505,
+      "std": 0.01291992347233594,
+      "n": 3.0
+    },
+    "before_next.MODEL2T_TEMPORAL.crack_length_m.cov95": {
+      "mean": 0.8717676767676767,
+      "std": 0.018863687071450246,
+      "n": 3.0
+    },
+    "before_next.MODEL2T_TEMPORAL.crack_length_m.mae_mm": {
+      "mean": 45.90471708491638,
+      "std": 4.10897591935582,
+      "n": 3.0
+    },
+    "before_next.MODEL2T_TEMPORAL.crack_length_m.median_ae_mm": {
+      "mean": 0.7778059304509481,
+      "std": 0.07393261673196913,
+      "n": 3.0
+    },
+    "before_next.MODEL2T_TEMPORAL.crack_length_m.nll": {
+      "mean": 2014.983195956412,
+      "std": 2026.5174552570206,
+      "n": 3.0
+    },
+    "before_next.NO_RATE_PRIOR.corrosion_depth_m.cov95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "before_next.NO_RATE_PRIOR.corrosion_depth_m.mae_mm": {
+      "mean": 0.12767367532637605,
+      "std": 0.006527694448575865,
+      "n": 3.0
+    },
+    "before_next.NO_RATE_PRIOR.corrosion_depth_m.median_ae_mm": {
+      "mean": 0.10785315983747383,
+      "std": 0.010187253416849904,
+      "n": 3.0
+    },
+    "before_next.NO_RATE_PRIOR.corrosion_depth_m.nll": {
+      "mean": -0.24664229689528094,
+      "std": 0.014106799972769993,
+      "n": 3.0
+    },
+    "before_next.NO_RATE_PRIOR.crack_length_m.cov95": {
+      "mean": 0.8623989898989898,
+      "std": 0.029682117240334975,
+      "n": 3.0
+    },
+    "before_next.NO_RATE_PRIOR.crack_length_m.mae_mm": {
+      "mean": 45.981881795303,
+      "std": 4.177581440088554,
+      "n": 3.0
+    },
+    "before_next.NO_RATE_PRIOR.crack_length_m.median_ae_mm": {
+      "mean": 0.8422108691547354,
+      "std": 0.06101096808795516,
+      "n": 3.0
+    },
+    "before_next.NO_RATE_PRIOR.crack_length_m.nll": {
+      "mean": 2003.8981144908964,
+      "std": 2025.6745669541112,
+      "n": 3.0
+    },
+    "before_next.corrosion_depth_m.TB_mm": {
+      "mean": 0.037645758049369406,
+      "std": 0.01208380487376161,
+      "n": 3.0
+    },
+    "before_next.corrosion_depth_m.TB_no_rate_prior_mm": {
+      "mean": 0.029387124400207937,
+      "std": 0.006490588755441631,
+      "n": 3.0
+    },
+    "before_next.crack_length_m.TB_mm": {
+      "mean": 0.022950492473540862,
+      "std": 0.12167419852839377,
+      "n": 3.0
+    },
+    "before_next.crack_length_m.TB_no_rate_prior_mm": {
+      "mean": -0.054214217913084894,
+      "std": 0.05997812236941695,
+      "n": 3.0
+    },
+    "between.LATEST_OBSERVATION.corrosion_depth_m.cov95": {
+      "mean": 0.9996300406955235,
+      "std": 0.0006407883120861625,
+      "n": 3.0
+    },
+    "between.LATEST_OBSERVATION.corrosion_depth_m.mae_mm": {
+      "mean": 0.15292424746222866,
+      "std": 0.007043462758149428,
+      "n": 3.0
+    },
+    "between.LATEST_OBSERVATION.corrosion_depth_m.median_ae_mm": {
+      "mean": 0.1293094182056706,
+      "std": 0.006017730189431739,
+      "n": 3.0
+    },
+    "between.LATEST_OBSERVATION.corrosion_depth_m.nll": {
+      "mean": -0.046753062916117416,
+      "std": 0.014714356240187281,
+      "n": 3.0
+    },
+    "between.LATEST_OBSERVATION.crack_length_m.cov95": {
+      "mean": 0.9064408233276158,
+      "std": 0.016803156689977377,
+      "n": 3.0
+    },
+    "between.LATEST_OBSERVATION.crack_length_m.mae_mm": {
+      "mean": 27.06718979629061,
+      "std": 2.1723548052372306,
+      "n": 3.0
+    },
+    "between.LATEST_OBSERVATION.crack_length_m.median_ae_mm": {
+      "mean": 0.797770214728831,
+      "std": 0.05576490004637941,
+      "n": 3.0
+    },
+    "between.LATEST_OBSERVATION.crack_length_m.nll": {
+      "mean": 4343.391755284673,
+      "std": 501.59578610381243,
+      "n": 3.0
+    },
+    "between.MODEL2T_TEMPORAL.corrosion_depth_m.cov95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "between.MODEL2T_TEMPORAL.corrosion_depth_m.mae_mm": {
+      "mean": 0.10762637472611176,
+      "std": 0.007374128438828727,
+      "n": 3.0
+    },
+    "between.MODEL2T_TEMPORAL.corrosion_depth_m.median_ae_mm": {
+      "mean": 0.09262921849521481,
+      "std": 0.011945158368848265,
+      "n": 3.0
+    },
+    "between.MODEL2T_TEMPORAL.corrosion_depth_m.nll": {
+      "mean": -0.3740477400311333,
+      "std": 0.01750506032239985,
+      "n": 3.0
+    },
+    "between.MODEL2T_TEMPORAL.crack_length_m.cov95": {
+      "mean": 0.9011463693539166,
+      "std": 0.0187699591725329,
+      "n": 3.0
+    },
+    "between.MODEL2T_TEMPORAL.crack_length_m.mae_mm": {
+      "mean": 27.05762545836905,
+      "std": 2.2135130794876217,
+      "n": 3.0
+    },
+    "between.MODEL2T_TEMPORAL.crack_length_m.median_ae_mm": {
+      "mean": 0.7050988128729356,
+      "std": 0.05036069886810947,
+      "n": 3.0
+    },
+    "between.MODEL2T_TEMPORAL.crack_length_m.nll": {
+      "mean": 735.0474645284863,
+      "std": 597.4700876598769,
+      "n": 3.0
+    },
+    "between.NO_RATE_PRIOR.corrosion_depth_m.cov95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "between.NO_RATE_PRIOR.corrosion_depth_m.mae_mm": {
+      "mean": 0.11353771237406085,
+      "std": 0.007292242299528055,
+      "n": 3.0
+    },
+    "between.NO_RATE_PRIOR.corrosion_depth_m.median_ae_mm": {
+      "mean": 0.09514398555424468,
+      "std": 0.011745073694629737,
+      "n": 3.0
+    },
+    "between.NO_RATE_PRIOR.corrosion_depth_m.nll": {
+      "mean": -0.3488987920150239,
+      "std": 0.018859065866740923,
+      "n": 3.0
+    },
+    "between.NO_RATE_PRIOR.crack_length_m.cov95": {
+      "mean": 0.8960920526014866,
+      "std": 0.020941328135531855,
+      "n": 3.0
+    },
+    "between.NO_RATE_PRIOR.crack_length_m.mae_mm": {
+      "mean": 27.12561120637768,
+      "std": 2.2194872120243208,
+      "n": 3.0
+    },
+    "between.NO_RATE_PRIOR.crack_length_m.median_ae_mm": {
+      "mean": 0.7740442479585123,
+      "std": 0.047572878275663526,
+      "n": 3.0
+    },
+    "between.NO_RATE_PRIOR.crack_length_m.nll": {
+      "mean": 730.6700655083445,
+      "std": 597.0193444799635,
+      "n": 3.0
+    },
+    "between.corrosion_depth_m.TB_mm": {
+      "mean": 0.045297872736116886,
+      "std": 0.013535902548433414,
+      "n": 3.0
+    },
+    "between.corrosion_depth_m.TB_no_rate_prior_mm": {
+      "mean": 0.0393865350881678,
+      "std": 0.007719445889391418,
+      "n": 3.0
+    },
+    "between.crack_length_m.TB_mm": {
+      "mean": 0.00956433792156138,
+      "std": 0.0931131443392552,
+      "n": 3.0
+    },
+    "between.crack_length_m.TB_no_rate_prior_mm": {
+      "mean": -0.058421410087066285,
+      "std": 0.05412004420877729,
+      "n": 3.0
+    }
+  },
+  "verdicts": {
+    "between.corrosion_depth_m.TB_positive_all_seeds": true,
+    "between.crack_length_m.TB_positive_all_seeds": false,
+    "before_next.corrosion_depth_m.TB_positive_all_seeds": true,
+    "before_next.crack_length_m.TB_positive_all_seeds": false
+  },
+  "wall_time_s": 2.571468399997684,
+  "environment": {
+    "python": "3.11.15",
+    "torch": "2.6.0+cpu",
+    "device": "cpu"
+  },
+  "claim_note": "Numbers are what this run produced on synthetic data; no real-world claim."
+}

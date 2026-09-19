@@ -1,0 +1,760 @@
+{
+  "experiment_id": "2S-E002",
+  "claim_scope": "SYNTHETIC_ONLY (Twin2S OCPWE worlds); not a physical-world result",
+  "seeds": [
+    2026201,
+    2026202,
+    2026203
+  ],
+  "config": {
+    "experiment": {
+      "id": "2S-E002"
+    },
+    "seeds": [
+      2026201,
+      2026202,
+      2026203
+    ],
+    "scenario": {
+      "family": "pipeline_with_supports"
+    },
+    "front_segments": 1,
+    "query_spacing_m": 0.125,
+    "max_attempts": 12,
+    "kinds": [
+      "bend_tail",
+      "remove_tail",
+      "hidden_object"
+    ],
+    "conditions": {
+      "style": "coverage",
+      "target_coverage": 0.8,
+      "n_views": 4,
+      "modalities": [
+        "DEPTH_RANGE",
+        "SONAR"
+      ],
+      "pose_sigma_m": 0.02,
+      "pose_sigma_rad": 0.005
+    },
+    "discriminating_conditions": {
+      "style": "coverage",
+      "target_coverage": 0.8,
+      "n_views": 4,
+      "modalities": [
+        "DEPTH_RANGE",
+        "SONAR"
+      ],
+      "pose_sigma_m": 0.02,
+      "pose_sigma_rad": 0.005
+    },
+    "models": [
+      "uahsm",
+      "plain_grid",
+      "ml_fill"
+    ],
+    "model": {}
+  },
+  "per_seed": {
+    "2026201": {
+      "pair_found": 1.0,
+      "kind": "bend_tail",
+      "max_observation_difference": 0.0,
+      "n_views": 4,
+      "n_box_cells": 5016.0,
+      "uahsm": {
+        "differing": {
+          "n_differing_cells": 537.0,
+          "confident_claim_rate": 0.0,
+          "confident_world_a_rate": 0.0,
+          "confident_world_b_rate": 0.0,
+          "unknown_rate": 1.0,
+          "inferred_rate": 0.0,
+          "mean_UO": 1.0,
+          "mean_abs_p_minus_half": 0.0
+        },
+        "changed_box": {
+          "n_differing_cells": 5016.0,
+          "confident_claim_rate": 0.0,
+          "confident_world_a_rate": 0.0,
+          "confident_world_b_rate": 0.0,
+          "unknown_rate": 1.0,
+          "inferred_rate": 0.0,
+          "mean_UO": 1.0,
+          "mean_abs_p_minus_half": 0.0
+        },
+        "after_discriminating_view": {
+          "n_differing_cells": 537.0,
+          "confident_claim_rate": 0.5884543761638734,
+          "confident_world_a_rate": 0.5400372439478585,
+          "confident_world_b_rate": 0.048417132216014895,
+          "unknown_rate": 0.0,
+          "inferred_rate": 0.0,
+          "mean_UO": 0.011739465060483865,
+          "mean_abs_p_minus_half": 0.38009683517533455
+        }
+      },
+      "plain_grid": {
+        "differing": {
+          "n_differing_cells": 537.0,
+          "confident_claim_rate": 0.0,
+          "confident_world_a_rate": 0.0,
+          "confident_world_b_rate": 0.0,
+          "unknown_rate": 1.0,
+          "inferred_rate": 0.0,
+          "mean_UO": 1.0,
+          "mean_abs_p_minus_half": 0.0
+        },
+        "changed_box": {
+          "n_differing_cells": 5016.0,
+          "confident_claim_rate": 0.0,
+          "confident_world_a_rate": 0.0,
+          "confident_world_b_rate": 0.0,
+          "unknown_rate": 1.0,
+          "inferred_rate": 0.0,
+          "mean_UO": 1.0,
+          "mean_abs_p_minus_half": 0.0
+        },
+        "after_discriminating_view": {
+          "n_differing_cells": 537.0,
+          "confident_claim_rate": 0.43947858472998136,
+          "confident_world_a_rate": 0.3743016759776536,
+          "confident_world_b_rate": 0.06517690875232775,
+          "unknown_rate": 0.0,
+          "inferred_rate": 0.0,
+          "mean_UO": 0.001024345552157125,
+          "mean_abs_p_minus_half": 0.3906412942982827
+        }
+      },
+      "ml_fill": {
+        "differing": {
+          "n_differing_cells": 537.0,
+          "confident_claim_rate": 1.0,
+          "confident_world_a_rate": 0.5046554934823091,
+          "confident_world_b_rate": 0.49534450651769085,
+          "unknown_rate": 0.0,
+          "inferred_rate": 1.0,
+          "mean_UO": 0.0,
+          "mean_abs_p_minus_half": 0.46999999999999986
+        },
+        "changed_box": {
+          "n_differing_cells": 5016.0,
+          "confident_claim_rate": 1.0,
+          "confident_world_a_rate": 0.8949362041467305,
+          "confident_world_b_rate": 0.8939393939393939,
+          "unknown_rate": 0.0,
+          "inferred_rate": 1.0,
+          "mean_UO": 0.0,
+          "mean_abs_p_minus_half": 0.46999999999999975
+        },
+        "after_discriminating_view": {
+          "n_differing_cells": 537.0,
+          "confident_claim_rate": 0.43947858472998136,
+          "confident_world_a_rate": 0.3743016759776536,
+          "confident_world_b_rate": 0.06517690875232775,
+          "unknown_rate": 0.0,
+          "inferred_rate": 0.0,
+          "mean_UO": 0.001024345552157125,
+          "mean_abs_p_minus_half": 0.3906412942982827
+        }
+      }
+    },
+    "2026202": {
+      "pair_found": 1.0,
+      "kind": "hidden_object",
+      "max_observation_difference": 0.0,
+      "n_views": 4,
+      "n_box_cells": 2016.0,
+      "discriminating_followup": "skipped: the changed entity exists only in world B",
+      "uahsm": {
+        "differing": {
+          "n_differing_cells": 196.0,
+          "confident_claim_rate": 0.0,
+          "confident_world_a_rate": 0.0,
+          "confident_world_b_rate": 0.0,
+          "unknown_rate": 1.0,
+          "inferred_rate": 0.0,
+          "mean_UO": 1.0,
+          "mean_abs_p_minus_half": 0.0
+        },
+        "changed_box": {
+          "n_differing_cells": 2016.0,
+          "confident_claim_rate": 0.0,
+          "confident_world_a_rate": 0.0,
+          "confident_world_b_rate": 0.0,
+          "unknown_rate": 1.0,
+          "inferred_rate": 0.0,
+          "mean_UO": 1.0,
+          "mean_abs_p_minus_half": 0.0
+        }
+      },
+      "plain_grid": {
+        "differing": {
+          "n_differing_cells": 196.0,
+          "confident_claim_rate": 0.0,
+          "confident_world_a_rate": 0.0,
+          "confident_world_b_rate": 0.0,
+          "unknown_rate": 1.0,
+          "inferred_rate": 0.0,
+          "mean_UO": 1.0,
+          "mean_abs_p_minus_half": 0.0
+        },
+        "changed_box": {
+          "n_differing_cells": 2016.0,
+          "confident_claim_rate": 0.0,
+          "confident_world_a_rate": 0.0,
+          "confident_world_b_rate": 0.0,
+          "unknown_rate": 1.0,
+          "inferred_rate": 0.0,
+          "mean_UO": 1.0,
+          "mean_abs_p_minus_half": 0.0
+        }
+      },
+      "ml_fill": {
+        "differing": {
+          "n_differing_cells": 196.0,
+          "confident_claim_rate": 1.0,
+          "confident_world_a_rate": 1.0,
+          "confident_world_b_rate": 0.0,
+          "unknown_rate": 0.0,
+          "inferred_rate": 1.0,
+          "mean_UO": 0.0,
+          "mean_abs_p_minus_half": 0.4699999999999998
+        },
+        "changed_box": {
+          "n_differing_cells": 2016.0,
+          "confident_claim_rate": 1.0,
+          "confident_world_a_rate": 0.7986111111111112,
+          "confident_world_b_rate": 0.7013888888888888,
+          "unknown_rate": 0.0,
+          "inferred_rate": 1.0,
+          "mean_UO": 0.0,
+          "mean_abs_p_minus_half": 0.46999999999999975
+        }
+      }
+    },
+    "2026203": {
+      "pair_found": 1.0,
+      "kind": "bend_tail",
+      "max_observation_difference": 0.0,
+      "n_views": 3,
+      "n_box_cells": 5928.0,
+      "uahsm": {
+        "differing": {
+          "n_differing_cells": 591.0,
+          "confident_claim_rate": 0.0,
+          "confident_world_a_rate": 0.0,
+          "confident_world_b_rate": 0.0,
+          "unknown_rate": 1.0,
+          "inferred_rate": 0.0,
+          "mean_UO": 1.0,
+          "mean_abs_p_minus_half": 0.0
+        },
+        "changed_box": {
+          "n_differing_cells": 5928.0,
+          "confident_claim_rate": 0.0,
+          "confident_world_a_rate": 0.0,
+          "confident_world_b_rate": 0.0,
+          "unknown_rate": 1.0,
+          "inferred_rate": 0.0,
+          "mean_UO": 0.9999140396173157,
+          "mean_abs_p_minus_half": 1.559912212405293e-05
+        },
+        "after_discriminating_view": {
+          "n_differing_cells": 591.0,
+          "confident_claim_rate": 0.6700507614213198,
+          "confident_world_a_rate": 0.5820642978003384,
+          "confident_world_b_rate": 0.08798646362098139,
+          "unknown_rate": 0.0,
+          "inferred_rate": 0.01353637901861252,
+          "mean_UO": 0.032622225771678774,
+          "mean_abs_p_minus_half": 0.39659992490697027
+        }
+      },
+      "plain_grid": {
+        "differing": {
+          "n_differing_cells": 591.0,
+          "confident_claim_rate": 0.0,
+          "confident_world_a_rate": 0.0,
+          "confident_world_b_rate": 0.0,
+          "unknown_rate": 1.0,
+          "inferred_rate": 0.0,
+          "mean_UO": 1.0,
+          "mean_abs_p_minus_half": 0.0
+        },
+        "changed_box": {
+          "n_differing_cells": 5928.0,
+          "confident_claim_rate": 0.0,
+          "confident_world_a_rate": 0.0,
+          "confident_world_b_rate": 0.0,
+          "unknown_rate": 0.9838056680161943,
+          "inferred_rate": 0.0,
+          "mean_UO": 0.9999140396173157,
+          "mean_abs_p_minus_half": 1.104945388259829e-05
+        },
+        "after_discriminating_view": {
+          "n_differing_cells": 591.0,
+          "confident_claim_rate": 0.5126903553299492,
+          "confident_world_a_rate": 0.4196277495769882,
+          "confident_world_b_rate": 0.09306260575296109,
+          "unknown_rate": 0.0,
+          "inferred_rate": 0.0,
+          "mean_UO": 0.006261205988473675,
+          "mean_abs_p_minus_half": 0.41182459400522387
+        }
+      },
+      "ml_fill": {
+        "differing": {
+          "n_differing_cells": 591.0,
+          "confident_claim_rate": 1.0,
+          "confident_world_a_rate": 0.5008460236886633,
+          "confident_world_b_rate": 0.49915397631133673,
+          "unknown_rate": 0.0,
+          "inferred_rate": 1.0,
+          "mean_UO": 0.0,
+          "mean_abs_p_minus_half": 0.46999999999999975
+        },
+        "changed_box": {
+          "n_differing_cells": 5928.0,
+          "confident_claim_rate": 0.9838056680161943,
+          "confident_world_a_rate": 0.8031376518218624,
+          "confident_world_b_rate": 0.8029689608636977,
+          "unknown_rate": 0.0,
+          "inferred_rate": 0.9838056680161943,
+          "mean_UO": 0.016108371601121288,
+          "mean_abs_p_minus_half": 0.4623997134214937
+        },
+        "after_discriminating_view": {
+          "n_differing_cells": 591.0,
+          "confident_claim_rate": 0.5126903553299492,
+          "confident_world_a_rate": 0.4196277495769882,
+          "confident_world_b_rate": 0.09306260575296109,
+          "unknown_rate": 0.0,
+          "inferred_rate": 0.0,
+          "mean_UO": 0.006261205988473675,
+          "mean_abs_p_minus_half": 0.41182459400522387
+        }
+      }
+    }
+  },
+  "aggregate": {
+    "discriminating_followup": {
+      "mean": null,
+      "std": null,
+      "n": 0
+    },
+    "kind": {
+      "mean": null,
+      "std": null,
+      "n": 0
+    },
+    "max_observation_difference": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3
+    },
+    "ml_fill": {
+      "after_discriminating_view": {
+        "confident_claim_rate": {
+          "mean": 0.4760844700299653,
+          "std": 0.05176853945391119,
+          "n": 2
+        },
+        "confident_world_a_rate": {
+          "mean": 0.3969647127773209,
+          "std": 0.032050374006650006,
+          "n": 2
+        },
+        "confident_world_b_rate": {
+          "mean": 0.07911975725264442,
+          "std": 0.019718165447261203,
+          "n": 2
+        },
+        "inferred_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 2
+        },
+        "mean_UO": {
+          "mean": 0.0036427757703154,
+          "std": 0.0037030195266469744,
+          "n": 2
+        },
+        "mean_abs_p_minus_half": {
+          "mean": 0.40123294415175326,
+          "std": 0.0149788548706851,
+          "n": 2
+        },
+        "n_differing_cells": {
+          "mean": 564.0,
+          "std": 38.18376618407357,
+          "n": 2
+        },
+        "unknown_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 2
+        }
+      },
+      "changed_box": {
+        "confident_claim_rate": {
+          "mean": 0.9946018893387314,
+          "std": 0.009349801930196393,
+          "n": 3
+        },
+        "confident_world_a_rate": {
+          "mean": 0.8322283223599013,
+          "std": 0.05435375995591037,
+          "n": 3
+        },
+        "confident_world_b_rate": {
+          "mean": 0.7994324145639936,
+          "std": 0.09632395661827128,
+          "n": 3
+        },
+        "inferred_rate": {
+          "mean": 0.9946018893387314,
+          "std": 0.009349801930196393,
+          "n": 3
+        },
+        "mean_UO": {
+          "mean": 0.005369457200373763,
+          "std": 0.009300172680113898,
+          "n": 3
+        },
+        "mean_abs_p_minus_half": {
+          "mean": 0.4674665711404977,
+          "std": 0.004388027502018757,
+          "n": 3
+        },
+        "n_differing_cells": {
+          "mean": 4320.0,
+          "std": 2046.7652527830346,
+          "n": 3
+        },
+        "unknown_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        }
+      },
+      "differing": {
+        "confident_claim_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "confident_world_a_rate": {
+          "mean": 0.6685005057236575,
+          "std": 0.2870933019840942,
+          "n": 3
+        },
+        "confident_world_b_rate": {
+          "mean": 0.3314994942763425,
+          "std": 0.2870933019840942,
+          "n": 3
+        },
+        "inferred_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "mean_UO": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "mean_abs_p_minus_half": {
+          "mean": 0.4699999999999998,
+          "std": 5.551115123125783e-17,
+          "n": 3
+        },
+        "n_differing_cells": {
+          "mean": 441.3333333333333,
+          "std": 214.1736055944647,
+          "n": 3
+        },
+        "unknown_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        }
+      }
+    },
+    "n_box_cells": {
+      "mean": 4320.0,
+      "std": 2046.7652527830346,
+      "n": 3
+    },
+    "n_views": {
+      "mean": 3.6666666666666665,
+      "std": 0.5773502691896258,
+      "n": 3
+    },
+    "pair_found": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3
+    },
+    "plain_grid": {
+      "after_discriminating_view": {
+        "confident_claim_rate": {
+          "mean": 0.4760844700299653,
+          "std": 0.05176853945391119,
+          "n": 2
+        },
+        "confident_world_a_rate": {
+          "mean": 0.3969647127773209,
+          "std": 0.032050374006650006,
+          "n": 2
+        },
+        "confident_world_b_rate": {
+          "mean": 0.07911975725264442,
+          "std": 0.019718165447261203,
+          "n": 2
+        },
+        "inferred_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 2
+        },
+        "mean_UO": {
+          "mean": 0.0036427757703154,
+          "std": 0.0037030195266469744,
+          "n": 2
+        },
+        "mean_abs_p_minus_half": {
+          "mean": 0.40123294415175326,
+          "std": 0.0149788548706851,
+          "n": 2
+        },
+        "n_differing_cells": {
+          "mean": 564.0,
+          "std": 38.18376618407357,
+          "n": 2
+        },
+        "unknown_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 2
+        }
+      },
+      "changed_box": {
+        "confident_claim_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "confident_world_a_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "confident_world_b_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "inferred_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "mean_UO": {
+          "mean": 0.9999713465391052,
+          "std": 4.9629250082406066e-05,
+          "n": 3
+        },
+        "mean_abs_p_minus_half": {
+          "mean": 3.68315129419943e-06,
+          "std": 6.379405173516479e-06,
+          "n": 3
+        },
+        "n_differing_cells": {
+          "mean": 4320.0,
+          "std": 2046.7652527830346,
+          "n": 3
+        },
+        "unknown_rate": {
+          "mean": 0.9946018893387314,
+          "std": 0.009349801930196393,
+          "n": 3
+        }
+      },
+      "differing": {
+        "confident_claim_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "confident_world_a_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "confident_world_b_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "inferred_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "mean_UO": {
+          "mean": 1.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "mean_abs_p_minus_half": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_differing_cells": {
+          "mean": 441.3333333333333,
+          "std": 214.1736055944647,
+          "n": 3
+        },
+        "unknown_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "n": 3
+        }
+      }
+    },
+    "uahsm": {
+      "after_discriminating_view": {
+        "confident_claim_rate": {
+          "mean": 0.6292525687925966,
+          "std": 0.05769735733585038,
+          "n": 2
+        },
+        "confident_world_a_rate": {
+          "mean": 0.5610507708740984,
+          "std": 0.029717614772380795,
+          "n": 2
+        },
+        "confident_world_b_rate": {
+          "mean": 0.06820179791849815,
+          "std": 0.02797974256346963,
+          "n": 2
+        },
+        "inferred_rate": {
+          "mean": 0.00676818950930626,
+          "std": 0.009571665396772216,
+          "n": 2
+        },
+        "mean_UO": {
+          "mean": 0.02218084541608132,
+          "std": 0.01476634170878193,
+          "n": 2
+        },
+        "mean_abs_p_minus_half": {
+          "mean": 0.3883483800411524,
+          "std": 0.0116694466597697,
+          "n": 2
+        },
+        "n_differing_cells": {
+          "mean": 564.0,
+          "std": 38.18376618407357,
+          "n": 2
+        },
+        "unknown_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 2
+        }
+      },
+      "changed_box": {
+        "confident_claim_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "confident_world_a_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "confident_world_b_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "inferred_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "mean_UO": {
+          "mean": 0.9999713465391052,
+          "std": 4.9629250082406066e-05,
+          "n": 3
+        },
+        "mean_abs_p_minus_half": {
+          "mean": 5.19970737468431e-06,
+          "std": 9.006157357443807e-06,
+          "n": 3
+        },
+        "n_differing_cells": {
+          "mean": 4320.0,
+          "std": 2046.7652527830346,
+          "n": 3
+        },
+        "unknown_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "n": 3
+        }
+      },
+      "differing": {
+        "confident_claim_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "confident_world_a_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "confident_world_b_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "inferred_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "mean_UO": {
+          "mean": 1.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "mean_abs_p_minus_half": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_differing_cells": {
+          "mean": 441.3333333333333,
+          "std": 214.1736055944647,
+          "n": 3
+        },
+        "unknown_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "n": 3
+        }
+      }
+    }
+  },
+  "environment": {
+    "python": "3.11.15",
+    "machine": "AMD64"
+  }
+}

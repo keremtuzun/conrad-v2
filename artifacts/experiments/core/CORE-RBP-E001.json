@@ -1,0 +1,272 @@
+{
+  "experiment_id": "CORE-RBP-E001",
+  "architecture_id": "conrad_v2_impl_freeze_v0_2",
+  "data": "SYNTHETIC_ONLY sandbox world (conrad.evaluation.core_experiments.sandbox_world)",
+  "candidate": "learned_typed_rbp + analytic_rbp",
+  "baselines": [
+    "no_propagation",
+    "learned_untyped_rbp"
+  ],
+  "seeds": [
+    2026201,
+    2026202,
+    2026203
+  ],
+  "config": {
+    "experiment": {
+      "id": "CORE-RBP-E001"
+    },
+    "seeds": [
+      2026201,
+      2026202,
+      2026203
+    ],
+    "model2_core": {
+      "evidence_dim": 16,
+      "belief_dim": 16
+    },
+    "groups": 16,
+    "train_steps": 250,
+    "test_graphs": 10
+  },
+  "per_seed": {
+    "2026201": {
+      "no_propagation": {
+        "rmse_hop1_B": 0.2328345348958576,
+        "rmse_hop2_C": 0.23281087704266526,
+        "rmse_decoy_D": 0.23325847185170528,
+        "contamination_rate_err_gt_0.2_D": 0.51875,
+        "confident_contamination_rate_D": 0.0
+      },
+      "analytic_rbp": {
+        "rmse_hop1_B": 0.0314627319382824,
+        "rmse_hop2_C": 0.04395402896932734,
+        "rmse_decoy_D": 0.3294934158944558,
+        "contamination_rate_err_gt_0.2_D": 0.55,
+        "confident_contamination_rate_D": 0.55
+      },
+      "learned_typed_rbp": {
+        "rmse_hop1_B": 0.14531041011214257,
+        "rmse_hop2_C": 0.05641205981373787,
+        "rmse_decoy_D": 0.27797791063785554,
+        "contamination_rate_err_gt_0.2_D": 0.54375
+      },
+      "learned_untyped_rbp": {
+        "rmse_hop1_B": 0.23515626788139343,
+        "rmse_hop2_C": 0.11938256844878196,
+        "rmse_decoy_D": 0.28232074826955794,
+        "contamination_rate_err_gt_0.2_D": 0.53125
+      },
+      "provenance": {
+        "relational_revisions": 1.0,
+        "inferred_targets_in_step": 1.0,
+        "provenance_relational_fraction": 1.0,
+        "inferred_claim_status_ok": 1.0,
+        "no_direct_evidence_claimed": 1.0,
+        "uo_not_lowered": 1.0
+      }
+    },
+    "2026202": {
+      "no_propagation": {
+        "rmse_hop1_B": 0.23256149842467727,
+        "rmse_hop2_C": 0.23747021745359156,
+        "rmse_decoy_D": 0.2213529424281456,
+        "contamination_rate_err_gt_0.2_D": 0.4625,
+        "confident_contamination_rate_D": 0.0
+      },
+      "analytic_rbp": {
+        "rmse_hop1_B": 0.031875191400765605,
+        "rmse_hop2_C": 0.04477587380361512,
+        "rmse_decoy_D": 0.32151784324907295,
+        "contamination_rate_err_gt_0.2_D": 0.6,
+        "confident_contamination_rate_D": 0.6
+      },
+      "learned_typed_rbp": {
+        "rmse_hop1_B": 0.23414791077375413,
+        "rmse_hop2_C": 0.23171549290418625,
+        "rmse_decoy_D": 0.2417978674173355,
+        "contamination_rate_err_gt_0.2_D": 0.45625
+      },
+      "learned_untyped_rbp": {
+        "rmse_hop1_B": 0.25009446144104003,
+        "rmse_hop2_C": 0.23428061753511428,
+        "rmse_decoy_D": 0.2389730304479599,
+        "contamination_rate_err_gt_0.2_D": 0.45
+      },
+      "provenance": {
+        "relational_revisions": 1.0,
+        "inferred_targets_in_step": 1.0,
+        "provenance_relational_fraction": 1.0,
+        "inferred_claim_status_ok": 1.0,
+        "no_direct_evidence_claimed": 1.0,
+        "uo_not_lowered": 1.0
+      }
+    },
+    "2026203": {
+      "no_propagation": {
+        "rmse_hop1_B": 0.2273078505927498,
+        "rmse_hop2_C": 0.22814811394054094,
+        "rmse_decoy_D": 0.22279350671523987,
+        "contamination_rate_err_gt_0.2_D": 0.475,
+        "confident_contamination_rate_D": 0.0
+      },
+      "analytic_rbp": {
+        "rmse_hop1_B": 0.028737392363181756,
+        "rmse_hop2_C": 0.04348270257940836,
+        "rmse_decoy_D": 0.32752465462993474,
+        "contamination_rate_err_gt_0.2_D": 0.59375,
+        "confident_contamination_rate_D": 0.59375
+      },
+      "learned_typed_rbp": {
+        "rmse_hop1_B": 0.2273579642176628,
+        "rmse_hop2_C": 0.20531153827905654,
+        "rmse_decoy_D": 0.21860625594854355,
+        "contamination_rate_err_gt_0.2_D": 0.4125
+      },
+      "learned_untyped_rbp": {
+        "rmse_hop1_B": 0.2360822454094887,
+        "rmse_hop2_C": 0.20498375594615936,
+        "rmse_decoy_D": 0.21773234009742737,
+        "contamination_rate_err_gt_0.2_D": 0.41875
+      },
+      "provenance": {
+        "relational_revisions": 1.0,
+        "inferred_targets_in_step": 1.0,
+        "provenance_relational_fraction": 1.0,
+        "inferred_claim_status_ok": 1.0,
+        "no_direct_evidence_claimed": 1.0,
+        "uo_not_lowered": 1.0
+      }
+    }
+  },
+  "summary": {
+    "analytic_rbp.confident_contamination_rate_D": {
+      "mean": 0.5812499999999999,
+      "std": 0.027243118397129177,
+      "n": 3.0
+    },
+    "analytic_rbp.contamination_rate_err_gt_0.2_D": {
+      "mean": 0.5812499999999999,
+      "std": 0.027243118397129177,
+      "n": 3.0
+    },
+    "analytic_rbp.rmse_decoy_D": {
+      "mean": 0.3261786379244878,
+      "std": 0.004154667313269667,
+      "n": 3.0
+    },
+    "analytic_rbp.rmse_hop1_B": {
+      "mean": 0.030691771900743254,
+      "std": 0.001705060185060135,
+      "n": 3.0
+    },
+    "analytic_rbp.rmse_hop2_C": {
+      "mean": 0.04407086845078361,
+      "std": 0.0006544551566756347,
+      "n": 3.0
+    },
+    "learned_typed_rbp.contamination_rate_err_gt_0.2_D": {
+      "mean": 0.4708333333333334,
+      "std": 0.06682922888477265,
+      "n": 3.0
+    },
+    "learned_typed_rbp.rmse_decoy_D": {
+      "mean": 0.24612734466791153,
+      "std": 0.029921674837551576,
+      "n": 3.0
+    },
+    "learned_typed_rbp.rmse_hop1_B": {
+      "mean": 0.20227209503451982,
+      "std": 0.04944695142732036,
+      "n": 3.0
+    },
+    "learned_typed_rbp.rmse_hop2_C": {
+      "mean": 0.16447969699899356,
+      "std": 0.09451588681308831,
+      "n": 3.0
+    },
+    "learned_untyped_rbp.contamination_rate_err_gt_0.2_D": {
+      "mean": 0.4666666666666666,
+      "std": 0.0580723327698598,
+      "n": 3.0
+    },
+    "learned_untyped_rbp.rmse_decoy_D": {
+      "mean": 0.24634203960498172,
+      "std": 0.032918723236475,
+      "n": 3.0
+    },
+    "learned_untyped_rbp.rmse_hop1_B": {
+      "mean": 0.24044432491064072,
+      "std": 0.008370078248567621,
+      "n": 3.0
+    },
+    "learned_untyped_rbp.rmse_hop2_C": {
+      "mean": 0.18621564731001852,
+      "std": 0.0597040354355951,
+      "n": 3.0
+    },
+    "no_propagation.confident_contamination_rate_D": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "no_propagation.contamination_rate_err_gt_0.2_D": {
+      "mean": 0.48541666666666666,
+      "std": 0.029536347664078824,
+      "n": 3.0
+    },
+    "no_propagation.rmse_decoy_D": {
+      "mean": 0.22580164033169692,
+      "std": 0.006497850306421007,
+      "n": 3.0
+    },
+    "no_propagation.rmse_hop1_B": {
+      "mean": 0.23090129463776154,
+      "std": 0.0031150067908628197,
+      "n": 3.0
+    },
+    "no_propagation.rmse_hop2_C": {
+      "mean": 0.23280973614559927,
+      "std": 0.004661051861247877,
+      "n": 3.0
+    },
+    "provenance.inferred_claim_status_ok": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "provenance.inferred_targets_in_step": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "provenance.no_direct_evidence_claimed": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "provenance.provenance_relational_fraction": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "provenance.relational_revisions": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "provenance.uo_not_lowered": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    }
+  },
+  "wall_time_s": 25.756670400005532,
+  "environment": {
+    "python": "3.11.15",
+    "torch": "2.6.0+cpu",
+    "device": "cpu",
+    "platform": "Windows-10-10.0.26200-SP0"
+  },
+  "claim_note": "Numbers are what this run produced; no research win is assumed or implied."
+}

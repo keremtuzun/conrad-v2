@@ -15,6 +15,8 @@ artifacts/*
 !artifacts/spec/
 !artifacts/migration/
 !artifacts/gates/
+!artifacts/experiments/
+!artifacts/registry/
 !artifacts/README.md
 mlruns/
 # secrets and machine-local overrides

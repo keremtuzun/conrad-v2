@@ -7,7 +7,10 @@ override (INTEGRATED / EVALUATED / VALIDATED / BLOCKED_EXTERNAL / BLOCKED_OPEN_D
   PARTIAL      some implementation paths exist
   IMPLEMENTED  all implementation paths exist, no test path exists
   TESTED       all implementation paths and at least one test path exist
-Overrides INTEGRATED/EVALUATED/VALIDATED are downgraded to the derived status when a path is missing.
+  EVALUATED    TESTED, and every linked experiment ID has a retained result artifact in artifacts/experiments
+  INTEGRATED   TESTED, and the linked formal gate (12th column ``gate:<ID>``) has official status PASS
+Hand-written INTEGRATED/EVALUATED/VALIDATED overrides are ignored: those states are derived from evidence only.
+BLOCKED_* overrides are kept (they record an external dependency, not a claim of success).
 """
 
 from __future__ import annotations
@@ -46,14 +49,35 @@ def _exists(rel: str) -> bool:
     return p.exists()
 
 
+EXPERIMENTS_DIR = ROOT / "artifacts" / "experiments"
+
+
+def _experiment_has_artifact(exp_id: str) -> bool:
+    if not EXPERIMENTS_DIR.exists():
+        return False
+    for path in EXPERIMENTS_DIR.rglob("*.json"):
+        if path.stem.startswith(exp_id) or any(part.startswith(exp_id) for part in path.relative_to(EXPERIMENTS_DIR).parts[:-1]):
+            return True
+    return False
+
+
+def _gate_status() -> dict[str, str]:
+    sys.path.insert(0, str(ROOT))
+    from conrad.evaluation.gates import evaluate_gates
+
+    return {k: v.official_status.value for k, v in evaluate_gates().items()}
+
+
 def parse() -> list[dict[str, object]]:
+    gates = _gate_status()
     rows = []
     for raw in SOURCE.read_text(encoding="utf-8").splitlines():
         if not raw.strip() or raw.lstrip().startswith("#"):
             continue
         cells = [c.strip() for c in raw.split("|")]
-        cells += [""] * (11 - len(cells))
-        rid, section, authority, owner, summary, impl, tests, exps, keys, ext, override = cells[:11]
+        cells += [""] * (12 - len(cells))
+        rid, section, authority, owner, summary, impl, tests, exps, keys, ext, override, gate_cell = cells[:12]
+        gate_id = gate_cell.removeprefix("gate:").strip() or None
         impl_paths, test_paths = _split(impl), _split(tests)
         present = [p for p in impl_paths if _exists(p)]
         tests_present = [p for p in test_paths if _exists(p)]
@@ -65,8 +89,15 @@ def parse() -> list[dict[str, object]]:
             derived = "IMPLEMENTED"
         else:
             derived = "TESTED"
-        if override in BLOCKED or (override in PROMOTED and derived == "TESTED"):
+        experiments = _split(exps)
+        missing_experiments = [e for e in experiments if not _experiment_has_artifact(e)]
+        gate_status = gates.get(gate_id) if gate_id else None
+        if override in BLOCKED:
             status = override
+        elif derived == "TESTED" and gate_status == "PASS":
+            status = "INTEGRATED"
+        elif derived == "TESTED" and experiments and not missing_experiments:
+            status = "EVALUATED"
         else:
             status = derived
         rows.append(
@@ -81,7 +112,10 @@ def parse() -> list[dict[str, object]]:
                 "missing_paths": [p for p in impl_paths if p not in present],
                 "test_ids": test_paths,
                 "missing_tests": [p for p in test_paths if p not in tests_present],
-                "experiment_ids": _split(exps),
+                "experiment_ids": experiments,
+                "missing_experiment_artifacts": missing_experiments,
+                "gate_id": gate_id,
+                "gate_official_status": gate_status,
                 "configuration_keys": _split(keys),
                 "assumptions": [],
                 "external_dependencies": [ext] if ext else [],
@@ -115,13 +149,14 @@ def main() -> int:
         "|---|---|",
         *[f"| {s} | {c} |" for s, c in counts.items() if c],
         "",
-        "| ID | Source | Authority | Status | Summary | Missing |",
-        "|---|---|---|---|---|---|",
+        "| ID | Source | Authority | Status | Gate (official) | Summary | Missing |",
+        "|---|---|---|---|---|---|---|",
     ]
     for r in rows:
         missing = ", ".join(r["missing_paths"] + r["missing_tests"]) or ""  # type: ignore[operator]
         lines.append(
-            f"| {r['requirement_id']} | {r['source_section']} | {r['authority']} | {r['implementation_status']} | {r['requirement_summary']} | {missing} |"
+            f"| {r['requirement_id']} | {r['source_section']} | {r['authority']} | {r['implementation_status']} | "
+            f"{(str(r['gate_id']) + ': ' + str(r['gate_official_status'])) if r['gate_id'] else ''} | {r['requirement_summary']} | {missing} |"
         )
     OUT_MD.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(json.dumps(counts))

@@ -1,0 +1,12 @@
+{
+  "experiment_id": "CORE-TBD-E002",
+  "module": "conrad.evaluation.core_experiments.tbd_e001",
+  "config": "configs\\eval\\core_tbd_e002.yaml",
+  "seeds": [
+    2026201,
+    2026202,
+    2026203
+  ],
+  "wall_s": 20.3,
+  "out_dir": "C:\\Users\\Kerem\\Kerem\\conrad-v2\\artifacts\\experiments\\CORE-TBD-E002"
+}

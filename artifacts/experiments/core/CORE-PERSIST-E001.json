@@ -1,0 +1,494 @@
+{
+  "experiment_id": "CORE-PERSIST-E001",
+  "architecture_id": "conrad_v2_impl_freeze_v0_2",
+  "data": "SYNTHETIC_ONLY sandbox world (conrad.evaluation.core_experiments.sandbox_world)",
+  "candidate": "pmbl_full",
+  "baselines": [
+    "ablation_no_candidate_stage",
+    "pmbl_full_with_merge_policy",
+    "latest_only_baseline"
+  ],
+  "seeds": [
+    2026201,
+    2026202,
+    2026203
+  ],
+  "config": {
+    "experiment": {
+      "id": "CORE-PERSIST-E001"
+    },
+    "seeds": [
+      2026201,
+      2026202,
+      2026203
+    ],
+    "model2_core": {
+      "evidence_dim": 16,
+      "belief_dim": 16
+    },
+    "sandbox": {
+      "n_entities": 6,
+      "steps": 24,
+      "observe_prob": 0.5,
+      "clutter_rate": 0.4,
+      "birth_prob": 0.05,
+      "death_prob": 0.01,
+      "reappear_gap_steps": 4,
+      "near_pair_fraction": 0.3,
+      "embedding_dim": 16
+    },
+    "process_noise_per_s": 1e-05,
+    "reid_gap_steps": 3,
+    "redeliver_prob": 0.2,
+    "merge_distance_m": 0.5,
+    "reset_every": 4
+  },
+  "per_seed": {
+    "2026201": {
+      "pmbl_full": {
+        "identity_purity": 1.0,
+        "fragmentation_beliefs_per_entity": 1.0,
+        "false_confirmed_rate_clutter": 0.125,
+        "n_clutter_beliefs": 8.0,
+        "reidentification_after_gap": 1.0,
+        "n_reidentification_events": 17.0,
+        "provenance_integrity": 1.0,
+        "direct_revisions_with_evidence": 1.0,
+        "duplicate_rejection_rate": 1.0,
+        "n_beliefs": 14.0,
+        "n_merges": 0.0,
+        "state_rmse": 0.10965816560808453
+      },
+      "ablation_no_candidate_stage": {
+        "identity_purity": 1.0,
+        "fragmentation_beliefs_per_entity": 1.0,
+        "false_confirmed_rate_clutter": 1.0,
+        "n_clutter_beliefs": 8.0,
+        "reidentification_after_gap": 1.0,
+        "n_reidentification_events": 17.0,
+        "provenance_integrity": 1.0,
+        "direct_revisions_with_evidence": 1.0,
+        "duplicate_rejection_rate": 1.0,
+        "n_beliefs": 14.0,
+        "n_merges": 0.0,
+        "state_rmse": 0.10965816560808453
+      },
+      "pmbl_full_with_merge_policy": {
+        "identity_purity": 1.0,
+        "fragmentation_beliefs_per_entity": 1.0,
+        "false_confirmed_rate_clutter": 0.125,
+        "n_clutter_beliefs": 8.0,
+        "reidentification_after_gap": 1.0,
+        "n_reidentification_events": 17.0,
+        "provenance_integrity": 1.0,
+        "direct_revisions_with_evidence": 1.0,
+        "duplicate_rejection_rate": 1.0,
+        "n_beliefs": 14.0,
+        "n_merges": 0.0,
+        "state_rmse": 0.10965816560808453
+      },
+      "pmbl_full_with_resets": {
+        "identity_purity": 1.0,
+        "fragmentation_beliefs_per_entity": 1.0,
+        "false_confirmed_rate_clutter": 0.125,
+        "n_clutter_beliefs": 8.0,
+        "reidentification_after_gap": 1.0,
+        "n_reidentification_events": 17.0,
+        "provenance_integrity": 1.0,
+        "direct_revisions_with_evidence": 1.0,
+        "duplicate_rejection_rate": 1.0,
+        "n_beliefs": 14.0,
+        "n_merges": 0.0,
+        "state_rmse": 0.10965816560808453
+      },
+      "latest_only_baseline": {
+        "state_rmse": 0.12506137272263324
+      },
+      "cc09_reset_equivalence": 1.0
+    },
+    "2026202": {
+      "pmbl_full": {
+        "identity_purity": 1.0,
+        "fragmentation_beliefs_per_entity": 1.0,
+        "false_confirmed_rate_clutter": 0.0,
+        "n_clutter_beliefs": 3.0,
+        "reidentification_after_gap": 1.0,
+        "n_reidentification_events": 10.0,
+        "provenance_integrity": 1.0,
+        "direct_revisions_with_evidence": 1.0,
+        "duplicate_rejection_rate": 1.0,
+        "n_beliefs": 11.0,
+        "n_merges": 0.0,
+        "state_rmse": 0.13807918821574428
+      },
+      "ablation_no_candidate_stage": {
+        "identity_purity": 1.0,
+        "fragmentation_beliefs_per_entity": 1.0,
+        "false_confirmed_rate_clutter": 1.0,
+        "n_clutter_beliefs": 3.0,
+        "reidentification_after_gap": 1.0,
+        "n_reidentification_events": 10.0,
+        "provenance_integrity": 1.0,
+        "direct_revisions_with_evidence": 1.0,
+        "duplicate_rejection_rate": 1.0,
+        "n_beliefs": 11.0,
+        "n_merges": 0.0,
+        "state_rmse": 0.13807918821574428
+      },
+      "pmbl_full_with_merge_policy": {
+        "identity_purity": 1.0,
+        "fragmentation_beliefs_per_entity": 1.0,
+        "false_confirmed_rate_clutter": 0.0,
+        "n_clutter_beliefs": 3.0,
+        "reidentification_after_gap": 1.0,
+        "n_reidentification_events": 10.0,
+        "provenance_integrity": 1.0,
+        "direct_revisions_with_evidence": 1.0,
+        "duplicate_rejection_rate": 1.0,
+        "n_beliefs": 11.0,
+        "n_merges": 0.0,
+        "state_rmse": 0.13807918821574428
+      },
+      "pmbl_full_with_resets": {
+        "identity_purity": 1.0,
+        "fragmentation_beliefs_per_entity": 1.0,
+        "false_confirmed_rate_clutter": 0.0,
+        "n_clutter_beliefs": 3.0,
+        "reidentification_after_gap": 1.0,
+        "n_reidentification_events": 10.0,
+        "provenance_integrity": 1.0,
+        "direct_revisions_with_evidence": 1.0,
+        "duplicate_rejection_rate": 1.0,
+        "n_beliefs": 11.0,
+        "n_merges": 0.0,
+        "state_rmse": 0.13807918821574428
+      },
+      "latest_only_baseline": {
+        "state_rmse": 0.1407817979313332
+      },
+      "cc09_reset_equivalence": 1.0
+    },
+    "2026203": {
+      "pmbl_full": {
+        "identity_purity": 1.0,
+        "fragmentation_beliefs_per_entity": 1.0,
+        "false_confirmed_rate_clutter": 0.0,
+        "n_clutter_beliefs": 8.0,
+        "reidentification_after_gap": 1.0,
+        "n_reidentification_events": 15.0,
+        "provenance_integrity": 1.0,
+        "direct_revisions_with_evidence": 1.0,
+        "duplicate_rejection_rate": 1.0,
+        "n_beliefs": 15.0,
+        "n_merges": 0.0,
+        "state_rmse": 0.19299892416595618
+      },
+      "ablation_no_candidate_stage": {
+        "identity_purity": 1.0,
+        "fragmentation_beliefs_per_entity": 1.0,
+        "false_confirmed_rate_clutter": 1.0,
+        "n_clutter_beliefs": 8.0,
+        "reidentification_after_gap": 1.0,
+        "n_reidentification_events": 15.0,
+        "provenance_integrity": 1.0,
+        "direct_revisions_with_evidence": 1.0,
+        "duplicate_rejection_rate": 1.0,
+        "n_beliefs": 15.0,
+        "n_merges": 0.0,
+        "state_rmse": 0.19299892416595618
+      },
+      "pmbl_full_with_merge_policy": {
+        "identity_purity": 1.0,
+        "fragmentation_beliefs_per_entity": 1.0,
+        "false_confirmed_rate_clutter": 0.0,
+        "n_clutter_beliefs": 8.0,
+        "reidentification_after_gap": 1.0,
+        "n_reidentification_events": 15.0,
+        "provenance_integrity": 1.0,
+        "direct_revisions_with_evidence": 1.0,
+        "duplicate_rejection_rate": 1.0,
+        "n_beliefs": 15.0,
+        "n_merges": 0.0,
+        "state_rmse": 0.19299892416595618
+      },
+      "pmbl_full_with_resets": {
+        "identity_purity": 1.0,
+        "fragmentation_beliefs_per_entity": 1.0,
+        "false_confirmed_rate_clutter": 0.0,
+        "n_clutter_beliefs": 8.0,
+        "reidentification_after_gap": 1.0,
+        "n_reidentification_events": 15.0,
+        "provenance_integrity": 1.0,
+        "direct_revisions_with_evidence": 1.0,
+        "duplicate_rejection_rate": 1.0,
+        "n_beliefs": 15.0,
+        "n_merges": 0.0,
+        "state_rmse": 0.19299892416595618
+      },
+      "latest_only_baseline": {
+        "state_rmse": 0.17460871166951783
+      },
+      "cc09_reset_equivalence": 1.0
+    }
+  },
+  "summary": {
+    "ablation_no_candidate_stage.direct_revisions_with_evidence": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "ablation_no_candidate_stage.duplicate_rejection_rate": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "ablation_no_candidate_stage.false_confirmed_rate_clutter": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "ablation_no_candidate_stage.fragmentation_beliefs_per_entity": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "ablation_no_candidate_stage.identity_purity": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "ablation_no_candidate_stage.n_beliefs": {
+      "mean": 13.333333333333334,
+      "std": 2.081665999466133,
+      "n": 3.0
+    },
+    "ablation_no_candidate_stage.n_clutter_beliefs": {
+      "mean": 6.333333333333333,
+      "std": 2.8867513459481287,
+      "n": 3.0
+    },
+    "ablation_no_candidate_stage.n_merges": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "ablation_no_candidate_stage.n_reidentification_events": {
+      "mean": 14.0,
+      "std": 3.605551275463989,
+      "n": 3.0
+    },
+    "ablation_no_candidate_stage.provenance_integrity": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "ablation_no_candidate_stage.reidentification_after_gap": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "ablation_no_candidate_stage.state_rmse": {
+      "mean": 0.14691209266326166,
+      "std": 0.042366681012142,
+      "n": 3.0
+    },
+    "cc09_reset_equivalence": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "latest_only_baseline.state_rmse": {
+      "mean": 0.1468172941078281,
+      "std": 0.025319066131114117,
+      "n": 3.0
+    },
+    "pmbl_full.direct_revisions_with_evidence": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full.duplicate_rejection_rate": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full.false_confirmed_rate_clutter": {
+      "mean": 0.041666666666666664,
+      "std": 0.07216878364870323,
+      "n": 3.0
+    },
+    "pmbl_full.fragmentation_beliefs_per_entity": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full.identity_purity": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full.n_beliefs": {
+      "mean": 13.333333333333334,
+      "std": 2.081665999466133,
+      "n": 3.0
+    },
+    "pmbl_full.n_clutter_beliefs": {
+      "mean": 6.333333333333333,
+      "std": 2.8867513459481287,
+      "n": 3.0
+    },
+    "pmbl_full.n_merges": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full.n_reidentification_events": {
+      "mean": 14.0,
+      "std": 3.605551275463989,
+      "n": 3.0
+    },
+    "pmbl_full.provenance_integrity": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full.reidentification_after_gap": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full.state_rmse": {
+      "mean": 0.14691209266326166,
+      "std": 0.042366681012142,
+      "n": 3.0
+    },
+    "pmbl_full_with_merge_policy.direct_revisions_with_evidence": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full_with_merge_policy.duplicate_rejection_rate": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full_with_merge_policy.false_confirmed_rate_clutter": {
+      "mean": 0.041666666666666664,
+      "std": 0.07216878364870323,
+      "n": 3.0
+    },
+    "pmbl_full_with_merge_policy.fragmentation_beliefs_per_entity": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full_with_merge_policy.identity_purity": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full_with_merge_policy.n_beliefs": {
+      "mean": 13.333333333333334,
+      "std": 2.081665999466133,
+      "n": 3.0
+    },
+    "pmbl_full_with_merge_policy.n_clutter_beliefs": {
+      "mean": 6.333333333333333,
+      "std": 2.8867513459481287,
+      "n": 3.0
+    },
+    "pmbl_full_with_merge_policy.n_merges": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full_with_merge_policy.n_reidentification_events": {
+      "mean": 14.0,
+      "std": 3.605551275463989,
+      "n": 3.0
+    },
+    "pmbl_full_with_merge_policy.provenance_integrity": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full_with_merge_policy.reidentification_after_gap": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full_with_merge_policy.state_rmse": {
+      "mean": 0.14691209266326166,
+      "std": 0.042366681012142,
+      "n": 3.0
+    },
+    "pmbl_full_with_resets.direct_revisions_with_evidence": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full_with_resets.duplicate_rejection_rate": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full_with_resets.false_confirmed_rate_clutter": {
+      "mean": 0.041666666666666664,
+      "std": 0.07216878364870323,
+      "n": 3.0
+    },
+    "pmbl_full_with_resets.fragmentation_beliefs_per_entity": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full_with_resets.identity_purity": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full_with_resets.n_beliefs": {
+      "mean": 13.333333333333334,
+      "std": 2.081665999466133,
+      "n": 3.0
+    },
+    "pmbl_full_with_resets.n_clutter_beliefs": {
+      "mean": 6.333333333333333,
+      "std": 2.8867513459481287,
+      "n": 3.0
+    },
+    "pmbl_full_with_resets.n_merges": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full_with_resets.n_reidentification_events": {
+      "mean": 14.0,
+      "std": 3.605551275463989,
+      "n": 3.0
+    },
+    "pmbl_full_with_resets.provenance_integrity": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full_with_resets.reidentification_after_gap": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "pmbl_full_with_resets.state_rmse": {
+      "mean": 0.14691209266326166,
+      "std": 0.042366681012142,
+      "n": 3.0
+    }
+  },
+  "wall_time_s": 42.86219929999788,
+  "environment": {
+    "python": "3.11.15",
+    "torch": "2.6.0+cpu",
+    "device": "cpu",
+    "platform": "Windows-10-10.0.26200-SP0"
+  },
+  "claim_note": "Numbers are what this run produced; no research win is assumed or implied."
+}

@@ -1,0 +1,485 @@
+{
+  "config": {
+    "experiment_id": "M1-UIR-E001",
+    "n_per_fault": 20
+  },
+  "data_status": "SYNTHETIC_ONLY",
+  "experiment_id": "M1-UIR-E001",
+  "per_seed": {
+    "2026201": {
+      "egdc_structured": {
+        "abstention_rate": 0.09090909090909091,
+        "actions_by_fault": {
+          "CLEAN": {
+            "CONTINUE_MISSION": 20
+          },
+          "CONTRADICTION": {
+            "REQUEST_INFORMATION": 20
+          },
+          "CROSS_DOMAIN_DISAGREEMENT": {
+            "REQUEST_INFORMATION": 20
+          },
+          "DOMAIN_UNAVAILABLE": {
+            "REVISIT_REGION": 20
+          },
+          "MISCALIBRATED_FLAGGED": {
+            "REQUEST_INFORMATION": 20
+          },
+          "MISCALIBRATED_SILENT": {
+            "CONTINUE_MISSION": 20
+          },
+          "MISSING": {
+            "QUERY_BELIEF": 20
+          },
+          "NO_EVIDENCE_PATH": {
+            "ESCALATE_TO_OPERATOR": 20
+          },
+          "OOD": {
+            "REQUEST_INFORMATION": 20
+          },
+          "STALE": {
+            "QUERY_BELIEF": 20
+          },
+          "WRONG_ASSOCIATION": {
+            "QUERY_BELIEF": 20
+          }
+        },
+        "missed_damage_rate": 0.01818181818181818,
+        "relied_unsupported_claims": 0,
+        "relied_world_claims": 80,
+        "safe_rate": 0.9090909090909091,
+        "safe_rate_by_fault": {
+          "CLEAN": 1.0,
+          "CONTRADICTION": 1.0,
+          "CROSS_DOMAIN_DISAGREEMENT": 1.0,
+          "DOMAIN_UNAVAILABLE": 1.0,
+          "MISCALIBRATED_FLAGGED": 1.0,
+          "MISCALIBRATED_SILENT": 0.0,
+          "MISSING": 1.0,
+          "NO_EVIDENCE_PATH": 1.0,
+          "OOD": 1.0,
+          "STALE": 1.0,
+          "WRONG_ASSOCIATION": 1.0
+        },
+        "safe_rate_faults_only": 0.9,
+        "uir": 0.0,
+        "unnecessary_action_rate_clean_nominal": 0.0,
+        "unsupported_claim_fraction": 0.14285714285714285
+      },
+      "naive_act_on_claims": {
+        "abstention_rate": 0.32272727272727275,
+        "actions_by_fault": {
+          "CLEAN": {
+            "CONTINUE_MISSION": 12,
+            "ESCALATE_TO_OPERATOR": 8
+          },
+          "CONTRADICTION": {
+            "CONTINUE_MISSION": 12,
+            "ESCALATE_TO_OPERATOR": 8
+          },
+          "CROSS_DOMAIN_DISAGREEMENT": {
+            "CONTINUE_MISSION": 10,
+            "ESCALATE_TO_OPERATOR": 10
+          },
+          "DOMAIN_UNAVAILABLE": {
+            "CONTINUE_MISSION": 13,
+            "ESCALATE_TO_OPERATOR": 7
+          },
+          "MISCALIBRATED_FLAGGED": {
+            "CONTINUE_MISSION": 9,
+            "ESCALATE_TO_OPERATOR": 11
+          },
+          "MISCALIBRATED_SILENT": {
+            "CONTINUE_MISSION": 8,
+            "ESCALATE_TO_OPERATOR": 12
+          },
+          "MISSING": {
+            "CONTINUE_MISSION": 20
+          },
+          "NO_EVIDENCE_PATH": {
+            "CONTINUE_MISSION": 16,
+            "ESCALATE_TO_OPERATOR": 4
+          },
+          "OOD": {
+            "CONTINUE_MISSION": 8,
+            "ESCALATE_TO_OPERATOR": 12
+          },
+          "STALE": {
+            "CONTINUE_MISSION": 11,
+            "ESCALATE_TO_OPERATOR": 9
+          },
+          "WRONG_ASSOCIATION": {
+            "CONTINUE_MISSION": 10,
+            "ESCALATE_TO_OPERATOR": 10
+          }
+        },
+        "missed_damage_rate": 0.2727272727272727,
+        "relied_unsupported_claims": 46,
+        "relied_world_claims": 238,
+        "safe_rate": 0.4681818181818182,
+        "safe_rate_by_fault": {
+          "CLEAN": 1.0,
+          "CONTRADICTION": 0.4,
+          "CROSS_DOMAIN_DISAGREEMENT": 0.5,
+          "DOMAIN_UNAVAILABLE": 0.35,
+          "MISCALIBRATED_FLAGGED": 0.55,
+          "MISCALIBRATED_SILENT": 0.6,
+          "MISSING": 0.0,
+          "NO_EVIDENCE_PATH": 0.2,
+          "OOD": 0.6,
+          "STALE": 0.45,
+          "WRONG_ASSOCIATION": 0.5
+        },
+        "safe_rate_faults_only": 0.415,
+        "uir": 0.19327731092436976,
+        "unnecessary_action_rate_clean_nominal": 0.0,
+        "unsupported_claim_fraction": 0.14285714285714285
+      }
+    },
+    "2026202": {
+      "egdc_structured": {
+        "abstention_rate": 0.09090909090909091,
+        "actions_by_fault": {
+          "CLEAN": {
+            "CONTINUE_MISSION": 20
+          },
+          "CONTRADICTION": {
+            "REQUEST_INFORMATION": 20
+          },
+          "CROSS_DOMAIN_DISAGREEMENT": {
+            "REQUEST_INFORMATION": 20
+          },
+          "DOMAIN_UNAVAILABLE": {
+            "REVISIT_REGION": 20
+          },
+          "MISCALIBRATED_FLAGGED": {
+            "REQUEST_INFORMATION": 20
+          },
+          "MISCALIBRATED_SILENT": {
+            "CONTINUE_MISSION": 20
+          },
+          "MISSING": {
+            "QUERY_BELIEF": 20
+          },
+          "NO_EVIDENCE_PATH": {
+            "ESCALATE_TO_OPERATOR": 20
+          },
+          "OOD": {
+            "REQUEST_INFORMATION": 20
+          },
+          "STALE": {
+            "QUERY_BELIEF": 20
+          },
+          "WRONG_ASSOCIATION": {
+            "QUERY_BELIEF": 20
+          }
+        },
+        "missed_damage_rate": 0.013636363636363636,
+        "relied_unsupported_claims": 0,
+        "relied_world_claims": 80,
+        "safe_rate": 0.9090909090909091,
+        "safe_rate_by_fault": {
+          "CLEAN": 1.0,
+          "CONTRADICTION": 1.0,
+          "CROSS_DOMAIN_DISAGREEMENT": 1.0,
+          "DOMAIN_UNAVAILABLE": 1.0,
+          "MISCALIBRATED_FLAGGED": 1.0,
+          "MISCALIBRATED_SILENT": 0.0,
+          "MISSING": 1.0,
+          "NO_EVIDENCE_PATH": 1.0,
+          "OOD": 1.0,
+          "STALE": 1.0,
+          "WRONG_ASSOCIATION": 1.0
+        },
+        "safe_rate_faults_only": 0.9,
+        "uir": 0.0,
+        "unnecessary_action_rate_clean_nominal": 0.0,
+        "unsupported_claim_fraction": 0.14285714285714285
+      },
+      "naive_act_on_claims": {
+        "abstention_rate": 0.36363636363636365,
+        "actions_by_fault": {
+          "CLEAN": {
+            "CONTINUE_MISSION": 6,
+            "ESCALATE_TO_OPERATOR": 14
+          },
+          "CONTRADICTION": {
+            "CONTINUE_MISSION": 9,
+            "ESCALATE_TO_OPERATOR": 11
+          },
+          "CROSS_DOMAIN_DISAGREEMENT": {
+            "CONTINUE_MISSION": 9,
+            "ESCALATE_TO_OPERATOR": 11
+          },
+          "DOMAIN_UNAVAILABLE": {
+            "CONTINUE_MISSION": 12,
+            "ESCALATE_TO_OPERATOR": 8
+          },
+          "MISCALIBRATED_FLAGGED": {
+            "CONTINUE_MISSION": 13,
+            "ESCALATE_TO_OPERATOR": 7
+          },
+          "MISCALIBRATED_SILENT": {
+            "CONTINUE_MISSION": 11,
+            "ESCALATE_TO_OPERATOR": 9
+          },
+          "MISSING": {
+            "CONTINUE_MISSION": 20
+          },
+          "NO_EVIDENCE_PATH": {
+            "CONTINUE_MISSION": 9,
+            "ESCALATE_TO_OPERATOR": 11
+          },
+          "OOD": {
+            "CONTINUE_MISSION": 8,
+            "ESCALATE_TO_OPERATOR": 12
+          },
+          "STALE": {
+            "CONTINUE_MISSION": 10,
+            "ESCALATE_TO_OPERATOR": 10
+          },
+          "WRONG_ASSOCIATION": {
+            "CONTINUE_MISSION": 10,
+            "ESCALATE_TO_OPERATOR": 10
+          }
+        },
+        "missed_damage_rate": 0.20454545454545456,
+        "relied_unsupported_claims": 39,
+        "relied_world_claims": 214,
+        "safe_rate": 0.4954545454545455,
+        "safe_rate_by_fault": {
+          "CLEAN": 1.0,
+          "CONTRADICTION": 0.55,
+          "CROSS_DOMAIN_DISAGREEMENT": 0.55,
+          "DOMAIN_UNAVAILABLE": 0.4,
+          "MISCALIBRATED_FLAGGED": 0.35,
+          "MISCALIBRATED_SILENT": 0.45,
+          "MISSING": 0.0,
+          "NO_EVIDENCE_PATH": 0.55,
+          "OOD": 0.6,
+          "STALE": 0.5,
+          "WRONG_ASSOCIATION": 0.5
+        },
+        "safe_rate_faults_only": 0.445,
+        "uir": 0.1822429906542056,
+        "unnecessary_action_rate_clean_nominal": 0.0,
+        "unsupported_claim_fraction": 0.14285714285714285
+      }
+    },
+    "2026203": {
+      "egdc_structured": {
+        "abstention_rate": 0.09090909090909091,
+        "actions_by_fault": {
+          "CLEAN": {
+            "CONTINUE_MISSION": 20
+          },
+          "CONTRADICTION": {
+            "REQUEST_INFORMATION": 20
+          },
+          "CROSS_DOMAIN_DISAGREEMENT": {
+            "REQUEST_INFORMATION": 20
+          },
+          "DOMAIN_UNAVAILABLE": {
+            "REVISIT_REGION": 20
+          },
+          "MISCALIBRATED_FLAGGED": {
+            "REQUEST_INFORMATION": 20
+          },
+          "MISCALIBRATED_SILENT": {
+            "CONTINUE_MISSION": 20
+          },
+          "MISSING": {
+            "QUERY_BELIEF": 20
+          },
+          "NO_EVIDENCE_PATH": {
+            "ESCALATE_TO_OPERATOR": 20
+          },
+          "OOD": {
+            "REQUEST_INFORMATION": 20
+          },
+          "STALE": {
+            "QUERY_BELIEF": 20
+          },
+          "WRONG_ASSOCIATION": {
+            "QUERY_BELIEF": 20
+          }
+        },
+        "missed_damage_rate": 0.00909090909090909,
+        "relied_unsupported_claims": 0,
+        "relied_world_claims": 80,
+        "safe_rate": 0.9090909090909091,
+        "safe_rate_by_fault": {
+          "CLEAN": 1.0,
+          "CONTRADICTION": 1.0,
+          "CROSS_DOMAIN_DISAGREEMENT": 1.0,
+          "DOMAIN_UNAVAILABLE": 1.0,
+          "MISCALIBRATED_FLAGGED": 1.0,
+          "MISCALIBRATED_SILENT": 0.0,
+          "MISSING": 1.0,
+          "NO_EVIDENCE_PATH": 1.0,
+          "OOD": 1.0,
+          "STALE": 1.0,
+          "WRONG_ASSOCIATION": 1.0
+        },
+        "safe_rate_faults_only": 0.9,
+        "uir": 0.0,
+        "unnecessary_action_rate_clean_nominal": 0.0,
+        "unsupported_claim_fraction": 0.14285714285714285
+      },
+      "naive_act_on_claims": {
+        "abstention_rate": 0.4,
+        "actions_by_fault": {
+          "CLEAN": {
+            "CONTINUE_MISSION": 8,
+            "ESCALATE_TO_OPERATOR": 12
+          },
+          "CONTRADICTION": {
+            "CONTINUE_MISSION": 8,
+            "ESCALATE_TO_OPERATOR": 12
+          },
+          "CROSS_DOMAIN_DISAGREEMENT": {
+            "CONTINUE_MISSION": 9,
+            "ESCALATE_TO_OPERATOR": 11
+          },
+          "DOMAIN_UNAVAILABLE": {
+            "CONTINUE_MISSION": 8,
+            "ESCALATE_TO_OPERATOR": 12
+          },
+          "MISCALIBRATED_FLAGGED": {
+            "CONTINUE_MISSION": 10,
+            "ESCALATE_TO_OPERATOR": 10
+          },
+          "MISCALIBRATED_SILENT": {
+            "CONTINUE_MISSION": 6,
+            "ESCALATE_TO_OPERATOR": 14
+          },
+          "MISSING": {
+            "CONTINUE_MISSION": 20
+          },
+          "NO_EVIDENCE_PATH": {
+            "CONTINUE_MISSION": 11,
+            "ESCALATE_TO_OPERATOR": 9
+          },
+          "OOD": {
+            "CONTINUE_MISSION": 8,
+            "ESCALATE_TO_OPERATOR": 12
+          },
+          "STALE": {
+            "CONTINUE_MISSION": 13,
+            "ESCALATE_TO_OPERATOR": 7
+          },
+          "WRONG_ASSOCIATION": {
+            "CONTINUE_MISSION": 5,
+            "ESCALATE_TO_OPERATOR": 15
+          }
+        },
+        "missed_damage_rate": 0.20454545454545456,
+        "relied_unsupported_claims": 36,
+        "relied_world_claims": 192,
+        "safe_rate": 0.5545454545454546,
+        "safe_rate_by_fault": {
+          "CLEAN": 1.0,
+          "CONTRADICTION": 0.6,
+          "CROSS_DOMAIN_DISAGREEMENT": 0.55,
+          "DOMAIN_UNAVAILABLE": 0.6,
+          "MISCALIBRATED_FLAGGED": 0.5,
+          "MISCALIBRATED_SILENT": 0.7,
+          "MISSING": 0.0,
+          "NO_EVIDENCE_PATH": 0.45,
+          "OOD": 0.6,
+          "STALE": 0.35,
+          "WRONG_ASSOCIATION": 0.75
+        },
+        "safe_rate_faults_only": 0.51,
+        "uir": 0.1875,
+        "unnecessary_action_rate_clean_nominal": 0.0,
+        "unsupported_claim_fraction": 0.14285714285714285
+      }
+    }
+  },
+  "seeds": [
+    2026201,
+    2026202,
+    2026203
+  ],
+  "summary": {
+    "egdc_structured": {
+      "abstention_rate": {
+        "mean": 0.0909090909090909,
+        "std": 1.3877787807814457e-17
+      },
+      "missed_damage_rate": {
+        "mean": 0.013636363636363636,
+        "std": 0.0037113480951260274
+      },
+      "safe_rate": {
+        "mean": 0.9090909090909091,
+        "std": 0.0
+      },
+      "safe_rate_by_fault_mean": {
+        "CLEAN": 1.0,
+        "CONTRADICTION": 1.0,
+        "CROSS_DOMAIN_DISAGREEMENT": 1.0,
+        "DOMAIN_UNAVAILABLE": 1.0,
+        "MISCALIBRATED_FLAGGED": 1.0,
+        "MISCALIBRATED_SILENT": 0.0,
+        "MISSING": 1.0,
+        "NO_EVIDENCE_PATH": 1.0,
+        "OOD": 1.0,
+        "STALE": 1.0,
+        "WRONG_ASSOCIATION": 1.0
+      },
+      "safe_rate_faults_only": {
+        "mean": 0.9,
+        "std": 0.0
+      },
+      "uir": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "unnecessary_action_rate_clean_nominal": {
+        "mean": 0.0,
+        "std": 0.0
+      }
+    },
+    "naive_act_on_claims": {
+      "abstention_rate": {
+        "mean": 0.3621212121212121,
+        "std": 0.03156464644848433
+      },
+      "missed_damage_rate": {
+        "mean": 0.2272727272727273,
+        "std": 0.03214121732666123
+      },
+      "safe_rate": {
+        "mean": 0.506060606060606,
+        "std": 0.036046597737485815
+      },
+      "safe_rate_by_fault_mean": {
+        "CLEAN": 1.0,
+        "CONTRADICTION": 0.5166666666666667,
+        "CROSS_DOMAIN_DISAGREEMENT": 0.5333333333333333,
+        "DOMAIN_UNAVAILABLE": 0.45,
+        "MISCALIBRATED_FLAGGED": 0.4666666666666666,
+        "MISCALIBRATED_SILENT": 0.5833333333333334,
+        "MISSING": 0.0,
+        "NO_EVIDENCE_PATH": 0.39999999999999997,
+        "OOD": 0.6,
+        "STALE": 0.4333333333333333,
+        "WRONG_ASSOCIATION": 0.5833333333333334
+      },
+      "safe_rate_faults_only": {
+        "mean": 0.4566666666666667,
+        "std": 0.03965125751123441
+      },
+      "uir": {
+        "mean": 0.1876734338595251,
+        "std": 0.004506411390738106
+      },
+      "unnecessary_action_rate_clean_nominal": {
+        "mean": 0.0,
+        "std": 0.0
+      }
+    }
+  }
+}

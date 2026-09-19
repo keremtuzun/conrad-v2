@@ -1,0 +1,1206 @@
+{
+  "config": {
+    "episodes_per_scenario": 6,
+    "experiment_id": "ACTIVE-MCBR-E001",
+    "mcbr": {
+      "n_azimuth": 8
+    },
+    "steps": 4
+  },
+  "data_status": "SYNTHETIC_ONLY",
+  "experiment_id": "ACTIVE-MCBR-E001",
+  "per_seed": {
+    "2026201": {
+      "A-B0_random": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.434323733561696,
+          "coverage": 0.3317957844455013,
+          "measurement": 0.6469923784616661,
+          "ood": 0.46921850518983116
+        },
+        "energy_j": 958.3608570645438,
+        "info_per_kj": 0.5132283800080749,
+        "info_per_time": 0.009711285128777954,
+        "mean_regret": 0.1779765385274512,
+        "mission_error_reduction": 0.4705826004146736,
+        "observations": 2.9583333333333335,
+        "redundant_observations": 0.8333333333333334,
+        "stopped_early": 12,
+        "time_s": 51.14720951989386,
+        "total_error_reduction": 0.3640793385950762,
+        "travel_m": 22.6152714266136,
+        "uncertainty_reduction": 0.7622528675231885
+      },
+      "A-B10_mcbr_full": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.548117600984056,
+          "coverage": 0.11037375708654323,
+          "measurement": 0.8604566396748252,
+          "ood": 0.0
+        },
+        "energy_j": 516.1355417636677,
+        "info_per_kj": 0.5023276681469707,
+        "info_per_time": 0.009638493481312644,
+        "mean_regret": 0.22074331099891095,
+        "mission_error_reduction": 0.3797369994363562,
+        "observations": 1.8333333333333333,
+        "redundant_observations": 0.2916666666666667,
+        "stopped_early": 20,
+        "time_s": 27.01511042151672,
+        "total_error_reduction": 0.29160275931171425,
+        "travel_m": 11.674221877425026,
+        "uncertainty_reduction": 0.5815946959029592
+      },
+      "A-B10_mcbr_full_no_stop_rule": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.548117600984056,
+          "coverage": 0.11037375708654323,
+          "measurement": 0.9030472263796625,
+          "ood": 0.36798407604202676
+        },
+        "energy_j": 634.0098450116683,
+        "info_per_kj": 0.7314889241356464,
+        "info_per_time": 0.01408250344944814,
+        "mean_regret": 0.10150224644432203,
+        "mission_error_reduction": 0.4823806651230722,
+        "observations": 2.2916666666666665,
+        "redundant_observations": 0.4583333333333333,
+        "stopped_early": 15,
+        "time_s": 33.137992250583416,
+        "total_error_reduction": 0.3713149081547797,
+        "travel_m": 14.27732945862504,
+        "uncertainty_reduction": 0.8619868558972706
+      },
+      "A-B1_fixed_inspection": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.1647720746757448,
+          "coverage": 0.04013137615897525,
+          "measurement": 0.4568589173218139,
+          "ood": -0.329022925794166
+        },
+        "energy_j": 804.5690460023379,
+        "info_per_kj": 0.10468756560524639,
+        "info_per_time": 0.0018415057687294247,
+        "mean_regret": 0.4276795553696399,
+        "mission_error_reduction": 0.08318486059059199,
+        "observations": 3.375,
+        "redundant_observations": 0.9583333333333334,
+        "stopped_early": 6,
+        "time_s": 45.290952300116906,
+        "total_error_reduction": 0.08023725840745029,
+        "travel_m": 19.270476150058453,
+        "uncertainty_reduction": 0.5531342737216928
+      },
+      "A-B2_coverage": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.5316343460942342,
+          "coverage": 0.07860541622471588,
+          "measurement": 0.9048706777333614,
+          "ood": 0.46478429687583694
+        },
+        "energy_j": 975.7780340628128,
+        "info_per_kj": 0.4636455436296825,
+        "info_per_time": 0.009060638807294272,
+        "mean_regret": 0.09164707725649712,
+        "mission_error_reduction": 0.4949736842320372,
+        "observations": 2.2083333333333335,
+        "redundant_observations": 0.4166666666666667,
+        "stopped_early": 16,
+        "time_s": 50.14306836980731,
+        "total_error_reduction": 0.37273732778087343,
+        "travel_m": 22.863200851570323,
+        "uncertainty_reduction": 0.9002434620152444
+      },
+      "A-B3_frontier": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.2855647268971331,
+          "coverage": 0.29470130321458515,
+          "measurement": 0.5583865212553252,
+          "ood": 0.23118238136504887
+        },
+        "energy_j": 477.47503913173114,
+        "info_per_kj": 0.7161645734129604,
+        "info_per_time": 0.01218014684285366,
+        "mean_regret": 0.3197923206844328,
+        "mission_error_reduction": 0.3424587331830231,
+        "observations": 3.5416666666666665,
+        "redundant_observations": 0.875,
+        "stopped_early": 6,
+        "time_s": 28.186251956586556,
+        "total_error_reduction": 0.2818327827904719,
+        "travel_m": 10.551459311626612,
+        "uncertainty_reduction": 0.6469660650425931
+      },
+      "A-B4_geometric_nbv": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.5311529319039016,
+          "coverage": 0.11079001927249647,
+          "measurement": 0.9029597682170537,
+          "ood": 0.4722055357937182
+        },
+        "energy_j": 841.4482352156257,
+        "info_per_kj": 0.5424047961668533,
+        "info_per_time": 0.010538062924915383,
+        "mean_regret": 0.0872096979698413,
+        "mission_error_reduction": 0.5042770637967925,
+        "observations": 2.2083333333333335,
+        "redundant_observations": 0.375,
+        "stopped_early": 16,
+        "time_s": 43.50991176078128,
+        "total_error_reduction": 0.3764410054143393,
+        "travel_m": 19.546622547057307,
+        "uncertainty_reduction": 0.890854391096029
+      },
+      "A-B5_entropy_nbv": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.5316343460942342,
+          "coverage": 0.07860541622471588,
+          "measurement": 0.9048706777333614,
+          "ood": 0.46478429687583694
+        },
+        "energy_j": 975.7780340628128,
+        "info_per_kj": 0.4636455436296825,
+        "info_per_time": 0.009060638807294272,
+        "mean_regret": 0.09164707725649712,
+        "mission_error_reduction": 0.4949736842320372,
+        "observations": 2.2083333333333335,
+        "redundant_observations": 0.4166666666666667,
+        "stopped_early": 16,
+        "time_s": 50.14306836980731,
+        "total_error_reduction": 0.37273732778087343,
+        "travel_m": 22.863200851570323,
+        "uncertainty_reduction": 0.9002434620152444
+      },
+      "A-B6_standard_eig": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.5511923132689761,
+          "coverage": 0.08155747415940878,
+          "measurement": 0.8970685379113492,
+          "ood": 0.4759683447694048
+        },
+        "energy_j": 789.8923897442991,
+        "info_per_kj": 0.586983708664115,
+        "info_per_time": 0.011412832062300074,
+        "mean_regret": 0.08780573871536768,
+        "mission_error_reduction": 0.5014466675272847,
+        "observations": 2.2083333333333335,
+        "redundant_observations": 0.4583333333333333,
+        "stopped_early": 16,
+        "time_s": 40.84878615388161,
+        "total_error_reduction": 0.3749583690596419,
+        "travel_m": 18.216059743607474,
+        "uncertainty_reduction": 0.9084681949119017
+      },
+      "A-B7_uncertainty_nbv": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.1253484169888745,
+          "coverage": 0.05878006093195617,
+          "measurement": 0.4717868886981296,
+          "ood": -0.040053084783332436
+        },
+        "energy_j": 538.9541210551287,
+        "info_per_kj": 0.2907328757396476,
+        "info_per_time": 0.0047495984827406095,
+        "mean_regret": 0.3826834393455331,
+        "mission_error_reduction": 0.153965570458907,
+        "observations": 3.375,
+        "redundant_observations": 1.0833333333333333,
+        "stopped_early": 5,
+        "time_s": 32.01020605275642,
+        "total_error_reduction": 0.08406342878313566,
+        "travel_m": 12.630103026378213,
+        "uncertainty_reduction": 0.6032036127966046
+      },
+      "A-B9_mcbr_no_mission": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.5460509969106697,
+          "coverage": 0.11048755386104218,
+          "measurement": 0.9030472263796625,
+          "ood": 0.4815374358411277
+        },
+        "energy_j": 712.8687244469296,
+        "info_per_kj": 0.6600478397025359,
+        "info_per_time": 0.012761996232153254,
+        "mean_regret": 0.08232393562957434,
+        "mission_error_reduction": 0.5102808032481255,
+        "observations": 2.2083333333333335,
+        "redundant_observations": 0.4166666666666667,
+        "stopped_early": 16,
+        "time_s": 37.039269555679816,
+        "total_error_reduction": 0.38105133501185273,
+        "travel_m": 16.311301444506572,
+        "uncertainty_reduction": 0.9082729900876333
+      }
+    },
+    "2026202": {
+      "A-B0_random": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.31751070986039764,
+          "coverage": 0.33398080849142575,
+          "measurement": 0.551465525828042,
+          "ood": 0.2937083430764132
+        },
+        "energy_j": 874.2396838835248,
+        "info_per_kj": 0.4832622138465603,
+        "info_per_time": 0.009189825014589674,
+        "mean_regret": 0.17322148624960945,
+        "mission_error_reduction": 0.3741663468140697,
+        "observations": 2.875,
+        "redundant_observations": 0.9583333333333334,
+        "stopped_early": 13,
+        "time_s": 46.5661508608429,
+        "total_error_reduction": 0.3254186787342143,
+        "travel_m": 20.40807543042145,
+        "uncertainty_reduction": 0.7741054166610531
+      },
+      "A-B10_mcbr_full": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.5321482051924803,
+          "coverage": 0.12935572338504234,
+          "measurement": 0.6673551043518741,
+          "ood": 0.0
+        },
+        "energy_j": 504.3426324502638,
+        "info_per_kj": 0.4544668352858882,
+        "info_per_time": 0.008699321640061748,
+        "mean_regret": 0.1957137425472951,
+        "mission_error_reduction": 0.3322147582323492,
+        "observations": 1.8333333333333333,
+        "redundant_observations": 0.2916666666666667,
+        "stopped_early": 20,
+        "time_s": 26.425464955846525,
+        "total_error_reduction": 0.27515926717703615,
+        "travel_m": 11.37939914458993,
+        "uncertainty_reduction": 0.5750456613629557
+      },
+      "A-B10_mcbr_full_no_stop_rule": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.5321482051924803,
+          "coverage": 0.12935572338504234,
+          "measurement": 0.6880855580808963,
+          "ood": 0.3718405956515869
+        },
+        "energy_j": 622.2169356982644,
+        "info_per_kj": 0.6846758414912008,
+        "info_per_time": 0.013168296218536324,
+        "mean_regret": 0.0884708017446469,
+        "mission_error_reduction": 0.43035752057750143,
+        "observations": 2.2916666666666665,
+        "redundant_observations": 0.5,
+        "stopped_early": 15,
+        "time_s": 32.54834678491322,
+        "total_error_reduction": 0.35104631472331865,
+        "travel_m": 13.982506725789944,
+        "uncertainty_reduction": 0.855437821357267
+      },
+      "A-B1_fixed_inspection": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.09101357407873256,
+          "coverage": 0.07127978404193762,
+          "measurement": 0.26029653693606813,
+          "ood": -0.22482324697259462
+        },
+        "energy_j": 774.6781569396011,
+        "info_per_kj": 0.06270748781339103,
+        "info_per_time": 0.0011331361433629089,
+        "mean_regret": 0.3957567724466973,
+        "mission_error_reduction": 0.0494416620210359,
+        "observations": 3.375,
+        "redundant_observations": 1.1666666666666667,
+        "stopped_early": 5,
+        "time_s": 43.79640784698006,
+        "total_error_reduction": 0.04305847972912013,
+        "travel_m": 18.52320392349003,
+        "uncertainty_reduction": 0.5403065417610947
+      },
+      "A-B2_coverage": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.528824765645148,
+          "coverage": 0.05099496284271726,
+          "measurement": 0.6140425533274315,
+          "ood": 0.3423469692820038
+        },
+        "energy_j": 967.8268242452767,
+        "info_per_kj": 0.35130940823048423,
+        "info_per_time": 0.006861654729037252,
+        "mean_regret": 0.1071423930746651,
+        "mission_error_reduction": 0.38405231277432517,
+        "observations": 2.25,
+        "redundant_observations": 0.5416666666666666,
+        "stopped_early": 15,
+        "time_s": 49.84967454559717,
+        "total_error_reduction": 0.31093599118774223,
+        "travel_m": 22.674837272798584,
+        "uncertainty_reduction": 0.8836559938078571
+      },
+      "A-B3_frontier": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.22726402190724218,
+          "coverage": 0.4478980196194899,
+          "measurement": 0.34291570274857147,
+          "ood": 0.20122706220503483
+        },
+        "energy_j": 479.49903176909993,
+        "info_per_kj": 0.6288254087451115,
+        "info_per_time": 0.010881250167480797,
+        "mean_regret": 0.2722222037599971,
+        "mission_error_reduction": 0.3048262016200846,
+        "observations": 3.4166666666666665,
+        "redundant_observations": 1.2083333333333333,
+        "stopped_early": 8,
+        "time_s": 27.89161825512166,
+        "total_error_reduction": 0.2729859063206223,
+        "travel_m": 10.529142460894164,
+        "uncertainty_reduction": 0.5566699047430322
+      },
+      "A-B4_geometric_nbv": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.5229917260563787,
+          "coverage": 0.06951862362177798,
+          "measurement": 0.7104451645157478,
+          "ood": 0.35043321142191663
+        },
+        "energy_j": 836.5130417045893,
+        "info_per_kj": 0.45116598684862924,
+        "info_per_time": 0.008738251869097066,
+        "mean_regret": 0.09152628040785336,
+        "mission_error_reduction": 0.4133471814039553,
+        "observations": 2.2083333333333335,
+        "redundant_observations": 0.4166666666666667,
+        "stopped_early": 16,
+        "time_s": 43.2214854185628,
+        "total_error_reduction": 0.3352433021440479,
+        "travel_m": 19.402409375948068,
+        "uncertainty_reduction": 0.8912953243478428
+      },
+      "A-B5_entropy_nbv": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.528824765645148,
+          "coverage": 0.05099496284271726,
+          "measurement": 0.6140425533274315,
+          "ood": 0.3423469692820038
+        },
+        "energy_j": 967.8268242452767,
+        "info_per_kj": 0.35130940823048423,
+        "info_per_time": 0.006861654729037252,
+        "mean_regret": 0.1071423930746651,
+        "mission_error_reduction": 0.38405231277432517,
+        "observations": 2.25,
+        "redundant_observations": 0.5416666666666666,
+        "stopped_early": 15,
+        "time_s": 49.84967454559717,
+        "total_error_reduction": 0.31093599118774223,
+        "travel_m": 22.674837272798584,
+        "uncertainty_reduction": 0.8836559938078571
+      },
+      "A-B6_standard_eig": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.5297155299897387,
+          "coverage": 0.05099496284271726,
+          "measurement": 0.7114621115617323,
+          "ood": 0.35703883366188643
+        },
+        "energy_j": 777.4442618416524,
+        "info_per_kj": 0.4858439320972689,
+        "info_per_time": 0.00943915816130919,
+        "mean_regret": 0.0868739012769875,
+        "mission_error_reduction": 0.41230285951401874,
+        "observations": 2.1666666666666665,
+        "redundant_observations": 0.4583333333333333,
+        "stopped_early": 16,
+        "time_s": 40.205546425415946,
+        "total_error_reduction": 0.33632980724547257,
+        "travel_m": 17.936106546041305,
+        "uncertainty_reduction": 0.8989363089323398
+      },
+      "A-B7_uncertainty_nbv": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.13715996374329215,
+          "coverage": 0.04469107553665256,
+          "measurement": 0.2824599991749321,
+          "ood": -0.13100820484709597
+        },
+        "energy_j": 529.235322274954,
+        "info_per_kj": 0.15949450690079048,
+        "info_per_time": 0.0026125811625602614,
+        "mean_regret": 0.3740731514683606,
+        "mission_error_reduction": 0.0833257084019452,
+        "observations": 3.375,
+        "redundant_observations": 1.0833333333333333,
+        "stopped_early": 5,
+        "time_s": 31.524266113747696,
+        "total_error_reduction": 0.05833338068785326,
+        "travel_m": 12.387133056873848,
+        "uncertainty_reduction": 0.5862104744407665
+      },
+      "A-B9_mcbr_no_mission": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.5313854851957744,
+          "coverage": 0.12992599436567007,
+          "measurement": 0.6880855580808963,
+          "ood": 0.3571232122940095
+        },
+        "energy_j": 717.6195145719763,
+        "info_per_kj": 0.5491350617402634,
+        "info_per_time": 0.010592667341381716,
+        "mean_regret": 0.09033670820600881,
+        "mission_error_reduction": 0.4266300624840876,
+        "observations": 2.2916666666666665,
+        "redundant_observations": 0.5,
+        "stopped_early": 15,
+        "time_s": 37.31847572859883,
+        "total_error_reduction": 0.34943836106980525,
+        "travel_m": 16.367571197632746,
+        "uncertainty_reduction": 0.8957264549995162
+      }
+    },
+    "2026203": {
+      "A-B0_random": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.33080443618993544,
+          "coverage": 0.3092051438264386,
+          "measurement": 0.509805247240234,
+          "ood": 0.26059881473346186
+        },
+        "energy_j": 893.536299935396,
+        "info_per_kj": 0.42021465617303283,
+        "info_per_time": 0.007925864717816445,
+        "mean_regret": 0.2868311729507444,
+        "mission_error_reduction": 0.3526034104975175,
+        "observations": 3.1666666666666665,
+        "redundant_observations": 1.2083333333333333,
+        "stopped_early": 9,
+        "time_s": 48.26014833010313,
+        "total_error_reduction": 0.27039895994231206,
+        "travel_m": 20.963407498384896,
+        "uncertainty_reduction": 0.6698847109354951
+      },
+      "A-B10_mcbr_full": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.5501107316295101,
+          "coverage": 0.18047667230108347,
+          "measurement": 0.7338412847900108,
+          "ood": 0.0
+        },
+        "energy_j": 540.0745437603014,
+        "info_per_kj": 0.4808515262148953,
+        "info_per_time": 0.009217374908880388,
+        "mean_regret": 0.24128169573063796,
+        "mission_error_reduction": 0.36610717218015115,
+        "observations": 2.0416666666666665,
+        "redundant_observations": 0.5,
+        "stopped_early": 18,
+        "time_s": 28.357893854681738,
+        "total_error_reduction": 0.277492970116688,
+        "travel_m": 12.137280260674203,
+        "uncertainty_reduction": 0.5737242869263207
+      },
+      "A-B10_mcbr_full_no_stop_rule": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.5501107316295101,
+          "coverage": 0.18047667230108347,
+          "measurement": 0.7630421188666294,
+          "ood": 0.4328113549971468
+        },
+        "energy_j": 653.1988470083019,
+        "info_per_kj": 0.7536489848138838,
+        "info_per_time": 0.01451530046946533,
+        "mean_regret": 0.10991563169125185,
+        "mission_error_reduction": 0.48161021944859234,
+        "observations": 2.4583333333333335,
+        "redundant_observations": 0.625,
+        "stopped_early": 14,
+        "time_s": 34.2224423504151,
+        "total_error_reduction": 0.3584686789504161,
+        "travel_m": 14.652887841874216,
+        "uncertainty_reduction": 0.8526984236820795
+      },
+      "A-B1_fixed_inspection": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.06942209324532904,
+          "coverage": 0.06563862025532562,
+          "measurement": 0.3838185305721347,
+          "ood": -0.22644064204684414
+        },
+        "energy_j": 755.6613345577595,
+        "info_per_kj": 0.08975281422100867,
+        "info_per_time": 0.0016294404708810724,
+        "mean_regret": 0.4438520663172143,
+        "mission_error_reduction": 0.07310965050648632,
+        "observations": 3.4583333333333335,
+        "redundant_observations": 1.4166666666666667,
+        "stopped_early": 5,
+        "time_s": 42.970566727887984,
+        "total_error_reduction": 0.035496309251492664,
+        "travel_m": 18.02695003061066,
+        "uncertainty_reduction": 0.5392252493989015
+      },
+      "A-B2_coverage": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.5475603823329166,
+          "coverage": 0.14606531182098964,
+          "measurement": 0.8477897828396347,
+          "ood": 0.5512710284286434
+        },
+        "energy_j": 1049.963196523647,
+        "info_per_kj": 0.47302585329143126,
+        "info_per_time": 0.009249617785335213,
+        "mean_regret": 0.10656850412506197,
+        "mission_error_reduction": 0.5231716263555461,
+        "observations": 2.4583333333333335,
+        "redundant_observations": 0.5833333333333334,
+        "stopped_early": 14,
+        "time_s": 53.97732649284901,
+        "total_error_reduction": 0.37647147799165204,
+        "travel_m": 24.53032991309117,
+        "uncertainty_reduction": 0.8835748065588781
+      },
+      "A-B3_frontier": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.2787110986852797,
+          "coverage": 0.3382771006339933,
+          "measurement": 0.48392506859097123,
+          "ood": 0.2785144538474111
+        },
+        "energy_j": 476.3139185270317,
+        "info_per_kj": 0.7286056065411461,
+        "info_per_time": 0.012482715758807493,
+        "mean_regret": 0.30205836349453863,
+        "mission_error_reduction": 0.34485693043941384,
+        "observations": 3.5,
+        "redundant_observations": 1.1666666666666667,
+        "stopped_early": 6,
+        "time_s": 28.024029259684912,
+        "total_error_reduction": 0.27875187225551906,
+        "travel_m": 10.512014629842458,
+        "uncertainty_reduction": 0.6122202023645815
+      },
+      "A-B4_geometric_nbv": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.5484627920382529,
+          "coverage": 0.2884862790356934,
+          "measurement": 0.7735025325871558,
+          "ood": 0.5611357931955439
+        },
+        "energy_j": 884.9501964503401,
+        "info_per_kj": 0.5948023435765779,
+        "info_per_time": 0.011504599086094957,
+        "mean_regret": 0.09914487508303571,
+        "mission_error_reduction": 0.5428968492141615,
+        "observations": 2.5416666666666665,
+        "redundant_observations": 0.5833333333333334,
+        "stopped_early": 13,
+        "time_s": 45.93500982251701,
+        "total_error_reduction": 0.3974965794099365,
+        "travel_m": 20.425838244591834,
+        "uncertainty_reduction": 0.8826546820007533
+      },
+      "A-B5_entropy_nbv": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.5475603823329166,
+          "coverage": 0.14606531182098964,
+          "measurement": 0.8477897828396347,
+          "ood": 0.5512710284286434
+        },
+        "energy_j": 1049.963196523647,
+        "info_per_kj": 0.47302585329143126,
+        "info_per_time": 0.009249617785335213,
+        "mean_regret": 0.10656850412506197,
+        "mission_error_reduction": 0.5231716263555461,
+        "observations": 2.4583333333333335,
+        "redundant_observations": 0.5833333333333334,
+        "stopped_early": 14,
+        "time_s": 53.97732649284901,
+        "total_error_reduction": 0.37647147799165204,
+        "travel_m": 24.53032991309117,
+        "uncertainty_reduction": 0.8835748065588781
+      },
+      "A-B6_standard_eig": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.5484460006877506,
+          "coverage": 0.15081533547558457,
+          "measurement": 0.8479043873498254,
+          "ood": 0.5710835961653405
+        },
+        "energy_j": 851.3542102694063,
+        "info_per_kj": 0.6112672649236894,
+        "info_per_time": 0.011895009067033469,
+        "mean_regret": 0.09292863647289999,
+        "mission_error_reduction": 0.5295623299196253,
+        "observations": 2.4583333333333335,
+        "redundant_observations": 0.5833333333333334,
+        "stopped_early": 14,
+        "time_s": 44.04687718013698,
+        "total_error_reduction": 0.3796473822753746,
+        "travel_m": 19.565105256735155,
+        "uncertainty_reduction": 0.9042545159990919
+      },
+      "A-B7_uncertainty_nbv": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.12168609487885311,
+          "coverage": 0.12458708506063061,
+          "measurement": 0.40477692851162755,
+          "ood": 0.029526004757061814
+        },
+        "energy_j": 537.3150934007559,
+        "info_per_kj": 0.32675042480865746,
+        "info_per_time": 0.0053216646548964975,
+        "mean_regret": 0.3907980356916099,
+        "mission_error_reduction": 0.17014402830204325,
+        "observations": 3.625,
+        "redundant_observations": 1.2083333333333333,
+        "stopped_early": 3,
+        "time_s": 32.3032546700378,
+        "total_error_reduction": 0.07387534328652344,
+        "travel_m": 12.526627335018896,
+        "uncertainty_reduction": 0.5541423958782641
+      },
+      "A-B9_mcbr_no_mission": {
+        "by_scenario_mission_error_reduction": {
+          "contradiction": 0.5489302540395196,
+          "coverage": 0.09878326975997487,
+          "measurement": 0.7630421188666294,
+          "ood": 0.5711679280574106
+        },
+        "energy_j": 743.6650610770436,
+        "info_per_kj": 0.637735754533603,
+        "info_per_time": 0.01236227484119348,
+        "mean_regret": 0.09999133313963675,
+        "mission_error_reduction": 0.49548089268088363,
+        "observations": 2.4166666666666665,
+        "redundant_observations": 0.625,
+        "stopped_early": 15,
+        "time_s": 38.724919720518855,
+        "total_error_reduction": 0.351086666735065,
+        "travel_m": 16.94579319359276,
+        "uncertainty_reduction": 0.9120400576430923
+      }
+    }
+  },
+  "ranking_by_mission_error_reduction": [
+    "A-B4_geometric_nbv",
+    "A-B6_standard_eig",
+    "A-B9_mcbr_no_mission",
+    "A-B2_coverage",
+    "A-B5_entropy_nbv",
+    "A-B10_mcbr_full_no_stop_rule",
+    "A-B0_random",
+    "A-B10_mcbr_full",
+    "A-B3_frontier",
+    "A-B7_uncertainty_nbv",
+    "A-B1_fixed_inspection"
+  ],
+  "seeds": [
+    2026201,
+    2026202,
+    2026203
+  ],
+  "summary": {
+    "A-B0_random": {
+      "energy_j": {
+        "mean": 908.7122802944882,
+        "std": 35.97986223090552
+      },
+      "info_per_kj": {
+        "mean": 0.472235083342556,
+        "std": 0.03876498773188357
+      },
+      "info_per_time": {
+        "mean": 0.008942324953728023,
+        "std": 0.0007496104415247435
+      },
+      "mean_regret": {
+        "mean": 0.21267639924260165,
+        "std": 0.05247126501442252
+      },
+      "mission_error_reduction": {
+        "mean": 0.39911745257542025,
+        "std": 0.051294512847624506
+      },
+      "observations": {
+        "mean": 3.0,
+        "std": 0.12266334536566445
+      },
+      "redundant_observations": {
+        "mean": 1.0,
+        "std": 0.15590239111558085
+      },
+      "time_s": {
+        "mean": 48.65783623694663,
+        "std": 1.8912326426352417
+      },
+      "total_error_reduction": {
+        "mean": 0.3199656590905342,
+        "std": 0.038438738303583686
+      },
+      "travel_m": {
+        "mean": 21.328918118473315,
+        "std": 0.9374173924315421
+      },
+      "uncertainty_reduction": {
+        "mean": 0.735414331706579,
+        "std": 0.046588404344628666
+      }
+    },
+    "A-B10_mcbr_full": {
+      "energy_j": {
+        "mean": 520.1842393247442,
+        "std": 14.865762351185767
+      },
+      "info_per_kj": {
+        "mean": 0.4792153432159181,
+        "std": 0.019573326265502674
+      },
+      "info_per_time": {
+        "mean": 0.00918506334341826,
+        "std": 0.0003840954436912867
+      },
+      "mean_regret": {
+        "mean": 0.21924624975894802,
+        "std": 0.018633133277345514
+      },
+      "mission_error_reduction": {
+        "mean": 0.3593529766162855,
+        "std": 0.01998007708609023
+      },
+      "observations": {
+        "mean": 1.9027777777777777,
+        "std": 0.09820927516479823
+      },
+      "redundant_observations": {
+        "mean": 0.36111111111111116,
+        "std": 0.09820927516479826
+      },
+      "time_s": {
+        "mean": 27.26615641068166,
+        "std": 0.8086360651410581
+      },
+      "total_error_reduction": {
+        "mean": 0.28141833220181284,
+        "std": 0.007264225538913591
+      },
+      "travel_m": {
+        "mean": 11.730300427563053,
+        "std": 0.31193434070700726
+      },
+      "uncertainty_reduction": {
+        "mean": 0.5767882147307453,
+        "std": 0.00344124042990159
+      }
+    },
+    "A-B10_mcbr_full_no_stop_rule": {
+      "energy_j": {
+        "mean": 636.4752092394115,
+        "std": 12.767882170700418
+      },
+      "info_per_kj": {
+        "mean": 0.7232712501469103,
+        "std": 0.028751478214655388
+      },
+      "info_per_time": {
+        "mean": 0.013922033379149932,
+        "std": 0.0005614968658869712
+      },
+      "mean_regret": {
+        "mean": 0.09996289329340692,
+        "std": 0.008822221524919342
+      },
+      "mission_error_reduction": {
+        "mean": 0.46478280171638864,
+        "std": 0.024344381730396575
+      },
+      "observations": {
+        "mean": 2.347222222222222,
+        "std": 0.07856742013183876
+      },
+      "redundant_observations": {
+        "mean": 0.5277777777777778,
+        "std": 0.07081971546656646
+      },
+      "time_s": {
+        "mean": 33.30292712863724,
+        "std": 0.6933261022574385
+      },
+      "total_error_reduction": {
+        "mean": 0.3602766339428382,
+        "std": 0.008372793076922187
+      },
+      "travel_m": {
+        "mean": 14.304241342096402,
+        "std": 0.27434272641421903
+      },
+      "uncertainty_reduction": {
+        "mean": 0.8567077003122057,
+        "std": 0.0038968523771712145
+      }
+    },
+    "A-B1_fixed_inspection": {
+      "energy_j": {
+        "mean": 778.3028458332328,
+        "std": 20.13032268110724
+      },
+      "info_per_kj": {
+        "mean": 0.08571595587988202,
+        "std": 0.01737438539540895
+      },
+      "info_per_time": {
+        "mean": 0.0015346941276578022,
+        "std": 0.00029684960692928983
+      },
+      "mean_regret": {
+        "mean": 0.42242946471118387,
+        "std": 0.019982691044407287
+      },
+      "mission_error_reduction": {
+        "mean": 0.06857872437270474,
+        "std": 0.014143262969778502
+      },
+      "observations": {
+        "mean": 3.402777777777778,
+        "std": 0.039283710065919374
+      },
+      "redundant_observations": {
+        "mean": 1.1805555555555556,
+        "std": 0.1873713550448895
+      },
+      "time_s": {
+        "mean": 44.01930895832832,
+        "std": 0.9603162604171092
+      },
+      "total_error_reduction": {
+        "mean": 0.05293068246268769,
+        "std": 0.019553915600266022
+      },
+      "travel_m": {
+        "mean": 18.606876701386383,
+        "std": 0.5111034812102736
+      },
+      "uncertainty_reduction": {
+        "mean": 0.5442220216272297,
+        "std": 0.006317355793873518
+      }
+    },
+    "A-B2_coverage": {
+      "energy_j": {
+        "mean": 997.8560182772457,
+        "std": 36.988051701347295
+      },
+      "info_per_kj": {
+        "mean": 0.42932693505053265,
+        "std": 0.05529947812095703
+      },
+      "info_per_time": {
+        "mean": 0.008390637107222246,
+        "std": 0.0010839030086176316
+      },
+      "mean_regret": {
+        "mean": 0.10178599148540807,
+        "std": 0.007173122213630951
+      },
+      "mission_error_reduction": {
+        "mean": 0.4673992077873028,
+        "std": 0.060048922644948044
+      },
+      "observations": {
+        "mean": 2.305555555555556,
+        "std": 0.10936122047238629
+      },
+      "redundant_observations": {
+        "mean": 0.5138888888888888,
+        "std": 0.07081971546656644
+      },
+      "time_s": {
+        "mean": 51.32335646941783,
+        "std": 1.8804587468619882
+      },
+      "total_error_reduction": {
+        "mean": 0.3533815989867559,
+        "std": 0.030052267640672665
+      },
+      "travel_m": {
+        "mean": 23.35612267915336,
+        "std": 0.8338433828267101
+      },
+      "uncertainty_reduction": {
+        "mean": 0.8891580874606598,
+        "std": 0.007838613593568787
+      }
+    },
+    "A-B3_frontier": {
+      "energy_j": {
+        "mean": 477.76266314262097,
+        "std": 1.316126202137626
+      },
+      "info_per_kj": {
+        "mean": 0.6911985295664059,
+        "std": 0.04439594183454914
+      },
+      "info_per_time": {
+        "mean": 0.011848037589713983,
+        "std": 0.0006946919830959071
+      },
+      "mean_regret": {
+        "mean": 0.2980242959796562,
+        "std": 0.01962879316356617
+      },
+      "mission_error_reduction": {
+        "mean": 0.3307139550808405,
+        "std": 0.018331569708271024
+      },
+      "observations": {
+        "mean": 3.4861111111111107,
+        "std": 0.051967463705193645
+      },
+      "redundant_observations": {
+        "mean": 1.0833333333333333,
+        "std": 0.1482927535004349
+      },
+      "time_s": {
+        "mean": 28.033966490464376,
+        "std": 0.1204887710574437
+      },
+      "total_error_reduction": {
+        "mean": 0.2778568537888711,
+        "std": 0.0036667514559825588
+      },
+      "travel_m": {
+        "mean": 10.530872134121077,
+        "std": 0.016149603862370143
+      },
+      "uncertainty_reduction": {
+        "mean": 0.6052853907167356,
+        "std": 0.037187971627524255
+      }
+    },
+    "A-B4_geometric_nbv": {
+      "energy_j": {
+        "mean": 854.3038244568517,
+        "std": 21.76371783527644
+      },
+      "info_per_kj": {
+        "mean": 0.5294577088640201,
+        "std": 0.05934964782675641
+      },
+      "info_per_time": {
+        "mean": 0.010260304626702467,
+        "std": 0.0011463075461142164
+      },
+      "mean_regret": {
+        "mean": 0.09262695115357679,
+        "std": 0.004934282808318312
+      },
+      "mission_error_reduction": {
+        "mean": 0.4868403648049697,
+        "std": 0.05430658622568884
+      },
+      "observations": {
+        "mean": 2.3194444444444446,
+        "std": 0.15713484026367708
+      },
+      "redundant_observations": {
+        "mean": 0.4583333333333333,
+        "std": 0.09001028747788696
+      },
+      "time_s": {
+        "mean": 44.22213566728703,
+        "std": 1.2168951865197752
+      },
+      "total_error_reduction": {
+        "mean": 0.3697269623227746,
+        "std": 0.02585441823702403
+      },
+      "travel_m": {
+        "mean": 19.79162338919907,
+        "std": 0.4523057386186134
+      },
+      "uncertainty_reduction": {
+        "mean": 0.8882681324815417,
+        "std": 0.003973388583928218
+      }
+    },
+    "A-B5_entropy_nbv": {
+      "energy_j": {
+        "mean": 997.8560182772457,
+        "std": 36.988051701347295
+      },
+      "info_per_kj": {
+        "mean": 0.42932693505053265,
+        "std": 0.05529947812095703
+      },
+      "info_per_time": {
+        "mean": 0.008390637107222246,
+        "std": 0.0010839030086176316
+      },
+      "mean_regret": {
+        "mean": 0.10178599148540807,
+        "std": 0.007173122213630951
+      },
+      "mission_error_reduction": {
+        "mean": 0.4673992077873028,
+        "std": 0.060048922644948044
+      },
+      "observations": {
+        "mean": 2.305555555555556,
+        "std": 0.10936122047238629
+      },
+      "redundant_observations": {
+        "mean": 0.5138888888888888,
+        "std": 0.07081971546656644
+      },
+      "time_s": {
+        "mean": 51.32335646941783,
+        "std": 1.8804587468619882
+      },
+      "total_error_reduction": {
+        "mean": 0.3533815989867559,
+        "std": 0.030052267640672665
+      },
+      "travel_m": {
+        "mean": 23.35612267915336,
+        "std": 0.8338433828267101
+      },
+      "uncertainty_reduction": {
+        "mean": 0.8891580874606598,
+        "std": 0.007838613593568787
+      }
+    },
+    "A-B6_standard_eig": {
+      "energy_j": {
+        "mean": 806.2302872851193,
+        "std": 32.30959910190843
+      },
+      "info_per_kj": {
+        "mean": 0.5613649685616912,
+        "std": 0.05431385942003153
+      },
+      "info_per_time": {
+        "mean": 0.010915666430214244,
+        "std": 0.0010624440901626049
+      },
+      "mean_regret": {
+        "mean": 0.08920275882175173,
+        "std": 0.0026619170355699573
+      },
+      "mission_error_reduction": {
+        "mean": 0.48110395232030956,
+        "std": 0.04998543385457342
+      },
+      "observations": {
+        "mean": 2.277777777777778,
+        "std": 0.12880025688188484
+      },
+      "redundant_observations": {
+        "mean": 0.5,
+        "std": 0.05892556509887899
+      },
+      "time_s": {
+        "mean": 41.70040325314485,
+        "std": 1.6798599653164672
+      },
+      "total_error_reduction": {
+        "mean": 0.36364518619349634,
+        "std": 0.01940951925456398
+      },
+      "travel_m": {
+        "mean": 18.572423848794642,
+        "std": 0.7111754267689259
+      },
+      "uncertainty_reduction": {
+        "mean": 0.9038863399477778,
+        "std": 0.003900075023672672
+      }
+    },
+    "A-B7_uncertainty_nbv": {
+      "energy_j": {
+        "mean": 535.1681789102795,
+        "std": 4.248191286060793
+      },
+      "info_per_kj": {
+        "mean": 0.25899260248303185,
+        "std": 0.07187590801097989
+      },
+      "info_per_time": {
+        "mean": 0.0042279481000657895,
+        "std": 0.001165868112444046
+      },
+      "mean_regret": {
+        "mean": 0.3825182088351679,
+        "std": 0.006828904934733438
+      },
+      "mission_error_reduction": {
+        "mean": 0.13581176905429848,
+        "std": 0.03769637954894709
+      },
+      "observations": {
+        "mean": 3.4583333333333335,
+        "std": 0.11785113019775792
+      },
+      "redundant_observations": {
+        "mean": 1.125,
+        "std": 0.05892556509887896
+      },
+      "time_s": {
+        "mean": 31.945908945513974,
+        "std": 0.32125418929309546
+      },
+      "total_error_reduction": {
+        "mean": 0.07209071758583746,
+        "std": 0.01057977663327691
+      },
+      "travel_m": {
+        "mean": 12.514621139423653,
+        "std": 0.09955471885598548
+      },
+      "uncertainty_reduction": {
+        "mean": 0.5811854943718784,
+        "std": 0.020341887324707732
+      }
+    },
+    "A-B9_mcbr_no_mission": {
+      "energy_j": {
+        "mean": 724.7177666986498,
+        "std": 13.537416663928006
+      },
+      "info_per_kj": {
+        "mean": 0.615639551992134,
+        "std": 0.047899844842423045
+      },
+      "info_per_time": {
+        "mean": 0.011905646138242817,
+        "std": 0.0009426484987709971
+      },
+      "mean_regret": {
+        "mean": 0.09088399232507331,
+        "std": 0.007223059076082885
+      },
+      "mission_error_reduction": {
+        "mean": 0.4774639194710322,
+        "std": 0.03644923502010659
+      },
+      "observations": {
+        "mean": 2.3055555555555554,
+        "std": 0.08561686115234679
+      },
+      "redundant_observations": {
+        "mean": 0.513888888888889,
+        "std": 0.08561686115234689
+      },
+      "time_s": {
+        "mean": 37.69422166826583,
+        "std": 0.7376733142964441
+      },
+      "total_error_reduction": {
+        "mean": 0.360525454272241,
+        "std": 0.01452958047098183
+      },
+      "travel_m": {
+        "mean": 16.54155527857736,
+        "std": 0.2867609808780578
+      },
+      "uncertainty_reduction": {
+        "mean": 0.9053465009100806,
+        "std": 0.006974078767496719
+      }
+    }
+  }
+}

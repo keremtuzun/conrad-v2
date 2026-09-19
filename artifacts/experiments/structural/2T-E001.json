@@ -1,0 +1,563 @@
+{
+  "experiment_id": "2T-E001",
+  "data": "SYNTHETIC_ONLY: Twin2T (MCDE) scenarios, T0 abstract observations",
+  "seeds": [
+    2026201,
+    2026202,
+    2026203
+  ],
+  "config": {
+    "experiment": {
+      "id": "2T-E001"
+    },
+    "seeds": [
+      2026201,
+      2026202,
+      2026203
+    ],
+    "scenario": {
+      "kind": "tier",
+      "tier": 3
+    },
+    "episodes_per_seed": 3,
+    "steps": 16,
+    "dt_days": 60,
+    "coverage": 0.8,
+    "degradation_levels": [
+      0.0,
+      0.4
+    ]
+  },
+  "per_seed": {
+    "2026201": {
+      "level_0.0": {
+        "MODEL2T_DIRECT.corrosion_depth_m.claim_rate_all": 0.9871794871794872,
+        "LATEST_OBSERVATION.corrosion_depth_m.claim_rate_all": 0.9871794871794872,
+        "SINGLE_FRAME.corrosion_depth_m.claim_rate_all": 0.7964743589743589,
+        "MODEL2T_DIRECT.crack_length_m.claim_rate_all": 0.9871323529411765,
+        "LATEST_OBSERVATION.crack_length_m.claim_rate_all": 0.9871323529411765,
+        "SINGLE_FRAME.crack_length_m.claim_rate_all": 0.8033088235294118,
+        "MODEL2T_DIRECT.corrosion_depth_m.mae_mm": 0.07702344174459892,
+        "MODEL2T_DIRECT.corrosion_depth_m.nll": -0.7500267356537342,
+        "MODEL2T_DIRECT.corrosion_depth_m.cov95": 1.0,
+        "LATEST_OBSERVATION.corrosion_depth_m.mae_mm": 0.15380964227077307,
+        "LATEST_OBSERVATION.corrosion_depth_m.nll": -0.039190622123564646,
+        "LATEST_OBSERVATION.corrosion_depth_m.cov95": 0.9959758551307847,
+        "SINGLE_FRAME.corrosion_depth_m.mae_mm": 0.15380964227077307,
+        "SINGLE_FRAME.corrosion_depth_m.nll": -0.039190622123564646,
+        "SINGLE_FRAME.corrosion_depth_m.cov95": 0.9959758551307847,
+        "MODEL2T_DIRECT.crack_length_m.mae_mm": 2.0061097891322492,
+        "MODEL2T_DIRECT.crack_length_m.nll": 286.483056920516,
+        "MODEL2T_DIRECT.crack_length_m.cov95": 0.9610983981693364,
+        "LATEST_OBSERVATION.crack_length_m.mae_mm": 0.7680230179506677,
+        "LATEST_OBSERVATION.crack_length_m.nll": 1.5579130473967255,
+        "LATEST_OBSERVATION.crack_length_m.cov95": 1.0,
+        "SINGLE_FRAME.crack_length_m.mae_mm": 0.7680230179506677,
+        "SINGLE_FRAME.crack_length_m.nll": 1.5579130473967255,
+        "SINGLE_FRAME.crack_length_m.cov95": 1.0,
+        "MODEL2T_DIRECT.corrosion_depth_m.median_ae_mm": 0.06451287969258446,
+        "LATEST_OBSERVATION.corrosion_depth_m.median_ae_mm": 0.12001522011203691,
+        "SINGLE_FRAME.corrosion_depth_m.median_ae_mm": 0.12001522011203691,
+        "MODEL2T_DIRECT.crack_length_m.median_ae_mm": 0.5391401131597222,
+        "LATEST_OBSERVATION.crack_length_m.median_ae_mm": 0.7107839220622054,
+        "SINGLE_FRAME.crack_length_m.median_ae_mm": 0.7107839220622054,
+        "MODEL2T_DIRECT.mean_ua_observed": 0.09997585296630859
+      },
+      "level_0.4": {
+        "MODEL2T_DIRECT.corrosion_depth_m.claim_rate_all": 0.9871794871794872,
+        "LATEST_OBSERVATION.corrosion_depth_m.claim_rate_all": 0.9871794871794872,
+        "SINGLE_FRAME.corrosion_depth_m.claim_rate_all": 0.7964743589743589,
+        "MODEL2T_DIRECT.crack_length_m.claim_rate_all": 0.9871323529411765,
+        "LATEST_OBSERVATION.crack_length_m.claim_rate_all": 0.9871323529411765,
+        "SINGLE_FRAME.crack_length_m.claim_rate_all": 0.8033088235294118,
+        "MODEL2T_DIRECT.corrosion_depth_m.mae_mm": 0.2060998704424172,
+        "MODEL2T_DIRECT.corrosion_depth_m.nll": 0.018192343474921303,
+        "MODEL2T_DIRECT.corrosion_depth_m.cov95": 0.96579476861167,
+        "LATEST_OBSERVATION.corrosion_depth_m.mae_mm": 0.5682955340548493,
+        "LATEST_OBSERVATION.corrosion_depth_m.nll": 1.4534360969601474,
+        "LATEST_OBSERVATION.corrosion_depth_m.cov95": 0.7585513078470825,
+        "SINGLE_FRAME.corrosion_depth_m.mae_mm": 0.5682955340548493,
+        "SINGLE_FRAME.corrosion_depth_m.nll": 1.4534360969601474,
+        "SINGLE_FRAME.corrosion_depth_m.cov95": 0.7585513078470825,
+        "MODEL2T_DIRECT.crack_length_m.mae_mm": 3.273697519865946,
+        "MODEL2T_DIRECT.crack_length_m.nll": 410.35154062705703,
+        "MODEL2T_DIRECT.crack_length_m.cov95": 0.9267734553775744,
+        "LATEST_OBSERVATION.crack_length_m.mae_mm": 1.9328537216628714,
+        "LATEST_OBSERVATION.crack_length_m.nll": 2.3748486757742766,
+        "LATEST_OBSERVATION.crack_length_m.cov95": 0.9016018306636155,
+        "SINGLE_FRAME.crack_length_m.mae_mm": 1.9328537216628714,
+        "SINGLE_FRAME.crack_length_m.nll": 2.3748486757742766,
+        "SINGLE_FRAME.crack_length_m.cov95": 0.9016018306636155,
+        "MODEL2T_DIRECT.corrosion_depth_m.median_ae_mm": 0.17329481715457817,
+        "LATEST_OBSERVATION.corrosion_depth_m.median_ae_mm": 0.48342861876618365,
+        "SINGLE_FRAME.corrosion_depth_m.median_ae_mm": 0.48342861876618365,
+        "MODEL2T_DIRECT.crack_length_m.median_ae_mm": 1.0406267598118104,
+        "LATEST_OBSERVATION.crack_length_m.median_ae_mm": 1.5231679560988964,
+        "SINGLE_FRAME.crack_length_m.median_ae_mm": 1.5231679560988964,
+        "MODEL2T_DIRECT.mean_ua_observed": 0.499879264831543
+      }
+    },
+    "2026202": {
+      "level_0.0": {
+        "MODEL2T_DIRECT.corrosion_depth_m.claim_rate_all": 0.9836956521739131,
+        "LATEST_OBSERVATION.corrosion_depth_m.claim_rate_all": 0.9836956521739131,
+        "SINGLE_FRAME.corrosion_depth_m.claim_rate_all": 0.8179347826086957,
+        "MODEL2T_DIRECT.crack_length_m.claim_rate_all": 0.9831081081081081,
+        "LATEST_OBSERVATION.crack_length_m.claim_rate_all": 0.9831081081081081,
+        "SINGLE_FRAME.crack_length_m.claim_rate_all": 0.8226351351351351,
+        "MODEL2T_DIRECT.corrosion_depth_m.mae_mm": 0.0778232876983763,
+        "MODEL2T_DIRECT.corrosion_depth_m.nll": -0.7544127086978866,
+        "MODEL2T_DIRECT.corrosion_depth_m.cov95": 1.0,
+        "LATEST_OBSERVATION.corrosion_depth_m.mae_mm": 0.1619918844251473,
+        "LATEST_OBSERVATION.corrosion_depth_m.nll": -0.03020764154356973,
+        "LATEST_OBSERVATION.corrosion_depth_m.cov95": 0.9983388704318937,
+        "SINGLE_FRAME.corrosion_depth_m.mae_mm": 0.1619918844251473,
+        "SINGLE_FRAME.corrosion_depth_m.nll": -0.03020764154356973,
+        "SINGLE_FRAME.corrosion_depth_m.cov95": 0.9983388704318937,
+        "MODEL2T_DIRECT.crack_length_m.mae_mm": 0.6351969060092455,
+        "MODEL2T_DIRECT.crack_length_m.nll": 1.353009510596258,
+        "MODEL2T_DIRECT.crack_length_m.cov95": 0.9671457905544147,
+        "LATEST_OBSERVATION.crack_length_m.mae_mm": 0.9071071581805413,
+        "LATEST_OBSERVATION.crack_length_m.nll": 1.6143864228063587,
+        "LATEST_OBSERVATION.crack_length_m.cov95": 1.0,
+        "SINGLE_FRAME.crack_length_m.mae_mm": 0.9071071581805413,
+        "SINGLE_FRAME.crack_length_m.nll": 1.6143864228063587,
+        "SINGLE_FRAME.crack_length_m.cov95": 1.0,
+        "MODEL2T_DIRECT.corrosion_depth_m.median_ae_mm": 0.06453660566541203,
+        "LATEST_OBSERVATION.corrosion_depth_m.median_ae_mm": 0.13851060135597248,
+        "SINGLE_FRAME.corrosion_depth_m.median_ae_mm": 0.13851060135597248,
+        "MODEL2T_DIRECT.crack_length_m.median_ae_mm": 0.512374504589161,
+        "LATEST_OBSERVATION.crack_length_m.median_ae_mm": 0.8314020419673458,
+        "SINGLE_FRAME.crack_length_m.median_ae_mm": 0.8314020419673458,
+        "MODEL2T_DIRECT.mean_ua_observed": 0.0999791670818718
+      },
+      "level_0.4": {
+        "MODEL2T_DIRECT.corrosion_depth_m.claim_rate_all": 0.9836956521739131,
+        "LATEST_OBSERVATION.corrosion_depth_m.claim_rate_all": 0.9836956521739131,
+        "SINGLE_FRAME.corrosion_depth_m.claim_rate_all": 0.8179347826086957,
+        "MODEL2T_DIRECT.crack_length_m.claim_rate_all": 0.9831081081081081,
+        "LATEST_OBSERVATION.crack_length_m.claim_rate_all": 0.9831081081081081,
+        "SINGLE_FRAME.crack_length_m.claim_rate_all": 0.8226351351351351,
+        "MODEL2T_DIRECT.corrosion_depth_m.mae_mm": 0.21497531512966778,
+        "MODEL2T_DIRECT.corrosion_depth_m.nll": 0.07617868086542923,
+        "MODEL2T_DIRECT.corrosion_depth_m.cov95": 0.9501661129568106,
+        "LATEST_OBSERVATION.corrosion_depth_m.mae_mm": 0.5652998227190379,
+        "LATEST_OBSERVATION.corrosion_depth_m.nll": 1.4594221079990313,
+        "LATEST_OBSERVATION.corrosion_depth_m.cov95": 0.7524916943521595,
+        "SINGLE_FRAME.corrosion_depth_m.mae_mm": 0.5652998227190379,
+        "SINGLE_FRAME.corrosion_depth_m.nll": 1.4594221079990313,
+        "SINGLE_FRAME.corrosion_depth_m.cov95": 0.7524916943521595,
+        "MODEL2T_DIRECT.crack_length_m.mae_mm": 1.207085898965505,
+        "MODEL2T_DIRECT.crack_length_m.nll": 1.911316195448,
+        "MODEL2T_DIRECT.crack_length_m.cov95": 0.9404517453798767,
+        "LATEST_OBSERVATION.crack_length_m.mae_mm": 2.0494323625436266,
+        "LATEST_OBSERVATION.crack_length_m.nll": 2.434306201629633,
+        "LATEST_OBSERVATION.crack_length_m.cov95": 0.8973305954825462,
+        "SINGLE_FRAME.crack_length_m.mae_mm": 2.0494323625436266,
+        "SINGLE_FRAME.crack_length_m.nll": 2.434306201629633,
+        "SINGLE_FRAME.crack_length_m.cov95": 0.8973305954825462,
+        "MODEL2T_DIRECT.corrosion_depth_m.median_ae_mm": 0.1786320946251537,
+        "LATEST_OBSERVATION.corrosion_depth_m.median_ae_mm": 0.4757855608698953,
+        "SINGLE_FRAME.corrosion_depth_m.median_ae_mm": 0.4757855608698953,
+        "MODEL2T_DIRECT.crack_length_m.median_ae_mm": 1.0128739646473455,
+        "LATEST_OBSERVATION.crack_length_m.median_ae_mm": 1.7709368435080393,
+        "SINGLE_FRAME.crack_length_m.median_ae_mm": 1.7709368435080393,
+        "MODEL2T_DIRECT.mean_ua_observed": 0.49989583540935906
+      }
+    },
+    "2026203": {
+      "level_0.0": {
+        "MODEL2T_DIRECT.corrosion_depth_m.claim_rate_all": 0.9831730769230769,
+        "LATEST_OBSERVATION.corrosion_depth_m.claim_rate_all": 0.9831730769230769,
+        "SINGLE_FRAME.corrosion_depth_m.claim_rate_all": 0.8112980769230769,
+        "MODEL2T_DIRECT.crack_length_m.claim_rate_all": 0.9836956521739131,
+        "LATEST_OBSERVATION.crack_length_m.claim_rate_all": 0.9836956521739131,
+        "SINGLE_FRAME.crack_length_m.claim_rate_all": 0.8070652173913043,
+        "MODEL2T_DIRECT.corrosion_depth_m.mae_mm": 0.06944395363561601,
+        "MODEL2T_DIRECT.corrosion_depth_m.nll": -0.7654720229598755,
+        "MODEL2T_DIRECT.corrosion_depth_m.cov95": 1.0,
+        "LATEST_OBSERVATION.corrosion_depth_m.mae_mm": 0.15173193363287163,
+        "LATEST_OBSERVATION.corrosion_depth_m.nll": -0.04931390163564642,
+        "LATEST_OBSERVATION.corrosion_depth_m.cov95": 1.0,
+        "SINGLE_FRAME.corrosion_depth_m.mae_mm": 0.15173193363287163,
+        "SINGLE_FRAME.corrosion_depth_m.nll": -0.04931390163564642,
+        "SINGLE_FRAME.corrosion_depth_m.cov95": 1.0,
+        "MODEL2T_DIRECT.crack_length_m.mae_mm": 1.656238038568441,
+        "MODEL2T_DIRECT.crack_length_m.nll": 200.0621649791509,
+        "MODEL2T_DIRECT.crack_length_m.cov95": 0.9478114478114478,
+        "LATEST_OBSERVATION.crack_length_m.mae_mm": 0.8494851517961706,
+        "LATEST_OBSERVATION.crack_length_m.nll": 1.595205719453325,
+        "LATEST_OBSERVATION.crack_length_m.cov95": 1.0,
+        "SINGLE_FRAME.crack_length_m.mae_mm": 0.8494851517961706,
+        "SINGLE_FRAME.crack_length_m.nll": 1.595205719453325,
+        "SINGLE_FRAME.crack_length_m.cov95": 1.0,
+        "MODEL2T_DIRECT.corrosion_depth_m.median_ae_mm": 0.052987990367926896,
+        "LATEST_OBSERVATION.corrosion_depth_m.median_ae_mm": 0.12984178180226524,
+        "SINGLE_FRAME.corrosion_depth_m.median_ae_mm": 0.12984178180226524,
+        "MODEL2T_DIRECT.crack_length_m.median_ae_mm": 0.5245569461714472,
+        "LATEST_OBSERVATION.crack_length_m.median_ae_mm": 0.7598905965627838,
+        "SINGLE_FRAME.crack_length_m.median_ae_mm": 0.7598905965627838,
+        "MODEL2T_DIRECT.mean_ua_observed": 0.09997788915094341
+      },
+      "level_0.4": {
+        "MODEL2T_DIRECT.corrosion_depth_m.claim_rate_all": 0.9831730769230769,
+        "LATEST_OBSERVATION.corrosion_depth_m.claim_rate_all": 0.9831730769230769,
+        "SINGLE_FRAME.corrosion_depth_m.claim_rate_all": 0.8112980769230769,
+        "MODEL2T_DIRECT.crack_length_m.claim_rate_all": 0.9836956521739131,
+        "LATEST_OBSERVATION.crack_length_m.claim_rate_all": 0.9836956521739131,
+        "SINGLE_FRAME.crack_length_m.claim_rate_all": 0.8070652173913043,
+        "MODEL2T_DIRECT.corrosion_depth_m.mae_mm": 0.1783013955624893,
+        "MODEL2T_DIRECT.corrosion_depth_m.nll": -0.06517537967797228,
+        "MODEL2T_DIRECT.corrosion_depth_m.cov95": 0.957037037037037,
+        "LATEST_OBSERVATION.corrosion_depth_m.mae_mm": 0.5327850323947002,
+        "LATEST_OBSERVATION.corrosion_depth_m.nll": 1.3142107218695378,
+        "LATEST_OBSERVATION.corrosion_depth_m.cov95": 0.7807407407407407,
+        "SINGLE_FRAME.corrosion_depth_m.mae_mm": 0.5327850323947002,
+        "SINGLE_FRAME.corrosion_depth_m.nll": 1.3142107218695378,
+        "SINGLE_FRAME.corrosion_depth_m.cov95": 0.7807407407407407,
+        "MODEL2T_DIRECT.crack_length_m.mae_mm": 2.89170856855852,
+        "MODEL2T_DIRECT.crack_length_m.nll": 289.1176827302096,
+        "MODEL2T_DIRECT.crack_length_m.cov95": 0.8905723905723906,
+        "LATEST_OBSERVATION.crack_length_m.mae_mm": 2.112550294323526,
+        "LATEST_OBSERVATION.crack_length_m.nll": 2.483451155047125,
+        "LATEST_OBSERVATION.crack_length_m.cov95": 0.8838383838383839,
+        "SINGLE_FRAME.crack_length_m.mae_mm": 2.112550294323526,
+        "SINGLE_FRAME.crack_length_m.nll": 2.483451155047125,
+        "SINGLE_FRAME.crack_length_m.cov95": 0.8838383838383839,
+        "MODEL2T_DIRECT.corrosion_depth_m.median_ae_mm": 0.13504558900435115,
+        "LATEST_OBSERVATION.corrosion_depth_m.median_ae_mm": 0.4441682674036832,
+        "SINGLE_FRAME.corrosion_depth_m.median_ae_mm": 0.4441682674036832,
+        "MODEL2T_DIRECT.crack_length_m.median_ae_mm": 1.2066259953895087,
+        "LATEST_OBSERVATION.crack_length_m.median_ae_mm": 1.7763482284805132,
+        "SINGLE_FRAME.crack_length_m.median_ae_mm": 1.7763482284805132,
+        "MODEL2T_DIRECT.mean_ua_observed": 0.499889445754717
+      }
+    }
+  },
+  "summary": {
+    "level_0.0.LATEST_OBSERVATION.corrosion_depth_m.claim_rate_all": {
+      "mean": 0.9846827387588256,
+      "std": 0.0021779774402535482,
+      "n": 3.0
+    },
+    "level_0.0.LATEST_OBSERVATION.corrosion_depth_m.cov95": {
+      "mean": 0.9981049085208928,
+      "std": 0.0020222485292261676,
+      "n": 3.0
+    },
+    "level_0.0.LATEST_OBSERVATION.corrosion_depth_m.mae_mm": {
+      "mean": 0.155844486776264,
+      "std": 0.005424213462440852,
+      "n": 3.0
+    },
+    "level_0.0.LATEST_OBSERVATION.corrosion_depth_m.median_ae_mm": {
+      "mean": 0.12945586775675821,
+      "std": 0.009253727847603938,
+      "n": 3.0
+    },
+    "level_0.0.LATEST_OBSERVATION.corrosion_depth_m.nll": {
+      "mean": -0.039570721767593596,
+      "std": 0.0095587996359932,
+      "n": 3.0
+    },
+    "level_0.0.LATEST_OBSERVATION.crack_length_m.claim_rate_all": {
+      "mean": 0.9846453710743992,
+      "std": 0.002173732069868526,
+      "n": 3.0
+    },
+    "level_0.0.LATEST_OBSERVATION.crack_length_m.cov95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "level_0.0.LATEST_OBSERVATION.crack_length_m.mae_mm": {
+      "mean": 0.8415384426424598,
+      "std": 0.06988177269968927,
+      "n": 3.0
+    },
+    "level_0.0.LATEST_OBSERVATION.crack_length_m.median_ae_mm": {
+      "mean": 0.7673588535307783,
+      "std": 0.06065487498105741,
+      "n": 3.0
+    },
+    "level_0.0.LATEST_OBSERVATION.crack_length_m.nll": {
+      "mean": 1.5891683965521366,
+      "std": 0.028716676050672216,
+      "n": 3.0
+    },
+    "level_0.0.MODEL2T_DIRECT.corrosion_depth_m.claim_rate_all": {
+      "mean": 0.9846827387588256,
+      "std": 0.0021779774402535482,
+      "n": 3.0
+    },
+    "level_0.0.MODEL2T_DIRECT.corrosion_depth_m.cov95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "level_0.0.MODEL2T_DIRECT.corrosion_depth_m.mae_mm": {
+      "mean": 0.07476356102619708,
+      "std": 0.0046242410706933395,
+      "n": 3.0
+    },
+    "level_0.0.MODEL2T_DIRECT.corrosion_depth_m.median_ae_mm": {
+      "mean": 0.06067915857530779,
+      "std": 0.006660757616526567,
+      "n": 3.0
+    },
+    "level_0.0.MODEL2T_DIRECT.corrosion_depth_m.nll": {
+      "mean": -0.7566371557704988,
+      "std": 0.007959293220911752,
+      "n": 3.0
+    },
+    "level_0.0.MODEL2T_DIRECT.crack_length_m.claim_rate_all": {
+      "mean": 0.9846453710743992,
+      "std": 0.002173732069868526,
+      "n": 3.0
+    },
+    "level_0.0.MODEL2T_DIRECT.crack_length_m.cov95": {
+      "mean": 0.9586852121783996,
+      "std": 0.009890490498239708,
+      "n": 3.0
+    },
+    "level_0.0.MODEL2T_DIRECT.crack_length_m.mae_mm": {
+      "mean": 1.4325149112366453,
+      "std": 0.7123128256289478,
+      "n": 3.0
+    },
+    "level_0.0.MODEL2T_DIRECT.crack_length_m.median_ae_mm": {
+      "mean": 0.5253571879734434,
+      "std": 0.013400736574695121,
+      "n": 3.0
+    },
+    "level_0.0.MODEL2T_DIRECT.crack_length_m.nll": {
+      "mean": 162.63274380342105,
+      "std": 146.20364961641144,
+      "n": 3.0
+    },
+    "level_0.0.MODEL2T_DIRECT.mean_ua_observed": {
+      "mean": 0.09997763639970793,
+      "std": 1.6714523271219774e-06,
+      "n": 3.0
+    },
+    "level_0.0.SINGLE_FRAME.corrosion_depth_m.claim_rate_all": {
+      "mean": 0.8085690728353772,
+      "std": 0.010987403839138307,
+      "n": 3.0
+    },
+    "level_0.0.SINGLE_FRAME.corrosion_depth_m.cov95": {
+      "mean": 0.9981049085208928,
+      "std": 0.0020222485292261676,
+      "n": 3.0
+    },
+    "level_0.0.SINGLE_FRAME.corrosion_depth_m.mae_mm": {
+      "mean": 0.155844486776264,
+      "std": 0.005424213462440852,
+      "n": 3.0
+    },
+    "level_0.0.SINGLE_FRAME.corrosion_depth_m.median_ae_mm": {
+      "mean": 0.12945586775675821,
+      "std": 0.009253727847603938,
+      "n": 3.0
+    },
+    "level_0.0.SINGLE_FRAME.corrosion_depth_m.nll": {
+      "mean": -0.039570721767593596,
+      "std": 0.0095587996359932,
+      "n": 3.0
+    },
+    "level_0.0.SINGLE_FRAME.crack_length_m.claim_rate_all": {
+      "mean": 0.8110030586852837,
+      "std": 0.010247269178313107,
+      "n": 3.0
+    },
+    "level_0.0.SINGLE_FRAME.crack_length_m.cov95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "level_0.0.SINGLE_FRAME.crack_length_m.mae_mm": {
+      "mean": 0.8415384426424598,
+      "std": 0.06988177269968927,
+      "n": 3.0
+    },
+    "level_0.0.SINGLE_FRAME.crack_length_m.median_ae_mm": {
+      "mean": 0.7673588535307783,
+      "std": 0.06065487498105741,
+      "n": 3.0
+    },
+    "level_0.0.SINGLE_FRAME.crack_length_m.nll": {
+      "mean": 1.5891683965521366,
+      "std": 0.028716676050672216,
+      "n": 3.0
+    },
+    "level_0.4.LATEST_OBSERVATION.corrosion_depth_m.claim_rate_all": {
+      "mean": 0.9846827387588256,
+      "std": 0.0021779774402535482,
+      "n": 3.0
+    },
+    "level_0.4.LATEST_OBSERVATION.corrosion_depth_m.cov95": {
+      "mean": 0.7639279143133276,
+      "std": 0.01487222506169489,
+      "n": 3.0
+    },
+    "level_0.4.LATEST_OBSERVATION.corrosion_depth_m.mae_mm": {
+      "mean": 0.5554601297228624,
+      "std": 0.019694252987435223,
+      "n": 3.0
+    },
+    "level_0.4.LATEST_OBSERVATION.corrosion_depth_m.median_ae_mm": {
+      "mean": 0.46779414901325406,
+      "std": 0.020814437174076977,
+      "n": 3.0
+    },
+    "level_0.4.LATEST_OBSERVATION.corrosion_depth_m.nll": {
+      "mean": 1.409022975609572,
+      "std": 0.08216435161606221,
+      "n": 3.0
+    },
+    "level_0.4.LATEST_OBSERVATION.crack_length_m.claim_rate_all": {
+      "mean": 0.9846453710743992,
+      "std": 0.002173732069868526,
+      "n": 3.0
+    },
+    "level_0.4.LATEST_OBSERVATION.crack_length_m.cov95": {
+      "mean": 0.8942569366615153,
+      "std": 0.009272030235567866,
+      "n": 3.0
+    },
+    "level_0.4.LATEST_OBSERVATION.crack_length_m.mae_mm": {
+      "mean": 2.031612126176675,
+      "std": 0.09116405637435743,
+      "n": 3.0
+    },
+    "level_0.4.LATEST_OBSERVATION.crack_length_m.median_ae_mm": {
+      "mean": 1.6901510093624832,
+      "std": 0.1446368757604796,
+      "n": 3.0
+    },
+    "level_0.4.LATEST_OBSERVATION.crack_length_m.nll": {
+      "mean": 2.430868677483678,
+      "std": 0.05438278270963046,
+      "n": 3.0
+    },
+    "level_0.4.MODEL2T_DIRECT.corrosion_depth_m.claim_rate_all": {
+      "mean": 0.9846827387588256,
+      "std": 0.0021779774402535482,
+      "n": 3.0
+    },
+    "level_0.4.MODEL2T_DIRECT.corrosion_depth_m.cov95": {
+      "mean": 0.9576659728685059,
+      "std": 0.007833287279592208,
+      "n": 3.0
+    },
+    "level_0.4.MODEL2T_DIRECT.corrosion_depth_m.mae_mm": {
+      "mean": 0.1997921937115248,
+      "std": 0.01913332651190196,
+      "n": 3.0
+    },
+    "level_0.4.MODEL2T_DIRECT.corrosion_depth_m.median_ae_mm": {
+      "mean": 0.16232416692802767,
+      "std": 0.0237741927907773,
+      "n": 3.0
+    },
+    "level_0.4.MODEL2T_DIRECT.corrosion_depth_m.nll": {
+      "mean": 0.009731881554126081,
+      "std": 0.07105580321101032,
+      "n": 3.0
+    },
+    "level_0.4.MODEL2T_DIRECT.crack_length_m.claim_rate_all": {
+      "mean": 0.9846453710743992,
+      "std": 0.002173732069868526,
+      "n": 3.0
+    },
+    "level_0.4.MODEL2T_DIRECT.crack_length_m.cov95": {
+      "mean": 0.9192658637766139,
+      "std": 0.025773250818200696,
+      "n": 3.0
+    },
+    "level_0.4.MODEL2T_DIRECT.crack_length_m.mae_mm": {
+      "mean": 2.4574973291299904,
+      "std": 1.0996024046193842,
+      "n": 3.0
+    },
+    "level_0.4.MODEL2T_DIRECT.crack_length_m.median_ae_mm": {
+      "mean": 1.0867089066162217,
+      "std": 0.10477421221252636,
+      "n": 3.0
+    },
+    "level_0.4.MODEL2T_DIRECT.crack_length_m.nll": {
+      "mean": 233.79351318423824,
+      "std": 209.76517116861734,
+      "n": 3.0
+    },
+    "level_0.4.MODEL2T_DIRECT.mean_ua_observed": {
+      "mean": 0.4998881819985397,
+      "std": 8.35726163562901e-06,
+      "n": 3.0
+    },
+    "level_0.4.SINGLE_FRAME.corrosion_depth_m.claim_rate_all": {
+      "mean": 0.8085690728353772,
+      "std": 0.010987403839138307,
+      "n": 3.0
+    },
+    "level_0.4.SINGLE_FRAME.corrosion_depth_m.cov95": {
+      "mean": 0.7639279143133276,
+      "std": 0.01487222506169489,
+      "n": 3.0
+    },
+    "level_0.4.SINGLE_FRAME.corrosion_depth_m.mae_mm": {
+      "mean": 0.5554601297228624,
+      "std": 0.019694252987435223,
+      "n": 3.0
+    },
+    "level_0.4.SINGLE_FRAME.corrosion_depth_m.median_ae_mm": {
+      "mean": 0.46779414901325406,
+      "std": 0.020814437174076977,
+      "n": 3.0
+    },
+    "level_0.4.SINGLE_FRAME.corrosion_depth_m.nll": {
+      "mean": 1.409022975609572,
+      "std": 0.08216435161606221,
+      "n": 3.0
+    },
+    "level_0.4.SINGLE_FRAME.crack_length_m.claim_rate_all": {
+      "mean": 0.8110030586852837,
+      "std": 0.010247269178313107,
+      "n": 3.0
+    },
+    "level_0.4.SINGLE_FRAME.crack_length_m.cov95": {
+      "mean": 0.8942569366615153,
+      "std": 0.009272030235567866,
+      "n": 3.0
+    },
+    "level_0.4.SINGLE_FRAME.crack_length_m.mae_mm": {
+      "mean": 2.031612126176675,
+      "std": 0.09116405637435743,
+      "n": 3.0
+    },
+    "level_0.4.SINGLE_FRAME.crack_length_m.median_ae_mm": {
+      "mean": 1.6901510093624832,
+      "std": 0.1446368757604796,
+      "n": 3.0
+    },
+    "level_0.4.SINGLE_FRAME.crack_length_m.nll": {
+      "mean": 2.430868677483678,
+      "std": 0.05438278270963046,
+      "n": 3.0
+    }
+  },
+  "verdicts": {
+    "level_0.0.corrosion_depth_m.model_beats_latest_all_seeds": true,
+    "level_0.0.crack_length_m.model_beats_latest_all_seeds": false,
+    "level_0.4.corrosion_depth_m.model_beats_latest_all_seeds": true,
+    "level_0.4.crack_length_m.model_beats_latest_all_seeds": false,
+    "ua_rises_with_sensor_degradation_all_seeds": true
+  },
+  "wall_time_s": 2.3876018000009935,
+  "environment": {
+    "python": "3.11.15",
+    "torch": "2.6.0+cpu",
+    "device": "cpu"
+  },
+  "claim_note": "Numbers are what this run produced on synthetic data; no real-world claim."
+}

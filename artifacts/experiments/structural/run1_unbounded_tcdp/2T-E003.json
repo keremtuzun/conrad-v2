@@ -1,0 +1,1116 @@
+{
+  "experiment_id": "2T-E003",
+  "data": "SYNTHETIC_ONLY: Twin2T (MCDE) scenarios, T0 abstract observations",
+  "seeds": [
+    2026201,
+    2026202,
+    2026203
+  ],
+  "config": {
+    "experiment": {
+      "id": "2T-E003"
+    },
+    "seeds": [
+      2026201,
+      2026202,
+      2026203
+    ],
+    "kinds": [
+      "coupled",
+      "misleading",
+      "natural"
+    ],
+    "episodes_per_kind": 3,
+    "n_segments": 6,
+    "observed_fraction": 0.5,
+    "steps": 12,
+    "dt_days": 60,
+    "burn_in_steps": 2,
+    "degraded_threshold_m": {
+      "corrosion_depth_m": 0.001,
+      "crack_length_m": 0.005
+    }
+  },
+  "per_seed": {
+    "2026201": {
+      "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.hidden_mae_mm": 0.7017294346493939,
+      "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.reachable_hidden_mae_mm": 0.9012053789249986,
+      "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.claim_rate_hidden": 0.0,
+      "coupled.GENERIC_RELATIONAL.corrosion_depth_m.hidden_mae_mm": 0.6409705383595389,
+      "coupled.GENERIC_RELATIONAL.corrosion_depth_m.reachable_hidden_mae_mm": 0.7351000964000942,
+      "coupled.GENERIC_RELATIONAL.corrosion_depth_m.claim_rate_hidden": 0.9523809523809523,
+      "coupled.TCDP.corrosion_depth_m.hidden_mae_mm": 0.6752775756173356,
+      "coupled.TCDP.corrosion_depth_m.reachable_hidden_mae_mm": 0.8394843745168632,
+      "coupled.TCDP.corrosion_depth_m.claim_rate_hidden": 0.42857142857142855,
+      "coupled.INDEPENDENT_COMPONENT.crack_length_m.hidden_mae_mm": 78.46390665084273,
+      "coupled.INDEPENDENT_COMPONENT.crack_length_m.claim_rate_hidden": 0.0,
+      "coupled.GENERIC_RELATIONAL.crack_length_m.hidden_mae_mm": 83.39780016915235,
+      "coupled.GENERIC_RELATIONAL.crack_length_m.claim_rate_hidden": 1.0,
+      "coupled.TCDP.crack_length_m.hidden_mae_mm": 78.46295355865615,
+      "coupled.TCDP.crack_length_m.claim_rate_hidden": 0.03125,
+      "coupled.INDEPENDENT_COMPONENT.crack_length_m.reachable_hidden_mae_mm": 1.5877394131731413,
+      "coupled.GENERIC_RELATIONAL.crack_length_m.reachable_hidden_mae_mm": 45.969239930410325,
+      "coupled.TCDP.crack_length_m.reachable_hidden_mae_mm": 1.5775730965164236,
+      "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.hidden_mae_mm": 0.3601103361433281,
+      "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.reachable_hidden_mae_mm": 0.39830242689477824,
+      "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.claim_rate_hidden": 0.0,
+      "misleading.GENERIC_RELATIONAL.corrosion_depth_m.hidden_mae_mm": 0.3680095440203029,
+      "misleading.GENERIC_RELATIONAL.corrosion_depth_m.reachable_hidden_mae_mm": 0.39631617702172783,
+      "misleading.GENERIC_RELATIONAL.corrosion_depth_m.claim_rate_hidden": 0.9545454545454546,
+      "misleading.TCDP.corrosion_depth_m.hidden_mae_mm": 0.3646610600387053,
+      "misleading.TCDP.corrosion_depth_m.reachable_hidden_mae_mm": 0.4094264186390336,
+      "misleading.TCDP.corrosion_depth_m.claim_rate_hidden": 0.4090909090909091,
+      "misleading.INDEPENDENT_COMPONENT.crack_length_m.hidden_mae_mm": 30.565628026660224,
+      "misleading.INDEPENDENT_COMPONENT.crack_length_m.reachable_hidden_mae_mm": 1.3963055091507557,
+      "misleading.INDEPENDENT_COMPONENT.crack_length_m.claim_rate_hidden": 0.0,
+      "misleading.GENERIC_RELATIONAL.crack_length_m.hidden_mae_mm": 30.649430384737858,
+      "misleading.GENERIC_RELATIONAL.crack_length_m.reachable_hidden_mae_mm": 1.0180269370767985,
+      "misleading.GENERIC_RELATIONAL.crack_length_m.claim_rate_hidden": 1.0,
+      "misleading.TCDP.crack_length_m.hidden_mae_mm": 30.56245893576316,
+      "misleading.TCDP.crack_length_m.reachable_hidden_mae_mm": 1.3635582365478498,
+      "misleading.TCDP.crack_length_m.claim_rate_hidden": 0.0967741935483871,
+      "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.hidden_mae_mm": 0.26158636527930695,
+      "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.reachable_hidden_mae_mm": 0.2542138799284809,
+      "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.claim_rate_hidden": 0.0,
+      "natural.GENERIC_RELATIONAL.corrosion_depth_m.hidden_mae_mm": 0.259340551420455,
+      "natural.GENERIC_RELATIONAL.corrosion_depth_m.reachable_hidden_mae_mm": 0.25366143724463625,
+      "natural.GENERIC_RELATIONAL.corrosion_depth_m.claim_rate_hidden": 1.0,
+      "natural.TCDP.corrosion_depth_m.hidden_mae_mm": 0.26209573861612884,
+      "natural.TCDP.corrosion_depth_m.reachable_hidden_mae_mm": 0.25545901475182337,
+      "natural.TCDP.corrosion_depth_m.claim_rate_hidden": 0.4090909090909091,
+      "natural.INDEPENDENT_COMPONENT.crack_length_m.hidden_mae_mm": 97.68025219839795,
+      "natural.INDEPENDENT_COMPONENT.crack_length_m.claim_rate_hidden": 0.0,
+      "natural.GENERIC_RELATIONAL.crack_length_m.hidden_mae_mm": 105.30512035833117,
+      "natural.GENERIC_RELATIONAL.crack_length_m.claim_rate_hidden": 1.0,
+      "natural.TCDP.crack_length_m.hidden_mae_mm": 97.68025219839795,
+      "natural.TCDP.crack_length_m.claim_rate_hidden": 0.0,
+      "coupled.INDEPENDENT_COMPONENT.crack_length_m.rc_hits": 0.0,
+      "coupled.INDEPENDENT_COMPONENT.crack_length_m.rc_pool": 72.0,
+      "coupled.GENERIC_RELATIONAL.crack_length_m.rc_hits": 17.0,
+      "coupled.GENERIC_RELATIONAL.crack_length_m.rc_pool": 72.0,
+      "coupled.TCDP.crack_length_m.rc_hits": 0.0,
+      "coupled.TCDP.crack_length_m.rc_pool": 72.0,
+      "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_hits": 0.0,
+      "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_pool": 10.0,
+      "coupled.GENERIC_RELATIONAL.corrosion_depth_m.rc_hits": 7.0,
+      "coupled.GENERIC_RELATIONAL.corrosion_depth_m.rc_pool": 10.0,
+      "coupled.TCDP.corrosion_depth_m.rc_hits": 0.0,
+      "coupled.TCDP.corrosion_depth_m.rc_pool": 10.0,
+      "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_hits": 0.0,
+      "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_pool": 60.0,
+      "misleading.GENERIC_RELATIONAL.corrosion_depth_m.rc_hits": 23.0,
+      "misleading.GENERIC_RELATIONAL.corrosion_depth_m.rc_pool": 60.0,
+      "misleading.TCDP.corrosion_depth_m.rc_hits": 2.0,
+      "misleading.TCDP.corrosion_depth_m.rc_pool": 60.0,
+      "misleading.INDEPENDENT_COMPONENT.crack_length_m.rc_hits": 0.0,
+      "misleading.INDEPENDENT_COMPONENT.crack_length_m.rc_pool": 80.0,
+      "misleading.GENERIC_RELATIONAL.crack_length_m.rc_hits": 32.0,
+      "misleading.GENERIC_RELATIONAL.crack_length_m.rc_pool": 80.0,
+      "misleading.TCDP.crack_length_m.rc_hits": 0.0,
+      "misleading.TCDP.crack_length_m.rc_pool": 80.0,
+      "natural.INDEPENDENT_COMPONENT.crack_length_m.rc_hits": 0.0,
+      "natural.INDEPENDENT_COMPONENT.crack_length_m.rc_pool": 49.0,
+      "natural.GENERIC_RELATIONAL.crack_length_m.rc_hits": 29.0,
+      "natural.GENERIC_RELATIONAL.crack_length_m.rc_pool": 49.0,
+      "natural.TCDP.crack_length_m.rc_hits": 0.0,
+      "natural.TCDP.crack_length_m.rc_pool": 49.0,
+      "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_hits": 0.0,
+      "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_pool": 2.0,
+      "natural.GENERIC_RELATIONAL.corrosion_depth_m.rc_hits": 0.0,
+      "natural.GENERIC_RELATIONAL.corrosion_depth_m.rc_pool": 2.0,
+      "natural.TCDP.corrosion_depth_m.rc_hits": 0.0,
+      "natural.TCDP.corrosion_depth_m.rc_pool": 2.0,
+      "coupled.INDEPENDENT_COMPONENT.crack_length_m.rc": 0.0,
+      "coupled.GENERIC_RELATIONAL.crack_length_m.rc": 0.2361111111111111,
+      "coupled.TCDP.crack_length_m.rc": 0.0,
+      "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.rc": 0.0,
+      "coupled.GENERIC_RELATIONAL.corrosion_depth_m.rc": 0.7,
+      "coupled.TCDP.corrosion_depth_m.rc": 0.0,
+      "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.rc": 0.0,
+      "misleading.GENERIC_RELATIONAL.corrosion_depth_m.rc": 0.38333333333333336,
+      "misleading.TCDP.corrosion_depth_m.rc": 0.03333333333333333,
+      "misleading.INDEPENDENT_COMPONENT.crack_length_m.rc": 0.0,
+      "misleading.GENERIC_RELATIONAL.crack_length_m.rc": 0.4,
+      "misleading.TCDP.crack_length_m.rc": 0.0,
+      "natural.INDEPENDENT_COMPONENT.crack_length_m.rc": 0.0,
+      "natural.GENERIC_RELATIONAL.crack_length_m.rc": 0.5918367346938775,
+      "natural.TCDP.crack_length_m.rc": 0.0,
+      "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.rc": 0.0,
+      "natural.GENERIC_RELATIONAL.corrosion_depth_m.rc": 0.0,
+      "natural.TCDP.corrosion_depth_m.rc": 0.0,
+      "coupled.corrosion_depth_m.RB_tcdp.hidden_mae_mm": 0.026451859032058267,
+      "coupled.corrosion_depth_m.RB_generic.hidden_mae_mm": 0.06075889628985498,
+      "coupled.corrosion_depth_m.RB_tcdp.reachable_hidden_mae_mm": 0.06172100440813544,
+      "coupled.corrosion_depth_m.RB_generic.reachable_hidden_mae_mm": 0.16610528252490442,
+      "coupled.crack_length_m.RB_tcdp.hidden_mae_mm": 0.0009530921865774644,
+      "coupled.crack_length_m.RB_generic.hidden_mae_mm": -4.933893518309617,
+      "coupled.crack_length_m.RB_tcdp.reachable_hidden_mae_mm": 0.010166316656717633,
+      "coupled.crack_length_m.RB_generic.reachable_hidden_mae_mm": -44.381500517237185,
+      "misleading.corrosion_depth_m.RB_tcdp.hidden_mae_mm": -0.004550723895377196,
+      "misleading.corrosion_depth_m.RB_generic.hidden_mae_mm": -0.00789920787697479,
+      "misleading.corrosion_depth_m.RB_tcdp.reachable_hidden_mae_mm": -0.01112399174425538,
+      "misleading.corrosion_depth_m.RB_generic.reachable_hidden_mae_mm": 0.0019862498730504052,
+      "misleading.crack_length_m.RB_tcdp.hidden_mae_mm": 0.003169090897063853,
+      "misleading.crack_length_m.RB_generic.hidden_mae_mm": -0.0838023580776337,
+      "misleading.crack_length_m.RB_tcdp.reachable_hidden_mae_mm": 0.032747272602905886,
+      "misleading.crack_length_m.RB_generic.reachable_hidden_mae_mm": 0.3782785720739572,
+      "natural.corrosion_depth_m.RB_tcdp.hidden_mae_mm": -0.0005093733368218833,
+      "natural.corrosion_depth_m.RB_generic.hidden_mae_mm": 0.002245813858851975,
+      "natural.corrosion_depth_m.RB_tcdp.reachable_hidden_mae_mm": -0.0012451348233424864,
+      "natural.corrosion_depth_m.RB_generic.reachable_hidden_mae_mm": 0.0005524426838446339,
+      "natural.crack_length_m.RB_tcdp.hidden_mae_mm": 0.0,
+      "natural.crack_length_m.RB_generic.hidden_mae_mm": -7.624868159933214
+    },
+    "2026202": {
+      "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.hidden_mae_mm": 0.6258081849942257,
+      "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.reachable_hidden_mae_mm": 0.8930445166295572,
+      "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.claim_rate_hidden": 0.0,
+      "coupled.GENERIC_RELATIONAL.corrosion_depth_m.hidden_mae_mm": 0.6362973426422336,
+      "coupled.GENERIC_RELATIONAL.corrosion_depth_m.reachable_hidden_mae_mm": 0.8935924032273055,
+      "coupled.GENERIC_RELATIONAL.corrosion_depth_m.claim_rate_hidden": 0.9393939393939394,
+      "coupled.TCDP.corrosion_depth_m.hidden_mae_mm": 0.6241214361495093,
+      "coupled.TCDP.corrosion_depth_m.reachable_hidden_mae_mm": 0.8897702394604019,
+      "coupled.TCDP.corrosion_depth_m.claim_rate_hidden": 0.5151515151515151,
+      "coupled.INDEPENDENT_COMPONENT.crack_length_m.hidden_mae_mm": 72.44417729657589,
+      "coupled.INDEPENDENT_COMPONENT.crack_length_m.claim_rate_hidden": 0.0,
+      "coupled.GENERIC_RELATIONAL.crack_length_m.hidden_mae_mm": 72.42197144654538,
+      "coupled.GENERIC_RELATIONAL.crack_length_m.claim_rate_hidden": 1.0,
+      "coupled.TCDP.crack_length_m.hidden_mae_mm": 72.442989395594,
+      "coupled.TCDP.crack_length_m.claim_rate_hidden": 0.04,
+      "coupled.INDEPENDENT_COMPONENT.crack_length_m.reachable_hidden_mae_mm": 1.8676421956336775,
+      "coupled.GENERIC_RELATIONAL.crack_length_m.reachable_hidden_mae_mm": 1.553263947090434,
+      "coupled.TCDP.crack_length_m.reachable_hidden_mae_mm": 1.8379446710861806,
+      "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.hidden_mae_mm": 0.38989661394783875,
+      "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.claim_rate_hidden": 0.0,
+      "misleading.GENERIC_RELATIONAL.corrosion_depth_m.hidden_mae_mm": 0.4179572167009278,
+      "misleading.GENERIC_RELATIONAL.corrosion_depth_m.claim_rate_hidden": 0.9743589743589743,
+      "misleading.TCDP.corrosion_depth_m.hidden_mae_mm": 0.3977014475589769,
+      "misleading.TCDP.corrosion_depth_m.claim_rate_hidden": 0.48717948717948717,
+      "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.reachable_hidden_mae_mm": 0.3588687745826284,
+      "misleading.GENERIC_RELATIONAL.corrosion_depth_m.reachable_hidden_mae_mm": 0.37389046031828577,
+      "misleading.TCDP.corrosion_depth_m.reachable_hidden_mae_mm": 0.3748892225212804,
+      "misleading.INDEPENDENT_COMPONENT.crack_length_m.hidden_mae_mm": 36.62617746825104,
+      "misleading.INDEPENDENT_COMPONENT.crack_length_m.reachable_hidden_mae_mm": 2.0649426922490797,
+      "misleading.INDEPENDENT_COMPONENT.crack_length_m.claim_rate_hidden": 0.0,
+      "misleading.GENERIC_RELATIONAL.crack_length_m.hidden_mae_mm": 37.08285316604723,
+      "misleading.GENERIC_RELATIONAL.crack_length_m.reachable_hidden_mae_mm": 1.8818843938967174,
+      "misleading.GENERIC_RELATIONAL.crack_length_m.claim_rate_hidden": 1.0,
+      "misleading.TCDP.crack_length_m.hidden_mae_mm": 36.625279881256475,
+      "misleading.TCDP.crack_length_m.reachable_hidden_mae_mm": 2.0371174954173075,
+      "misleading.TCDP.crack_length_m.claim_rate_hidden": 0.03225806451612903,
+      "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.hidden_mae_mm": 0.243227316522957,
+      "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.reachable_hidden_mae_mm": 0.1931717824050768,
+      "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.claim_rate_hidden": 0.0,
+      "natural.GENERIC_RELATIONAL.corrosion_depth_m.hidden_mae_mm": 0.25671938469532535,
+      "natural.GENERIC_RELATIONAL.corrosion_depth_m.reachable_hidden_mae_mm": 0.2147464919150899,
+      "natural.GENERIC_RELATIONAL.corrosion_depth_m.claim_rate_hidden": 1.0,
+      "natural.TCDP.corrosion_depth_m.hidden_mae_mm": 0.24441973745887105,
+      "natural.TCDP.corrosion_depth_m.reachable_hidden_mae_mm": 0.19533982047037504,
+      "natural.TCDP.corrosion_depth_m.claim_rate_hidden": 0.55,
+      "natural.INDEPENDENT_COMPONENT.crack_length_m.hidden_mae_mm": 139.91814532865007,
+      "natural.INDEPENDENT_COMPONENT.crack_length_m.reachable_hidden_mae_mm": 333.4739315530886,
+      "natural.INDEPENDENT_COMPONENT.crack_length_m.claim_rate_hidden": 0.0,
+      "natural.GENERIC_RELATIONAL.crack_length_m.hidden_mae_mm": 145.6592216171733,
+      "natural.GENERIC_RELATIONAL.crack_length_m.reachable_hidden_mae_mm": 350.98086071941384,
+      "natural.GENERIC_RELATIONAL.crack_length_m.claim_rate_hidden": 1.0,
+      "natural.TCDP.crack_length_m.hidden_mae_mm": 139.91998747024894,
+      "natural.TCDP.crack_length_m.reachable_hidden_mae_mm": 333.48498440268185,
+      "natural.TCDP.crack_length_m.claim_rate_hidden": 0.05555555555555555,
+      "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_hits": 0.0,
+      "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_pool": 80.0,
+      "coupled.GENERIC_RELATIONAL.corrosion_depth_m.rc_hits": 50.0,
+      "coupled.GENERIC_RELATIONAL.corrosion_depth_m.rc_pool": 80.0,
+      "coupled.TCDP.corrosion_depth_m.rc_hits": 4.0,
+      "coupled.TCDP.corrosion_depth_m.rc_pool": 80.0,
+      "coupled.INDEPENDENT_COMPONENT.crack_length_m.rc_hits": 0.0,
+      "coupled.INDEPENDENT_COMPONENT.crack_length_m.rc_pool": 20.0,
+      "coupled.GENERIC_RELATIONAL.crack_length_m.rc_hits": 3.0,
+      "coupled.GENERIC_RELATIONAL.crack_length_m.rc_pool": 20.0,
+      "coupled.TCDP.crack_length_m.rc_hits": 0.0,
+      "coupled.TCDP.crack_length_m.rc_pool": 20.0,
+      "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_hits": 0.0,
+      "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_pool": 60.0,
+      "misleading.GENERIC_RELATIONAL.corrosion_depth_m.rc_hits": 28.0,
+      "misleading.GENERIC_RELATIONAL.corrosion_depth_m.rc_pool": 60.0,
+      "misleading.TCDP.corrosion_depth_m.rc_hits": 3.0,
+      "misleading.TCDP.corrosion_depth_m.rc_pool": 60.0,
+      "misleading.INDEPENDENT_COMPONENT.crack_length_m.rc_hits": 0.0,
+      "misleading.INDEPENDENT_COMPONENT.crack_length_m.rc_pool": 77.0,
+      "misleading.GENERIC_RELATIONAL.crack_length_m.rc_hits": 27.0,
+      "misleading.GENERIC_RELATIONAL.crack_length_m.rc_pool": 77.0,
+      "misleading.TCDP.crack_length_m.rc_hits": 0.0,
+      "misleading.TCDP.crack_length_m.rc_pool": 77.0,
+      "natural.INDEPENDENT_COMPONENT.crack_length_m.rc_hits": 0.0,
+      "natural.INDEPENDENT_COMPONENT.crack_length_m.rc_pool": 20.0,
+      "natural.GENERIC_RELATIONAL.crack_length_m.rc_hits": 10.0,
+      "natural.GENERIC_RELATIONAL.crack_length_m.rc_pool": 20.0,
+      "natural.TCDP.crack_length_m.rc_hits": 0.0,
+      "natural.TCDP.crack_length_m.rc_pool": 20.0,
+      "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_hits": 0.0,
+      "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_pool": 30.0,
+      "natural.GENERIC_RELATIONAL.corrosion_depth_m.rc_hits": 0.0,
+      "natural.GENERIC_RELATIONAL.corrosion_depth_m.rc_pool": 30.0,
+      "natural.TCDP.corrosion_depth_m.rc_hits": 0.0,
+      "natural.TCDP.corrosion_depth_m.rc_pool": 30.0,
+      "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.rc": 0.0,
+      "coupled.GENERIC_RELATIONAL.corrosion_depth_m.rc": 0.625,
+      "coupled.TCDP.corrosion_depth_m.rc": 0.05,
+      "coupled.INDEPENDENT_COMPONENT.crack_length_m.rc": 0.0,
+      "coupled.GENERIC_RELATIONAL.crack_length_m.rc": 0.15,
+      "coupled.TCDP.crack_length_m.rc": 0.0,
+      "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.rc": 0.0,
+      "misleading.GENERIC_RELATIONAL.corrosion_depth_m.rc": 0.4666666666666667,
+      "misleading.TCDP.corrosion_depth_m.rc": 0.05,
+      "misleading.INDEPENDENT_COMPONENT.crack_length_m.rc": 0.0,
+      "misleading.GENERIC_RELATIONAL.crack_length_m.rc": 0.35064935064935066,
+      "misleading.TCDP.crack_length_m.rc": 0.0,
+      "natural.INDEPENDENT_COMPONENT.crack_length_m.rc": 0.0,
+      "natural.GENERIC_RELATIONAL.crack_length_m.rc": 0.5,
+      "natural.TCDP.crack_length_m.rc": 0.0,
+      "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.rc": 0.0,
+      "natural.GENERIC_RELATIONAL.corrosion_depth_m.rc": 0.0,
+      "natural.TCDP.corrosion_depth_m.rc": 0.0,
+      "coupled.corrosion_depth_m.RB_tcdp.hidden_mae_mm": 0.0016867488447164236,
+      "coupled.corrosion_depth_m.RB_generic.hidden_mae_mm": -0.01048915764800784,
+      "coupled.corrosion_depth_m.RB_tcdp.reachable_hidden_mae_mm": 0.003274277169155293,
+      "coupled.corrosion_depth_m.RB_generic.reachable_hidden_mae_mm": -0.0005478865977482927,
+      "coupled.crack_length_m.RB_tcdp.hidden_mae_mm": 0.0011879009818898112,
+      "coupled.crack_length_m.RB_generic.hidden_mae_mm": 0.02220585003050246,
+      "coupled.crack_length_m.RB_tcdp.reachable_hidden_mae_mm": 0.029697524547496856,
+      "coupled.crack_length_m.RB_generic.reachable_hidden_mae_mm": 0.3143782485432436,
+      "misleading.corrosion_depth_m.RB_tcdp.hidden_mae_mm": -0.007804833611138151,
+      "misleading.corrosion_depth_m.RB_generic.hidden_mae_mm": -0.028060602753089026,
+      "misleading.corrosion_depth_m.RB_tcdp.reachable_hidden_mae_mm": -0.016020447938651983,
+      "misleading.corrosion_depth_m.RB_generic.reachable_hidden_mae_mm": -0.015021685735657375,
+      "misleading.crack_length_m.RB_tcdp.hidden_mae_mm": 0.0008975869945686554,
+      "misleading.crack_length_m.RB_generic.hidden_mae_mm": -0.4566756977961859,
+      "misleading.crack_length_m.RB_tcdp.reachable_hidden_mae_mm": 0.027825196831772203,
+      "misleading.crack_length_m.RB_generic.reachable_hidden_mae_mm": 0.18305829835236231,
+      "natural.corrosion_depth_m.RB_tcdp.hidden_mae_mm": -0.0011924209359140403,
+      "natural.corrosion_depth_m.RB_generic.hidden_mae_mm": -0.013492068172368338,
+      "natural.corrosion_depth_m.RB_tcdp.reachable_hidden_mae_mm": -0.00216803806529825,
+      "natural.corrosion_depth_m.RB_generic.reachable_hidden_mae_mm": -0.021574709510013113,
+      "natural.crack_length_m.RB_tcdp.hidden_mae_mm": -0.0018421415988711942,
+      "natural.crack_length_m.RB_generic.hidden_mae_mm": -5.741076288523232,
+      "natural.crack_length_m.RB_tcdp.reachable_hidden_mae_mm": -0.011052849593227165,
+      "natural.crack_length_m.RB_generic.reachable_hidden_mae_mm": -17.50692916632522
+    },
+    "2026203": {
+      "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.hidden_mae_mm": 0.5524008760405142,
+      "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.reachable_hidden_mae_mm": 0.6697801136995655,
+      "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.claim_rate_hidden": 0.0,
+      "coupled.GENERIC_RELATIONAL.corrosion_depth_m.hidden_mae_mm": 0.58875639186259,
+      "coupled.GENERIC_RELATIONAL.corrosion_depth_m.reachable_hidden_mae_mm": 0.6865584852688804,
+      "coupled.GENERIC_RELATIONAL.corrosion_depth_m.claim_rate_hidden": 0.9333333333333333,
+      "coupled.TCDP.corrosion_depth_m.hidden_mae_mm": 0.5520381897587302,
+      "coupled.TCDP.corrosion_depth_m.reachable_hidden_mae_mm": 0.6688733979951055,
+      "coupled.TCDP.corrosion_depth_m.claim_rate_hidden": 0.4,
+      "coupled.INDEPENDENT_COMPONENT.crack_length_m.hidden_mae_mm": 91.22021248880239,
+      "coupled.INDEPENDENT_COMPONENT.crack_length_m.claim_rate_hidden": 0.0,
+      "coupled.GENERIC_RELATIONAL.crack_length_m.hidden_mae_mm": 98.7322168024539,
+      "coupled.GENERIC_RELATIONAL.crack_length_m.claim_rate_hidden": 1.0,
+      "coupled.TCDP.crack_length_m.hidden_mae_mm": 91.21820399443382,
+      "coupled.TCDP.crack_length_m.claim_rate_hidden": 0.06666666666666667,
+      "coupled.INDEPENDENT_COMPONENT.crack_length_m.reachable_hidden_mae_mm": 56.884266598227285,
+      "coupled.GENERIC_RELATIONAL.crack_length_m.reachable_hidden_mae_mm": 57.28379497976531,
+      "coupled.TCDP.crack_length_m.reachable_hidden_mae_mm": 56.869202890463114,
+      "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.hidden_mae_mm": 0.3731433653840865,
+      "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.reachable_hidden_mae_mm": 0.38954881691306675,
+      "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.claim_rate_hidden": 0.0,
+      "misleading.GENERIC_RELATIONAL.corrosion_depth_m.hidden_mae_mm": 0.38080677797521956,
+      "misleading.GENERIC_RELATIONAL.corrosion_depth_m.reachable_hidden_mae_mm": 0.41075450742345815,
+      "misleading.GENERIC_RELATIONAL.corrosion_depth_m.claim_rate_hidden": 0.9555555555555556,
+      "misleading.TCDP.corrosion_depth_m.hidden_mae_mm": 0.37917059234861816,
+      "misleading.TCDP.corrosion_depth_m.reachable_hidden_mae_mm": 0.4046168843243961,
+      "misleading.TCDP.corrosion_depth_m.claim_rate_hidden": 0.4,
+      "misleading.INDEPENDENT_COMPONENT.crack_length_m.hidden_mae_mm": 51.86514754137882,
+      "misleading.INDEPENDENT_COMPONENT.crack_length_m.claim_rate_hidden": 0.0,
+      "misleading.GENERIC_RELATIONAL.crack_length_m.hidden_mae_mm": 69.96400539640487,
+      "misleading.GENERIC_RELATIONAL.crack_length_m.claim_rate_hidden": 1.0,
+      "misleading.TCDP.crack_length_m.hidden_mae_mm": 51.863177867529394,
+      "misleading.TCDP.crack_length_m.claim_rate_hidden": 0.0625,
+      "misleading.INDEPENDENT_COMPONENT.crack_length_m.reachable_hidden_mae_mm": 2.065055073450593,
+      "misleading.GENERIC_RELATIONAL.crack_length_m.reachable_hidden_mae_mm": 1.6365799640042344,
+      "misleading.TCDP.crack_length_m.reachable_hidden_mae_mm": 2.033540291859778,
+      "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.hidden_mae_mm": 0.21617211336983716,
+      "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.reachable_hidden_mae_mm": 0.22010819453427802,
+      "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.claim_rate_hidden": 0.0,
+      "natural.GENERIC_RELATIONAL.corrosion_depth_m.hidden_mae_mm": 0.2098700781675587,
+      "natural.GENERIC_RELATIONAL.corrosion_depth_m.reachable_hidden_mae_mm": 0.21298985524827596,
+      "natural.GENERIC_RELATIONAL.corrosion_depth_m.claim_rate_hidden": 1.0,
+      "natural.TCDP.corrosion_depth_m.hidden_mae_mm": 0.2138973981154651,
+      "natural.TCDP.corrosion_depth_m.reachable_hidden_mae_mm": 0.21588372334758713,
+      "natural.TCDP.corrosion_depth_m.claim_rate_hidden": 0.5384615384615384,
+      "natural.INDEPENDENT_COMPONENT.crack_length_m.hidden_mae_mm": 72.84954202648298,
+      "natural.INDEPENDENT_COMPONENT.crack_length_m.reachable_hidden_mae_mm": 240.478057833423,
+      "natural.INDEPENDENT_COMPONENT.crack_length_m.claim_rate_hidden": 0.0,
+      "natural.GENERIC_RELATIONAL.crack_length_m.hidden_mae_mm": 92.37089126339018,
+      "natural.GENERIC_RELATIONAL.crack_length_m.reachable_hidden_mae_mm": 286.43501531827064,
+      "natural.GENERIC_RELATIONAL.crack_length_m.claim_rate_hidden": 1.0,
+      "natural.TCDP.crack_length_m.hidden_mae_mm": 73.37968154028745,
+      "natural.TCDP.crack_length_m.reachable_hidden_mae_mm": 244.71917394385872,
+      "natural.TCDP.crack_length_m.claim_rate_hidden": 0.125,
+      "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_hits": 0.0,
+      "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_pool": 70.0,
+      "coupled.GENERIC_RELATIONAL.corrosion_depth_m.rc_hits": 64.0,
+      "coupled.GENERIC_RELATIONAL.corrosion_depth_m.rc_pool": 70.0,
+      "coupled.TCDP.corrosion_depth_m.rc_hits": 5.0,
+      "coupled.TCDP.corrosion_depth_m.rc_pool": 70.0,
+      "coupled.INDEPENDENT_COMPONENT.crack_length_m.rc_hits": 0.0,
+      "coupled.INDEPENDENT_COMPONENT.crack_length_m.rc_pool": 84.0,
+      "coupled.GENERIC_RELATIONAL.crack_length_m.rc_hits": 25.0,
+      "coupled.GENERIC_RELATIONAL.crack_length_m.rc_pool": 84.0,
+      "coupled.TCDP.crack_length_m.rc_hits": 0.0,
+      "coupled.TCDP.crack_length_m.rc_pool": 84.0,
+      "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_hits": 0.0,
+      "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_pool": 60.0,
+      "misleading.GENERIC_RELATIONAL.corrosion_depth_m.rc_hits": 14.0,
+      "misleading.GENERIC_RELATIONAL.corrosion_depth_m.rc_pool": 60.0,
+      "misleading.TCDP.corrosion_depth_m.rc_hits": 0.0,
+      "misleading.TCDP.corrosion_depth_m.rc_pool": 60.0,
+      "misleading.INDEPENDENT_COMPONENT.crack_length_m.rc_hits": 0.0,
+      "misleading.INDEPENDENT_COMPONENT.crack_length_m.rc_pool": 100.0,
+      "misleading.GENERIC_RELATIONAL.crack_length_m.rc_hits": 47.0,
+      "misleading.GENERIC_RELATIONAL.crack_length_m.rc_pool": 100.0,
+      "misleading.TCDP.crack_length_m.rc_hits": 0.0,
+      "misleading.TCDP.crack_length_m.rc_pool": 100.0,
+      "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_hits": 0.0,
+      "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_pool": 28.0,
+      "natural.GENERIC_RELATIONAL.corrosion_depth_m.rc_hits": 0.0,
+      "natural.GENERIC_RELATIONAL.corrosion_depth_m.rc_pool": 28.0,
+      "natural.TCDP.corrosion_depth_m.rc_hits": 0.0,
+      "natural.TCDP.corrosion_depth_m.rc_pool": 28.0,
+      "natural.INDEPENDENT_COMPONENT.crack_length_m.rc_hits": 0.0,
+      "natural.INDEPENDENT_COMPONENT.crack_length_m.rc_pool": 33.0,
+      "natural.GENERIC_RELATIONAL.crack_length_m.rc_hits": 26.0,
+      "natural.GENERIC_RELATIONAL.crack_length_m.rc_pool": 33.0,
+      "natural.TCDP.crack_length_m.rc_hits": 6.0,
+      "natural.TCDP.crack_length_m.rc_pool": 33.0,
+      "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.rc": 0.0,
+      "coupled.GENERIC_RELATIONAL.corrosion_depth_m.rc": 0.9142857142857143,
+      "coupled.TCDP.corrosion_depth_m.rc": 0.07142857142857142,
+      "coupled.INDEPENDENT_COMPONENT.crack_length_m.rc": 0.0,
+      "coupled.GENERIC_RELATIONAL.crack_length_m.rc": 0.2976190476190476,
+      "coupled.TCDP.crack_length_m.rc": 0.0,
+      "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.rc": 0.0,
+      "misleading.GENERIC_RELATIONAL.corrosion_depth_m.rc": 0.23333333333333334,
+      "misleading.TCDP.corrosion_depth_m.rc": 0.0,
+      "misleading.INDEPENDENT_COMPONENT.crack_length_m.rc": 0.0,
+      "misleading.GENERIC_RELATIONAL.crack_length_m.rc": 0.47,
+      "misleading.TCDP.crack_length_m.rc": 0.0,
+      "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.rc": 0.0,
+      "natural.GENERIC_RELATIONAL.corrosion_depth_m.rc": 0.0,
+      "natural.TCDP.corrosion_depth_m.rc": 0.0,
+      "natural.INDEPENDENT_COMPONENT.crack_length_m.rc": 0.0,
+      "natural.GENERIC_RELATIONAL.crack_length_m.rc": 0.7878787878787878,
+      "natural.TCDP.crack_length_m.rc": 0.18181818181818182,
+      "coupled.corrosion_depth_m.RB_tcdp.hidden_mae_mm": 0.0003626862817840415,
+      "coupled.corrosion_depth_m.RB_generic.hidden_mae_mm": -0.036355515822075746,
+      "coupled.corrosion_depth_m.RB_tcdp.reachable_hidden_mae_mm": 0.0009067157044599927,
+      "coupled.corrosion_depth_m.RB_generic.reachable_hidden_mae_mm": -0.016778371569314943,
+      "coupled.crack_length_m.RB_tcdp.hidden_mae_mm": 0.002008494368567426,
+      "coupled.crack_length_m.RB_generic.hidden_mae_mm": -7.512004313651516,
+      "coupled.crack_length_m.RB_tcdp.reachable_hidden_mae_mm": 0.015063707764170431,
+      "coupled.crack_length_m.RB_generic.reachable_hidden_mae_mm": -0.39952838153802617,
+      "misleading.corrosion_depth_m.RB_tcdp.hidden_mae_mm": -0.006027226964531673,
+      "misleading.corrosion_depth_m.RB_generic.hidden_mae_mm": -0.0076634125911330675,
+      "misleading.corrosion_depth_m.RB_tcdp.reachable_hidden_mae_mm": -0.015068067411329322,
+      "misleading.corrosion_depth_m.RB_generic.reachable_hidden_mae_mm": -0.021205690510391395,
+      "misleading.crack_length_m.RB_tcdp.hidden_mae_mm": 0.001969673849423259,
+      "misleading.crack_length_m.RB_generic.hidden_mae_mm": -18.098857855026054,
+      "misleading.crack_length_m.RB_tcdp.reachable_hidden_mae_mm": 0.03151478159081478,
+      "misleading.crack_length_m.RB_generic.reachable_hidden_mae_mm": 0.42847510944635836,
+      "natural.corrosion_depth_m.RB_tcdp.hidden_mae_mm": 0.0022747152543720617,
+      "natural.corrosion_depth_m.RB_generic.hidden_mae_mm": 0.006302035202278455,
+      "natural.corrosion_depth_m.RB_tcdp.reachable_hidden_mae_mm": 0.004224471186690892,
+      "natural.corrosion_depth_m.RB_generic.reachable_hidden_mae_mm": 0.007118339286002057,
+      "natural.crack_length_m.RB_tcdp.hidden_mae_mm": -0.5301395138044711,
+      "natural.crack_length_m.RB_generic.hidden_mae_mm": -19.5213492369072,
+      "natural.crack_length_m.RB_tcdp.reachable_hidden_mae_mm": -4.241116110435712,
+      "natural.crack_length_m.RB_generic.reachable_hidden_mae_mm": -45.956957484847635
+    }
+  },
+  "summary": {
+    "coupled.GENERIC_RELATIONAL.corrosion_depth_m.claim_rate_hidden": {
+      "mean": 0.9417027417027417,
+      "std": 0.009731437402647787,
+      "n": 3.0
+    },
+    "coupled.GENERIC_RELATIONAL.corrosion_depth_m.hidden_mae_mm": {
+      "mean": 0.6220080909547875,
+      "std": 0.028891457369637757,
+      "n": 3.0
+    },
+    "coupled.GENERIC_RELATIONAL.corrosion_depth_m.rc": {
+      "mean": 0.7464285714285714,
+      "std": 0.15012749683559787,
+      "n": 3.0
+    },
+    "coupled.GENERIC_RELATIONAL.corrosion_depth_m.rc_hits": {
+      "mean": 40.333333333333336,
+      "std": 29.704096238285608,
+      "n": 3.0
+    },
+    "coupled.GENERIC_RELATIONAL.corrosion_depth_m.rc_pool": {
+      "mean": 53.333333333333336,
+      "std": 37.859388972001824,
+      "n": 3.0
+    },
+    "coupled.GENERIC_RELATIONAL.corrosion_depth_m.reachable_hidden_mae_mm": {
+      "mean": 0.77175032829876,
+      "std": 0.10827368295192262,
+      "n": 3.0
+    },
+    "coupled.GENERIC_RELATIONAL.crack_length_m.claim_rate_hidden": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "coupled.GENERIC_RELATIONAL.crack_length_m.hidden_mae_mm": {
+      "mean": 84.85066280605055,
+      "std": 13.215156452093089,
+      "n": 3.0
+    },
+    "coupled.GENERIC_RELATIONAL.crack_length_m.rc": {
+      "mean": 0.22791005291005292,
+      "std": 0.07415044721174323,
+      "n": 3.0
+    },
+    "coupled.GENERIC_RELATIONAL.crack_length_m.rc_hits": {
+      "mean": 15.0,
+      "std": 11.135528725660043,
+      "n": 3.0
+    },
+    "coupled.GENERIC_RELATIONAL.crack_length_m.rc_pool": {
+      "mean": 58.666666666666664,
+      "std": 34.01960219246153,
+      "n": 3.0
+    },
+    "coupled.GENERIC_RELATIONAL.crack_length_m.reachable_hidden_mae_mm": {
+      "mean": 34.935432952422026,
+      "std": 29.458134608569697,
+      "n": 3.0
+    },
+    "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.claim_rate_hidden": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.hidden_mae_mm": {
+      "mean": 0.6266461652280446,
+      "std": 0.07466780606262383,
+      "n": 3.0
+    },
+    "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.rc": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_hits": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_pool": {
+      "mean": 53.333333333333336,
+      "std": 37.859388972001824,
+      "n": 3.0
+    },
+    "coupled.INDEPENDENT_COMPONENT.corrosion_depth_m.reachable_hidden_mae_mm": {
+      "mean": 0.8213433364180404,
+      "std": 0.13132101042467967,
+      "n": 3.0
+    },
+    "coupled.INDEPENDENT_COMPONENT.crack_length_m.claim_rate_hidden": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "coupled.INDEPENDENT_COMPONENT.crack_length_m.hidden_mae_mm": {
+      "mean": 80.709432145407,
+      "std": 9.587317818085808,
+      "n": 3.0
+    },
+    "coupled.INDEPENDENT_COMPONENT.crack_length_m.rc": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "coupled.INDEPENDENT_COMPONENT.crack_length_m.rc_hits": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "coupled.INDEPENDENT_COMPONENT.crack_length_m.rc_pool": {
+      "mean": 58.666666666666664,
+      "std": 34.01960219246153,
+      "n": 3.0
+    },
+    "coupled.INDEPENDENT_COMPONENT.crack_length_m.reachable_hidden_mae_mm": {
+      "mean": 20.11321606901137,
+      "std": 31.844971410860456,
+      "n": 3.0
+    },
+    "coupled.TCDP.corrosion_depth_m.claim_rate_hidden": {
+      "mean": 0.447907647907648,
+      "std": 0.05996152845021707,
+      "n": 3.0
+    },
+    "coupled.TCDP.corrosion_depth_m.hidden_mae_mm": {
+      "mean": 0.6171457338418583,
+      "std": 0.06191511829686899,
+      "n": 3.0
+    },
+    "coupled.TCDP.corrosion_depth_m.rc": {
+      "mean": 0.04047619047619048,
+      "std": 0.03665429599604917,
+      "n": 3.0
+    },
+    "coupled.TCDP.corrosion_depth_m.rc_hits": {
+      "mean": 3.0,
+      "std": 2.6457513110645907,
+      "n": 3.0
+    },
+    "coupled.TCDP.corrosion_depth_m.rc_pool": {
+      "mean": 53.333333333333336,
+      "std": 37.859388972001824,
+      "n": 3.0
+    },
+    "coupled.TCDP.corrosion_depth_m.reachable_hidden_mae_mm": {
+      "mean": 0.7993760039907901,
+      "std": 0.11578153860624174,
+      "n": 3.0
+    },
+    "coupled.TCDP.crack_length_m.claim_rate_hidden": {
+      "mean": 0.04597222222222223,
+      "std": 0.01844818820773867,
+      "n": 3.0
+    },
+    "coupled.TCDP.crack_length_m.hidden_mae_mm": {
+      "mean": 80.70804898289465,
+      "std": 9.586840506969672,
+      "n": 3.0
+    },
+    "coupled.TCDP.crack_length_m.rc": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "coupled.TCDP.crack_length_m.rc_hits": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "coupled.TCDP.crack_length_m.rc_pool": {
+      "mean": 58.666666666666664,
+      "std": 34.01960219246153,
+      "n": 3.0
+    },
+    "coupled.TCDP.crack_length_m.reachable_hidden_mae_mm": {
+      "mean": 20.094906886021906,
+      "std": 31.847740631101395,
+      "n": 3.0
+    },
+    "coupled.corrosion_depth_m.RB_generic.hidden_mae_mm": {
+      "mean": 0.004638074273257131,
+      "std": 0.0502934102955972,
+      "n": 3.0
+    },
+    "coupled.corrosion_depth_m.RB_generic.reachable_hidden_mae_mm": {
+      "mean": 0.04959300811928039,
+      "std": 0.10122840375103045,
+      "n": 3.0
+    },
+    "coupled.corrosion_depth_m.RB_tcdp.hidden_mae_mm": {
+      "mean": 0.009500431386186245,
+      "std": 0.014695286994222517,
+      "n": 3.0
+    },
+    "coupled.corrosion_depth_m.RB_tcdp.reachable_hidden_mae_mm": {
+      "mean": 0.02196733242725024,
+      "std": 0.034448035702999674,
+      "n": 3.0
+    },
+    "coupled.crack_length_m.RB_generic.hidden_mae_mm": {
+      "mean": -4.141230660643544,
+      "std": 3.8291404390639507,
+      "n": 3.0
+    },
+    "coupled.crack_length_m.RB_generic.reachable_hidden_mae_mm": {
+      "mean": -14.822216883410656,
+      "std": 25.60157909930308,
+      "n": 3.0
+    },
+    "coupled.crack_length_m.RB_tcdp.hidden_mae_mm": {
+      "mean": 0.0013831625123449005,
+      "std": 0.0005541333236632146,
+      "n": 3.0
+    },
+    "coupled.crack_length_m.RB_tcdp.reachable_hidden_mae_mm": {
+      "mean": 0.01830918298946164,
+      "std": 0.010162029939765647,
+      "n": 3.0
+    },
+    "misleading.GENERIC_RELATIONAL.corrosion_depth_m.claim_rate_hidden": {
+      "mean": 0.9614866614866616,
+      "std": 0.01115918478315888,
+      "n": 3.0
+    },
+    "misleading.GENERIC_RELATIONAL.corrosion_depth_m.hidden_mae_mm": {
+      "mean": 0.38892451289881674,
+      "std": 0.025944473723127484,
+      "n": 3.0
+    },
+    "misleading.GENERIC_RELATIONAL.corrosion_depth_m.rc": {
+      "mean": 0.36111111111111116,
+      "std": 0.11824331474329314,
+      "n": 3.0
+    },
+    "misleading.GENERIC_RELATIONAL.corrosion_depth_m.rc_hits": {
+      "mean": 21.666666666666668,
+      "std": 7.094598884597588,
+      "n": 3.0
+    },
+    "misleading.GENERIC_RELATIONAL.corrosion_depth_m.rc_pool": {
+      "mean": 60.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "misleading.GENERIC_RELATIONAL.corrosion_depth_m.reachable_hidden_mae_mm": {
+      "mean": 0.39365371492115725,
+      "std": 0.018575683582867767,
+      "n": 3.0
+    },
+    "misleading.GENERIC_RELATIONAL.crack_length_m.claim_rate_hidden": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "misleading.GENERIC_RELATIONAL.crack_length_m.hidden_mae_mm": {
+      "mean": 45.89876298239665,
+      "std": 21.087891110884055,
+      "n": 3.0
+    },
+    "misleading.GENERIC_RELATIONAL.crack_length_m.rc": {
+      "mean": 0.4068831168831169,
+      "std": 0.059972304846699014,
+      "n": 3.0
+    },
+    "misleading.GENERIC_RELATIONAL.crack_length_m.rc_hits": {
+      "mean": 35.333333333333336,
+      "std": 10.408329997330664,
+      "n": 3.0
+    },
+    "misleading.GENERIC_RELATIONAL.crack_length_m.rc_pool": {
+      "mean": 85.66666666666667,
+      "std": 12.503332889007368,
+      "n": 3.0
+    },
+    "misleading.GENERIC_RELATIONAL.crack_length_m.reachable_hidden_mae_mm": {
+      "mean": 1.5121637649925834,
+      "std": 0.44516510348209526,
+      "n": 3.0
+    },
+    "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.claim_rate_hidden": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.hidden_mae_mm": {
+      "mean": 0.3743834384917511,
+      "std": 0.014931809078143737,
+      "n": 3.0
+    },
+    "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.rc": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_hits": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_pool": {
+      "mean": 60.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "misleading.INDEPENDENT_COMPONENT.corrosion_depth_m.reachable_hidden_mae_mm": {
+      "mean": 0.3822400061301578,
+      "std": 0.020707903562750016,
+      "n": 3.0
+    },
+    "misleading.INDEPENDENT_COMPONENT.crack_length_m.claim_rate_hidden": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "misleading.INDEPENDENT_COMPONENT.crack_length_m.hidden_mae_mm": {
+      "mean": 39.68565101209669,
+      "std": 10.974409627109248,
+      "n": 3.0
+    },
+    "misleading.INDEPENDENT_COMPONENT.crack_length_m.rc": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "misleading.INDEPENDENT_COMPONENT.crack_length_m.rc_hits": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "misleading.INDEPENDENT_COMPONENT.crack_length_m.rc_pool": {
+      "mean": 85.66666666666667,
+      "std": 12.503332889007368,
+      "n": 3.0
+    },
+    "misleading.INDEPENDENT_COMPONENT.crack_length_m.reachable_hidden_mae_mm": {
+      "mean": 1.8421010916168095,
+      "std": 0.38607030339961357,
+      "n": 3.0
+    },
+    "misleading.TCDP.corrosion_depth_m.claim_rate_hidden": {
+      "mean": 0.4320901320901321,
+      "std": 0.04792482592712864,
+      "n": 3.0
+    },
+    "misleading.TCDP.corrosion_depth_m.hidden_mae_mm": {
+      "mean": 0.3805110333154335,
+      "std": 0.016560929574198652,
+      "n": 3.0
+    },
+    "misleading.TCDP.corrosion_depth_m.rc": {
+      "mean": 0.02777777777777778,
+      "std": 0.02545875386086578,
+      "n": 3.0
+    },
+    "misleading.TCDP.corrosion_depth_m.rc_hits": {
+      "mean": 1.6666666666666667,
+      "std": 1.5275252316519468,
+      "n": 3.0
+    },
+    "misleading.TCDP.corrosion_depth_m.rc_pool": {
+      "mean": 60.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "misleading.TCDP.corrosion_depth_m.reachable_hidden_mae_mm": {
+      "mean": 0.39631084182823667,
+      "std": 0.018706876686930975,
+      "n": 3.0
+    },
+    "misleading.TCDP.crack_length_m.claim_rate_hidden": {
+      "mean": 0.06384408602150538,
+      "std": 0.03227905902828717,
+      "n": 3.0
+    },
+    "misleading.TCDP.crack_length_m.hidden_mae_mm": {
+      "mean": 39.68363889484968,
+      "std": 10.974758614409074,
+      "n": 3.0
+    },
+    "misleading.TCDP.crack_length_m.rc": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "misleading.TCDP.crack_length_m.rc_hits": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "misleading.TCDP.crack_length_m.rc_pool": {
+      "mean": 85.66666666666667,
+      "std": 12.503332889007368,
+      "n": 3.0
+    },
+    "misleading.TCDP.crack_length_m.reachable_hidden_mae_mm": {
+      "mean": 1.8114053412749787,
+      "std": 0.38785109385649125,
+      "n": 3.0
+    },
+    "misleading.corrosion_depth_m.RB_generic.hidden_mae_mm": {
+      "mean": -0.014541074407065627,
+      "std": 0.011708848571845308,
+      "n": 3.0
+    },
+    "misleading.corrosion_depth_m.RB_generic.reachable_hidden_mae_mm": {
+      "mean": -0.011413708790999455,
+      "std": 0.012009564851074619,
+      "n": 3.0
+    },
+    "misleading.corrosion_depth_m.RB_tcdp.hidden_mae_mm": {
+      "mean": -0.00612759482368234,
+      "std": 0.0016293749694024785,
+      "n": 3.0
+    },
+    "misleading.corrosion_depth_m.RB_tcdp.reachable_hidden_mae_mm": {
+      "mean": -0.014070835698078895,
+      "std": 0.002596088236818137,
+      "n": 3.0
+    },
+    "misleading.crack_length_m.RB_generic.hidden_mae_mm": {
+      "mean": -6.213111970299958,
+      "std": 10.295046141668365,
+      "n": 3.0
+    },
+    "misleading.crack_length_m.RB_generic.reachable_hidden_mae_mm": {
+      "mean": 0.329937326624226,
+      "std": 0.1296534218623246,
+      "n": 3.0
+    },
+    "misleading.crack_length_m.RB_tcdp.hidden_mae_mm": {
+      "mean": 0.002012117247018589,
+      "std": 0.0011363465916094018,
+      "n": 3.0
+    },
+    "misleading.crack_length_m.RB_tcdp.reachable_hidden_mae_mm": {
+      "mean": 0.030695750341830957,
+      "std": 0.0025612138946804713,
+      "n": 3.0
+    },
+    "natural.GENERIC_RELATIONAL.corrosion_depth_m.claim_rate_hidden": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "natural.GENERIC_RELATIONAL.corrosion_depth_m.hidden_mae_mm": {
+      "mean": 0.24197667142777965,
+      "std": 0.027835995165130738,
+      "n": 3.0
+    },
+    "natural.GENERIC_RELATIONAL.corrosion_depth_m.rc": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "natural.GENERIC_RELATIONAL.corrosion_depth_m.rc_hits": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "natural.GENERIC_RELATIONAL.corrosion_depth_m.rc_pool": {
+      "mean": 20.0,
+      "std": 15.620499351813308,
+      "n": 3.0
+    },
+    "natural.GENERIC_RELATIONAL.corrosion_depth_m.reachable_hidden_mae_mm": {
+      "mean": 0.22713259480266737,
+      "std": 0.022991434363212434,
+      "n": 3.0
+    },
+    "natural.GENERIC_RELATIONAL.crack_length_m.claim_rate_hidden": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "natural.GENERIC_RELATIONAL.crack_length_m.hidden_mae_mm": {
+      "mean": 114.4450777462982,
+      "std": 27.795065277201115,
+      "n": 3.0
+    },
+    "natural.GENERIC_RELATIONAL.crack_length_m.rc": {
+      "mean": 0.6265718408575551,
+      "std": 0.14704912385931274,
+      "n": 3.0
+    },
+    "natural.GENERIC_RELATIONAL.crack_length_m.rc_hits": {
+      "mean": 21.666666666666668,
+      "std": 10.214368964029708,
+      "n": 3.0
+    },
+    "natural.GENERIC_RELATIONAL.crack_length_m.rc_pool": {
+      "mean": 34.0,
+      "std": 14.52583904633395,
+      "n": 3.0
+    },
+    "natural.GENERIC_RELATIONAL.crack_length_m.reachable_hidden_mae_mm": {
+      "mean": 318.70793801884224,
+      "std": 45.640804980566884,
+      "n": 2.0
+    },
+    "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.claim_rate_hidden": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.hidden_mae_mm": {
+      "mean": 0.24032859839070034,
+      "std": 0.022845469884244015,
+      "n": 3.0
+    },
+    "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.rc": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_hits": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.rc_pool": {
+      "mean": 20.0,
+      "std": 15.620499351813308,
+      "n": 3.0
+    },
+    "natural.INDEPENDENT_COMPONENT.corrosion_depth_m.reachable_hidden_mae_mm": {
+      "mean": 0.22249795228927857,
+      "std": 0.030591136365128425,
+      "n": 3.0
+    },
+    "natural.INDEPENDENT_COMPONENT.crack_length_m.claim_rate_hidden": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "natural.INDEPENDENT_COMPONENT.crack_length_m.hidden_mae_mm": {
+      "mean": 103.48264651784366,
+      "std": 33.90870422332025,
+      "n": 3.0
+    },
+    "natural.INDEPENDENT_COMPONENT.crack_length_m.rc": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "natural.INDEPENDENT_COMPONENT.crack_length_m.rc_hits": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "natural.INDEPENDENT_COMPONENT.crack_length_m.rc_pool": {
+      "mean": 34.0,
+      "std": 14.52583904633395,
+      "n": 3.0
+    },
+    "natural.INDEPENDENT_COMPONENT.crack_length_m.reachable_hidden_mae_mm": {
+      "mean": 286.9759946932558,
+      "std": 65.7580129295434,
+      "n": 2.0
+    },
+    "natural.TCDP.corrosion_depth_m.claim_rate_hidden": {
+      "mean": 0.4991841491841493,
+      "std": 0.07823604001061334,
+      "n": 3.0
+    },
+    "natural.TCDP.corrosion_depth_m.hidden_mae_mm": {
+      "mean": 0.24013762473015499,
+      "std": 0.024382829487583156,
+      "n": 3.0
+    },
+    "natural.TCDP.corrosion_depth_m.rc": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "natural.TCDP.corrosion_depth_m.rc_hits": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "natural.TCDP.corrosion_depth_m.rc_pool": {
+      "mean": 20.0,
+      "std": 15.620499351813308,
+      "n": 3.0
+    },
+    "natural.TCDP.corrosion_depth_m.reachable_hidden_mae_mm": {
+      "mean": 0.22222751952326183,
+      "std": 0.03055752268593629,
+      "n": 3.0
+    },
+    "natural.TCDP.crack_length_m.claim_rate_hidden": {
+      "mean": 0.06018518518518518,
+      "std": 0.06262846878920687,
+      "n": 3.0
+    },
+    "natural.TCDP.crack_length_m.hidden_mae_mm": {
+      "mean": 103.65997373631144,
+      "std": 33.67077190333564,
+      "n": 3.0
+    },
+    "natural.TCDP.crack_length_m.rc": {
+      "mean": 0.06060606060606061,
+      "std": 0.1049727762162956,
+      "n": 3.0
+    },
+    "natural.TCDP.crack_length_m.rc_hits": {
+      "mean": 2.0,
+      "std": 3.4641016151377544,
+      "n": 3.0
+    },
+    "natural.TCDP.crack_length_m.rc_pool": {
+      "mean": 34.0,
+      "std": 14.52583904633395,
+      "n": 3.0
+    },
+    "natural.TCDP.crack_length_m.reachable_hidden_mae_mm": {
+      "mean": 289.1020791732703,
+      "std": 62.7669065129536,
+      "n": 2.0
+    },
+    "natural.corrosion_depth_m.RB_generic.hidden_mae_mm": {
+      "mean": -0.0016480730370793024,
+      "std": 0.010455783015646408,
+      "n": 3.0
+    },
+    "natural.corrosion_depth_m.RB_generic.reachable_hidden_mae_mm": {
+      "mean": -0.004634642513388808,
+      "std": 0.015033367950500833,
+      "n": 3.0
+    },
+    "natural.corrosion_depth_m.RB_tcdp.hidden_mae_mm": {
+      "mean": 0.00019097366054537934,
+      "std": 0.0018366063209188058,
+      "n": 3.0
+    },
+    "natural.corrosion_depth_m.RB_tcdp.reachable_hidden_mae_mm": {
+      "mean": 0.00027043276601671867,
+      "std": 0.003455249986994971,
+      "n": 3.0
+    },
+    "natural.crack_length_m.RB_generic.hidden_mae_mm": {
+      "mean": -10.962431228454548,
+      "std": 7.471845559181406,
+      "n": 3.0
+    },
+    "natural.crack_length_m.RB_generic.reachable_hidden_mae_mm": {
+      "mean": -31.73194332558643,
+      "std": 20.11720794897651,
+      "n": 2.0
+    },
+    "natural.crack_length_m.RB_tcdp.hidden_mae_mm": {
+      "mean": -0.17732721846778077,
+      "std": 0.3055457988206933,
+      "n": 3.0
+    },
+    "natural.crack_length_m.RB_tcdp.reachable_hidden_mae_mm": {
+      "mean": -2.1260844800144696,
+      "std": 2.9911064165898007,
+      "n": 2.0
+    }
+  },
+  "verdicts": {
+    "coupled.corrosion_depth_m.tcdp_RB_positive_all_seeds": true,
+    "coupled.corrosion_depth_m.tcdp_rc_below_generic_all_seeds": true,
+    "coupled.crack_length_m.tcdp_RB_positive_all_seeds": true,
+    "coupled.crack_length_m.tcdp_rc_below_generic_all_seeds": true,
+    "misleading.corrosion_depth_m.tcdp_RB_positive_all_seeds": false,
+    "misleading.corrosion_depth_m.tcdp_rc_below_generic_all_seeds": true,
+    "misleading.crack_length_m.tcdp_RB_positive_all_seeds": true,
+    "misleading.crack_length_m.tcdp_rc_below_generic_all_seeds": true,
+    "natural.corrosion_depth_m.tcdp_RB_positive_all_seeds": false,
+    "natural.corrosion_depth_m.tcdp_rc_below_generic_all_seeds": false,
+    "natural.crack_length_m.tcdp_RB_positive_all_seeds": false,
+    "natural.crack_length_m.tcdp_rc_below_generic_all_seeds": true
+  },
+  "wall_time_s": 4.879099699988728,
+  "environment": {
+    "python": "3.11.15",
+    "torch": "2.6.0+cpu",
+    "device": "cpu"
+  },
+  "claim_note": "Numbers are what this run produced on synthetic data; no real-world claim."
+}

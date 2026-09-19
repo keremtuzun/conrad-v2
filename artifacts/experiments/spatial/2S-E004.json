@@ -1,0 +1,3975 @@
+{
+  "experiment_id": "2S-E004",
+  "claim_scope": "SYNTHETIC_ONLY (Twin2S OCPWE worlds); not a physical-world result",
+  "seeds": [
+    2026201,
+    2026202,
+    2026203
+  ],
+  "config": {
+    "experiment": {
+      "id": "2S-E004"
+    },
+    "seeds": [
+      2026201,
+      2026202,
+      2026203
+    ],
+    "scenario": {
+      "family": "pipeline_with_supports"
+    },
+    "target_group": "segments",
+    "conditions": {
+      "style": "coverage",
+      "target_coverage": 0.8,
+      "n_views": 6,
+      "pose_sigma_m": 0.02,
+      "pose_sigma_rad": 0.005
+    },
+    "variants": {
+      "depth_sonar": {
+        "modalities": [
+          "DEPTH_RANGE",
+          "SONAR"
+        ]
+      },
+      "depth_only": {
+        "modalities": [
+          "DEPTH_RANGE"
+        ]
+      },
+      "sonar_only": {
+        "modalities": [
+          "SONAR"
+        ]
+      },
+      "sonar_only_degraded": {
+        "modalities": [
+          "SONAR"
+        ],
+        "degradation": {
+          "SONAR": {
+            "speckle": 1.0,
+            "multipath": 0.6,
+            "attenuation": 1.0
+          }
+        }
+      },
+      "depth_dropout_plus_sonar": {
+        "modalities": [
+          "DEPTH_RANGE",
+          "SONAR"
+        ],
+        "degradation": {
+          "DEPTH_RANGE": {
+            "dropout": 0.6
+          }
+        }
+      },
+      "depth_sonar_rgb_degraded": {
+        "modalities": [
+          "DEPTH_RANGE",
+          "SONAR",
+          "RGB"
+        ],
+        "degradation": {
+          "RGB": {
+            "blur": 1.0,
+            "low_light": 0.8,
+            "backscatter": 0.5
+          }
+        }
+      },
+      "rgb_only": {
+        "modalities": [
+          "RGB"
+        ]
+      }
+    },
+    "eval_margin_m": 1.0,
+    "models": [
+      "uahsm",
+      "plain_grid",
+      "ml_fill"
+    ],
+    "model": {}
+  },
+  "per_seed": {
+    "2026201": {
+      "depth_sonar": {
+        "n_views": 6,
+        "n_observations": 18,
+        "uahsm": {
+          "E_observed": 0.1528514109797895,
+          "E_hidden": 0.216195632319157,
+          "iou": 0.3548866592344853,
+          "iou_observed": 0.5711402623612513,
+          "ece_claimed": 0.20232392581219769,
+          "ece_observed_claimed": 0.23310066107469052,
+          "confident_claim_rate": 0.056687565308254965,
+          "confident_error_rate": 0.1382488479262673,
+          "unknown_fraction": 0.4400034831069314,
+          "coverage_estimate": 0.5212541340989817,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.21559713723504825,
+          "mean_UA_claimed": 0.03826308857191255,
+          "mean_UE_claimed": 0.09262497447358455,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.039377895433487756,
+          "hidden_uc_rate_not_unknown": 0.039377895433487756,
+          "hidden_claimed_observed_rate": 0.2471872931833223,
+          "integrated_observations": 12.0
+        },
+        "plain_grid": {
+          "E_observed": 0.13692587973060005,
+          "E_hidden": 0.21323588036728042,
+          "iou": 0.352831507807038,
+          "iou_observed": 0.25021570319240727,
+          "ece_claimed": 0.16764989449539153,
+          "ece_observed_claimed": 0.23310209962108028,
+          "confident_claim_rate": 0.08524904214559387,
+          "confident_error_rate": 0.2604698672114402,
+          "unknown_fraction": 0.2543538836642285,
+          "coverage_estimate": 0.5459679007785728,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.19088337055545712,
+          "mean_UA_claimed": 0.214097921419814,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.07379219060225016,
+          "hidden_uc_rate_not_unknown": 0.07379219060225016,
+          "hidden_claimed_observed_rate": 0.5453342157511581,
+          "integrated_observations": 12.0
+        },
+        "ml_fill": {
+          "E_observed": 0.24923766181521362,
+          "E_hidden": 0.29438631054597003,
+          "iou": 0.3422755246962285,
+          "iou_observed": 0.15592404386199518,
+          "ece_claimed": 0.29668722105224987,
+          "ece_observed_claimed": 0.3538018221318566,
+          "confident_claim_rate": 0.3396029258098224,
+          "confident_error_rate": 0.59,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.5459679007785728,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.19088337055545712,
+          "mean_UA_claimed": 0.1596412836222455,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.528457974851092,
+          "hidden_uc_rate_not_unknown": 0.528457974851092,
+          "hidden_claimed_observed_rate": 0.5453342157511581,
+          "integrated_observations": 12.0
+        }
+      },
+      "depth_only": {
+        "n_views": 6,
+        "n_observations": 12,
+        "uahsm": {
+          "E_observed": 0.1762995050132052,
+          "E_hidden": 0.21573279043666901,
+          "iou": 0.360105580693816,
+          "iou_observed": 0.5933701657458563,
+          "ece_claimed": 0.20796217708041095,
+          "ece_observed_claimed": 0.25575512410863105,
+          "confident_claim_rate": 0.043451758969000345,
+          "confident_error_rate": 0.18036072144288579,
+          "unknown_fraction": 0.5388366422849181,
+          "coverage_estimate": 0.39806879479221347,
+          "true_observed_fraction": 0.6412399860675723,
+          "E_coverage": 0.2431711912753588,
+          "mean_UA_claimed": 0.006517408658965216,
+          "mean_UE_claimed": 0.09070543869228288,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 4120.0,
+          "hidden_uc_rate": 0.03033980582524272,
+          "hidden_uc_rate_not_unknown": 0.03033980582524272,
+          "hidden_claimed_observed_rate": 0.2470873786407767,
+          "integrated_observations": 6.0
+        },
+        "plain_grid": {
+          "E_observed": 0.15296491479271918,
+          "E_hidden": 0.209329840797276,
+          "iou": 0.33970925784238715,
+          "iou_observed": 0.6096440872560276,
+          "ece_claimed": 0.13266258232546327,
+          "ece_observed_claimed": 0.16125447189984538,
+          "confident_claim_rate": 0.0851619644723093,
+          "confident_error_rate": 0.2607361963190184,
+          "unknown_fraction": 0.5446708463949843,
+          "coverage_estimate": 0.45172948746506153,
+          "true_observed_fraction": 0.6412399860675723,
+          "E_coverage": 0.18951049860251074,
+          "mean_UA_claimed": 0.006815808521134026,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 4120.0,
+          "hidden_uc_rate": 0.05776699029126214,
+          "hidden_uc_rate_not_unknown": 0.05776699029126214,
+          "hidden_claimed_observed_rate": 0.2470873786407767,
+          "integrated_observations": 6.0
+        },
+        "ml_fill": {
+          "E_observed": 0.11064385286985118,
+          "E_hidden": 0.133347267981742,
+          "iou": 0.6017207882320289,
+          "iou_observed": 0.39854545454545454,
+          "ece_claimed": 0.1506620204614984,
+          "ece_observed_claimed": 0.16925211585690503,
+          "confident_claim_rate": 0.6298328108672936,
+          "confident_error_rate": 0.17254251347988386,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.45172948746506153,
+          "true_observed_fraction": 0.6412399860675723,
+          "E_coverage": 0.18951049860251074,
+          "mean_UA_claimed": 0.0031034363250618097,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 4120.0,
+          "hidden_uc_rate": 0.8106796116504854,
+          "hidden_uc_rate_not_unknown": 0.8106796116504854,
+          "hidden_claimed_observed_rate": 0.2470873786407767,
+          "integrated_observations": 6.0
+        }
+      },
+      "sonar_only": {
+        "n_views": 6,
+        "n_observations": 6,
+        "uahsm": {
+          "E_observed": 0.18833571385432774,
+          "E_hidden": 0.24093183664091686,
+          "iou": 0.0,
+          "iou_observed": 0.0,
+          "ece_claimed": 0.32285421439208245,
+          "ece_observed_claimed": 0.3216980859753311,
+          "confident_claim_rate": 0.0,
+          "confident_error_rate": NaN,
+          "unknown_fraction": 0.731974921630094,
+          "coverage_estimate": 0.27715484331106055,
+          "true_observed_fraction": 0.4795367467781261,
+          "E_coverage": 0.20238190346706553,
+          "mean_UA_claimed": 0.023328389553693082,
+          "mean_UE_claimed": 0.09648748942607219,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 5977.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.0642462773966873,
+          "integrated_observations": 6.0
+        },
+        "plain_grid": {
+          "E_observed": 0.17920606551134197,
+          "E_hidden": 0.2403763669920957,
+          "iou": 0.22322435174746336,
+          "iou_observed": 0.1167608286252354,
+          "ece_claimed": 0.23069704211701184,
+          "ece_observed_claimed": 0.30254510816702807,
+          "confident_claim_rate": 0.0,
+          "confident_error_rate": NaN,
+          "unknown_fraction": 0.32567049808429116,
+          "coverage_estimate": 0.2491524374190312,
+          "true_observed_fraction": 0.4795367467781261,
+          "E_coverage": 0.23038430935909487,
+          "mean_UA_claimed": 0.5202666300925665,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 5977.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.5129663710891752,
+          "integrated_observations": 6.0
+        },
+        "ml_fill": {
+          "E_observed": 0.25794877479044126,
+          "E_hidden": 0.41755386406420547,
+          "iou": 0.2542411737734984,
+          "iou_observed": 0.09562350119904077,
+          "ece_claimed": 0.3703690259625688,
+          "ece_observed_claimed": 0.3776604350835949,
+          "confident_claim_rate": 0.32567049808429116,
+          "confident_error_rate": 0.689572192513369,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.2491524374190312,
+          "true_observed_fraction": 0.4795367467781261,
+          "E_coverage": 0.23038430935909487,
+          "mean_UA_claimed": 0.3508311375336846,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 5977.0,
+          "hidden_uc_rate": 0.48703362891082486,
+          "hidden_uc_rate_not_unknown": 0.48703362891082486,
+          "hidden_claimed_observed_rate": 0.5129663710891752,
+          "integrated_observations": 6.0
+        }
+      },
+      "sonar_only_degraded": {
+        "n_views": 6,
+        "n_observations": 6,
+        "uahsm": {
+          "E_observed": 0.1746012358045972,
+          "E_hidden": 0.24100283412843193,
+          "iou": 0.004302925989672977,
+          "iou_observed": 0.028328611898016998,
+          "ece_claimed": 0.2877674565300514,
+          "ece_observed_claimed": 0.28922998004831524,
+          "confident_claim_rate": 0.0018286311389759666,
+          "confident_error_rate": 0.0,
+          "unknown_fraction": 0.6918321142459074,
+          "coverage_estimate": 0.3272181649902265,
+          "true_observed_fraction": 0.4795367467781261,
+          "E_coverage": 0.1523185817878996,
+          "mean_UA_claimed": 0.03877398558320653,
+          "mean_UE_claimed": 0.1019796703862695,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 5977.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.07277898611343483,
+          "integrated_observations": 6.0
+        },
+        "plain_grid": {
+          "E_observed": 0.17681357707546536,
+          "E_hidden": 0.24080985350469675,
+          "iou": 0.26188765981899154,
+          "iou_observed": 0.10785981626403539,
+          "ece_claimed": 0.22085743340293984,
+          "ece_observed_claimed": 0.3155773637475621,
+          "confident_claim_rate": 0.0,
+          "confident_error_rate": NaN,
+          "unknown_fraction": 0.20646116335771508,
+          "coverage_estimate": 0.2624808016722328,
+          "true_observed_fraction": 0.4795367467781261,
+          "E_coverage": 0.21705594510589327,
+          "mean_UA_claimed": 0.5302810137619024,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 5977.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.6683955161452233,
+          "integrated_observations": 6.0
+        },
+        "ml_fill": {
+          "E_observed": 0.22237379134820914,
+          "E_hidden": 0.39694232799022466,
+          "iou": 0.2546112934253706,
+          "iou_observed": 0.09610154125113328,
+          "ece_claimed": 0.3334677630269062,
+          "ece_observed_claimed": 0.3585500177337976,
+          "confident_claim_rate": 0.20646116335771508,
+          "confident_error_rate": 0.7962884858709405,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.2624808016722328,
+          "true_observed_fraction": 0.4795367467781261,
+          "E_coverage": 0.21705594510589327,
+          "mean_UA_claimed": 0.4207985787541116,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 5977.0,
+          "hidden_uc_rate": 0.33160448385477664,
+          "hidden_uc_rate_not_unknown": 0.33160448385477664,
+          "hidden_claimed_observed_rate": 0.6683955161452233,
+          "integrated_observations": 6.0
+        }
+      },
+      "depth_dropout_plus_sonar": {
+        "n_views": 6,
+        "n_observations": 18,
+        "uahsm": {
+          "E_observed": 0.1523241907269426,
+          "E_hidden": 0.22834515535826594,
+          "iou": 0.24825174825174826,
+          "iou_observed": 0.5304740406320542,
+          "ece_claimed": 0.22463068208804873,
+          "ece_observed_claimed": 0.23380304946046052,
+          "confident_claim_rate": 0.012800417972831766,
+          "confident_error_rate": 0.02040816326530612,
+          "unknown_fraction": 0.5170672239637757,
+          "coverage_estimate": 0.48376918922521767,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.2530820821088123,
+          "mean_UA_claimed": 0.4346639395243775,
+          "mean_UE_claimed": 0.09321496818987929,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.0013236267372600927,
+          "hidden_uc_rate_not_unknown": 0.0013236267372600927,
+          "hidden_claimed_observed_rate": 0.08669755129053607,
+          "integrated_observations": 12.0
+        },
+        "plain_grid": {
+          "E_observed": 0.13939162215669046,
+          "E_hidden": 0.22568931991448954,
+          "iou": 0.3453620171177423,
+          "iou_observed": 0.24646983311938384,
+          "ece_claimed": 0.17709701422786148,
+          "ece_observed_claimed": 0.23896158422978409,
+          "confident_claim_rate": 0.022814350400557296,
+          "confident_error_rate": 0.22900763358778625,
+          "unknown_fraction": 0.2604493207941484,
+          "coverage_estimate": 0.5097688562624173,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.22708241507161264,
+          "mean_UA_claimed": 0.4696414610877326,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.009927200529450696,
+          "hidden_uc_rate_not_unknown": 0.009927200529450696,
+          "hidden_claimed_observed_rate": 0.528457974851092,
+          "integrated_observations": 12.0
+        },
+        "ml_fill": {
+          "E_observed": 0.2526992799208124,
+          "E_hidden": 0.30823481958358284,
+          "iou": 0.34119668801749725,
+          "iou_observed": 0.15429480381760338,
+          "ece_claimed": 0.3052660172272055,
+          "ece_observed_claimed": 0.35965481976466457,
+          "confident_claim_rate": 0.2832636711947057,
+          "confident_error_rate": 0.657239471257301,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.5097688562624173,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.22708241507161264,
+          "mean_UA_claimed": 0.34732366153066113,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.4814692256783587,
+          "hidden_uc_rate_not_unknown": 0.4814692256783587,
+          "hidden_claimed_observed_rate": 0.528457974851092,
+          "integrated_observations": 12.0
+        }
+      },
+      "depth_sonar_rgb_degraded": {
+        "n_views": 6,
+        "n_observations": 24,
+        "uahsm": {
+          "E_observed": 0.1528514109797895,
+          "E_hidden": 0.216195632319157,
+          "iou": 0.3548866592344853,
+          "iou_observed": 0.5711402623612513,
+          "ece_claimed": 0.20232392581219769,
+          "ece_observed_claimed": 0.23310066107469052,
+          "confident_claim_rate": 0.056687565308254965,
+          "confident_error_rate": 0.1382488479262673,
+          "unknown_fraction": 0.4400034831069314,
+          "coverage_estimate": 0.5212541340989817,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.21559713723504825,
+          "mean_UA_claimed": 0.03826308857191255,
+          "mean_UE_claimed": 0.09262497447358455,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.039377895433487756,
+          "hidden_uc_rate_not_unknown": 0.039377895433487756,
+          "hidden_claimed_observed_rate": 0.2471872931833223,
+          "integrated_observations": 12.0
+        },
+        "plain_grid": {
+          "E_observed": 0.13692587973060005,
+          "E_hidden": 0.21323588036728042,
+          "iou": 0.352831507807038,
+          "iou_observed": 0.25021570319240727,
+          "ece_claimed": 0.16764989449539153,
+          "ece_observed_claimed": 0.23310209962108028,
+          "confident_claim_rate": 0.08524904214559387,
+          "confident_error_rate": 0.2604698672114402,
+          "unknown_fraction": 0.2543538836642285,
+          "coverage_estimate": 0.5459679007785728,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.19088337055545712,
+          "mean_UA_claimed": 0.214097921419814,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.07379219060225016,
+          "hidden_uc_rate_not_unknown": 0.07379219060225016,
+          "hidden_claimed_observed_rate": 0.5453342157511581,
+          "integrated_observations": 12.0
+        },
+        "ml_fill": {
+          "E_observed": 0.24923766181521362,
+          "E_hidden": 0.29438631054597003,
+          "iou": 0.3422755246962285,
+          "iou_observed": 0.15592404386199518,
+          "ece_claimed": 0.29668722105224987,
+          "ece_observed_claimed": 0.3538018221318566,
+          "confident_claim_rate": 0.3396029258098224,
+          "confident_error_rate": 0.59,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.5459679007785728,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.19088337055545712,
+          "mean_UA_claimed": 0.1596412836222455,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.528457974851092,
+          "hidden_uc_rate_not_unknown": 0.528457974851092,
+          "hidden_claimed_observed_rate": 0.5453342157511581,
+          "integrated_observations": 12.0
+        }
+      },
+      "rgb_only": {
+        "n_views": 6,
+        "n_observations": 6,
+        "uahsm": {
+          "E_observed": NaN,
+          "E_hidden": 0.25,
+          "iou": 0.0,
+          "iou_observed": NaN,
+          "ece_claimed": NaN,
+          "ece_observed_claimed": NaN,
+          "confident_claim_rate": 0.0,
+          "confident_error_rate": NaN,
+          "unknown_fraction": 1.0,
+          "coverage_estimate": 0.0,
+          "true_observed_fraction": 0.0,
+          "E_coverage": 0.0,
+          "mean_UA_claimed": NaN,
+          "mean_UE_claimed": NaN,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 11484.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.0,
+          "integrated_observations": 0.0
+        },
+        "plain_grid": {
+          "E_observed": NaN,
+          "E_hidden": 0.25,
+          "iou": 0.0,
+          "iou_observed": NaN,
+          "ece_claimed": NaN,
+          "ece_observed_claimed": NaN,
+          "confident_claim_rate": 0.0,
+          "confident_error_rate": NaN,
+          "unknown_fraction": 1.0,
+          "coverage_estimate": 0.0,
+          "true_observed_fraction": 0.0,
+          "E_coverage": 0.0,
+          "mean_UA_claimed": NaN,
+          "mean_UE_claimed": NaN,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 11484.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.0,
+          "integrated_observations": 0.0
+        },
+        "ml_fill": {
+          "E_observed": NaN,
+          "E_hidden": 0.18842525252525252,
+          "iou": 0.0,
+          "iou_observed": NaN,
+          "ece_claimed": 0.1694949494949495,
+          "ece_observed_claimed": NaN,
+          "confident_claim_rate": 1.0,
+          "confident_error_rate": 0.1994949494949495,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.0,
+          "true_observed_fraction": 0.0,
+          "E_coverage": 0.0,
+          "mean_UA_claimed": 0.0,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 11484.0,
+          "hidden_uc_rate": 1.0,
+          "hidden_uc_rate_not_unknown": 1.0,
+          "hidden_claimed_observed_rate": 0.0,
+          "integrated_observations": 0.0
+        }
+      }
+    },
+    "2026202": {
+      "depth_sonar": {
+        "n_views": 6,
+        "n_observations": 18,
+        "uahsm": {
+          "E_observed": 0.17212375874252184,
+          "E_hidden": 0.21473957146109013,
+          "iou": 0.26057425131213335,
+          "iou_observed": 0.41854636591478694,
+          "ece_claimed": 0.20378981982349056,
+          "ece_observed_claimed": 0.26272403518635035,
+          "confident_claim_rate": 0.04493207941483804,
+          "confident_error_rate": 0.1325581395348837,
+          "unknown_fraction": 0.49634273772204807,
+          "coverage_estimate": 0.470105027755848,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.22059507673735995,
+          "mean_UA_claimed": 0.05114099573646641,
+          "mean_UE_claimed": 0.08986852852373109,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.04560810810810811,
+          "hidden_uc_rate_not_unknown": 0.04560810810810811,
+          "hidden_claimed_observed_rate": 0.20945945945945946,
+          "integrated_observations": 12.0
+        },
+        "plain_grid": {
+          "E_observed": 0.16506452676029879,
+          "E_hidden": 0.21351847467830212,
+          "iou": 0.3053660754888586,
+          "iou_observed": 0.17699579831932774,
+          "ece_claimed": 0.17131212893308953,
+          "ece_observed_claimed": 0.27301422008793474,
+          "confident_claim_rate": 0.09278996865203762,
+          "confident_error_rate": 0.30180180180180183,
+          "unknown_fraction": 0.33260188087774295,
+          "coverage_estimate": 0.4808697369527159,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.20983036754049206,
+          "mean_UA_claimed": 0.23069555320286425,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.1097972972972973,
+          "hidden_uc_rate_not_unknown": 0.1097972972972973,
+          "hidden_claimed_observed_rate": 0.43277027027027026,
+          "integrated_observations": 12.0
+        },
+        "ml_fill": {
+          "E_observed": 0.2744856462761838,
+          "E_hidden": 0.14240398143505886,
+          "iou": 0.4635371557249264,
+          "iou_observed": 0.11002604166666667,
+          "ece_claimed": 0.24954864864113302,
+          "ece_observed_claimed": 0.3838109845338873,
+          "confident_claim_rate": 0.42539184952978054,
+          "confident_error_rate": 0.4070253009088676,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.4808697369527159,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.20983036754049206,
+          "mean_UA_claimed": 0.15396577829746022,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.677027027027027,
+          "hidden_uc_rate_not_unknown": 0.677027027027027,
+          "hidden_claimed_observed_rate": 0.43277027027027026,
+          "integrated_observations": 12.0
+        }
+      },
+      "depth_only": {
+        "n_views": 6,
+        "n_observations": 12,
+        "uahsm": {
+          "E_observed": 0.1970334081193586,
+          "E_hidden": 0.21718556224448118,
+          "iou": 0.2632563942607611,
+          "iou_observed": 0.432,
+          "ece_claimed": 0.21343013358588736,
+          "ece_observed_claimed": 0.29324339395466154,
+          "confident_claim_rate": 0.03625914315569488,
+          "confident_error_rate": 0.14697406340057637,
+          "unknown_fraction": 0.6008359456635318,
+          "coverage_estimate": 0.33883699790143434,
+          "true_observed_fraction": 0.6202716823406479,
+          "E_coverage": 0.28143468443921354,
+          "mean_UA_claimed": 0.008490430368480803,
+          "mean_UE_claimed": 0.08886045448917886,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 3634.0,
+          "hidden_uc_rate": 0.0379746835443038,
+          "hidden_uc_rate_not_unknown": 0.0379746835443038,
+          "hidden_claimed_observed_rate": 0.20335718216840948,
+          "integrated_observations": 6.0
+        },
+        "plain_grid": {
+          "E_observed": 0.18214636715145419,
+          "E_hidden": 0.2141364447629288,
+          "iou": 0.24162144909032876,
+          "iou_observed": 0.46345029239766083,
+          "ece_claimed": 0.15573413785119328,
+          "ece_observed_claimed": 0.20115320549006144,
+          "confident_claim_rate": 0.09268547544409614,
+          "confident_error_rate": 0.30214205186020293,
+          "unknown_fraction": 0.6109717868338558,
+          "coverage_estimate": 0.38580879197646306,
+          "true_observed_fraction": 0.6202716823406479,
+          "E_coverage": 0.23446289036418483,
+          "mean_UA_claimed": 0.008971545961484997,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 3634.0,
+          "hidden_uc_rate": 0.09190974133186572,
+          "hidden_uc_rate_not_unknown": 0.09190974133186572,
+          "hidden_claimed_observed_rate": 0.20335718216840948,
+          "integrated_observations": 6.0
+        },
+        "ml_fill": {
+          "E_observed": 0.15423140758272103,
+          "E_hidden": 0.11295193733309943,
+          "iou": 0.6557377049180327,
+          "iou_observed": 0.25426356589147286,
+          "ece_claimed": 0.15763721998119046,
+          "ece_observed_claimed": 0.21189035801589343,
+          "confident_claim_rate": 0.7036572622779519,
+          "confident_error_rate": 0.18562518562518562,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.38580879197646306,
+          "true_observed_fraction": 0.6202716823406479,
+          "E_coverage": 0.23446289036418483,
+          "mean_UA_claimed": 0.0034901844947344443,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 3634.0,
+          "hidden_uc_rate": 0.8885525591634562,
+          "hidden_uc_rate_not_unknown": 0.8885525591634562,
+          "hidden_claimed_observed_rate": 0.20335718216840948,
+          "integrated_observations": 6.0
+        }
+      },
+      "sonar_only": {
+        "n_views": 6,
+        "n_observations": 6,
+        "uahsm": {
+          "E_observed": 0.18842108170294958,
+          "E_hidden": 0.24245098001820503,
+          "iou": 0.0,
+          "iou_observed": 0.0,
+          "ece_claimed": 0.32826041156100183,
+          "ece_observed_claimed": 0.32850311906515034,
+          "confident_claim_rate": 0.0,
+          "confident_error_rate": NaN,
+          "unknown_fraction": 0.7229885057471265,
+          "coverage_estimate": 0.28962691658168466,
+          "true_observed_fraction": 0.46635318704284223,
+          "E_coverage": 0.17672627046115758,
+          "mean_UA_claimed": 0.027098125327997775,
+          "mean_UE_claimed": 0.09154980164713647,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 5107.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.047973369884472296,
+          "integrated_observations": 6.0
+        },
+        "plain_grid": {
+          "E_observed": 0.1840249584911271,
+          "E_hidden": 0.24167568790490102,
+          "iou": 0.21353972398358823,
+          "iou_observed": 0.09150657229524772,
+          "ece_claimed": 0.20304445766021434,
+          "ece_observed_claimed": 0.3210748677811021,
+          "confident_claim_rate": 0.0,
+          "confident_error_rate": NaN,
+          "unknown_fraction": 0.40365726227795196,
+          "coverage_estimate": 0.25333544727687474,
+          "true_observed_fraction": 0.46635318704284223,
+          "E_coverage": 0.2130177397659675,
+          "mean_UA_claimed": 0.495108702226361,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 5107.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.39788525553162324,
+          "integrated_observations": 6.0
+        },
+        "ml_fill": {
+          "E_observed": 0.24387913729462252,
+          "E_hidden": 0.3455091517780164,
+          "iou": 0.35565454806725105,
+          "iou_observed": 0.0744637798462161,
+          "ece_claimed": 0.3045856551584999,
+          "ece_observed_claimed": 0.3734775126810554,
+          "confident_claim_rate": 0.40365726227795196,
+          "confident_error_rate": 0.4845974631115713,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.25333544727687474,
+          "true_observed_fraction": 0.46635318704284223,
+          "E_coverage": 0.2130177397659675,
+          "mean_UA_claimed": 0.2952544789556784,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 5107.0,
+          "hidden_uc_rate": 0.6021147444683768,
+          "hidden_uc_rate_not_unknown": 0.6021147444683768,
+          "hidden_claimed_observed_rate": 0.39788525553162324,
+          "integrated_observations": 6.0
+        }
+      },
+      "sonar_only_degraded": {
+        "n_views": 6,
+        "n_observations": 6,
+        "uahsm": {
+          "E_observed": 0.167670501410496,
+          "E_hidden": 0.2441614902920691,
+          "iou": 0.002834868887313962,
+          "iou_observed": 0.03404255319148936,
+          "ece_claimed": 0.28757836415566057,
+          "ece_observed_claimed": 0.29640933364215594,
+          "confident_claim_rate": 0.0010449320794148381,
+          "confident_error_rate": 0.0,
+          "unknown_fraction": 0.680773249738767,
+          "coverage_estimate": 0.3446123676166247,
+          "true_observed_fraction": 0.46635318704284223,
+          "E_coverage": 0.1217408194262175,
+          "mean_UA_claimed": 0.0461149763471496,
+          "mean_UE_claimed": 0.09710556462618326,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 5107.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.05580575680438614,
+          "integrated_observations": 6.0
+        },
+        "plain_grid": {
+          "E_observed": 0.17959182907921656,
+          "E_hidden": 0.24210212291898403,
+          "iou": 0.3245112781954887,
+          "iou_observed": 0.07435691318327975,
+          "ece_claimed": 0.16400053978917628,
+          "ece_observed_claimed": 0.3404502155397909,
+          "confident_claim_rate": 0.0,
+          "confident_error_rate": NaN,
+          "unknown_fraction": 0.1508881922675026,
+          "coverage_estimate": 0.2647343582522394,
+          "true_observed_fraction": 0.46635318704284223,
+          "E_coverage": 0.20161882879060283,
+          "mean_UA_claimed": 0.5525158935704468,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 5107.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.7515175249657333,
+          "integrated_observations": 6.0
+        },
+        "ml_fill": {
+          "E_observed": 0.2066829113108993,
+          "E_hidden": 0.30702323120173314,
+          "iou": 0.3643864785733298,
+          "iou_observed": 0.06947052196770559,
+          "ece_claimed": 0.2250102807029098,
+          "ece_observed_claimed": 0.36513567650338863,
+          "confident_claim_rate": 0.1508881922675026,
+          "confident_error_rate": 0.5983379501385041,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.2647343582522394,
+          "true_observed_fraction": 0.46635318704284223,
+          "E_coverage": 0.20161882879060283,
+          "mean_UA_claimed": 0.4691477691905382,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 5107.0,
+          "hidden_uc_rate": 0.24848247503426668,
+          "hidden_uc_rate_not_unknown": 0.24848247503426668,
+          "hidden_claimed_observed_rate": 0.7515175249657333,
+          "integrated_observations": 6.0
+        }
+      },
+      "depth_dropout_plus_sonar": {
+        "n_views": 6,
+        "n_observations": 18,
+        "uahsm": {
+          "E_observed": 0.16772884391709364,
+          "E_hidden": 0.22696387612541885,
+          "iou": 0.17041800643086816,
+          "iou_observed": 0.45080763582966227,
+          "ece_claimed": 0.22738971390219456,
+          "ece_observed_claimed": 0.25498970050603,
+          "confident_claim_rate": 0.006896551724137931,
+          "confident_error_rate": 0.030303030303030304,
+          "unknown_fraction": 0.5551724137931034,
+          "coverage_estimate": 0.4404747078143849,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.25022539667882304,
+          "mean_UA_claimed": 0.4005532472246381,
+          "mean_UE_claimed": 0.09011561606893234,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.07635135135135135,
+          "integrated_observations": 12.0
+        },
+        "plain_grid": {
+          "E_observed": 0.16271773440739323,
+          "E_hidden": 0.22430081842483643,
+          "iou": 0.2950486095410355,
+          "iou_observed": 0.17260981912144702,
+          "ece_claimed": 0.16651901479496892,
+          "ece_observed_claimed": 0.27782869962012957,
+          "confident_claim_rate": 0.024033437826541274,
+          "confident_error_rate": 0.24782608695652175,
+          "unknown_fraction": 0.3393939393939394,
+          "coverage_estimate": 0.45107224787346123,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.23962785661974673,
+          "mean_UA_claimed": 0.4680894731875019,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.013851351351351352,
+          "hidden_uc_rate_not_unknown": 0.013851351351351352,
+          "hidden_claimed_observed_rate": 0.41486486486486485,
+          "integrated_observations": 12.0
+        },
+        "ml_fill": {
+          "E_observed": 0.27325092654052485,
+          "E_hidden": 0.15253689950591748,
+          "iou": 0.46048109965635736,
+          "iou_observed": 0.10789980732177264,
+          "ece_claimed": 0.24736606181126375,
+          "ece_observed_claimed": 0.388635309510581,
+          "confident_claim_rate": 0.3634273772204807,
+          "confident_error_rate": 0.4223691776883266,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.45107224787346123,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.23962785661974673,
+          "mean_UA_claimed": 0.30922274289356183,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.5989864864864864,
+          "hidden_uc_rate_not_unknown": 0.5989864864864864,
+          "hidden_claimed_observed_rate": 0.41486486486486485,
+          "integrated_observations": 12.0
+        }
+      },
+      "depth_sonar_rgb_degraded": {
+        "n_views": 6,
+        "n_observations": 24,
+        "uahsm": {
+          "E_observed": 0.17212375874252184,
+          "E_hidden": 0.21473957146109013,
+          "iou": 0.26057425131213335,
+          "iou_observed": 0.41854636591478694,
+          "ece_claimed": 0.20378981982349056,
+          "ece_observed_claimed": 0.26272403518635035,
+          "confident_claim_rate": 0.04493207941483804,
+          "confident_error_rate": 0.1325581395348837,
+          "unknown_fraction": 0.49634273772204807,
+          "coverage_estimate": 0.470105027755848,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.22059507673735995,
+          "mean_UA_claimed": 0.05114099573646641,
+          "mean_UE_claimed": 0.08986852852373109,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.04560810810810811,
+          "hidden_uc_rate_not_unknown": 0.04560810810810811,
+          "hidden_claimed_observed_rate": 0.20945945945945946,
+          "integrated_observations": 12.0
+        },
+        "plain_grid": {
+          "E_observed": 0.16506452676029879,
+          "E_hidden": 0.21351847467830212,
+          "iou": 0.3053660754888586,
+          "iou_observed": 0.17699579831932774,
+          "ece_claimed": 0.17131212893308953,
+          "ece_observed_claimed": 0.27301422008793474,
+          "confident_claim_rate": 0.09278996865203762,
+          "confident_error_rate": 0.30180180180180183,
+          "unknown_fraction": 0.33260188087774295,
+          "coverage_estimate": 0.4808697369527159,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.20983036754049206,
+          "mean_UA_claimed": 0.23069555320286425,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.1097972972972973,
+          "hidden_uc_rate_not_unknown": 0.1097972972972973,
+          "hidden_claimed_observed_rate": 0.43277027027027026,
+          "integrated_observations": 12.0
+        },
+        "ml_fill": {
+          "E_observed": 0.2744856462761838,
+          "E_hidden": 0.14240398143505886,
+          "iou": 0.4635371557249264,
+          "iou_observed": 0.11002604166666667,
+          "ece_claimed": 0.24954864864113302,
+          "ece_observed_claimed": 0.3838109845338873,
+          "confident_claim_rate": 0.42539184952978054,
+          "confident_error_rate": 0.4070253009088676,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.4808697369527159,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.20983036754049206,
+          "mean_UA_claimed": 0.15396577829746022,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.677027027027027,
+          "hidden_uc_rate_not_unknown": 0.677027027027027,
+          "hidden_claimed_observed_rate": 0.43277027027027026,
+          "integrated_observations": 12.0
+        }
+      },
+      "rgb_only": {
+        "n_views": 6,
+        "n_observations": 6,
+        "uahsm": {
+          "E_observed": NaN,
+          "E_hidden": 0.25,
+          "iou": 0.0,
+          "iou_observed": NaN,
+          "ece_claimed": NaN,
+          "ece_observed_claimed": NaN,
+          "confident_claim_rate": 0.0,
+          "confident_error_rate": NaN,
+          "unknown_fraction": 1.0,
+          "coverage_estimate": 0.0,
+          "true_observed_fraction": 0.0,
+          "E_coverage": 0.0,
+          "mean_UA_claimed": NaN,
+          "mean_UE_claimed": NaN,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 9570.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.0,
+          "integrated_observations": 0.0
+        },
+        "plain_grid": {
+          "E_observed": NaN,
+          "E_hidden": 0.25,
+          "iou": 0.0,
+          "iou_observed": NaN,
+          "ece_claimed": NaN,
+          "ece_observed_claimed": NaN,
+          "confident_claim_rate": 0.0,
+          "confident_error_rate": NaN,
+          "unknown_fraction": 1.0,
+          "coverage_estimate": 0.0,
+          "true_observed_fraction": 0.0,
+          "E_coverage": 0.0,
+          "mean_UA_claimed": NaN,
+          "mean_UE_claimed": NaN,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 9570.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.0,
+          "integrated_observations": 0.0
+        },
+        "ml_fill": {
+          "E_observed": NaN,
+          "E_hidden": 0.2731758620689655,
+          "iou": 0.0,
+          "iou_observed": NaN,
+          "ece_claimed": 0.2596551724137931,
+          "ece_observed_claimed": NaN,
+          "confident_claim_rate": 1.0,
+          "confident_error_rate": 0.2896551724137931,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.0,
+          "true_observed_fraction": 0.0,
+          "E_coverage": 0.0,
+          "mean_UA_claimed": 0.0,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 9570.0,
+          "hidden_uc_rate": 1.0,
+          "hidden_uc_rate_not_unknown": 1.0,
+          "hidden_claimed_observed_rate": 0.0,
+          "integrated_observations": 0.0
+        }
+      }
+    },
+    "2026203": {
+      "depth_sonar": {
+        "n_views": 6,
+        "n_observations": 18,
+        "uahsm": {
+          "E_observed": 0.16797555819198975,
+          "E_hidden": 0.2152391040826817,
+          "iou": 0.2936768149882904,
+          "iou_observed": 0.38266796494644595,
+          "ece_claimed": 0.25577793963528855,
+          "ece_observed_claimed": 0.2694702949469461,
+          "confident_claim_rate": 0.0390282131661442,
+          "confident_error_rate": 0.39959839357429716,
+          "unknown_fraction": 0.4279780564263323,
+          "coverage_estimate": 0.5329928824837733,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.21833940591748058,
+          "mean_UA_claimed": 0.023774657233876437,
+          "mean_UE_claimed": 0.09105674614489696,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.018279231011660887,
+          "hidden_uc_rate_not_unknown": 0.018279231011660887,
+          "hidden_claimed_observed_rate": 0.2704065553104318,
+          "integrated_observations": 12.0
+        },
+        "plain_grid": {
+          "E_observed": 0.15796266681593546,
+          "E_hidden": 0.2094560194998156,
+          "iou": 0.19818773234200743,
+          "iou_observed": 0.1460882461994809,
+          "ece_claimed": 0.24688617210042982,
+          "ece_observed_claimed": 0.26753035093380717,
+          "confident_claim_rate": 0.06496865203761755,
+          "confident_error_rate": 0.5066344993968637,
+          "unknown_fraction": 0.2526645768025078,
+          "coverage_estimate": 0.5545096827079673,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.19682260569328658,
+          "mean_UA_claimed": 0.2005792445808839,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.02804916482823826,
+          "hidden_uc_rate_not_unknown": 0.02804916482823826,
+          "hidden_claimed_observed_rate": 0.5310431768042861,
+          "integrated_observations": 12.0
+        },
+        "ml_fill": {
+          "E_observed": 0.23845733668137828,
+          "E_hidden": 0.27986862586603056,
+          "iou": 0.2263149428985041,
+          "iou_observed": 0.09904474610356963,
+          "ece_claimed": 0.33040803582677897,
+          "ece_observed_claimed": 0.3501200360051445,
+          "confident_claim_rate": 0.3176332288401254,
+          "confident_error_rate": 0.5756229953121145,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.5545096827079673,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.19682260569328658,
+          "mean_UA_claimed": 0.14989997463348814,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.49700598802395207,
+          "hidden_uc_rate_not_unknown": 0.49700598802395207,
+          "hidden_claimed_observed_rate": 0.5310431768042861,
+          "integrated_observations": 12.0
+        }
+      },
+      "depth_only": {
+        "n_views": 6,
+        "n_observations": 12,
+        "uahsm": {
+          "E_observed": 0.19330570584776918,
+          "E_hidden": 0.2202600857762179,
+          "iou": 0.29505882352941176,
+          "iou_observed": 0.3968421052631579,
+          "ece_claimed": 0.2672203769594649,
+          "ece_observed_claimed": 0.28580752755399225,
+          "confident_claim_rate": 0.03471786833855799,
+          "confident_error_rate": 0.4582392776523702,
+          "unknown_fraction": 0.5622257053291536,
+          "coverage_estimate": 0.38134442844306626,
+          "true_observed_fraction": 0.613871473354232,
+          "E_coverage": 0.23252704491116571,
+          "mean_UA_claimed": 0.005352510581847422,
+          "mean_UE_claimed": 0.0910847808257055,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 4927.0,
+          "hidden_uc_rate": 0.014207428455449563,
+          "hidden_uc_rate_not_unknown": 0.014207428455449563,
+          "hidden_claimed_observed_rate": 0.24660036533387455,
+          "integrated_observations": 6.0
+        },
+        "plain_grid": {
+          "E_observed": 0.17743842244614105,
+          "E_hidden": 0.21254959146374736,
+          "iou": 0.274310595065312,
+          "iou_observed": 0.40683572216097025,
+          "ece_claimed": 0.1879489636827836,
+          "ece_observed_claimed": 0.1986769996329324,
+          "confident_claim_rate": 0.06496865203761755,
+          "confident_error_rate": 0.5066344993968637,
+          "unknown_fraction": 0.567398119122257,
+          "coverage_estimate": 0.42900514279932067,
+          "true_observed_fraction": 0.613871473354232,
+          "E_coverage": 0.1848663305549113,
+          "mean_UA_claimed": 0.00544185127153326,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 4927.0,
+          "hidden_uc_rate": 0.021920032474122185,
+          "hidden_uc_rate_not_unknown": 0.021920032474122185,
+          "hidden_claimed_observed_rate": 0.24660036533387455,
+          "integrated_observations": 6.0
+        },
+        "ml_fill": {
+          "E_observed": 0.16712758368704494,
+          "E_hidden": 0.10901413378158782,
+          "iou": 0.41942210306821565,
+          "iou_observed": 0.21469248291571755,
+          "ece_claimed": 0.18940582127969946,
+          "ece_observed_claimed": 0.22452757352480202,
+          "confident_claim_rate": 0.6323667711598746,
+          "confident_error_rate": 0.21192217127277233,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.42900514279932067,
+          "true_observed_fraction": 0.613871473354232,
+          "E_coverage": 0.1848663305549113,
+          "mean_UA_claimed": 0.0023541550955222257,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 4927.0,
+          "hidden_uc_rate": 0.7753196671402476,
+          "hidden_uc_rate_not_unknown": 0.7753196671402476,
+          "hidden_claimed_observed_rate": 0.24660036533387455,
+          "integrated_observations": 6.0
+        }
+      },
+      "sonar_only": {
+        "n_views": 6,
+        "n_observations": 6,
+        "uahsm": {
+          "E_observed": 0.19330800997413417,
+          "E_hidden": 0.24070479186056967,
+          "iou": 0.0,
+          "iou_observed": 0.0,
+          "ece_claimed": 0.3159492609288369,
+          "ece_observed_claimed": 0.3150492306341834,
+          "confident_claim_rate": 0.0,
+          "confident_error_rate": NaN,
+          "unknown_fraction": 0.7544670846394984,
+          "coverage_estimate": 0.24725714945145308,
+          "true_observed_fraction": 0.4970219435736677,
+          "E_coverage": 0.2497647941222146,
+          "mean_UA_claimed": 0.006039392500471037,
+          "mean_UE_claimed": 0.09093728238525842,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 6418.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.06325958242443129,
+          "integrated_observations": 6.0
+        },
+        "plain_grid": {
+          "E_observed": 0.18851019626834095,
+          "E_hidden": 0.23946375640258197,
+          "iou": 0.1098052973162603,
+          "iou_observed": 0.06688717383314957,
+          "ece_claimed": 0.3192990865789189,
+          "ece_observed_claimed": 0.33437804754160927,
+          "confident_claim_rate": 0.0,
+          "confident_error_rate": NaN,
+          "unknown_fraction": 0.4213949843260188,
+          "coverage_estimate": 0.22220661905126302,
+          "true_observed_fraction": 0.4970219435736677,
+          "E_coverage": 0.27481532452240465,
+          "mean_UA_claimed": 0.4713354711980375,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 6418.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.4062013088189467,
+          "integrated_observations": 6.0
+        },
+        "ml_fill": {
+          "E_observed": 0.29345018365402376,
+          "E_hidden": 0.4199187112171659,
+          "iou": 0.1584015939783042,
+          "iou_observed": 0.04865990111891751,
+          "ece_claimed": 0.4366312818348087,
+          "ece_observed_claimed": 0.4253152877733721,
+          "confident_claim_rate": 0.4213949843260188,
+          "confident_error_rate": 0.6258136507346104,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.22220661905126302,
+          "true_observed_fraction": 0.4970219435736677,
+          "E_coverage": 0.27481532452240465,
+          "mean_UA_claimed": 0.27271706770024373,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 6418.0,
+          "hidden_uc_rate": 0.5937986911810533,
+          "hidden_uc_rate_not_unknown": 0.5937986911810533,
+          "hidden_claimed_observed_rate": 0.4062013088189467,
+          "integrated_observations": 6.0
+        }
+      },
+      "sonar_only_degraded": {
+        "n_views": 6,
+        "n_observations": 6,
+        "uahsm": {
+          "E_observed": 0.18298724524763607,
+          "E_hidden": 0.24026700627501937,
+          "iou": 0.008678237650200267,
+          "iou_observed": 0.05909090909090909,
+          "ece_claimed": 0.28372158447091883,
+          "ece_observed_claimed": 0.2823906279232571,
+          "confident_claim_rate": 0.0011755485893416929,
+          "confident_error_rate": 0.0,
+          "unknown_fraction": 0.7175548589341693,
+          "coverage_estimate": 0.29544544062150024,
+          "true_observed_fraction": 0.4970219435736677,
+          "E_coverage": 0.20157650295216745,
+          "mean_UA_claimed": 0.035735582715269984,
+          "mean_UE_claimed": 0.10029708082403939,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 6418.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.06777812402617638,
+          "integrated_observations": 6.0
+        },
+        "plain_grid": {
+          "E_observed": 0.18805799579360172,
+          "E_hidden": 0.24054794974872531,
+          "iou": 0.10150856558424955,
+          "iou_observed": 0.04896907216494845,
+          "ece_claimed": 0.3472166291989049,
+          "ece_observed_claimed": 0.3617257958863427,
+          "confident_claim_rate": 0.0,
+          "confident_error_rate": NaN,
+          "unknown_fraction": 0.22186520376175548,
+          "coverage_estimate": 0.24269971828700854,
+          "true_observed_fraction": 0.4970219435736677,
+          "E_coverage": 0.25432222528665915,
+          "mean_UA_claimed": 0.542432772946393,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 6418.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.653007167341851,
+          "integrated_observations": 6.0
+        },
+        "ml_fill": {
+          "E_observed": 0.2451131203599846,
+          "E_hidden": 0.3746854224816639,
+          "iou": 0.14508770151069655,
+          "iou_observed": 0.04286422200198216,
+          "ece_claimed": 0.42426206201535477,
+          "ece_observed_claimed": 0.41058697836578906,
+          "confident_claim_rate": 0.22186520376175548,
+          "confident_error_rate": 0.7244789826916284,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.24269971828700854,
+          "true_observed_fraction": 0.4970219435736677,
+          "E_coverage": 0.25432222528665915,
+          "mean_UA_claimed": 0.4220858152495874,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 6418.0,
+          "hidden_uc_rate": 0.34699283265814895,
+          "hidden_uc_rate_not_unknown": 0.34699283265814895,
+          "hidden_claimed_observed_rate": 0.653007167341851,
+          "integrated_observations": 6.0
+        }
+      },
+      "depth_dropout_plus_sonar": {
+        "n_views": 6,
+        "n_observations": 18,
+        "uahsm": {
+          "E_observed": 0.16080742610740434,
+          "E_hidden": 0.22515827164791585,
+          "iou": 0.19803600654664485,
+          "iou_observed": 0.39845758354755784,
+          "ece_claimed": 0.2560022357885665,
+          "ece_observed_claimed": 0.2578241501298853,
+          "confident_claim_rate": 0.00603448275862069,
+          "confident_error_rate": 0.14285714285714285,
+          "unknown_fraction": 0.5253134796238245,
+          "coverage_estimate": 0.4910455583736504,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.2602867300276035,
+          "mean_UA_claimed": 0.41797268571339097,
+          "mean_UE_claimed": 0.09116843210968238,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.0006303183107469272,
+          "hidden_uc_rate_not_unknown": 0.0006303183107469272,
+          "hidden_claimed_observed_rate": 0.10242672549637567,
+          "integrated_observations": 12.0
+        },
+        "plain_grid": {
+          "E_observed": 0.1545520011053043,
+          "E_hidden": 0.22294689258758205,
+          "iou": 0.1883177570093458,
+          "iou_observed": 0.13919275745001886,
+          "ece_claimed": 0.2570836657818403,
+          "ece_observed_claimed": 0.27536358475264844,
+          "confident_claim_rate": 0.016379310344827588,
+          "confident_error_rate": 0.44019138755980863,
+          "unknown_fraction": 0.2608150470219436,
+          "coverage_estimate": 0.5143712144877314,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.2369610739135225,
+          "mean_UA_claimed": 0.4581254643600011,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.0012606366214938543,
+          "hidden_uc_rate_not_unknown": 0.0012606366214938543,
+          "hidden_claimed_observed_rate": 0.5146549007248661,
+          "integrated_observations": 12.0
+        },
+        "ml_fill": {
+          "E_observed": 0.23663703291921898,
+          "E_hidden": 0.2960909203215877,
+          "iou": 0.22398334934357989,
+          "iou_observed": 0.09641595153962645,
+          "ece_claimed": 0.33989914856225056,
+          "ece_observed_claimed": 0.35806410738353034,
+          "confident_claim_rate": 0.27719435736677117,
+          "confident_error_rate": 0.5818490245971162,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.5143712144877314,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.2369610739135225,
+          "mean_UA_claimed": 0.3386394498309977,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.4866057358966278,
+          "hidden_uc_rate_not_unknown": 0.4866057358966278,
+          "hidden_claimed_observed_rate": 0.5146549007248661,
+          "integrated_observations": 12.0
+        }
+      },
+      "depth_sonar_rgb_degraded": {
+        "n_views": 6,
+        "n_observations": 24,
+        "uahsm": {
+          "E_observed": 0.16797555819198975,
+          "E_hidden": 0.2152391040826817,
+          "iou": 0.2936768149882904,
+          "iou_observed": 0.38266796494644595,
+          "ece_claimed": 0.25577793963528855,
+          "ece_observed_claimed": 0.2694702949469461,
+          "confident_claim_rate": 0.0390282131661442,
+          "confident_error_rate": 0.39959839357429716,
+          "unknown_fraction": 0.4279780564263323,
+          "coverage_estimate": 0.5329928824837733,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.21833940591748058,
+          "mean_UA_claimed": 0.023774657233876437,
+          "mean_UE_claimed": 0.09105674614489696,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.018279231011660887,
+          "hidden_uc_rate_not_unknown": 0.018279231011660887,
+          "hidden_claimed_observed_rate": 0.2704065553104318,
+          "integrated_observations": 12.0
+        },
+        "plain_grid": {
+          "E_observed": 0.15796266681593546,
+          "E_hidden": 0.2094560194998156,
+          "iou": 0.19818773234200743,
+          "iou_observed": 0.1460882461994809,
+          "ece_claimed": 0.24688617210042982,
+          "ece_observed_claimed": 0.26753035093380717,
+          "confident_claim_rate": 0.06496865203761755,
+          "confident_error_rate": 0.5066344993968637,
+          "unknown_fraction": 0.2526645768025078,
+          "coverage_estimate": 0.5545096827079673,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.19682260569328658,
+          "mean_UA_claimed": 0.2005792445808839,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.02804916482823826,
+          "hidden_uc_rate_not_unknown": 0.02804916482823826,
+          "hidden_claimed_observed_rate": 0.5310431768042861,
+          "integrated_observations": 12.0
+        },
+        "ml_fill": {
+          "E_observed": 0.23845733668137828,
+          "E_hidden": 0.27986862586603056,
+          "iou": 0.2263149428985041,
+          "iou_observed": 0.09904474610356963,
+          "ece_claimed": 0.33040803582677897,
+          "ece_observed_claimed": 0.3501200360051445,
+          "confident_claim_rate": 0.3176332288401254,
+          "confident_error_rate": 0.5756229953121145,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.5545096827079673,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.19682260569328658,
+          "mean_UA_claimed": 0.14989997463348814,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.49700598802395207,
+          "hidden_uc_rate_not_unknown": 0.49700598802395207,
+          "hidden_claimed_observed_rate": 0.5310431768042861,
+          "integrated_observations": 12.0
+        }
+      },
+      "rgb_only": {
+        "n_views": 6,
+        "n_observations": 6,
+        "uahsm": {
+          "E_observed": NaN,
+          "E_hidden": 0.25,
+          "iou": 0.0,
+          "iou_observed": NaN,
+          "ece_claimed": NaN,
+          "ece_observed_claimed": NaN,
+          "confident_claim_rate": 0.0,
+          "confident_error_rate": NaN,
+          "unknown_fraction": 1.0,
+          "coverage_estimate": 0.0,
+          "true_observed_fraction": 0.0,
+          "E_coverage": 0.0,
+          "mean_UA_claimed": NaN,
+          "mean_UE_claimed": NaN,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 12760.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.0,
+          "integrated_observations": 0.0
+        },
+        "plain_grid": {
+          "E_observed": NaN,
+          "E_hidden": 0.25,
+          "iou": 0.0,
+          "iou_observed": NaN,
+          "ece_claimed": NaN,
+          "ece_observed_claimed": NaN,
+          "confident_claim_rate": 0.0,
+          "confident_error_rate": NaN,
+          "unknown_fraction": 1.0,
+          "coverage_estimate": 0.0,
+          "true_observed_fraction": 0.0,
+          "E_coverage": 0.0,
+          "mean_UA_claimed": NaN,
+          "mean_UE_claimed": NaN,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 12760.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.0,
+          "integrated_observations": 0.0
+        },
+        "ml_fill": {
+          "E_observed": NaN,
+          "E_hidden": 0.10889686520376175,
+          "iou": 0.0,
+          "iou_observed": NaN,
+          "ece_claimed": 0.08489028213166144,
+          "ece_observed_claimed": NaN,
+          "confident_claim_rate": 1.0,
+          "confident_error_rate": 0.11489028213166144,
+          "unknown_fraction": 0.0,
+          "coverage_estimate": 0.0,
+          "true_observed_fraction": 0.0,
+          "E_coverage": 0.0,
+          "mean_UA_claimed": 0.0,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 12760.0,
+          "hidden_uc_rate": 1.0,
+          "hidden_uc_rate_not_unknown": 1.0,
+          "hidden_claimed_observed_rate": 0.0,
+          "integrated_observations": 0.0
+        }
+      }
+    }
+  },
+  "aggregate": {
+    "depth_dropout_plus_sonar": {
+      "ml_fill": {
+        "E_coverage": {
+          "mean": 0.23455711520162728,
+          "std": 0.006609182175260786,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.25228754647036267,
+          "std": 0.08659972430493301,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.25419574646018545,
+          "std": 0.01835276166155037,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.3079618019273192,
+          "std": 0.04813036125499699,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.5538192245142479,
+          "std": 0.11991774668416773,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.4917374395412033,
+          "std": 0.03529219156327896,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.2975104092002399,
+          "std": 0.04675152540631548,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.36878474555292523,
+          "std": 0.01720948164668559,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.48599258014694097,
+          "std": 0.06198382954262819,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.5223538160204909,
+          "std": 0.0664155145381558,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.5223538160204909,
+          "std": 0.0664155145381558,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 12.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.34188704567247813,
+          "std": 0.1182503865575925,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.11953685422633416,
+          "std": 0.030644021125632196,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.33172861808507353,
+          "std": 0.01996846756296211,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        }
+      },
+      "n_observations": {
+        "mean": 18.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "n_views": {
+        "mean": 6.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "plain_grid": {
+        "E_coverage": {
+          "mean": 0.23455711520162728,
+          "std": 0.006609182175260786,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.22431234364230268,
+          "std": 0.0013712499895425622,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.15222045255646266,
+          "std": 0.011836552165212665,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.021075699523975384,
+          "std": 0.004112614378903091,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.3056750360347055,
+          "std": 0.11687394990979233,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.4917374395412033,
+          "std": 0.03529219156327896,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.2002332316015569,
+          "std": 0.04951719315415222,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.2640512895341874,
+          "std": 0.02176325302025919,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.48599258014694097,
+          "std": 0.06198382954262819,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.008346396167431968,
+          "std": 0.006442494173485585,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.008346396167431968,
+          "std": 0.006442494173485585,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 12.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.2762427945560412,
+          "std": 0.08019332214209485,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.18609080323028326,
+          "std": 0.05489440263314362,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.4652854662117452,
+          "std": 0.006249110856621887,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.28688610240334383,
+          "std": 0.045473488407990495,
+          "n": 3
+        }
+      },
+      "uahsm": {
+        "E_coverage": {
+          "mean": 0.2545314029384129,
+          "std": 0.005184882384312704,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.2268224343772002,
+          "std": 0.0015981430699183476,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.1602868202504802,
+          "std": 0.007715510859360224,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.00857715081853013,
+          "std": 0.003682767956005276,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.0645227788084931,
+          "std": 0.06801971435990711,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.47176315180441764,
+          "std": 0.02733974090009135,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.23600754392626996,
+          "std": 0.017370775490432457,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.24887230003212527,
+          "std": 0.013127081197328565,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.0884918760460877,
+          "std": 0.013129965163588204,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.0006513150160023399,
+          "std": 0.000662063124725382,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.0006513150160023399,
+          "std": 0.000662063124725382,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 12.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.20556858707642042,
+          "std": 0.03945982347322426,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.4599130866697581,
+          "std": 0.06647757638133867,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.4177299574874689,
+          "std": 0.017056641522750594,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.09149967212283133,
+          "std": 0.0015760031256751284,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.5325177057935678,
+          "std": 0.020048117842103974,
+          "n": 3
+        }
+      }
+    },
+    "depth_only": {
+      "ml_fill": {
+        "E_coverage": {
+          "mean": 0.20294657317386897,
+          "std": 0.027392531119705528,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.11843777969880975,
+          "std": 0.013061248211665879,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.14400094804653904,
+          "std": 0.029598981207102276,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.6552856147683733,
+          "std": 0.04191023086054621,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.19002995679261395,
+          "std": 0.02005594347691741,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.42218114074694846,
+          "std": 0.03348596387194517,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.1659016872407961,
+          "std": 0.02065179386334101,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.20189001579920016,
+          "std": 0.028962893302242804,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.23234830871435355,
+          "std": 0.0251082328986427,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 4227.0,
+          "std": 653.1071887523517,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.8248506126513964,
+          "std": 0.0579312947465424,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.8248506126513964,
+          "std": 0.0579312947465424,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 6.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.5589601987394258,
+          "std": 0.12382494469906502,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.289167167784215,
+          "std": 0.09676866674232155,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.0029825919717728264,
+          "std": 0.000577575291420948,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.6251277139208175,
+          "std": 0.014315888168946059,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        }
+      },
+      "n_observations": {
+        "mean": 12.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "n_views": {
+        "mean": 6.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "plain_grid": {
+        "E_coverage": {
+          "mean": 0.20294657317386897,
+          "std": 0.027392531119705528,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.21200529234131738,
+          "std": 0.002449093010007139,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.17084990146343815,
+          "std": 0.015666708237403213,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.08093869731800767,
+          "std": 0.014332918894242446,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.35650424919202833,
+          "std": 0.13165458684831002,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.42218114074694846,
+          "std": 0.03348596387194517,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.15878189461981337,
+          "std": 0.02776891439878892,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.18702822567427976,
+          "std": 0.022355037163480564,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.23234830871435355,
+          "std": 0.0251082328986427,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 4227.0,
+          "std": 653.1071887523517,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.05719892136575002,
+          "std": 0.03499831229110948,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.05719892136575002,
+          "std": 0.03499831229110948,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 6.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.285213767332676,
+          "std": 0.04994460862359376,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.49331003393821954,
+          "std": 0.10464946899905533,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.007076401918050761,
+          "std": 0.0017792183227349657,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.6251277139208175,
+          "std": 0.014315888168946059,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.5743469174503657,
+          "std": 0.033692254665178466,
+          "n": 3
+        }
+      },
+      "uahsm": {
+        "E_coverage": {
+          "mean": 0.2523776402085794,
+          "std": 0.025720776184271054,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.21772614615245603,
+          "std": 0.0023115522910040908,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.18887953966011098,
+          "std": 0.01105291340979453,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.03814292348775108,
+          "std": 0.004661725285847878,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.2618580208319441,
+          "std": 0.17088845998658345,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.372750073712238,
+          "std": 0.03053684071178795,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.22953756254192106,
+          "std": 0.03274859560205187,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.27826868187242826,
+          "std": 0.019848633194001708,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.23234830871435355,
+          "std": 0.0251082328986427,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 4227.0,
+          "std": 653.1071887523517,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.027507305941665356,
+          "std": 0.01213416232409622,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.027507305941665356,
+          "std": 0.01213416232409622,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 6.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.30614026616132967,
+          "std": 0.04936638538813148,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.4740707570030047,
+          "std": 0.10480115021018233,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.006786783203097814,
+          "std": 0.001586208413357559,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.09021689133572242,
+          "std": 0.0011899226035936847,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.6251277139208175,
+          "std": 0.014315888168946059,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.5672994310925344,
+          "std": 0.03130951013190467,
+          "n": 3
+        }
+      }
+    },
+    "depth_sonar": {
+      "ml_fill": {
+        "E_coverage": {
+          "mean": 0.1991787812630786,
+          "std": 0.009690760866644799,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.23888630594901983,
+          "std": 0.08387085310064213,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.25406021492425857,
+          "std": 0.01849195870998956,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.3608760013932428,
+          "std": 0.05694196951122854,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.5242160987403274,
+          "std": 0.10174446858787665,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.527115773479752,
+          "std": 0.040277319057719085,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.29221463517338725,
+          "std": 0.04061481432116121,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.3625776142236295,
+          "std": 0.018480554599906246,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.5030492209419049,
+          "std": 0.06128137261170632,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.5674969966340236,
+          "std": 0.09615054621406378,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.5674969966340236,
+          "std": 0.09615054621406378,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 12.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.344042541106553,
+          "std": 0.11862097759170535,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.12166494387741049,
+          "std": 0.03017302871566512,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.1545023455177313,
+          "std": 0.004892770533145131,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        }
+      },
+      "n_observations": {
+        "mean": 18.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "n_views": {
+        "mean": 6.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "plain_grid": {
+        "E_coverage": {
+          "mean": 0.1991787812630786,
+          "std": 0.009690760866644799,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.21207012484846607,
+          "std": 0.002268286791068893,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.15331769110227808,
+          "std": 0.01463310335167641,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.08100255427841635,
+          "std": 0.014388568689918953,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.3563020561367019,
+          "std": 0.13182171606633256,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.527115773479752,
+          "std": 0.040277319057719085,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.1952827318429703,
+          "std": 0.0447273884222303,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.2578822235476074,
+          "std": 0.021634673826647566,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.5030492209419049,
+          "std": 0.06128137261170632,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.07054621757592858,
+          "std": 0.04097061808431027,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.07054621757592858,
+          "std": 0.04097061808431027,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 12.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.28546177187930133,
+          "std": 0.07922001198659195,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.19109991590373865,
+          "std": 0.053477344965691766,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.2151242397345207,
+          "std": 0.015084363036466571,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.27987344711482637,
+          "std": 0.04567197428112749,
+          "n": 3
+        }
+      },
+      "uahsm": {
+        "E_coverage": {
+          "mean": 0.2181772066299629,
+          "std": 0.0025029145558419195,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.21539143595430962,
+          "std": 0.0007398865149020205,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.16431690930476703,
+          "std": 0.01014372371626444,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.04688261929641241,
+          "std": 0.008989807222180969,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.22346846034514942,
+          "std": 0.15255953288790897,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.5081173481128677,
+          "std": 0.03343877879952975,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.22063056175699228,
+          "std": 0.030447345370375058,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.25509833040266233,
+          "std": 0.019346862719481203,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.24235110265107118,
+          "std": 0.03076001751161853,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.03442174485108558,
+          "std": 0.014322690120391609,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.03442174485108558,
+          "std": 0.014322690120391609,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 12.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.3030459085116364,
+          "std": 0.0478491641213818,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.45745153107416137,
+          "std": 0.10007827251837613,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.0377262471807518,
+          "std": 0.013691065326300659,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.09118341638073753,
+          "std": 0.0013825818529482475,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.4547747590851039,
+          "std": 0.03649760756109501,
+          "n": 3
+        }
+      }
+    },
+    "depth_sonar_rgb_degraded": {
+      "ml_fill": {
+        "E_coverage": {
+          "mean": 0.1991787812630786,
+          "std": 0.009690760866644799,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.23888630594901983,
+          "std": 0.08387085310064213,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.25406021492425857,
+          "std": 0.01849195870998956,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.3608760013932428,
+          "std": 0.05694196951122854,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.5242160987403274,
+          "std": 0.10174446858787665,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.527115773479752,
+          "std": 0.040277319057719085,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.29221463517338725,
+          "std": 0.04061481432116121,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.3625776142236295,
+          "std": 0.018480554599906246,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.5030492209419049,
+          "std": 0.06128137261170632,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.5674969966340236,
+          "std": 0.09615054621406378,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.5674969966340236,
+          "std": 0.09615054621406378,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 12.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.344042541106553,
+          "std": 0.11862097759170535,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.12166494387741049,
+          "std": 0.03017302871566512,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.1545023455177313,
+          "std": 0.004892770533145131,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        }
+      },
+      "n_observations": {
+        "mean": 24.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "n_views": {
+        "mean": 6.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "plain_grid": {
+        "E_coverage": {
+          "mean": 0.1991787812630786,
+          "std": 0.009690760866644799,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.21207012484846607,
+          "std": 0.002268286791068893,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.15331769110227808,
+          "std": 0.01463310335167641,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.08100255427841635,
+          "std": 0.014388568689918953,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.3563020561367019,
+          "std": 0.13182171606633256,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.527115773479752,
+          "std": 0.040277319057719085,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.1952827318429703,
+          "std": 0.0447273884222303,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.2578822235476074,
+          "std": 0.021634673826647566,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.5030492209419049,
+          "std": 0.06128137261170632,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.07054621757592858,
+          "std": 0.04097061808431027,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.07054621757592858,
+          "std": 0.04097061808431027,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 12.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.28546177187930133,
+          "std": 0.07922001198659195,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.19109991590373865,
+          "std": 0.053477344965691766,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.2151242397345207,
+          "std": 0.015084363036466571,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.27987344711482637,
+          "std": 0.04567197428112749,
+          "n": 3
+        }
+      },
+      "uahsm": {
+        "E_coverage": {
+          "mean": 0.2181772066299629,
+          "std": 0.0025029145558419195,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.21539143595430962,
+          "std": 0.0007398865149020205,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.16431690930476703,
+          "std": 0.01014372371626444,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.04688261929641241,
+          "std": 0.008989807222180969,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.22346846034514942,
+          "std": 0.15255953288790897,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.5081173481128677,
+          "std": 0.03343877879952975,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.22063056175699228,
+          "std": 0.030447345370375058,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.25509833040266233,
+          "std": 0.019346862719481203,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.24235110265107118,
+          "std": 0.03076001751161853,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.03442174485108558,
+          "std": 0.014322690120391609,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.03442174485108558,
+          "std": 0.014322690120391609,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 12.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.3030459085116364,
+          "std": 0.0478491641213818,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.45745153107416137,
+          "std": 0.10007827251837613,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.0377262471807518,
+          "std": 0.013691065326300659,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.09118341638073753,
+          "std": 0.0013825818529482475,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.4547747590851039,
+          "std": 0.03649760756109501,
+          "n": 3
+        }
+      }
+    },
+    "rgb_only": {
+      "ml_fill": {
+        "E_coverage": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.19016599326599326,
+          "std": 0.08215333125628115,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "confident_claim_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.20134680134680136,
+          "std": 0.08739716091093741,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.17134680134680136,
+          "std": 0.0873971609109374,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 1.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "mean_UA_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        }
+      },
+      "n_observations": {
+        "mean": 6.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "n_views": {
+        "mean": 6.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "plain_grid": {
+        "E_coverage": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.25,
+          "std": 0.0,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "confident_claim_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "coverage_estimate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "ece_observed_claimed": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "mean_UA_claimed": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "mean_UE_claimed": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "n": 3
+        }
+      },
+      "uahsm": {
+        "E_coverage": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.25,
+          "std": 0.0,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "confident_claim_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "coverage_estimate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "ece_observed_claimed": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "mean_UA_claimed": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "mean_UE_claimed": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "n": 3
+        }
+      }
+    },
+    "sonar_only": {
+      "ml_fill": {
+        "E_coverage": {
+          "mean": 0.23940579121582237,
+          "std": 0.031871236587253805,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.3943272423531292,
+          "std": 0.042294238390874934,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.2650926985796958,
+          "std": 0.025546015239592355,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.38357424822942066,
+          "std": 0.05092435474815371,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.5999944354531835,
+          "std": 0.10489820699919776,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.24156483458238967,
+          "std": 0.016894667036667768,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.37052865431862586,
+          "std": 0.06602295806758299,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.3921510785126741,
+          "std": 0.028797096934794302,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.4390176451465817,
+          "std": 0.06417631757096226,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 5834.0,
+          "std": 667.0959451233383,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.5609823548534183,
+          "std": 0.06417631757096225,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.5609823548534183,
+          "std": 0.06417631757096225,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 6.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.2560991052730179,
+          "std": 0.09863960110572591,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.07291572738805814,
+          "std": 0.02352004002826834,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.3062675613965356,
+          "std": 0.04020470078389786,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.48097062579821204,
+          "std": 0.015384575508279201,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        }
+      },
+      "n_observations": {
+        "mean": 6.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "n_views": {
+        "mean": 6.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "plain_grid": {
+        "E_coverage": {
+          "mean": 0.23940579121582237,
+          "std": 0.031871236587253805,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.2405052704331929,
+          "std": 0.001111585496299261,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.18391374009027003,
+          "std": 0.004653062371745143,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "coverage_estimate": {
+          "mean": 0.24156483458238967,
+          "std": 0.016894667036667768,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.2510135287853817,
+          "std": 0.06073182369372719,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.3193326744965798,
+          "std": 0.015987821470948335,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.4390176451465817,
+          "std": 0.06417631757096226,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 5834.0,
+          "std": 667.0959451233383,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 6.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.18218979101577062,
+          "std": 0.06287355723857242,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.09171819158454424,
+          "std": 0.024937500829528572,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.49557026783898833,
+          "std": 0.024468844676475445,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.48097062579821204,
+          "std": 0.015384575508279201,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.38357424822942066,
+          "std": 0.05092435474815371,
+          "n": 3
+        }
+      },
+      "uahsm": {
+        "E_coverage": {
+          "mean": 0.20962432268347922,
+          "std": 0.03705396013554295,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.24136253617323053,
+          "std": 0.0009494313223282124,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.19002160184380382,
+          "std": 0.002846432981245228,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "coverage_estimate": {
+          "mean": 0.27134630311473273,
+          "std": 0.021773921237957572,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.3223546289606404,
+          "std": 0.006170761433927386,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.3217501452248883,
+          "std": 0.006727095294577367,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.05849307656853029,
+          "std": 0.009123681454381763,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 5834.0,
+          "std": 667.0959451233383,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 6.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.0188219691273873,
+          "std": 0.011229355541136703,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0929915244861557,
+          "std": 0.003043045038672106,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.48097062579821204,
+          "std": 0.015384575508279201,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.7364768373389063,
+          "std": 0.01621498276464576,
+          "n": 3
+        }
+      }
+    },
+    "sonar_only_degraded": {
+      "ml_fill": {
+        "E_coverage": {
+          "mean": 0.22433233306105174,
+          "std": 0.027094674141067133,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.35955032722454056,
+          "std": 0.04683123234707982,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.22472327433969766,
+          "std": 0.01932253333894315,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.19307151979565773,
+          "std": 0.0373349160465513,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.7063684729003578,
+          "std": 0.10021026181416964,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.25663829273716027,
+          "std": 0.012123634875384499,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.32758003524839024,
+          "std": 0.09975628848769902,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.3780908908676584,
+          "std": 0.028334422569941224,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.6909734028176026,
+          "std": 0.052994276716824766,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 5834.0,
+          "std": 667.0959451233383,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.30902659718239744,
+          "std": 0.05299427671682475,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.30902659718239744,
+          "std": 0.05299427671682475,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 6.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.2546951578364656,
+          "std": 0.1096494125849346,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.06947876174027368,
+          "std": 0.026618660581054752,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.43734405439807905,
+          "std": 0.027550343925237742,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.48097062579821204,
+          "std": 0.015384575508279201,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        }
+      },
+      "n_observations": {
+        "mean": 6.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "n_views": {
+        "mean": 6.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "plain_grid": {
+        "E_coverage": {
+          "mean": 0.22433233306105174,
+          "std": 0.027094674141067133,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.24115330872413535,
+          "std": 0.0008320665097260725,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.1814878006494279,
+          "std": 0.005857070020366926,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "coverage_estimate": {
+          "mean": 0.25663829273716027,
+          "std": 0.012123634875384499,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.24402486746367366,
+          "std": 0.09377942927618643,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.3392511250578985,
+          "std": 0.023097571532625073,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.6909734028176026,
+          "std": 0.052994276716824766,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 5834.0,
+          "std": 667.0959451233383,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 6.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.22930250119957662,
+          "std": 0.11501694170722006,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.07706193387075454,
+          "std": 0.029538412073532076,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.5417432267595808,
+          "std": 0.011133466463007592,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.48097062579821204,
+          "std": 0.015384575508279201,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.19307151979565773,
+          "std": 0.0373349160465513,
+          "n": 3
+        }
+      },
+      "uahsm": {
+        "E_coverage": {
+          "mean": 0.15854530138876152,
+          "std": 0.04028043096535497,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.24181044356517348,
+          "std": 0.002069039920228566,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.17508632748757644,
+          "std": 0.007669885650960764,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.0013497039359108324,
+          "std": 0.0004198733351181189,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.3224253244094505,
+          "std": 0.02493140926944414,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.286355801718877,
+          "std": 0.002283257401957387,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.28934331387124274,
+          "std": 0.007010040008789989,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.06545428898133245,
+          "std": 0.008721971410244417,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 5834.0,
+          "std": 667.0959451233383,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "integrated_observations": {
+          "mean": 6.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.0052720108423957345,
+          "std": 0.003039832843036172,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.040487358060138486,
+          "std": 0.01636249872397785,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.04020818154854204,
+          "std": 0.005336257264376811,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.09979410527883072,
+          "std": 0.002475674663487697,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.48097062579821204,
+          "std": 0.015384575508279201,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.6967200743062812,
+          "std": 0.018871693323988786,
+          "n": 3
+        }
+      }
+    }
+  },
+  "environment": {
+    "python": "3.11.15",
+    "machine": "AMD64"
+  }
+}

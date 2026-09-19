@@ -1,0 +1,2140 @@
+{
+  "experiment_id": "2S-E003",
+  "claim_scope": "SYNTHETIC_ONLY (Twin2S OCPWE worlds); not a physical-world result",
+  "seeds": [
+    2026201,
+    2026202,
+    2026203
+  ],
+  "config": {
+    "experiment": {
+      "id": "2S-E003"
+    },
+    "seeds": [
+      2026201,
+      2026202,
+      2026203
+    ],
+    "scenario": {
+      "family": "pipeline_with_supports"
+    },
+    "target_group": "segments",
+    "pose_sigmas_m": [
+      0.0,
+      0.05,
+      0.15,
+      0.3
+    ],
+    "rotation_sigma_rad_per_m": 0.1,
+    "conditions": {
+      "style": "coverage",
+      "target_coverage": 0.8,
+      "n_views": 6,
+      "modalities": [
+        "DEPTH_RANGE",
+        "SONAR"
+      ]
+    },
+    "eval_margin_m": 1.0,
+    "models": [
+      "uahsm",
+      "uahsm_no_pose_cov",
+      "plain_grid"
+    ],
+    "model": {}
+  },
+  "per_seed": {
+    "2026201": {
+      "sigma_0.0": {
+        "n_views": 6,
+        "uahsm": {
+          "E_observed": 0.15704066115475354,
+          "E_hidden": 0.2141590608824437,
+          "iou": 0.34587289992695397,
+          "iou_observed": 0.5504322766570605,
+          "ece_claimed": 0.2136932440674504,
+          "ece_observed_claimed": 0.2402317103163661,
+          "confident_claim_rate": 0.05956112852664577,
+          "confident_error_rate": 0.17690058479532164,
+          "unknown_fraction": 0.439481017067224,
+          "coverage_estimate": 0.5197426226981949,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.217108648635835,
+          "mean_UA_claimed": 0.04068562837346564,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.03441429516876241,
+          "hidden_uc_rate_not_unknown": 0.03441429516876241,
+          "hidden_claimed_observed_rate": 0.22964923891462607
+        },
+        "uahsm_no_pose_cov": {
+          "E_observed": 0.15704066115475354,
+          "E_hidden": 0.2141590608824437,
+          "iou": 0.34587289992695397,
+          "iou_observed": 0.5504322766570605,
+          "ece_claimed": 0.2136932440674504,
+          "ece_observed_claimed": 0.2402317103163661,
+          "confident_claim_rate": 0.05956112852664577,
+          "confident_error_rate": 0.17690058479532164,
+          "unknown_fraction": 0.439481017067224,
+          "coverage_estimate": 0.5197426226981949,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.217108648635835,
+          "mean_UA_claimed": 0.04068562837346564,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.03441429516876241,
+          "hidden_uc_rate_not_unknown": 0.03441429516876241,
+          "hidden_claimed_observed_rate": 0.22964923891462607
+        },
+        "plain_grid": {
+          "E_observed": 0.1428267096088314,
+          "E_hidden": 0.21222993244000748,
+          "iou": 0.35140101056499773,
+          "iou_observed": 0.24395329441201,
+          "ece_claimed": 0.17245958931058508,
+          "ece_observed_claimed": 0.24092905525392416,
+          "confident_claim_rate": 0.08638105189829327,
+          "confident_error_rate": 0.3185483870967742,
+          "unknown_fraction": 0.25252525252525254,
+          "coverage_estimate": 0.5430069082771727,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.19384436305685726,
+          "mean_UA_claimed": 0.21610919674588694,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.05956320317670417,
+          "hidden_uc_rate_not_unknown": 0.05956320317670417,
+          "hidden_claimed_observed_rate": 0.5436796823295831
+        }
+      },
+      "sigma_0.05": {
+        "n_views": 6,
+        "uahsm": {
+          "E_observed": 0.15633455251857672,
+          "E_hidden": 0.21974918213450959,
+          "iou": 0.3310269482884195,
+          "iou_observed": 0.5208131655372701,
+          "ece_claimed": 0.20480638956417874,
+          "ece_observed_claimed": 0.2374753585955578,
+          "confident_claim_rate": 0.056339254615116685,
+          "confident_error_rate": 0.14064914992272023,
+          "unknown_fraction": 0.4494078718216649,
+          "coverage_estimate": 0.5130254913725881,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.22382577996144182,
+          "mean_UA_claimed": 0.03931279283362727,
+          "mean_UE_claimed": 0.17347609539632974,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.04037061548643282,
+          "hidden_uc_rate_not_unknown": 0.04037061548643282,
+          "hidden_claimed_observed_rate": 0.23593646591661152
+        },
+        "uahsm_no_pose_cov": {
+          "E_observed": 0.15648383265067708,
+          "E_hidden": 0.21975214694767217,
+          "iou": 0.3310269482884195,
+          "iou_observed": 0.5208131655372701,
+          "ece_claimed": 0.2049453385801354,
+          "ece_observed_claimed": 0.23763297755031998,
+          "confident_claim_rate": 0.056339254615116685,
+          "confident_error_rate": 0.14064914992272023,
+          "unknown_fraction": 0.4494078718216649,
+          "coverage_estimate": 0.5130254913725881,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.22382577996144182,
+          "mean_UA_claimed": 0.03931279283362727,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.04037061548643282,
+          "hidden_uc_rate_not_unknown": 0.04037061548643282,
+          "hidden_claimed_observed_rate": 0.23593646591661152
+        },
+        "plain_grid": {
+          "E_observed": 0.14400312460067222,
+          "E_hidden": 0.22088195876142744,
+          "iou": 0.3460136674259681,
+          "iou_observed": 0.23627287853577372,
+          "ece_claimed": 0.17069562211322645,
+          "ece_observed_claimed": 0.23921425602975663,
+          "confident_claim_rate": 0.0831591779867642,
+          "confident_error_rate": 0.29842931937172773,
+          "unknown_fraction": 0.25304771856495994,
+          "coverage_estimate": 0.5364636867182933,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.2003875846157367,
+          "mean_UA_claimed": 0.2215915947376704,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.06982131039046989,
+          "hidden_uc_rate_not_unknown": 0.06982131039046989,
+          "hidden_claimed_observed_rate": 0.5526141628060887
+        }
+      },
+      "sigma_0.15": {
+        "n_views": 6,
+        "uahsm": {
+          "E_observed": 0.16607482706881352,
+          "E_hidden": 0.22069014507282997,
+          "iou": 0.22010086455331412,
+          "iou_observed": 0.31873252562907733,
+          "ece_claimed": 0.1891964513164297,
+          "ece_observed_claimed": 0.23672947011102347,
+          "confident_claim_rate": 0.00513758272378962,
+          "confident_error_rate": 0.0,
+          "unknown_fraction": 0.562957157784744,
+          "coverage_estimate": 0.5777900375088715,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.15906123382515847,
+          "mean_UA_claimed": 0.03579637717034005,
+          "mean_UE_claimed": 0.3863682966777457,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.16909331568497685
+        },
+        "uahsm_no_pose_cov": {
+          "E_observed": 0.1766369235216169,
+          "E_hidden": 0.2263397323046261,
+          "iou": 0.37082601054481545,
+          "iou_observed": 0.34560143626570916,
+          "ece_claimed": 0.16019795415708085,
+          "ece_observed_claimed": 0.23577783547922196,
+          "confident_claim_rate": 0.027516544757924068,
+          "confident_error_rate": 0.370253164556962,
+          "unknown_fraction": 0.4315569487983281,
+          "coverage_estimate": 0.522473797064741,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.214377474269289,
+          "mean_UA_claimed": 0.0410254930551106,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.006949040370615486,
+          "hidden_uc_rate_not_unknown": 0.006949040370615486,
+          "hidden_claimed_observed_rate": 0.39510258107213764
+        },
+        "plain_grid": {
+          "E_observed": 0.17319421987296293,
+          "E_hidden": 0.23722297789770216,
+          "iou": 0.2865787767451913,
+          "iou_observed": 0.16473317865429235,
+          "ece_claimed": 0.16046005877507225,
+          "ece_observed_claimed": 0.23632126639015325,
+          "confident_claim_rate": 0.08185301288749565,
+          "confident_error_rate": 0.3627659574468085,
+          "unknown_fraction": 0.25287356321839083,
+          "coverage_estimate": 0.5494305114654303,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.18742075986859963,
+          "mean_UA_claimed": 0.2081429422814746,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.13103904698874919,
+          "hidden_uc_rate_not_unknown": 0.13103904698874919,
+          "hidden_claimed_observed_rate": 0.6042356055592323
+        }
+      },
+      "sigma_0.3": {
+        "n_views": 6,
+        "uahsm": {
+          "E_observed": 0.1788190994517766,
+          "E_hidden": 0.24635621063909077,
+          "iou": 0.14307004470938897,
+          "iou_observed": 0.17806841046277666,
+          "ece_claimed": 0.171227027044288,
+          "ece_observed_claimed": 0.2504628401461317,
+          "confident_claim_rate": 0.0,
+          "confident_error_rate": NaN,
+          "unknown_fraction": 0.5967432950191571,
+          "coverage_estimate": 0.5825094305787681,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.1543418407552618,
+          "mean_UA_claimed": 0.036246304768666776,
+          "mean_UE_claimed": 0.5574520549033571,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.200198544010589
+        },
+        "uahsm_no_pose_cov": {
+          "E_observed": 0.2028150452298165,
+          "E_hidden": 0.274860043051281,
+          "iou": 0.15285996055226825,
+          "iou_observed": 0.15425940138142746,
+          "ece_claimed": 0.13810263490297858,
+          "ece_observed_claimed": 0.2549167785145277,
+          "confident_claim_rate": 0.022030651340996167,
+          "confident_error_rate": 0.47035573122529645,
+          "unknown_fraction": 0.4664750957854406,
+          "coverage_estimate": 0.4857605622897987,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.25109070904423125,
+          "mean_UA_claimed": 0.046421196119624725,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.008934480476505625,
+          "hidden_uc_rate_not_unknown": 0.008934480476505625,
+          "hidden_claimed_observed_rate": 0.3934480476505625
+        },
+        "plain_grid": {
+          "E_observed": 0.20541866151398233,
+          "E_hidden": 0.31989642278569325,
+          "iou": 0.17281392457521758,
+          "iou_observed": 0.11323476379372521,
+          "ece_claimed": 0.18129589456920844,
+          "ece_observed_claimed": 0.2479409639244262,
+          "confident_claim_rate": 0.052159526297457334,
+          "confident_error_rate": 0.6978297161936561,
+          "unknown_fraction": 0.2830895158481365,
+          "coverage_estimate": 0.5097059923820549,
+          "true_observed_fraction": 0.73685127133403,
+          "E_coverage": 0.227145278951975,
+          "mean_UA_claimed": 0.23360068011545657,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 11484.0,
+          "n_true_occupied": 2291.0,
+          "hidden_n_cells": 3022.0,
+          "hidden_uc_rate": 0.039046988749172735,
+          "hidden_uc_rate_not_unknown": 0.039046988749172735,
+          "hidden_claimed_observed_rate": 0.6062210456651225
+        }
+      }
+    },
+    "2026202": {
+      "sigma_0.0": {
+        "n_views": 6,
+        "uahsm": {
+          "E_observed": 0.16891909544398268,
+          "E_hidden": 0.20990814379460168,
+          "iou": 0.2714196372732958,
+          "iou_observed": 0.43717277486910994,
+          "ece_claimed": 0.20164444606138787,
+          "ece_observed_claimed": 0.25699553291893096,
+          "confident_claim_rate": 0.048589341692789965,
+          "confident_error_rate": 0.12903225806451613,
+          "unknown_fraction": 0.4917450365726228,
+          "coverage_estimate": 0.4714263562777202,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.21927374821548773,
+          "mean_UA_claimed": 0.05115433428958291,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.052702702702702706,
+          "hidden_uc_rate_not_unknown": 0.052702702702702706,
+          "hidden_claimed_observed_rate": 0.20439189189189189
+        },
+        "uahsm_no_pose_cov": {
+          "E_observed": 0.16891909544398268,
+          "E_hidden": 0.20990814379460168,
+          "iou": 0.2714196372732958,
+          "iou_observed": 0.43717277486910994,
+          "ece_claimed": 0.20164444606138787,
+          "ece_observed_claimed": 0.25699553291893096,
+          "confident_claim_rate": 0.048589341692789965,
+          "confident_error_rate": 0.12903225806451613,
+          "unknown_fraction": 0.4917450365726228,
+          "coverage_estimate": 0.4714263562777202,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.21927374821548773,
+          "mean_UA_claimed": 0.05115433428958291,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.052702702702702706,
+          "hidden_uc_rate_not_unknown": 0.052702702702702706,
+          "hidden_claimed_observed_rate": 0.20439189189189189
+        },
+        "plain_grid": {
+          "E_observed": 0.16288113086020384,
+          "E_hidden": 0.21004224423519044,
+          "iou": 0.3095676172953082,
+          "iou_observed": 0.17958311063602353,
+          "ece_claimed": 0.17047384827467005,
+          "ece_observed_claimed": 0.26835948370859136,
+          "confident_claim_rate": 0.09540229885057472,
+          "confident_error_rate": 0.30010952902519167,
+          "unknown_fraction": 0.3346917450365726,
+          "coverage_estimate": 0.4835541630431089,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.20714594145009907,
+          "mean_UA_claimed": 0.22813739252444099,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.11452702702702702,
+          "hidden_uc_rate_not_unknown": 0.11452702702702702,
+          "hidden_claimed_observed_rate": 0.41993243243243245
+        }
+      },
+      "sigma_0.05": {
+        "n_views": 6,
+        "uahsm": {
+          "E_observed": 0.17173669824208132,
+          "E_hidden": 0.21960128732010645,
+          "iou": 0.2576323987538941,
+          "iou_observed": 0.43693107932379716,
+          "ece_claimed": 0.19680132128254008,
+          "ece_observed_claimed": 0.2606308100664206,
+          "confident_claim_rate": 0.04075235109717868,
+          "confident_error_rate": 0.12307692307692308,
+          "unknown_fraction": 0.5042842215256008,
+          "coverage_estimate": 0.4650263857707479,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.22567371872246006,
+          "mean_UA_claimed": 0.050898588515577194,
+          "mean_UE_claimed": 0.1723518824674909,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.03614864864864865,
+          "hidden_uc_rate_not_unknown": 0.03614864864864865,
+          "hidden_claimed_observed_rate": 0.20912162162162162
+        },
+        "uahsm_no_pose_cov": {
+          "E_observed": 0.17175189601309768,
+          "E_hidden": 0.2195958051926064,
+          "iou": 0.2576323987538941,
+          "iou_observed": 0.43693107932379716,
+          "ece_claimed": 0.19696433060961274,
+          "ece_observed_claimed": 0.26079753873225986,
+          "confident_claim_rate": 0.04075235109717868,
+          "confident_error_rate": 0.12307692307692308,
+          "unknown_fraction": 0.5042842215256008,
+          "coverage_estimate": 0.4650263857707479,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.22567371872246006,
+          "mean_UA_claimed": 0.050898588515577194,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.03614864864864865,
+          "hidden_uc_rate_not_unknown": 0.03614864864864865,
+          "hidden_claimed_observed_rate": 0.20912162162162162
+        },
+        "plain_grid": {
+          "E_observed": 0.16361923851925622,
+          "E_hidden": 0.21889366962453696,
+          "iou": 0.3050228310502283,
+          "iou_observed": 0.18080593849416754,
+          "ece_claimed": 0.16655264558590474,
+          "ece_observed_claimed": 0.2721689124879508,
+          "confident_claim_rate": 0.08955067920585162,
+          "confident_error_rate": 0.2812135355892649,
+          "unknown_fraction": 0.33699059561128525,
+          "coverage_estimate": 0.47566793685360587,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.2150321676396021,
+          "mean_UA_claimed": 0.23470263681558287,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.10641891891891891,
+          "hidden_uc_rate_not_unknown": 0.10641891891891891,
+          "hidden_claimed_observed_rate": 0.4320945945945946
+        }
+      },
+      "sigma_0.15": {
+        "n_views": 6,
+        "uahsm": {
+          "E_observed": 0.17361347296106264,
+          "E_hidden": 0.21664492432863808,
+          "iou": 0.19523660294578501,
+          "iou_observed": 0.4152431011826544,
+          "ece_claimed": 0.18743066452097268,
+          "ece_observed_claimed": 0.25787218634992803,
+          "confident_claim_rate": 0.0029258098223615466,
+          "confident_error_rate": 0.07142857142857142,
+          "unknown_fraction": 0.5981191222570533,
+          "coverage_estimate": 0.5255894459529034,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.1651106585403046,
+          "mean_UA_claimed": 0.04686305167149952,
+          "mean_UE_claimed": 0.38458153423231733,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.0006756756756756757,
+          "hidden_uc_rate_not_unknown": 0.0006756756756756757,
+          "hidden_claimed_observed_rate": 0.16013513513513514
+        },
+        "uahsm_no_pose_cov": {
+          "E_observed": 0.1770031728096049,
+          "E_hidden": 0.22454557820564625,
+          "iou": 0.279925187032419,
+          "iou_observed": 0.42201834862385323,
+          "ece_claimed": 0.167417371298709,
+          "ece_observed_claimed": 0.25950957279342585,
+          "confident_claim_rate": 0.02936259143155695,
+          "confident_error_rate": 0.18149466192170818,
+          "unknown_fraction": 0.5052246603970741,
+          "coverage_estimate": 0.46034334902455387,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.23035675546865408,
+          "mean_UA_claimed": 0.050598681447725266,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.015202702702702704,
+          "hidden_uc_rate_not_unknown": 0.015202702702702704,
+          "hidden_claimed_observed_rate": 0.2614864864864865
+        },
+        "plain_grid": {
+          "E_observed": 0.16873034138280746,
+          "E_hidden": 0.23084489456482954,
+          "iou": 0.30451381091399055,
+          "iou_observed": 0.16393442622950818,
+          "ece_claimed": 0.15136740001074303,
+          "ece_observed_claimed": 0.27587806404124443,
+          "confident_claim_rate": 0.08631138975966562,
+          "confident_error_rate": 0.26997578692493945,
+          "unknown_fraction": 0.3333333333333333,
+          "coverage_estimate": 0.47205244449874384,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.21864765999446412,
+          "mean_UA_claimed": 0.2383055973392124,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.11418918918918919,
+          "hidden_uc_rate_not_unknown": 0.11418918918918919,
+          "hidden_claimed_observed_rate": 0.4756756756756757
+        }
+      },
+      "sigma_0.3": {
+        "n_views": 6,
+        "uahsm": {
+          "E_observed": 0.18226489236880816,
+          "E_hidden": 0.23486263541279667,
+          "iou": 0.1719097553225294,
+          "iou_observed": 0.3240611961057024,
+          "ece_claimed": 0.15005322994398235,
+          "ece_observed_claimed": 0.26422798911302037,
+          "confident_claim_rate": 0.0,
+          "confident_error_rate": NaN,
+          "unknown_fraction": 0.6015673981191223,
+          "coverage_estimate": 0.5745296870866079,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.11617041740660006,
+          "mean_UA_claimed": 0.048558608757982624,
+          "mean_UE_claimed": 0.555552305599385,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.23141891891891891
+        },
+        "uahsm_no_pose_cov": {
+          "E_observed": 0.1861650848286887,
+          "E_hidden": 0.24561612347103046,
+          "iou": 0.2735552763819096,
+          "iou_observed": 0.35945945945945945,
+          "ece_claimed": 0.12524848188209206,
+          "ece_observed_claimed": 0.25816936105174115,
+          "confident_claim_rate": 0.030094043887147336,
+          "confident_error_rate": 0.2152777777777778,
+          "unknown_fraction": 0.5029258098223616,
+          "coverage_estimate": 0.4651069595779171,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.22559314491529087,
+          "mean_UA_claimed": 0.046852167861351844,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.02668918918918919,
+          "hidden_uc_rate_not_unknown": 0.02668918918918919,
+          "hidden_claimed_observed_rate": 0.3618243243243243
+        },
+        "plain_grid": {
+          "E_observed": 0.1816550418984035,
+          "E_hidden": 0.2622291318668409,
+          "iou": 0.28596961572832885,
+          "iou_observed": 0.14228052472250252,
+          "ece_claimed": 0.11720171367640914,
+          "ece_observed_claimed": 0.2742617414752264,
+          "confident_claim_rate": 0.08369905956112852,
+          "confident_error_rate": 0.2846441947565543,
+          "unknown_fraction": 0.33207941483803555,
+          "coverage_estimate": 0.47674662564003517,
+          "true_observed_fraction": 0.690700104493208,
+          "E_coverage": 0.21395347885317278,
+          "mean_UA_claimed": 0.23207375309386516,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 9570.0,
+          "n_true_occupied": 2772.0,
+          "hidden_n_cells": 2960.0,
+          "hidden_uc_rate": 0.12263513513513513,
+          "hidden_uc_rate_not_unknown": 0.12263513513513513,
+          "hidden_claimed_observed_rate": 0.5422297297297297
+        }
+      }
+    },
+    "2026203": {
+      "sigma_0.0": {
+        "n_views": 6,
+        "uahsm": {
+          "E_observed": 0.16898801322350268,
+          "E_hidden": 0.2157718460376425,
+          "iou": 0.29236499068901306,
+          "iou_observed": 0.38372093023255816,
+          "ece_claimed": 0.25772175767479694,
+          "ece_observed_claimed": 0.2700261627261075,
+          "confident_claim_rate": 0.04184952978056426,
+          "confident_error_rate": 0.38764044943820225,
+          "unknown_fraction": 0.4304858934169279,
+          "coverage_estimate": 0.531335641794515,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.2199966466067389,
+          "mean_UA_claimed": 0.02354318551618654,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.022376300031515917,
+          "hidden_uc_rate_not_unknown": 0.022376300031515917,
+          "hidden_claimed_observed_rate": 0.2704065553104318
+        },
+        "uahsm_no_pose_cov": {
+          "E_observed": 0.16898801322350268,
+          "E_hidden": 0.2157718460376425,
+          "iou": 0.29236499068901306,
+          "iou_observed": 0.38372093023255816,
+          "ece_claimed": 0.25772175767479694,
+          "ece_observed_claimed": 0.2700261627261075,
+          "confident_claim_rate": 0.04184952978056426,
+          "confident_error_rate": 0.38764044943820225,
+          "unknown_fraction": 0.4304858934169279,
+          "coverage_estimate": 0.531335641794515,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.2199966466067389,
+          "mean_UA_claimed": 0.02354318551618654,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.022376300031515917,
+          "hidden_uc_rate_not_unknown": 0.022376300031515917,
+          "hidden_claimed_observed_rate": 0.2704065553104318
+        },
+        "plain_grid": {
+          "E_observed": 0.1584051786885782,
+          "E_hidden": 0.20962259993498567,
+          "iou": 0.19727104532839962,
+          "iou_observed": 0.14634146341463414,
+          "ece_claimed": 0.24852539324837147,
+          "ece_observed_claimed": 0.2688785029193166,
+          "confident_claim_rate": 0.06481191222570533,
+          "confident_error_rate": 0.49455864570737607,
+          "unknown_fraction": 0.2529780564263323,
+          "coverage_estimate": 0.5530816305819187,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.19825065781933515,
+          "mean_UA_claimed": 0.20301026915970785,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.02899464229435865,
+          "hidden_uc_rate_not_unknown": 0.02899464229435865,
+          "hidden_claimed_observed_rate": 0.5319886542704065
+        }
+      },
+      "sigma_0.05": {
+        "n_views": 6,
+        "uahsm": {
+          "E_observed": 0.16937812467976826,
+          "E_hidden": 0.21679752115073303,
+          "iou": 0.2770700636942675,
+          "iou_observed": 0.3625461254612546,
+          "ece_claimed": 0.26244429341867953,
+          "ece_observed_claimed": 0.27370629090527393,
+          "confident_claim_rate": 0.034561128526645765,
+          "confident_error_rate": 0.4399092970521542,
+          "unknown_fraction": 0.4270376175548589,
+          "coverage_estimate": 0.5336610682031852,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.21767122019806873,
+          "mean_UA_claimed": 0.023451760635616433,
+          "mean_UE_claimed": 0.17280251428433183,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.007563819728963126,
+          "hidden_uc_rate_not_unknown": 0.007563819728963126,
+          "hidden_claimed_observed_rate": 0.2666246454459502
+        },
+        "uahsm_no_pose_cov": {
+          "E_observed": 0.1695518371845657,
+          "E_hidden": 0.21679752115073303,
+          "iou": 0.2770700636942675,
+          "iou_observed": 0.3625461254612546,
+          "ece_claimed": 0.26267414971134,
+          "ece_observed_claimed": 0.2739681293838718,
+          "confident_claim_rate": 0.034561128526645765,
+          "confident_error_rate": 0.4399092970521542,
+          "unknown_fraction": 0.4270376175548589,
+          "coverage_estimate": 0.5336610682031852,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.21767122019806873,
+          "mean_UA_claimed": 0.023451760635616433,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.007563819728963126,
+          "hidden_uc_rate_not_unknown": 0.007563819728963126,
+          "hidden_claimed_observed_rate": 0.2666246454459502
+        },
+        "plain_grid": {
+          "E_observed": 0.16090186164062295,
+          "E_hidden": 0.2107319402530737,
+          "iou": 0.19176201372997712,
+          "iou_observed": 0.14150600218261186,
+          "ece_claimed": 0.25156615738652843,
+          "ece_observed_claimed": 0.2708832201284155,
+          "confident_claim_rate": 0.06465517241379311,
+          "confident_error_rate": 0.5309090909090909,
+          "unknown_fraction": 0.24976489028213167,
+          "coverage_estimate": 0.5562959947880547,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.19503629361319919,
+          "mean_UA_claimed": 0.19977702067874653,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.02615820989599748,
+          "hidden_uc_rate_not_unknown": 0.02615820989599748,
+          "hidden_claimed_observed_rate": 0.528837062716672
+        }
+      },
+      "sigma_0.15": {
+        "n_views": 6,
+        "uahsm": {
+          "E_observed": 0.16711189761214953,
+          "E_hidden": 0.20793929526212687,
+          "iou": 0.15691609977324264,
+          "iou_observed": 0.24775583482944344,
+          "ece_claimed": 0.28022302373351543,
+          "ece_observed_claimed": 0.2846453577872776,
+          "confident_claim_rate": 0.002586206896551724,
+          "confident_error_rate": 0.0,
+          "unknown_fraction": 0.556269592476489,
+          "coverage_estimate": 0.592147360007923,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.15918492839333087,
+          "mean_UA_claimed": 0.023201355419612563,
+          "mean_UE_claimed": 0.38526359824661516,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.0003151591553734636,
+          "hidden_uc_rate_not_unknown": 0.0003151591553734636,
+          "hidden_claimed_observed_rate": 0.10368736211786952
+        },
+        "uahsm_no_pose_cov": {
+          "E_observed": 0.17660560776059808,
+          "E_hidden": 0.22350837275752333,
+          "iou": 0.22208121827411167,
+          "iou_observed": 0.27479674796747966,
+          "ece_claimed": 0.2749634446558099,
+          "ece_observed_claimed": 0.2847960510458949,
+          "confident_claim_rate": 0.029702194357366773,
+          "confident_error_rate": 0.5435356200527705,
+          "unknown_fraction": 0.42539184952978054,
+          "coverage_estimate": 0.5325058418219576,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.21882644657929629,
+          "mean_UA_claimed": 0.024225817894713418,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.010715411282697762,
+          "hidden_uc_rate_not_unknown": 0.010715411282697762,
+          "hidden_claimed_observed_rate": 0.2653640088244564
+        },
+        "plain_grid": {
+          "E_observed": 0.1692455600416664,
+          "E_hidden": 0.21743402392325892,
+          "iou": 0.16428571428571428,
+          "iou_observed": 0.1176678445229682,
+          "ece_claimed": 0.26030918870408365,
+          "ece_observed_claimed": 0.2768319110067591,
+          "confident_claim_rate": 0.065282131661442,
+          "confident_error_rate": 0.6050420168067226,
+          "unknown_fraction": 0.24898119122257054,
+          "coverage_estimate": 0.5589643243936426,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.19236796400761125,
+          "mean_UA_claimed": 0.20392440011823967,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.03813425780018909,
+          "hidden_uc_rate_not_unknown": 0.03813425780018909,
+          "hidden_claimed_observed_rate": 0.5196974472108414
+        }
+      },
+      "sigma_0.3": {
+        "n_views": 6,
+        "uahsm": {
+          "E_observed": 0.17229546140806032,
+          "E_hidden": 0.20809802790926857,
+          "iou": 0.08566019876952201,
+          "iou_observed": 0.14258555133079848,
+          "ece_claimed": 0.29749180261125063,
+          "ece_observed_claimed": 0.30189124472537143,
+          "confident_claim_rate": 0.0,
+          "confident_error_rate": NaN,
+          "unknown_fraction": 0.5689655172413793,
+          "coverage_estimate": 0.6320157594818858,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.11931652891936806,
+          "mean_UA_claimed": 0.02363361945187457,
+          "mean_UE_claimed": 0.5562432919653361,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.0,
+          "hidden_uc_rate_not_unknown": 0.0,
+          "hidden_claimed_observed_rate": 0.09675386069965332
+        },
+        "uahsm_no_pose_cov": {
+          "E_observed": 0.19255209569287493,
+          "E_hidden": 0.22015214080591228,
+          "iou": 0.16292569659442724,
+          "iou_observed": 0.14096301465457084,
+          "ece_claimed": 0.2860723342261475,
+          "ece_observed_claimed": 0.3000379231206489,
+          "confident_claim_rate": 0.022021943573667713,
+          "confident_error_rate": 0.6192170818505338,
+          "unknown_fraction": 0.4140282131661442,
+          "coverage_estimate": 0.5344890106193928,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.21684327778186108,
+          "mean_UA_claimed": 0.02567430407965728,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.006933501418216199,
+          "hidden_uc_rate_not_unknown": 0.006933501418216199,
+          "hidden_claimed_observed_rate": 0.3079104947998739
+        },
+        "plain_grid": {
+          "E_observed": 0.18816520549800098,
+          "E_hidden": 0.21332239442734552,
+          "iou": 0.1213571117877338,
+          "iou_observed": 0.06795131845841786,
+          "ece_claimed": 0.2668111729506683,
+          "ece_observed_claimed": 0.2807443484124521,
+          "confident_claim_rate": 0.059639498432601884,
+          "confident_error_rate": 0.6793692509855453,
+          "unknown_fraction": 0.2525862068965517,
+          "coverage_estimate": 0.5627226048611708,
+          "true_observed_fraction": 0.7513322884012539,
+          "E_coverage": 0.18860968354008312,
+          "mean_UA_claimed": 0.1978103260737776,
+          "mean_UE_claimed": 0.0,
+          "n_cells": 12760.0,
+          "n_true_occupied": 1466.0,
+          "hidden_n_cells": 3173.0,
+          "hidden_uc_rate": 0.048534509927513396,
+          "hidden_uc_rate_not_unknown": 0.048534509927513396,
+          "hidden_claimed_observed_rate": 0.5244248345414434
+        }
+      }
+    }
+  },
+  "aggregate": {
+    "sigma_0.0": {
+      "n_views": {
+        "mean": 6.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "plain_grid": {
+        "E_coverage": {
+          "mean": 0.19974698744209718,
+          "std": 0.006775857782809174,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.21063159220339453,
+          "std": 0.0014000157030032044,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.15470433971920447,
+          "std": 0.010526970587011299,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.08219842099152443,
+          "std": 0.015718261336465953,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.3710721872764473,
+          "std": 0.10733907458892178,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.5265475673007334,
+          "std": 0.037572591268424424,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.19715294361120886,
+          "std": 0.04450092390229147,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.2593890139606107,
+          "std": 0.015988899331245556,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.4985335896774741,
+          "std": 0.0683211275848469,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.06769495749936327,
+          "std": 0.04334214208812671,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.06769495749936327,
+          "std": 0.04334214208812671,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.2860798910629019,
+          "std": 0.07970424398132817,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.1899592894875559,
+          "std": 0.049626265256760026,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.21575228614334527,
+          "std": 0.012567363328490365,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.2800650179960525,
+          "std": 0.04730867508409877,
+          "n": 3
+        }
+      },
+      "uahsm": {
+        "E_coverage": {
+          "mean": 0.21879301448602054,
+          "std": 0.0015028179393964571,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.2132796835715626,
+          "std": 0.003029146635593891,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.1649825899407463,
+          "std": 0.006877998404072131,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.049999999999999996,
+          "std": 0.008939667229842758,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.23119109743268,
+          "std": 0.13758685977669757,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.50750154025681,
+          "std": 0.031775205700133466,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.2243531492678784,
+          "std": 0.02951933948462312,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.25575113532046817,
+          "std": 0.014936155550756083,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.2348158953723166,
+          "std": 0.03330922846268919,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.03649776596766035,
+          "std": 0.015270177231163251,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.03649776596766035,
+          "std": 0.015270177231163251,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.3032191759630876,
+          "std": 0.03839507889582471,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.4571086605862429,
+          "std": 0.08512489595390145,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.038461049393078366,
+          "std": 0.01393934890432988,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.4539039823522582,
+          "std": 0.0330784990704303,
+          "n": 3
+        }
+      },
+      "uahsm_no_pose_cov": {
+        "E_coverage": {
+          "mean": 0.21879301448602054,
+          "std": 0.0015028179393964571,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.2132796835715626,
+          "std": 0.003029146635593891,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.1649825899407463,
+          "std": 0.006877998404072131,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.049999999999999996,
+          "std": 0.008939667229842758,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.23119109743268,
+          "std": 0.13758685977669757,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.50750154025681,
+          "std": 0.031775205700133466,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.2243531492678784,
+          "std": 0.02951933948462312,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.25575113532046817,
+          "std": 0.014936155550756083,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.2348158953723166,
+          "std": 0.03330922846268919,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.03649776596766035,
+          "std": 0.015270177231163251,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.03649776596766035,
+          "std": 0.015270177231163251,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.3032191759630876,
+          "std": 0.03839507889582471,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.4571086605862429,
+          "std": 0.08512489595390145,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.038461049393078366,
+          "std": 0.01393934890432988,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.4539039823522582,
+          "std": 0.0330784990704303,
+          "n": 3
+        }
+      }
+    },
+    "sigma_0.05": {
+      "n_views": {
+        "mean": 6.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "plain_grid": {
+        "E_coverage": {
+          "mean": 0.20348534862284598,
+          "std": 0.010351611029339828,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.2168358562130127,
+          "std": 0.005378816408604003,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.15617474158685044,
+          "std": 0.010628133858716676,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.07912167653546964,
+          "std": 0.012929525439290575,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.37018398195669455,
+          "std": 0.1394579373453906,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.5228092061199846,
+          "std": 0.04201255243230765,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.19627147502855322,
+          "std": 0.04793138310573269,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.26075546288204093,
+          "std": 0.01866630508966673,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.5045152733724517,
+          "std": 0.06383497206194823,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.06746614640179543,
+          "std": 0.040182153392715,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.06746614640179543,
+          "std": 0.040182153392715,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.2809328374020579,
+          "std": 0.07989767839220144,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.1861949397375177,
+          "std": 0.04761272113873024,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.2186904174106666,
+          "std": 0.0176426270165883,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.27993440148612564,
+          "std": 0.04943936899293477,
+          "n": 3
+        }
+      },
+      "uahsm": {
+        "E_coverage": {
+          "mean": 0.22239023962732354,
+          "std": 0.004189937672135671,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.2187159968684497,
+          "std": 0.0016630935116923424,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.1658164584801421,
+          "std": 0.008295819598459655,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.043884244746313715,
+          "std": 0.01122177625661168,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.23454512335059918,
+          "std": 0.17806748346953155,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.503904315115507,
+          "std": 0.035214724198620845,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.22135066808846612,
+          "std": 0.035812495188598525,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.2572708198557508,
+          "std": 0.01834767736444196,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.23722757766139446,
+          "std": 0.028773245635285268,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.0280276946213482,
+          "std": 0.01784751755015886,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.0280276946213482,
+          "std": 0.01784751755015886,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.2885764702455271,
+          "std": 0.03802614914944882,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.4400967901074406,
+          "std": 0.07918099700799448,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.0378877139949403,
+          "std": 0.013778796298675835,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.17287683071605084,
+          "std": 0.0005657789995746489,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.46024323696737485,
+          "std": 0.0397468654063916,
+          "n": 3
+        }
+      },
+      "uahsm_no_pose_cov": {
+        "E_coverage": {
+          "mean": 0.22239023962732354,
+          "std": 0.004189937672135671,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.21871515776367054,
+          "std": 0.0016625607719879252,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.1659291886161135,
+          "std": 0.008253552368380792,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.043884244746313715,
+          "std": 0.01122177625661168,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.23454512335059918,
+          "std": 0.17806748346953155,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.503904315115507,
+          "std": 0.035214724198620845,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.22152793963369607,
+          "std": 0.03585640911847691,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.2574662152221505,
+          "std": 0.018395219540374368,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.23722757766139446,
+          "std": 0.028773245635285268,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.0280276946213482,
+          "std": 0.01784751755015886,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.0280276946213482,
+          "std": 0.01784751755015886,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.2885764702455271,
+          "std": 0.03802614914944882,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.4400967901074406,
+          "std": 0.07918099700799448,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.0378877139949403,
+          "std": 0.013778796298675835,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.46024323696737485,
+          "std": 0.0397468654063916,
+          "n": 3
+        }
+      }
+    },
+    "sigma_0.15": {
+      "n_views": {
+        "mean": 6.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "plain_grid": {
+        "E_coverage": {
+          "mean": 0.19947879462355833,
+          "std": 0.016784003005963645,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.22850063212859686,
+          "std": 0.010100611349225696,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.17039004043247896,
+          "std": 0.0024421157461172833,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.07781551143620109,
+          "std": 0.01108077107052258,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.41259458705949026,
+          "std": 0.1730014851052047,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.5268157601192723,
+          "std": 0.04766538524498408,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.19071221582996634,
+          "std": 0.060443966496099524,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.2630104138127189,
+          "std": 0.023118399568655013,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.5332029094819165,
+          "std": 0.06533538112143236,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.09445416465937582,
+          "std": 0.04949675098869571,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.09445416465937582,
+          "std": 0.04949675098869571,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.25179276731496536,
+          "std": 0.07631205415959605,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.14877848313558958,
+          "std": 0.02694556322519295,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.21679097991297555,
+          "std": 0.018751215873743975,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.27839602925809825,
+          "std": 0.0476168895900351,
+          "n": 3
+        }
+      },
+      "uahsm": {
+        "E_coverage": {
+          "mean": 0.1611189402529313,
+          "std": 0.003457482646501872,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.21509145488786496,
+          "std": 0.0065158263636578536,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.16893339921400854,
+          "std": 0.004086097959711978,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.0035498664809009636,
+          "std": 0.0013854474684209435,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.023809523809523808,
+          "std": 0.041239304942116126,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.5651756144898993,
+          "std": 0.035026157824046694,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.21895004652363928,
+          "std": 0.05307129923860217,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.2597490047494097,
+          "std": 0.02401301539643295,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.1443052709793272,
+          "std": 0.035460162716760765,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.00033027827701637976,
+          "std": 0.0003380914751282339,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.00033027827701637976,
+          "std": 0.0003380914751282339,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.1907511890907806,
+          "std": 0.03183029733078596,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.32724382054705836,
+          "std": 0.08406739976651767,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.03528692808715071,
+          "std": 0.01183907180295027,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.38540447638555947,
+          "std": 0.0009016734423407266,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.5724486241727621,
+          "std": 0.022481364201483493,
+          "n": 3
+        }
+      },
+      "uahsm_no_pose_cov": {
+        "E_coverage": {
+          "mean": 0.22118689210574646,
+          "std": 0.008247007592126954,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.22479789442259857,
+          "std": 0.0014324443536296015,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.1767485680306066,
+          "std": 0.00022104946129456363,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.028860443515615928,
+          "std": 0.0011761719432119382,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.36509448217714685,
+          "std": 0.18107559980305535,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.5051076626370842,
+          "std": 0.03909019455571207,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.20085959003719991,
+          "std": 0.06427725840426202,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.26002781977284756,
+          "std": 0.024513216828559326,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.3073176921276935,
+          "std": 0.07604866100143813,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.010955718118671983,
+          "std": 0.004132075266084926,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.010955718118671983,
+          "std": 0.004132075266084926,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.2909441386171154,
+          "std": 0.07498210638167693,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.347472177619014,
+          "std": 0.07362862676883501,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.03861666413251643,
+          "std": 0.01335042417229467,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.4540578195750609,
+          "std": 0.04441887337637786,
+          "n": 3
+        }
+      }
+    },
+    "sigma_0.3": {
+      "n_views": {
+        "mean": 6.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "plain_grid": {
+        "E_coverage": {
+          "mean": 0.20990281378174366,
+          "std": 0.01958453328721233,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.26514931635995986,
+          "std": 0.053346991370056336,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.19174630297012896,
+          "std": 0.012279885937464633,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.06516602809706258,
+          "std": 0.016480061808794237,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.5539477206452519,
+          "std": 0.23340627452146245,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.5163917409610869,
+          "std": 0.04337616484089858,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.18843626039876193,
+          "std": 0.07505988405412671,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.2676490179373682,
+          "std": 0.01737272554633908,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.5576252033120985,
+          "std": 0.0430165141970666,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.07007221127060709,
+          "std": 0.04576733538691644,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.07007221127060709,
+          "std": 0.04576733538691644,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.19338021736376007,
+          "std": 0.08421133185442531,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.10782220232488186,
+          "std": 0.03745903885850138,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.22116158642769979,
+          "std": 0.020237190927097803,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.2892517125275746,
+          "std": 0.04010326705075355,
+          "n": 3
+        }
+      },
+      "uahsm": {
+        "E_coverage": {
+          "mean": 0.12994292902707663,
+          "std": 0.02118855055336541,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.22977229132038535,
+          "std": 0.019630482385348473,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.17779315107621504,
+          "std": 0.0050632811468718075,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": null,
+          "std": null,
+          "n": 0
+        },
+        "coverage_estimate": {
+          "mean": 0.596351625715754,
+          "std": 0.031142686212280706,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.20625735319984032,
+          "std": 0.07971747606681749,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.2721940246615078,
+          "std": 0.026623551437802515,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.17612377454305375,
+          "std": 0.0704866325623928,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.1335466662671468,
+          "std": 0.04390634981541083,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.21490505263309254,
+          "std": 0.09618241037946958,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.03614617765950799,
+          "std": 0.012462796317676526,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.556415884156026,
+          "std": 0.0009615627398672848,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.589092070126553,
+          "std": 0.017596209562276196,
+          "n": 3
+        }
+      },
+      "uahsm_no_pose_cov": {
+        "E_coverage": {
+          "mean": 0.23117571058046105,
+          "std": 0.017793128352601332,
+          "n": 3
+        },
+        "E_hidden": {
+          "mean": 0.24687610244274125,
+          "std": 0.02737570642520608,
+          "n": 3
+        },
+        "E_observed": {
+          "mean": 0.19384407525046002,
+          "std": 0.008399833553273199,
+          "n": 3
+        },
+        "confident_claim_rate": {
+          "mean": 0.024715546267270405,
+          "std": 0.004657917607855394,
+          "n": 3
+        },
+        "confident_error_rate": {
+          "mean": 0.4349501969512027,
+          "std": 0.20428388149000187,
+          "n": 3
+        },
+        "coverage_estimate": {
+          "mean": 0.4951188441623695,
+          "std": 0.03562513622970937,
+          "n": 3
+        },
+        "ece_claimed": {
+          "mean": 0.1831411503370727,
+          "std": 0.08937241618685256,
+          "n": 3
+        },
+        "ece_observed_claimed": {
+          "mean": 0.27104135422897263,
+          "std": 0.02516437122019235,
+          "n": 3
+        },
+        "hidden_claimed_observed_rate": {
+          "mean": 0.35439428892492025,
+          "std": 0.043250113369196895,
+          "n": 3
+        },
+        "hidden_n_cells": {
+          "mean": 3051.6666666666665,
+          "std": 109.55516114420777,
+          "n": 3
+        },
+        "hidden_uc_rate": {
+          "mean": 0.014185723694637005,
+          "std": 0.010874440966229991,
+          "n": 3
+        },
+        "hidden_uc_rate_not_unknown": {
+          "mean": 0.014185723694637005,
+          "std": 0.010874440966229991,
+          "n": 3
+        },
+        "iou": {
+          "mean": 0.19644697784286835,
+          "std": 0.06696713401517967,
+          "n": 3
+        },
+        "iou_observed": {
+          "mean": 0.21822729183181924,
+          "std": 0.12249119296749023,
+          "n": 3
+        },
+        "mean_UA_claimed": {
+          "mean": 0.03964922268687795,
+          "std": 0.01210455272694426,
+          "n": 3
+        },
+        "mean_UE_claimed": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 3
+        },
+        "n_cells": {
+          "mean": 11271.333333333334,
+          "std": 1605.5981232342463,
+          "n": 3
+        },
+        "n_true_occupied": {
+          "mean": 2176.3333333333335,
+          "std": 660.507633062127,
+          "n": 3
+        },
+        "true_observed_fraction": {
+          "mean": 0.7262945547428306,
+          "std": 0.03166462742959331,
+          "n": 3
+        },
+        "unknown_fraction": {
+          "mean": 0.4611430395913154,
+          "std": 0.044688016181699756,
+          "n": 3
+        }
+      }
+    }
+  },
+  "environment": {
+    "python": "3.11.15",
+    "machine": "AMD64"
+  }
+}

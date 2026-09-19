@@ -1,0 +1,12 @@
+{
+  "experiment_id": "CORE-UNC-E001",
+  "module": "conrad.evaluation.core_experiments.unc_e001",
+  "config": "configs\\eval\\core_unc_e001.yaml",
+  "seeds": [
+    2026201,
+    2026202,
+    2026203
+  ],
+  "wall_s": 0.5,
+  "out_dir": "C:\\Users\\Kerem\\Kerem\\conrad-v2\\artifacts\\experiments\\CORE-UNC-E001"
+}

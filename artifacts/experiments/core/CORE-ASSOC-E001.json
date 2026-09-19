@@ -1,0 +1,206 @@
+{
+  "experiment_id": "CORE-ASSOC-E001",
+  "architecture_id": "conrad_v2_impl_freeze_v0_2",
+  "data": "SYNTHETIC_ONLY sandbox world (conrad.evaluation.core_experiments.sandbox_world)",
+  "candidate": "learned_scorer",
+  "baselines": [
+    "nearest_neighbour"
+  ],
+  "seeds": [
+    2026201,
+    2026202,
+    2026203
+  ],
+  "config": {
+    "experiment": {
+      "id": "CORE-ASSOC-E001"
+    },
+    "seeds": [
+      2026201,
+      2026202,
+      2026203
+    ],
+    "model2_core": {
+      "evidence_dim": 32,
+      "belief_dim": 32,
+      "heads": 4
+    },
+    "sandbox": {
+      "n_entities": 10,
+      "steps": 25,
+      "clutter_rate": 0.5,
+      "birth_prob": 0.1,
+      "near_pair_fraction": 0.4
+    },
+    "train_episodes": 4,
+    "test_episodes": 2,
+    "epochs": 15,
+    "batch_size": 64
+  },
+  "per_seed": {
+    "2026201": {
+      "learned_scorer": {
+        "accuracy": 0.8658536585365854,
+        "false_association_rate": 0.0024390243902439024,
+        "new_entity_recall": 0.9814814814814815,
+        "existing_entity_recall": 0.848314606741573,
+        "n_queries": 410.0,
+        "n_new_entity_queries": 54.0,
+        "retrieval_miss_rate": 0.0
+      },
+      "nearest_neighbour": {
+        "accuracy": 0.9536585365853658,
+        "false_association_rate": 0.046341463414634146,
+        "new_entity_recall": 0.9444444444444444,
+        "existing_entity_recall": 0.9550561797752809,
+        "n_queries": 410.0,
+        "n_new_entity_queries": 54.0,
+        "retrieval_miss_rate": 0.0
+      },
+      "train_loss_first": 1.6333657503128052,
+      "train_loss_last": 0.4326605200767517,
+      "n_train_queries": 717
+    },
+    "2026202": {
+      "learned_scorer": {
+        "accuracy": 0.6335227272727273,
+        "false_association_rate": 0.0,
+        "new_entity_recall": 1.0,
+        "existing_entity_recall": 0.5714285714285714,
+        "n_queries": 352.0,
+        "n_new_entity_queries": 51.0,
+        "retrieval_miss_rate": 0.0
+      },
+      "nearest_neighbour": {
+        "accuracy": 0.9715909090909091,
+        "false_association_rate": 0.028409090909090908,
+        "new_entity_recall": 0.9215686274509803,
+        "existing_entity_recall": 0.9800664451827242,
+        "n_queries": 352.0,
+        "n_new_entity_queries": 51.0,
+        "retrieval_miss_rate": 0.0
+      },
+      "train_loss_first": 1.3818538188934326,
+      "train_loss_last": 0.4861665368080139,
+      "n_train_queries": 687
+    },
+    "2026203": {
+      "learned_scorer": {
+        "accuracy": 0.5067750677506775,
+        "false_association_rate": 0.0,
+        "new_entity_recall": 1.0,
+        "existing_entity_recall": 0.4276729559748428,
+        "n_queries": 369.0,
+        "n_new_entity_queries": 51.0,
+        "retrieval_miss_rate": 0.0
+      },
+      "nearest_neighbour": {
+        "accuracy": 0.940379403794038,
+        "false_association_rate": 0.05962059620596206,
+        "new_entity_recall": 0.9411764705882353,
+        "existing_entity_recall": 0.940251572327044,
+        "n_queries": 369.0,
+        "n_new_entity_queries": 51.0,
+        "retrieval_miss_rate": 0.0
+      },
+      "train_loss_first": 1.2494992017745972,
+      "train_loss_last": 0.6317889094352722,
+      "n_train_queries": 768
+    }
+  },
+  "summary": {
+    "learned_scorer.accuracy": {
+      "mean": 0.6687171511866635,
+      "std": 0.18210805637360952,
+      "n": 3.0
+    },
+    "learned_scorer.existing_entity_recall": {
+      "mean": 0.615805378048329,
+      "std": 0.2138032397188253,
+      "n": 3.0
+    },
+    "learned_scorer.false_association_rate": {
+      "mean": 0.0008130081300813008,
+      "std": 0.00140817138826738,
+      "n": 3.0
+    },
+    "learned_scorer.n_new_entity_queries": {
+      "mean": 52.0,
+      "std": 1.7320508075688772,
+      "n": 3.0
+    },
+    "learned_scorer.n_queries": {
+      "mean": 377.0,
+      "std": 29.816103031751148,
+      "n": 3.0
+    },
+    "learned_scorer.new_entity_recall": {
+      "mean": 0.9938271604938271,
+      "std": 0.01069167165165972,
+      "n": 3.0
+    },
+    "learned_scorer.retrieval_miss_rate": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "n_train_queries": {
+      "mean": 724.0,
+      "std": 40.95119045888654,
+      "n": 3.0
+    },
+    "nearest_neighbour.accuracy": {
+      "mean": 0.9552096164901043,
+      "std": 0.01566345754861665,
+      "n": 3.0
+    },
+    "nearest_neighbour.existing_entity_recall": {
+      "mean": 0.958458065761683,
+      "std": 0.020124255174461845,
+      "n": 3.0
+    },
+    "nearest_neighbour.false_association_rate": {
+      "mean": 0.044790383509895705,
+      "std": 0.015663457548616668,
+      "n": 3.0
+    },
+    "nearest_neighbour.n_new_entity_queries": {
+      "mean": 52.0,
+      "std": 1.7320508075688772,
+      "n": 3.0
+    },
+    "nearest_neighbour.n_queries": {
+      "mean": 377.0,
+      "std": 29.816103031751148,
+      "n": 3.0
+    },
+    "nearest_neighbour.new_entity_recall": {
+      "mean": 0.9357298474945533,
+      "std": 0.012372349337255518,
+      "n": 3.0
+    },
+    "nearest_neighbour.retrieval_miss_rate": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "train_loss_first": {
+      "mean": 1.4215729236602783,
+      "std": 0.19499124912228458,
+      "n": 3.0
+    },
+    "train_loss_last": {
+      "mean": 0.516871988773346,
+      "std": 0.10305409961484366,
+      "n": 3.0
+    }
+  },
+  "wall_time_s": 9.830815799999982,
+  "environment": {
+    "python": "3.11.15",
+    "torch": "2.6.0+cpu",
+    "device": "cpu",
+    "platform": "Windows-10-10.0.26200-SP0"
+  },
+  "claim_note": "Numbers are what this run produced; no research win is assumed or implied."
+}

@@ -5,96 +5,105 @@ Statuses are derived from the files present in the repository; do not edit this 
 
 | status | count |
 |---|---|
-| IMPLEMENTED | 3 |
-| TESTED | 75 |
-| INTEGRATED | 1 |
+| TESTED | 77 |
+| INTEGRATED | 3 |
+| EVALUATED | 8 |
 | BLOCKED_EXTERNAL | 2 |
 | BLOCKED_OPEN_DECISION | 4 |
 
-| ID | Source | Authority | Status | Summary | Missing |
-|---|---|---|---|---|---|
-| REQ-REPO-001 | prompt s3; ch34 | FROZEN_CONTRACT | TESTED | New standalone repository with own git history, lock, CI, README, migrations, docs |  |
-| REQ-REPO-002 | prompt s4-s6,s128 | FROZEN_CONTRACT | TESTED | Zero dependency on the legacy repository; operation proven with it absent |  |
-| REQ-REPO-003 | prompt s4,s5,s117 | FROZEN_CONTRACT | IMPLEMENTED | Read-only legacy audit and salvage ledger |  |
-| REQ-SPEC-001 | prompt s7; ch29-30 | FROZEN_CONTRACT | TESTED | Requirements ledger and implementation map |  |
-| REQ-SPEC-002 | prompt s8; ch30 | FROZEN_CONTRACT | TESTED | Implementation metadata on every substantial package |  |
-| REQ-ARCH-001 | ch1; ch2; INV-ARCH-01 | FROZEN_CONTRACT | TESTED | Twins = truth, Model2 = belief, Model1 = decision; no truth in deployment-equivalent inference |  |
-| REQ-ARCH-002 | INV-ARCH-04; prompt s118,s122 | FROZEN_CONTRACT | TESTED | Twin1 scrapped; no obsolete architecture identifiers; no extra subsystem |  |
-| REQ-ARCH-003 | INV-ARCH-07; ch28 | FROZEN_CONTRACT | TESTED | Simulator hidden entity ID never an inference feature or belief ID |  |
-| REQ-SCHEMA-001 | ch2; ch25 Phase 0 | INTERFACE_FROZEN | TESTED | Versioned public schemas: Scenario, WorldEntity, TruthState, Observation, Evidence, Uncertainty, ProvenanceRecord, BeliefCell, BeliefMessage, BeliefQuery, MissionState, ResourceState, SystemHealth, RobotState, RobotConfig, RobotCapabilities, CommunicationState, LinkState | tests/contract/test_schema_compat.py |
-| REQ-SCHEMA-002 | ch2 Global identifiers | INTERFACE_FROZEN | TESTED | Global machine IDs (UUIDv7), deterministic factory for replay |  |
-| REQ-SCHEMA-003 | ch2 Frames; ch28 | INTERFACE_FROZEN | TESTED | Every spatial value carries a frame; explicit T_A_from_B transforms |  |
-| REQ-SCHEMA-004 | ch2 Time; ch28 envelope | INTERFACE_FROZEN | TESTED | Common time semantics, clock domains, acquisition vs creation time, asynchronous sensors |  |
-| REQ-SCHEMA-005 | ch2; ch34 | INTERFACE_FROZEN | TESTED | Large payloads by content-addressed reference only |  |
-| REQ-UNC-001 | ch2; ch6; ch28 | FROZEN_CONTRACT | TESTED | Four-channel uncertainty UA/UE/UC/UO, never a single confidence scalar, responsive to inputs |  |
-| REQ-KNOW-001 | ch2; ch28; INV-ARCH-06 | FROZEN_CONTRACT | TESTED | Property-level knowledge status OBSERVED/INFERRED/PREDICTED/UNKNOWN/MIXED |  |
-| REQ-PROV-001 | ch2 Provenance; INV-ARCH-05; prompt s105 | FROZEN_CONTRACT | TESTED | First-class provenance DAG; command -> ... -> raw observation trace |  |
-| REQ-EVID-001 | ch3; ch4 | FROZEN_CONTRACT | TESTED | Evidence is not belief; ECMER emits evidence only |  |
-| REQ-RHI-001 | ch1; ch20 RHI | FROZEN_CONTRACT | TESTED | One RobotHardwareInterface for simulated and physical robot; no adapter branching upstream |  |
-| REQ-RHI-002 | INV-ARCH-08; ch1 handoff | FROZEN_CONTRACT | TESTED | RobotConfig with sourced parameters; missing physical facts stay OPEN |  |
-| REQ-GATE-001 | ch34 command gateway; CC-08; SS-07 | FROZEN_CONTRACT | TESTED | Command Gateway is the only actuator path and fails closed |  |
-| REQ-GATE-002 | ch34; SS-10; prompt s27 | FROZEN_CONTRACT | TESTED | Hardware control defaults OFF; physical run impossible without every prerequisite |  |
-| REQ-I0-001 | ch25 Phase 1; gate I0 | FROZEN_CONTRACT | INTEGRATED | Fake full system closes the loop with IDs/frames/time/provenance/uncertainty and deterministic replay |  |
-| REQ-PERSIST-001 | ch28; ch34; CC-01..04; SS-03 | FROZEN_CONTRACT | TESTED | Atomic idempotent belief+provenance commits; dedupe; late evidence explicit; lineage preserved |  |
-| REQ-CORE-ECMER | ch4; ch33 ECMER | EXPERIMENTAL_CANDIDATE | TESTED | ECMER encoders, fusion, quality head, missing modalities, staged training E1-E4, baselines/ablations |  |
-| REQ-CORE-ASSOC | ch3; ch33 Association | EXPERIMENTAL_CANDIDATE | TESTED | Deterministic candidate retrieval, learned scorer, NO_MATCH |  |
-| REQ-CORE-BUO | ch5; ch33 BUO | EXPERIMENTAL_CANDIDATE | TESTED | BUO: trust != innovation, contradiction memory, uncertainty update, no artificial certainty |  |
-| REQ-CORE-RBP | ch9; ch33 RBP | EXPERIMENTAL_CANDIDATE | TESTED | Relational propagation labelled INFERRED with provenance; anti-contamination |  |
-| REQ-CORE-TBD | ch7; ch33 TBD | EXPERIMENTAL_CANDIDATE | TESTED | Temporal dynamics on physical delta_t; baselines first; temporal surprise |  |
-| REQ-CORE-PMBL | ch8; ch33 PMBL | FROZEN_CONTRACT | TESTED | Working graph, persistent store, evidence archive, full lifecycle, CC-09 reset |  |
-| REQ-CORE-SANDBOX | ch25 Phase 2; gate C1 | FROZEN_CONTRACT | TESTED | Abstract synthetic hidden-state sandbox and CORE-* experiments vs baselines |  |
-| REQ-CC-0506 | ch28 CC-05, CC-06 | FROZEN_CONTRACT | TESTED | Masked loss zero denominator; padding/permutation invariance |  |
-| REQ-T2S-001 | ch14-15; ch33 | EXPERIMENTAL_CANDIDATE | TESTED | Twin2S canonical geometry, observability truth, OCPWE controls, counterfactual worlds |  |
-| REQ-M2S-001 | ch14; ch33 UAHSM | EXPERIMENTAL_CANDIDATE | TESTED | Model2S persistent spatial belief, observed/inferred/unknown, pose uncertainty, free-space evidence |  |
-| REQ-T2T-001 | ch10-11; ch33 | EXPERIMENTAL_CANDIDATE | TESTED | Twin2T hierarchy, corrosion + fatigue with validity masks, MCDE coupling, interventions |  |
-| REQ-M2T-001 | ch10; ch33 TCDP | EXPERIMENTAL_CANDIDATE | TESTED | Model2T persistent structural belief, direct vs propagated support, TCDP constrained propagation |  |
-| REQ-T2E-001 | ch12-13; ch33 | EXPERIMENTAL_CANDIDATE | TESTED | Twin2E fields + entities, MEIFE, disturbances, counterfactuals |  |
-| REQ-M2E-001 | ch12; ch33 CEFD | EXPERIMENTAL_CANDIDATE | TESTED | Model2E separate entity/field beliefs and CEFD coupling with provenance |  |
-| REQ-BUS-001 | ch2 Belief Bus | FROZEN_CONTRACT | TESTED | Asynchronous versioned bus, availability states, failure isolation, cross-domain context only |  |
-| REQ-XDOM-001 | ch2 Cross-domain | FROZEN_CONTRACT | TESTED | Children never mutate each other; typed uncertain cross-domain relations; biofouling != corrosion |  |
-| REQ-SIM-KERNEL | ch20-21; ADR-0005 | FROZEN_CONTRACT | TESTED | 6-DOF underwater dynamics, thruster/sensor/power models, fault injection, validity level L1 |  |
-| REQ-UNITY-001 | ch21; prompt s45-48 | INTERFACE_FROZEN | TESTED | Unity V2 C# project (8 modules) and Python bridge adapter |  |
-| REQ-EST-001 | ch20 State estimator | EXPERIMENTAL_CANDIDATE | TESTED | Conventional estimator baseline with covariance and health; consumes RHI only |  |
-| REQ-NAV-001 | ch20 Navigation | EXPERIMENTAL_CANDIDATE | TESTED | Waypoint, global/local planning, obstacle avoidance, trajectory, station keeping, pipeline following, standoff |  |
-| REQ-CTRL-001 | ch20 Controller/Allocation | EXPERIMENTAL_CANDIDATE | TESTED | Classical PID baseline; allocation from RobotConfig geometry with saturation/deadzone/asymmetry/faults |  |
-| REQ-SAFE-001 | ch20 Safety; ch28; INV-ARCH-03 | FROZEN_CONTRACT | TESTED | Deterministic Safety Supervisor overrides autonomy; no hard-coded surface action |  |
-| REQ-M1-001 | ch16-17; ch33 EGDC | EXPERIMENTAL_CANDIDATE | TESTED | Model1/EGDC: claim graph, grounded proposals, closed action vocabulary, deterministic constraints, UIR |  |
-| REQ-MCBR-001 | ch18; ch33 MCBR | EXPERIMENTAL_CANDIDATE | TESTED | MCBR: InformationNeed -> ObservationPlan, cause-specific strategies, feasibility before ranking, baselines, never moves the robot |  |
-| REQ-BAAC-001 | ch19; ch33 BAAC | EXPERIMENTAL_CANDIDATE | TESTED | BAAC: receiver model, semantic deltas, progressive fidelity, store-and-forward, channel simulator, baselines |  |
-| REQ-SCEN-001 | ch2 Shared scenario; prompt s77 | FROZEN_CONTRACT | TESTED | One shared scenario feeds all twins with shared world-entity IDs; impossible worlds rejected |  |
-| REQ-INT-I1 | ch25 Phase 5; gate I1 | FROZEN_CONTRACT | TESTED | Twin2S -> sim -> sensors -> ECMER -> Model2S persistent spatial belief, no leakage |  |
-| REQ-INT-I2 | ch25 Phase 6; gate I2 | FROZEN_CONTRACT | TESTED | Autonomous movement on estimated state; nav benchmarks |  |
-| REQ-INT-I3 | ch25 Phase 7; gate I3 | FROZEN_CONTRACT | TESTED | Structural inspection with partial observations and persistent uncertain 2T state |  |
-| REQ-INT-I4 | ch25 Phase 8; ch35 P1; gate I4 | FROZEN_CONTRACT | TESTED | Flagship closed active inspection, quantified and replayable |  |
-| REQ-INT-I5 | ch25 Phase 9; gate I5 | FROZEN_CONTRACT | TESTED | Model1 decision autonomy integrated; hard constraints deterministic |  |
-| REQ-INT-I6 | ch25 Phase 10; gate I6 | FROZEN_CONTRACT | TESTED | 2E integrated into multi-domain belief through the bus |  |
-| REQ-INT-I7 | ch25 Phase 11; gate I7 | FROZEN_CONTRACT | TESTED | Constrained BAAC communication in missions: low bandwidth, loss, outage, reconnection |  |
-| REQ-HW-012 | ch22; ch25 Phase 12 | FROZEN_CONTRACT | TESTED | Hardware characterization ingestion with value/units/frame/time/uncertainty/provenance/source type |  |
-| REQ-HW-013 | ch22; ch25 Phase 13 | EXPERIMENTAL_CANDIDATE | TESTED | Parameter identification tooling; identification data separated from validation data |  |
-| REQ-HIL-014 | ch22; ch25 Phase 14; gate I8 | FROZEN_CONTRACT | TESTED | HIL harness with latency/CPU/RAM/backlog/deadline metrics; host mode |  |
-| REQ-PHY-015 | ch22; ch25 Phase 15; gate I9 | FROZEN_CONTRACT | BLOCKED_EXTERNAL | Readiness ladder R0-R6 and autonomy activation ladder that cannot skip gates |  |
-| REQ-DATA-001 | ch24; prompt s92-93 | FROZEN_CONTRACT | TESTED | Dataset registry, manifests, adapters; models never own dataset loading |  |
-| REQ-DATA-002 | prompt s91; INV-ARCH-09 | FROZEN_CONTRACT | TESTED | Lineage-aware splits; OOD holds out structural families |  |
-| REQ-DATA-003 | ch35 P2 | FROZEN_CONTRACT | TESTED | DATA-CONRAD-SSL-01 corpus tooling and acceptance report |  |
-| REQ-DATA-004 | ch35 P4 | FROZEN_CONTRACT | TESTED | SIMREAL-LEDGER-01 randomization ledger |  |
-| REQ-TRAIN-001 | ch23; ch33 training config | FROZEN_CONTRACT | TESTED | Deterministic trainer, curriculum C0-C9, truncated persistent training, resume |  |
-| REQ-TRAIN-002 | ch3 Checkpoint; SS-05; ch36 tuple | FROZEN_CONTRACT | TESTED | Checkpoint identity; incompatible load rejected |  |
-| REQ-TRAIN-003 | prompt s97 | FROZEN_CONTRACT | TESTED | Compute-aware execution; smoke runs; full-scale configs marked compute-blocked |  |
-| REQ-EXP-001 | ch27; prompt s98 | FROZEN_CONTRACT | TESTED | Experiment registry with stable IDs; failed experiments retained |  |
-| REQ-EXP-002 | ch28 acceptance; prompt s99 | FROZEN_CONTRACT | TESTED | Acceptance records; OPEN threshold -> NOT_EVALUABLE |  |
-| REQ-EXP-003 | ch25 D0-D8; ch27 claims | FROZEN_CONTRACT | TESTED | Maturity ladder and claim ladder enforcement |  |
-| REQ-EXP-004 | prompt s90; ch27 | FROZEN_CONTRACT | BLOCKED_EXTERNAL | Twin usefulness RealOnly vs Twin+Real |  |
-| REQ-GOLD-001 | ch35 P3 | FROZEN_CONTRACT | TESTED | GOLDEN-V0.2 fixtures GS-01..GS-10 |  |
-| REQ-INTB-001 | ch20 benchmarks; prompt s113 | FROZEN_CONTRACT | IMPLEMENTED | Intelligence benchmarks INT-001..INT-010 with reproducible artifacts | tests/acceptance/test_int_benchmarks.py |
-| REQ-RUN-001 | ch34 state machine; prompt s106 | FROZEN_CONTRACT | TESTED | Runtime state machine, health, SAFE_HOLD on critical failure (SS-06) |  |
-| REQ-RUN-002 | ch34 events; prompt s104 | FROZEN_CONTRACT | TESTED | Structured append-only event log with correlation identity |  |
-| REQ-RUN-003 | ch34 CLI; prompt s108-109 | FROZEN_CONTRACT | TESTED | One Typer CLI; doctor with machine-readable report and nonzero exit |  |
-| REQ-REPLAY-001 | ch2 replay; CC-10; SS-02; SS-08 | FROZEN_CONTRACT | TESTED | Deterministic replay with digest verification, fail closed; backup/restore |  |
-| REQ-SEC-001 | ch34 network/secrets; prompt s107 | FROZEN_CONTRACT | TESTED | No public control endpoint; private bind; unknown peer rejected; secrets never committed or printed |  |
-| REQ-REL-001 | ch34 release; prompt s116 | FROZEN_CONTRACT | IMPLEMENTED | Release lanes dev/candidate/physical with manifest; physical requires I-gate evidence | tests/unit/runtime/test_release.py |
-| REQ-DASH-001 | ch37; prompt s112 | FROZEN_CONTRACT | TESTED | Operator and replay console: explanatory surface, never a source of truth |  |
-| REQ-ADV-001 | prompt s103; ch36 fault injection | FROZEN_CONTRACT | TESTED | Adversarial / fault-injection suite |  |
-| REQ-OPEN-001 | ch28; ADR-0002 | OPEN_BLOCKED | BLOCKED_OPEN_DECISION | Physical WORLD frame convention, geodetic origin, body-frame convention |  |
-| REQ-OPEN-002 | ch28 acceptance | OPEN_BLOCKED | BLOCKED_OPEN_DECISION | Numerical research-superiority thresholds |  |
-| REQ-OPEN-003 | ch28; ch34 safe_hold | OPEN_BLOCKED | BLOCKED_OPEN_DECISION | Timeout behaviour, degraded modes, recovery action per physical configuration |  |
-| REQ-OPEN-004 | ch30 fidelity register | OPEN_BLOCKED | BLOCKED_OPEN_DECISION | Final canonical neural architectures for every learned package |  |
+| ID | Source | Authority | Status | Gate (official) | Summary | Missing |
+|---|---|---|---|---|---|---|
+| REQ-REPO-001 | prompt s3; ch34 | FROZEN_CONTRACT | TESTED |  | New standalone repository with own git history, lock, CI, README, migrations, docs |  |
+| REQ-REPO-002 | prompt s4-s6,s128 | FROZEN_CONTRACT | TESTED |  | Zero dependency on the legacy repository; operation proven with it absent |  |
+| REQ-REPO-003 | prompt s4,s5,s117 | FROZEN_CONTRACT | TESTED |  | Read-only legacy audit and salvage ledger |  |
+| REQ-SPEC-001 | prompt s7; ch29-30 | FROZEN_CONTRACT | TESTED |  | Requirements ledger and implementation map |  |
+| REQ-SPEC-002 | prompt s8; ch30 | FROZEN_CONTRACT | TESTED |  | Implementation metadata on every substantial package |  |
+| REQ-ARCH-001 | ch1; ch2; INV-ARCH-01 | FROZEN_CONTRACT | TESTED |  | Twins = truth, Model2 = belief, Model1 = decision; no truth in deployment-equivalent inference |  |
+| REQ-ARCH-002 | INV-ARCH-04; prompt s118,s122 | FROZEN_CONTRACT | TESTED |  | Twin1 scrapped; no obsolete architecture identifiers; no extra subsystem |  |
+| REQ-ARCH-003 | INV-ARCH-07; ch28 | FROZEN_CONTRACT | TESTED |  | Simulator hidden entity ID never an inference feature or belief ID |  |
+| REQ-SCHEMA-001a | ch2; ch25 Phase 0 | INTERFACE_FROZEN | TESTED |  | Scenario and WorldEntity versioned schemas with shared-scenario consistency |  |
+| REQ-SCHEMA-001b | ch2; ch25 Phase 0 | INTERFACE_FROZEN | TESTED |  | TruthState separated from the public schema surface |  |
+| REQ-SCHEMA-001c | ch2; ch25 Phase 0 | INTERFACE_FROZEN | TESTED |  | Observation and Evidence schemas (evidence is not belief) |  |
+| REQ-SCHEMA-001d | ch2; ch25 Phase 0 | INTERFACE_FROZEN | TESTED |  | BeliefCell, BeliefMessage, BeliefQuery, BeliefRevision schemas |  |
+| REQ-SCHEMA-001e | ch2; ch25 Phase 0 | INTERFACE_FROZEN | TESTED |  | MissionState and ResourceState schemas |  |
+| REQ-SCHEMA-001f | ch2; ch25 Phase 0 | INTERFACE_FROZEN | TESTED |  | SystemHealth, RobotState, RobotConfig, RobotCapabilities schemas |  |
+| REQ-SCHEMA-001g | ch2; ch25 Phase 0 | INTERFACE_FROZEN | TESTED |  | CommunicationState and LinkState schemas |  |
+| REQ-SCHEMA-002 | ch2 Global identifiers | INTERFACE_FROZEN | TESTED |  | Global machine IDs (UUIDv7), deterministic factory for replay |  |
+| REQ-SCHEMA-003 | ch2 Frames; ch28 | INTERFACE_FROZEN | TESTED |  | Every spatial value carries a frame; explicit T_A_from_B transforms |  |
+| REQ-SCHEMA-004 | ch2 Time; ch28 envelope | INTERFACE_FROZEN | TESTED |  | Common time semantics, clock domains, acquisition vs creation time, asynchronous sensors |  |
+| REQ-SCHEMA-005 | ch2; ch34 | INTERFACE_FROZEN | TESTED |  | Large payloads by content-addressed reference only |  |
+| REQ-UNC-001 | ch2; ch6; ch28 | FROZEN_CONTRACT | EVALUATED |  | Four-channel uncertainty UA/UE/UC/UO, never a single confidence scalar, responsive to inputs |  |
+| REQ-KNOW-001 | ch2; ch28; INV-ARCH-06 | FROZEN_CONTRACT | TESTED |  | Property-level knowledge status OBSERVED/INFERRED/PREDICTED/UNKNOWN/MIXED |  |
+| REQ-PROV-001 | ch2 Provenance; INV-ARCH-05; prompt s105 | FROZEN_CONTRACT | TESTED |  | First-class provenance DAG; command -> ... -> raw observation trace |  |
+| REQ-EVID-001 | ch3; ch4 | FROZEN_CONTRACT | TESTED |  | Evidence is not belief; ECMER emits evidence only |  |
+| REQ-RHI-001 | ch1; ch20 RHI | FROZEN_CONTRACT | TESTED |  | One RobotHardwareInterface for simulated and physical robot; no adapter branching upstream |  |
+| REQ-RHI-002 | INV-ARCH-08; ch1 handoff | FROZEN_CONTRACT | TESTED |  | RobotConfig with sourced parameters; missing physical facts stay OPEN |  |
+| REQ-GATE-001a | ch34; CC-08 | FROZEN_CONTRACT | TESTED |  | Gateway rejects expired or future-issued commands |  |
+| REQ-GATE-001b | ch34; SS-07 | FROZEN_CONTRACT | TESTED |  | Gateway rejects raw/untyped payloads, wrong RobotConfig digest, unknown peer, wrong clock domain |  |
+| REQ-GATE-001c | ch34 | FROZEN_CONTRACT | TESTED |  | Only the gateway calls RobotHardwareInterface.send |  |
+| REQ-GATE-001d | ch28; ch34 | FROZEN_CONTRACT | TESTED |  | Missing/mismatched safety authorization and invalid actuator sets rejected |  |
+| REQ-GATE-002 | ch34; SS-10; prompt s27 | FROZEN_CONTRACT | TESTED |  | Hardware control defaults OFF; physical run impossible without every prerequisite |  |
+| REQ-I0-001 | ch25 Phase 1; gate I0 | FROZEN_CONTRACT | INTEGRATED | I0: PASS | Fake full system closes the loop with IDs/frames/time/provenance/uncertainty and deterministic replay |  |
+| REQ-PERSIST-001 | ch28; ch34; CC-01..04; SS-03 | FROZEN_CONTRACT | TESTED |  | Atomic idempotent belief+provenance commits; dedupe; late evidence explicit; lineage preserved |  |
+| REQ-CORE-ECMER | ch4; ch33 ECMER | EXPERIMENTAL_CANDIDATE | TESTED |  | ECMER encoders, fusion, quality head, missing modalities, staged training E1-E4, baselines/ablations |  |
+| REQ-CORE-ASSOC | ch3; ch33 Association | EXPERIMENTAL_CANDIDATE | EVALUATED |  | Deterministic candidate retrieval, learned scorer, NO_MATCH |  |
+| REQ-CORE-BUO | ch5; ch33 BUO | EXPERIMENTAL_CANDIDATE | EVALUATED |  | BUO: trust != innovation, contradiction memory, uncertainty update, no artificial certainty |  |
+| REQ-CORE-RBP | ch9; ch33 RBP | EXPERIMENTAL_CANDIDATE | EVALUATED |  | Relational propagation labelled INFERRED with provenance; anti-contamination |  |
+| REQ-CORE-TBD | ch7; ch33 TBD | EXPERIMENTAL_CANDIDATE | EVALUATED |  | Temporal dynamics on physical delta_t; baselines first; temporal surprise |  |
+| REQ-CORE-PMBL | ch8; ch33 PMBL | FROZEN_CONTRACT | EVALUATED |  | Working graph, persistent store, evidence archive, full lifecycle, CC-09 reset |  |
+| REQ-CORE-SANDBOX | ch25 Phase 2; gate C1 | FROZEN_CONTRACT | INTEGRATED | C1: PASS | Abstract synthetic hidden-state sandbox and CORE-* experiments vs baselines |  |
+| REQ-CC-0506 | ch28 CC-05, CC-06 | FROZEN_CONTRACT | TESTED |  | Masked loss zero denominator; padding/permutation invariance |  |
+| REQ-T2S-001 | ch14-15; ch33 | EXPERIMENTAL_CANDIDATE | TESTED |  | Twin2S canonical geometry, observability truth, OCPWE controls, counterfactual worlds |  |
+| REQ-M2S-001 | ch14; ch33 UAHSM | EXPERIMENTAL_CANDIDATE | INTEGRATED | 2S-FIRST: PASS | Model2S persistent spatial belief, observed/inferred/unknown, pose uncertainty, free-space evidence |  |
+| REQ-T2T-001 | ch10-11; ch33 | EXPERIMENTAL_CANDIDATE | TESTED |  | Twin2T hierarchy, corrosion + fatigue with validity masks, MCDE coupling, interventions |  |
+| REQ-M2T-001 | ch10; ch33 TCDP | EXPERIMENTAL_CANDIDATE | EVALUATED | 2T: NOT_RUN | Model2T persistent structural belief, direct vs propagated support, TCDP constrained propagation |  |
+| REQ-T2E-001 | ch12-13; ch33 | EXPERIMENTAL_CANDIDATE | TESTED |  | Twin2E fields + entities, MEIFE, disturbances, counterfactuals |  |
+| REQ-M2E-001 | ch12; ch33 CEFD | EXPERIMENTAL_CANDIDATE | EVALUATED | 2E: NOT_RUN | Model2E separate entity/field beliefs and CEFD coupling with provenance |  |
+| REQ-BUS-001 | ch2 Belief Bus | FROZEN_CONTRACT | TESTED |  | Asynchronous versioned bus, availability states, failure isolation, cross-domain context only |  |
+| REQ-XDOM-001 | ch2 Cross-domain | FROZEN_CONTRACT | TESTED |  | Children never mutate each other; typed uncertain cross-domain relations; biofouling != corrosion |  |
+| REQ-SIM-KERNEL | ch20-21; ADR-0005 | FROZEN_CONTRACT | TESTED |  | 6-DOF underwater dynamics, thruster/sensor/power models, fault injection, validity level L1 |  |
+| REQ-UNITY-001 | ch21; prompt s45-48 | INTERFACE_FROZEN | TESTED | U0: NOT_RUN | Unity V2 C# project (8 modules) and Python bridge adapter |  |
+| REQ-EST-001 | ch20 State estimator | EXPERIMENTAL_CANDIDATE | TESTED |  | Conventional estimator baseline with covariance and health; consumes RHI only |  |
+| REQ-NAV-001 | ch20 Navigation | EXPERIMENTAL_CANDIDATE | TESTED |  | Waypoint, global/local planning, obstacle avoidance, trajectory, station keeping, pipeline following, standoff |  |
+| REQ-CTRL-001 | ch20 Controller/Allocation | EXPERIMENTAL_CANDIDATE | TESTED |  | Classical PID baseline; allocation from RobotConfig geometry with saturation/deadzone/asymmetry/faults |  |
+| REQ-SAFE-001 | ch20 Safety; ch28; INV-ARCH-03 | FROZEN_CONTRACT | TESTED |  | Deterministic Safety Supervisor overrides autonomy; no hard-coded surface action |  |
+| REQ-M1-001 | ch16-17; ch33 EGDC | EXPERIMENTAL_CANDIDATE | TESTED |  | Model1/EGDC: claim graph, grounded proposals, closed action vocabulary, deterministic constraints, UIR |  |
+| REQ-MCBR-001 | ch18; ch33 MCBR | EXPERIMENTAL_CANDIDATE | TESTED |  | MCBR: InformationNeed -> ObservationPlan, cause-specific strategies, feasibility before ranking, baselines, never moves the robot |  |
+| REQ-BAAC-001 | ch19; ch33 BAAC | EXPERIMENTAL_CANDIDATE | TESTED |  | BAAC: receiver model, semantic deltas, progressive fidelity, store-and-forward, channel simulator, baselines |  |
+| REQ-SCEN-001 | ch2 Shared scenario; prompt s77 | FROZEN_CONTRACT | TESTED |  | One shared scenario feeds all twins with shared world-entity IDs; impossible worlds rejected |  |
+| REQ-INT-I1 | ch25 Phase 5; gate I1 | FROZEN_CONTRACT | TESTED | I1: BLOCKED_UPSTREAM | Twin2S -> sim -> sensors -> ECMER -> Model2S persistent spatial belief, no leakage |  |
+| REQ-INT-I2 | ch25 Phase 6; gate I2 | FROZEN_CONTRACT | TESTED | I2: BLOCKED_UPSTREAM | Autonomous movement on estimated state; nav benchmarks |  |
+| REQ-INT-I3 | ch25 Phase 7; gate I3 | FROZEN_CONTRACT | TESTED | I3: BLOCKED_UPSTREAM | Structural inspection with partial observations and persistent uncertain 2T state |  |
+| REQ-INT-I4 | ch25 Phase 8; ch35 P1; gate I4 | FROZEN_CONTRACT | TESTED | I4: BLOCKED_UPSTREAM | Flagship closed active inspection, quantified and replayable |  |
+| REQ-INT-I5 | ch25 Phase 9; gate I5 | FROZEN_CONTRACT | TESTED | I5: BLOCKED_UPSTREAM | Model1 decision autonomy integrated; hard constraints deterministic |  |
+| REQ-INT-I6 | ch25 Phase 10; gate I6 | FROZEN_CONTRACT | TESTED | I6: BLOCKED_UPSTREAM | 2E integrated into multi-domain belief through the bus |  |
+| REQ-INT-I7 | ch25 Phase 11; gate I7 | FROZEN_CONTRACT | TESTED | I7: BLOCKED_UPSTREAM | Constrained BAAC communication in missions: low bandwidth, loss, outage, reconnection |  |
+| REQ-HW-012 | ch22; ch25 Phase 12 | FROZEN_CONTRACT | TESTED |  | Hardware characterization ingestion with value/units/frame/time/uncertainty/provenance/source type |  |
+| REQ-HW-013 | ch22; ch25 Phase 13 | EXPERIMENTAL_CANDIDATE | TESTED |  | Parameter identification tooling; identification data separated from validation data |  |
+| REQ-HIL-014 | ch22; ch25 Phase 14; gate I8 | FROZEN_CONTRACT | TESTED | I8: BLOCKED_EXTERNAL | HIL harness with latency/CPU/RAM/backlog/deadline metrics; host mode |  |
+| REQ-PHY-015 | ch22; ch25 Phase 15; gate I9 | FROZEN_CONTRACT | BLOCKED_EXTERNAL | I9: BLOCKED_EXTERNAL | Readiness ladder R0-R6 and autonomy activation ladder that cannot skip gates |  |
+| REQ-DATA-001 | ch24; prompt s92-93 | FROZEN_CONTRACT | TESTED |  | Dataset registry, manifests, adapters; models never own dataset loading |  |
+| REQ-DATA-002 | prompt s91; INV-ARCH-09 | FROZEN_CONTRACT | TESTED |  | Lineage-aware splits; OOD holds out structural families |  |
+| REQ-DATA-003 | ch35 P2 | FROZEN_CONTRACT | TESTED |  | DATA-CONRAD-SSL-01 corpus tooling and acceptance report |  |
+| REQ-DATA-004 | ch35 P4 | FROZEN_CONTRACT | TESTED |  | SIMREAL-LEDGER-01 randomization ledger |  |
+| REQ-TRAIN-001 | ch23; ch33 training config | FROZEN_CONTRACT | TESTED |  | Deterministic trainer, curriculum C0-C9, truncated persistent training, resume |  |
+| REQ-TRAIN-002 | ch3 Checkpoint; SS-05; ch36 tuple | FROZEN_CONTRACT | TESTED |  | Checkpoint identity; incompatible load rejected |  |
+| REQ-TRAIN-003 | prompt s97 | FROZEN_CONTRACT | TESTED |  | Compute-aware execution; smoke runs; full-scale configs marked compute-blocked |  |
+| REQ-EXP-001 | ch27; prompt s98 | FROZEN_CONTRACT | TESTED |  | Experiment registry with stable IDs; failed experiments retained |  |
+| REQ-EXP-002 | ch28 acceptance; prompt s99 | FROZEN_CONTRACT | TESTED |  | Acceptance records; OPEN threshold -> NOT_EVALUABLE |  |
+| REQ-EXP-003 | ch25 D0-D8; ch27 claims | FROZEN_CONTRACT | TESTED |  | Maturity ladder and claim ladder enforcement |  |
+| REQ-EXP-004 | prompt s90; ch27 | FROZEN_CONTRACT | BLOCKED_EXTERNAL |  | Twin usefulness RealOnly vs Twin+Real |  |
+| REQ-GOLD-001 | ch35 P3 | FROZEN_CONTRACT | TESTED |  | GOLDEN-V0.2 fixtures GS-01..GS-10 |  |
+| REQ-INTB-001 | ch20 benchmarks; prompt s113 | FROZEN_CONTRACT | TESTED |  | Intelligence benchmarks INT-001..INT-010 with reproducible artifacts |  |
+| REQ-RUN-001 | ch34 state machine; prompt s106 | FROZEN_CONTRACT | TESTED |  | Runtime state machine, health, SAFE_HOLD on critical failure (SS-06) |  |
+| REQ-RUN-002 | ch34 events; prompt s104 | FROZEN_CONTRACT | TESTED |  | Structured append-only event log with correlation identity |  |
+| REQ-RUN-003 | ch34 CLI; prompt s108-109 | FROZEN_CONTRACT | TESTED |  | One Typer CLI; doctor with machine-readable report and nonzero exit |  |
+| REQ-REPLAY-001 | ch2 replay; CC-10; SS-02; SS-08 | FROZEN_CONTRACT | TESTED |  | Deterministic replay with digest verification, fail closed; backup/restore |  |
+| REQ-SEC-001 | ch34 network/secrets; prompt s107 | FROZEN_CONTRACT | TESTED |  | No public control endpoint; private bind; unknown peer rejected; secrets never committed or printed |  |
+| REQ-REL-001 | ch34 release; prompt s116 | FROZEN_CONTRACT | TESTED |  | Release lanes dev/candidate/physical with manifest; physical requires I-gate evidence |  |
+| REQ-DASH-001 | ch37; prompt s112 | FROZEN_CONTRACT | TESTED |  | Operator and replay console: explanatory surface, never a source of truth |  |
+| REQ-ADV-001 | prompt s103; ch36 fault injection | FROZEN_CONTRACT | TESTED |  | Adversarial / fault-injection suite |  |
+| REQ-OPEN-001 | ch28; ADR-0002 | OPEN_BLOCKED | BLOCKED_OPEN_DECISION |  | Physical WORLD frame convention, geodetic origin, body-frame convention |  |
+| REQ-OPEN-002 | ch28 acceptance | OPEN_BLOCKED | BLOCKED_OPEN_DECISION |  | Numerical research-superiority thresholds |  |
+| REQ-OPEN-003 | ch28; ch34 safe_hold | OPEN_BLOCKED | BLOCKED_OPEN_DECISION |  | Timeout behaviour, degraded modes, recovery action per physical configuration |  |
+| REQ-OPEN-004 | ch30 fidelity register | OPEN_BLOCKED | BLOCKED_OPEN_DECISION |  | Final canonical neural architectures for every learned package |  |
