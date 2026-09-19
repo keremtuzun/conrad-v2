@@ -92,3 +92,38 @@ cosine-incidence weighting of MCBR predicted visibility was added after inspecti
 - INT-008: thruster failure, still resolved.
 - INT-009: position-fix outage, resolved.
 - I6-MULTIDOMAIN: turbidity context raised U_A to 0.88; the target resolved.
+
+## Note appended 2026-09-19: MCBR evidence contamination (nothing above is deleted or edited)
+
+Seed **2026201** is **DEVELOPMENT / CONTAMINATED_FOR_FINAL_EVALUATION** for every MCBR metric: the cosine-incidence
+weighting of MCBR predicted visibility (`conrad/orchestration/deliberation.py`) was added after inspecting that seed,
+and 2026201 was also used as an evaluation seed. The following rows above are therefore development evidence only
+and cannot support any final claim or gate I4:
+
+- ACTIVE-MCBR-E001 (seeds 2026201/2026202/2026203): development evidence. 2026202 and 2026203 were inspected in the
+  same write-up, so the whole E001 row is treated as development.
+- Integrated missions, FLAGSHIP-I4 / FIXED-VIEW s2026201 (and the s2026202/s2026203 replicates, which were inspected
+  together with it): development evidence.
+- The previous I4 evidence is **FAIL**: MCBR showed no advantage over the fixed-view baseline, and the spec requires
+  I4 to beat simple views under matched budgets (the margin is OPEN, the direction is not).
+
+The re-evaluation with immutable partitions (`configs/eval/partitions.yaml`, `conrad/evaluation/partitions.py`),
+validation-based selection and a frozen production planner is in `docs/audits/MCBR_REEVALUATION.md`
+(ACTIVE-MCBR-SEL001, ACTIVE-MCBR-E002, ACTIVE-MCBR-E003).
+
+## Correction appended 2026-09-19: structural crack and corrosion numbers (nothing above is deleted or edited)
+
+The integrated-mission crack errors above (78.5→0.24 mm on FLAGSHIP-I4 s2026201; 0.26 / 0.32 / 0.27 / 0.18 mm on the
+other rows) and the corrosion errors (0.006 to 0.079 mm) are **VALID_BUT_OPTIMISTIC_SENSOR_MODEL**. See
+`docs/audits/STRUCTURAL_LINEAGE_AUDIT.md`. No truth leak reaches Model2T. The numbers came from a Twin2T T0 sensor
+that added about 1 mm of iid noise to the true crack length. It reported the full 80 mm crack even when only a third
+of the defect patch was in view, and 57 independent looks averaged the error away. The metric itself compared
+against the right truth quantity. "Before" (78.5 mm) is the prior mean, not a sensor baseline; the
+latest-observation error was 1.0 mm.
+
+The Twin2T sensor model is now REALISTIC by default: partial-view sizing, a log-logistic POD, and multiplicative
+sizing error with a persistent per-sensor bias. Re-run on the current tree, crack / corrosion error:
+FLAGSHIP-I4 s2026201 24.4 / 0.33 mm, FIXED-VIEW s2026201 44.0 / 0.079 mm, FLAGSHIP-I4 s2026203 17.3 / 1.75 mm,
+FIXED-VIEW s2026203 35.4 / 0.049 mm, FLAGSHIP-I4 s2026202 79.2 / 0.13 mm. 2T-E001 is unaffected by any leak. Its
+crack failure comes from run-away cracks at the 1 m cap (model 7.6 mm vs latest 1.7 mm there); on near-static cracks
+the model already beat latest-observation (0.81 vs 1.34 mm). The flagship crack is exactly that static case.

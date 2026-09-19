@@ -70,7 +70,11 @@ def emit_sample(
             sensor_context={"twin2t_fidelity": fidelity.value},
         )
     else:
-        draft = model.t0(rt, quality, rng) if fidelity is FidelityLevel.T0 else model.t1(rt, quality, rng)
+        draft = (
+            model.t0(rt, quality, rng, visibility=visibility, sensor_id=ctx.sensor.sensor_id)
+            if fidelity is FidelityLevel.T0
+            else model.t1(rt, quality, rng)
+        )
         obs = Observation(
             **common,
             modality=Modality.STRUCTURED,

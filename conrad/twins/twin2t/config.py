@@ -38,19 +38,76 @@ class MCDEConfig:
     reference_cycles_per_s: float = 0.05
 
 
+MEASUREMENT_MODELS: tuple[str, ...] = ("REALISTIC", "IDEALISED_ADDITIVE")
+
+
 @dataclass(frozen=True)
 class ObservationConfig:
+    """T0 sensor model. Every number is an ENGINEERING_ESTIMATE for synthetic scenarios, not a calibration.
+
+    ``measurement_model``:
+      * ``REALISTIC`` (default, STRUCTURAL_LINEAGE_AUDIT 2026-09-19): crack length is sized only over the part
+        of the crack in view, detected with a length- and condition-dependent probability (log-logistic POD),
+        and carries multiplicative error: a persistent per (component, sensor) sizing bias that repeated
+        looks cannot average away, plus per-reading scatter. Wall loss likewise has relative error.
+      * ``IDEALISED_ADDITIVE``: the pre-audit model (truth + small additive Gaussian noise, step detection
+        threshold, full crack length reported at any visibility). Kept only to reproduce old numbers.
+    """
+
     visibility_threshold: float = 0.3
     default_fidelity: str = "T0"
     feature_dim: int = 16
+    measurement_model: str = "REALISTIC"
     wall_loss_sigma_m: float = 2.0e-4
+    """Additive wall-loss noise floor (both models)."""
+    wall_rel_sigma: float = 0.10
+    """REALISTIC: per-reading log-normal relative wall-loss error (x noise gain)."""
+    wall_systematic_rel_sigma: float = 0.05
+    """REALISTIC: persistent per (component, sensor) log-normal wall-loss bias."""
     anomaly_sigma: float = 0.05
     crack_sigma_m: float = 1.0e-3
+    """Additive crack-indication noise floor (both models)."""
     crack_detection_limit_m: float = 2.0e-3
+    """IDEALISED_ADDITIVE only: deterministic detection threshold (x noise gain)."""
+    crack_pod_a50_m: float = 1.0e-2
+    """REALISTIC: visible crack length detected with probability 0.5 in clear water (x noise gain)."""
+    crack_pod_log_width: float = 0.5
+    """REALISTIC: log-logistic POD width in ln(length); smaller = sharper POD curve."""
+    crack_visibility_exponent: float = 0.5
+    """REALISTIC: fraction of the crack in view = visibility ** exponent (area fraction -> length fraction)."""
+    crack_sizing_median_factor: float = 0.85
+    """REALISTIC: median measured / visible length (tight crack tips are missed, so sizing runs short)."""
+    crack_rel_sigma: float = 0.25
+    """REALISTIC: per-reading log-normal relative sizing scatter (x noise gain)."""
+    crack_systematic_rel_sigma: float = 0.20
+    """REALISTIC: persistent per (component, sensor) log-normal sizing bias (does not average out)."""
     turbidity_noise_gain: float = 2.0
     biofouling_noise_gain: float = 1.5
     corruption_noise_gain: float = 4.0
     contradiction_magnitude: float = 0.6
+
+    def __post_init__(self) -> None:
+        if self.measurement_model not in MEASUREMENT_MODELS:
+            raise ValueError(
+                f"measurement_model must be one of {MEASUREMENT_MODELS}, got {self.measurement_model!r}"
+            )
+        for name in (
+            "wall_rel_sigma",
+            "wall_systematic_rel_sigma",
+            "crack_rel_sigma",
+            "crack_systematic_rel_sigma",
+            "crack_visibility_exponent",
+        ):
+            if getattr(self, name) < 0.0:
+                raise ValueError(f"{name} must be >= 0")
+        if (
+            self.crack_pod_a50_m <= 0.0
+            or self.crack_pod_log_width <= 0.0
+            or self.crack_sizing_median_factor <= 0.0
+        ):
+            raise ValueError(
+                "crack_pod_a50_m, crack_pod_log_width and crack_sizing_median_factor must be > 0"
+            )
 
 
 @dataclass(frozen=True)

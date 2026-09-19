@@ -47,9 +47,11 @@ IMPLEMENTATION_METADATA = {
         "environment_conditioning,loading_conditioning,corrosion_model,max_stress_concentration,"
         "support_load_redistribution,crack_coating_length_scale_m,max_crack_length_m,"
         "reference_stress_range_pa,reference_cycles_per_s}",
-        "twin2t.observation.{visibility_threshold,default_fidelity,feature_dim,wall_loss_sigma_m,anomaly_sigma,"
-        "crack_sigma_m,crack_detection_limit_m,turbidity_noise_gain,biofouling_noise_gain,"
-        "corruption_noise_gain,contradiction_magnitude}",
+        "twin2t.observation.{visibility_threshold,default_fidelity,feature_dim,measurement_model,"
+        "wall_loss_sigma_m,wall_rel_sigma,wall_systematic_rel_sigma,anomaly_sigma,crack_sigma_m,"
+        "crack_detection_limit_m,crack_pod_a50_m,crack_pod_log_width,crack_visibility_exponent,"
+        "crack_sizing_median_factor,crack_rel_sigma,crack_systematic_rel_sigma,turbidity_noise_gain,"
+        "biofouling_noise_gain,corruption_noise_gain,contradiction_magnitude}",
         "twin2t.prior_overrides",
         "twin2t.generator",
         "twin2t.clock_domain",
@@ -67,6 +69,10 @@ IMPLEMENTATION_METADATA = {
         "environment change shared over CONNECTED_TO/ATTACHED_TO/CONTACTS; ADJACENT_TO carries nothing",
         "per-component random streams from (seed, entity UUID)",
         "visibility absent from SensingContext.degradation means NOT observable",
+        "T0 REALISTIC sensor model (STRUCTURAL_LINEAGE_AUDIT): crack sized over the in-view part only "
+        "(visibility**0.5), log-logistic POD (a50 10 mm x noise gain), median undersizing 0.85, persistent "
+        "per (component, sensor) sizing bias 20% + per-reading 25% log-normal; wall loss 5% persistent + 10% "
+        "per reading; all ENGINEERING_ESTIMATE, uncalibrated",
         "concrete and HDPE have no valid V1 mechanism (fully masked)",
     ],
     "baselines": [g.value for g in GeneratorKind],
