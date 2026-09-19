@@ -8,7 +8,11 @@ from conrad.schemas.base import ConradModel
 
 
 class BAACConfig(ConradModel):
-    model_version: str = "baac-greedy-0.2"
+    model_version: str = "baac-greedy-0.3"
+    scheduler_policy: str = Field(
+        default="C-B10_baac",
+        description="SchedulingPolicy name: C-B10_baac or a baseline C-B0..C-B4 (scheduler.ALL_POLICIES)",
+    )
     critical_value: float = Field(
         default=0.8, ge=0, description="mission_value at/above which a unit is critical"
     )

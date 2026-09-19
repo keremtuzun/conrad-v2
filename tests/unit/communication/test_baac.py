@@ -21,12 +21,12 @@ from conrad.communication import (
     apply_deltas,
     belief_view,
     compute_deltas,
-    payload_bits,
+    increment_bits,
     schedule,
 )
 from conrad.communication.learned import BAACBatch, BAACHeadsConfig, baac_loss, build_heads, train_heads
 from conrad.communication.queue import QueueEntry
-from conrad.communication.units import UnitContent
+from conrad.communication.units import ALERT_FRAME, UnitContent
 from conrad.evaluation.decision_experiments.fixtures import make_belief, unc
 from conrad.schemas.belief import Lifecycle
 from conrad.schemas.comms import DeltaType
@@ -97,8 +97,8 @@ def test_sizes_are_measured_from_payloads_and_monotonic():
     opts = content.unit.fidelity_levels
     assert [int(o.fidelity) for o in opts] == [0, 1, 2, 3, 4]
     assert all(a.size_bits < c.size_bits for a, c in itertools.pairwise(opts))
-    assert opts[0].size_bits == payload_bits(content.increments[0])
-    assert opts[4].size_bits - opts[3].size_bits == payload_bits(content.increments[4]) + 2 * 8 * 1000
+    assert opts[0].size_bits == increment_bits(content.increments[0]) == 8 * ALERT_FRAME.size
+    assert opts[4].size_bits - opts[3].size_bits == increment_bits(content.increments[4]) + 2 * 8 * 1000
     routine, _ = _built(UnitBuilder(ids, cfg).belief_unit(b, None, 0.2, _now(), sizes))
     assert int(routine.unit.fidelity_levels[0].fidelity) == 1  # no F0 alert for non-critical units
     assert prov.parent_records == b.provenance_refs

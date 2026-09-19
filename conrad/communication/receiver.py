@@ -68,6 +68,8 @@ class ReceiverStore:
         self.known_evidence_ids: set[str] = set()
         self.resync_requests: list[ResyncRequest] = []
         self.stale_ignored = 0
+        # belief -> revisions whose deltas were APPLIED, in order (one entry = one belief contribution)
+        self.applied: dict[UUID, list[int]] = {}
 
     def receive(self, increment: dict[str, Any]) -> ResyncRequest | None:
         kind = increment.get("kind")
@@ -105,8 +107,13 @@ class ReceiverStore:
             self.resync_requests.append(req)
             return req
         self.views[bid] = view
+        self.applied.setdefault(bid, []).append(int(view["revision"]))
         self.known_evidence_ids.update(view.get("evidence_support", []))
         return None
+
+    def duplicate_contributions(self) -> int:
+        """Revisions applied more than once for the same belief (must be 0: retransmissions never double-count)."""
+        return sum(len(revs) - len(set(revs)) for revs in self.applied.values())
 
     def revision(self, belief_id: UUID) -> int | None:
         v = self.views.get(belief_id)

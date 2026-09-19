@@ -31,6 +31,10 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
     ),
     "CORE-FULL-E001": ("conrad.evaluation.core_experiments.full_e001", "configs/eval/core_full_e001.yaml"),
     "M1-UIR-E001": ("conrad.evaluation.decision_experiments.m1_uir", "configs/eval/m1_uir_e001.yaml"),
+    "M1-ACTION-E001": (
+        "conrad.evaluation.decision_experiments.action_matrix",
+        "configs/eval/m1_action_e001.yaml",
+    ),
     "ACTIVE-MCBR-E001": (
         "conrad.evaluation.decision_experiments.active_mcbr",
         "configs/eval/active_mcbr_e001.yaml",
@@ -48,6 +52,8 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
         "configs/eval/active_mcbr_e003.yaml",
     ),
     "COM-BAAC-E001": ("conrad.evaluation.decision_experiments.com_baac", "configs/eval/com_baac_e001.yaml"),
+    "COM-I7-E001": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e001.yaml"),
+    "COM-I7-E002": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e002.yaml"),
     "2S-E001": ("conrad.evaluation.spatial_experiments.e001_coverage", "configs/eval/2s_e001.yaml"),
     "2S-E002": ("conrad.evaluation.spatial_experiments.e002_counterfactual", "configs/eval/2s_e002.yaml"),
     "2S-E003": ("conrad.evaluation.spatial_experiments.e003_pose", "configs/eval/2s_e003.yaml"),
@@ -56,9 +62,39 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
     "2T-E002": ("conrad.evaluation.structural_experiments.e002_persistent", "configs/eval/2t_e002.yaml"),
     "2T-E003": ("conrad.evaluation.structural_experiments.e003_tcdp", "configs/eval/2t_e003.yaml"),
     "2T-E004": ("conrad.evaluation.structural_experiments.e004_temporal", "configs/eval/2t_e004.yaml"),
+    "2T-E001-R2-DEV": (
+        "conrad.evaluation.structural_experiments.e001_r2",
+        "configs/eval/2t_e001_r2_dev.yaml",
+    ),
+    "2T-E001-R2": ("conrad.evaluation.structural_experiments.e001_r2", "configs/eval/2t_e001_r2.yaml"),
+    "2T-E002-R2-DEV": (
+        "conrad.evaluation.structural_experiments.e002_persistent",
+        "configs/eval/2t_e002_r2_dev.yaml",
+    ),
+    "2T-E002-R2": (
+        "conrad.evaluation.structural_experiments.e002_persistent",
+        "configs/eval/2t_e002_r2.yaml",
+    ),
+    "2T-E003-R2-DEV": (
+        "conrad.evaluation.structural_experiments.e003_r2",
+        "configs/eval/2t_e003_r2_dev.yaml",
+    ),
+    "2T-E003-R2": ("conrad.evaluation.structural_experiments.e003_r2", "configs/eval/2t_e003_r2.yaml"),
+    "2T-E004-R2-DEV": (
+        "conrad.evaluation.structural_experiments.e004_temporal",
+        "configs/eval/2t_e004_r2_dev.yaml",
+    ),
+    "2T-E004-R2": ("conrad.evaluation.structural_experiments.e004_temporal", "configs/eval/2t_e004_r2.yaml"),
     "2E-E001": ("conrad.evaluation.ecological_experiments.e001_field", "configs/eval/2e_e001.yaml"),
     "2E-E002": ("conrad.evaluation.ecological_experiments.e002_turbidity", "configs/eval/2e_e002.yaml"),
     "2E-E003": ("conrad.evaluation.ecological_experiments.e003_coupling", "configs/eval/2e_e003.yaml"),
+    "2E-E001-R2": ("conrad.evaluation.ecological_experiments.e001_field", "configs/eval/2e_e001_r2.yaml"),
+    "2E-E002-R2": ("conrad.evaluation.ecological_experiments.e002_turbidity", "configs/eval/2e_e002_r2.yaml"),
+    "2E-E003-R2": ("conrad.evaluation.ecological_experiments.e003_coupling", "configs/eval/2e_e003_r2.yaml"),
+    "2E-E001-R3": ("conrad.evaluation.ecological_experiments.e001_field", "configs/eval/2e_e001_r3.yaml"),
+    "2E-E002-R3": ("conrad.evaluation.ecological_experiments.e002_turbidity", "configs/eval/2e_e002_r3.yaml"),
+    "2E-E003-R3": ("conrad.evaluation.ecological_experiments.e003_coupling", "configs/eval/2e_e003_r3.yaml"),
+    "NAV-CAL-E001": ("conrad.evaluation.nav_benchmarks.calibration", "configs/sim/nav_calibration.yaml"),
 }
 DEFAULT_SEEDS = [2026201, 2026202, 2026203]
 

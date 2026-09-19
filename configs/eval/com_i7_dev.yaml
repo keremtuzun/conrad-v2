@@ -1,0 +1,16 @@
+# COM-I7-E002: critical structural finding made while the acoustic link is down (outage 6-60 s), then
+# reconnection. Python-kernel SURROGATE; SYNTHETIC_ONLY link. Shadow arms + closed-loop baseline primaries.
+experiment_id: COM-I7-DEV
+hypothesis: after reconnection BAAC delivers the queued critical belief delta first, coalesces stale units, and the receiver never double-counts a revision
+primary_metric: critical_delta_latency_s
+direction: lower
+baselines: [C-B0_send_all, C-B1_fifo, C-B2_fixed_priority, C-B4_value_per_bit]
+partition: development
+seeds: [5100000]
+scenario: I7-OUTAGE-CRITICAL
+bandwidth_levels: [1.0, 0.1]
+closed_loop_levels: []
+deadline_linkup_s: {critical: 30.0, routine: 120.0}
+queue_trace_every_s: 5
+workers: 2
+keep_bundles: true

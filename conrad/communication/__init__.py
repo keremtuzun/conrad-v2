@@ -11,15 +11,17 @@ from conrad.communication.delta import ResyncRequired, apply_deltas, belief_view
 from conrad.communication.queue import DropRecord, PersistentQueue, QueueEntry
 from conrad.communication.receiver import ReceiverKnowledge, ReceiverStore, ResyncRequest
 from conrad.communication.scheduler import (
+    ALL_POLICIES,
     BAAC_POLICY,
     BASELINE_POLICIES,
     ScheduledIncrement,
     SchedulingPolicy,
     confidence_adjustment,
     novelty,
+    policy_by_name,
     schedule,
 )
-from conrad.communication.units import UnitBuilder, UnitContent, payload_bits
+from conrad.communication.units import UnitBuilder, UnitContent, alert_frame, increment_bits, payload_bits
 
 IMPLEMENTATION_METADATA = {
     "implementation_status": "EXPERIMENTAL_CANDIDATE",
@@ -46,6 +48,7 @@ IMPLEMENTATION_METADATA = {
 }
 
 __all__ = [
+    "ALL_POLICIES",
     "BAAC_POLICY",
     "BASELINE_POLICIES",
     "IMPLEMENTATION_METADATA",
@@ -65,11 +68,14 @@ __all__ = [
     "SchedulingPolicy",
     "UnitBuilder",
     "UnitContent",
+    "alert_frame",
     "apply_deltas",
     "belief_view",
     "compute_deltas",
     "confidence_adjustment",
+    "increment_bits",
     "novelty",
     "payload_bits",
+    "policy_by_name",
     "schedule",
 ]

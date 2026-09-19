@@ -42,6 +42,14 @@ SCENARIOS: dict[str, Override] = {
         "world": {},
         "runtime": {"link": {"bandwidth_bps": 300.0, "outages_s": [[20.0, 70.0]]}},
     },
+    # Gate I7 harness (COM-I7-E001/E002). The defect is on the lane side, so the critical structural finding is
+    # made by the lane pass itself (not by MCBR); I7-OUTAGE-CRITICAL drops the link at 6 s, before the robot
+    # reaches a view of the defect, and restores it at 60 s. The link stays the declared mission link.
+    "I7-BANDWIDTH": {"world": {"defect": {"side": "near"}}, "runtime": {"duration_s": 240.0}},
+    "I7-OUTAGE-CRITICAL": {
+        "world": {"defect": {"side": "near"}},
+        "runtime": {"duration_s": 240.0, "link": {"outages_s": [[6.0, 60.0]]}},
+    },
     # ch20 "Integrated intelligence benchmarks" (spec lines ~9681-9703): one-line definitions, no criteria.
     "INT-001": {"world": {"defect": {"side": "near"}}, "runtime": {}},
     "INT-002": {"world": {}, "runtime": {}},

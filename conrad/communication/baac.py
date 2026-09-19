@@ -18,10 +18,10 @@ from conrad.communication.channel import ChannelSim
 from conrad.communication.config import BAACConfig
 from conrad.communication.queue import DropRecord, PersistentQueue, QueueEntry
 from conrad.communication.receiver import ReceiverKnowledge, ResyncRequest
-from conrad.communication.scheduler import BAAC_POLICY, SchedulingPolicy, schedule
+from conrad.communication.scheduler import ScheduledIncrement, SchedulingPolicy, policy_by_name, schedule
 from conrad.communication.units import EvidenceSizes, UnitBuilder, UnitContent
 from conrad.schemas.belief import BeliefMessage
-from conrad.schemas.comms import CommunicationState, Fidelity, LinkStatus, Transmission
+from conrad.schemas.comms import CommunicationState, Fidelity, LinkState, LinkStatus, Transmission
 from conrad.schemas.ids import IdFactory
 from conrad.schemas.timebase import NS_PER_S, TimeStamp, stamp
 
@@ -40,13 +40,16 @@ class BAACSender:
         id_factory: IdFactory,
         channel: ChannelSim,
         config: BAACConfig | None = None,
-        policy: SchedulingPolicy = BAAC_POLICY,
+        policy: SchedulingPolicy | None = None,
         queue_path: str | Path | None = None,
     ) -> None:
         self._ids = id_factory
         self.config = config or BAACConfig()
         self.channel = channel
-        self.policy = policy
+        self.policy = policy if policy is not None else policy_by_name(self.config.scheduler_policy)
+        self.carry_bits: dict[str, float] = {}  # unused sub-packet capacity carried to the next step
+        self.coalesced = 0  # queued units superseded by a fresher revision of the same belief
+        self._deferred: dict[UUID, float] = {}  # fresher revisions waiting for an in-progress increment
         self.builder = UnitBuilder(id_factory, self.config)
         self.queue = PersistentQueue(self.config.queue_capacity_bits, queue_path)
         self.receiver_model = ReceiverKnowledge()
@@ -71,11 +74,26 @@ class BAACSender:
         self.latest[message.belief_id] = (message, mission_value, evidence_sizes)
         created = now.time_ns
         if self.policy.use_novelty:  # redundancy-aware coalescing is a BAAC feature, not a baseline one
-            for e in self.queue.entries():
-                if e.content.unit.belief_ids == (message.belief_id,) and e.content.new_revision is not None:
-                    created = min(created, e.content.unit.created_time_ns)
-                    mission_value = max(mission_value, e.content.unit.mission_value)
-                    self.queue.remove(e.unit_id, "SUPERSEDED_BY_NEWER_REVISION", now.time_ns, record=False)
+            mine = [
+                e
+                for e in self.queue.entries()
+                if e.content.unit.belief_ids == (message.belief_id,) and e.content.new_revision is not None
+            ]
+            if any(e.partial_level is not None for e in mine):
+                # An increment of this belief is mid-transmission: superseding it would throw away the delivered
+                # fragments, and a belief revised faster than one increment can cross the link would never
+                # arrive (livelock). Finish it; the fresher revision is rebuilt as a delta against what the
+                # receiver then holds (``_release_deferred``).
+                self._deferred[message.belief_id] = max(
+                    mission_value, self._deferred.get(message.belief_id, 0.0)
+                )
+                return []
+            mission_value = max(mission_value, self._deferred.pop(message.belief_id, 0.0))
+            for e in mine:
+                created = min(created, e.content.unit.created_time_ns)
+                mission_value = max(mission_value, e.content.unit.mission_value)
+                self.queue.remove(e.unit_id, "SUPERSEDED_BY_NEWER_REVISION", now.time_ns, record=False)
+                self.coalesced += 1
         known = self.receiver_model.known(message.belief_id) if self.policy.use_receiver_knowledge else None
         built = self.builder.belief_unit(
             message, known, mission_value, now, evidence_sizes, created_time_ns=created
@@ -158,9 +176,19 @@ class BAACSender:
             self.reevaluate(now)
         self._link_was_up = up
         entries = self.queue.entries()
+        carried = dict(self.carry_bits)
         plan = schedule(
-            entries, links, self.channel, self.receiver_model, now.time_ns, dt_s, self.policy, self.config
+            entries,
+            links,
+            self.channel,
+            self.receiver_model,
+            now.time_ns,
+            dt_s,
+            self.policy,
+            self.config,
+            self.carry_bits,
         )
+        self._update_carry(links, dt_s, plan, bool(entries))
         sent: list[Transmission] = []
         for inc in plan:
             entry = self.queue.get(inc.unit_id)
@@ -168,6 +196,15 @@ class BAACSender:
                 continue
             result = self.channel.transmit(inc.link_name, inc.chunk_bits, now_s)
             self.energy_used_j += result.energy_j
+            # capacity carried from earlier steps was already being serialised then: do not count that time twice
+            credit = min(carried.get(inc.link_name, 0.0), float(inc.reserved_bits))
+            carried[inc.link_name] = carried.get(inc.link_name, 0.0) - credit
+            bw = self.channel.bandwidth(inc.link_name, now_s)
+            if result.delivered_time_s is not None and credit > 0 and bw > 0:
+                floor_s = now_s + self.channel.profiles[inc.link_name].latency_s
+                result = result.model_copy(
+                    update={"delivered_time_s": max(floor_s, result.delivered_time_s - credit / bw)}
+                )
             completed = result.delivered and inc.completes
             increments = [
                 entry.content.increments[lv]
@@ -222,9 +259,40 @@ class BAACSender:
             else:
                 self.queue.replace(updated)
         self.transmissions.extend(sent)
+        self._release_deferred(now)
         if sink is not None:
             self.poll(int((now_s + dt_s) * NS_PER_S), sink, now)
         return sent
+
+    def _release_deferred(self, now: TimeStamp) -> None:
+        """Offer deferred fresher revisions once no increment of their belief is mid-transmission."""
+        busy = {
+            e.content.unit.belief_ids[0]
+            for e in self.queue.entries()
+            if e.partial_level is not None and e.content.unit.belief_ids
+        }
+        for bid in [b for b in self._deferred if b not in busy]:
+            message, value, sizes = self.latest[bid]
+            self.offer(message, max(value, self._deferred[bid]), now, sizes)
+
+    def _update_carry(
+        self, links: list[LinkState], dt_s: float, plan: list[ScheduledIncrement], backlog: bool
+    ) -> None:
+        """Carry unused capacity only while data waits on an UP link, capped at one packet's reservation.
+
+        A link cannot bank idle capacity: the carry is cleared when the queue is empty or the link is down.
+        """
+        used: dict[str, int] = {}
+        for inc in plan:
+            used[inc.link_name] = used.get(inc.link_name, 0) + inc.reserved_bits
+        for ln in links:
+            name = ln.link_name
+            if ln.status is LinkStatus.DOWN or not backlog:
+                self.carry_bits[name] = 0.0
+                continue
+            left = ln.bandwidth_bps * dt_s + self.carry_bits.get(name, 0.0) - used.get(name, 0)
+            cap = float(self.channel.expected_bits(name, self.channel.profiles[name].packet_bits))
+            self.carry_bits[name] = max(0.0, min(left, cap))
 
     def poll(self, until_ns: int, sink: Sink, now: TimeStamp) -> None:
         ready = sorted((f for f in self.in_flight if f.arrive_ns <= until_ns), key=lambda f: f.arrive_ns)

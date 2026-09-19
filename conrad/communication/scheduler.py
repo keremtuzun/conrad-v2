@@ -17,9 +17,11 @@ implementation_status: EXPERIMENTAL_CANDIDATE (value terms) / FROZEN_CONTRACT (h
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from uuid import UUID
+
+from pydantic import Field
 
 from conrad.communication.channel import ChannelSim
 from conrad.communication.config import BAACConfig
@@ -37,9 +39,13 @@ class SchedulingPolicy(ConradModel):
     use_novelty: bool = True
     use_uncertainty: bool = True
     use_receiver_knowledge: bool = True
+    critical_first: bool = Field(
+        default=False,
+        description="critical units' F0 alert and F1 belief delta pre-empt all other traffic (ch19 Level 0/1)",
+    )
 
 
-BAAC_POLICY = SchedulingPolicy(name="C-B10_baac")
+BAAC_POLICY = SchedulingPolicy(name="C-B10_baac", critical_first=True)
 BASELINE_POLICIES: dict[str, SchedulingPolicy] = {
     "C-B0_send_all": SchedulingPolicy(
         name="C-B0_send_all",
@@ -67,6 +73,14 @@ BASELINE_POLICIES: dict[str, SchedulingPolicy] = {
         name="C-B4_value_per_bit", progressive=False, use_novelty=False, use_uncertainty=False
     ),
 }
+ALL_POLICIES: dict[str, SchedulingPolicy] = {BAAC_POLICY.name: BAAC_POLICY, **BASELINE_POLICIES}
+
+
+def policy_by_name(name: str) -> SchedulingPolicy:
+    """Resolve a configured scheduler policy name (``BAACConfig.scheduler_policy``)."""
+    if name not in ALL_POLICIES:
+        raise KeyError(f"unknown BAAC scheduler policy {name!r}; known: {sorted(ALL_POLICIES)}")
+    return ALL_POLICIES[name]
 
 
 @dataclass(frozen=True)
@@ -133,13 +147,24 @@ def schedule(
     dt_s: float,
     policy: SchedulingPolicy,
     cfg: BAACConfig,
+    carry_bits: Mapping[str, float] | None = None,
 ) -> list[ScheduledIncrement]:
-    """Allocate this step's link capacity (bandwidth x dt) to increments, fragmenting large ones.
+    """Allocate this step's link capacity (bandwidth x dt + carried credit) to increments.
 
-    An increment already in progress can only be continued; its priority uses its REMAINING bits.
-    FIFO / fixed-priority orders are strict (head-of-line blocking); value orders skip what cannot go.
+    Transmission is packet-granular: a chunk is at least one packet (or the whole remaining increment when
+    that is smaller); capacity too small for that is carried to the next step by the sender (``carry_bits``),
+    which models a slow modem finishing a packet over several control periods instead of losing the
+    fractional capacity to step discretisation. An increment already in progress can only be continued; its
+    priority uses its REMAINING bits. FIFO / fixed-priority orders are strict (head-of-line blocking);
+    value orders skip what cannot go. With ``policy.critical_first`` a critical unit's F0 alert and F1
+    belief delta pre-empt everything else; ordering within each class is value per bit.
     """
-    budget = {ln.link_name: ln.bandwidth_bps * dt_s for ln in links if ln.status is not LinkStatus.DOWN}
+    carry = carry_bits or {}
+    budget = {
+        ln.link_name: ln.bandwidth_bps * dt_s + carry.get(ln.link_name, 0.0)
+        for ln in links
+        if ln.status is not LinkStatus.DOWN
+    }
     strict = policy.order in ("fifo", "class")
     by_link = {ln.link_name: ln for ln in links}
     energy_left = cfg.energy_budget_j_per_step
@@ -187,7 +212,8 @@ def schedule(
                 elif policy.order == "class":
                     key = (float(e.critical), e.content.unit.mission_value, -float(t), prio)
                 else:
-                    key = (prio, -float(t), -float(lv))
+                    preempt = float(policy.critical_first and e.critical and lv <= 1)
+                    key = (preempt, prio, -float(t), -float(lv))
                 name, chunk = pick if pick is not None else ("", 0)
                 inc = ScheduledIncrement(
                     e.unit_id,
@@ -235,8 +261,8 @@ def _pick_link(
         chunk = min(remaining, int(cap * (1.0 - pf)))
         while chunk >= 1 and channel.expected_bits(name, chunk) > cap:  # reservation must fit the budget
             chunk -= 1
-        if chunk < 1:
-            continue
+        if chunk < max(1, min(remaining, channel.profiles[name].packet_bits)):
+            continue  # not even one packet fits: wait for carried credit
         deadline = entry.content.unit.deadline_ns
         if deadline is not None and ln.bandwidth_bps > 0:
             arrival = now_ns + int(

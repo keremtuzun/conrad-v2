@@ -1,8 +1,9 @@
 """InformationUnit builder with progressive fidelity F0..F4 (ch16 'Progressive fidelity', ch19).
 
 Each fidelity level is an INCREMENT on top of the previous one. ``size_bits`` is measured, not
-assumed: 8 x the UTF-8 length of the canonical JSON of the cumulative payload, plus 8 x the byte length
-of referenced evidence objects at F3 (compressed) and F4 (raw). Evidence bytes are referenced by ID
+assumed: 8 x the byte length of the packed binary alert frame at F0 (23 bytes), 8 x the DEFLATE-compressed
+length of the canonical JSON of the payload at F1..F4, plus 8 x the byte length of referenced evidence objects at
+F3 (compressed) and F4 (raw). Evidence bytes are referenced by ID
 (``EvidenceSizes``, typically ``PayloadRef.byte_length``) so raw evidence stays discoverable onboard.
 
     F0 critical alert (critical units only)   F1 structured semantic deltas
@@ -15,6 +16,8 @@ implementation_status: EXPERIMENTAL_CANDIDATE (payload layout) / FROZEN_CONTRACT
 from __future__ import annotations
 
 import json
+import struct
+import zlib
 from collections.abc import Mapping, Sequence
 from typing import Any
 from uuid import UUID
@@ -23,10 +26,11 @@ from conrad.communication.config import BAACConfig
 from conrad.communication.delta import View, compute_deltas
 from conrad.schemas.base import ConradModel
 from conrad.schemas.belief import BeliefMessage
-from conrad.schemas.comms import Fidelity, FidelityOption, InformationType, InformationUnit
+from conrad.schemas.comms import DeltaType, Fidelity, FidelityOption, InformationType, InformationUnit
 from conrad.schemas.ids import IdFactory
 from conrad.schemas.provenance import ProvenanceRecord, SourceType
 from conrad.schemas.timebase import TimeStamp
+from conrad.schemas.world import Domain
 
 EvidenceSizes = Mapping[UUID, int]
 
@@ -56,15 +60,41 @@ class UnitContent(ConradModel):
         return sorted(int(o.fidelity) for o in self.unit.fidelity_levels)
 
 
+_DOMAIN_CODES = {d: i for i, d in enumerate(Domain)}
+_DELTA_BITS = {d.value: 1 << i for i, d in enumerate(DeltaType)}
+ALERT_FRAME = struct.Struct(">16sIBH")  # belief UUID, revision, domain code, delta-type bitmask
+
+
 def _alert(m: BeliefMessage, delta_types: Sequence[str]) -> dict[str, Any]:
+    """F0 critical alert. Its dict form carries exactly the fields of the packed ``ALERT_FRAME``."""
     return {
         "kind": "alert",
         "belief_id": str(m.belief_id),
         "revision": m.revision,
         "domain": m.domain.value,
         "delta_types": list(delta_types),
-        "summary": m.change_summary or "critical belief change",
     }
+
+
+def alert_frame(increment: dict[str, Any]) -> bytes:
+    """The Level-0 wire frame of an alert (ch19 'Level 0 - emergency/control: tiny, highest priority')."""
+    mask = 0
+    for d in increment["delta_types"]:
+        mask |= _DELTA_BITS[str(d)]
+    return ALERT_FRAME.pack(
+        UUID(str(increment["belief_id"])).bytes,
+        int(increment["revision"]),
+        _DOMAIN_CODES[Domain(increment["domain"])],
+        mask,
+    )
+
+
+def increment_bits(increment: dict[str, Any]) -> int:
+    """Measured wire size of one increment: the packed frame for alerts, DEFLATE(canonical JSON) otherwise."""
+    if increment.get("kind") == "alert":
+        return 8 * len(alert_frame(increment))
+    raw = json.dumps(increment, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
+    return 8 * len(zlib.compress(raw, 9))
 
 
 class UnitBuilder:
@@ -118,7 +148,7 @@ class UnitBuilder:
         options = []
         cumulative = 0
         for level in sorted(increments):
-            cumulative += payload_bits(increments[level]) + evidence_bits.get(level, 0)
+            cumulative += increment_bits(increments[level]) + evidence_bits.get(level, 0)
             options.append(
                 FidelityOption(
                     fidelity=Fidelity(level),

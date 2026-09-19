@@ -60,6 +60,36 @@ def _persist_check(d: dict) -> tuple[bool, str]:
     return ok, json.dumps(vals) if vals else "keys missing"
 
 
+I5A = "tests/acceptance/test_i5_action_matrix.py::"
+I5_ARTIFACT = "artifacts/experiments/M1-ACTION-E001/m1_action_e001.json"
+
+
+def _i5_class_check(cls: str) -> Callable[[dict], tuple[bool, str]]:
+    """M1-ACTION-E001 final split: the class's canonical-scenario recall meets the stored floor (EGDC arm)."""
+
+    def check(d: dict) -> tuple[bool, str]:
+        if d.get("partition") != "final_test":
+            return False, f"artifact partition is {d.get('partition')!r}, not final_test"
+        s = d["summary"]["egdc_structured"]["per_class"].get(cls, {})
+        floor = float(d["acceptance"]["canonical_recall_floor"])
+        recall, n = s.get("recall"), int(s.get("n_canonical", 0))
+        ok = recall is not None and n >= 50 and recall >= floor
+        return ok, f"{cls}: recall={recall} n={n} floor={floor} (ENGINEERING_ESTIMATE; spec bound OPEN)"
+
+    return check
+
+
+def _i5_constraints_check(d: dict) -> tuple[bool, str]:
+    s = d["summary"]["egdc_structured"]
+    hc = s["hard_constraint_violations"]
+    uir = s["uir"]["unsupported_inference_rate"]
+    ok = d.get("partition") == "final_test" and hc["total"] == 0 and uir == 0.0
+    return ok, (
+        f"violations={hc['total']} (audit={hc['chosen_action_audit']}, injected accepted="
+        f"{hc['injected_invalid_accepted']}/{hc['injected_invalid_proposals']}); UIR={uir}"
+    )
+
+
 def _walk(o: object, prefix: str = "") -> list[tuple[str, object]]:
     out: list[tuple[str, object]] = []
     if isinstance(o, dict):
@@ -208,7 +238,260 @@ PLAN: dict[str, list[tuple[str, list[str], Callable[[], tuple[CriterionStatus, s
             None,
         ),
     ],
+    # Model1 action-matrix half of the I5 formal path (M1-ACTION-E001, final split). The integrated-mission half
+    # is not covered here; the official status stays BLOCKED_UPSTREAM until I4 passes.
+    "I5": [
+        (name, [I5A + test], _exp(I5_ARTIFACT, _i5_class_check(name)))
+        for name, test in (
+            ("continue", "test_i5_continue"),
+            ("request evidence", "test_i5_request_evidence"),
+            ("replan", "test_i5_replan"),
+            ("change sensing", "test_i5_change_sensing"),
+            ("return", "test_i5_return"),
+            ("escalate", "test_i5_escalate"),
+        )
+    ]
+    + [
+        (
+            "hard constraints inviolable",
+            [
+                I5A + "test_i5_hard_constraints_inviolable",
+                I5A + "test_artifact_is_final_split_and_large_enough",
+                "tests/unit/decision/test_action_semantics.py::test_every_injected_invalid_kind_is_rejected",
+            ],
+            _exp(I5_ARTIFACT, _i5_constraints_check),
+        )
+    ],
 }
+
+# ---------------------------------------------------------------- 2E (functional) and 2E-CEFD (research)
+EM = "tests/unit/domains/ecological/test_eco_model2e.py::"
+EB = "tests/unit/domains/ecological/test_eco_field_eb.py::"
+EP = "tests/property/domains/ecological/test_eco_belief_properties.py::"
+ECO = "artifacts/experiments/ecological/"
+
+
+def _eco_entity_check(d: dict) -> tuple[bool, str]:
+    """2E-E002-R3 (thresholds as set for R2) production arm: cover error well below the prior sd in clear/moderate water, calibrated
+    (coverage95 >= 0.85, mean z^2 <= 2) at every turbidity level. Thresholds fixed before the FINAL run."""
+    s, cand = d["summary"], d.get("candidate", "production")
+    levels = sorted({k.split(".")[0] for k in s if k.startswith("turbidity_")}, key=lambda x: float(x[10:]))
+    got, ok = {}, bool(levels)
+    for lv in levels:
+        rmse = s[f"{lv}.{cand}.cover.rmse"]["mean"]
+        cov = s[f"{lv}.{cand}.cover.coverage95"]["mean"]
+        z2 = s[f"{lv}.{cand}.cover.mean_z2"]["mean"]
+        got[lv] = {"rmse": round(rmse, 4), "coverage95": round(cov, 3), "mean_z2": round(z2, 3)}
+        ok &= cov >= 0.85 and z2 <= 2.0 and (float(lv[10:]) > 4.0 or rmse <= 0.10)
+    return ok, json.dumps({"candidate": cand, **got})
+
+
+def _eco_field_check(d: dict) -> tuple[bool, str]:
+    """2E-E001-R3 (thresholds as set for R2) production arm, per field: RMSE not significantly increasing with sensor count (paired 95 % CI
+    low <= 0 at each step) and lower at 8 than at 1 sensor; not significantly worse than the static field at
+    >= 4 sensors; calibrated at every count (coverage95 >= 0.85 and 1/3 <= mean z^2 <= 3)."""
+    s, p = d["summary"], d.get("paired", {})
+    cand = p.get("candidate", d.get("candidate"))
+    ok, got = bool(p), {}
+    for name in ("temperature", "turbidity"):
+        f = p.get(name, {})
+        steps = {k: v for k, v in f.items() if "_minus_k" in k}
+        rm = {k: s[f"{cand}.k{k}.{name}.rmse"]["mean"] for k in (1, 2, 4, 8)}
+        mono = bool(steps) and all(v["ci_low"] <= 0 for v in steps.values()) and rm[8] < rm[1]
+        keys = [f"k{k}_minus_static" for k in (4, 8)]
+        static = all(k in f and f[k]["ci_low"] <= 0 for k in keys)
+        cal = {
+            k: (s[f"{cand}.k{k}.{name}.coverage95"]["mean"], s[f"{cand}.k{k}.{name}.mean_z2"]["mean"])
+            for k in rm
+        }
+        calib = all(c >= 0.85 and 1 / 3 <= z <= 3 for c, z in cal.values())
+        ok &= mono and static and calib
+        got[name] = {
+            "rmse": {k: round(v, 4) for k, v in rm.items()},
+            "non_increasing": mono,
+            "not_worse_than_static_k>=4": static,
+            "calibrated": calib,
+            "coverage95/mean_z2": {k: [round(c, 3), round(z, 3)] for k, (c, z) in cal.items()},
+        }
+    return ok, json.dumps(got)
+
+
+def _cefd_check(d: dict) -> tuple[bool, str]:
+    """2E-E003-R3 (thresholds as set for R2): CEFD cover benefit over BOTH uncoupled arms > 0 with the pooled paired 95 % CI above 0, AND
+    zero confident stress claims on healthy entities AND zero non-UNKNOWN damage claims. Otherwise FAIL."""
+    p = d.get("paired", {})
+    got: dict[str, object] = {}
+    ok = bool(p)
+    for key in ("CB_entity_cover_rmse", "CB_entity_cover_rmse_vs_production"):
+        pooled = p.get(key, {}).get("pooled")
+        if pooled is None:
+            ok = False
+            continue
+        got[key] = {k: round(float(v), 5) for k, v in pooled.items()}
+        ok &= pooled["mean"] > 0 and pooled["ci_low"] > 0
+    spur = p.get("cefd_confident_stress_on_healthy", {})
+    got["cefd_confident_stress_on_healthy"] = spur
+    got["cefd_UEI_max"] = p.get("cefd_UEI_max")
+    ok &= spur.get("max", 1.0) == 0.0 and p.get("cefd_UEI_max", 1.0) == 0.0
+    return ok, json.dumps(got)
+
+
+PLAN["2E"] = [
+    (
+        "entity model works",
+        [
+            EM + "test_entity_and_field_beliefs_are_separate_state_types",
+            EM + "test_stress_is_inferred_and_never_observed_damage",
+            EM + "test_observability_context_sets_survey_noise_but_never_couples_ecology",
+            EP + "test_cover_belief_stays_bounded",
+        ],
+        _exp(ECO + "2E-E002-R3.json", _eco_entity_check),
+    ),
+    (
+        "field model works",
+        [
+            EM + "test_variance_grows_away_from_sensor_and_with_time",
+            EB + "test_error_does_not_grow_with_more_sensors_on_a_near_uniform_field",
+            EB + "test_tau2_shrinks_when_stations_agree_and_grows_when_they_differ",
+            EB + "test_noise_scale_and_drift_are_learned_from_the_readings",
+            EB + "test_abrupt_change_is_detected_and_not_over_confident",
+            EB + "test_change_detection_is_quiet_on_a_stationary_field",
+            EP + "test_field_variance_stays_between_floor_and_prior",
+            EP + "test_prediction_variance_is_monotone_in_delta_t",
+        ],
+        _exp(ECO + "2E-E001-R3.json", _eco_field_check),
+    ),
+    (
+        "persistent inference works",
+        [
+            EM + "test_reset_working_memory_preserves_persistent_state",
+            EM + "test_persisted_revisions_and_query",
+            EM + "test_each_observation_uses_its_own_timestamp",
+            EM + "test_internal_exception_sets_unavailable_and_is_raised",
+        ],
+        None,
+    ),
+]
+PLAN["2E-CEFD"] = [
+    (
+        "CEFD beats uncoupled baselines without unsupported ecological claims",
+        [EM + "test_stress_is_inferred_and_never_observed_damage"],
+        _exp(ECO + "2E-E003-R3.json", _cefd_check),
+    ),
+]
+
+# ---------------------------------------------------------------- 2T (functional) and 2T-TCDP (research)
+# FINAL-partition artifacts of the R2 structural experiments (docs/audits/MODEL2T_REPAIR.md).
+TD = "tests/unit/domains/technical/"
+T2_E001 = "artifacts/experiments/2T-E001-R2/2T-E001-R2.json"
+T2_E003 = "artifacts/experiments/2T-E003-R2/2T-E003-R2.json"
+
+
+def _t2_direct_check(d: dict) -> tuple[bool, str]:
+    """PASS iff on the FINAL partition, at every sensor-degradation level, Model2T direct inference beats
+    LATEST_OBSERVATION for corrosion AND crack (paired bootstrap 95 % CI of the per-seed MAE gain above 0)
+    and its 95 % interval coverage lies in the band declared in the config before the run."""
+    v = d["verdicts"]
+    band = v.get("coverage_band")
+    got: dict[str, object] = {"partition": v.get("partition"), "coverage_band": band}
+    ok = v.get("partition") == "final_test"
+    levels = sorted({k.split(".")[0] + "." + k.split(".")[1] for k in v if k.startswith("level_")})
+    for lv in levels:
+        for q in ("corrosion_depth_m", "crack_length_m"):
+            gain = v.get(f"{lv}.{q}.mae_gain_vs_LATEST_OBSERVATION")
+            cov = v.get(f"{lv}.{q}.model_cov95")
+            beats = bool(v.get(f"{lv}.{q}.beats_latest_ci_above_0"))
+            calibrated = bool(v.get(f"{lv}.{q}.model_cov95_in_band"))
+            ok = ok and beats and calibrated
+            got[f"{lv}.{q}"] = {
+                "mae_gain_mm": None if gain is None else {k: round(float(x), 4) for k, x in gain.items()},
+                "cov95": None if cov is None else round(float(cov), 3),
+                "beats_latest": beats,
+                "calibrated": calibrated,
+            }
+    return ok and bool(levels), json.dumps(got)
+
+
+def _t2_tcdp_run() -> tuple[CriterionStatus, str]:
+    """Benefit vs no propagation (CI above 0, declared rule in 2T-E003-R2) AND contamination below GENERIC.
+    The 'excessive contamination' bound is OPEN: benefit + lower-than-generic -> NOT_EVALUABLE; no benefit, or
+    contamination not below generic -> FAIL."""
+    p = ROOT / T2_E003
+    if not p.exists():
+        return CriterionStatus.NOT_RUN, f"artifact missing: {T2_E003}"
+    v = json.loads(p.read_text(encoding="utf-8"))["verdicts"]
+    keys = [k for k in v if k.endswith(("RB_tcdp_ci", "rc_generic_minus_tcdp_ci")) and "." in k]
+    got = {k: v[k] for k in keys if k.count(".") == 1}
+    got.update(
+        partition=v.get("partition"),
+        tcdp_benefit=v.get("tcdp_benefit"),
+        tcdp_contamination_lower_than_generic=v.get("tcdp_contamination_lower_than_generic"),
+        excessive_contamination_threshold=v.get("excessive_contamination_threshold"),
+    )
+    measured = json.dumps(got, default=str)
+    if v.get("partition") != "final_test" or not v.get("tcdp_benefit"):
+        return CriterionStatus.FAIL, measured
+    if not v.get("tcdp_contamination_lower_than_generic"):
+        return CriterionStatus.FAIL, measured
+    if str(v.get("excessive_contamination_threshold", "OPEN")).upper() == "OPEN":
+        return CriterionStatus.NOT_EVALUABLE, measured
+    return CriterionStatus.PASS, measured
+
+
+PLAN["2T"] = [
+    (
+        "direct inference works before TCDP gets credit",
+        [
+            TD + "test_m2t_direct.py::test_direct_update_is_observed_and_reduces_uo",
+            TD + "test_m2t_direct.py::test_contradiction_raises_uc_and_is_not_averaged_away",
+            TD + "test_m2t_measurement.py::test_missed_detection_never_drags_a_large_crack_to_zero",
+            TD + "test_m2t_measurement.py::test_same_sensor_bias_floor_is_not_averaged_away",
+        ],
+        _exp(T2_E001, _t2_direct_check),
+    ),
+]
+PLAN["2T-TCDP"] = [
+    (
+        "TCDP improves hidden-state reconstruction vs generic/no propagation without excessive contamination",
+        [TD + "test_m2t_tcdp.py::test_no_propagation_over_invalid_relation_types"],
+        _t2_tcdp_run,
+    ),
+]
+
+
+I7A = "tests/acceptance/test_i7_constrained_comms.py::"
+I7_E001 = "artifacts/experiments/COM-I7-E001/com_i7_e001.json"
+I7_E002 = "artifacts/experiments/COM-I7-E002/com_i7_e002.json"
+
+
+def _i7_bandwidth_check(d: dict) -> tuple[bool, str]:
+    s = d["summary"]
+    parts = [
+        f"{c}: baac={s[c]['baac']['mission_information_retained']:.3f} "
+        f"crit_latency={s[c]['baac']['critical_alert_latency_s']}"
+        for c in s
+    ]
+    return d.get("partition") == "final_test", "; ".join(parts)
+
+
+def _i7_outage_check(d: dict) -> tuple[bool, str]:
+    runs = [r for r in d["per_run"] if r["run_id"].endswith("-shadow")]
+    first = [r["reconnection"]["baac"][0]["critical_delivered_first"] for r in runs]
+    lat = [r["arms"]["baac"]["critical_delta_latency_s"] for r in runs]
+    ok = d.get("partition") == "final_test" and bool(runs) and all(first)
+    return ok, f"critical_delivered_first={sum(first)}/{len(first)}; critical delta latency s={lat}"
+
+
+def _i7_retention_check(d: dict) -> tuple[bool, str]:
+    comp = d["comparisons"]
+    rows, ok = [], d.get("partition") == "final_test"
+    for cond, row in comp.items():
+        if cond == "bw_0pct":
+            continue
+        for p in ("raw", "fifo", "fixed_priority"):
+            ok = ok and bool(row[p]["baac_strictly_more_every_seed"])
+        rows.append(f"{cond}: " + ", ".join(f"{p} {row[p]['baac_minus_policy_mean']:+.3f}" for p in row))
+    return ok, "BAAC minus policy retained (mean): " + "; ".join(rows)
 
 
 I1S = "tests/integration/test_i1_spatial_loop.py::"
@@ -237,6 +520,36 @@ SURROGATE_PLAN: dict[str, list[tuple[str, list[str], Callable[[], tuple[Criterio
                 "tests/leakage/test_dynamic_leakage.py::test_registry_ids_are_not_world_ids",
             ],
             None,
+        ),
+    ],
+    # I7: COM-I7-E001 (bandwidth sweep) / COM-I7-E002 (critical finding during an outage), FINAL seeds.
+    "I7": [
+        (
+            "full mission under constrained bandwidth",
+            [
+                I7A + "test_artifacts_are_final_split_surrogate",
+                I7A + "test_full_mission_under_constrained_bandwidth",
+                I7A + "test_no_duplicate_contribution_at_the_receiver",
+            ],
+            _exp(I7_E001, _i7_bandwidth_check),
+        ),
+        (
+            "full mission under outages",
+            [
+                I7A + "test_outage_finding_is_created_while_the_link_is_down",
+                I7A + "test_critical_delta_is_delivered_first_after_reconnection",
+                I7A + "test_receiver_synchronised_for_critical_beliefs_after_reconnection",
+                I7A + "test_stale_and_redundant_units_are_coalesced_or_dropped",
+            ],
+            _exp(I7_E002, _i7_outage_check),
+        ),
+        (
+            "BAAC retains more mission-relevant information than raw/FIFO/fixed-priority",
+            [
+                I7A + "test_baac_retains_more_than_raw_fifo_fixed_priority_every_nonzero_level",
+                I7A + "test_value_per_bit_comparison_is_reported",
+            ],
+            _exp(I7_E001, _i7_retention_check),
         ),
     ],
     "I3": [

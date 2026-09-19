@@ -1,0 +1,35 @@
+{
+  "gate_id": "I7",
+  "evidence_class": "SURROGATE",
+  "execution_path": "python L1 kernel instead of Unity; pytest nodes + retained experiment artifacts (I7)",
+  "git_commit": "4f55d32efae281d351f900c2d098e58185d6c6c3",
+  "criteria": [
+    {
+      "criterion": "full mission under constrained bandwidth",
+      "status": "PASS",
+      "measured": "test_artifacts_are_final_split_surrogate=PASS; test_full_mission_under_constrained_bandwidth=PASS; test_no_duplicate_contribution_at_the_receiver=PASS; experiment: bw_100pct: baac=0.628 crit_latency=1.0613333332; bw_50pct: baac=0.589 crit_latency=2.3756666664; bw_10pct: baac=0.330 crit_latency=1.3066666666; bw_1pct: baac=0.060 crit_latency=1.4; bw_0.1pct: baac=0.060 crit_latency=145.2; bw_0pct: baac=0.000 crit_latency=None"
+    },
+    {
+      "criterion": "full mission under outages",
+      "status": "PASS",
+      "measured": "test_outage_finding_is_created_while_the_link_is_down=PASS; test_critical_delta_is_delivered_first_after_reconnection=PASS; test_receiver_synchronised_for_critical_beliefs_after_reconnection=PASS; test_stale_and_redundant_units_are_coalesced_or_dropped=PASS; experiment: critical_delivered_first=10/10; critical delta latency s=[96.616666666, 50.330833333, 103.958333333, 52.6175, 95.0, 46.237499999, 96.15, 48.177499999, 96.349999999, 50.304166666]"
+    },
+    {
+      "criterion": "BAAC retains more mission-relevant information than raw/FIFO/fixed-priority",
+      "status": "PASS",
+      "measured": "test_baac_retains_more_than_raw_fifo_fixed_priority_every_nonzero_level=PASS; test_value_per_bit_comparison_is_reported=PASS; experiment: BAAC minus policy retained (mean): bw_100pct: raw +0.401, fifo +0.401, fixed_priority +0.469, value_per_bit +0.070; bw_50pct: raw +0.362, fifo +0.362, fixed_priority +0.534, value_per_bit +0.088; bw_10pct: raw +0.103, fifo +0.103, fixed_priority +0.330, value_per_bit +0.091; bw_1pct: raw +0.060, fifo +0.060, fixed_priority +0.060, value_per_bit +0.025; bw_0.1pct: raw +0.060, fifo +0.060, fixed_priority +0.060, value_per_bit +0.060"
+    }
+  ],
+  "artifacts": [
+    "tests/acceptance/test_i7_constrained_comms.py::test_artifacts_are_final_split_surrogate",
+    "tests/acceptance/test_i7_constrained_comms.py::test_baac_retains_more_than_raw_fifo_fixed_priority_every_nonzero_level",
+    "tests/acceptance/test_i7_constrained_comms.py::test_critical_delta_is_delivered_first_after_reconnection",
+    "tests/acceptance/test_i7_constrained_comms.py::test_full_mission_under_constrained_bandwidth",
+    "tests/acceptance/test_i7_constrained_comms.py::test_no_duplicate_contribution_at_the_receiver",
+    "tests/acceptance/test_i7_constrained_comms.py::test_outage_finding_is_created_while_the_link_is_down",
+    "tests/acceptance/test_i7_constrained_comms.py::test_receiver_synchronised_for_critical_beliefs_after_reconnection",
+    "tests/acceptance/test_i7_constrained_comms.py::test_stale_and_redundant_units_are_coalesced_or_dropped",
+    "tests/acceptance/test_i7_constrained_comms.py::test_value_per_bit_comparison_is_reported"
+  ],
+  "notes": ""
+}
