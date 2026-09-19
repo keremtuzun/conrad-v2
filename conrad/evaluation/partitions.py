@@ -31,6 +31,16 @@ PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions.yaml"
 # Digest of the canonical JSON of partitions.yaml v1 (recorded 2026-09-19). Changing the file breaks loading.
 PARTITIONS_SHA256 = "074ae11310252217315b2ac3324fd914d1964a3e34b76b57a65f0ca3a3acb904"
 CONTAMINATED_LABEL = "DEVELOPMENT / CONTAMINATED_FOR_FINAL_EVALUATION"
+# NAV benchmark noise seeds (gate I2): a separate versioned file, because adding a domain to partitions.yaml would
+# change the v1 digest pinned by the I4 artifacts. Pinned on 2026-09-19 before any run on its final_test seeds.
+NAV_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_nav.yaml"
+NAV_PARTITIONS_SHA256 = "4e1886400c78969118e5b8326f77a43133b9ce6ef499e964f096601637abad90"
+NAV_DOMAIN = "nav"
+# I5 integrated-mission seeds (M1-ACTION-E002): a separate versioned file for the same reason as NAV. Pinned on
+# 2026-09-19 before any I5 mission ran on its final_test seeds.
+I5_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_i5.yaml"
+I5_PARTITIONS_SHA256 = "a6342e86ccaa9c391d351a181064048cc1479a5af177bdd70912ac096d4f67c8"
+I5_DOMAIN = "i5_mission"
 
 
 class Partition(StrEnum):
@@ -137,10 +147,106 @@ def validate(raw: dict[str, Any]) -> None:
             raise PartitionIntegrityError(f"contaminated seed {c['seed']} must be in development only")
 
 
+def load_nav(path: Path = NAV_PARTITIONS_PATH, *, verify_digest: bool = True) -> dict[str, Any]:
+    """The NAV noise-seed partition; its seeds must be disjoint from every seed of ``partitions.yaml``."""
+    digest = canonical_digest(path)
+    if verify_digest and digest != NAV_PARTITIONS_SHA256:
+        raise PartitionIntegrityError(
+            f"{path} changed after freezing: digest {digest} != pinned {NAV_PARTITIONS_SHA256}"
+        )
+    raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+    validate_nav(raw, load()["raw"])
+    return {"raw": raw, "digest": digest}
+
+
+def validate_nav(raw: dict[str, Any], main: dict[str, Any]) -> None:
+    seeds = raw["noise_seeds"]
+    dev, final = set(_seeds(seeds["development"])), _seeds(seeds["final_test"])
+    if set(final) & dev:
+        raise PartitionIntegrityError("nav: final_test and development seeds overlap")
+    if len(final) != len(raw["benchmarks"]):
+        raise PartitionIntegrityError("nav: one final_test noise seed per benchmark is required")
+    other = {
+        s
+        for domain in ("abstract", "mission")
+        for p in Partition
+        for s in _seeds(main[domain]["world_seeds"][p.value])
+    }
+    if (dev | set(final)) & other:
+        raise PartitionIntegrityError("nav seeds collide with partitions.yaml seeds")
+    for c in raw.get("contaminated", []):
+        if not {int(s) for s in c["seeds"]} <= dev:
+            raise PartitionIntegrityError(f"contaminated nav seeds {c['seeds']} must be in development only")
+
+
+def _nav_split(part: Partition) -> Split:
+    loaded = load_nav()
+    raw = loaded["raw"]
+    if part.value not in raw["noise_seeds"]:
+        raise KeyError(f"nav partition has no {part.value!r} split")
+    return Split(
+        domain=NAV_DOMAIN,
+        partition=part,
+        world_seeds=_seeds(raw["noise_seeds"][part.value]),
+        families=tuple(raw["benchmarks"]),
+        replicates_per_world=1,
+        digest=loaded["digest"],
+    )
+
+
+def load_i5(path: Path = I5_PARTITIONS_PATH, *, verify_digest: bool = True) -> dict[str, Any]:
+    """The I5 integrated-mission partition; disjoint from partitions.yaml, the NAV file and reserved ranges."""
+    digest = canonical_digest(path)
+    if verify_digest and digest != I5_PARTITIONS_SHA256:
+        raise PartitionIntegrityError(
+            f"{path} changed after freezing: digest {digest} != pinned {I5_PARTITIONS_SHA256}"
+        )
+    raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+    validate_i5(raw, load()["raw"], load_nav()["raw"])
+    return {"raw": raw, "digest": digest}
+
+
+def validate_i5(raw: dict[str, Any], main: dict[str, Any], nav: dict[str, Any]) -> None:
+    seeds = raw["world_seeds"]
+    dev, final = set(_seeds(seeds["development"])), set(_seeds(seeds["final_test"]))
+    if dev & final:
+        raise PartitionIntegrityError("i5: final_test and development seeds overlap")
+    taken = {
+        s
+        for domain in ("abstract", "mission")
+        for p in Partition
+        for s in _seeds(main[domain]["world_seeds"][p.value])
+    }
+    taken |= {s for part in nav["noise_seeds"].values() for s in _seeds(part)}
+    for r in raw.get("reserved_elsewhere", []):
+        taken |= set(_seeds(r))
+    if (dev | final) & taken:
+        raise PartitionIntegrityError("i5 seeds collide with seeds used by another partition or experiment")
+
+
+def _i5_split(part: Partition) -> Split:
+    loaded = load_i5()
+    raw = loaded["raw"]
+    if part.value not in raw["world_seeds"]:
+        raise KeyError(f"i5 partition has no {part.value!r} split")
+    return Split(
+        domain=I5_DOMAIN,
+        partition=part,
+        world_seeds=_seeds(raw["world_seeds"][part.value]),
+        families=tuple(raw["scenarios"]),
+        replicates_per_world=1,
+        digest=loaded["digest"],
+    )
+
+
 def split(domain: str, partition: str | Partition, purpose: str | Purpose) -> Split:
     """The only sanctioned way to obtain evaluation seeds. Raises on a forbidden (purpose, partition)."""
     part = Partition(partition)
     check_access(part, purpose)
+    if domain == NAV_DOMAIN:
+        return _nav_split(part)
+    if domain == I5_DOMAIN:
+        return _i5_split(part)
     loaded = load()
     raw = loaded["raw"]
     if domain not in ("abstract", "mission"):
@@ -156,6 +262,9 @@ def split(domain: str, partition: str | Partition, purpose: str | Purpose) -> Sp
 
 
 def partition_of(domain: str, seed: int) -> Partition | None:
+    if domain == I5_DOMAIN:
+        i5 = load_i5()["raw"]["world_seeds"]
+        return next((Partition(p) for p, spec in i5.items() if int(seed) in _seeds(spec)), None)
     raw = load()["raw"]
     for p in Partition:
         if int(seed) in _seeds(raw[domain]["world_seeds"][p.value]):

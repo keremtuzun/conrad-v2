@@ -1,0 +1,23 @@
+# Immutable I5 integrated-mission seed partition (gate I5, M1-ACTION-E002). SYNTHETIC_ONLY. Created 2026-09-19.
+# DO NOT EDIT: conrad.evaluation.partitions pins the digest of this file's canonical content (I5_PARTITIONS_SHA256)
+# and refuses to load a changed copy. A new split needs a new version.
+#
+# Why a separate file: configs/eval/partitions.yaml (v1) is digest-pinned by the I4 artifacts and
+# configs/active/mcbr_frozen.yaml, so adding a domain there would break those pins (same reason as
+# partitions_nav.yaml).
+#
+# A seed is the run seed of one python-kernel mission world; every I5 scenario runs once per seed.
+# Checked on load: disjoint from every seed of partitions.yaml and partitions_nav.yaml, and from the local
+# ranges of other experiments listed under reserved_elsewhere. The final_test range was declared before any
+# I5 mission was run on it.
+version: partitions-i5-missions-2026-09-19-v1
+scenarios: [I5-NOMINAL, I5-CRITICAL-FINDING, I5-UNCERTAIN-BELIEF, I5-ROUTE-BLOCKED, I5-BATTERY-RESERVE,
+            I5-TIME-RESERVE, I5-COMMS-OUTAGE]
+world_seeds:
+  development: {explicit: [], range: [7500000, 7500010]}
+  final_test: {explicit: [], range: [7600000, 7600010]}
+reserved_elsewhere:
+  - {range: [6300000, 6300012], owner: 2E-E00x-R2 final}
+  - {range: [6400000, 6400020], owner: 2E-E00x-R3 final}
+  - {range: [7100000, 7100010], owner: M1-ACTION-E001 development}
+  - {range: [7300000, 7300010], owner: M1-ACTION-E001 final; former I2 NAV final}

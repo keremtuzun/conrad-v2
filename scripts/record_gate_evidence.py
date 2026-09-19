@@ -90,6 +90,78 @@ def _i5_constraints_check(d: dict) -> tuple[bool, str]:
     )
 
 
+I5M = "tests/acceptance/test_i5_integrated_missions.py::"
+I5_E002 = "artifacts/experiments/M1-ACTION-E002/m1_action_e002.json"
+I5_MISSION_CRITERIA = (
+    "actions exercised correctly inside integrated missions",
+    "traceable decisions with low measured UIR",
+    "competitive mission outcomes vs decision baselines",
+)
+
+
+def _i5_formal_mission(criterion: str) -> Callable[[], tuple[CriterionStatus, str]]:
+    """The formal path is integrated missions through Unity. Only python-kernel SURROGATE runs exist, so the
+    formal criterion stays NOT_RUN; the surrogate result lives in artifacts/gates/I5/evidence_surrogate.json."""
+
+    def run() -> tuple[CriterionStatus, str]:
+        return CriterionStatus.NOT_RUN, (
+            f"{criterion}: no Unity integrated-mission run exists; M1-ACTION-E002 is SURROGATE (python L1 kernel) "
+            "and is recorded only with --surrogate"
+        )
+
+    return run
+
+
+def _i5_e002_final(d: dict) -> str | None:
+    if d.get("partition") != "final_test":
+        return f"artifact partition is {d.get('partition')!r}, not final_test"
+    if "SURROGATE" not in str(d.get("evidence_class", "")):
+        return "artifact is not labelled SURROGATE"
+    return None
+
+
+def _i5_actions_check(d: dict) -> tuple[bool, str]:
+    bad = _i5_e002_final(d)
+    if bad:
+        return False, bad
+    v = d["verdicts"]
+    e = d["closed_loop"]["egdc_structured"]
+    rows = "; ".join(
+        f"{sc}: correct {e[sc]['correct']}/{e[sc]['n']} latency_max={e[sc]['latency_s_max']} "
+        f"forbidden={e[sc]['forbidden_after_onset']}"
+        for sc in d["scenarios"]
+    )
+    return bool(v["actions_exercised_correctly"]), (
+        f"{rows}; violations={v['violations_total']}; nominal over-escalations={v['nominal_over_escalations']}; "
+        f"floor={v['success_floor']} (ENGINEERING_ESTIMATE)"
+    )
+
+
+def _i5_trace_check(d: dict) -> tuple[bool, str]:
+    bad = _i5_e002_final(d)
+    if bad:
+        return False, bad
+    v = d["verdicts"]
+    u = d["closed_loop"]["egdc_structured"]["ALL"]["uir"]
+    return bool(v["traceable_low_uir"]), (
+        f"traceable_fraction={v['traceable_fraction']}; UIR={v['uir']} ({u['relied_unsupported_claims']}/"
+        f"{u['relied_world_claims']} relied world claims) max={v['uir_max']}"
+    )
+
+
+def _i5_competitive_check(d: dict) -> tuple[bool, str]:
+    bad = _i5_e002_final(d)
+    if bad:
+        return False, bad
+    v = d["verdicts"]
+    rows = "; ".join(
+        f"vs {k}: task success {c['egdc_task_success']} vs {c['baseline_task_success']}, safety events "
+        f"{c['egdc_safety_events']} vs {c['baseline_safety_events']}"
+        for k, c in v["competitive"].items()
+    )
+    return bool(v["competitive_outcomes"]), rows
+
+
 def _walk(o: object, prefix: str = "") -> list[tuple[str, object]]:
     out: list[tuple[str, object]] = []
     if isinstance(o, dict):
@@ -261,7 +333,10 @@ PLAN: dict[str, list[tuple[str, list[str], Callable[[], tuple[CriterionStatus, s
             ],
             _exp(I5_ARTIFACT, _i5_constraints_check),
         )
-    ],
+    ]
+    # Integrated-mission half (ch25 I5 + ch26 Phase 9): formal needs Unity missions, so these stay NOT_RUN here.
+    # M1-ACTION-E002 (python kernel) is recorded in SURROGATE_PLAN["I5"].
+    + [(name, [], _i5_formal_mission(name)) for name in I5_MISSION_CRITERIA],
 }
 
 # ---------------------------------------------------------------- 2E (functional) and 2E-CEFD (research)
@@ -381,10 +456,12 @@ PLAN["2E-CEFD"] = [
 ]
 
 # ---------------------------------------------------------------- 2T (functional) and 2T-TCDP (research)
-# FINAL-partition artifacts of the R2 structural experiments (docs/audits/MODEL2T_REPAIR.md).
+# FINAL-3 artifacts of the R3 structural experiments (docs/audits/MODEL2T_REPAIR.md, iteration 3). The R2 FINAL
+# seeds are spent; R3 runs on the config-local final_3 split 6500000-6500059 (partition name "final_3").
 TD = "tests/unit/domains/technical/"
-T2_E001 = "artifacts/experiments/2T-E001-R2/2T-E001-R2.json"
-T2_E003 = "artifacts/experiments/2T-E003-R2/2T-E003-R2.json"
+T2_E001 = "artifacts/experiments/2T-E001-R3/2T-E001-R3.json"
+T2_E003 = "artifacts/experiments/2T-E003-R3/2T-E003-R3.json"
+T2_FINAL_PARTITIONS = ("final_test", "final_3")
 
 
 def _t2_direct_check(d: dict) -> tuple[bool, str]:
@@ -394,7 +471,7 @@ def _t2_direct_check(d: dict) -> tuple[bool, str]:
     v = d["verdicts"]
     band = v.get("coverage_band")
     got: dict[str, object] = {"partition": v.get("partition"), "coverage_band": band}
-    ok = v.get("partition") == "final_test"
+    ok = v.get("partition") in T2_FINAL_PARTITIONS
     levels = sorted({k.split(".")[0] + "." + k.split(".")[1] for k in v if k.startswith("level_")})
     for lv in levels:
         for q in ("corrosion_depth_m", "crack_length_m"):
@@ -429,7 +506,7 @@ def _t2_tcdp_run() -> tuple[CriterionStatus, str]:
         excessive_contamination_threshold=v.get("excessive_contamination_threshold"),
     )
     measured = json.dumps(got, default=str)
-    if v.get("partition") != "final_test" or not v.get("tcdp_benefit"):
+    if v.get("partition") not in T2_FINAL_PARTITIONS or not v.get("tcdp_benefit"):
         return CriterionStatus.FAIL, measured
     if not v.get("tcdp_contamination_lower_than_generic"):
         return CriterionStatus.FAIL, measured
@@ -578,6 +655,32 @@ SURROGATE_PLAN: dict[str, list[tuple[str, list[str], Callable[[], tuple[Criterio
             "critical latency and sync error compared against baselines",
             [I7A + "test_value_per_bit_comparison_is_reported"],
             _exp(I7_E001, _i7_latency_sync_check),
+        ),
+    ],
+    # I5: the action-matrix criteria (belief-level fixtures, identical to the formal record) plus the integrated
+    # missions of M1-ACTION-E002 (python kernel, FINAL seeds of configs/eval/partitions_i5.yaml).
+    "I5": [
+        *[c for c in PLAN["I5"] if c[0] not in I5_MISSION_CRITERIA],
+        (
+            I5_MISSION_CRITERIA[0],
+            [
+                I5M + "test_artifact_is_final_split_surrogate",
+                I5M + "test_every_scenario_and_arm_ran_on_every_final_seed",
+            ],
+            _exp(I5_E002, _i5_actions_check),
+        ),
+        (
+            I5_MISSION_CRITERIA[1],
+            [I5M + "test_artifact_is_final_split_surrogate", I5M + "test_uir_is_measured_on_the_e001_basis"],
+            _exp(I5_E002, _i5_trace_check),
+        ),
+        (
+            I5_MISSION_CRITERIA[2],
+            [
+                I5M + "test_artifact_is_final_split_surrogate",
+                I5M + "test_baselines_ran_closed_loop_on_the_same_seeds",
+            ],
+            _exp(I5_E002, _i5_competitive_check),
         ),
     ],
     "I3": [

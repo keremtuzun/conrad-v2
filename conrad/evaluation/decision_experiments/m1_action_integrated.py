@@ -1,0 +1,710 @@
+"""M1-ACTION-E002: gate I5 actions inside integrated missions (python-kernel SURROGATE evidence).
+
+Spec ch25 Integration Gate I5 (L11835-11845) asks for continue, request evidence, replan, change sensing, return
+and escalate "while hard constraints remain inviolable" and names UIR as the measure; ch26 Phase 9 adds
+traceable decisions with low measured UIR and competitive mission outcomes against decision baselines.
+M1-ACTION-E001 tested action choice on belief fixtures. This experiment runs full integrated missions (scenario
+IDs ``I5-*`` in ``conrad.sim.mission.scenarios``), each built so that ONE action class becomes warranted:
+
+| scenario             | warranted class              | warrant onset (first decision where ...)                 | expected action                 |
+|----------------------|------------------------------|---------------------------------------------------------|---------------------------------|
+| I5-NOMINAL           | continue                     | critical component OBSERVED INTACT, nothing to report    | CONTINUE_MISSION                |
+| I5-CRITICAL-FINDING  | escalate / operator alert    | the critical component is OBSERVED DEGRADED+, link up   | ESCALATE, TRANSMIT(REPORT_FINDING) |
+| I5-UNCERTAIN-BELIEF  | request evidence             | the critical component's condition is not OBSERVED      | QUERY_BELIEF, REQUEST_INFORMATION, REVISIT_REGION |
+| I5-ROUTE-BLOCKED     | replan                       | Model2S has OBSERVED occupied cells on a planned leg    | REPLAN(ROUTE_BLOCKED)           |
+| I5-BATTERY-RESERVE   | return                       | battery_fraction < battery reserve                       | RETURN_TO_SAFE_STATE, ABORT     |
+| I5-TIME-RESERVE      | return                       | time_remaining_s < time reserve                          | RETURN_TO_SAFE_STATE, ABORT     |
+| I5-COMMS-OUTAGE      | report (store-and-forward)   | a critical finding is OBSERVED while the link is DOWN    | STORE_AND_FORWARD(REPORT_FINDING) |
+
+Onsets are read from what the runtime itself knew at that decision (its DecisionContext): a Model 1 action can
+only be warranted by the belief it has. Truth is used only for mission outcomes (energy, obstacle clearance,
+path length) and for the shore receiver's delivery record.
+
+Per mission and arm: the expected action is issued, its latency from onset against a declared budget, no
+scenario-forbidden action between onset and the expected action, no hard-constraint violation (the independent
+audit of M1-ACTION-E001 on every decision), no over-escalation in the nominal case, UIR on the same basis as
+E001 (``conrad.decision.uir``), decision traceability, and mission outcomes.
+
+Arms:
+- ``egdc_structured`` drives the mission. ``naive_act_on_claims`` (the E001 baseline) and ``rule_fsm`` (a
+  fixed-precedence rule system, spec ch16 M1-B0/B2 family) also rank the IDENTICAL decision contexts as open-loop
+  shadow arms (same basis as E001).
+- Closed loop: each baseline also drives its own mission on the same seed, for the mission-outcome comparison.
+
+Seeds come from ``configs/eval/partitions_i5.yaml`` (``conrad.evaluation.partitions``, domain ``i5_mission``).
+
+implementation_status: EXPERIMENTAL_CANDIDATE (evaluation harness). data_status: SYNTHETIC_ONLY.
+Evidence class: SURROGATE (python L1 kernel, not Unity). It never promotes the formal gate.
+"""
+
+from __future__ import annotations
+
+import json
+import shutil
+from collections import Counter
+from collections.abc import Callable, Sequence
+from concurrent.futures import ProcessPoolExecutor
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+
+from conrad.decision import EGDC, DecisionConfig, DecisionContext, NaiveActOnClaimsPolicy, uir_report
+from conrad.decision.claims import ClaimGraph
+from conrad.decision.consequence import ConsequenceVector
+from conrad.decision.egdc import DecisionOutcome
+from conrad.decision.policy import _stable_sort, _with_score
+from conrad.evaluation.decision_experiments.action_matrix import ALWAYS_OK, RETREAT, audit_violations
+from conrad.evaluation.partitions import I5_DOMAIN, Partition, Purpose, check_access, partition_of, split
+from conrad.schemas.belief import KnowledgeStatus
+from conrad.schemas.comms import LinkStatus
+from conrad.schemas.decision import (
+    WORLD_DEPENDENT_CLAIMS,
+    ActionProposal,
+    ActionType,
+    DecisionRecord,
+)
+from conrad.schemas.ids import IdFactory
+from conrad.schemas.world import Domain
+from conrad.settings import REPO_ROOT, ConradSettings, load_settings
+from conrad.sim.mission.run import MissionSession, prepare
+from conrad.twins.twin2s.sdf import Box
+
+EXPERIMENT_ID = "M1-ACTION-E002"
+RESULT_FILE = "m1_action_e002.json"
+DEFAULT_CONFIG = "configs/sim/mission_default.yaml"
+EVIDENCE_CLASS = "SURROGATE (python L1 kernel mission, not Unity)"
+PRIMARY = "egdc_structured"
+BASELINES = ("rule_fsm", "naive_act_on_claims")
+FINDING_VALUES = frozenset({"DEGRADED", "SEVERE", "FAILED"})
+OVER_ESCALATION = frozenset({ActionType.ESCALATE_TO_OPERATOR, *RETREAT})
+NOT_RETREAT = frozenset(t for t in ActionType if t not in RETREAT | ALWAYS_OK)
+
+
+# ---------------------------------------------------------------------------------------------- scenarios
+@dataclass(frozen=True)
+class ScenarioSpec:
+    scenario_id: str
+    action_class: str
+    onset: str
+    expected: tuple[str, ...]  # labels (``label``); "TYPE:*" matches any parameter
+    forbidden_after_onset: frozenset[ActionType]
+    success: str
+    check_over_escalation: bool = False
+
+
+SPECS: dict[str, ScenarioSpec] = {
+    s.scenario_id: s
+    for s in (
+        ScenarioSpec(
+            "I5-NOMINAL",
+            "continue",
+            "critical_intact",
+            ("CONTINUE_MISSION:*",),
+            frozenset(),
+            "inspected_without_escalation",
+            check_over_escalation=True,
+        ),
+        ScenarioSpec(
+            "I5-CRITICAL-FINDING",
+            "escalate",
+            "finding_link_up",
+            ("ESCALATE_TO_OPERATOR:*", "TRANSMIT_INFORMATION:REPORT_FINDING"),
+            frozenset({ActionType.CONTINUE_MISSION}),
+            "finding_delivered",
+        ),
+        ScenarioSpec(
+            "I5-UNCERTAIN-BELIEF",
+            "request evidence",
+            "critical_open",
+            ("QUERY_BELIEF:*", "REQUEST_INFORMATION:*", "REVISIT_REGION:*"),
+            frozenset({ActionType.CONTINUE_MISSION}),
+            "critical_observed",
+        ),
+        ScenarioSpec(
+            "I5-ROUTE-BLOCKED",
+            "replan",
+            "route_blocked",
+            ("REPLAN:ROUTE_BLOCKED",),
+            frozenset({ActionType.CONTINUE_MISSION}),
+            "obstacle_passed_without_contact",
+        ),
+        ScenarioSpec(
+            "I5-BATTERY-RESERVE",
+            "return",
+            "battery_below_reserve",
+            ("RETURN_TO_SAFE_STATE:*", "ABORT_MISSION:*"),
+            NOT_RETREAT,
+            "retreated",
+        ),
+        ScenarioSpec(
+            "I5-TIME-RESERVE",
+            "return",
+            "time_below_reserve",
+            ("RETURN_TO_SAFE_STATE:*", "ABORT_MISSION:*"),
+            NOT_RETREAT,
+            "retreated",
+        ),
+        ScenarioSpec(
+            "I5-COMMS-OUTAGE",
+            "report (store-and-forward)",
+            "finding_link_down",
+            ("STORE_AND_FORWARD:REPORT_FINDING",),
+            frozenset({ActionType.TRANSMIT_INFORMATION}),
+            "finding_delivered",
+        ),
+    )
+}
+
+
+def label(action: ActionProposal | None) -> str:
+    if action is None:
+        return "NONE"
+    p = action.parameters
+    detail = (
+        p.get("question_type")
+        or p.get("intent")
+        or (p.get("reason") if isinstance(p.get("reason"), str) else "")
+    )
+    return f"{action.action_type.value}:{detail or ''}"
+
+
+def matches(lab: str, expected: Sequence[str]) -> bool:
+    head = lab.split(":", 1)[0]
+    return lab in expected or f"{head}:*" in expected
+
+
+def label_type(lab: str) -> ActionType | None:
+    head = lab.split(":", 1)[0]
+    return ActionType(head) if head in ActionType.__members__ else None
+
+
+# ---------------------------------------------------------------------------------------------- rule baseline
+class RuleFSMPolicy:
+    """Fixed-precedence rule system (spec ch16 decision baselines M1-B0 FSM / M1-B2 rules). Evaluation only.
+
+    States in precedence order: RETREAT (a reserve or health rule fired) > REPORT (a finding is pending) >
+    AVOID (a replan candidate exists) > INSPECT (some consequential requirement is open: first information
+    action) > TRANSIT (continue). It reads the same claim graph as EGDC but ignores grounding, uncertainty cause,
+    attempt counts and utility. It never escalates. The ConstraintEngine still checks every choice.
+    """
+
+    name = "rule_fsm"
+
+    def __init__(self, config: DecisionConfig) -> None:
+        self.config = config
+
+    def _retreat(self, ctx: DecisionContext) -> bool:
+        c, r, h = self.config.constraints, ctx.resource_state, ctx.system_health
+        if h is not None and (h.leak_detected or h.overall.value == "FAULT"):
+            return True
+        if (
+            r is not None
+            and r.battery_fraction is not None
+            and r.battery_fraction < c.battery_reserve_fraction
+        ):
+            return True
+        return r is not None and r.time_remaining_s is not None and r.time_remaining_s < c.time_reserve_s
+
+    def rank(
+        self,
+        graph: ClaimGraph,
+        candidates: Sequence[ActionProposal],
+        consequences: Sequence[ConsequenceVector],
+        ctx: DecisionContext,
+    ) -> list[ActionProposal]:
+        retreat = self._retreat(ctx)
+        open_item = any(a.matters and not a.satisfied for a in graph.assessments)
+        order: list[Callable[[ActionProposal], bool]] = []
+        if retreat:
+            order.append(lambda a: a.action_type is ActionType.RETURN_TO_SAFE_STATE)
+        order += [
+            lambda a: a.action_type in (ActionType.TRANSMIT_INFORMATION, ActionType.STORE_AND_FORWARD),
+            lambda a: a.action_type is ActionType.REPLAN and a.parameters.get("reason") == "ROUTE_BLOCKED",
+        ]
+        if open_item:
+            order.append(lambda a: a.action_type is ActionType.REQUEST_INFORMATION)
+            order.append(lambda a: a.action_type is ActionType.REVISIT_REGION)
+        order.append(lambda a: a.action_type is ActionType.CONTINUE_MISSION)
+        scored = []
+        for a, c in zip(candidates, consequences, strict=True):
+            rank = next((i for i, rule in enumerate(order) if rule(a)), len(order))
+            scored.append(_with_score(a, float(len(order) - rank), c))
+        return _stable_sort(scored)
+
+
+def make_arm(name: str, ids: IdFactory, base: DecisionConfig) -> EGDC:
+    if name == PRIMARY:
+        return EGDC(ids, base)
+    if name == "naive_act_on_claims":  # identical to M1-ACTION-E001's naive arm
+        cfg = base.model_copy(update={"enforce_grounding": False, "model_version": "naive-baseline-0.2"})
+        return EGDC(ids, config=cfg, policy=NaiveActOnClaimsPolicy())
+    if name == "rule_fsm":
+        cfg = base.model_copy(update={"model_version": "rule-fsm-baseline-0.1"})
+        return EGDC(ids, config=cfg, policy=RuleFSMPolicy(cfg))
+    raise KeyError(name)
+
+
+# ---------------------------------------------------------------------------------------------- recording
+@dataclass
+class Step:
+    ctx: DecisionContext
+    outcome: DecisionOutcome
+    shadows: dict[str, DecisionRecord] = field(default_factory=dict)
+
+
+class RecordingEGDC:
+    """Stands in for ``Deliberation.egdc``: the driving arm decides; shadow arms rank the same context."""
+
+    def __init__(self, driver: EGDC, shadows: dict[str, EGDC]) -> None:
+        self.driver, self.shadows = driver, shadows
+        self.steps: list[Step] = []
+
+    def decide(self, ctx: DecisionContext) -> DecisionOutcome:
+        out = self.driver.decide(ctx)
+        step = Step(ctx, out)
+        for name, arm in self.shadows.items():
+            step.shadows[name] = arm.decide(ctx).record
+        self.steps.append(step)
+        return out
+
+
+# ---------------------------------------------------------------------------------------------- per-decision state
+def _critical_condition(ctx: DecisionContext, critical: set[str]) -> tuple[str | None, bool]:
+    """(condition value, OBSERVED?) of the critical component's technical belief in this snapshot."""
+    for m in ctx.beliefs(Domain.TECHNICAL):
+        if m.world_entity_id is None or str(m.world_entity_id) not in critical:
+            continue
+        c = next((x for x in m.state_summary if x.name == "condition"), None)
+        if c is not None and c.status is KnowledgeStatus.OBSERVED:
+            return str(c.value), True
+        return None, False
+    return None, False
+
+
+def decision_state(ctx: DecisionContext, critical: set[str], cfg: DecisionConfig) -> dict[str, Any]:
+    value, observed = _critical_condition(ctx, critical)
+    r, link = ctx.resource_state, ctx.link_state
+    down = link is None or link.status is LinkStatus.DOWN
+    finding = observed and value in FINDING_VALUES
+    battery = None if r is None else r.battery_fraction
+    time_left = None if r is None else r.time_remaining_s
+    pending = bool(ctx.mission.notes.get("pending_report_belief_ids"))
+    return {
+        "t_s": round(ctx.timestamp.time_ns / 1e9, 3),
+        "critical_condition": value,
+        "critical_observed": observed,
+        "link_down": down,
+        "report_pending": pending,
+        "battery": battery,
+        "time_remaining_s": time_left,
+        "route_legs": len(ctx.mission.notes.get("planned_route") or []),
+        "route_occupied_legs": len(ctx.mission.notes.get("route_leg_occupancy") or {}),
+        "onsets": {
+            "critical_intact": observed and value == "INTACT" and not pending,
+            "finding_link_up": finding and not down,
+            "finding_link_down": finding and down,
+            "critical_open": not observed,
+            "route_blocked": bool(ctx.mission.notes.get("route_leg_occupancy")),
+            "battery_below_reserve": battery is not None
+            and battery < cfg.constraints.battery_reserve_fraction,
+            "time_below_reserve": time_left is not None and time_left < cfg.constraints.time_reserve_s,
+        },
+    }
+
+
+def traceable(ctx: DecisionContext, rec: DecisionRecord, out: DecisionOutcome | None) -> list[str]:
+    """Why a decision is NOT traceable to its claims and evidence (empty = traceable)."""
+    problems = []
+    claims = {c.claim_id: c for c in rec.claims}
+    chosen = rec.chosen
+    if chosen is not None:
+        for cid in chosen.supporting_claims:
+            cl = claims.get(cid)
+            if cl is None:
+                problems.append("SUPPORT_NOT_IN_RECORD")
+                continue
+            if cl.claim_type in WORLD_DEPENDENT_CLAIMS:
+                if not cl.source_belief_ids:
+                    problems.append("WORLD_CLAIM_WITHOUT_BELIEF")
+                for b in cl.source_belief_ids:
+                    m = next((x for x in ctx.snapshot.messages if x.belief_id == b), None)
+                    if m is None:
+                        problems.append("BELIEF_NOT_IN_SNAPSHOT")
+                    elif not m.provenance_refs:
+                        problems.append("BELIEF_WITHOUT_PROVENANCE")
+    if rec.belief_snapshot_id != ctx.snapshot.snapshot_id:
+        problems.append("SNAPSHOT_MISMATCH")
+    if out is not None and out.provenance.record_id != rec.provenance_id:
+        problems.append("PROVENANCE_MISMATCH")
+    return problems
+
+
+# ---------------------------------------------------------------------------------------------- scoring
+def score_arm(
+    spec: ScenarioSpec,
+    states: list[dict[str, Any]],
+    records: list[DecisionRecord],
+    ctxs: list[DecisionContext],
+    outs: list[DecisionOutcome | None],
+    cfg: DecisionConfig,
+    budget_s: float,
+) -> dict[str, Any]:
+    labels = [label(r.chosen) for r in records]
+    onset_i = next((i for i, s in enumerate(states) if s["onsets"][spec.onset]), None)
+    onset_t = None if onset_i is None else states[onset_i]["t_s"]
+    hit_i = None
+    if onset_i is not None:
+        hit_i = next((i for i in range(onset_i, len(labels)) if matches(labels[i], spec.expected)), None)
+    latency = None if hit_i is None or onset_t is None else states[hit_i]["t_s"] - onset_t
+    window = range(onset_i, hit_i if hit_i is not None else len(labels)) if onset_i is not None else range(0)
+    forbidden = [labels[i] for i in window if label_type(labels[i]) in spec.forbidden_after_onset]
+    audit = Counter(v for c, r in zip(ctxs, records, strict=True) for v in audit_violations(c, r, cfg))
+    over = [x for x in labels if label_type(x) in OVER_ESCALATION] if spec.check_over_escalation else []
+    trace = [traceable(c, r, o) for c, r, o in zip(ctxs, records, outs, strict=True)]
+    uir = uir_report(records).model_dump()
+    within = latency is not None and latency <= budget_s + 1e-9
+    correct = within and not forbidden and not audit and not over
+    return {
+        "n_decisions": len(labels),
+        "onset_t_s": onset_t,
+        "warrant_reached": onset_i is not None,
+        "first_expected_t_s": None if hit_i is None else states[hit_i]["t_s"],
+        "latency_s": latency,
+        "latency_budget_s": budget_s,
+        "issued_within_budget": within,
+        "chosen_at_onset": None if onset_i is None else labels[onset_i],
+        "forbidden_after_onset": forbidden,
+        "violations": dict(audit),
+        "violations_total": int(sum(audit.values())),
+        "over_escalations": len(over),
+        "correct": correct,
+        "actions": dict(Counter(x.split(":", 1)[0] for x in labels)),
+        "escalations": sum(1 for x in labels if label_type(x) is ActionType.ESCALATE_TO_OPERATOR),
+        "uir": uir,
+        "traceable_decisions": sum(1 for t in trace if not t),
+        "untraceable_reasons": dict(Counter(p for t in trace for p in t)),
+        "timeline": [[s["t_s"], lab] for s, lab in zip(states, labels, strict=True)],
+    }
+
+
+def _outcomes(
+    session: MissionSession, spec: ScenarioSpec, driving: dict[str, Any], crit_obs: bool, contact_m: float
+) -> dict[str, Any]:
+    rt, world = session.runtime, session.world
+    traj = np.asarray([row[1:4] for row in world.recorder.trajectory], dtype=np.float64).reshape(-1, 3)
+    distance = float(np.linalg.norm(np.diff(traj, axis=0), axis=1).sum()) if len(traj) > 1 else 0.0
+    harness = rt.shore.harness_report()
+    recv = harness["arms"]["primary"]["receiver_revisions"]
+    delivered = [b for b, rev, _ in harness["critical_offers"] if int(recv.get(str(b), -1)) >= int(rev)]
+    receipts = [r for r in harness["arms"]["primary"]["receipts"] if r["kind"] in ("alert", "deltas")]
+    first_delivery = min(
+        (r["t_ns"] for r in receipts if r["belief_id"] in {str(b) for b in delivered}), default=None
+    )
+    # DEGRADED episodes (reduced collision margin near the inspected pipe, unmonitored altitude) come with any
+    # inspection; a safety EVENT is a transition into a state worse than DEGRADED.
+    entered = [e.get("to") for e in rt.executive.stats.safety_events if e.get("to") != e.get("from")]
+    safety = [x for x in entered if x not in ("NORMAL", "DEGRADED")]
+    held = rt.routing.phase == "HOLDING" or rt.supervisor.state.value in ("SAFE_HOLD", "STOPPED")
+    last = driving["timeline"][-1][0] if driving["timeline"] else None
+    out: dict[str, Any] = {
+        "energy_j": float(world.hardware.kernel.energy_used_j),
+        "distance_m": distance,
+        "safety_events": len(safety),
+        "degraded_episodes": sum(1 for x in entered if x == "DEGRADED"),
+        "supervisor_refusals": rt.executive.stats.refused_by_supervisor,
+        "operator_escalations": driving["escalations"],
+        "findings_reported": len(set(delivered)),
+        "first_finding_delivered_t_s": None if first_delivery is None else first_delivery / 1e9,
+        "critical_observed_end": crit_obs,
+        "safe_hold": held,
+        "last_decision_t_s": last,
+        "replans_executed": sum(1 for r in rt.routing.replans if r["accepted"]),
+    }
+    obstacle = world.recorder.meta.get("lane_obstacle")
+    if obstacle is not None and len(traj):
+        box = Box(center=tuple(obstacle["center_m"]), half_extents=tuple(obstacle["half_extent_m"]))
+        out["obstacle_min_clearance_m"] = float(np.min(box.sdf(traj)))
+        lane = np.asarray(world.context.transit_lane)
+        d = (lane[-1] - lane[0]) / np.linalg.norm(lane[-1] - lane[0])
+        past = float(np.max((traj - np.asarray(obstacle["center_m"])) @ d))
+        out["passed_obstacle"] = (
+            past > float(np.max(np.abs(np.asarray(obstacle["half_extent_m"]) @ np.abs(d)))) + 0.5
+        )
+    kind = spec.success
+    if kind == "inspected_without_escalation":
+        ok = crit_obs and driving["escalations"] == 0 and not held
+    elif kind == "finding_delivered":
+        ok = out["findings_reported"] > 0
+    elif kind == "critical_observed":
+        ok = bool(crit_obs)
+    elif kind == "obstacle_passed_without_contact":
+        ok = bool(out.get("passed_obstacle")) and out.get("obstacle_min_clearance_m", -1.0) > contact_m
+    elif kind == "retreated":
+        ok = driving["issued_within_budget"] and held
+    else:  # pragma: no cover - SPECS is closed
+        raise KeyError(kind)
+    out["task_success"] = bool(ok)
+    return out
+
+
+# ---------------------------------------------------------------------------------------------- one mission
+def _settings(seed: int) -> ConradSettings:
+    base = load_settings(REPO_ROOT / DEFAULT_CONFIG)
+    settings = base.model_copy(update={"run": base.run.model_copy(update={"seed": int(seed)})})
+    assert isinstance(settings, ConradSettings)
+    return settings
+
+
+def mission_job(job: dict[str, Any]) -> dict[str, Any]:
+    """Run one integrated mission driven by ``job['arm']`` (shadow arms on the EGDC-driven one)."""
+    seed, scenario, arm = int(job["seed"]), str(job["scenario"]), str(job["arm"])
+    spec = SPECS[scenario]
+    # capture=False: no replay tape (bundles are scored in-process and deleted unless keep_bundles)
+    session = prepare(
+        scenario, _settings(seed), run_id=job["run_id"], runs_root=Path(job["runs_root"]), capture=False
+    )
+    rt = session.runtime
+    base_cfg = rt.deliberation.egdc.config
+    driver = make_arm(arm, rt.deliberation.egdc._ids, base_cfg) if arm != PRIMARY else rt.deliberation.egdc
+    shadows = (
+        {name: make_arm(name, IdFactory(seed).child(f"shadow-{name}"), base_cfg) for name in BASELINES}
+        if arm == PRIMARY
+        else {}
+    )
+    recorder = RecordingEGDC(driver, shadows)
+    rt.deliberation.egdc = recorder  # type: ignore[assignment]
+    session.run()
+    critical = {str(c) for c in rt.ctx.critical_component_ids}
+    audit_cfg = DecisionConfig()
+    steps = recorder.steps
+    states = [decision_state(s.ctx, critical, audit_cfg) for s in steps]
+    ctxs = [s.ctx for s in steps]
+    budget = float(job["cfg"]["latency_budget_s"].get(scenario, job["cfg"]["latency_budget_s"]["default"]))
+    driving = score_arm(
+        spec, states, [s.outcome.record for s in steps], ctxs, [s.outcome for s in steps], audit_cfg, budget
+    )
+    crit_obs = any(s["critical_observed"] for s in states[-3:])
+    outcome = _outcomes(session, spec, driving, crit_obs, float(job["cfg"]["contact_clearance_m"]))
+    shadow_scores = {
+        name: score_arm(
+            spec, states, [s.shadows[name] for s in steps], ctxs, [None] * len(steps), audit_cfg, budget
+        )
+        for name in shadows
+    }
+    session.finish()
+    if not job.get("keep_bundle", False):
+        shutil.rmtree(session.run_dir, ignore_errors=True)
+    print(f"finished {job['run_id']}", flush=True)
+    return {
+        "run_id": job["run_id"],
+        "seed": seed,
+        "scenario": scenario,
+        "arm": arm,
+        "action_class": spec.action_class,
+        "driving": driving,
+        "outcome": outcome,
+        "shadow": shadow_scores,
+        "decision_states": [{k: v for k, v in s.items() if k != "onsets"} for s in states],
+    }
+
+
+# ---------------------------------------------------------------------------------------------- experiment
+def seeds_for(partition: Partition, purpose: Purpose) -> tuple[int, ...]:
+    return split(I5_DOMAIN, partition, purpose).world_seeds
+
+
+def _check_seeds(seeds: Sequence[int], partition: Partition) -> None:
+    purpose = Purpose.FINAL_EVALUATION if partition is Partition.FINAL_TEST else Purpose.DESIGN
+    check_access(partition, purpose)
+    for s in seeds:
+        got = partition_of(I5_DOMAIN, s)
+        if got is not partition:
+            raise ValueError(f"seed {s} is in I5 partition {got}, not {partition.value}")
+
+
+def _rate(xs: Sequence[bool]) -> float | None:
+    return None if not xs else float(np.mean([float(x) for x in xs]))
+
+
+def _mean(xs: Sequence[Any]) -> float | None:
+    v = [float(x) for x in xs if x is not None]
+    return None if not v else float(np.mean(v))
+
+
+def _pool_uir(scores: Sequence[dict[str, Any]]) -> dict[str, Any]:
+    relied = sum(s["uir"]["relied_world_claims"] for s in scores)
+    bad = sum(s["uir"]["relied_unsupported_claims"] for s in scores)
+    return {
+        "unsupported_inference_rate": bad / relied if relied else 0.0,
+        "relied_world_claims": relied,
+        "relied_unsupported_claims": bad,
+    }
+
+
+def _action_summary(scores: Sequence[dict[str, Any]]) -> dict[str, Any]:
+    lat = [s["latency_s"] for s in scores if s["latency_s"] is not None]
+    return {
+        "n": len(scores),
+        "warrant_reached": sum(s["warrant_reached"] for s in scores),
+        "issued_within_budget": sum(s["issued_within_budget"] for s in scores),
+        "correct": sum(s["correct"] for s in scores),
+        "correct_rate": _rate([s["correct"] for s in scores]),
+        "correct_given_warrant": _rate([s["correct"] for s in scores if s["warrant_reached"]]),
+        "latency_s_mean": _mean(lat),
+        "latency_s_max": max(lat) if lat else None,
+        "forbidden_after_onset": sum(len(s["forbidden_after_onset"]) for s in scores),
+        "violations_total": sum(s["violations_total"] for s in scores),
+        "violations_by_rule": dict(sum((Counter(s["violations"]) for s in scores), Counter())),
+        "over_escalations": sum(s["over_escalations"] for s in scores),
+        "escalations": sum(s["escalations"] for s in scores),
+        "decisions": sum(s["n_decisions"] for s in scores),
+        "traceable_decisions": sum(s["traceable_decisions"] for s in scores),
+        "uir": _pool_uir(scores),
+        "chosen_at_onset": dict(Counter(str(s["chosen_at_onset"]) for s in scores)),
+    }
+
+
+OUTCOME_KEYS = (
+    "energy_j",
+    "distance_m",
+    "safety_events",
+    "degraded_episodes",
+    "operator_escalations",
+    "findings_reported",
+    "first_finding_delivered_t_s",
+)
+
+
+def summarize(rows: list[dict[str, Any]], scenarios: Sequence[str]) -> dict[str, Any]:
+    arms = [PRIMARY, *BASELINES]
+    closed: dict[str, Any] = {}
+    shadow: dict[str, Any] = {}
+    outcomes: dict[str, Any] = {}
+    for arm in arms:
+        drv = [r for r in rows if r["arm"] == arm]
+        closed[arm] = {
+            sc: _action_summary([r["driving"] for r in drv if r["scenario"] == sc]) for sc in scenarios
+        }
+        closed[arm]["ALL"] = _action_summary([r["driving"] for r in drv])
+        outcomes[arm] = {}
+        for sc in [*scenarios, "ALL"]:
+            sub = [r["outcome"] for r in drv if sc == "ALL" or r["scenario"] == sc]
+            outcomes[arm][sc] = {
+                "n": len(sub),
+                "task_success": sum(o["task_success"] for o in sub),
+                "task_success_rate": _rate([o["task_success"] for o in sub]),
+                **{f"{k}_mean": _mean([o[k] for o in sub]) for k in OUTCOME_KEYS},
+                "safety_events_total": sum(o["safety_events"] for o in sub),
+                "findings_reported_total": sum(o["findings_reported"] for o in sub),
+            }
+    prim = [r for r in rows if r["arm"] == PRIMARY]
+    for name in BASELINES:
+        shadow[name] = {
+            sc: _action_summary([r["shadow"][name] for r in prim if r["scenario"] == sc]) for sc in scenarios
+        }
+        shadow[name]["ALL"] = _action_summary([r["shadow"][name] for r in prim])
+    return {"closed_loop": closed, "shadow_same_context": shadow, "mission_outcomes": outcomes}
+
+
+def verdicts(summary: dict[str, Any], config: dict[str, Any], scenarios: Sequence[str]) -> dict[str, Any]:
+    floor = float(config["success_floor"])
+    uir_max = float(config["uir_max"])
+    e = summary["closed_loop"][PRIMARY]
+    per_scenario = {sc: e[sc]["correct_rate"] for sc in scenarios}
+    actions_ok = all((r or 0.0) >= floor for r in per_scenario.values()) and e["ALL"]["violations_total"] == 0
+    nominal_over = sum(e[sc]["over_escalations"] for sc in scenarios if SPECS[sc].check_over_escalation)
+    actions_ok = actions_ok and nominal_over == 0
+    trace_rate = e["ALL"]["traceable_decisions"] / e["ALL"]["decisions"] if e["ALL"]["decisions"] else 0.0
+    uir = e["ALL"]["uir"]["unsupported_inference_rate"]
+    oc = summary["mission_outcomes"]
+    comp = {}
+    for name in BASELINES:
+        comp[name] = {
+            "egdc_task_success": oc[PRIMARY]["ALL"]["task_success"],
+            "baseline_task_success": oc[name]["ALL"]["task_success"],
+            "egdc_safety_events": oc[PRIMARY]["ALL"]["safety_events_total"],
+            "baseline_safety_events": oc[name]["ALL"]["safety_events_total"],
+            "per_scenario_success": {
+                sc: [oc[PRIMARY][sc]["task_success"], oc[name][sc]["task_success"]] for sc in scenarios
+            },
+            "egdc_violations": e["ALL"]["violations_total"],
+            "baseline_violations": summary["closed_loop"][name]["ALL"]["violations_total"],
+            "not_worse": oc[PRIMARY]["ALL"]["task_success"] >= oc[name]["ALL"]["task_success"]
+            and oc[PRIMARY]["ALL"]["safety_events_total"] <= oc[name]["ALL"]["safety_events_total"]
+            and e["ALL"]["violations_total"] <= summary["closed_loop"][name]["ALL"]["violations_total"],
+        }
+    return {
+        "success_floor": floor,
+        "floor_status": "ENGINEERING_ESTIMATE (ch25 leaves the I5 bound OPEN)",
+        "per_scenario_correct_rate": per_scenario,
+        "nominal_over_escalations": nominal_over,
+        "violations_total": e["ALL"]["violations_total"],
+        "actions_exercised_correctly": bool(actions_ok),
+        "traceable_fraction": trace_rate,
+        "uir": uir,
+        "uir_max": uir_max,
+        "traceable_low_uir": bool(trace_rate == 1.0 and uir <= uir_max),
+        "competitive": comp,
+        "competitive_outcomes": bool(
+            all(c["not_worse"] for c in comp.values()) and e["ALL"]["violations_total"] == 0
+        ),
+    }
+
+
+def run(config: dict[str, Any], seeds: list[int], out_dir: str | Path) -> dict[str, Any]:
+    partition = Partition(str(config.get("partition", Partition.FINAL_TEST.value)))
+    _check_seeds(seeds, partition)
+    scenarios = list(config.get("scenarios", SPECS))
+    arms = list(config.get("arms", [PRIMARY, *BASELINES]))
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    runs_root = REPO_ROOT / "artifacts" / "runs" / str(config["experiment_id"])
+    jobs = [
+        {
+            "seed": s,
+            "scenario": sc,
+            "arm": arm,
+            "run_id": f"{config['experiment_id']}-{sc}-s{s}-{arm}",
+            "runs_root": str(runs_root),
+            "cfg": config,
+            "keep_bundle": bool(config.get("keep_bundles", False)),
+        }
+        for s in seeds
+        for sc in scenarios
+        for arm in arms
+    ]
+    workers = int(config.get("workers", 1))
+    if workers > 1:
+        with ProcessPoolExecutor(max_workers=workers) as pool:
+            rows = list(pool.map(mission_job, jobs))
+    else:
+        rows = [mission_job(j) for j in jobs]
+    rows.sort(key=lambda r: r["run_id"])
+    summary = summarize(rows, scenarios)
+    result: dict[str, Any] = {
+        "experiment_id": config["experiment_id"],
+        "evidence_class": EVIDENCE_CLASS,
+        "data_status": "SYNTHETIC_ONLY",
+        "partition": partition.value,
+        "partition_file": "configs/eval/partitions_i5.yaml",
+        "seeds": list(seeds),
+        "scenarios": {
+            sc: {
+                "action_class": SPECS[sc].action_class,
+                "onset": SPECS[sc].onset,
+                "expected": list(SPECS[sc].expected),
+                "success": SPECS[sc].success,
+            }
+            for sc in scenarios
+        },
+        "arms": arms,
+        "config": config,
+        **summary,
+        "verdicts": verdicts(summary, config, scenarios),
+        "per_run": rows,
+    }
+    name = RESULT_FILE if partition is Partition.FINAL_TEST else f"m1_action_e002_{partition.value}.json"
+    (out / name).write_text(json.dumps(result, indent=1, default=str), encoding="utf-8")
+    return result

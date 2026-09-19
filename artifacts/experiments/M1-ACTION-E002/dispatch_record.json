@@ -1,0 +1,19 @@
+{
+  "experiment_id": "M1-ACTION-E002",
+  "module": "conrad.evaluation.decision_experiments.m1_action_integrated",
+  "config": "configs\\eval\\m1_action_e002.yaml",
+  "seeds": [
+    7600000,
+    7600001,
+    7600002,
+    7600003,
+    7600004,
+    7600005,
+    7600006,
+    7600007,
+    7600008,
+    7600009
+  ],
+  "wall_s": 2483.9,
+  "out_dir": "C:\\Users\\Kerem\\Kerem\\conrad-v2\\artifacts\\experiments\\M1-ACTION-E002"
+}

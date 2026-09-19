@@ -38,6 +38,31 @@ class ModuleFaults(ConradModel):
     model2s_crash_at_s: float | None = None
 
 
+class RouteSettings(ConradModel):
+    """Planned-route publication for Model 1 (``MissionState.notes["planned_route"]``) and the replan detour.
+
+    All values are ENGINEERING_ESTIMATE simulation settings, not measured vehicle properties.
+    """
+
+    enabled: bool = True
+    lookahead_m: float = Field(default=6.0, gt=0, description="route ahead of the estimated pose to publish")
+    leg_length_m: float = Field(default=1.0, gt=0, description="length of one published corridor leg")
+    corridor_half_m: float = Field(default=0.45, gt=0, description="corridor half width around the path")
+    skip_near_m: float = Field(
+        default=0.6, ge=0, description="path closer than this to the robot is not a leg"
+    )
+    min_occupied_cells: int = Field(
+        default=2, ge=1, description="OBSERVED occupied belief cells to block a leg"
+    )
+    occupied_probability: float = Field(default=0.7, ge=0, le=1)
+    design_clearance_m: float = Field(
+        default=0.3,
+        ge=0,
+        description="cells this close to the surveyed design or charted seabed are known structure",
+    )
+    detour_climb_m: float = Field(default=1.6, gt=0, description="REPLAN detour: climb over a blocked leg")
+
+
 class MissionRuntimeConfig(ConradModel):
     duration_s: float = Field(default=90.0, gt=0)
     control_period_s: float = Field(default=0.05, gt=0)
@@ -68,7 +93,7 @@ class MissionRuntimeConfig(ConradModel):
             }
         }
     )
-    model2t_mode: str = "TCDP"
+    model2t_mode: str = "NONE"  # ADR-0009: no relational propagation in production (2T-TCDP FAIL)
     model2e_enabled: bool = True
     model2e: dict[str, Any] = Field(default_factory=dict)
     baac: dict[str, Any] = Field(default_factory=dict)
@@ -97,6 +122,13 @@ class MissionRuntimeConfig(ConradModel):
     cruise_speed_fraction: float = Field(default=0.8, gt=0, le=1, description="of RobotConfig max speed")
     max_plans_per_need: int = Field(default=4, gt=0)
     module_faults: ModuleFaults = ModuleFaults()
+    time_budget_s: float | None = Field(
+        default=None,
+        gt=0,
+        description="operator mission time budget; None = MissionSpec.time_budget_s (feeds "
+        "ResourceState.time_remaining_s)",
+    )
+    route: RouteSettings = RouteSettings()
 
 
 def runtime_config(raw: dict[str, Any] | None) -> MissionRuntimeConfig:

@@ -25,13 +25,16 @@ from conrad.decision.config import DecisionConfig
 from conrad.decision.context import DecisionContext, DecisionSummary, MissionRequirement
 from conrad.decision.egdc import EGDC, DecisionOutcome
 from conrad.decision.query_engine import BeliefQueryEngine
+from conrad.decision.route import ROUTE_OBSERVED_CLAIM
+from conrad.domains.spatial.grid import OBSERVED
+from conrad.domains.spatial.keys import index_to_center, region_indices
 from conrad.domains.spatial.model import Model2S
 from conrad.domains.spatial.queries import UnknownPolicy
 from conrad.orchestration.belief_bus import BeliefBus
 from conrad.orchestration.mission_config import MissionRuntimeConfig
 from conrad.orchestration.mission_context import MissionContext
 from conrad.orchestration.services import RuntimeServices
-from conrad.schemas.belief import BeliefMessage
+from conrad.schemas.belief import BeliefMessage, BeliefQuery
 from conrad.schemas.comms import LinkState
 from conrad.schemas.decision import (
     InformationNeed,
@@ -87,6 +90,7 @@ class Deliberation:
         self.history: list[DecisionSummary] = []
         self.decisions: list[DecisionOutcome] = []
         self.plans: list[AdoptedPlan] = []
+        self.last_route: tuple[list[SpatialSupport], dict[str, list[str]]] = ([], {})
         self.sensor = ctx.sensor(ctx.structural_sensor_ids[0])
         # MCBR candidate poses are SENSOR-boresight poses (+X looks at the target); the belief map is queried
         # with the same convention, and ``view_pose`` converts to a vehicle pose through the real mount yaw.
@@ -134,9 +138,22 @@ class Deliberation:
         health: SystemHealth,
         motion_permitted: bool,
         notes: dict[str, Any],
+        route_messages: Sequence[BeliefMessage] = (),
     ) -> DecisionOutcome:
         trace = self.ids.new()
         snapshot = self.query.retrieve(self.requirements, now.time_ns)
+        extra = [m for m in route_messages if m.belief_id not in {x.belief_id for x in snapshot.messages}]
+        if extra:  # SPATIAL beliefs that occupy a planned-route leg (route_context) join the snapshot
+            revisions = dict(snapshot.provenance.get("revisions", {}))
+            revisions.update({str(m.belief_id): m.revision for m in extra})
+            snapshot = snapshot.model_copy(
+                update={
+                    "messages": tuple(
+                        sorted([*snapshot.messages, *extra], key=lambda m: (m.domain.value, m.belief_id.int))
+                    ),
+                    "provenance": {**snapshot.provenance, "revisions": revisions},
+                }
+            )
         ctx = DecisionContext(
             timestamp=now,
             trace_id=trace,
@@ -193,6 +210,55 @@ class Deliberation:
             },
         )
         return out
+
+    # ------------------------------------------------------------------ planned route
+    def route_context(
+        self, legs: Sequence[SpatialSupport], now: TimeStamp
+    ) -> tuple[dict[str, Any], list[BeliefMessage]]:
+        """Publish the planned route and Model2S's cell-level occupancy of each leg for Model 1.
+
+        Returns the notes (``planned_route``: leg supports; ``route_leg_occupancy``: leg index -> the SPATIAL
+        belief IDs whose OBSERVED, occupied cells lie inside that leg) and those belief messages, which are
+        merged into the decision snapshot. Only belief-plane data is used: Model2S point states, the surveyed
+        registry design and the charted seabed (known structure is not an obstacle). Model2S publishes 2.8 m
+        blocks, far coarser than a route corridor, so the cell-level check has to be made here.
+        """
+        notes: dict[str, Any] = {"planned_route": [leg.model_dump(mode="json") for leg in legs]}
+        if self.m2s is None or not legs:
+            return notes, []
+        rc = self.cfg.route
+        res = float(self.m2s.cfg.grid.base_voxel_m)
+        occupancy: dict[str, list[str]] = {}
+        cells: dict[str, int] = {}
+        found: dict[UUID, BeliefMessage] = {}
+        for i, leg in enumerate(legs):
+            idx = region_indices(np.asarray(leg.center_m), np.asarray(leg.half_extent_m), res)
+            pts = index_to_center(idx, res)
+            if len(pts) == 0:
+                continue
+            st = self.m2s.occupancy_state(pts)
+            occ = (st.status == OBSERVED) & (st.probability >= rc.occupied_probability)
+            occ &= self.ctx.design_distance(pts) > rc.design_clearance_m
+            n = int(occ.sum())
+            if n < rc.min_occupied_cells:
+                continue
+            hit = pts[occ]
+            lo, hi = hit.min(axis=0) - res / 2, hit.max(axis=0) + res / 2
+            box = SpatialSupport(
+                frame_id=leg.frame_id,
+                center_m=tuple(float(v) for v in (lo + hi) / 2),
+                half_extent_m=tuple(float(v) for v in (hi - lo) / 2),
+            )
+            reply = self.bus.query(BeliefQuery(domain=Domain.SPATIAL, region=box), now.time_ns)
+            ids = [m for m in reply.messages if any(c.name == ROUTE_OBSERVED_CLAIM for c in m.state_summary)]
+            if ids:
+                occupancy[str(i)] = sorted(str(m.belief_id) for m in ids)
+                cells[str(i)] = n
+                found.update({m.belief_id: m for m in ids})
+        notes["route_leg_occupancy"] = occupancy
+        notes["route_occupied_cells"] = cells
+        self.last_route = (list(legs), occupancy)
+        return notes, list(found.values())
 
     # ------------------------------------------------------------------ MCBR
     def plan(

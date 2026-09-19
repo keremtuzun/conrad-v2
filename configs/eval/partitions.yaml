@@ -9,6 +9,9 @@
 # 2026201 is DEVELOPMENT / CONTAMINATED_FOR_FINAL_EVALUATION: the cosine-incidence weighting of MCBR predicted
 # visibility was added after inspecting that seed. 2026202/2026203 were also inspected in the 2026-09-18/19
 # write-ups, and 1000/1001 were used for scratch timing runs on 2026-09-19, so they are development too.
+# NAV benchmark noise seeds (gate I2) live in the separately pinned configs/eval/partitions_nav.yaml
+# (partitions-nav-2026-09-19-v1): adding a domain here would change this file's pinned v1 digest. The former I2
+# seeds 7300001..7300006 are CONTAMINATED_FOR_FINAL_EVALUATION there. (Comments are not part of the digest.)
 version: partitions-2026-09-19-v1
 replicates_per_world: 3
 abstract:

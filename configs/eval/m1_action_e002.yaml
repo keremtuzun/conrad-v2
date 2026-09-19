@@ -1,0 +1,27 @@
+# M1-ACTION-E002: gate I5 actions inside integrated missions (python-kernel SURROGATE; SYNTHETIC_ONLY).
+# Seeds: configs/eval/partitions_i5.yaml (digest-pinned, domain i5_mission). Development 7500000..7500009 were the
+# only seeds inspected while building the suite; final_test 7600000..7600009 is run once.
+# All thresholds below were fixed before the final run. They are ENGINEERING_ESTIMATE values: ch25/ch26 leave
+# the I5 bounds OPEN.
+experiment_id: M1-ACTION-E002
+hypothesis: >-
+  Inside full integrated missions EGDC issues the warranted action class (continue, request evidence, replan,
+  return, escalate / operator alert, store-and-forward) within the latency budget, with zero hard-constraint
+  violations, no over-escalation in the nominal mission, traceable decisions with UIR 0, and mission outcomes no
+  worse than a rule/FSM baseline and the naive act-on-claims baseline on the same seeds.
+partition: final_test
+seeds: [7600000, 7600001, 7600002, 7600003, 7600004, 7600005, 7600006, 7600007, 7600008, 7600009]
+scenarios: [I5-NOMINAL, I5-CRITICAL-FINDING, I5-UNCERTAIN-BELIEF, I5-ROUTE-BLOCKED, I5-BATTERY-RESERVE,
+            I5-TIME-RESERVE, I5-COMMS-OUTAGE]
+arms: [egdc_structured, rule_fsm, naive_act_on_claims]
+baselines: [rule_fsm, naive_act_on_claims]
+# seconds from warrant onset to the first expected action; decisions run every 2 s, so 4 s = two cycles
+latency_budget_s: {default: 4.0}
+success_floor: 0.9
+uir_max: 0.0
+contact_clearance_m: 0.3
+primary_metric: verdicts.per_scenario_correct_rate
+direction: higher
+workers: 21
+keep_bundles: false
+limitations: [synthetic data only, python L1 kernel (not Unity), SURROGATE evidence for gate I5]

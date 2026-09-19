@@ -9,6 +9,7 @@ implementation_status: EXPERIMENTAL_CANDIDATE
 
 from __future__ import annotations
 
+import itertools
 import json
 from dataclasses import dataclass, field
 from typing import Any
@@ -23,7 +24,7 @@ from conrad.robotics.navigation import GoalStatus, NavigationStack
 from conrad.runtime.command_gateway import CommandGateway
 from conrad.schemas.decision import NavigationGoal
 from conrad.schemas.events import EventType, Severity
-from conrad.schemas.frames import WORLD, Pose
+from conrad.schemas.frames import WORLD, Pose, SpatialSupport
 from conrad.schemas.provenance import ProvenanceRecord, SourceType
 from conrad.schemas.timebase import TimeStamp
 
@@ -190,6 +191,95 @@ class MissionExecutive:
             risk_limit=0.3,
         )
         return self.set_goal(goal, purpose, None, now)
+
+    # ------------------------------------------------------------------ planned route (Model 1 context)
+    def planned_path(self) -> list[np.ndarray]:
+        """Remaining path of the active motion goal's navigation trajectory, starting at the estimated pose.
+
+        Deployment plane only: the trajectory is the navigation stack's own plan and the start point is the
+        EKF estimate. Station keeping (HOLD / SAFE_HOLD) has no route.
+        """
+        traj = self.stack.trajectory
+        if self.active is None or self.active.purpose in ("HOLD", "SAFE_HOLD") or traj is None:
+            return []
+        p = np.asarray(self.stack.estimator.get_state().pose.position_m, dtype=np.float64)
+        pts = np.asarray([tp.pose.position_m for tp in traj.points], dtype=np.float64)
+        if len(pts) < 2:
+            return []
+        seg = pts[1:] - pts[:-1]
+        rel = p - pts[:-1]
+        t = np.clip(
+            np.einsum("ij,ij->i", rel, seg) / np.maximum(np.einsum("ij,ij->i", seg, seg), 1e-12), 0, 1
+        )
+        k = int(np.argmin(np.linalg.norm(pts[:-1] + t[:, None] * seg - p, axis=1)))
+        return [p, *list(pts[k + 1 :])]
+
+    def planned_route(self) -> list[SpatialSupport]:
+        """Corridor legs (axis-aligned WORLD boxes) along the next ``lookahead_m`` of the planned path."""
+        rc = self.cfg.route
+        path = self.planned_path()
+        if not rc.enabled or len(path) < 2:
+            return []
+        dense = [path[0]]
+        for a, b in itertools.pairwise(path):
+            n = max(1, int(np.ceil(float(np.linalg.norm(b - a)) / (rc.leg_length_m / 4))))
+            dense += [a + (b - a) * (i / n) for i in range(1, n + 1)]
+        arr = np.asarray(dense)
+        dist = np.concatenate([[0.0], np.cumsum(np.linalg.norm(np.diff(arr, axis=0), axis=1))])
+        keep = dist <= rc.lookahead_m
+        arr, dist = arr[keep], dist[keep]
+        legs: list[SpatialSupport] = []
+        start = rc.skip_near_m
+        while start < float(dist[-1]) - 1e-6:
+            sel = arr[(dist >= start) & (dist <= start + rc.leg_length_m)]
+            if len(sel):
+                lo, hi = sel.min(axis=0) - rc.corridor_half_m, sel.max(axis=0) + rc.corridor_half_m
+                legs.append(
+                    SpatialSupport(
+                        frame_id=WORLD,
+                        center_m=tuple(float(v) for v in (lo + hi) / 2),
+                        half_extent_m=tuple(float(v) for v in (hi - lo) / 2),
+                    )
+                )
+            start += rc.leg_length_m
+        return legs
+
+    def replan_detour(self, blocked: list[SpatialSupport], now: TimeStamp, parent: UUID | None) -> bool:
+        """REPLAN(ROUTE_BLOCKED): re-route the active transit over the blocked legs (climb, pass, descend).
+
+        Only the remaining lane via-points are changed; the navigation stack plans the new trajectory and the
+        safety supervisor / gateway still authorize every command. Non-transit goals are held instead.
+        """
+        if not blocked:
+            return False
+        if self.active is None or self.active.purpose != "TRANSIT":
+            return self.hold_goal(now, "HOLD")
+        path = self.planned_path()
+        climb = self.cfg.route.detour_climb_m
+        los = np.asarray([np.asarray(b.center_m) - np.asarray(b.half_extent_m) for b in blocked])
+        his = np.asarray([np.asarray(b.center_m) + np.asarray(b.half_extent_m) for b in blocked])
+        lo, hi = los.min(axis=0), his.max(axis=0)
+        lane_end = np.asarray(self.ctx.transit_lane[-1], dtype=np.float64)
+        d = lane_end - path[0]
+        d_xy = d[:2] / max(float(np.linalg.norm(d[:2])), 1e-9)
+        corners = np.asarray([[x, y] for x in (lo[0], hi[0]) for y in (lo[1], hi[1])])
+        proj = (corners - path[0][:2]) @ d_xy
+        top = float(hi[2]) + climb
+        before = path[0][:2] + d_xy * max(float(proj.min()) - 1.0, 0.3)
+        after = path[0][:2] + d_xy * (float(proj.max()) + 1.0)
+        past = float((np.append(after, top) - path[0]) @ d)
+        via = [[float(before[0]), float(before[1]), top], [float(after[0]), float(after[1]), top]]
+        via += [list(p) for p in self.ctx.transit_lane[1:-1] if float((np.asarray(p) - path[0]) @ d) > past]
+        goal = NavigationGoal(
+            goal_id=self.ids.new(),
+            trace_id=self.ids.new(),
+            target_pose=Pose(frame_id=WORLD, position_m=self.ctx.transit_lane[-1]),
+            position_tolerance_m=0.5,
+            orientation_tolerance_rad=0.5,
+            observation_constraints={"primitive": "GO_TO", "via": via, "replan": "ROUTE_BLOCKED"},
+            risk_limit=0.3,
+        )
+        return self.set_goal(goal, "TRANSIT", parent, now)
 
     def goal_finished(self, now_ns: int) -> bool:
         if self.active is None:

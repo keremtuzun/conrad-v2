@@ -79,6 +79,18 @@ class EcoEventSpec(ConradModel):
     parameters: dict[str, Any] = Field(default_factory=dict)
 
 
+class LaneObstacleOptions(ConradModel):
+    """Unregistered box on the transit lane (not in the asset registry): the I5 blocked-route scenario.
+
+    Placed on the lane polyline at ``lane_fraction`` of its length (0 = start, 1 = end), centred on the lane
+    height. Truth side only; the runtime can learn about it only through its sensors.
+    """
+
+    lane_fraction: float = Field(default=0.55, ge=0, le=1)
+    half_extent_m: tuple[float, float, float] = (0.5, 0.7, 0.5)
+    material_id: str = "rock"
+
+
 class MissionWorldOptions(ConradModel):
     family: str = "straight_pipeline"
     target_segment_index: int = Field(default=1, ge=0)
@@ -117,6 +129,7 @@ class MissionWorldOptions(ConradModel):
     fix: FixOptions = FixOptions()
     faults: tuple[FaultSpec, ...] = ()
     physics_dt_s: float = Field(default=0.025, gt=0)
+    lane_obstacle: LaneObstacleOptions | None = None
     current_mps: tuple[float, float, float] = (0.0, 0.0, 0.0)
 
 

@@ -12,6 +12,7 @@ from typing import Any
 from uuid import UUID
 
 from conrad.active.planner import PriorView
+from conrad.decision.actions import REPLAN_ROUTE_BLOCKED
 from conrad.decision.egdc import DecisionOutcome
 from conrad.decision.router import ExecutiveDirective, RouteTarget, TransmissionRequest
 from conrad.orchestration.belief_bus import BeliefBus
@@ -24,7 +25,7 @@ from conrad.orchestration.services import ModuleRunner, RuntimeServices
 from conrad.robotics.hardware.interface import RobotHardwareInterface
 from conrad.runtime.supervisor import RuntimeState, RuntimeSupervisor
 from conrad.schemas.belief import BeliefMessage, BeliefQuery, KnowledgeStatus
-from conrad.schemas.decision import InformationNeed, NavigationGoal, PlanStatus, ResourceState
+from conrad.schemas.decision import ActionType, InformationNeed, NavigationGoal, PlanStatus, ResourceState
 from conrad.schemas.events import EventType
 from conrad.schemas.robot import HealthLevel, SystemHealth
 from conrad.schemas.timebase import TimeStamp
@@ -53,6 +54,8 @@ class DecisionRouting:
         self.phase = "NOT_STARTED"
         self.plan_attempts: dict[tuple[UUID, ...], int] = {}
         self.prior_views: list[PriorView] = []
+        self.started_ns: int | None = None  # set by MissionRuntime.start (mission clock origin)
+        self.replans: list[dict[str, Any]] = []
 
     # ------------------------------------------------------------------ helpers
     def _critical_heads(self, now: TimeStamp) -> list[BeliefMessage]:
@@ -96,8 +99,12 @@ class DecisionRouting:
                     self.x.resume_transit(now)
         state = self.x.stack.estimator.get_state()
         power = self.hw.get_power_state()
+        budget = self.cfg.time_budget_s or self.ctx.spec.time_budget_s
+        start = now.time_ns if self.started_ns is None else self.started_ns
         resources = ResourceState(
-            timestamp=now, battery_fraction=None if power is None else power.remaining_fraction
+            timestamp=now,
+            battery_fraction=None if power is None else power.remaining_fraction,
+            time_remaining_s=None if budget is None else budget - (now.time_ns - start) / 1e9,
         )
         link = self.shore.link_state(now.time_ns / 1e9)
         safety_ok = self.x.safety_state in ("NORMAL", "DEGRADED")
@@ -110,9 +117,13 @@ class DecisionRouting:
         health = self._health()
         if health.overall is HealthLevel.UNKNOWN:
             health = health.model_copy(update={"overall": HealthLevel.OK})
-        out: DecisionOutcome | None = self.runner.call(
-            "egdc", lambda: self.d.decide(now, state, resources, link, health, motion, notes)
-        )
+
+        def decide() -> DecisionOutcome:
+            route_notes, route_msgs = self.d.route_context(self.x.planned_route(), now)
+            notes.update(route_notes)
+            return self.d.decide(now, state, resources, link, health, motion, notes, route_msgs)
+
+        out: DecisionOutcome | None = self.runner.call("egdc", decide)
         if out is None:
             return None
         self.x.latest_decision_record = out.provenance.record_id
@@ -154,6 +165,28 @@ class DecisionRouting:
             self.shore.offer(self._critical_heads(now), now, floor=0.5)
         elif routed.target is RouteTarget.SAFETY_SUPERVISOR and isinstance(payload, ExecutiveDirective):
             self.supervisor.safe_hold(f"decision {payload.action_type.value}")
+        elif (
+            routed.target is RouteTarget.MISSION_EXECUTIVE
+            and isinstance(payload, ExecutiveDirective)
+            and payload.action_type is ActionType.REPLAN
+            and payload.parameters.get("reason") == REPLAN_ROUTE_BLOCKED
+        ):
+            self._replan(payload, out, now)
+
+    def _replan(self, payload: ExecutiveDirective, out: DecisionOutcome, now: TimeStamp) -> None:
+        """REPLAN(ROUTE_BLOCKED): the executive re-routes around the legs the blocking beliefs occupy."""
+        blockers = {str(b) for b in payload.parameters.get("blocking_belief_ids", [])}
+        legs, occupancy = self.d.last_route
+        blocked = [leg for i, leg in enumerate(legs) if blockers & set(occupancy.get(str(i), []))]
+        accepted = self.x.replan_detour(blocked, now, out.provenance.record_id)
+        row = {
+            "t_s": now.time_ns / 1e9,
+            "decision_id": str(out.record.decision_id),
+            "blocked_legs": len(blocked),
+            "accepted": accepted,
+        }
+        self.replans.append(row)
+        self.s.emit(EventType.PLAN_PROPOSED, MODULE, out.record.trace_id, {"replan": "ROUTE_BLOCKED", **row})
 
     def _inspect(self, need: InformationNeed, out: DecisionOutcome, now: TimeStamp) -> None:
         key = tuple(sorted(need.target_belief_ids, key=str))

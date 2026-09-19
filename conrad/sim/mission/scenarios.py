@@ -103,6 +103,25 @@ SCENARIOS: dict[str, Override] = {
         "runtime": {},
     },
     "INT-010": {"world": {}, "runtime": {"link": {"bandwidth_bps": 300.0, "outages_s": [[25.0, 85.0]]}}},
+    # Gate I5 integrated missions (M1-ACTION-E002): each scenario makes one Model 1 action class warranted.
+    # The trigger is scripted on the truth side; the runtime only sees its consequences through sensors,
+    # power readings, the link state and its own mission clock.
+    "I5-NOMINAL": {
+        "world": {"defect": {"side": "near", "corrosion_depth_m": 0.0, "crack_length_m": 0.0}},
+        "runtime": {"duration_s": 120.0},
+    },
+    "I5-CRITICAL-FINDING": {"world": {"defect": {"side": "near"}}, "runtime": {"duration_s": 120.0}},
+    "I5-UNCERTAIN-BELIEF": {"world": {}, "runtime": {"duration_s": 120.0}},
+    "I5-ROUTE-BLOCKED": {"world": {"lane_obstacle": {}}, "runtime": {"duration_s": 120.0}},
+    "I5-BATTERY-RESERVE": {
+        "world": {"faults": [{"t_s": 30.0, "type": "LOW_POWER", "magnitude": 0.12}]},
+        "runtime": {"duration_s": 120.0},
+    },
+    "I5-TIME-RESERVE": {"world": {}, "runtime": {"duration_s": 120.0, "time_budget_s": 150.0}},
+    "I5-COMMS-OUTAGE": {
+        "world": {"defect": {"side": "near"}},
+        "runtime": {"duration_s": 120.0, "link": {"outages_s": [[6.0, 80.0]]}},
+    },
 }
 
 INT_DESCRIPTIONS = {

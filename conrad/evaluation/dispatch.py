@@ -35,6 +35,10 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
         "conrad.evaluation.decision_experiments.action_matrix",
         "configs/eval/m1_action_e001.yaml",
     ),
+    "M1-ACTION-E002": (
+        "conrad.evaluation.decision_experiments.m1_action_integrated",
+        "configs/eval/m1_action_e002.yaml",
+    ),
     "ACTIVE-MCBR-E001": (
         "conrad.evaluation.decision_experiments.active_mcbr",
         "configs/eval/active_mcbr_e001.yaml",

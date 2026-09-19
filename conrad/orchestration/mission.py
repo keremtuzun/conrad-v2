@@ -103,7 +103,8 @@ class MissionRuntime:
             self.bus.attach_child(Domain.ECOLOGICAL, self.m2e.receive_context)
         lo, hi = context.spec.boundary_min_m, context.spec.boundary_max_m
         boundary = None if lo is None or hi is None else MissionBoundary(min_xyz_m=lo, max_xyz_m=hi)
-        nav_cfg = NavigationStackConfig(
+        nav_cfg = NavigationStackConfig.for_surface(
+            context.water_surface_z_m,
             control_period_s=config.control_period_s,
             safety=SafetyConfig(boundary=boundary),
             trajectory=TrajectoryConfig(cruise_speed_fraction=config.cruise_speed_fraction),
@@ -222,6 +223,7 @@ class MissionRuntime:
         )
         self._publish(self.m2t.export_beliefs(), now)
         self.routing.phase = "TRANSIT"
+        self.routing.started_ns = now.time_ns
         self.executive.transit_goal(now)
 
     def _check_digest(self) -> None:
