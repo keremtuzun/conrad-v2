@@ -53,3 +53,42 @@ EKF's own σ was still below the 1.5 m hold limit, so **the estimator is overcon
 `conrad train run --config configs/train/core_smoke.yaml` (6 epochs, 102 steps, CPU): best val RMSE 1.034 vs
 hold-last 0.758. The smoke-scale model is worse than the trivial baseline, as expected at this scale. Checkpoint
 reload reproduces the metric exactly. `configs/train/core_full.yaml` is refused: BLOCKED_EXTERNAL (EXT-COMPUTE-01).
+
+## Integrated missions (2026-09-19; sim kernel L1, SYNTHETIC_ONLY RobotConfig; 120 s missions)
+
+Runs are in `artifacts/runs/<ID>-s<seed>-<hash>/`. Errors are against the evaluation-only truth record; "before" is the
+error while the target component was still UNKNOWN (prior mean). Unless a row says otherwise: U_O went from 1.00 to
+~0.30, UIR 0.0, 2400 commands accepted and 0 rejected by the gateway, 0 collisions, critical alert delivered once at
+~2.4 s latency on a 1200 bps link.
+
+| Run | Target state | Corrosion error before→after (mm) | Crack error (mm) | MCBR |
+|---|---|---|---|---|
+| FLAGSHIP-I4 s2026201 | UNKNOWN→OBSERVED | 5.50→0.006 | 78.5→0.24 | 1 plan, then NOT_WORTH_COST |
+| FIXED-VIEW s2026201 | UNKNOWN→OBSERVED | 5.50→0.043 | 78.5→0.26 | (fixed pattern, 3 plans) |
+| FLAGSHIP-I4 s2026203 | UNKNOWN→OBSERVED | 5.50→0.079 | 78.5→0.32 | 1 plan |
+| FIXED-VIEW s2026203 | UNKNOWN→OBSERVED | 5.50→0.07 | 78.5→0.27 | 3 plans |
+| FLAGSHIP-I4 s2026202 | already OBSERVED from the lane (the scenario's hidden-side premise did not hold) | 0.032 | 0.18 | NOT_WORTH_COST ×4 |
+
+**Verdict.** The architecture closes the full loop on 2 of 3 seeds: UNKNOWN → InformationNeed → ObservationPlan →
+navigation through the gateway → new STRUCTURED evidence → DIRECT revision → grounded decision → BAAC transmission,
+with a provenance trace from the last command down to the raw observation and no truth leakage (dynamic leakage test).
+**MCBR shows no hidden-state-error advantage over the fixed-view baseline on any seed**; it uses 1 plan where the
+baseline uses 3. The I4 acceptance record is NOT_EVALUABLE because its thresholds are OPEN. Disclosure: the
+cosine-incidence weighting of MCBR predicted visibility was added after inspecting seed 2026201.
+
+**Known failures.**
+- **I7-COMMS-OUTAGE / INT-010:** MCBR returned NOT_WORTH_COST (value 0.245 < cost 0.255), so no finding occurred and the
+  "critical finding during outage" path was **not exercised**.
+- **INT-004:** under sensing degradation, NOT_WORTH_COST left the target UNKNOWN.
+- **INT-005:** the critical alert was not delivered at 100 bps with 15% loss.
+- **INT-006:** the transit goal was rejected as GOAL_OUTSIDE_ENVELOPE (the lane leaves the mission boundary).
+- **INT-003:** credible contradiction drove U_C to 1.0, but the biased sensor pulled the corrosion error to 3.49 mm.
+- **EGDC:** decisions are dominated by ESCALATE_TO_OPERATOR because Model2T uncertainty is uncalibrated.
+
+**Passing.**
+- INT-001: the defect was visible from the lane.
+- INT-002: same as the flagship.
+- INT-007
+- INT-008: thruster failure, still resolved.
+- INT-009: position-fix outage, resolved.
+- I6-MULTIDOMAIN: turbidity context raised U_A to 0.88; the target resolved.
