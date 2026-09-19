@@ -1277,7 +1277,7 @@
       ],
       "missing_experiment_artifacts": [],
       "gate_id": "2E",
-      "gate_official_status": "NOT_RUN",
+      "gate_official_status": "FAIL",
       "configuration_keys": [
         "model.ecological"
       ],
@@ -1375,7 +1375,7 @@
       "requirement_summary": "Unity V2 C# project (8 modules) and Python bridge adapter",
       "authority": "INTERFACE_FROZEN",
       "owner": "software",
-      "implementation_status": "TESTED",
+      "implementation_status": "INTEGRATED",
       "implementation_paths": [
         "unity/ConradUnityV2",
         "conrad/adapters/unity"
@@ -1389,7 +1389,7 @@
       "experiment_ids": [],
       "missing_experiment_artifacts": [],
       "gate_id": "U0",
-      "gate_official_status": "NOT_RUN",
+      "gate_official_status": "PASS",
       "configuration_keys": [
         "sim.unity"
       ],
@@ -1660,7 +1660,7 @@
       "requirement_summary": "Twin2S -> sim -> sensors -> ECMER -> Model2S persistent spatial belief, no leakage",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "TESTED",
+      "implementation_status": "INTEGRATED",
       "implementation_paths": [
         "conrad/orchestration/mission.py"
       ],
@@ -1676,7 +1676,7 @@
         "SYS-I1"
       ],
       "gate_id": "I1",
-      "gate_official_status": "BLOCKED_UPSTREAM",
+      "gate_official_status": "PASS",
       "configuration_keys": [],
       "assumptions": [],
       "external_dependencies": [],
@@ -1720,7 +1720,7 @@
         "NAV-008"
       ],
       "gate_id": "I2",
-      "gate_official_status": "BLOCKED_UPSTREAM",
+      "gate_official_status": "FAIL",
       "configuration_keys": [],
       "assumptions": [],
       "external_dependencies": [],
@@ -1750,7 +1750,7 @@
         "SYS-I3"
       ],
       "gate_id": "I3",
-      "gate_official_status": "BLOCKED_UPSTREAM",
+      "gate_official_status": "FAIL",
       "configuration_keys": [],
       "assumptions": [],
       "external_dependencies": [],
@@ -2000,17 +2000,22 @@
       "requirement_summary": "Dataset registry, manifests, adapters; models never own dataset loading",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "TESTED",
+      "implementation_status": "EVALUATED",
       "implementation_paths": [
         "conrad/data/manifest.py",
-        "conrad/data/adapters"
+        "conrad/data/adapters",
+        "conrad/data/adapters/uvvid.py",
+        "datasets/public",
+        "docs/audits/PUBLIC_DATA_PROCUREMENT.md"
       ],
       "missing_paths": [],
       "test_ids": [
         "tests/unit/data"
       ],
       "missing_tests": [],
-      "experiment_ids": [],
+      "experiment_ids": [
+        "DATA-REAL-SMOKE-E001"
+      ],
       "missing_experiment_artifacts": [],
       "gate_id": null,
       "gate_official_status": null,
@@ -2074,7 +2079,7 @@
       "configuration_keys": [],
       "assumptions": [],
       "external_dependencies": [
-        "Rights-cleared real captures (EXT-DATA-01)"
+        "Conrad-owned real captures (EXT-DATA-CONRAD-CAPTURE); public data only via approved manifests, audit 2026-09-19: uvvid=APPROVED_WITH_RESTRICTIONS(sample downloaded, unlabelled); subpipe,seaclear,underwater_caves_sonar=APPROVED_WITH_RESTRICTIONS(not downloaded, size); aqualoc,benthicnet,fathomnet,seaview,suim=NEEDS_HUMAN_RIGHTS_REVIEW; uw_slam=UNAVAILABLE"
       ],
       "evidence_artifacts": [],
       "maturity_level": null,
@@ -2293,7 +2298,7 @@
       "configuration_keys": [],
       "assumptions": [],
       "external_dependencies": [
-        "Usable real datasets (EXT-DATA-01)"
+        "Labelled real task data, audit 2026-09-19: uvvid APPROVED_WITH_RESTRICTIONS but has no labels/pose so cannot score RealOnly vs Twin+Real; subpipe APPROVED_WITH_RESTRICTIONS (CC-BY-4.0, segmentation+VI) blocked on a 4.9 GB download budget decision; seaclear APPROVED_WITH_RESTRICTIONS (1.7 GB) object labels only; aqualoc,benthicnet,fathomnet,seaview,suim NEEDS_HUMAN_RIGHTS_REVIEW; uw_slam UNAVAILABLE"
       ],
       "evidence_artifacts": [],
       "maturity_level": null,

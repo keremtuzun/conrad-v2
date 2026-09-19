@@ -1,15 +1,21 @@
-# TEMPLATE ONLY. Conrad has NOT downloaded, licensed, inspected or verified this dataset.
-# Candidate name and role come from specification ch24; every OPEN field must be closed by a
-# DATA-VERIFY / DATA-RIGHTS-01 / DATA-SPLIT-01 task with evidence before status may change.
-# No statistic, URL, license or label in this file may be filled from memory or by analogy.
+# Public-data procurement audit 2026-09-19 (docs/audits/PUBLIC_DATA_PROCUREMENT.md).
+# Every licence/URL below was read from the cited page on that date. Anything not read is OPEN.
+# procurement_status is the rights verdict; status says whether any data is on disk.
 schema_version: 1.0.0
 dataset_id: public.uw_slam
 version: UNPINNED
-manifest_version: 1
+manifest_version: 2
 status: UNVERIFIED_NOT_DOWNLOADED
+procurement_status: UNAVAILABLE
+verified_on: '2026-09-19'
 source_category: PUBLIC_REAL
 source: OPEN
-release_id: OPEN
+source_urls:
+- https://github.com/gidobot/UWslamdataset
+- https://deepblue.lib.umich.edu/data/concern/data_sets/rj430494s (HTTP 403)
+- https://github.com/MecatronicaUSB/uw-slam
+- https://github.com/chintha/UW-SLAM
+release_id: 'OPEN: no release named exactly UW-SLAM'
 retrieved_at: OPEN
 license: REVIEW_REQUIRED
 license_evidence_ref: OPEN
@@ -19,13 +25,17 @@ rights_by_asset_ref: OPEN
 redistribution_allowed: false
 deployment_allowed: false
 training_allowed: false
+conrad_tasks:
+- 2S
+restrictions:
+- the name matches only code repositories and a similarly named 'UWslam dataset' (Billings, Johnson-Roberson; U.
+  Michigan Deep Blue)
+- spec ch24 forbids silent substitution with a similarly named resource
+forbidden_uses:
+- must not be substituted by the UWslam dataset without a recorded human decision
 checksum: OPEN
-modalities: []
-labels: []
 label_schema_ref: OPEN
 label_quality_report_ref: OPEN
-units: {}
-frames: {}
 coordinate_frames_ref: OPEN
 calibration_ref: OPEN
 timestamps:
@@ -36,19 +46,23 @@ timestamps:
 synchronization: []
 truth_availability: UNVERIFIED
 missingness_policy: OPEN
-split_strategy: []
 split_manifest_ref: OPEN
 duplicate_audit_ref: OPEN
 transformations: []
 corruptions: []
 adapter_version: OPEN
 transform_config_hash: OPEN
-permitted_tasks: []
-unsupported_claims: []
-intended_role: 'UW-SLAM: Underwater localization/spatial evaluation.'
-remaining_verification:
-- 'OPEN: resolve exact publication/release and available truth'
-- source_audit_state=OPEN_SOURCE_AUDIT
-required_files_note: 'DATA-VERIFY must produce: source URL, paper/release identifier, asset inventory
-  with sha256, license evidence, task-label audit, adapter smoke test'
 files: []
+units: {}
+frames: {}
+labels: []
+modalities: []
+split_strategy: []
+permitted_tasks: []
+required_files_note: 'DATA-VERIFY must produce: asset inventory with sha256, task-label audit, adapter smoke test'
+unsupported_claims: []
+intended_role: 'UW-SLAM: underwater localization/spatial evaluation.'
+remaining_verification:
+- 'human: decide whether ''UW-SLAM'' in the design discussion meant the UWslam dataset'
+- 'if yes: open the Deep Blue record in a browser; its GitHub README states CC0 1.0 but the record page returned
+  403 here'

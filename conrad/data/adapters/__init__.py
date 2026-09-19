@@ -11,6 +11,7 @@ from conrad.data.adapters.base import (
 from conrad.data.adapters.image_folder import ImageFolderSequenceAdapter
 from conrad.data.adapters.public import PUBLIC_CANDIDATES, PublicDatasetAdapter, public_adapter
 from conrad.data.adapters.synthetic import SyntheticTwinAdapter, TwinSampleLike
+from conrad.data.adapters.uvvid import DecodedFrame, UvvidVideoAdapter
 
 __all__ = [
     "PUBLIC_CANDIDATES",
@@ -18,11 +19,13 @@ __all__ = [
     "DatasetAudit",
     "DatasetContractError",
     "DatasetNotAvailableError",
+    "DecodedFrame",
     "ImageFolderSequenceAdapter",
     "PartialTruth",
     "PublicDatasetAdapter",
     "SequenceSample",
     "SyntheticTwinAdapter",
     "TwinSampleLike",
+    "UvvidVideoAdapter",
     "public_adapter",
 ]

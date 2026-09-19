@@ -190,12 +190,15 @@ def test_verify_manifest_by_id(tmp_path, monkeypatch):
     assert verify_manifest_by_id("nope", search)[0].startswith("MANIFEST_INVALID")
 
 
-def test_public_templates_are_unverified_and_fail_closed(tmp_path):
+def test_undownloaded_public_manifests_fail_closed(tmp_path):
     for key, name in PUBLIC_CANDIDATES.items():
         path = REPO_ROOT / "datasets" / "public" / name
         m = load_manifest(path)
-        assert m.status is ManifestStatus.UNVERIFIED_NOT_DOWNLOADED
-        assert m.license == "REVIEW_REQUIRED" and not m.files and not m.training_allowed
+        if m.status is not ManifestStatus.UNVERIFIED_NOT_DOWNLOADED:
+            continue  # downloaded samples are covered by test_public_procurement.py
+        assert not m.files
+        if not m.procurement_status.permits_download:
+            assert not m.training_allowed
         assert verify_manifest_by_id(m.dataset_id), key
         adapter = public_adapter(key)
         assert not adapter.inspect().usable

@@ -1,31 +1,41 @@
-# TEMPLATE ONLY. Conrad has NOT downloaded, licensed, inspected or verified this dataset.
-# Candidate name and role come from specification ch24; every OPEN field must be closed by a
-# DATA-VERIFY / DATA-RIGHTS-01 / DATA-SPLIT-01 task with evidence before status may change.
-# No statistic, URL, license or label in this file may be filled from memory or by analogy.
+# Public-data procurement audit 2026-09-19 (docs/audits/PUBLIC_DATA_PROCUREMENT.md).
+# Every licence/URL below was read from the cited page on that date. Anything not read is OPEN.
+# procurement_status is the rights verdict; status says whether any data is on disk.
 schema_version: 1.0.0
 dataset_id: public.seaview
 version: UNPINNED
-manifest_version: 1
+manifest_version: 2
 status: UNVERIFIED_NOT_DOWNLOADED
+procurement_status: NEEDS_HUMAN_RIGHTS_REVIEW
+verified_on: '2026-09-19'
 source_category: PUBLIC_REAL
-source: OPEN
-release_id: OPEN
+source: https://espace.library.uq.edu.au/view/UQ:734799
+source_urls:
+- https://espace.library.uq.edu.au/view/UQ:734799 (HTTP 403)
+- https://researchdata.edu.au/seaview-survey-photo-classification-dataset/3369315 (HTTP 403)
+- http://data.qld.edu.au/public/Q1281/Seaview_Survey_photoquadrat_data_collection.pdf
+release_id: 'OPEN: Seaview Survey Photo-quadrat and Image Classification Dataset (UQ eSpace UQ:734799), version
+  not readable'
 retrieved_at: OPEN
 license: REVIEW_REQUIRED
-license_evidence_ref: OPEN
+license_evidence_ref: 'OPEN: every licence page returned HTTP 403 from this host'
 usage_rights: REVIEW_REQUIRED
 rights_review_status: REVIEW_REQUIRED
 rights_by_asset_ref: OPEN
 redistribution_allowed: false
 deployment_allowed: false
 training_allowed: false
+conrad_tasks:
+- 2E
+- ECMER-SSL (only via an approved manifest)
+restrictions:
+- licence unverifiable from this host
+forbidden_uses:
+- 'static photo-quadrats: no longitudinal dynamics'
+- no structural labels; must not supervise 2T
 checksum: OPEN
-modalities: []
-labels: []
 label_schema_ref: OPEN
 label_quality_report_ref: OPEN
-units: {}
-frames: {}
 coordinate_frames_ref: OPEN
 calibration_ref: OPEN
 timestamps:
@@ -36,19 +46,22 @@ timestamps:
 synchronization: []
 truth_availability: UNVERIFIED
 missingness_policy: OPEN
-split_strategy: []
 split_manifest_ref: OPEN
 duplicate_audit_ref: OPEN
 transformations: []
 corruptions: []
 adapter_version: OPEN
 transform_config_hash: OPEN
-permitted_tasks: []
-unsupported_claims: []
-intended_role: 'Seaview: Ecological imagery and habitat representation.'
-remaining_verification:
-- 'OPEN: exact dataset version, task labels, geography and asset rights'
-- source_audit_state=OPEN_SOURCE_AUDIT
-required_files_note: 'DATA-VERIFY must produce: source URL, paper/release identifier, asset inventory
-  with sha256, license evidence, task-label audit, adapter smoke test'
 files: []
+units: {}
+frames: {}
+labels: []
+modalities: []
+split_strategy: []
+permitted_tasks: []
+required_files_note: 'DATA-VERIFY must produce: asset inventory with sha256, task-label audit, adapter smoke test'
+unsupported_claims: []
+intended_role: 'Seaview: ecological imagery and habitat representation.'
+remaining_verification:
+- 'human: open https://espace.library.uq.edu.au/view/UQ:734799 in a browser, record the licence field and version'
+- pin one regional subset; transects are the lineage unit

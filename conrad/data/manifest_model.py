@@ -34,6 +34,21 @@ class ManifestStatus(str, Enum):
     REJECTED = "REJECTED"
 
 
+class ProcurementStatus(str, Enum):
+    """Outcome of the public-data rights audit. Only the two APPROVED values permit a download."""
+
+    APPROVED = "APPROVED"
+    APPROVED_WITH_RESTRICTIONS = "APPROVED_WITH_RESTRICTIONS"
+    REJECTED = "REJECTED"
+    NEEDS_HUMAN_RIGHTS_REVIEW = "NEEDS_HUMAN_RIGHTS_REVIEW"
+    UNAVAILABLE = "UNAVAILABLE"
+    NOT_AUDITED = "NOT_AUDITED"
+
+    @property
+    def permits_download(self) -> bool:
+        return self in (ProcurementStatus.APPROVED, ProcurementStatus.APPROVED_WITH_RESTRICTIONS)
+
+
 class RightsReviewStatus(str, Enum):
     REVIEW_REQUIRED = "REVIEW_REQUIRED"
     IN_REVIEW = "IN_REVIEW"
@@ -200,12 +215,23 @@ class DatasetManifest(VersionedModel):
     permitted_tasks: tuple[str, ...] = ()
     unsupported_claims: tuple[str, ...] = ()
     intended_role: str | None = None
+    procurement_status: ProcurementStatus = ProcurementStatus.NOT_AUDITED
+    verified_on: str | None = Field(default=None, description="ISO date of the last source/licence check")
+    source_urls: tuple[str, ...] = Field(default=(), description="every page the audit fetched or tried")
+    conrad_tasks: tuple[str, ...] = Field(default=(), description="2S / 2T / 2E / ECMER-SSL")
+    forbidden_uses: tuple[str, ...] = ()
+    restrictions: tuple[str, ...] = ()
     remaining_verification: tuple[str, ...] = ()
     required_files_note: str | None = None
     files: tuple[FileEntry, ...] = ()
 
     @model_validator(mode="after")
     def _structure(self) -> DatasetManifest:
+        public = self.source_category is SourceCategory.PUBLIC_REAL
+        if self.files and public and not self.procurement_status.permits_download:
+            raise ValueError(
+                f"{self.dataset_id}: files listed but procurement_status is {self.procurement_status.value}"
+            )
         paths = [f.path for f in self.files]
         if len(set(paths)) != len(paths):
             raise ValueError("duplicate file paths in manifest")

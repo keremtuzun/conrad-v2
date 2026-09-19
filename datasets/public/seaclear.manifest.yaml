@@ -1,31 +1,42 @@
-# TEMPLATE ONLY. Conrad has NOT downloaded, licensed, inspected or verified this dataset.
-# Candidate name and role come from specification ch24; every OPEN field must be closed by a
-# DATA-VERIFY / DATA-RIGHTS-01 / DATA-SPLIT-01 task with evidence before status may change.
-# No statistic, URL, license or label in this file may be filled from memory or by analogy.
+# Public-data procurement audit 2026-09-19 (docs/audits/PUBLIC_DATA_PROCUREMENT.md).
+# Every licence/URL below was read from the cited page on that date. Anything not read is OPEN.
+# procurement_status is the rights verdict; status says whether any data is on disk.
 schema_version: 1.0.0
 dataset_id: public.seaclear
-version: UNPINNED
-manifest_version: 1
+version: 4tu-4f1dff25-v1
+manifest_version: 2
 status: UNVERIFIED_NOT_DOWNLOADED
+procurement_status: APPROVED_WITH_RESTRICTIONS
+verified_on: '2026-09-19'
 source_category: PUBLIC_REAL
-source: OPEN
-release_id: OPEN
+source: https://data.4tu.nl/datasets/4f1dff25-e157-4399-a5d4-478055461689/1
+source_urls:
+- https://data.4tu.nl/datasets/4f1dff25-e157-4399-a5d4-478055461689/1
+- https://data.4tu.nl/v2/articles/4f1dff25-e157-4399-a5d4-478055461689
+- https://www.nature.com/articles/s41597-024-03759-2
+- https://github.com/adjuras/seaclear-dataset
+release_id: doi:10.4121/4f1dff25-e157-4399-a5d4-478055461689.v1 (published 2024-01-08)
 retrieved_at: OPEN
-license: REVIEW_REQUIRED
-license_evidence_ref: OPEN
-usage_rights: REVIEW_REQUIRED
-rights_review_status: REVIEW_REQUIRED
+license: CC-BY-4.0
+license_evidence_ref: '4TU.ResearchData API license {name: CC BY 4.0} for the record, read 2026-09-19'
+usage_rights: 'CC-BY-4.0: research and commercial use, adaptation and redistribution with attribution'
+rights_review_status: CLEARED
 rights_by_asset_ref: OPEN
 redistribution_allowed: false
 deployment_allowed: false
-training_allowed: false
+training_allowed: true
+conrad_tasks:
+- ECMER (marine-object perception baseline)
+restrictions:
+- attribution required
+- 'not downloaded: single archive ''Seaclear Marine Debris Dataset.rar'' is 1,711,829,309 bytes, above the sample
+  budget'
+forbidden_uses:
+- debris/animal/plant/robot-part boxes and masks must not supervise structural hidden state
+- collection or annotation availability is not a condition label
 checksum: OPEN
-modalities: []
-labels: []
 label_schema_ref: OPEN
 label_quality_report_ref: OPEN
-units: {}
-frames: {}
 coordinate_frames_ref: OPEN
 calibration_ref: OPEN
 timestamps:
@@ -36,20 +47,22 @@ timestamps:
 synchronization: []
 truth_availability: UNVERIFIED
 missingness_policy: OPEN
-split_strategy: []
 split_manifest_ref: OPEN
 duplicate_audit_ref: OPEN
 transformations: []
 corruptions: []
 adapter_version: OPEN
 transform_config_hash: OPEN
+files: []
+units: {}
+frames: {}
+labels: []
+modalities: []
+split_strategy: []
 permitted_tasks: []
+required_files_note: 'DATA-VERIFY must produce: asset inventory with sha256, task-label audit, adapter smoke test'
 unsupported_claims:
 - structural hidden-state supervision from collection/annotation availability
-intended_role: 'SeaClear: Potential marine-object perception baseline.'
+intended_role: 'SeaClear: potential marine-object perception baseline.'
 remaining_verification:
-- 'OPEN: task-specific relevance and labels'
-- source_audit_state=OPEN_SOURCE_AUDIT
-required_files_note: 'DATA-VERIFY must produce: source URL, paper/release identifier, asset inventory
-  with sha256, license evidence, task-label audit, adapter smoke test'
-files: []
+- budget decision for 1.7 GB; then audit per-site (Bistrina, Jakljan, Lokrum, Slano, Marseille) splits

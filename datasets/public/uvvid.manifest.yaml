@@ -1,54 +1,121 @@
-# TEMPLATE ONLY. Conrad has NOT downloaded, licensed, inspected or verified this dataset.
-# Candidate name and role come from specification ch24; every OPEN field must be closed by a
-# DATA-VERIFY / DATA-RIGHTS-01 / DATA-SPLIT-01 task with evidence before status may change.
-# No statistic, URL, license or label in this file may be filled from memory or by analogy.
+# Public-data procurement audit 2026-09-19 (docs/audits/PUBLIC_DATA_PROCUREMENT.md).
+# Every licence/URL below was read from the cited page on that date. Anything not read is OPEN.
+# procurement_status is the rights verdict; status says whether any data is on disk.
 schema_version: 1.0.0
 dataset_id: public.uvvid
-version: UNPINNED
-manifest_version: 1
-status: UNVERIFIED_NOT_DOWNLOADED
+version: dtu-27694068-v5
+manifest_version: 2
+status: VERIFIED
+procurement_status: APPROVED_WITH_RESTRICTIONS
+verified_on: '2026-09-19'
 source_category: PUBLIC_REAL
-source: OPEN
-release_id: OPEN
-retrieved_at: OPEN
-license: REVIEW_REQUIRED
-license_evidence_ref: OPEN
-usage_rights: REVIEW_REQUIRED
-rights_review_status: REVIEW_REQUIRED
-rights_by_asset_ref: OPEN
+source: https://data.dtu.dk/articles/dataset/Underwater_Visual_and_Visual-Inertial_Datasets_UVVID_/27694068
+source_urls:
+- https://data.dtu.dk/articles/dataset/Underwater_Visual_and_Visual-Inertial_Datasets_UVVID_/27694068
+- https://api.figshare.com/v2/articles/27694068
+- https://ndownloader.figshare.com/files/50436318
+- https://ndownloader.figshare.com/files/50436333
+- https://ndownloader.figshare.com/files/50436324
+- https://ndownloader.figshare.com/files/50981490
+release_id: doi:10.11583/DTU.27694068.v5 (version 5, published 2026-08-21)
+retrieved_at: '2026-09-19'
+license: CC-BY-4.0
+license_evidence_ref: 'figshare API license {name: CC BY 4.0, url: https://creativecommons.org/licenses/by/4.0/}
+  for article 27694068 v5, read 2026-09-19'
+usage_rights: 'CC-BY-4.0 for the UVVID-native visual subset: research use, adaptation and training with attribution'
+rights_review_status: CLEARED
+rights_by_asset_ref: UVVID-native files under visual/ only; AQUALOC- and Underwater-Caves-derived files excluded
+  (upstream terms differ)
 redistribution_allowed: false
 deployment_allowed: false
-training_allowed: false
-checksum: OPEN
-modalities: []
-labels: []
-label_schema_ref: OPEN
-label_quality_report_ref: OPEN
-units: {}
-frames: {}
-coordinate_frames_ref: OPEN
-calibration_ref: OPEN
+training_allowed: true
+conrad_tasks:
+- ECMER (quality features, representation)
+- 2S (visual odometry smoke only; no pose truth)
+restrictions:
+- attribution to UVVID (DTU) and doi:10.11583/DTU.27694068.v5 is required
+- only visual/ROV_GoPro_* UVVID-native videos are approved; visual-inertial/AQUALOC and visual-inertial/UnderwaterCaves
+  are excluded
+- deployment and redistribution by Conrad not reviewed; flags stay false
+forbidden_uses:
+- 'no labels: must not supervise any 2T, 2E or 2S head'
+- 'no pose, IMU or calibration in the visual subset: must not be used as localization ground truth'
+- 'videos are separate clocks: frames from different videos are never paired or synchronized'
+checksum: 737c88d46cafd30805663ba6bcd7794a06fbeee5fe59c518f2448d55a9e86b21
+label_schema_ref: 'NONE: dataset README states no labels, calibration or IMU for the visual subset'
+label_quality_report_ref: NONE
+coordinate_frames_ref: camera optical frame name only; no extrinsics exist
+calibration_ref: NONE
 timestamps:
-  clock_domain: OPEN
-  units: OPEN
-  semantics: OPEN
+  clock_domain: per-video container presentation time
+  units: ns
+  semantics: container PTS of each decoded frame relative to the first frame; no absolute UTC
   offset_evidence_ref: null
 synchronization: []
-truth_availability: UNVERIFIED
-missingness_policy: OPEN
-split_strategy: []
-split_manifest_ref: OPEN
-duplicate_audit_ref: OPEN
-transformations: []
-corruptions: []
-adapter_version: OPEN
-transform_config_hash: OPEN
-permitted_tasks: []
-unsupported_claims: []
-intended_role: 'UVVID: Underwater visual/visual-inertial sequences.'
+truth_availability: NONE
+missingness_policy: pose, calibration, labels are None; never imputed
+split_manifest_ref: one video = one sequence; recording site is not documented, so videos may share a site
+duplicate_audit_ref: two videos with distinct sha256; no frame-level duplicate audit
+transformations:
+- transformation_id: uvvid-decode-v1
+  kind: TRANSFORM
+  description: OpenCV/FFmpeg decode of H.264 MP4 to uint8 BGR arrays; frame stride set by the adapter caller
+  version: 1.0.0
+  config_hash: 617d144fa3ff3b74f92d701e2a1e30972fec65d95533b025828f65b6b6dc9d87
+corruptions:
+- transformation_id: smoke-gaussian-blur
+  kind: CORRUPTION
+  description: DATA-REAL-SMOKE-E001 in-memory Gaussian blur, sigma from the experiment config
+  version: 1.0.0
+  config_hash: 0b2a7abbc47b0632ca8212a10e846dce659b3bda434947c04610c3c4195d19a8
+- transformation_id: smoke-gaussian-noise
+  kind: CORRUPTION
+  description: DATA-REAL-SMOKE-E001 in-memory additive Gaussian noise, seeded
+  version: 1.0.0
+  config_hash: cf3fbd122f71cf038ccbdc0ec75b6866a49019fbd0e61eb4376dfefd6488ec1d
+- transformation_id: smoke-darken
+  kind: CORRUPTION
+  description: DATA-REAL-SMOKE-E001 in-memory multiplicative darkening
+  version: 1.0.0
+  config_hash: f469802a31447f90d6a033d43f18db7ebfbee7cc3c378024bcc0f1573d3feef8
+adapter_version: uvvid_video-1.0.0
+transform_config_hash: 617d144fa3ff3b74f92d701e2a1e30972fec65d95533b025828f65b6b6dc9d87
+files:
+- path: raw/ROV_GoPro_1.mp4
+  sha256: fbdfbc39d7c2dc42e0ebf07b4298b5ccd01508bc0a3c9ff221f15c0462d810a2
+  byte_length: 6511081
+  stream: rov_gopro_video
+  modality: RGB
+  lineage:
+    sequence: uvvid/visual/ROV_GoPro_1
+  sequence_index: 0
+- path: raw/ROV_GoPro_4.mp4
+  sha256: e364f2faf8c2cc1ed3798fd00e69b8d23548e912e2f90f2d6dd39e0f88b62ace
+  byte_length: 4276800
+  stream: rov_gopro_video
+  modality: RGB
+  lineage:
+    sequence: uvvid/visual/ROV_GoPro_4
+  sequence_index: 1
+units:
+  time: ns (converted from container ms)
+  image: uint8 BGR 0-255
+frames:
+  rov_gopro_video: uvvid.rov_gopro.camera_optical
+labels: []
+modalities:
+- RGB
+split_strategy:
+- sequence
+permitted_tasks:
+- ECMER quality-feature extraction
+- ECMER encoding smoke
+- unlabelled representation research
+required_files_note: null
+unsupported_claims:
+- structural condition
+- ecological labels
+- metric trajectory accuracy
+intended_role: 'UVVID: underwater visual/visual-inertial sequences (DTU, roughly planar walls and seabottom).'
 remaining_verification:
-- 'OPEN: identify exact release, sensors, labels, calibration and terms'
-- source_audit_state=OPEN_SOURCE_AUDIT
-required_files_note: 'DATA-VERIFY must produce: source URL, paper/release identifier, asset inventory
-  with sha256, license evidence, task-label audit, adapter smoke test'
-files: []
+- a larger sample, and the visual-inertial Saltholm/Orientkaj subsets, need their own README review

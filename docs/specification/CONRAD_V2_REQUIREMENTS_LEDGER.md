@@ -5,9 +5,9 @@ Statuses are derived from the files present in the repository; do not edit this 
 
 | status | count |
 |---|---|
-| TESTED | 77 |
-| INTEGRATED | 3 |
-| EVALUATED | 8 |
+| TESTED | 74 |
+| INTEGRATED | 5 |
+| EVALUATED | 9 |
 | BLOCKED_EXTERNAL | 2 |
 | BLOCKED_OPEN_DECISION | 4 |
 
@@ -58,11 +58,11 @@ Statuses are derived from the files present in the repository; do not edit this 
 | REQ-T2T-001 | ch10-11; ch33 | EXPERIMENTAL_CANDIDATE | TESTED |  | Twin2T hierarchy, corrosion + fatigue with validity masks, MCDE coupling, interventions |  |
 | REQ-M2T-001 | ch10; ch33 TCDP | EXPERIMENTAL_CANDIDATE | EVALUATED | 2T: NOT_RUN | Model2T persistent structural belief, direct vs propagated support, TCDP constrained propagation |  |
 | REQ-T2E-001 | ch12-13; ch33 | EXPERIMENTAL_CANDIDATE | TESTED |  | Twin2E fields + entities, MEIFE, disturbances, counterfactuals |  |
-| REQ-M2E-001 | ch12; ch33 CEFD | EXPERIMENTAL_CANDIDATE | EVALUATED | 2E: NOT_RUN | Model2E separate entity/field beliefs and CEFD coupling with provenance |  |
+| REQ-M2E-001 | ch12; ch33 CEFD | EXPERIMENTAL_CANDIDATE | EVALUATED | 2E: FAIL | Model2E separate entity/field beliefs and CEFD coupling with provenance |  |
 | REQ-BUS-001 | ch2 Belief Bus | FROZEN_CONTRACT | TESTED |  | Asynchronous versioned bus, availability states, failure isolation, cross-domain context only |  |
 | REQ-XDOM-001 | ch2 Cross-domain | FROZEN_CONTRACT | TESTED |  | Children never mutate each other; typed uncertain cross-domain relations; biofouling != corrosion |  |
 | REQ-SIM-KERNEL | ch20-21; ADR-0005 | FROZEN_CONTRACT | TESTED |  | 6-DOF underwater dynamics, thruster/sensor/power models, fault injection, validity level L1 |  |
-| REQ-UNITY-001 | ch21; prompt s45-48 | INTERFACE_FROZEN | TESTED | U0: NOT_RUN | Unity V2 C# project (8 modules) and Python bridge adapter |  |
+| REQ-UNITY-001 | ch21; prompt s45-48 | INTERFACE_FROZEN | INTEGRATED | U0: PASS | Unity V2 C# project (8 modules) and Python bridge adapter |  |
 | REQ-EST-001 | ch20 State estimator | EXPERIMENTAL_CANDIDATE | TESTED |  | Conventional estimator baseline with covariance and health; consumes RHI only |  |
 | REQ-NAV-001 | ch20 Navigation | EXPERIMENTAL_CANDIDATE | TESTED |  | Waypoint, global/local planning, obstacle avoidance, trajectory, station keeping, pipeline following, standoff |  |
 | REQ-CTRL-001 | ch20 Controller/Allocation | EXPERIMENTAL_CANDIDATE | TESTED |  | Classical PID baseline; allocation from RobotConfig geometry with saturation/deadzone/asymmetry/faults |  |
@@ -71,9 +71,9 @@ Statuses are derived from the files present in the repository; do not edit this 
 | REQ-MCBR-001 | ch18; ch33 MCBR | EXPERIMENTAL_CANDIDATE | TESTED |  | MCBR: InformationNeed -> ObservationPlan, cause-specific strategies, feasibility before ranking, baselines, never moves the robot |  |
 | REQ-BAAC-001 | ch19; ch33 BAAC | EXPERIMENTAL_CANDIDATE | TESTED |  | BAAC: receiver model, semantic deltas, progressive fidelity, store-and-forward, channel simulator, baselines |  |
 | REQ-SCEN-001 | ch2 Shared scenario; prompt s77 | FROZEN_CONTRACT | TESTED |  | One shared scenario feeds all twins with shared world-entity IDs; impossible worlds rejected |  |
-| REQ-INT-I1 | ch25 Phase 5; gate I1 | FROZEN_CONTRACT | TESTED | I1: BLOCKED_UPSTREAM | Twin2S -> sim -> sensors -> ECMER -> Model2S persistent spatial belief, no leakage |  |
-| REQ-INT-I2 | ch25 Phase 6; gate I2 | FROZEN_CONTRACT | TESTED | I2: BLOCKED_UPSTREAM | Autonomous movement on estimated state; nav benchmarks |  |
-| REQ-INT-I3 | ch25 Phase 7; gate I3 | FROZEN_CONTRACT | TESTED | I3: BLOCKED_UPSTREAM | Structural inspection with partial observations and persistent uncertain 2T state |  |
+| REQ-INT-I1 | ch25 Phase 5; gate I1 | FROZEN_CONTRACT | INTEGRATED | I1: PASS | Twin2S -> sim -> sensors -> ECMER -> Model2S persistent spatial belief, no leakage |  |
+| REQ-INT-I2 | ch25 Phase 6; gate I2 | FROZEN_CONTRACT | TESTED | I2: FAIL | Autonomous movement on estimated state; nav benchmarks |  |
+| REQ-INT-I3 | ch25 Phase 7; gate I3 | FROZEN_CONTRACT | TESTED | I3: FAIL | Structural inspection with partial observations and persistent uncertain 2T state |  |
 | REQ-INT-I4 | ch25 Phase 8; ch35 P1; gate I4 | FROZEN_CONTRACT | TESTED | I4: BLOCKED_UPSTREAM | Flagship closed active inspection, quantified and replayable |  |
 | REQ-INT-I5 | ch25 Phase 9; gate I5 | FROZEN_CONTRACT | TESTED | I5: BLOCKED_UPSTREAM | Model1 decision autonomy integrated; hard constraints deterministic |  |
 | REQ-INT-I6 | ch25 Phase 10; gate I6 | FROZEN_CONTRACT | TESTED | I6: BLOCKED_UPSTREAM | 2E integrated into multi-domain belief through the bus |  |
@@ -82,7 +82,7 @@ Statuses are derived from the files present in the repository; do not edit this 
 | REQ-HW-013 | ch22; ch25 Phase 13 | EXPERIMENTAL_CANDIDATE | TESTED |  | Parameter identification tooling; identification data separated from validation data |  |
 | REQ-HIL-014 | ch22; ch25 Phase 14; gate I8 | FROZEN_CONTRACT | TESTED | I8: BLOCKED_EXTERNAL | HIL harness with latency/CPU/RAM/backlog/deadline metrics; host mode |  |
 | REQ-PHY-015 | ch22; ch25 Phase 15; gate I9 | FROZEN_CONTRACT | BLOCKED_EXTERNAL | I9: BLOCKED_EXTERNAL | Readiness ladder R0-R6 and autonomy activation ladder that cannot skip gates |  |
-| REQ-DATA-001 | ch24; prompt s92-93 | FROZEN_CONTRACT | TESTED |  | Dataset registry, manifests, adapters; models never own dataset loading |  |
+| REQ-DATA-001 | ch24; prompt s92-93 | FROZEN_CONTRACT | EVALUATED |  | Dataset registry, manifests, adapters; models never own dataset loading |  |
 | REQ-DATA-002 | prompt s91; INV-ARCH-09 | FROZEN_CONTRACT | TESTED |  | Lineage-aware splits; OOD holds out structural families |  |
 | REQ-DATA-003 | ch35 P2 | FROZEN_CONTRACT | TESTED |  | DATA-CONRAD-SSL-01 corpus tooling and acceptance report |  |
 | REQ-DATA-004 | ch35 P4 | FROZEN_CONTRACT | TESTED |  | SIMREAL-LEDGER-01 randomization ledger |  |

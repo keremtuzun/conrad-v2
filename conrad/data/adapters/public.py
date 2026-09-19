@@ -1,4 +1,6 @@
-"""Public-dataset candidates (ch24). None of them is downloaded, licensed or verified here.
+"""Public-dataset candidates (ch24). Per-candidate verdicts: docs/audits/PUBLIC_DATA_PROCUREMENT.md.
+
+Only ``public.uvvid`` has a verified local sample; it is read by :class:`UvvidVideoAdapter`, not here.
 
 Each candidate has a manifest template under ``datasets/public/``. The adapter is deliberately
 not a silent stub: every data-access method raises :class:`DatasetNotAvailableError` naming the

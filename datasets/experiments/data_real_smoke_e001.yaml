@@ -1,0 +1,17 @@
+# DATA-REAL-SMOKE-E001: ECMER quality features + encoding on real UVVID frames (CC BY 4.0).
+experiment: {id: DATA-REAL-SMOKE-E001}
+hypothesis: >-
+  Engineered ECMER quality features move in the physically expected direction under controlled
+  blur / noise / darkening of real UVVID frames, and the ECMER encoder yields finite contract-valid Evidence.
+manifest_id: public.uvvid
+seeds: [2026201, 2026202, 2026203]
+frame_stride: 15            # ~1 frame per second at the videos' ~15 fps
+max_frames_per_sequence: 24
+corruptions:
+  blur_sigma_px: 3.0
+  noise_sigma_u8: 20.0
+  darken_factor: 0.4
+pass_fraction: 0.9          # ENGINEERING_ESTIMATE acceptance for a smoke check
+primary_metric: min_fraction_expected_direction
+direction: higher
+baselines: [clean_frames]

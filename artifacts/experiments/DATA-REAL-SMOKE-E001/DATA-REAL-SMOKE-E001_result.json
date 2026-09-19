@@ -1,0 +1,362 @@
+{
+  "experiment_id": "DATA-REAL-SMOKE-E001",
+  "dataset": {
+    "manifest_id": "public.uvvid",
+    "manifest_digest": "e5a3972d252a2651017e229d87ee1e32d6383cdf022af640d5bacd5a1cc4097d",
+    "files_digest": "737c88d46cafd30805663ba6bcd7794a06fbeee5fe59c518f2448d55a9e86b21",
+    "license": "CC-BY-4.0",
+    "release_id": "doi:10.11583/DTU.27694068.v5 (version 5, published 2026-08-21)",
+    "adapter": "uvvid_video@uvvid_video-1.0.0",
+    "verify_problems": 0
+  },
+  "n_sequences": 2,
+  "n_observations": 48,
+  "sequences": {
+    "uvvid/visual/ROV_GoPro_1": {
+      "n_frames": 24,
+      "frame_shape": [
+        240,
+        432,
+        3
+      ],
+      "time_span_s": 23.023,
+      "median_dt_ms": 1001.0,
+      "pose_available": false,
+      "calibration_available": false,
+      "quality": {
+        "blur": {
+          "n": 24.0,
+          "mean": 0.9528639030719267,
+          "std": 0.017955907670740307,
+          "min": 0.9217380802265592,
+          "max": 0.9804250733768909
+        },
+        "brightness": {
+          "n": 24.0,
+          "mean": 0.304635533289962,
+          "std": 0.010190443959653326,
+          "min": 0.2798829732510288,
+          "max": 0.32543625938029536
+        },
+        "contrast": {
+          "n": 24.0,
+          "mean": 0.0355923536704787,
+          "std": 0.005311685895413676,
+          "min": 0.024927840774833013,
+          "max": 0.04311648006089934
+        },
+        "snr_db": {
+          "n": 24.0,
+          "mean": 40.050043762469464,
+          "std": 1.7626291813299584,
+          "min": 37.61900762935218,
+          "max": 41.9493425246591
+        },
+        "saturation_fraction": {
+          "n": 24.0,
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      }
+    },
+    "uvvid/visual/ROV_GoPro_4": {
+      "n_frames": 24,
+      "frame_shape": [
+        240,
+        432,
+        3
+      ],
+      "time_span_s": 23.023,
+      "median_dt_ms": 1001.0,
+      "pose_available": false,
+      "calibration_available": false,
+      "quality": {
+        "blur": {
+          "n": 24.0,
+          "mean": 0.5642057993076369,
+          "std": 0.15209284063250056,
+          "min": 0.271086835752934,
+          "max": 0.8439655143861752
+        },
+        "brightness": {
+          "n": 24.0,
+          "mean": 0.5069214097676108,
+          "std": 0.020534591979637352,
+          "min": 0.46759584543694027,
+          "max": 0.5451741406439118
+        },
+        "contrast": {
+          "n": 24.0,
+          "mean": 0.06731343213156428,
+          "std": 0.010226136218505044,
+          "min": 0.04961336209956795,
+          "max": 0.08260403359826389
+        },
+        "snr_db": {
+          "n": 24.0,
+          "mean": 40.92493700976564,
+          "std": 1.9517040044610139,
+          "min": 37.28967177149301,
+          "max": 46.22331394878348
+        },
+        "saturation_fraction": {
+          "n": 24.0,
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      }
+    }
+  },
+  "quality_all_frames": {
+    "blur": {
+      "n": 48.0,
+      "mean": 0.7585348511897818,
+      "std": 0.22246596099490154,
+      "min": 0.271086835752934,
+      "max": 0.9804250733768909
+    },
+    "brightness": {
+      "n": 48.0,
+      "mean": 0.40577847152878643,
+      "std": 0.10243364322094156,
+      "min": 0.2798829732510288,
+      "max": 0.5451741406439118
+    },
+    "contrast": {
+      "n": 48.0,
+      "mean": 0.05145289290102149,
+      "std": 0.017831170438001698,
+      "min": 0.024927840774833013,
+      "max": 0.08260403359826389
+    },
+    "snr_db": {
+      "n": 48.0,
+      "mean": 40.48749038611755,
+      "std": 1.9103310248471737,
+      "min": 37.28967177149301,
+      "max": 46.22331394878348
+    },
+    "saturation_fraction": {
+      "n": 48.0,
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    }
+  },
+  "corruption_response": {
+    "blur": {
+      "seed_2026201": {
+        "blur": {
+          "expected_sign": 1,
+          "mean_delta": 0.23790700762953718,
+          "fraction_expected_direction": 1.0
+        }
+      },
+      "seed_2026202": {
+        "blur": {
+          "expected_sign": 1,
+          "mean_delta": 0.23790700762953718,
+          "fraction_expected_direction": 1.0
+        }
+      },
+      "seed_2026203": {
+        "blur": {
+          "expected_sign": 1,
+          "mean_delta": 0.23790700762953718,
+          "fraction_expected_direction": 1.0
+        }
+      }
+    },
+    "noise": {
+      "seed_2026201": {
+        "snr_db": {
+          "expected_sign": -1,
+          "mean_delta": -21.562363756025274,
+          "fraction_expected_direction": 1.0
+        }
+      },
+      "seed_2026202": {
+        "snr_db": {
+          "expected_sign": -1,
+          "mean_delta": -21.561690734476173,
+          "fraction_expected_direction": 1.0
+        }
+      },
+      "seed_2026203": {
+        "snr_db": {
+          "expected_sign": -1,
+          "mean_delta": -21.56823957973279,
+          "fraction_expected_direction": 1.0
+        }
+      }
+    },
+    "darken": {
+      "seed_2026201": {
+        "brightness": {
+          "expected_sign": -1,
+          "mean_delta": -0.2442840921412289,
+          "fraction_expected_direction": 1.0
+        },
+        "contrast": {
+          "expected_sign": -1,
+          "mean_delta": -0.030855409156884107,
+          "fraction_expected_direction": 1.0
+        }
+      },
+      "seed_2026202": {
+        "brightness": {
+          "expected_sign": -1,
+          "mean_delta": -0.2442840921412289,
+          "fraction_expected_direction": 1.0
+        },
+        "contrast": {
+          "expected_sign": -1,
+          "mean_delta": -0.030855409156884107,
+          "fraction_expected_direction": 1.0
+        }
+      },
+      "seed_2026203": {
+        "brightness": {
+          "expected_sign": -1,
+          "mean_delta": -0.2442840921412289,
+          "fraction_expected_direction": 1.0
+        },
+        "contrast": {
+          "expected_sign": -1,
+          "mean_delta": -0.030855409156884107,
+          "fraction_expected_direction": 1.0
+        }
+      }
+    }
+  },
+  "ecmer_encoding_untrained": {
+    "seed_2026201": {
+      "clean": {
+        "n_evidence": 48.0,
+        "embedding_dim": 256.0,
+        "all_finite": 1.0,
+        "reliability_mean": 0.5162596081693968,
+        "ood_score_mean": 0.47627508888641995,
+        "provenance_direct": 1.0,
+        "validity_VALID": 48.0
+      },
+      "blur": {
+        "n_evidence": 48.0,
+        "embedding_dim": 256.0,
+        "all_finite": 1.0,
+        "reliability_mean": 0.5157019595305125,
+        "ood_score_mean": 0.47613410154978436,
+        "provenance_direct": 1.0,
+        "validity_VALID": 48.0
+      },
+      "noise": {
+        "n_evidence": 48.0,
+        "embedding_dim": 256.0,
+        "all_finite": 1.0,
+        "reliability_mean": 0.5178678917388121,
+        "ood_score_mean": 0.4764994718134403,
+        "provenance_direct": 1.0,
+        "validity_VALID": 48.0
+      },
+      "darken": {
+        "n_evidence": 48.0,
+        "embedding_dim": 256.0,
+        "all_finite": 1.0,
+        "reliability_mean": 0.5153155078490576,
+        "ood_score_mean": 0.4757426604628563,
+        "provenance_direct": 1.0,
+        "validity_VALID": 48.0
+      }
+    },
+    "seed_2026202": {
+      "clean": {
+        "n_evidence": 48.0,
+        "embedding_dim": 256.0,
+        "all_finite": 1.0,
+        "reliability_mean": 0.48013208247721195,
+        "ood_score_mean": 0.47153751117487747,
+        "provenance_direct": 1.0,
+        "validity_DEGRADED": 48.0
+      },
+      "blur": {
+        "n_evidence": 48.0,
+        "embedding_dim": 256.0,
+        "all_finite": 1.0,
+        "reliability_mean": 0.47991556860506535,
+        "ood_score_mean": 0.47140124812722206,
+        "provenance_direct": 1.0,
+        "validity_DEGRADED": 48.0
+      },
+      "noise": {
+        "n_evidence": 48.0,
+        "embedding_dim": 256.0,
+        "all_finite": 1.0,
+        "reliability_mean": 0.48085472732782364,
+        "ood_score_mean": 0.4718411347518365,
+        "provenance_direct": 1.0,
+        "validity_DEGRADED": 48.0
+      },
+      "darken": {
+        "n_evidence": 48.0,
+        "embedding_dim": 256.0,
+        "all_finite": 1.0,
+        "reliability_mean": 0.4797637189428012,
+        "ood_score_mean": 0.47144682457049686,
+        "provenance_direct": 1.0,
+        "validity_DEGRADED": 48.0
+      }
+    },
+    "seed_2026203": {
+      "clean": {
+        "n_evidence": 48.0,
+        "embedding_dim": 256.0,
+        "all_finite": 1.0,
+        "reliability_mean": 0.4891435361156861,
+        "ood_score_mean": 0.5000498636315266,
+        "provenance_direct": 1.0,
+        "validity_VALID": 48.0
+      },
+      "blur": {
+        "n_evidence": 48.0,
+        "embedding_dim": 256.0,
+        "all_finite": 1.0,
+        "reliability_mean": 0.4887327291071415,
+        "ood_score_mean": 0.49979246966540813,
+        "provenance_direct": 1.0,
+        "validity_VALID": 48.0
+      },
+      "noise": {
+        "n_evidence": 48.0,
+        "embedding_dim": 256.0,
+        "all_finite": 1.0,
+        "reliability_mean": 0.4907237434138854,
+        "ood_score_mean": 0.5007193436225256,
+        "provenance_direct": 1.0,
+        "validity_VALID": 48.0
+      },
+      "darken": {
+        "n_evidence": 48.0,
+        "embedding_dim": 256.0,
+        "all_finite": 1.0,
+        "reliability_mean": 0.48870707924167317,
+        "ood_score_mean": 0.5003258244444927,
+        "provenance_direct": 1.0,
+        "validity_VALID": 48.0
+      }
+    }
+  },
+  "min_fraction_expected_direction": 1.0,
+  "pass_fraction": 0.9,
+  "quality_response_check": "PASS",
+  "limitations": [
+    "2 short UVVID videos, subsampled; not a benchmark",
+    "no labels, pose or calibration: nothing is scored against truth",
+    "ECMER weights are random: reliability/OOD values support no claim",
+    "corruptions are synthetic perturbations of real frames"
+  ]
+}

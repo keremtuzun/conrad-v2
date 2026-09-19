@@ -1,31 +1,43 @@
-# TEMPLATE ONLY. Conrad has NOT downloaded, licensed, inspected or verified this dataset.
-# Candidate name and role come from specification ch24; every OPEN field must be closed by a
-# DATA-VERIFY / DATA-RIGHTS-01 / DATA-SPLIT-01 task with evidence before status may change.
-# No statistic, URL, license or label in this file may be filled from memory or by analogy.
+# Public-data procurement audit 2026-09-19 (docs/audits/PUBLIC_DATA_PROCUREMENT.md).
+# Every licence/URL below was read from the cited page on that date. Anything not read is OPEN.
+# procurement_status is the rights verdict; status says whether any data is on disk.
 schema_version: 1.0.0
 dataset_id: public.subpipe
-version: UNPINNED
-manifest_version: 1
+version: zenodo-12666132-v3.0.1
+manifest_version: 2
 status: UNVERIFIED_NOT_DOWNLOADED
+procurement_status: APPROVED_WITH_RESTRICTIONS
+verified_on: '2026-09-19'
 source_category: PUBLIC_REAL
-source: OPEN
-release_id: OPEN
+source: https://zenodo.org/records/12666132
+source_urls:
+- https://zenodo.org/records/12666132
+- https://zenodo.org/api/records/12666132
+- https://github.com/remaro-network/SubPipe-dataset
+release_id: doi:10.5281/zenodo.12666132 (version 3.0.1, published 2024-07-05)
 retrieved_at: OPEN
-license: REVIEW_REQUIRED
-license_evidence_ref: OPEN
-usage_rights: REVIEW_REQUIRED
-rights_review_status: REVIEW_REQUIRED
+license: CC-BY-4.0
+license_evidence_ref: Zenodo record metadata license.id=cc-by-4.0 (https://zenodo.org/api/records/12666132), read
+  2026-09-19
+usage_rights: 'CC-BY-4.0: research and commercial use, redistribution and adaptation with attribution'
+rights_review_status: CLEARED
 rights_by_asset_ref: OPEN
 redistribution_allowed: false
 deployment_allowed: false
-training_allowed: false
+training_allowed: true
+conrad_tasks:
+- 2S
+- ECMER-SSL (only via an approved manifest)
+- 2T domain-appearance context only
+restrictions:
+- attribution to the SubPipe authors and the Zenodo DOI is required
+- 'not downloaded: smallest archive SubPipeMini2.zip is 4,945,761,374 bytes, above the 200 MB sample budget'
+forbidden_uses:
+- pipeline segmentation masks must not supervise 2T material loss, corrosion or fatigue condition
+- no structural hidden-state labels exist
 checksum: OPEN
-modalities: []
-labels: []
 label_schema_ref: OPEN
 label_quality_report_ref: OPEN
-units: {}
-frames: {}
 coordinate_frames_ref: OPEN
 calibration_ref: OPEN
 timestamps:
@@ -36,26 +48,25 @@ timestamps:
 synchronization: []
 truth_availability: UNVERIFIED
 missingness_policy: OPEN
-split_strategy: []
 split_manifest_ref: OPEN
 duplicate_audit_ref: OPEN
 transformations: []
 corruptions: []
 adapter_version: OPEN
 transform_config_hash: OPEN
+files: []
+units: {}
+frames: {}
+labels: []
+modalities: []
+split_strategy: []
 permitted_tasks: []
+required_files_note: 'DATA-VERIFY must produce: asset inventory with sha256, task-label audit, adapter smoke test'
 unsupported_claims:
 - true material loss labels
 - fatigue labels inferred from pipeline segmentation
-intended_role: 'SubPipe: Underwater pipeline segmentation, visual-inertial localization and sonar perception;
-  candidate 2S/ECMER data.'
+intended_role: 'SubPipe: underwater pipeline segmentation, visual-inertial localization and sonar perception; candidate
+  2S/ECMER data.'
 remaining_verification:
-- Pin release/assets
-- verify data terms
-- verify timestamp alignment
-- verify calibration
-- verify split boundaries
-- source_audit_state=SOURCE_POINTER_CHECKED_2026-09-17
-required_files_note: 'DATA-VERIFY must produce: source URL, paper/release identifier, asset inventory
-  with sha256, license evidence, task-label audit, adapter smoke test'
-files: []
+- 'download needs >4.9 GB: requires an explicit budget decision'
+- inspect modalities, timestamps, calibration and chunk/sequence boundaries from the archive README
