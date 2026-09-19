@@ -43,6 +43,7 @@ R_HEALTH_FAULT = "SYSTEM_HEALTH_FAULT"
 R_LEAK = "LEAK_DETECTED"
 R_BATTERY = "BATTERY_BELOW_RESERVE"
 R_ENERGY = "INSUFFICIENT_ENERGY"
+R_TIME = "TIME_BELOW_RESERVE"
 R_RISK = "RISK_LIMIT_EXCEEDED"
 R_MOTION = "MOTION_NOT_PERMITTED"
 R_BOUNDARY = "OUTSIDE_MISSION_BOUNDARY"
@@ -169,6 +170,9 @@ class ConstraintEngine:
         battery = None if ctx.resource_state is None else ctx.resource_state.battery_fraction
         if battery is not None and battery < self.c.battery_reserve_fraction and not retreat:
             out.append(R_BATTERY)
+        time_left = None if ctx.resource_state is None else ctx.resource_state.time_remaining_s
+        if time_left is not None and time_left < self.c.time_reserve_s and not retreat:
+            out.append(R_TIME)
         needed = action.parameters.get("estimated_energy_j")
         remaining = None if ctx.resource_state is None else ctx.resource_state.energy_remaining_j
         if isinstance(needed, int | float) and remaining is not None and needed > remaining:

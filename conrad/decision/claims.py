@@ -31,9 +31,11 @@ from conrad.decision.graph import (  # re-exported: public names live in conrad.
     _prop,
     diagnose_causes,
 )
+from conrad.decision.route import OCCUPANCY_PROPERTY, route_blockers
 from conrad.schemas.belief import Availability, BeliefMessage, KnowledgeStatus
 from conrad.schemas.decision import (
     ActionProposal,
+    ActionType,
     ClaimEdgeType,
     ClaimType,
     DecisionClaim,
@@ -56,6 +58,7 @@ class ClaimGraphBuilder:
         self._state_nodes(ctx, graph)
         for requirement in sorted(ctx.requirements, key=lambda r: (-r.consequence, r.requirement_id.int)):
             self._requirement(ctx, requirement, graph)
+        self._route(ctx, graph)
         for need in ctx.active_information_needs:
             graph.add(
                 DecisionClaim(
@@ -85,6 +88,9 @@ class ClaimGraphBuilder:
                 continue
             for claim_id in action.supporting_claims:
                 graph.connect(action.action_id, claim_id, ClaimEdgeType.DEPENDS_ON)
+            if action.action_type is ActionType.CONTINUE_MISSION:
+                for claim_id in graph.route_blocking_claim_ids:
+                    graph.connect(claim_id, action.action_id, ClaimEdgeType.BLOCKS)
             for claim_id in action.parameters.get("motivating_claims", ()):
                 graph.connect(action.action_id, UUID(str(claim_id)), ClaimEdgeType.RESOLVES)
             for res in resources:
@@ -102,6 +108,34 @@ class ClaimGraphBuilder:
                     graph.connect(outcome.claim_id, action.action_id, ClaimEdgeType.DEPENDS_ON)
 
     # ------------------------------------------------------------------ internals
+    def _route(self, ctx: DecisionContext, graph: ClaimGraph) -> None:
+        """Grounded obstacle claims on the planned route (ch17 'Replanning'). They BLOCK continuing."""
+        for m in route_blockers(ctx, self.config):
+            prop = _prop(m, OCCUPANCY_PROPERTY)
+            node = DecisionClaim(
+                claim_id=self._ids.new(),
+                claim_type=ClaimType.BELIEF_CLAIM,
+                statement=f"{m.domain.value} occupancy of belief {m.belief_id} on the planned route",
+                structured_value={
+                    "property": OCCUPANCY_PROPERTY,
+                    "value": True,
+                    "knowledge_status": m.knowledge_status.value,
+                    "domain": m.domain.value,
+                    "route_blocking": True,
+                    "issues": [],
+                    "stale": False,
+                    "provenance_refs": [str(p) for p in m.provenance_refs],
+                },
+                source_belief_ids=(m.belief_id,),
+                source_belief_revisions=(m.revision,),
+                evidence_refs=m.evidence_support,
+                uncertainty=prop.uncertainty if prop is not None else m.uncertainty,
+                timestamp=m.timestamp,
+                grounding=GroundingStatus.GROUNDED,  # route_blockers() only returns evidence-backed beliefs
+            )
+            if graph.add(node):
+                graph.route_blocking_claim_ids.append(node.claim_id)
+
     def _state_nodes(self, ctx: DecisionContext, graph: ClaimGraph) -> None:
         if ctx.resource_state is not None:
             graph.add(
@@ -220,10 +254,17 @@ class ClaimGraphBuilder:
         if disagreeing:
             issues.append(ISSUE_CROSS_DOMAIN)
 
-        effective = _max_uncertainty(uncertainties)
-        if effective is not None:
-            effective = self._effective(effective, issues, req)
+        raw = _max_uncertainty(uncertainties)
+        effective = None if raw is None else self._effective(raw, issues, req)
         causes = () if effective is None else diagnose_causes(effective, self.config)
+        # U_E over threshold only because of the uncalibrated-source floor: a calibration gap, not OOD evidence.
+        # An independent confirming observation can close it, so it must not be read as "no autonomous path".
+        calibration_only = (
+            raw is not None
+            and effective is not None
+            and UncertaintyType.EPISTEMIC in causes
+            and raw.epistemic < self.config.thresholds.epistemic
+        )
         if ISSUE_CROSS_DOMAIN in issues and UncertaintyType.OBSERVATIONAL not in causes:
             causes = (*causes, UncertaintyType.OBSERVATIONAL)
         matters = req.consequence >= self.config.consequence_matters_above
@@ -246,6 +287,7 @@ class ClaimGraphBuilder:
                 consequence=req.consequence,
                 matters=matters,
                 satisfied=satisfied,
+                calibration_only_epistemic=calibration_only,
             )
         )
 

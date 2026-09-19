@@ -33,6 +33,7 @@ from conrad.schemas.ids import IdFactory
 from conrad.schemas.robot import HealthLevel
 
 ACTION_VOCABULARY: frozenset[ActionType] = frozenset(ActionType)
+REPLAN_ROUTE_BLOCKED = "ROUTE_BLOCKED"
 
 INFORMATION_ACTIONS = frozenset(
     {
@@ -111,7 +112,22 @@ class CandidateActionGenerator:
             link_up = ctx.link_state is not None and ctx.link_state.status is not LinkStatus.DOWN
             kind = ActionType.TRANSMIT_INFORMATION if link_up else ActionType.STORE_AND_FORWARD
             out.append(self._make(kind, targets=ids, parameters={"intent": "REPORT_FINDING"}))
-        if any(a.matters and not a.satisfied for a in graph.assessments) and self._exhausted(graph, ctx):
+        if graph.route_blocking_claim_ids:
+            # a grounded obstacle belief sits on the planned route (ch17 'Replanning'); the replan relies on it
+            blockers = tuple(graph.route_blocking_claim_ids)
+            out.append(
+                self._make(
+                    ActionType.REPLAN,
+                    supporting=blockers,
+                    parameters={
+                        "reason": REPLAN_ROUTE_BLOCKED,
+                        "blocking_belief_ids": sorted(
+                            str(b) for c in blockers if (n := graph.get(c)) for b in n.source_belief_ids
+                        ),
+                    },
+                )
+            )
+        elif any(a.matters and not a.satisfied for a in graph.assessments) and self._exhausted(graph, ctx):
             out.append(self._make(ActionType.REPLAN, parameters={"reason": "INFORMATION_ATTEMPTS_EXHAUSTED"}))
         assert all(a.action_type in ACTION_VOCABULARY for a in out)
         return out
@@ -151,11 +167,14 @@ class CandidateActionGenerator:
             if cause is UncertaintyType.EPISTEMIC:
                 used = set(ctx.mission.notes.get("modalities_used", []))
                 alternates = [m for m in ctx.available_modalities if m not in used]
-                if not alternates:
-                    continue  # no autonomous resolution: ESCALATE stays the legitimate option
+                if not alternates and not a.calibration_only_epistemic:
+                    continue  # OOD, no alternate evidence: no autonomous resolution, ESCALATE stays legitimate
                 question = QuestionType.CONFIRM_CONDITION
-                params["require_alternate_modality"] = True
+                params["require_alternate_modality"] = bool(alternates)
                 params["alternate_modalities"] = alternates
+                if a.calibration_only_epistemic:
+                    # uncalibrated source, not OOD: an independent confirming look (any modality) closes it
+                    params["calibration_check"] = True
             if cause is UncertaintyType.ALEATORIC and len(ctx.available_modalities) > 1:
                 out.append(
                     self._make(

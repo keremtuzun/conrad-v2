@@ -1,0 +1,15 @@
+# M1-ACTION-E001: I5 decision-autonomy action matrix (SYNTHETIC_ONLY belief fixtures).
+# Final evaluation on the LOCAL final_test seed list of conrad.evaluation.decision_experiments.action_matrix.SEEDS
+# (7300000..7300009). Development seeds 7100000..7100009 were the only ones used while fixing the policy.
+experiment_id: M1-ACTION-E001
+hypothesis: >-
+  Under imperfect beliefs EGDC chooses an action in the spec-derived expected set for every condition, uses each
+  required I5 action in its canonical scenario class, and never gets an invalid action past the constraint engine.
+partition: final_test
+seeds: [7300000, 7300001, 7300002, 7300003, 7300004, 7300005, 7300006, 7300007, 7300008, 7300009]
+n_per_condition_per_seed: 10
+# ENGINEERING_ESTIMATE: ch25 leaves the I5 recall bound OPEN.
+canonical_recall_floor: 0.9
+baselines: [naive_act_on_claims]
+primary_metric: egdc_structured.per_class.*.recall
+direction: higher

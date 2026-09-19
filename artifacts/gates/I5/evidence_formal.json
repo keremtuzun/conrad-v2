@@ -1,0 +1,55 @@
+{
+  "gate_id": "I5",
+  "evidence_class": "FORMAL",
+  "execution_path": "pytest nodes + retained experiment artifacts (I5)",
+  "git_commit": "06043d80c3c65301db0a3c1ebd301466e41cdb0a",
+  "criteria": [
+    {
+      "criterion": "continue",
+      "status": "PASS",
+      "measured": "test_i5_continue=PASS; experiment: continue: recall=1.0 n=100 floor=0.9 (ENGINEERING_ESTIMATE; spec bound OPEN)"
+    },
+    {
+      "criterion": "request evidence",
+      "status": "PASS",
+      "measured": "test_i5_request_evidence=PASS; experiment: request evidence: recall=1.0 n=770 floor=0.9 (ENGINEERING_ESTIMATE; spec bound OPEN)"
+    },
+    {
+      "criterion": "replan",
+      "status": "PASS",
+      "measured": "test_i5_replan=PASS; experiment: replan: recall=1.0 n=100 floor=0.9 (ENGINEERING_ESTIMATE; spec bound OPEN)"
+    },
+    {
+      "criterion": "change sensing",
+      "status": "PASS",
+      "measured": "test_i5_change_sensing=PASS; experiment: change sensing: recall=1.0 n=50 floor=0.9 (ENGINEERING_ESTIMATE; spec bound OPEN)"
+    },
+    {
+      "criterion": "return",
+      "status": "PASS",
+      "measured": "test_i5_return=PASS; experiment: return: recall=1.0 n=170 floor=0.9 (ENGINEERING_ESTIMATE; spec bound OPEN)"
+    },
+    {
+      "criterion": "escalate",
+      "status": "PASS",
+      "measured": "test_i5_escalate=PASS; experiment: escalate: recall=1.0 n=80 floor=0.9 (ENGINEERING_ESTIMATE; spec bound OPEN)"
+    },
+    {
+      "criterion": "hard constraints inviolable",
+      "status": "PASS",
+      "measured": "test_i5_hard_constraints_inviolable=PASS; test_artifact_is_final_split_and_large_enough=PASS; test_every_injected_invalid_kind_is_rejected=PASS; experiment: violations=0 (audit=0, injected accepted=0/210); UIR=0.0"
+    }
+  ],
+  "artifacts": [
+    "tests/acceptance/test_i5_action_matrix.py::test_artifact_is_final_split_and_large_enough",
+    "tests/acceptance/test_i5_action_matrix.py::test_i5_change_sensing",
+    "tests/acceptance/test_i5_action_matrix.py::test_i5_continue",
+    "tests/acceptance/test_i5_action_matrix.py::test_i5_escalate",
+    "tests/acceptance/test_i5_action_matrix.py::test_i5_hard_constraints_inviolable",
+    "tests/acceptance/test_i5_action_matrix.py::test_i5_replan",
+    "tests/acceptance/test_i5_action_matrix.py::test_i5_request_evidence",
+    "tests/acceptance/test_i5_action_matrix.py::test_i5_return",
+    "tests/unit/decision/test_action_semantics.py::test_every_injected_invalid_kind_is_rejected"
+  ],
+  "notes": ""
+}

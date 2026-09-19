@@ -8,6 +8,8 @@ from __future__ import annotations
 from collections.abc import Iterable
 from uuid import UUID
 
+from pydantic import Field
+
 from conrad.decision.config import DecisionConfig
 from conrad.schemas.base import ConradModel
 from conrad.schemas.belief import BeliefMessage, PropertyClaim
@@ -49,6 +51,10 @@ class RequirementAssessment(ConradModel):
     consequence: float
     matters: bool
     satisfied: bool
+    calibration_only_epistemic: bool = Field(
+        default=False,
+        description="U_E exceeds its threshold ONLY because of the uncalibrated-source floor (not OOD evidence)",
+    )
 
 
 class ClaimGraph:
@@ -59,6 +65,7 @@ class ClaimGraph:
         self.claims: list[DecisionClaim] = []
         self.edges: list[ClaimEdge] = []
         self.assessments: list[RequirementAssessment] = []
+        self.route_blocking_claim_ids: list[UUID] = []  # grounded obstacle claims on the planned route
         self.dropped_for_budget = 0
         self._by_id: dict[UUID, DecisionClaim] = {}
 

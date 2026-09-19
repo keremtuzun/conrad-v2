@@ -246,6 +246,7 @@ GATES: tuple[GateDefinition, ...] = (
             "return",
             "escalate",
             "hard constraints inviolable",
+            "actions exercised correctly inside integrated missions",
         ),
         formal_path="Model1 action-matrix suite on imperfect beliefs + integrated mission",
     ),

@@ -62,6 +62,8 @@ IMPLEMENTATION_METADATA = {
         "DecisionConfig.consequence_matters_above",
         "DecisionConfig.escalate_consequence_above",
         "ConsequenceConfig.costs/resolvability",
+        "ConsequenceConfig.operator_value_autonomous_factor/report_value/route_replan_value/blocked_route_risk",
+        "ConstraintConfig.time_reserve_s",
         "EGDCScorerConfig.* (conrad.decision.learned)",
     ],
     "assumptions": [
@@ -69,9 +71,20 @@ IMPLEMENTATION_METADATA = {
         "UIR counts world claims a decision RELIED ON; honestly labelled UNSUPPORTED claims are not inferences",
         "an OBSERVED belief without evidence_support has no evidence path and is UNSUPPORTED",
         "uncalibrated beliefs on consequential requirements get a configured epistemic floor",
+        "a U_E excess caused only by that floor is a calibration gap: confirm (any modality) before escalating",
+        "high U_A: repeat/improve the measurement first, change sensor mode once a repeat has been tried",
+        "the planned route is mission context in MissionState.notes['planned_route'] (SpatialSupport dicts)",
+        "time_remaining_s below ConstraintConfig.time_reserve_s is a hard reserve like battery (only when known)",
+        "an open consequential requirement counts against CONTINUE; operator value is discounted while an "
+        "autonomous path remains; a pending finding is worth its requirement's consequence to report once",
     ],
     "baselines": ["NaiveActOnClaimsPolicy (M1-UIR-E001)", "StructuredReasoningPolicy", "LearnedEGDCPolicy"],
-    "acceptance_tests": ["tests/unit/decision", "tests/property/decision", "M1-UIR-E001"],
+    "acceptance_tests": [
+        "tests/unit/decision",
+        "tests/property/decision",
+        "M1-UIR-E001",
+        "M1-ACTION-E001 (tests/acceptance/test_i5_action_matrix.py)",
+    ],
     "claim_status": "EVALUATED",
 }
 

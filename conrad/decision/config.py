@@ -23,12 +23,18 @@ class UncertaintyThresholds(ConradModel):
 
 
 class ConstraintConfig(ConradModel):
-    engine_version: str = "constraint-engine-0.2"
+    engine_version: str = "constraint-engine-0.3"
     battery_reserve_fraction: float = Field(default=0.2, ge=0, le=1)
     max_robot_state_age_s: float = Field(default=2.0, gt=0)
     max_belief_age_s: float = Field(default=30.0, gt=0)
     risk_limit: float = Field(default=0.6, ge=0, le=1)
     max_pose_sigma_m: float | None = Field(default=None, gt=0)
+    time_reserve_s: float = Field(
+        default=120.0,
+        ge=0,
+        description="ENGINEERING_ESTIMATE: below this mission time remaining only retreat/hold actions are "
+        "permitted; inactive when ResourceState.time_remaining_s is unknown (None)",
+    )
 
 
 class UtilityWeights(ConradModel):
