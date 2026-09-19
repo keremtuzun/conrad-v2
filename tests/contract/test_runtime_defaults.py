@@ -40,9 +40,23 @@ def test_model2core_rbp_default_off() -> None:
 
 
 def test_model2e_production_default_is_uncoupled() -> None:
+    """Ecological coupling (both directions) stays OFF; only the sensing-quality context is ON (ADR-0007
+    addendum). The switch set is exhaustive: a new switch must be added here deliberately."""
     sw = Model2EConfig().switches
-    assert sw.field_to_entity is False and sw.entity_to_field is False
+    assert sw.ecological_coupling is False
+    assert sw.entity_to_field is False
+    assert sw.observability_context is True
     assert sw == CefdSwitches()
+    assert set(CefdSwitches.model_fields) == {
+        "entities",
+        "fields",
+        "observability_context",
+        "ecological_coupling",
+        "entity_to_field",
+        "field_dynamics",
+        "spatial_correlation",
+    }
+    assert not hasattr(sw, "field_to_entity")
 
 
 def test_runtime_code_never_constructs_killed_candidates() -> None:

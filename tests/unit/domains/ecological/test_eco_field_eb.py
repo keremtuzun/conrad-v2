@@ -115,3 +115,60 @@ def test_static_baseline_is_one_uniform_level_without_variance_growth():
 
 def test_production_baseline_uses_the_production_switches():
     assert baseline_config("production").switches == Model2EConfig().switches
+
+
+def _step_world(cfg, jump_at=12, jump=15.0, steps=36, seed=7):
+    """Four stations, a uniform level of 2 NTU; station 0 reads every step, the others every 3rd step.
+    At ``jump_at`` the whole field jumps by ``jump`` (the 2E-E003 spike, abruptly)."""
+    rng = np.random.default_rng(seed)
+    pos = _stations(4, rng)
+    fg = FieldBeliefGrid(cfg)
+    out = []
+    for i in range(steps):
+        level = 2.0 + (jump if i >= jump_at else 0.0)
+        for s, p in enumerate(pos):
+            if s == 0 or i % 3 == 0:
+                fg.update_point("turbidity", 0, p, level + rng.normal(0, 0.1), SENSOR_VAR, i * 900 * NS)
+        mean, var = fg.moments_at_time("turbidity", i * 900 * NS)
+        out.append((level, mean[0], var[0]))
+    return fg, out
+
+
+def test_abrupt_change_is_detected_and_not_over_confident():
+    """2E-E003-R2 regression: a 15 NTU step used to give mean z^2 ~ 35 (DEV-derived drift priors assume small
+    deviations). With change-point intervention the jump is absorbed, stale stations carry its variance, and
+    the variogram (drift q, noise scale) is not polluted by the jump."""
+    no_cd = Model2EConfig(field_model={"change_detection": False})
+    fg0, out0 = _step_world(no_cd)
+    fg1, out1 = _step_world(Model2EConfig())
+
+    def z2(out, lo, hi):
+        return float(np.mean([np.mean((m - lv) ** 2 / v) for lv, m, v in out[lo:hi]]))
+
+    assert z2(out0, 12, 20) > 20.0  # the defect is reproduced without the mechanism
+    assert z2(out1, 12, 20) < 3.0
+    # after the jump the belief tracks the new level
+    lv, m, _ = out1[-1]
+    assert np.max(np.abs(m - lv)) < 0.5
+    fb1, fb0 = fg1.fields["turbidity"], fg0.fields["turbidity"]
+    _ = fb1.mean, fb0.mean
+    assert sum(len(s.changes[0]) for s in fb1.stations) >= 1
+    assert fb1.q[0] < fb0.q[0] and fb1.noise_scale[0] < fb0.noise_scale[0]
+
+
+def test_change_detection_is_quiet_on_a_stationary_field():
+    """No change points (beyond the 3-sigma false-alarm rate) and no drift inflation without a change."""
+    fg, out = _step_world(Model2EConfig(), jump=0.0, steps=48)
+    fb = fg.fields["turbidity"]
+    _ = fb.mean
+    n_reads = sum(len(s.buf[0]) for s in fb.stations)
+    n_changes = sum(len(s.changes[0]) for s in fb.stations)
+    assert n_changes <= max(1, round(0.01 * n_reads))
+    _, ref = _step_world(Model2EConfig(field_model={"change_detection": False}), jump=0.0, steps=48)
+    rmse = [float(np.sqrt(np.mean([np.mean((m - lv) ** 2) for lv, m, _ in o[12:]]))) for o in (out, ref)]
+    assert rmse[0] <= rmse[1] + 0.02
+
+
+def test_static_baseline_never_detects_changes():
+    fg, _ = _step_world(baseline_config("static_field"))
+    assert all(not s.changes[0] and s.qa[0] == 0.0 for s in fg.fields["turbidity"].stations)

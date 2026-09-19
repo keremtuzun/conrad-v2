@@ -207,3 +207,37 @@ def test_spatial_context_is_context_only(make_model, maker, reg):
     m.receive_context([fake])  # own-domain messages are never re-ingested
     assert m.context == {}
     assert m.gate_inflation() == 1.0
+
+
+def test_observability_context_sets_survey_noise_but_never_couples_ecology(make_model, maker, reg):
+    """Production (observability context only): a turbid field belief raises the survey noise, hence UA, but
+    produces no stress likelihood, no cover process-noise inflation and no relational provenance."""
+
+    def run(variant, ntu):
+        m = make_model(variant, with_repo=False)
+        m.ingest(
+            [maker.field("turbidity", ntu, 1.0, pos=reg["pipe"][1]), maker.field("temperature", 30.0, 1.0)]
+        )
+        m.update_beliefs(stamp(2, "SIM"))
+        m.ingest([maker.cover(0.4, 3.0, reg["pipe"][1], rng=4.0)])
+        msgs = m.update_beliefs(stamp(4, "SIM"))
+        return m, msgs, m.entities.by_registry(reg["pipe"][0])
+
+    clear, _, bc = run("production", 0.5)
+    turbid, msgs, bt = run("production", 25.0)
+    assert bt.meas_var_ema > 2.0 * bc.meas_var_ema  # sensing quality reaches the measurement variance
+    assert bt.cover_var > bc.cover_var
+    em = next(mm for mm in _msgs_by_kind(msgs, "ENTITY") if mm.world_entity_id == reg["pipe"][0])
+    ref = next(
+        mm for mm in _msgs_by_kind(clear.export_beliefs(), "ENTITY") if mm.world_entity_id == reg["pipe"][0]
+    )
+    assert em.uncertainty.aleatoric > ref.uncertainty.aleatoric
+    for m in (clear, turbid):  # never ecological coupling, even at 30 degC
+        assert all(b.stress_p is None for b in m.entities.beliefs.values())
+        assert m.cefd.process_inflation(bt, 1.0) == 1.0
+        for mm in m.export_beliefs():
+            assert not any(c.name == STRESS_CLAIM for c in mm.state_summary)
+    # the old uncoupled arm is turbidity-blind
+    _, _, bu = run("uncoupled", 25.0)
+    _, _, bu0 = run("uncoupled", 0.5)
+    assert bu.meas_var_ema == pytest.approx(bu0.meas_var_ema)

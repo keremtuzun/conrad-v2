@@ -99,6 +99,9 @@ class Station:
     P: np.ndarray  # (C,) its variance; inf = no reading yet
     t_ns: list[int | None]
     buf: list[list[tuple[int, float, float]]]  # per component: (t_ns, value, meas_var)
+    # per component: change points found by the last filter run, as (t_ns, intervention variance)
+    changes: list[list[tuple[int, float]]] = field(default_factory=list)
+    qa: np.ndarray = field(default_factory=lambda: np.zeros(1))  # (C,) innovation-driven extra drift rate
 
 
 @dataclass
@@ -244,13 +247,21 @@ class FieldBeliefGrid:
         return 2.0 * spec.local_sd**2 / spec.correlation_time_s
 
     def _accumulate(
-        self, fb: FieldBelief, c: int, buf: list[tuple[int, float, float]], t_ns: int, y: float, r: float
+        self,
+        fb: FieldBelief,
+        c: int,
+        buf: list[tuple[int, float, float]],
+        t_ns: int,
+        y: float,
+        r: float,
+        slope: bool = True,
     ) -> None:
         """Temporal variogram statistics from an in-order reading and its station's previous two.
 
         lag-1: E[(y_i - y_{i-1})^2] = q dt1 + rho (r_i + r_{i-1});
         slope: E[(y_i - y_{i-2})^2 - (y_i - y_{i-1})^2] = q (t_{i-1} - t_{i-2}) + rho (r_{i-2} - r_{i-1}).
-        The slope does not depend on the sensor noise, so q is learned even when the stated noise is wrong."""
+        The slope does not depend on the sensor noise, so q is learned even when the stated noise is wrong.
+        ``slope=False`` when the previous reading was a change point (its lag-2 pair spans the jump)."""
         if not buf or t_ns <= buf[-1][0]:
             return
         t1, y1, r1 = buf[-1]
@@ -259,7 +270,7 @@ class FieldBeliefGrid:
         vs[1] += (t_ns - t1) / NS_PER_S
         vs[2] += r + r1
         vs[3] += 1.0
-        if len(buf) >= 2 and buf[-2][0] < t1:
+        if slope and len(buf) >= 2 and buf[-2][0] < t1:
             t2, y2, r2 = buf[-2]
             vs[4] += (y - y2) ** 2 - (y - y1) ** 2 - (r2 - r1)
             vs[5] += (t1 - t2) / NS_PER_S
@@ -288,16 +299,21 @@ class FieldBeliefGrid:
     def _station_arrays(
         self, fb: FieldBelief, c: int, t_ns: int
     ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-        """(positions (S,3), values (S,), variances (S,)) of the stations with a reading of component c."""
+        """(positions (S,3), values (S,), variances (S,)) of the stations with a reading of component c.
+
+        A change point seen at one station is a possible jump at every station that has not reported since:
+        such stale stations carry the intervention variance of each later change point elsewhere."""
+        events = [(t, j, i) for i, s in enumerate(fb.stations) for t, j in s.changes[c] if t <= t_ns]
         pos, m, v = [], [], []
-        for s in fb.stations:
+        for i, s in enumerate(fb.stations):
             ts = s.t_ns[c]
             if ts is None:
                 continue
             age = max(0.0, (t_ns - ts) / NS_PER_S)
+            shock = sum(j for t, j, k in events if k != i and t > ts)
             pos.append(s.pos)
             m.append(s.m[c])
-            v.append(s.P[c] + fb.q[c] * age)
+            v.append(s.P[c] + (fb.q[c] + s.qa[c]) * age + shock)
         return np.asarray(pos, dtype=np.float64).reshape(-1, 3), np.asarray(m), np.asarray(v)
 
     def _update_tau2(self, fb: FieldBelief, t_ns: int) -> None:
@@ -469,6 +485,8 @@ class FieldBeliefGrid:
             P=np.full(c, np.inf),
             t_ns=[None] * c,
             buf=[[] for _ in range(c)],
+            changes=[[] for _ in range(c)],
+            qa=np.zeros(c),
         )
         fb.stations.append(st)
         if len(fb.stations) > self.fm.max_stations:
@@ -479,20 +497,49 @@ class FieldBeliefGrid:
     def _refilter(self, st: Station, c: int, q: float, rho: float) -> None:
         """Re-run a station's local-level filter from its buffer (late reading or new hyper-parameters)."""
         st.P[c], st.t_ns[c] = np.inf, None
+        st.changes[c] = []
+        st.qa[c] = 0.0
         for t, y, r in st.buf[c]:
             self._filter_step(st, c, t, y, rho * r, q)
 
-    @staticmethod
-    def _filter_step(st: Station, c: int, t_ns: int, y: float, r: float, q: float) -> None:
+    @property
+    def _detect_changes(self) -> bool:
+        return self.fm.change_detection and self.cfg.switches.field_dynamics
+
+    def _filter_step(self, st: Station, c: int, t_ns: int, y: float, r: float, q: float) -> bool:
+        """One local-level step. Returns True when the reading is a CHANGE POINT.
+
+        Change point (West & Harrison intervention): the standardized one-step innovation e^2 / S exceeds
+        ``change_z``^2, i.e. the reading is not explained by drift q dt plus sensor noise. The state then
+        receives the unexplained variance e^2 - S before the update (method of moments), so the station
+        re-acquires the new level in one step instead of averaging the jump away. The intervention is
+        recorded so that other stations' stale values get the same variance (``_station_arrays``)."""
         prev = st.t_ns[c]
+        changed = False
         if prev is None or not np.isfinite(st.P[c]):
             st.m[c], st.P[c] = y, r
         else:
-            pp = st.P[c] + q * max(0.0, (t_ns - prev) / NS_PER_S)
+            dt = max(0.0, (t_ns - prev) / NS_PER_S)
+            pp = st.P[c] + (q + st.qa[c]) * dt
+            e2 = (y - st.m[c]) ** 2
+            s = pp + r
+            if self._detect_changes and t_ns >= prev and e2 > self.fm.change_z**2 * s:
+                pp += e2 - s
+                st.changes[c].append((t_ns, e2 - s))
+                changed = True
+            elif self._detect_changes and dt > 0:
+                # innovation-based process-noise inflation (covariance matching with exponential forgetting):
+                # E[e^2] = P + q dt + r under the base model, so the excess over it, per second, is an unbiased
+                # estimate of extra drift. Only the running estimate is clipped at 0, so a correct model
+                # keeps qa near 0 and a sustained, sub-threshold trend (e.g. settling after a spike) raises it.
+                w = 1.0 - math.exp(-dt / self.fm.volatility_memory_s)
+                excess = (e2 - (st.P[c] + q * dt + r)) / dt
+                st.qa[c] = max(0.0, (1.0 - w) * st.qa[c] + w * excess)
             gain = pp / (pp + r)
             st.m[c] += gain * (y - st.m[c])
             st.P[c] = (1.0 - gain) * pp
         st.t_ns[c] = t_ns if prev is None else max(prev, t_ns)
+        return changed
 
     def update_point(
         self, name: str, component: int, p: np.ndarray, value: float, meas_var: float, t_ns: int
@@ -517,9 +564,11 @@ class FieldBeliefGrid:
         in_order = prev is None or t_ns >= prev[0]
         rho = float(fb.noise_scale[c])
         if in_order:
-            self._accumulate(fb, c, buf, t_ns, value, meas_var)
+            prev_change = bool(st.changes[c]) and bool(buf) and st.changes[c][-1][0] == buf[-1][0]
+            if not self._filter_step(st, c, t_ns, value, rho * meas_var, float(fb.q[c])):
+                # a jump is neither drift nor sensor noise: change points stay out of the variogram
+                self._accumulate(fb, c, buf, t_ns, value, meas_var, slope=not prev_change)
             buf.append((t_ns, value, meas_var))
-            self._filter_step(st, c, t_ns, value, rho * meas_var, float(fb.q[c]))
         else:
             bisect.insort(buf, (t_ns, value, meas_var))
             self._refilter(st, c, float(fb.q[c]), rho)

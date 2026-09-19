@@ -1,8 +1,9 @@
 """Analytic CEFD coupling (ch12 CEFD, EXPERIMENTAL_CANDIDATE): only justified cross-type effects.
 
-field -> entity
-  * observability: the turbidity belief sets the survey measurement variance (beam attenuation);
-  * context: the temperature belief gives a thermal-stress LIKELIHOOD (INFERRED, never damage) and,
+field -> entity, OBSERVABILITY (switch ``observability_context``; sensing quality, not ecology; ON in production)
+  * the turbidity belief sets the survey measurement variance (beam attenuation), hence UA/UO.
+field -> entity, ECOLOGICAL COUPLING (switch ``ecological_coupling``; OFF in production, ADR-0007)
+  * the temperature belief gives a thermal-stress LIKELIHOOD (INFERRED, never damage) and,
     through the coupling gate, inflates cover process noise. It never moves the cover mean:
     environmental stress is not ecological change.
 entity -> field
@@ -51,8 +52,14 @@ class AnalyticCEFD:
         self.sw = config.switches
 
     @property
+    def observability(self) -> bool:
+        """Sensing-quality context: turbidity belief -> survey measurement noise (and so UA/UO) only."""
+        return self.sw.observability_context and self.sw.fields and self.sw.entities
+
+    @property
     def field_to_entity(self) -> bool:
-        return self.sw.field_to_entity and self.sw.fields and self.sw.entities
+        """Causal ecological coupling: temperature belief -> stress likelihood and cover process noise."""
+        return self.sw.ecological_coupling and self.sw.fields and self.sw.entities
 
     @property
     def entity_to_field(self) -> bool:
@@ -71,7 +78,7 @@ class AnalyticCEFD:
         self, fields: FieldBeliefGrid | None, b: EntityBelief, range_m: float | None
     ) -> SurveyNoise:
         ec = self.cfg.entity
-        if not self.field_to_entity or fields is None or "turbidity" not in fields.fields:
+        if not self.observability or fields is None or "turbidity" not in fields.fields:
             return SurveyNoise(ec.uncoupled_meas_sd**2, None, None)
         fb = fields.fields["turbidity"]
         r = 3.0 if range_m is None else range_m
@@ -103,7 +110,7 @@ class AnalyticCEFD:
         return self.cc.stress_threshold_c
 
     def process_inflation(self, b: EntityBelief, gate: float) -> float:
-        if b.stress_p is None:
+        if not self.field_to_entity or b.stress_p is None:
             return 1.0
         return 1.0 + self.cc.stress_process_inflation * gate * b.stress_p
 

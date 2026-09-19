@@ -172,3 +172,138 @@ python -m uv run python scripts/record_gate_evidence.py 2E 2E-CEFD
 ```
 
 Wall time on this CPU with the three runs in parallel: E001-R2 470 s, E002-R2 929 s, E003-R2 1059 s.
+
+## Iteration 2 (2026-09-19): observability context split out, change detection, fresh FINAL-2
+
+Model version: `model2e-uncoupled-obsctx-analytic-0.4.0`. R2 artifacts are kept unchanged. The gate
+thresholds in `scripts/record_gate_evidence.py` are **unchanged**: they were set before any FINAL data, and
+there was no spec reason to change them.
+
+### I2.1 Changes
+
+1. **Switch split** (`CefdSwitches`; ADR-0007 addendum). `field_to_entity` is removed and replaced by two
+   switches:
+   - `observability_context`, **ON** in production. The turbidity belief sets the survey measurement variance,
+     so it reaches UA/UO. It adds no process noise, makes no stress claim and has no term that shifts cover.
+   - `ecological_coupling`, **OFF**. This is the stress likelihood and the stress-gated cover process noise.
+
+   `entity_to_field` stays OFF. The `uncoupled` baseline is now fully turbidity-blind (the old production
+   arm). `production` = `uncoupled` + observability context. `tests/contract/test_runtime_defaults.py`
+   asserts `ecological_coupling`/`entity_to_field` False, `observability_context` True, and the exact switch
+   set.
+2. **Abrupt-change fix** (`field_belief.py`; `FieldModelConfig.change_detection`, `change_z`,
+   `volatility_memory_s`). Priors are not widened. There are three parts, all driven by standardized
+   station innovations:
+   - **Change-point intervention.** When e^2 > change_z^2 S (3 sigma), the station state gets the
+     unexplained variance e^2 - S before its update (West & Harrison intervention, method of moments).
+     The station re-acquires the new level in one reading instead of averaging the jump away.
+   - **Stale stations.** A change point at one station adds its intervention variance to every other
+     station that has not reported since.
+   - **Innovation-based process-noise inflation.** A per-station drift qa comes from covariance matching
+     with 3 h exponential forgetting. It is unbiased at 0 under the model, and only the running estimate is
+     clipped. It rises during a sustained, sub-threshold settling tail.
+
+   Change points are kept out of the temporal variogram, so a jump no longer inflates q or the noise scale.
+   The mechanism is disabled in the static baseline. New tests:
+   - `test_abrupt_change_is_detected_and_not_over_confident` (reproduces z^2 > 20 without the mechanism)
+   - `test_change_detection_is_quiet_on_a_stationary_field`
+   - `test_static_baseline_never_detects_changes`
+   - `test_observability_context_sets_survey_noise_but_never_couples_ecology`
+
+### I2.2 Partitions (`configs/eval/2e_e00{1,2,3}_r3.yaml`)
+
+`configs/eval/partitions.yaml` is pinned by digest and covers only MCBR/mission, so the local lists are kept.
+
+| partition | seeds |
+|---|---|
+| development | 2026201-2026203, 6100000-6100004 (8) |
+| validation | 6200000-6200007 + the spent R2 FINAL 6300000-6300011 (20) |
+| final_2 | 6400000-6400019 (20), fresh, run once after freezing |
+
+### I2.3 DEV (design data, not a result)
+
+- **E003 base world, production turbidity mean z^2** (8 seeds):
+  - R2 mechanism: 69 (seed 2026201: 138)
+  - change points only: 1.08
+  - change points + qa, 3 h memory: 0.79
+  - change points + qa, 6 h memory: 0.80
+- **E002, production at 25 NTU:** RMSE 0.188, coverage 1.0, z^2 0.39. The uncoupled arm gives 0.229, 0.909
+  and 1.31.
+- **E001 field check:** passes with and without change detection.
+
+### I2.4 VALIDATION (selection)
+
+The rule was fixed before the runs: keep the arms that pass the E001 field check, then pick the one whose
+E003 production turbidity mean z^2 is closest to 1 in log terms.
+
+| arm | E001 field check | E003 turbidity RMSE / coverage95 / mean z^2 |
+|---|---|---|
+| B: R2 behaviour (no change detection) | pass | 0.210 / 0.876 / **22.9** |
+| C: change points only | pass | 0.125 / 0.918 / 1.50 |
+| **A: change points + qa (3 h), chosen** | pass | 0.123 / 0.949 / 0.985 |
+
+E002-R3 production, A: coverage >= 0.998 and z^2 0.35-0.41 at every turbidity level. At 25 NTU the RMSE is
+0.193. The entity check passes. Validation temperature z^2 at k = 2 was 0.375, just above the 1/3 bound.
+The design was frozen at A (the config defaults).
+
+### I2.5 FINAL-2 (20 fresh seeds, run once)
+
+Artifacts: `artifacts/experiments/ecological/2E-E00{1,2,3}-R3.json`.
+
+**2E-E002-R3, production cover** (RMSE / coverage95 / z^2):
+
+| turbidity | RMSE | coverage95 | z^2 |
+|---|---|---|---|
+| 1 NTU | 0.049 | 1.0 | 0.31 |
+| 4 NTU | 0.069 | 0.999 | 0.33 |
+| 10 NTU | 0.118 | 0.999 | 0.41 |
+| 25 NTU | 0.183 | 1.0 | 0.37 |
+
+At 25 NTU the turbidity-blind `uncoupled` arm gives 0.242 / 0.905 / 1.42. The observability context fixes
+the R2 over-confidence. It is also somewhat over-cautious (z^2 about 0.3-0.4). The entity check has no lower
+z^2 bound.
+
+**2E-E003-R3, turbidity after the 15 NTU spike** (production, all worlds): RMSE 0.141, coverage 0.954,
+mean z^2 **1.22**. R2 FINAL was 0.277 / 0.865 / 35.
+
+**2E-E001-R3, production:**
+- **Turbidity.** RMSE is 0.074 / 0.060 / 0.050 / 0.043 at 1 / 2 / 4 / 8 sensors. Every step down is
+  significant. Against static, k4 is -0.002 [-0.013, 0.009] and k8 is -0.007 [-0.017, 0.004]: better, not
+  significant. Coverage / z^2 are 1.0 / 0.37, 0.99 / 0.48, 0.97 / 0.67 and 0.95 / 0.87.
+- **Temperature.** RMSE is 0.455 / 0.099 / 0.057 / 0.043, with every step significant. It is better than
+  static at k >= 2 by about 0.3 degC, which is significant. z^2 is **0.323** / 0.409 / 0.532 / 0.403.
+- **k = 1 is the problem.** The temperature z^2 at k = 1 is 0.323, just below the pre-stated 1/3 bound. This
+  is the same marginal over-caution as R2, now at k = 1 instead of k = 2. Iteration 2 did not target it
+  (change detection barely touches temperature: DEV/VAL z^2 are the same with or without it). It is left
+  OPEN, with no tuning on FINAL-2.
+
+### I2.6 Gate outcomes (re-recorded, `artifacts/gates/2E*/evidence_formal.json`)
+
+**2E (functional): FAIL**
+- **entity model works: PASS.** This was FAIL in R2.
+- **field model works: FAIL**, only on temperature calibration at k = 1: z^2 0.323 < 1/3. Every other field
+  criterion passes, and turbidity is calibrated.
+- **persistent inference works: PASS.**
+
+**2E-CEFD (research): FAIL**
+- **Benefit.** Pooled CB over `uncoupled` is -0.0006 [-0.0015, +0.0003] (80 pairs). Over `production` it is
+  -0.0004 [-0.0006, -0.0003]. Against production, the full ecological coupling is significantly *worse*.
+- **Unsupported claims.** `cefd` made confident stress claims on healthy entities in 28 of 80 worlds (max
+  1.0). `production` and `uncoupled` made none. UEI = 0 for all arms. Ecological coupling stays OFF.
+
+### I2.7 Open items
+
+- Temperature over-caution at small k. The mean z^2 is 0.32-0.45 across all partitions, and the k = 1 or
+  k = 2 point sits on the 1/3 bound. It is the only reason the functional 2E gate fails. A principled next
+  step is an EB check on the temperature `depth_trend_sd` and on the level/drift priors, designed on DEV only.
+- `volatility_memory_s` (3 h) and `change_z` (3) are ENGINEERING_ESTIMATE, chosen on DEV/VAL.
+
+### I2.8 Reproduce
+
+```
+python -m uv run python -m conrad.evaluation.ecological_experiments.run_all artifacts/experiments/ecological 2e_e001_r3
+# likewise 2e_e002_r3, 2e_e003_r3 (always with a name filter)
+python -m uv run python scripts/record_gate_evidence.py 2E 2E-CEFD
+```
+
+Wall time with the three runs in parallel: E001-R3 527 s, E002-R3 743 s, E003-R3 951 s.

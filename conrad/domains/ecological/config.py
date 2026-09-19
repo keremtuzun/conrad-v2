@@ -85,6 +85,20 @@ class FieldModelConfig(ConradModel):
     station_merge_radius_m: float = Field(
         default=2.0, gt=0, description="readings within this distance of a station join it (pose noise)"
     )
+    change_detection: bool = Field(
+        default=True, description="innovation-based change-point intervention at stations (iteration 2)"
+    )
+    change_z: float = Field(
+        default=3.0,
+        gt=0,
+        description="standardized-innovation threshold of a change point (ENGINEERING_ESTIMATE: 3 sigma, "
+        "0.27 % false alarms per reading under the model)",
+    )
+    volatility_memory_s: float = Field(
+        default=10800.0,
+        gt=0,
+        description="forgetting time of the innovation-driven station drift inflation (ENGINEERING_ESTIMATE)",
+    )
     max_stations: int = Field(default=64, ge=1, description="oldest station is dropped beyond this")
     max_station_readings: int = Field(default=256, ge=2, description="per-station buffer for late re-runs")
     jitter_fraction: float = Field(default=1e-9, gt=0, description="kriging matrix jitter / prior variance")
@@ -177,13 +191,20 @@ class CouplingConfig(ConradModel):
 class CefdSwitches(ConradModel):
     """Baselines differ only through these switches (one interface).
 
-    Production default is UNCOUPLED (ADR-0007): CEFD coupling failed its 2E research gate (2E-E003: ~0 benefit,
-    confident thermal-stress claims on healthy entities in the confounded world). Enable coupling only explicitly.
+    The old ``field_to_entity`` switch is split in two (ADR-0007 addendum, MODEL2E_REPAIR.md iteration 2):
+
+    * ``observability_context``: SENSING QUALITY. The turbidity belief sets the survey measurement variance
+      (beam attenuation), which reaches UA/UO. It adds no process noise, no stress claim and no bias term to
+      cover; it only weights the survey reading. ON in production.
+    * ``ecological_coupling``: CAUSAL field -> entity inference (thermal-stress likelihood and the stress
+      gate's cover process-noise inflation). Failed its research gate (2E-E003). OFF in production.
+    * ``entity_to_field``: causal entity -> field effect (filtration sink). OFF in production.
     """
 
     entities: bool = True
     fields: bool = True
-    field_to_entity: bool = False
+    observability_context: bool = True
+    ecological_coupling: bool = False
     entity_to_field: bool = False
     field_dynamics: bool = True
     spatial_correlation: bool = True
@@ -198,7 +219,7 @@ class Model2EConfig(ConradModel):
     switches: CefdSwitches = CefdSwitches()
     variance_floor_fraction: float = Field(default=1e-4, gt=0)
     material_change_fraction: float = Field(default=0.01, ge=0, description="publish threshold")
-    model_version: str = "model2e-uncoupled-analytic-0.3.0"
+    model_version: str = "model2e-uncoupled-obsctx-analytic-0.4.0"
     clock_domain: str = "SIM"
 
 

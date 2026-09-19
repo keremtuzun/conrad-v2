@@ -18,6 +18,10 @@ EXPERIMENTS = {
     "2e_e001_r2": e001_field.run,
     "2e_e002_r2": e002_turbidity.run,
     "2e_e003_r2": e003_coupling.run,
+    # R3: iteration 2 (observability context + change detection), fresh FINAL-2 partition
+    "2e_e001_r3": e001_field.run,
+    "2e_e002_r3": e002_turbidity.run,
+    "2e_e003_r3": e003_coupling.run,
 }
 
 
