@@ -19,11 +19,13 @@ from conrad.schemas.ids import IdFactory
 _NO_COUPLING = {"field_to_entity": False, "entity_to_field": False}
 
 BASELINES: dict[str, CefdSwitches] = {
-    "cefd": CefdSwitches(),
+    "cefd": CefdSwitches(field_to_entity=True, entity_to_field=True),
     "entity_only": CefdSwitches(fields=False, **_NO_COUPLING),
     "field_only": CefdSwitches(entities=False, **_NO_COUPLING),
     "uncoupled": CefdSwitches(**_NO_COUPLING),
-    "static_field": CefdSwitches(field_dynamics=False, spatial_correlation=False),
+    "static_field": CefdSwitches(
+        field_to_entity=True, entity_to_field=True, field_dynamics=False, spatial_correlation=False
+    ),
 }
 
 

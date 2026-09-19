@@ -1,0 +1,62 @@
+{
+  "gate_id": "I1",
+  "evidence_class": "SURROGATE",
+  "execution_path": "python L1 kernel instead of Unity; pytest nodes + retained experiment artifacts (I1)",
+  "git_commit": "28871b4a265392eecf90c810d3e6e99c6552dffc",
+  "criteria": [
+    {
+      "criterion": "robot moves through synthetic world",
+      "status": "PASS",
+      "measured": "test_spatial_beliefs_persist_with_direct_provenance=PASS"
+    },
+    {
+      "criterion": "persistent map",
+      "status": "PASS",
+      "measured": "test_spatial_beliefs_persist_with_direct_provenance=PASS"
+    },
+    {
+      "criterion": "geometry",
+      "status": "PASS",
+      "measured": "test_free_space_claims_agree_with_truth_where_claimed=PASS"
+    },
+    {
+      "criterion": "occupancy",
+      "status": "PASS",
+      "measured": "test_free_space_claims_agree_with_truth_where_claimed=PASS"
+    },
+    {
+      "criterion": "coverage",
+      "status": "PASS",
+      "measured": "test_map_keeps_unknown_space_next_to_observed_space=PASS"
+    },
+    {
+      "criterion": "observed/inferred/unknown",
+      "status": "PASS",
+      "measured": "test_map_keeps_unknown_space_next_to_observed_space=PASS"
+    },
+    {
+      "criterion": "uncertainty",
+      "status": "PASS",
+      "measured": "test_map_keeps_unknown_space_next_to_observed_space=PASS"
+    },
+    {
+      "criterion": "provenance",
+      "status": "PASS",
+      "measured": "test_spatial_beliefs_persist_with_direct_provenance=PASS"
+    },
+    {
+      "criterion": "no Twin truth leakage",
+      "status": "PASS",
+      "measured": "test_spatial_beliefs_carry_only_registry_identities=PASS; test_no_world_entity_id_or_twin_key_on_the_runtime_side=PASS; test_registry_ids_are_not_world_ids=PASS"
+    }
+  ],
+  "artifacts": [
+    "tests/integration/test_i1_spatial_loop.py::test_free_space_claims_agree_with_truth_where_claimed",
+    "tests/integration/test_i1_spatial_loop.py::test_map_keeps_unknown_space_next_to_observed_space",
+    "tests/integration/test_i1_spatial_loop.py::test_spatial_beliefs_carry_only_registry_identities",
+    "tests/integration/test_i1_spatial_loop.py::test_spatial_beliefs_persist_with_direct_provenance",
+    "tests/leakage/test_dynamic_leakage.py::test_no_world_entity_id_or_twin_key_on_the_runtime_side",
+    "tests/leakage/test_dynamic_leakage.py::test_registry_ids_are_not_world_ids"
+  ],
+  "notes": ""
+}

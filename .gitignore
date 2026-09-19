@@ -14,6 +14,7 @@ build/
 artifacts/*
 !artifacts/spec/
 !artifacts/migration/
+!artifacts/gates/
 !artifacts/README.md
 mlruns/
 # secrets and machine-local overrides

@@ -1,0 +1,55 @@
+{
+  "gate_id": "I0",
+  "evidence_class": "FORMAL",
+  "execution_path": "pytest nodes + retained experiment artifacts (I0)",
+  "git_commit": "28871b4a265392eecf90c810d3e6e99c6552dffc",
+  "criteria": [
+    {
+      "criterion": "complete architectural loop executes",
+      "status": "PASS",
+      "measured": "test_i0_loop_closes_and_belief_resolves=PASS"
+    },
+    {
+      "criterion": "timestamps",
+      "status": "PASS",
+      "measured": "test_i0_boundaries_preserve_identity=PASS"
+    },
+    {
+      "criterion": "IDs",
+      "status": "PASS",
+      "measured": "test_i0_boundaries_preserve_identity=PASS"
+    },
+    {
+      "criterion": "frames",
+      "status": "PASS",
+      "measured": "test_i0_boundaries_preserve_identity=PASS"
+    },
+    {
+      "criterion": "provenance",
+      "status": "PASS",
+      "measured": "test_i0_full_causal_trace_from_command_to_raw_observation=PASS"
+    },
+    {
+      "criterion": "uncertainty",
+      "status": "PASS",
+      "measured": "test_i0_loop_closes_and_belief_resolves=PASS"
+    },
+    {
+      "criterion": "logging",
+      "status": "PASS",
+      "measured": "test_i0_deterministic_replay=PASS"
+    },
+    {
+      "criterion": "configs",
+      "status": "PASS",
+      "measured": "test_i0_boundaries_preserve_identity=PASS"
+    }
+  ],
+  "artifacts": [
+    "tests/integration/test_i0_fake_full_system.py::test_i0_boundaries_preserve_identity",
+    "tests/integration/test_i0_fake_full_system.py::test_i0_deterministic_replay",
+    "tests/integration/test_i0_fake_full_system.py::test_i0_full_causal_trace_from_command_to_raw_observation",
+    "tests/integration/test_i0_fake_full_system.py::test_i0_loop_closes_and_belief_resolves"
+  ],
+  "notes": ""
+}

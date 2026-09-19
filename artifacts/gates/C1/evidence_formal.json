@@ -1,0 +1,78 @@
+{
+  "gate_id": "C1",
+  "evidence_class": "FORMAL",
+  "execution_path": "pytest nodes + retained experiment artifacts (C1)",
+  "git_commit": "28871b4a265392eecf90c810d3e6e99c6552dffc",
+  "criteria": [
+    {
+      "criterion": "persistent identity",
+      "status": "PASS",
+      "measured": "test_lifecycle_candidate_confirm_active_dormant_reactivated=PASS; test_cc09_reset_working_memory_preserves_persistence=PASS"
+    },
+    {
+      "criterion": "evidence association",
+      "status": "PASS",
+      "measured": "test_retrieval_gates_frame_lifecycle_domain_distance_and_k=PASS; test_nearest_neighbour_baseline_and_engine=PASS"
+    },
+    {
+      "criterion": "no-match/new entity",
+      "status": "PASS",
+      "measured": "test_no_match_with_empty_candidate_set=PASS; test_no_match_creates_candidate_then_matches=PASS"
+    },
+    {
+      "criterion": "credible contradiction handling",
+      "status": "PASS",
+      "measured": "test_credible_contradiction_raises_uc_and_is_not_averaged_away=PASS; test_unreliable_disagreement_is_ambiguous_not_contradiction=PASS"
+    },
+    {
+      "criterion": "decomposed uncertainty",
+      "status": "PASS",
+      "measured": "test_corrupted_evidence_raises_ua=PASS; test_ood_score_raises_ue_and_unmeasured_ood_keeps_it=PASS; test_low_coverage_raises_uo=PASS"
+    },
+    {
+      "criterion": "relational inference",
+      "status": "PASS",
+      "measured": "test_analytic_rbp_labels_inferred_and_keeps_observational_uncertainty=PASS; test_analytic_rbp_never_overwrites_direct_observation=PASS; test_relational_step_is_inferred_with_provenance=PASS"
+    },
+    {
+      "criterion": "temporal prediction/correction",
+      "status": "PASS",
+      "measured": "test_analytic_tbd_uses_delta_t_and_marks_predicted=PASS; test_prediction_is_persisted_as_predicted_and_kept_apart=PASS; test_sequence_index_is_irrelevant_only_physical_time_matters=PASS"
+    },
+    {
+      "criterion": "provenance",
+      "status": "PASS",
+      "measured": "test_cc04_merge_preserves_lineage_to_raw_observations=PASS; test_cc03_dangling_provenance_rejected=PASS; test_cc04_merge_preserves_lineage_evidence_and_provenance=PASS"
+    },
+    {
+      "criterion": "long sequence persistence",
+      "status": "PASS",
+      "measured": "test_cc01_duplicate_delivery_is_one_contribution=PASS; test_cc02_late_observation_never_masquerades_as_current=PASS; experiment: {\"pmbl_full.identity_purity\": 1.0, \"pmbl_full.reidentification_after_gap\": 1.0, \"pmbl_full.provenance_integrity\": 1.0, \"pmbl_full.duplicate_rejection_rate\": 1.0, \"cc09_reset_equivalence\": 1.0}"
+    }
+  ],
+  "artifacts": [
+    "tests/contract/test_cc_persistence.py::test_cc01_duplicate_delivery_is_one_contribution",
+    "tests/contract/test_cc_persistence.py::test_cc02_late_observation_never_masquerades_as_current",
+    "tests/contract/test_cc_persistence.py::test_cc03_dangling_provenance_rejected",
+    "tests/contract/test_cc_persistence.py::test_cc04_merge_preserves_lineage_to_raw_observations",
+    "tests/unit/core/test_core_analytic_tbd_rbp.py::test_analytic_rbp_labels_inferred_and_keeps_observational_uncertainty",
+    "tests/unit/core/test_core_analytic_tbd_rbp.py::test_analytic_rbp_never_overwrites_direct_observation",
+    "tests/unit/core/test_core_analytic_tbd_rbp.py::test_analytic_tbd_uses_delta_t_and_marks_predicted",
+    "tests/unit/core/test_core_association.py::test_nearest_neighbour_baseline_and_engine",
+    "tests/unit/core/test_core_association.py::test_no_match_with_empty_candidate_set",
+    "tests/unit/core/test_core_association.py::test_retrieval_gates_frame_lifecycle_domain_distance_and_k",
+    "tests/unit/core/test_core_buo_analytic.py::test_corrupted_evidence_raises_ua",
+    "tests/unit/core/test_core_buo_analytic.py::test_credible_contradiction_raises_uc_and_is_not_averaged_away",
+    "tests/unit/core/test_core_buo_analytic.py::test_low_coverage_raises_uo",
+    "tests/unit/core/test_core_buo_analytic.py::test_ood_score_raises_ue_and_unmeasured_ood_keeps_it",
+    "tests/unit/core/test_core_buo_analytic.py::test_unreliable_disagreement_is_ambiguous_not_contradiction",
+    "tests/unit/core/test_core_pipeline.py::test_no_match_creates_candidate_then_matches",
+    "tests/unit/core/test_core_pipeline.py::test_prediction_is_persisted_as_predicted_and_kept_apart",
+    "tests/unit/core/test_core_pipeline.py::test_relational_step_is_inferred_with_provenance",
+    "tests/unit/core/test_core_pipeline.py::test_sequence_index_is_irrelevant_only_physical_time_matters",
+    "tests/unit/core/test_core_pmbl.py::test_cc04_merge_preserves_lineage_evidence_and_provenance",
+    "tests/unit/core/test_core_pmbl.py::test_cc09_reset_working_memory_preserves_persistence",
+    "tests/unit/core/test_core_pmbl.py::test_lifecycle_candidate_confirm_active_dormant_reactivated"
+  ],
+  "notes": ""
+}

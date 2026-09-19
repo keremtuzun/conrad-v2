@@ -1,0 +1,10 @@
+# CORE-TBD-E002: matched temporal comparison at the higher process noise used by the training smoke (q=0.02),
+# same generator, dims and epochs as CORE-TBD-E001. Development seeds only (reconciliation study, not final).
+experiment: {id: CORE-TBD-E002}
+seeds: [2026201, 2026202, 2026203]
+model2_core: {evidence_dim: 32, belief_dim: 32, heads: 4}
+process_noise_per_s: 0.02
+length: 24
+train_sequences: 80
+test_sequences: 30
+epochs: 25

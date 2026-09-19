@@ -1,0 +1,65 @@
+{
+  "gate_id": "P0",
+  "evidence_class": "FORMAL",
+  "execution_path": "pytest nodes + retained experiment artifacts (P0)",
+  "git_commit": "28871b4a265392eecf90c810d3e6e99c6552dffc",
+  "criteria": [
+    {
+      "criterion": "serialization/deserialization",
+      "status": "PASS",
+      "measured": "test_round_trip_serialization=PASS; test_unknown_keys_rejected=PASS"
+    },
+    {
+      "criterion": "schema version",
+      "status": "PASS",
+      "measured": "test_schema_version_gate=PASS"
+    },
+    {
+      "criterion": "timestamps",
+      "status": "PASS",
+      "measured": "test_time_semantics=PASS; test_evidence_cannot_predate_observation=PASS"
+    },
+    {
+      "criterion": "coordinate frames",
+      "status": "PASS",
+      "measured": "test_frame_contract=PASS; test_frame_graph_round_trip=PASS; test_every_spatial_type_requires_a_frame=PASS"
+    },
+    {
+      "criterion": "UUID uniqueness",
+      "status": "PASS",
+      "measured": "test_uuid_uniqueness_and_determinism=PASS; test_namespaced_id_factories_never_collide=PASS"
+    },
+    {
+      "criterion": "provenance graph validity",
+      "status": "PASS",
+      "measured": "test_provenance_dag=PASS"
+    },
+    {
+      "criterion": "uncertainty contract",
+      "status": "PASS",
+      "measured": "test_uncertainty_contract=PASS; test_unknown_is_a_status_not_a_value=PASS"
+    },
+    {
+      "criterion": "RobotConfig validation",
+      "status": "PASS",
+      "measured": "test_robot_config_validation=PASS"
+    }
+  ],
+  "artifacts": [
+    "tests/contract/test_p0_contracts.py::test_every_spatial_type_requires_a_frame",
+    "tests/contract/test_p0_contracts.py::test_evidence_cannot_predate_observation",
+    "tests/contract/test_p0_contracts.py::test_frame_contract",
+    "tests/contract/test_p0_contracts.py::test_frame_graph_round_trip",
+    "tests/contract/test_p0_contracts.py::test_namespaced_id_factories_never_collide",
+    "tests/contract/test_p0_contracts.py::test_provenance_dag",
+    "tests/contract/test_p0_contracts.py::test_robot_config_validation",
+    "tests/contract/test_p0_contracts.py::test_round_trip_serialization",
+    "tests/contract/test_p0_contracts.py::test_schema_version_gate",
+    "tests/contract/test_p0_contracts.py::test_time_semantics",
+    "tests/contract/test_p0_contracts.py::test_uncertainty_contract",
+    "tests/contract/test_p0_contracts.py::test_unknown_is_a_status_not_a_value",
+    "tests/contract/test_p0_contracts.py::test_unknown_keys_rejected",
+    "tests/contract/test_p0_contracts.py::test_uuid_uniqueness_and_determinism"
+  ],
+  "notes": ""
+}

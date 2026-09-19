@@ -1,0 +1,25 @@
+{
+  "gate_id": "2S-FIRST",
+  "evidence_class": "FORMAL",
+  "execution_path": "pytest nodes + retained experiment artifacts (2S-FIRST)",
+  "git_commit": "28871b4a265392eecf90c810d3e6e99c6552dffc",
+  "criteria": [
+    {
+      "criterion": "observed != inferred != unknown",
+      "status": "PASS",
+      "measured": "test_small_gap_is_inferred_with_relational_provenance=PASS; test_large_gap_and_hidden_side_stay_unknown=PASS; test_unknown_is_never_occupied_and_is_free_follows_policy=PASS"
+    },
+    {
+      "criterion": "counterfactual worlds produce uncertainty, not confident hallucination",
+      "status": "PASS",
+      "measured": "test_counterfactual_region_is_not_confidently_resolved=PASS"
+    }
+  ],
+  "artifacts": [
+    "tests/simulation/spatial/test_m2s_twin2s_loop.py::test_counterfactual_region_is_not_confidently_resolved",
+    "tests/unit/domains/spatial/test_m2s_inference_temporal.py::test_large_gap_and_hidden_side_stay_unknown",
+    "tests/unit/domains/spatial/test_m2s_inference_temporal.py::test_small_gap_is_inferred_with_relational_provenance",
+    "tests/unit/domains/spatial/test_m2s_map_updates.py::test_unknown_is_never_occupied_and_is_free_follows_policy"
+  ],
+  "notes": ""
+}

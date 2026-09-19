@@ -41,6 +41,33 @@ class FieldSpec(ConradModel):
     nonnegative: bool = False
 
 
+class FieldModelConfig(ConradModel):
+    """Hierarchical empirical-Bayes field model (v0.3, docs/audits/MODEL2E_REPAIR.md).
+
+    Readings are pooled into STATIONS (sensor locations). Each station runs a local-level (random-walk) filter
+    whose drift rate q is learned from successive readings; stations are then combined by kriging with an
+    unknown domain level (prior N(prior_mean, prior_sd^2)) and a local-deviation GP whose variance tau^2 is
+    estimated per update by maximum a-posteriori marginal likelihood (empirical Bayes). The configured
+    ``local_sd`` is only the CENTRE of a weak log-normal prior on tau; with >= 2 stations the data dominate.
+    """
+
+    local_var_prior_log10_sd: float = Field(
+        default=1.0, gt=0, description="width of the log-normal tau^2 prior, in decades (ENGINEERING_ESTIMATE)"
+    )
+    tau2_grid_decades: tuple[float, float] = Field(
+        default=(-5.0, 1.0), description="EB search range for tau^2 around local_sd^2, in decades"
+    )
+    drift_prior_pairs: float = Field(
+        default=2.0, gt=0, description="pseudo-count (reading pairs) of the drift-rate prior 2 local_sd^2 / T"
+    )
+    station_merge_radius_m: float = Field(
+        default=2.0, gt=0, description="readings within this distance of a station join it (pose noise)"
+    )
+    max_stations: int = Field(default=64, ge=1, description="oldest station is dropped beyond this")
+    max_station_readings: int = Field(default=256, ge=2, description="per-station buffer for late re-runs")
+    jitter_fraction: float = Field(default=1e-9, gt=0, description="kriging matrix jitter / prior variance")
+
+
 def _default_fields() -> dict[str, FieldSpec]:
     return {
         "temperature": FieldSpec(
@@ -124,12 +151,16 @@ class CouplingConfig(ConradModel):
 
 
 class CefdSwitches(ConradModel):
-    """Baselines differ only through these switches (one interface)."""
+    """Baselines differ only through these switches (one interface).
+
+    Production default is UNCOUPLED (ADR-0007): CEFD coupling failed its 2E research gate (2E-E003: ~0 benefit,
+    confident thermal-stress claims on healthy entities in the confounded world). Enable coupling only explicitly.
+    """
 
     entities: bool = True
     fields: bool = True
-    field_to_entity: bool = True
-    entity_to_field: bool = True
+    field_to_entity: bool = False
+    entity_to_field: bool = False
     field_dynamics: bool = True
     spatial_correlation: bool = True
 
@@ -137,12 +168,13 @@ class CefdSwitches(ConradModel):
 class Model2EConfig(ConradModel):
     grid: BeliefGridConfig = BeliefGridConfig()
     fields: dict[str, FieldSpec] = Field(default_factory=_default_fields)
+    field_model: FieldModelConfig = FieldModelConfig()
     entity: EntityConfig = EntityConfig()
     coupling: CouplingConfig = CouplingConfig()
     switches: CefdSwitches = CefdSwitches()
     variance_floor_fraction: float = Field(default=1e-4, gt=0)
     material_change_fraction: float = Field(default=0.01, ge=0, description="publish threshold")
-    model_version: str = "model2e-cefd-analytic-0.1.0"
+    model_version: str = "model2e-uncoupled-analytic-0.3.0"
     clock_domain: str = "SIM"
 
 

@@ -209,3 +209,32 @@ def runtime_safe_hold(
             indent=2,
         )
     )
+
+
+gates_app = typer.Typer(no_args_is_help=True, help="Formal gate registry (evidence-derived)")
+
+
+@gates_app.command("status")
+def gates_status(as_json: bool = typer.Option(False, "--json")) -> None:
+    """Official gate status derived from artifacts/gates evidence. Surrogate evidence never promotes a gate."""
+    from conrad.evaluation.gates import evaluate_gates
+
+    reports = evaluate_gates()
+    if as_json:
+        typer.echo(json.dumps({k: v.model_dump(mode="json") for k, v in reports.items()}, indent=2))
+        return
+    for r in reports.values():
+        blocked = f" (blocked by {', '.join(r.blocking_upstream)})" if r.blocking_upstream else ""
+        typer.echo(
+            f"{r.gate_id:<9} official={r.official_status.value:<17} formal={r.formal_status.value:<14} "
+            f"surrogate={r.surrogate_status.value}{blocked}"
+        )
+
+
+def _register_gates() -> None:
+    from conrad.cli.app import app
+
+    app.add_typer(gates_app, name="gates")
+
+
+_register_gates()

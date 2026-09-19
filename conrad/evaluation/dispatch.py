@@ -24,6 +24,7 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
     "CORE-UNC-E001": ("conrad.evaluation.core_experiments.unc_e001", "configs/eval/core_unc_e001.yaml"),
     "CORE-RBP-E001": ("conrad.evaluation.core_experiments.rbp_e001", "configs/eval/core_rbp_e001.yaml"),
     "CORE-TBD-E001": ("conrad.evaluation.core_experiments.tbd_e001", "configs/eval/core_tbd_e001.yaml"),
+    "CORE-TBD-E002": ("conrad.evaluation.core_experiments.tbd_e001", "configs/eval/core_tbd_e002.yaml"),
     "CORE-PERSIST-E001": (
         "conrad.evaluation.core_experiments.persist_e001",
         "configs/eval/core_persist_e001.yaml",
@@ -33,6 +34,18 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
     "ACTIVE-MCBR-E001": (
         "conrad.evaluation.decision_experiments.active_mcbr",
         "configs/eval/active_mcbr_e001.yaml",
+    ),
+    "ACTIVE-MCBR-SEL001": (
+        "conrad.evaluation.decision_experiments.active_mcbr_reeval",
+        "configs/eval/active_mcbr_sel001.yaml",
+    ),
+    "ACTIVE-MCBR-E002": (
+        "conrad.evaluation.decision_experiments.active_mcbr_reeval",
+        "configs/eval/active_mcbr_e002.yaml",
+    ),
+    "ACTIVE-MCBR-E003": (
+        "conrad.evaluation.decision_experiments.active_mcbr_reeval",
+        "configs/eval/active_mcbr_e003.yaml",
     ),
     "COM-BAAC-E001": ("conrad.evaluation.decision_experiments.com_baac", "configs/eval/com_baac_e001.yaml"),
     "2S-E001": ("conrad.evaluation.spatial_experiments.e001_coverage", "configs/eval/2s_e001.yaml"),
