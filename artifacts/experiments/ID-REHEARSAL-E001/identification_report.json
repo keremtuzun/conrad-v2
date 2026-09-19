@@ -1,0 +1,1453 @@
+{
+  "dataset_lineage": {
+    "identification": [
+      [
+        "A-tilt-r1",
+        "ccaa95b15007083bbba5bc598ad200a2ca93ee71f767e213424c58ffa74575ff"
+      ],
+      [
+        "A-tilt-r2",
+        "9deb0be4a9492f28310faf538969f5ff85b646a7322044b487f03bd405fd0ddb"
+      ],
+      [
+        "A-tilt-r3",
+        "370f76229ae4abcba94dd3cb7163c90323cae2c9ceb5ea646389f5da3124a397"
+      ],
+      [
+        "B-H1-r1",
+        "ac53469ae6c584dde1ebe885706a3874c56803ae69238343a85a94e6d7a19e0a"
+      ],
+      [
+        "B-H1-r2",
+        "da99c8974f74cf254305fbb0a0881683015fd19919614ae0acc9da2ef1985d93"
+      ],
+      [
+        "B-H1-r3",
+        "399eced28779d3f44a8721184f574a12f68e792b1d5acf796dd38a663a034d7b"
+      ],
+      [
+        "B-H2-r1",
+        "7bbc08fc204df1f988dfe7abb3ff3b03fbc8c1532aeca1b2539ee212af1f7901"
+      ],
+      [
+        "B-H2-r2",
+        "3abc5ac9406d7e11835d65fc1e736c83b0ad627e600a9030faf730fff1d52702"
+      ],
+      [
+        "B-H2-r3",
+        "4d44ff2bf43e42c3a99c529dc89c17556a4f049cf2d92690210166fbbcc1b43b"
+      ],
+      [
+        "B-H3-r1",
+        "576316eb2f45027621b73b27474a72adff3fb45d59e79378fd1efa253788e9ec"
+      ],
+      [
+        "B-H3-r2",
+        "29ca0122d77e04319432ec11e4216d7e7aec6509dd33d27dd158f79c36f19618"
+      ],
+      [
+        "B-H3-r3",
+        "abca5e46403dc51dea92dde3ca93677032d6c9439811b26f6f7b0bbe7b124b6b"
+      ],
+      [
+        "B-H4-r1",
+        "32246ff62c5e9c973580f925ba227946503b5eb400fc4d75ae5cc81094d6eeec"
+      ],
+      [
+        "B-H4-r2",
+        "bdf5ed0c8695e09ff3dd83c0764975c793758b34ecb9a182c54afa23bd14aec7"
+      ],
+      [
+        "B-H4-r3",
+        "d9b3d438ee76dbe73479bdd95088a4fa468bb514a1f27c51e4cf89e739483ca8"
+      ],
+      [
+        "B-V1-r1",
+        "c90481cc890b1a84b253b6956f93cbe85327cccb229d38dd152cc2ac2e1f8754"
+      ],
+      [
+        "B-V1-r2",
+        "01510532be3ab542e12b0655a6c68d26a5b5a490408cbb073939e18756d71310"
+      ],
+      [
+        "B-V1-r3",
+        "d67bc405eaca8484c8f7ad8becaf84337a11574c96844c2e641b890f1819e128"
+      ],
+      [
+        "B-V2-r1",
+        "212fbf669b6b48f74882b8d098941c9a5e79c44ce7f55dd827594e440d082348"
+      ],
+      [
+        "B-V2-r2",
+        "32e8faec3a448dd49cc9d8a2467db21a4730f2f6aa68bbc629213627abedb054"
+      ],
+      [
+        "B-V2-r3",
+        "f1eb9f5b490e2d711bd6edb82821e58ab21d32309d09fb5ca41e9b8fb2cd9bcb"
+      ],
+      [
+        "B-V3-r1",
+        "7b30ecc3327dcb5c8e89a67d2b1f5909d4b73ae1fe4b3dea5bc654edf6d3fe2d"
+      ],
+      [
+        "B-V3-r2",
+        "abd697596ec4c280a736ae85b34238aaa73459d4ff4b74a66aa2cc6c366b1d4c"
+      ],
+      [
+        "B-V3-r3",
+        "c7eb2ebcaa4f481cc461a944b682fd35c3638f5c7be0dd5b7742d4e9e66b925f"
+      ],
+      [
+        "B-V4-r1",
+        "427ef0af0d2c01ca2a17f4b127939f56fa940363773724f4b56789ff38f40f44"
+      ],
+      [
+        "B-V4-r2",
+        "b3142df17be860731faacf1b97873a1c43dc3e6eac8f0c9c53cdb7057fad2341"
+      ],
+      [
+        "B-V4-r3",
+        "77578715cd68127595f83121cae3dd89d3ce64289b6860f9937c2a6f0a5997ee"
+      ],
+      [
+        "C_SURGE_ACCELERATION-r1",
+        "895fab95a0559474a9db5d769a85ed8abafa0dad2557319dd8da4e2a8a700ff8"
+      ],
+      [
+        "C_SURGE_ACCELERATION-r2",
+        "9854e4a680d3842b33abf397dfb3ac69fa41fd5f6faaa5bb905cc77b246b1183"
+      ],
+      [
+        "C_SURGE_ACCELERATION-r3",
+        "84c03188e2d5bbd930bc9bbf91e4ffdea37a2dac74e13d51b603455038a7c932"
+      ],
+      [
+        "D_HEAVE-r1",
+        "34a1d14618e45795bdabd7cda7a7861fdf4d571cf839c1c582a5d7481d6e37df"
+      ],
+      [
+        "D_HEAVE-r2",
+        "ea9ee0afa071968a62b4bb7f8dd2e97a82b779ff5bd4f5ce516abe5244f7bf71"
+      ],
+      [
+        "D_HEAVE-r3",
+        "933beb8055b7b83ab5c0e66f1832849c7c60364ba13b5f617d3faa452989e304"
+      ],
+      [
+        "D_SWAY-r1",
+        "e4f562eb838dbd05933d54f59ba5800ea83bd48d4006ffdcdcb980723a721448"
+      ],
+      [
+        "D_SWAY-r2",
+        "d8fb7725d55b440cf3763156db3c0ef7c4d02b1a9aa699b955d007122040d499"
+      ],
+      [
+        "D_SWAY-r3",
+        "ae841c84bc059984820649109250c3cede98f2dd610d17f64625c80cdcae32eb"
+      ],
+      [
+        "E_YAW_ROTATION-r1",
+        "a92cc63992936a389028a8a8a88e9ef8e98da045d1516b714858516d4640c424"
+      ],
+      [
+        "E_YAW_ROTATION-r2",
+        "f9495aa136113b543cf3cd28eb74f7a5e4765ba26c85be3dba9f1b84e6f4a2e1"
+      ],
+      [
+        "E_YAW_ROTATION-r3",
+        "bf673cc527c1944c00be74f1ca97433785e201e11c3ab1bf24b13dc23209e06b"
+      ],
+      [
+        "F-hold-r1",
+        "90b32f8102833070d246e5001df725d2f0be4a498e563e26941ba333ba1f171b"
+      ],
+      [
+        "F-hold-r2",
+        "bd662a9f23ce141a0deeb2efeb44366dfba4a6b690247d8e181baf76e1e44fc8"
+      ],
+      [
+        "F-hold-r3",
+        "5a56f3b65f09bb018abe367aebc26d192929fa6f1cb78dd4abc10316bca91fed"
+      ]
+    ],
+    "lineage_digest": "ccacd90121e4cbe752c88c38640747d8eb58b4687da71cbfbdc921817b40eff0",
+    "split_id": "id-rehearsal-seed2026201",
+    "synthetic": true,
+    "validation": [
+      [
+        "A-tilt-r4",
+        "bdf9a6500a6f34229413f614153130fb87c2d13cdadcd9dbe1ed6ac3863b8309"
+      ],
+      [
+        "B-H1-r4",
+        "38d122aa927a52aaba3f12cc0278eae7790d299a6dab7060abfdbecf6352bd06"
+      ],
+      [
+        "B-H2-r4",
+        "b02cd7df7a506b9ca8b5c2d6e0713e300fdef3a86264e80283a8539b6f84f04b"
+      ],
+      [
+        "B-H3-r4",
+        "538f874bccbb026e52e8259c211f825f830b49749a8bd8d8c46c156ddc0c483c"
+      ],
+      [
+        "B-H4-r4",
+        "d8434a2745ad777a79a36aa71b5cf15a2ba01b630b4ed4531e95a183ce9177b9"
+      ],
+      [
+        "B-V1-r4",
+        "ca4759b7d8a3620b39eccf1726d2f4caf8aee94a7e90c05feaf76694bc918c29"
+      ],
+      [
+        "B-V2-r4",
+        "0c37baff3ba7d2ff24eb615c2acb7643aa62192da778f4c9d9b74350fa067365"
+      ],
+      [
+        "B-V3-r4",
+        "3096810109dd74809b08d2bbc32d2410baf9afb951a2bd6951930041f48007dc"
+      ],
+      [
+        "B-V4-r4",
+        "f68fbdfcff96c3e8c632bafa0a6d3879f53d2b1652ace194faf7d1d3097df8cd"
+      ],
+      [
+        "C_SURGE_ACCELERATION-r4",
+        "7b36920f3ac8dfcc1f78034e04de1ff44578b20d7230cf958bafe5062aaa24fd"
+      ],
+      [
+        "D_HEAVE-r4",
+        "eb3104994bf1b8b43157d6c6d529ae09b1870ab0059c443aeeedace3afa3b219"
+      ],
+      [
+        "D_SWAY-r4",
+        "c08f7f4e8bd262a31cc2c644ac3344c71c02e5958d95f461b04d083f3d36e16f"
+      ],
+      [
+        "E_YAW_ROTATION-r4",
+        "594901b72892dc9d5168b696311944de27bf8bf54f3b4814580e51815f6d7370"
+      ],
+      [
+        "F-hold-r4",
+        "e693bf213473b6edf145c0db8ed493a0dd0891d46524644e2a68de24426b798c"
+      ]
+    ]
+  },
+  "fits": {
+    "A_trim": {
+      "condition_number": 20.49670803120748,
+      "converged": true,
+      "correlation": [
+        [
+          1.0,
+          -7.605370950481593e-05
+        ],
+        [
+          -7.605370950481591e-05,
+          1.0
+        ]
+      ],
+      "dof": 37,
+      "message": "`gtol` termination condition is satisfied.",
+      "n_residuals": 39,
+      "parameters": [
+        {
+          "ci95": [
+            0.020185247379572904,
+            0.020241955569085278
+          ],
+          "name": "z_bg_m",
+          "sigma": 1.4466374875605481e-05,
+          "units": "m",
+          "value": 0.02021360147432909
+        },
+        {
+          "ci95": [
+            -6.5428332607165986e-06,
+            5.982916353694627e-06
+          ],
+          "name": "x_bg_m",
+          "sigma": 3.1953442893906187e-06,
+          "units": "m",
+          "value": -2.7995845351098605e-07
+        }
+      ],
+      "residual_rms": 0.0021461721474453606
+    },
+    "B_thruster_H1": {
+      "condition_number": 72267.25067655981,
+      "converged": true,
+      "correlation": [
+        [
+          1.0,
+          0.18737096946350562,
+          0.46450792109577416,
+          -0.35483868658401974
+        ],
+        [
+          0.18737096946350604,
+          1.0,
+          0.39625493078244095,
+          -0.2998042621880168
+        ],
+        [
+          0.46450792109577466,
+          0.39625493078244084,
+          1.0,
+          -0.7424068384023585
+        ],
+        [
+          -0.35483868658402024,
+          -0.29980426218801676,
+          -0.7424068384023588,
+          1.0
+        ]
+      ],
+      "dof": 5216,
+      "message": "`ftol` termination condition is satisfied.",
+      "n_residuals": 5220,
+      "parameters": [
+        {
+          "ci95": [
+            39.99908522295837,
+            40.036003036883
+          ],
+          "name": "k_fwd",
+          "sigma": 0.009417809674649167,
+          "units": "N",
+          "value": 40.01754412992069
+        },
+        {
+          "ci95": [
+            29.978539091859222,
+            30.014476966484683
+          ],
+          "name": "k_rev",
+          "sigma": 0.009167825159555863,
+          "units": "N",
+          "value": 29.996508029171952
+        },
+        {
+          "ci95": [
+            0.14986752771223077,
+            0.1502687802422939
+          ],
+          "name": "time_constant_s",
+          "sigma": 0.00010236033930181116,
+          "units": "s",
+          "value": 0.15006815397726234
+        },
+        {
+          "ci95": [
+            0.019815831585991806,
+            0.020062983852150277
+          ],
+          "name": "latency_s",
+          "sigma": 6.304904748940499e-05,
+          "units": "s",
+          "value": 0.01993940771907104
+        },
+        {
+          "ci95": null,
+          "name": "deadzone",
+          "sigma": 0.0028867513459481294,
+          "units": "unitless",
+          "value": 0.04999999999999999
+        }
+      ],
+      "residual_rms": 0.05165870762994544
+    },
+    "B_thruster_H2": {
+      "condition_number": 67157.7068452773,
+      "converged": true,
+      "correlation": [
+        [
+          1.0,
+          0.18748262317601183,
+          0.4638438420940654,
+          -0.35386605080188577
+        ],
+        [
+          0.18748262317601244,
+          1.0,
+          0.397037300841343,
+          -0.3012673077019063
+        ],
+        [
+          0.46384384209406593,
+          0.397037300841343,
+          1.0,
+          -0.7789096094944747
+        ],
+        [
+          -0.353866050801886,
+          -0.30126730770190624,
+          -0.7789096094944747,
+          1.0
+        ]
+      ],
+      "dof": 5216,
+      "message": "`ftol` termination condition is satisfied.",
+      "n_residuals": 5220,
+      "parameters": [
+        {
+          "ci95": [
+            39.99170234841753,
+            40.02977752965273
+          ],
+          "name": "k_fwd",
+          "sigma": 0.009713056437552324,
+          "units": "N",
+          "value": 40.01073993903513
+        },
+        {
+          "ci95": [
+            29.970889846935485,
+            30.00798648251478
+          ],
+          "name": "k_rev",
+          "sigma": 0.009463427443697204,
+          "units": "N",
+          "value": 29.989438164725133
+        },
+        {
+          "ci95": [
+            0.14971994372270436,
+            0.15016210503200234
+          ],
+          "name": "time_constant_s",
+          "sigma": 0.00011279625237193434,
+          "units": "s",
+          "value": 0.14994102437735335
+        },
+        {
+          "ci95": [
+            0.019931939251567207,
+            0.02022284290622619
+          ],
+          "name": "latency_s",
+          "sigma": 7.421011598443333e-05,
+          "units": "s",
+          "value": 0.020077391078896698
+        },
+        {
+          "ci95": null,
+          "name": "deadzone",
+          "sigma": 0.0028867513459481294,
+          "units": "unitless",
+          "value": 0.04999999999999999
+        }
+      ],
+      "residual_rms": 0.05330868374889227
+    },
+    "B_thruster_H3": {
+      "condition_number": 72266.12815527846,
+      "converged": true,
+      "correlation": [
+        [
+          1.0,
+          0.18750534500279883,
+          0.4645903675766278,
+          -0.3549139334065698
+        ],
+        [
+          0.1875053450027985,
+          1.0,
+          0.3964622540220657,
+          -0.2999715810146691
+        ],
+        [
+          0.4645903675766277,
+          0.3964622540220658,
+          1.0,
+          -0.7425639708623963
+        ],
+        [
+          -0.3549139334065689,
+          -0.2999715810146691,
+          -0.7425639708623962,
+          1.0
+        ]
+      ],
+      "dof": 5216,
+      "message": "`ftol` termination condition is satisfied.",
+      "n_residuals": 5220,
+      "parameters": [
+        {
+          "ci95": [
+            40.001145934201645,
+            40.03851728917002
+          ],
+          "name": "k_fwd",
+          "sigma": 0.009533508920504091,
+          "units": "N",
+          "value": 40.01983161168583
+        },
+        {
+          "ci95": [
+            29.98890214246617,
+            30.025283361988937
+          ],
+          "name": "k_rev",
+          "sigma": 0.009280923347643934,
+          "units": "N",
+          "value": 30.007092752227553
+        },
+        {
+          "ci95": [
+            0.14993349421971386,
+            0.15033979507263062
+          ],
+          "name": "time_constant_s",
+          "sigma": 0.00010364817676447812,
+          "units": "s",
+          "value": 0.15013664464617224
+        },
+        {
+          "ci95": [
+            0.01978447863727313,
+            0.020034773302566887
+          ],
+          "name": "latency_s",
+          "sigma": 6.385067992187669e-05,
+          "units": "s",
+          "value": 0.01990962596992001
+        },
+        {
+          "ci95": null,
+          "name": "deadzone",
+          "sigma": 0.0028867513459481294,
+          "units": "unitless",
+          "value": 0.04999999999999999
+        }
+      ],
+      "residual_rms": 0.052287159844056394
+    },
+    "B_thruster_H4": {
+      "condition_number": 67114.01101995834,
+      "converged": true,
+      "correlation": [
+        [
+          1.0,
+          0.18722687285843248,
+          0.46348725875476504,
+          -0.3535678799002125
+        ],
+        [
+          0.18722687285843248,
+          1.0,
+          0.39682195096110034,
+          -0.3010920971238344
+        ],
+        [
+          0.4634872587547653,
+          0.39682195096110034,
+          1.0,
+          -0.7789787520000371
+        ],
+        [
+          -0.35356787990021266,
+          -0.30109209712383433,
+          -0.7789787520000369,
+          1.0
+        ]
+      ],
+      "dof": 5216,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "n_residuals": 5220,
+      "parameters": [
+        {
+          "ci95": [
+            39.967748203938505,
+            40.00583369545979
+          ],
+          "name": "k_fwd",
+          "sigma": 0.00971568661257202,
+          "units": "N",
+          "value": 39.98679094969915
+        },
+        {
+          "ci95": [
+            29.974600419858287,
+            30.01171104247516
+          ],
+          "name": "k_rev",
+          "sigma": 0.009466995565528375,
+          "units": "N",
+          "value": 29.993155731166723
+        },
+        {
+          "ci95": [
+            0.1495642023745561,
+            0.15000653675386633
+          ],
+          "name": "time_constant_s",
+          "sigma": 0.00011284040288527017,
+          "units": "s",
+          "value": 0.1497853695642112
+        },
+        {
+          "ci95": [
+            0.01990335083447243,
+            0.020194488613669452
+          ],
+          "name": "latency_s",
+          "sigma": 7.426984163189303e-05,
+          "units": "s",
+          "value": 0.02004891972407094
+        },
+        {
+          "ci95": null,
+          "name": "deadzone",
+          "sigma": 0.0028867513459481294,
+          "units": "unitless",
+          "value": 0.04999999999999999
+        }
+      ],
+      "residual_rms": 0.0533427275507313
+    },
+    "B_thruster_V1": {
+      "condition_number": 72232.14474508367,
+      "converged": true,
+      "correlation": [
+        [
+          1.0,
+          0.18729410061732518,
+          0.46431453262094996,
+          -0.35468278845278367
+        ],
+        [
+          0.18729410061732493,
+          1.0,
+          0.3962687188376963,
+          -0.2998142207983787
+        ],
+        [
+          0.4643145326209503,
+          0.39626871883769643,
+          1.0,
+          -0.7424409690720079
+        ],
+        [
+          -0.3546827884527833,
+          -0.29981422079837877,
+          -0.7424409690720079,
+          1.0
+        ]
+      ],
+      "dof": 5216,
+      "message": "`ftol` termination condition is satisfied.",
+      "n_residuals": 5220,
+      "parameters": [
+        {
+          "ci95": [
+            39.97734044256766,
+            40.01489878179982
+          ],
+          "name": "k_fwd",
+          "sigma": 0.009581208987798299,
+          "units": "N",
+          "value": 39.99611961218374
+        },
+        {
+          "ci95": [
+            29.985551424037293,
+            30.022117235104314
+          ],
+          "name": "k_rev",
+          "sigma": 0.009328013027300531,
+          "units": "N",
+          "value": 30.003834329570804
+        },
+        {
+          "ci95": [
+            0.1498061300720416,
+            0.15021443092637962
+          ],
+          "name": "time_constant_s",
+          "sigma": 0.0001041583812086789,
+          "units": "s",
+          "value": 0.1500102804992106
+        },
+        {
+          "ci95": [
+            0.019799641076290002,
+            0.02005117290823604
+          ],
+          "name": "latency_s",
+          "sigma": 6.416628365970347e-05,
+          "units": "s",
+          "value": 0.01992540699226302
+        },
+        {
+          "ci95": null,
+          "name": "deadzone",
+          "sigma": 0.0028867513459481294,
+          "units": "unitless",
+          "value": 0.05
+        }
+      ],
+      "residual_rms": 0.052564049718488895
+    },
+    "B_thruster_V2": {
+      "condition_number": 72262.01423918837,
+      "converged": true,
+      "correlation": [
+        [
+          1.0,
+          0.18711717170912412,
+          0.46415415660928394,
+          -0.3545457507631785
+        ],
+        [
+          0.18711717170912404,
+          1.0,
+          0.39603721365584027,
+          -0.29962294716871796
+        ],
+        [
+          0.4641541566092838,
+          0.3960372136558402,
+          1.0,
+          -0.742088676955523
+        ],
+        [
+          -0.354545750763179,
+          -0.29962294716871796,
+          -0.742088676955523,
+          1.0
+        ]
+      ],
+      "dof": 5216,
+      "message": "`xtol` termination condition is satisfied.",
+      "n_residuals": 5220,
+      "parameters": [
+        {
+          "ci95": [
+            39.97142696778631,
+            40.00885088994642
+          ],
+          "name": "k_fwd",
+          "sigma": 0.009546918918396865,
+          "units": "N",
+          "value": 39.990138928866365
+        },
+        {
+          "ci95": [
+            29.9797585878306,
+            30.01619288818061
+          ],
+          "name": "k_rev",
+          "sigma": 0.009294464375003125,
+          "units": "N",
+          "value": 29.997975738005604
+        },
+        {
+          "ci95": [
+            0.14970884246430471,
+            0.1501154091642113
+          ],
+          "name": "time_constant_s",
+          "sigma": 0.00010371599487412379,
+          "units": "s",
+          "value": 0.149912125814258
+        },
+        {
+          "ci95": [
+            0.019874604320501102,
+            0.020124967845374694
+          ],
+          "name": "latency_s",
+          "sigma": 6.386824614122229e-05,
+          "units": "s",
+          "value": 0.019999786082937898
+        },
+        {
+          "ci95": null,
+          "name": "deadzone",
+          "sigma": 0.0028867513459481294,
+          "units": "unitless",
+          "value": 0.05
+        }
+      ],
+      "residual_rms": 0.05238614576473648
+    },
+    "B_thruster_V3": {
+      "condition_number": 67071.06002473916,
+      "converged": true,
+      "correlation": [
+        [
+          1.0,
+          0.18767812313851812,
+          0.46385726601276933,
+          -0.35389364140906293
+        ],
+        [
+          0.18767812313851795,
+          1.0,
+          0.3974237196811419,
+          -0.3015765339700698
+        ],
+        [
+          0.46385726601276944,
+          0.39742371968114204,
+          1.0,
+          -0.7790805045733763
+        ],
+        [
+          -0.3538936414090629,
+          -0.3015765339700699,
+          -0.7790805045733764,
+          1.0
+        ]
+      ],
+      "dof": 5216,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "n_residuals": 5220,
+      "parameters": [
+        {
+          "ci95": [
+            39.958356047900615,
+            39.99577649251976
+          ],
+          "name": "k_fwd",
+          "sigma": 0.00954603179059711,
+          "units": "N",
+          "value": 39.97706627021019
+        },
+        {
+          "ci95": [
+            29.978961733996904,
+            30.015426860748335
+          ],
+          "name": "k_rev",
+          "sigma": 0.009302328252916325,
+          "units": "N",
+          "value": 29.99719429737262
+        },
+        {
+          "ci95": [
+            0.14980650027537246,
+            0.15024152693298537
+          ],
+          "name": "time_constant_s",
+          "sigma": 0.00011097618816655581,
+          "units": "s",
+          "value": 0.1500240136041789
+        },
+        {
+          "ci95": [
+            0.019890047612114735,
+            0.020176308758166575
+          ],
+          "name": "latency_s",
+          "sigma": 7.30258025642455e-05,
+          "units": "s",
+          "value": 0.020033178185140655
+        },
+        {
+          "ci95": null,
+          "name": "deadzone",
+          "sigma": 0.0028867513459481294,
+          "units": "unitless",
+          "value": 0.05
+        }
+      ],
+      "residual_rms": 0.05238728913619357
+    },
+    "B_thruster_V4": {
+      "condition_number": 67143.78142238053,
+      "converged": true,
+      "correlation": [
+        [
+          1.0,
+          0.18741458957369747,
+          0.4637313058568462,
+          -0.3537777914416096
+        ],
+        [
+          0.1874145895736976,
+          1.0,
+          0.3970051174061854,
+          -0.30123339519856995
+        ],
+        [
+          0.46373130585684713,
+          0.39700511740618544,
+          1.0,
+          -0.7786514059813191
+        ],
+        [
+          -0.35377779144160987,
+          -0.30123339519857,
+          -0.7786514059813193,
+          1.0
+        ]
+      ],
+      "dof": 5216,
+      "message": "`ftol` termination condition is satisfied.",
+      "n_residuals": 5220,
+      "parameters": [
+        {
+          "ci95": [
+            39.97029569999044,
+            40.00735735486543
+          ],
+          "name": "k_fwd",
+          "sigma": 0.009454503794639114,
+          "units": "N",
+          "value": 39.98882652742793
+        },
+        {
+          "ci95": [
+            29.966276509778908,
+            30.002387522367457
+          ],
+          "name": "k_rev",
+          "sigma": 0.009211993007282048,
+          "units": "N",
+          "value": 29.984332016073182
+        },
+        {
+          "ci95": [
+            0.14968462218813602,
+            0.15011493207882629
+          ],
+          "name": "time_constant_s",
+          "sigma": 0.00010977293129853154,
+          "units": "s",
+          "value": 0.14989977713348115
+        },
+        {
+          "ci95": [
+            0.020011265854533177,
+            0.0202942463134167
+          ],
+          "name": "latency_s",
+          "sigma": 7.21888925723274e-05,
+          "units": "s",
+          "value": 0.02015275608397494
+        },
+        {
+          "ci95": null,
+          "name": "deadzone",
+          "sigma": 0.0028867513459481294,
+          "units": "unitless",
+          "value": 0.05
+        }
+      ],
+      "residual_rms": 0.05189514087585887
+    },
+    "C_SURGE_ACCELERATION": {
+      "condition_number": 33.03546137921094,
+      "converged": true,
+      "correlation": [
+        [
+          1.0,
+          0.5091272370355597,
+          -0.40002802400052706
+        ],
+        [
+          0.5091272370355596,
+          1.0,
+          -0.9153232785103229
+        ],
+        [
+          -0.40002802400052695,
+          -0.9153232785103229,
+          1.0
+        ]
+      ],
+      "dof": 7947,
+      "message": "`ftol` termination condition is satisfied.",
+      "n_residuals": 7950,
+      "parameters": [
+        {
+          "ci95": [
+            5.38883919463733,
+            5.411862009193844
+          ],
+          "name": "added_inertia",
+          "sigma": 0.005873166978702656,
+          "units": "kg",
+          "value": 5.400350601915587
+        },
+        {
+          "ci95": [
+            3.929868512046131,
+            3.9642880728826957
+          ],
+          "name": "linear_damping",
+          "sigma": 0.008780500213409245,
+          "units": "N*s/m",
+          "value": 3.9470782924644134
+        },
+        {
+          "ci95": [
+            18.278067260950472,
+            18.329820578901604
+          ],
+          "name": "quadratic_damping",
+          "sigma": 0.013202377028350145,
+          "units": "N*s^2/m^2",
+          "value": 18.303943919926038
+        }
+      ],
+      "residual_rms": 0.005232635371012918
+    },
+    "D_HEAVE": {
+      "condition_number": 744.1489399969919,
+      "converged": true,
+      "correlation": [
+        [
+          1.0,
+          0.5088295292496343,
+          -0.3882484754144205,
+          0.11714639789827713
+        ],
+        [
+          0.5088295292496343,
+          1.0,
+          -0.905891413578779,
+          0.1750110821919434
+        ],
+        [
+          -0.3882484754144203,
+          -0.9058914135787792,
+          1.0,
+          -0.1470545653390997
+        ],
+        [
+          0.11714639789827706,
+          0.17501108219194328,
+          -0.14705456533909958,
+          1.0
+        ]
+      ],
+      "dof": 7946,
+      "message": "`ftol` termination condition is satisfied.",
+      "n_residuals": 7950,
+      "parameters": [
+        {
+          "ci95": [
+            14.388831337730025,
+            14.43073787851025
+          ],
+          "name": "added_inertia",
+          "sigma": 0.010690444076587997,
+          "units": "kg",
+          "value": 14.409784608120138
+        },
+        {
+          "ci95": [
+            5.1452372439874505,
+            5.206331959718646
+          ],
+          "name": "linear_damping",
+          "sigma": 0.015585386666121198,
+          "units": "N*s/m",
+          "value": 5.1757846018530484
+        },
+        {
+          "ci95": [
+            37.007178589219784,
+            37.116015233034624
+          ],
+          "name": "quadratic_damping",
+          "sigma": 0.02776444995276462,
+          "units": "N*s^2/m^2",
+          "value": 37.061596911127204
+        },
+        {
+          "ci95": [
+            0.30229499449975944,
+            0.30691946635352435
+          ],
+          "name": "bias",
+          "sigma": 0.0011797122075930973,
+          "units": "N",
+          "value": 0.3046072304266419
+        }
+      ],
+      "residual_rms": 0.005125790331544506
+    },
+    "D_HEAVE_displaced_volume": {
+      "condition_number": 744.1489399969919,
+      "converged": true,
+      "correlation": null,
+      "dof": 7946,
+      "message": "derived: V = (m g + heave bias) / (rho g)",
+      "n_residuals": 7950,
+      "parameters": [
+        {
+          "ci95": [
+            0.011249585864096924,
+            0.011250045927406754
+          ],
+          "name": "displaced_volume_m3",
+          "sigma": 1.1736308924201608e-07,
+          "units": "m^3",
+          "value": 0.011249815895751839
+        }
+      ],
+      "residual_rms": 0.005125790331544506
+    },
+    "D_SWAY": {
+      "condition_number": 36.83398654593176,
+      "converged": true,
+      "correlation": [
+        [
+          1.0,
+          0.48129904565981857,
+          -0.382482462925943
+        ],
+        [
+          0.4812990456598185,
+          1.0,
+          -0.9230011206569013
+        ],
+        [
+          -0.382482462925943,
+          -0.9230011206569014,
+          1.0
+        ]
+      ],
+      "dof": 7947,
+      "message": "`ftol` termination condition is satisfied.",
+      "n_residuals": 7950,
+      "parameters": [
+        {
+          "ci95": [
+            12.557580416800329,
+            12.589063734952473
+          ],
+          "name": "added_inertia",
+          "sigma": 0.008031458712281532,
+          "units": "kg",
+          "value": 12.573322075876401
+        },
+        {
+          "ci95": [
+            6.133143583933812,
+            6.179604960723834
+          ],
+          "name": "linear_damping",
+          "sigma": 0.011852392038271055,
+          "units": "N*s/m",
+          "value": 6.156374272328823
+        },
+        {
+          "ci95": [
+            21.76868198356657,
+            21.841991298133724
+          ],
+          "name": "quadratic_damping",
+          "sigma": 0.01870135575692638,
+          "units": "N*s^2/m^2",
+          "value": 21.805336640850147
+        }
+      ],
+      "residual_rms": 0.005245824969433486
+    },
+    "E_YAW_ROTATION": {
+      "condition_number": 14.331767756226261,
+      "converged": true,
+      "correlation": [
+        [
+          1.0,
+          0.5171095551774914,
+          -0.36453579211757886
+        ],
+        [
+          0.5171095551774912,
+          1.0,
+          -0.8023769581863806
+        ],
+        [
+          -0.36453579211757886,
+          -0.8023769581863806,
+          1.0
+        ]
+      ],
+      "dof": 7947,
+      "message": "`ftol` termination condition is satisfied.",
+      "n_residuals": 7950,
+      "parameters": [
+        {
+          "ci95": [
+            0.1057802480093981,
+            0.10716633705935315
+          ],
+          "name": "added_inertia",
+          "sigma": 0.0003535941453966935,
+          "units": "kg*m^2",
+          "value": 0.10647329253437562
+        },
+        {
+          "ci95": [
+            0.056356181862728665,
+            0.05949926444448502
+          ],
+          "name": "linear_damping",
+          "sigma": 0.000801806781060294,
+          "units": "N*m*s/rad",
+          "value": 0.05792772315360684
+        },
+        {
+          "ci95": [
+            1.5575110299737756,
+            1.5603663572701059
+          ],
+          "name": "quadratic_damping",
+          "sigma": 0.0007283998204924338,
+          "units": "N*m*s^2/rad^2",
+          "value": 1.5589386936219407
+        }
+      ],
+      "residual_rms": 0.010502274761003204
+    },
+    "F_station_keeping": {
+      "condition_number": 1.0,
+      "converged": true,
+      "correlation": [
+        [
+          1.0
+        ]
+      ],
+      "dof": 2999,
+      "message": "`ftol` termination condition is satisfied.",
+      "n_residuals": 3000,
+      "parameters": [
+        {
+          "ci95": [
+            0.2003166031284018,
+            0.20062015183470963
+          ],
+          "name": "current_mps",
+          "sigma": 7.743589446628962e-05,
+          "units": "m/s",
+          "value": 0.20046837748155572
+        }
+      ],
+      "residual_rms": 0.047858931212999216
+    }
+  },
+  "notes": [
+    "protocol identification-protocol.v1; manifest manifest.yaml",
+    "displaced volume derived from the D_HEAVE net-buoyancy bias and the measured mass"
+  ],
+  "real_identification_status": "BLOCKED_EXTERNAL",
+  "report_version": "identification.v1",
+  "status": "SYNTHETIC_TOOLING_CHECK",
+  "validations": {
+    "A_trim": {
+      "envelope_rmse": null,
+      "kind": "A_STATIC_TRIM",
+      "per_trajectory": [
+        {
+          "max_abs_error": 0.004119337204870253,
+          "nrmse": 0.0011327181377721084,
+          "rmse": 0.0022830587277575124,
+          "trajectory_id": "A-tilt-r4",
+          "units": "N*m"
+        }
+      ],
+      "pooled_rmse": 0.0022830587277575124,
+      "within_envelope": null
+    },
+    "B_thruster_H1": {
+      "envelope_rmse": null,
+      "kind": "B_THRUSTER_STEP",
+      "per_trajectory": [
+        {
+          "max_abs_error": 0.3624843829941818,
+          "nrmse": 0.0016259337352751838,
+          "rmse": 0.05475431926115864,
+          "trajectory_id": "B-H1-r4",
+          "units": "N"
+        }
+      ],
+      "pooled_rmse": 0.05475431926115864,
+      "within_envelope": null
+    },
+    "B_thruster_H2": {
+      "envelope_rmse": null,
+      "kind": "B_THRUSTER_STEP",
+      "per_trajectory": [
+        {
+          "max_abs_error": 0.329945676584274,
+          "nrmse": 0.0016167036478203362,
+          "rmse": 0.05440115756700312,
+          "trajectory_id": "B-H2-r4",
+          "units": "N"
+        }
+      ],
+      "pooled_rmse": 0.05440115756700312,
+      "within_envelope": null
+    },
+    "B_thruster_H3": {
+      "envelope_rmse": null,
+      "kind": "B_THRUSTER_STEP",
+      "per_trajectory": [
+        {
+          "max_abs_error": 0.38156765538635945,
+          "nrmse": 0.0016437234618676148,
+          "rmse": 0.05522987413969315,
+          "trajectory_id": "B-H3-r4",
+          "units": "N"
+        }
+      ],
+      "pooled_rmse": 0.05522987413969315,
+      "within_envelope": null
+    },
+    "B_thruster_H4": {
+      "envelope_rmse": null,
+      "kind": "B_THRUSTER_STEP",
+      "per_trajectory": [
+        {
+          "max_abs_error": 0.31280704023218536,
+          "nrmse": 0.0015697139135722924,
+          "rmse": 0.052892571489472746,
+          "trajectory_id": "B-H4-r4",
+          "units": "N"
+        }
+      ],
+      "pooled_rmse": 0.052892571489472746,
+      "within_envelope": null
+    },
+    "B_thruster_V1": {
+      "envelope_rmse": null,
+      "kind": "B_THRUSTER_STEP",
+      "per_trajectory": [
+        {
+          "max_abs_error": 0.4343612407123375,
+          "nrmse": 0.0015886867438312834,
+          "rmse": 0.053545878467946686,
+          "trajectory_id": "B-V1-r4",
+          "units": "N"
+        }
+      ],
+      "pooled_rmse": 0.053545878467946686,
+      "within_envelope": null
+    },
+    "B_thruster_V2": {
+      "envelope_rmse": null,
+      "kind": "B_THRUSTER_STEP",
+      "per_trajectory": [
+        {
+          "max_abs_error": 0.3179083137366849,
+          "nrmse": 0.0015909052800578256,
+          "rmse": 0.05365858070046892,
+          "trajectory_id": "B-V2-r4",
+          "units": "N"
+        }
+      ],
+      "pooled_rmse": 0.05365858070046892,
+      "within_envelope": null
+    },
+    "B_thruster_V3": {
+      "envelope_rmse": null,
+      "kind": "B_THRUSTER_STEP",
+      "per_trajectory": [
+        {
+          "max_abs_error": 0.3366007237914448,
+          "nrmse": 0.0016063876121549714,
+          "rmse": 0.05407690797703616,
+          "trajectory_id": "B-V3-r4",
+          "units": "N"
+        }
+      ],
+      "pooled_rmse": 0.05407690797703616,
+      "within_envelope": null
+    },
+    "B_thruster_V4": {
+      "envelope_rmse": null,
+      "kind": "B_THRUSTER_STEP",
+      "per_trajectory": [
+        {
+          "max_abs_error": 0.34636603942048527,
+          "nrmse": 0.0016555633133632926,
+          "rmse": 0.055714929691669114,
+          "trajectory_id": "B-V4-r4",
+          "units": "N"
+        }
+      ],
+      "pooled_rmse": 0.055714929691669114,
+      "within_envelope": null
+    },
+    "C_SURGE_ACCELERATION": {
+      "envelope_rmse": null,
+      "kind": "C_SURGE_ACCELERATION",
+      "per_trajectory": [
+        {
+          "max_abs_error": 0.025569501742353277,
+          "nrmse": 0.0025318304471331978,
+          "rmse": 0.005495770817538544,
+          "trajectory_id": "C_SURGE_ACCELERATION-r4",
+          "units": "m/s"
+        }
+      ],
+      "pooled_rmse": 0.005495770817538544,
+      "within_envelope": null
+    },
+    "D_HEAVE": {
+      "envelope_rmse": null,
+      "kind": "D_HEAVE",
+      "per_trajectory": [
+        {
+          "max_abs_error": 0.0200368559818751,
+          "nrmse": 0.0027242851385356134,
+          "rmse": 0.0050615747699480265,
+          "trajectory_id": "D_HEAVE-r4",
+          "units": "m/s"
+        }
+      ],
+      "pooled_rmse": 0.0050615747699480265,
+      "within_envelope": null
+    },
+    "D_SWAY": {
+      "envelope_rmse": null,
+      "kind": "D_SWAY",
+      "per_trajectory": [
+        {
+          "max_abs_error": 0.01684624930917497,
+          "nrmse": 0.002428598117464183,
+          "rmse": 0.005052514999919487,
+          "trajectory_id": "D_SWAY-r4",
+          "units": "m/s"
+        }
+      ],
+      "pooled_rmse": 0.005052514999919487,
+      "within_envelope": null
+    },
+    "E_YAW_ROTATION": {
+      "envelope_rmse": null,
+      "kind": "E_YAW_ROTATION",
+      "per_trajectory": [
+        {
+          "max_abs_error": 0.05861542752969296,
+          "nrmse": 0.0028242484896223367,
+          "rmse": 0.010252734582795889,
+          "trajectory_id": "E_YAW_ROTATION-r4",
+          "units": "rad/s"
+        }
+      ],
+      "pooled_rmse": 0.010252734582795889,
+      "within_envelope": null
+    },
+    "F_station_keeping": {
+      "envelope_rmse": null,
+      "kind": "F_STATION_KEEPING",
+      "per_trajectory": [
+        {
+          "max_abs_error": 0.21387108048958892,
+          "nrmse": 0.2775230387795877,
+          "rmse": 0.07134191255156927,
+          "trajectory_id": "F-hold-r4",
+          "units": "N"
+        }
+      ],
+      "pooled_rmse": 0.07134191255156927,
+      "within_envelope": null
+    }
+  }
+}

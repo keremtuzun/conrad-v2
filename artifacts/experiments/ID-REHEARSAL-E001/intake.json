@@ -1,0 +1,674 @@
+{
+  "protocol_version": "identification-protocol.v1",
+  "manifest": "C:\\Users\\Kerem\\Kerem\\conrad-v2\\artifacts\\experiments\\ID-REHEARSAL-E001\\delivery\\manifest.yaml",
+  "accepted": true,
+  "synthetic": true,
+  "findings": [
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-H1-r1",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-H1-r2",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-H1-r3",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-H1-r4",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-H2-r1",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-H2-r2",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-H2-r3",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-H2-r4",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-H3-r1",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-H3-r2",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-H3-r3",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-H3-r4",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-H4-r1",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-H4-r2",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-H4-r3",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-H4-r4",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-V1-r1",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-V1-r2",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-V1-r3",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-V1-r4",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-V2-r1",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-V2-r2",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-V2-r3",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-V2-r4",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-V3-r1",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-V3-r2",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-V3-r3",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-V3-r4",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-V4-r1",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-V4-r2",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-V4-r3",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "B-V4-r4",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "C_SURGE_ACCELERATION-r1",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "C_SURGE_ACCELERATION-r2",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "C_SURGE_ACCELERATION-r3",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "C_SURGE_ACCELERATION-r4",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "D_SWAY-r1",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "D_SWAY-r2",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "D_SWAY-r3",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "D_SWAY-r4",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "D_HEAVE-r1",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "D_HEAVE-r2",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "D_HEAVE-r3",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "D_HEAVE-r4",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "E_YAW_ROTATION-r1",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "E_YAW_ROTATION-r2",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "E_YAW_ROTATION-r3",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "E_YAW_ROTATION-r4",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "A-tilt-r1",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "A-tilt-r2",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "A-tilt-r3",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "A-tilt-r4",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "F-hold-r1",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "F-hold-r2",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "F-hold-r3",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "WARN",
+      "code": "CHANNEL_CONSTANT",
+      "trajectory_id": "F-hold-r4",
+      "message": "battery_voltage_v never changes (no information about its rate)"
+    },
+    {
+      "severity": "INFO",
+      "code": "KIND_NOT_DELIVERED",
+      "trajectory_id": null,
+      "message": "A_STATIC_TRIM/SCALE not in this delivery"
+    },
+    {
+      "severity": "INFO",
+      "code": "KIND_NOT_DELIVERED",
+      "trajectory_id": null,
+      "message": "A_STATIC_TRIM/TILT_WEIGHTS not in this delivery"
+    },
+    {
+      "severity": "WARN",
+      "code": "REPEATABILITY_OUTLIER",
+      "trajectory_id": null,
+      "message": "B_THRUSTER_STEP/STANDARD/H1: repetition B-H1-r1 thrust_n RMS deviates (robust z)"
+    },
+    {
+      "severity": "WARN",
+      "code": "REPEATABILITY_OUTLIER",
+      "trajectory_id": null,
+      "message": "B_THRUSTER_STEP/STANDARD/H2: repetition B-H2-r1 thrust_n RMS deviates (robust z)"
+    },
+    {
+      "severity": "WARN",
+      "code": "REPEATABILITY_OUTLIER",
+      "trajectory_id": null,
+      "message": "B_THRUSTER_STEP/STANDARD/H4: repetition B-H4-r1 thrust_n RMS deviates (robust z)"
+    },
+    {
+      "severity": "WARN",
+      "code": "REPEATABILITY_OUTLIER",
+      "trajectory_id": null,
+      "message": "B_THRUSTER_STEP/STANDARD/V3: repetition B-V3-r1 thrust_n RMS deviates (robust z)"
+    },
+    {
+      "severity": "WARN",
+      "code": "REPEATABILITY_OUTLIER",
+      "trajectory_id": null,
+      "message": "B_THRUSTER_STEP/STANDARD/V4: repetition B-V4-r1 thrust_n RMS deviates (robust z)"
+    },
+    {
+      "severity": "WARN",
+      "code": "REPEATABILITY_OUTLIER",
+      "trajectory_id": null,
+      "message": "D_HEAVE/STANDARD: repetition D_HEAVE-r1 ref_w_mps RMS deviates (robust z)"
+    }
+  ],
+  "repeatability": [
+    {
+      "group": "A_STATIC_TRIM/TILT_THRUSTERS",
+      "feature": "rms(ref_pitch_rad - initial)",
+      "n_repetitions": 4,
+      "mean": 0.2526304225237368,
+      "std": 3.20184089167022e-05,
+      "cv": 0.00012674011544945183,
+      "per_repetition": {
+        "A-tilt-r1": 0.2526723558023935,
+        "A-tilt-r2": 0.25262558576652216,
+        "A-tilt-r3": 0.2526292763533768,
+        "A-tilt-r4": 0.25259447217265474
+      },
+      "outliers": []
+    },
+    {
+      "group": "B_THRUSTER_STEP/STANDARD/H1",
+      "feature": "rms(thrust_n - initial)",
+      "n_repetitions": 4,
+      "mean": 4.292381088717545,
+      "std": 0.01910426032805665,
+      "cv": 0.00445073723259845,
+      "per_repetition": {
+        "B-H1-r1": 4.264051460747468,
+        "B-H1-r2": 4.297779232978515,
+        "B-H1-r3": 4.304223681411792,
+        "B-H1-r4": 4.303469979732404
+      },
+      "outliers": [
+        "B-H1-r1"
+      ]
+    },
+    {
+      "group": "B_THRUSTER_STEP/STANDARD/H2",
+      "feature": "rms(thrust_n - initial)",
+      "n_repetitions": 4,
+      "mean": 4.293685118712371,
+      "std": 0.015576957482410933,
+      "cv": 0.003627876067232963,
+      "per_repetition": {
+        "B-H2-r1": 4.270347728727293,
+        "B-H2-r2": 4.302534622362499,
+        "B-H2-r3": 4.301047175871536,
+        "B-H2-r4": 4.300810947888155
+      },
+      "outliers": [
+        "B-H2-r1"
+      ]
+    },
+    {
+      "group": "B_THRUSTER_STEP/STANDARD/H3",
+      "feature": "rms(thrust_n - initial)",
+      "n_repetitions": 4,
+      "mean": 4.292323649658682,
+      "std": 0.019151861947137482,
+      "cv": 0.004461886733229076,
+      "per_repetition": {
+        "B-H3-r1": 4.2660842518984445,
+        "B-H3-r2": 4.304094162815964,
+        "B-H3-r3": 4.290375059713292,
+        "B-H3-r4": 4.30874112420703
+      },
+      "outliers": []
+    },
+    {
+      "group": "B_THRUSTER_STEP/STANDARD/H4",
+      "feature": "rms(thrust_n - initial)",
+      "n_repetitions": 4,
+      "mean": 4.294096419908929,
+      "std": 0.019554582318991386,
+      "cv": 0.004553829352394027,
+      "per_repetition": {
+        "B-H4-r1": 4.265348107497183,
+        "B-H4-r2": 4.303960518411885,
+        "B-H4-r3": 4.308285757410433,
+        "B-H4-r4": 4.298791296316215
+      },
+      "outliers": [
+        "B-H4-r1"
+      ]
+    },
+    {
+      "group": "B_THRUSTER_STEP/STANDARD/V1",
+      "feature": "rms(thrust_n - initial)",
+      "n_repetitions": 4,
+      "mean": 4.293851335960505,
+      "std": 0.01761171282597515,
+      "cv": 0.004101612153750901,
+      "per_repetition": {
+        "B-V1-r1": 4.271613892915507,
+        "B-V1-r2": 4.294186507953529,
+        "B-V1-r3": 4.294901806510532,
+        "B-V1-r4": 4.314703136462451
+      },
+      "outliers": []
+    },
+    {
+      "group": "B_THRUSTER_STEP/STANDARD/V2",
+      "feature": "rms(thrust_n - initial)",
+      "n_repetitions": 4,
+      "mean": 4.288873678898588,
+      "std": 0.01747076373761194,
+      "cv": 0.004073508581884499,
+      "per_repetition": {
+        "B-V2-r1": 4.264414744577851,
+        "B-V2-r2": 4.303275059608907,
+        "B-V2-r3": 4.2884496431293755,
+        "B-V2-r4": 4.299355268278216
+      },
+      "outliers": []
+    },
+    {
+      "group": "B_THRUSTER_STEP/STANDARD/V3",
+      "feature": "rms(thrust_n - initial)",
+      "n_repetitions": 4,
+      "mean": 4.286532943689577,
+      "std": 0.015036107317270217,
+      "cv": 0.003507754988657123,
+      "per_repetition": {
+        "B-V3-r1": 4.264106295590897,
+        "B-V3-r2": 4.295981734118705,
+        "B-V3-r3": 4.292071349140061,
+        "B-V3-r4": 4.293972395908647
+      },
+      "outliers": [
+        "B-V3-r1"
+      ]
+    },
+    {
+      "group": "B_THRUSTER_STEP/STANDARD/V4",
+      "feature": "rms(thrust_n - initial)",
+      "n_repetitions": 4,
+      "mean": 4.288573161130684,
+      "std": 0.015734001933219915,
+      "cv": 0.0036688197547437057,
+      "per_repetition": {
+        "B-V4-r1": 4.265733137418242,
+        "B-V4-r2": 4.301672631628939,
+        "B-V4-r3": 4.29443703009003,
+        "B-V4-r4": 4.292449845385527
+      },
+      "outliers": [
+        "B-V4-r1"
+      ]
+    },
+    {
+      "group": "C_SURGE_ACCELERATION/STANDARD",
+      "feature": "rms(ref_u_mps - initial)",
+      "n_repetitions": 4,
+      "mean": 0.4748657501632269,
+      "std": 0.000354475888575229,
+      "cv": 0.0007464760060151401,
+      "per_repetition": {
+        "C_SURGE_ACCELERATION-r1": 0.4744808186514683,
+        "C_SURGE_ACCELERATION-r2": 0.47465126195261736,
+        "C_SURGE_ACCELERATION-r3": 0.47512589991997217,
+        "C_SURGE_ACCELERATION-r4": 0.47520502012884974
+      },
+      "outliers": []
+    },
+    {
+      "group": "D_HEAVE/STANDARD",
+      "feature": "rms(ref_w_mps - initial)",
+      "n_repetitions": 4,
+      "mean": 0.4105292281372933,
+      "std": 0.0003885110798793277,
+      "cv": 0.0009463664296014458,
+      "per_repetition": {
+        "D_HEAVE-r1": 0.41109706530224116,
+        "D_HEAVE-r2": 0.4102303980897443,
+        "D_HEAVE-r3": 0.4103452184186375,
+        "D_HEAVE-r4": 0.4104442307385503
+      },
+      "outliers": [
+        "D_HEAVE-r1"
+      ]
+    },
+    {
+      "group": "D_SWAY/STANDARD",
+      "feature": "rms(ref_v_mps - initial)",
+      "n_repetitions": 4,
+      "mean": 0.4444460820823708,
+      "std": 0.00011124919116271785,
+      "cv": 0.00025030975780342157,
+      "per_repetition": {
+        "D_SWAY-r1": 0.4443095733576722,
+        "D_SWAY-r2": 0.4445820648433022,
+        "D_SWAY-r3": 0.4444475832271605,
+        "D_SWAY-r4": 0.44444510690134825
+      },
+      "outliers": []
+    },
+    {
+      "group": "E_YAW_ROTATION/STANDARD",
+      "feature": "rms(ref_r_rps - initial)",
+      "n_repetitions": 4,
+      "mean": 0.8566335188116889,
+      "std": 6.143347394817253e-05,
+      "cv": 7.171500133848633e-05,
+      "per_repetition": {
+        "E_YAW_ROTATION-r1": 0.8566535847501359,
+        "E_YAW_ROTATION-r2": 0.8565904017950511,
+        "E_YAW_ROTATION-r3": 0.8567113573210526,
+        "E_YAW_ROTATION-r4": 0.8565787313805158
+      },
+      "outliers": []
+    },
+    {
+      "group": "F_STATION_KEEPING/STANDARD",
+      "feature": "rms(ref_x_m - initial)",
+      "n_repetitions": 4,
+      "mean": 0.4249278524933513,
+      "std": 0.007431523919156493,
+      "cv": 0.017488907529950092,
+      "per_repetition": {
+        "F-hold-r1": 0.42002383617548367,
+        "F-hold-r2": 0.4172442971831102,
+        "F-hold-r3": 0.4299230303440172,
+        "F-hold-r4": 0.43252024627079433
+      },
+      "outliers": []
+    }
+  ],
+  "groups": {
+    "A_STATIC_TRIM/TILT_THRUSTERS": {
+      "identification": 3,
+      "validation": 1
+    },
+    "B_THRUSTER_STEP/STANDARD/H1": {
+      "identification": 3,
+      "validation": 1
+    },
+    "B_THRUSTER_STEP/STANDARD/H2": {
+      "identification": 3,
+      "validation": 1
+    },
+    "B_THRUSTER_STEP/STANDARD/H3": {
+      "identification": 3,
+      "validation": 1
+    },
+    "B_THRUSTER_STEP/STANDARD/H4": {
+      "identification": 3,
+      "validation": 1
+    },
+    "B_THRUSTER_STEP/STANDARD/V1": {
+      "identification": 3,
+      "validation": 1
+    },
+    "B_THRUSTER_STEP/STANDARD/V2": {
+      "identification": 3,
+      "validation": 1
+    },
+    "B_THRUSTER_STEP/STANDARD/V3": {
+      "identification": 3,
+      "validation": 1
+    },
+    "B_THRUSTER_STEP/STANDARD/V4": {
+      "identification": 3,
+      "validation": 1
+    },
+    "C_SURGE_ACCELERATION/STANDARD": {
+      "identification": 3,
+      "validation": 1
+    },
+    "D_HEAVE/STANDARD": {
+      "identification": 3,
+      "validation": 1
+    },
+    "D_SWAY/STANDARD": {
+      "identification": 3,
+      "validation": 1
+    },
+    "E_YAW_ROTATION/STANDARD": {
+      "identification": 3,
+      "validation": 1
+    },
+    "F_STATION_KEEPING/STANDARD": {
+      "identification": 3,
+      "validation": 1
+    }
+  }
+}

@@ -40,3 +40,4 @@ unity/**/MemoryCaptures/
 unity/**/*.csproj
 unity/**/*.sln
 
+artifacts/experiments/ID-REHEARSAL-E001/delivery/

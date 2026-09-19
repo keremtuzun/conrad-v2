@@ -1,0 +1,10 @@
+{
+  "experiment_id": "ID-REHEARSAL-E001",
+  "module": "conrad.evaluation.identification_rehearsal",
+  "config": "configs\\eval\\id_rehearsal_e001.yaml",
+  "seeds": [
+    2026201
+  ],
+  "wall_s": 690.4,
+  "out_dir": "C:\\Users\\Kerem\\Kerem\\conrad-v2\\artifacts\\experiments\\ID-REHEARSAL-E001"
+}
