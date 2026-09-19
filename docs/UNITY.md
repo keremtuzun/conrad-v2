@@ -88,10 +88,12 @@ Connecting (after `EXT-UNITY-01` is resolved):
 ```python
 from conrad.adapters.unity import UnityRobotHardware
 from conrad.sim.unity import load_unity_settings
+
 settings, unity = load_unity_settings("configs/sim/unity_lockstep.yaml")
 hw = UnityRobotHardware(unity.bridge, robot_config, ids, mission_id, run_id, payload_store=object_store)
-hw.connect(); hw.reset(seed=settings.run.seed)
-state = hw.step(unity.physics_dt_ns)   # the experiment runner owns time in lock-step mode
+hw.connect()
+hw.reset(seed=settings.run.seed)
+state = hw.step(unity.physics_dt_ns)  # the experiment runner owns time in lock-step mode
 ```
 
 ## Scenario fields Unity reads

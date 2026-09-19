@@ -7,7 +7,7 @@ from conrad.orchestration.belief_bus import (
     BeliefBus,
     BeliefBusConfig,
 )
-from conrad.schemas.belief import Availability, BeliefQuery
+from conrad.schemas.belief import Availability, BeliefMessage, BeliefQuery
 from conrad.schemas.ids import IdFactory
 from conrad.schemas.provenance import SourceType
 from conrad.schemas.timebase import stamp
@@ -29,7 +29,9 @@ def test_revision_monotonic_per_belief():
     older = make_belief(ids, belief_id=b0.belief_id, revision=0, time_s=3.0)
     assert bus.publish(again).reason_code == REASON_NON_MONOTONIC
     assert bus.publish(older).reason_code == REASON_NON_MONOTONIC
-    assert bus.head(b0.belief_id).revision == 1
+    head = bus.head(b0.belief_id)
+    assert head is not None
+    assert head.revision == 1
 
 
 def test_children_never_write_each_others_beliefs():
@@ -40,7 +42,9 @@ def test_children_never_write_each_others_beliefs():
     forged = make_belief(ids, domain=Domain.SPATIAL, belief_id=t.belief_id, revision=1)
     r = bus.publish(forged)
     assert not r.accepted and r.reason_code == REASON_FOREIGN_WRITE
-    assert bus.head(t.belief_id).domain is Domain.TECHNICAL
+    head = bus.head(t.belief_id)
+    assert head is not None
+    assert head.domain is Domain.TECHNICAL
 
 
 def test_staleness_and_availability_from_config():
@@ -61,7 +65,8 @@ def test_staleness_and_availability_from_config():
 def test_one_failing_consumer_does_not_block_others():
     ids = IdFactory(4)
     bus = BeliefBus(ids)
-    got, ctx = [], []
+    got: list[BeliefMessage] = []
+    ctx: list[BeliefMessage] = []
 
     def broken(_m):
         raise RuntimeError("consumer crashed")
@@ -84,9 +89,9 @@ def test_one_failing_consumer_does_not_block_others():
 def test_cross_domain_delivery_is_context_only_and_never_to_self():
     ids = IdFactory(5)
     bus = BeliefBus(ids)
-    seen = {d: [] for d in Domain}
+    seen: dict[Domain, list[BeliefMessage]] = {d: [] for d in Domain}
     for d in Domain:
-        bus.attach_child(d, lambda ms, d=d: seen[d].extend(ms))
+        bus.attach_child(d, seen[d].extend)
     m = make_belief(ids, domain=Domain.TECHNICAL)
     bus.publish(m)
     bus.dispatch()

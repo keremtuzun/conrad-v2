@@ -35,6 +35,7 @@ the run ID and never edit a sealed run; add notes under `notes/`.
 
 ```python
 from conrad.console import build_console, serve_console
+
 build_console("artifacts/runs/<run_id>", "artifacts/runs/<run_id>/notes/console.html")
 ```
 

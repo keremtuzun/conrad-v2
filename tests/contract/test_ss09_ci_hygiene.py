@@ -52,7 +52,9 @@ def test_secret_scanner_detects_planted_credentials() -> None:
 
 
 def test_repository_is_currently_clean_of_secrets() -> None:
-    result = subprocess.run([sys.executable, "scripts/secret_scan.py"], cwd=ROOT, capture_output=True, text=True)
+    result = subprocess.run(
+        [sys.executable, "scripts/secret_scan.py"], cwd=ROOT, capture_output=True, text=True
+    )
     assert result.returncode == 0, result.stdout[-600:]
 
 

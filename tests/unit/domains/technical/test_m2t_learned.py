@@ -13,7 +13,13 @@ from conrad.domains.technical.baselines import (
     Model2TEstimator,
     SingleFrame,
 )
-from conrad.domains.technical.learned_tcdp import GraphBatch, LearnedTCDP, tcdp_loss, train_learned_tcdp
+from conrad.domains.technical.learned_tcdp import (
+    GraphBatch,
+    LearnedTCDP,
+    TCDPLayer,
+    tcdp_loss,
+    train_learned_tcdp,
+)
 from conrad.schemas.ids import IdFactory
 from conrad.schemas.timebase import stamp
 
@@ -59,7 +65,9 @@ def test_learned_tcdp_forward_backward_and_constraints():
     model.eval()
     z0 = model.encoder(b.node_features)
     z = model(b).z
-    frozen = ~model.layers[0].mutable
+    layer0 = model.layers[0]
+    assert isinstance(layer0, TCDPLayer)
+    frozen = ~layer0.mutable
     assert torch.allclose(z[:, frozen], z0[:, frozen])  # material / geometry never rewritten
     assert torch.allclose(z[b.observed], z0[b.observed])  # observed nodes never updated
 

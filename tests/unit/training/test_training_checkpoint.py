@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from typing import Any
 
 import pytest
 import torch
@@ -26,7 +27,7 @@ def make(tmp_path, **kw):
     torch.manual_seed(0)
     model = torch.nn.Linear(3, 2)
     opt = torch.optim.AdamW(model.parameters())
-    args = {
+    args: dict[str, Any] = {
         "model": model,
         "optimizer": opt,
         "component": "buo",

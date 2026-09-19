@@ -74,8 +74,8 @@ def test_imitation_training_reduces_loss_and_policy_only_ranks():
     hist = train_imitation(model, [collate(batches)], TINY, epochs=20)
     assert hist[-1]["total"] < hist[0]["total"]
     ids = IdFactory(9)
-    b = make_belief(ids, uncertainty=unc(uo=0.9))
-    ctx = make_context(ids, [b], [make_requirement(ids, belief_ids=[b.belief_id])], battery=0.05)
+    belief = make_belief(ids, uncertainty=unc(uo=0.9))
+    ctx = make_context(ids, [belief], [make_requirement(ids, belief_ids=[belief.belief_id])], battery=0.05)
     out = EGDC(ids, policy=LearnedEGDCPolicy(model)).decide(ctx)
     # whatever the learned scores say, the deterministic constraint engine still decides permission
     assert out.record.chosen is None or out.record.constraint_decisions[-1].accepted

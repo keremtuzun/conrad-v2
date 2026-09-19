@@ -105,7 +105,7 @@
       "requirement_summary": "Implementation metadata on every substantial package",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/core/__init__.py",
         "conrad/decision/__init__.py",
@@ -116,9 +116,7 @@
       "test_ids": [
         "tests/contract/test_package_metadata.py"
       ],
-      "missing_tests": [
-        "tests/contract/test_package_metadata.py"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
@@ -144,9 +142,7 @@
         "tests/leakage/test_static_boundaries.py",
         "tests/leakage/test_dynamic_leakage.py"
       ],
-      "missing_tests": [
-        "tests/leakage/test_dynamic_leakage.py"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
@@ -184,7 +180,7 @@
       "requirement_summary": "Simulator hidden entity ID never an inference feature or belief ID",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/schemas/observation.py",
         "conrad/schemas/belief.py"
@@ -193,9 +189,7 @@
       "test_ids": [
         "tests/leakage/test_dynamic_leakage.py"
       ],
-      "missing_tests": [
-        "tests/leakage/test_dynamic_leakage.py"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
@@ -987,9 +981,7 @@
         "tests/unit/orchestration",
         "tests/integration/test_multidomain.py"
       ],
-      "missing_tests": [
-        "tests/integration/test_multidomain.py"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
@@ -1270,7 +1262,7 @@
       "requirement_summary": "Twin2S -> sim -> sensors -> ECMER -> Model2S persistent spatial belief, no leakage",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/orchestration/mission.py"
       ],
@@ -1278,9 +1270,7 @@
       "test_ids": [
         "tests/integration/test_i1_spatial_loop.py"
       ],
-      "missing_tests": [
-        "tests/integration/test_i1_spatial_loop.py"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "SYS-I1"
       ],
@@ -1329,7 +1319,7 @@
       "requirement_summary": "Structural inspection with partial observations and persistent uncertain 2T state",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/orchestration/mission.py"
       ],
@@ -1337,9 +1327,7 @@
       "test_ids": [
         "tests/integration/test_i3_structural.py"
       ],
-      "missing_tests": [
-        "tests/integration/test_i3_structural.py"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "SYS-I3"
       ],
@@ -1356,7 +1344,7 @@
       "requirement_summary": "Flagship closed active inspection, quantified and replayable",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/orchestration/mission.py"
       ],
@@ -1364,9 +1352,7 @@
       "test_ids": [
         "tests/acceptance/test_flagship_mission.py"
       ],
-      "missing_tests": [
-        "tests/acceptance/test_flagship_mission.py"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "SYS-I4"
       ],
@@ -1383,7 +1369,7 @@
       "requirement_summary": "Model1 decision autonomy integrated; hard constraints deterministic",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/orchestration/mission.py"
       ],
@@ -1391,9 +1377,7 @@
       "test_ids": [
         "tests/acceptance/test_flagship_mission.py"
       ],
-      "missing_tests": [
-        "tests/acceptance/test_flagship_mission.py"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "SYS-I5"
       ],
@@ -1410,7 +1394,7 @@
       "requirement_summary": "2E integrated into multi-domain belief through the bus",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/orchestration/mission.py"
       ],
@@ -1418,9 +1402,7 @@
       "test_ids": [
         "tests/integration/test_multidomain.py"
       ],
-      "missing_tests": [
-        "tests/integration/test_multidomain.py"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "SYS-I6"
       ],
@@ -1437,7 +1419,7 @@
       "requirement_summary": "Constrained BAAC communication in missions: low bandwidth, loss, outage, reconnection",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "IMPLEMENTED",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "conrad/orchestration/mission.py"
       ],
@@ -1445,9 +1427,7 @@
       "test_ids": [
         "tests/acceptance/test_flagship_mission.py"
       ],
-      "missing_tests": [
-        "tests/acceptance/test_flagship_mission.py"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "SYS-I7"
       ],
@@ -1838,19 +1818,15 @@
       "requirement_summary": "GOLDEN-V0.2 fixtures GS-01..GS-10",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "tests/acceptance/test_golden_suite.py"
       ],
-      "missing_paths": [
-        "tests/acceptance/test_golden_suite.py"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/acceptance/test_golden_suite.py"
       ],
-      "missing_tests": [
-        "tests/acceptance/test_golden_suite.py"
-      ],
+      "missing_tests": [],
       "experiment_ids": [
         "GOLDEN-V0.2"
       ],
@@ -1859,7 +1835,7 @@
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-INTB-001",
@@ -1867,13 +1843,11 @@
       "requirement_summary": "Intelligence benchmarks INT-001..INT-010 with reproducible artifacts",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "IMPLEMENTED",
       "implementation_paths": [
         "conrad/evaluation/int_benchmarks"
       ],
-      "missing_paths": [
-        "conrad/evaluation/int_benchmarks"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/acceptance/test_int_benchmarks.py"
       ],
@@ -1889,7 +1863,7 @@
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-RUN-001",
@@ -1956,9 +1930,7 @@
         "tests/unit/runtime/test_supervisor_and_doctor.py",
         "tests/integration/test_cli.py"
       ],
-      "missing_tests": [
-        "tests/integration/test_cli.py"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
@@ -2072,26 +2044,22 @@
       "requirement_summary": "Adversarial / fault-injection suite",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "MISSING",
+      "implementation_status": "TESTED",
       "implementation_paths": [
         "tests/regression/test_adversarial.py"
       ],
-      "missing_paths": [
-        "tests/regression/test_adversarial.py"
-      ],
+      "missing_paths": [],
       "test_ids": [
         "tests/regression/test_adversarial.py"
       ],
-      "missing_tests": [
-        "tests/regression/test_adversarial.py"
-      ],
+      "missing_tests": [],
       "experiment_ids": [],
       "configuration_keys": [],
       "assumptions": [],
       "external_dependencies": [],
       "evidence_artifacts": [],
       "maturity_level": null,
-      "claim_status": "NONE"
+      "claim_status": "IMPLEMENTED"
     },
     {
       "requirement_id": "REQ-OPEN-001",

@@ -41,8 +41,9 @@ def test_egdc_invariants(ua, ue, uc, uo, consequence, n_ev, calibrated, battery,
         assert battery >= 0.2
         grounded = {c.claim_id for c in rec.claims if c.grounding.value == "GROUNDED"}
         assert set(rec.chosen.supporting_claims) <= grounded
-    if isinstance(getattr(out.routed, "payload", None), InformationNeed):
-        assert out.routed.payload.target_belief_ids == (b.belief_id,)
+    payload = getattr(out.routed, "payload", None)
+    if isinstance(payload, InformationNeed):
+        assert payload.target_belief_ids == (b.belief_id,)
 
 
 @settings(max_examples=20, deadline=None)

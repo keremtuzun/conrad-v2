@@ -47,7 +47,9 @@ def test_cc01_duplicate_delivery_is_one_contribution(repo: Repository, ids: IdFa
                 message_id=ids.new(), producer_version="t0", run_id=run_id, revision=rev2, provenance=[p2]
             )
         )
-    assert len(repo.revisions(bid)) == 1 and repo.head(bid).independent_observation_count == 1
+    head = repo.head(bid)
+    assert head is not None
+    assert len(repo.revisions(bid)) == 1 and head.independent_observation_count == 1
 
 
 def test_cc01_same_independence_group_is_not_corroboration(repo: Repository, ids: IdFactory) -> None:
@@ -194,7 +196,8 @@ def test_cc04_merge_preserves_lineage_to_raw_observations(repo: Repository, ids:
     closure = repo.provenance_closure(rev.provenance_root)
     sources = {s for r in closure.values() for s in r.source_ids}
     assert {ev_a.source_observation_id, ev_b.source_observation_id} <= sources
-    assert repo.head(a) is not None and repo.head(a).lifecycle is Lifecycle.MERGED  # old IDs stay resolvable
+    head_a = repo.head(a)
+    assert head_a is not None and head_a.lifecycle is Lifecycle.MERGED  # old IDs stay resolvable
     # a merged belief is terminal
     zombie, zp = make_revision(ids, a, 2, 4.0, (), (), kind=UpdateKind.LIFECYCLE, lifecycle=Lifecycle.ACTIVE)
     with pytest.raises(LifecycleError):

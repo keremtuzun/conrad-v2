@@ -73,6 +73,7 @@ def test_encoder_keeps_units_timestamp_and_position():
     ev, prov = enc.encode(obs, created_time_ns=obs.timestamp.time_ns + 5)
     assert ev.timestamp == obs.timestamp and ev.measurements == {"temperature": 14.2}
     assert ev.measurement_units == {"temperature": "degC"}
+    assert ev.spatial_support is not None
     assert ev.spatial_support.center_m == (1.0, 2.0, -5.0) and prov.source_ids == (obs.observation_id,)
     assert evidence_kind(ev, Model2EConfig()) == "FIELD"
     cur = _obs(
@@ -91,6 +92,7 @@ def test_encoder_keeps_units_timestamp_and_position():
     )
     sev, _ = enc.encode(survey, 0)
     assert sev.measurements == {"cover_fraction": 0.4}
+    assert sev.spatial_support is not None
     assert sev.spatial_support.center_m == (2.0, 2.0, -7.0)
     assert sev.sensor_context.range_m == pytest.approx(5**0.5)
     blind = _obs(

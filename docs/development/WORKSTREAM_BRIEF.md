@@ -52,8 +52,12 @@ Each package `__init__.py` must define:
 ```python
 IMPLEMENTATION_METADATA = {
     "implementation_status": "FROZEN_CONTRACT" | "EXPERIMENTAL_CANDIDATE" | "OPEN_BLOCKED",
-    "source_sections": [...], "configuration_keys": [...], "assumptions": [...],
-    "baselines": [...], "acceptance_tests": [...], "claim_status": "NONE" | "IMPLEMENTED" | "EVALUATED" | "VALIDATED",
+    "source_sections": [...],
+    "configuration_keys": [...],
+    "assumptions": [...],
+    "baselines": [...],
+    "acceptance_tests": [...],
+    "claim_status": "NONE" | "IMPLEMENTED" | "EVALUATED" | "VALIDATED",
 }
 ```
 

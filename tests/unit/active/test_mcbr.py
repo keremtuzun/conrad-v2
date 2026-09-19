@@ -72,6 +72,7 @@ def test_candidates_bounded_and_plan_has_provenance():
     assert r.plan.status is PlanStatus.PLAN
     assert len(r.table) <= 128
     assert r.provenance.source_type is SourceType.PLAN and r.plan.provenance == r.provenance.record_id
+    assert r.plan.primary_action is not None
     assert r.plan.primary_action.predicted_visibility > 0
 
 
@@ -116,6 +117,7 @@ def test_need_satisfied_and_not_worth_cost():
 def test_contradiction_prefers_discriminating_sonar():
     ids = IdFactory(5)
     r = MCBRPlanner(ids).plan(_request(ids, unc(uc=0.9), QuestionType.DISCRIMINATE_HYPOTHESES))
+    assert r.plan.primary_action is not None
     assert r.plan.primary_action.sensor_configuration["modality"] == "SONAR"
     assert r.plan.primary_action.hypothesis_discrimination > 0
 
@@ -151,6 +153,7 @@ def test_redundant_view_has_lower_coverage_gain():
     ids = IdFactory(7)
     planner = MCBRPlanner(ids)
     r = planner.plan(_request(ids, unc(uo=0.9), QuestionType.EXTEND_COVERAGE))
+    assert r.plan.primary_action is not None
     best = r.plan.primary_action.pose.position_m
     again = planner.plan(
         _request(
@@ -160,6 +163,7 @@ def test_redundant_view_has_lower_coverage_gain():
             views=[PriorView(position_m=best, modality="SONAR")],
         )
     )
+    assert again.plan.primary_action is not None
     assert again.plan.primary_action.pose.position_m != best
 
 

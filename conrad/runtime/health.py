@@ -52,9 +52,10 @@ class HealthRegistry:
 
     def availability(self, name: str) -> Availability:
         m = self._modules[name]
-        if m.state in (Availability.AVAILABLE, Availability.DEGRADED):
-            if m.last_ok_ns is None or (self._clock_ns() - m.last_ok_ns) / 1e9 > m.freshness_s:
-                return Availability.STALE
+        if m.state in (Availability.AVAILABLE, Availability.DEGRADED) and (
+            m.last_ok_ns is None or (self._clock_ns() - m.last_ok_ns) / 1e9 > m.freshness_s
+        ):
+            return Availability.STALE
         return m.state
 
     def snapshot(self) -> dict[str, Availability]:

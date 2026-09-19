@@ -68,6 +68,7 @@ def test_observed_belief_without_evidence_is_unsupported_and_never_relied_on():
     _, ctx = _ctx(ids, belief_kw={"n_evidence": 0})
     out = EGDC(ids).decide(ctx)
     assert out.record.unsupported_claim_ids
+    assert out.record.chosen is not None
     assert out.record.chosen.action_type is not ActionType.CONTINUE_MISSION
     assert unsupported_inference_rate([out.record]) == 0.0
 
@@ -103,7 +104,9 @@ def test_uncertainty_cause_maps_to_need(u, question):
     ids = IdFactory(4)
     _, ctx = _ctx(ids, u)
     out = EGDC(ids).decide(ctx)
+    assert out.record.chosen is not None
     assert out.record.chosen.action_type is ActionType.REQUEST_INFORMATION
+    assert out.routed is not None
     need = out.routed.payload
     assert isinstance(need, InformationNeed) and need.question_type is question
     if question is QuestionType.CONFIRM_CONDITION:
@@ -113,22 +116,28 @@ def test_uncertainty_cause_maps_to_need(u, question):
 def test_contradiction_with_conflicting_evidence_resolves_contradiction():
     ids = IdFactory(5)
     _, ctx = _ctx(ids, unc(uc=0.9), belief_kw={"n_conflicts": 2})
-    need = EGDC(ids).decide(ctx).routed.payload
-    assert need.question_type is QuestionType.RESOLVE_CONTRADICTION
+    routed = EGDC(ids).decide(ctx).routed
+    assert routed is not None
+    need = routed.payload
+    assert isinstance(need, InformationNeed) and need.question_type is QuestionType.RESOLVE_CONTRADICTION
 
 
 def test_ood_without_alternate_modality_escalates():
     ids = IdFactory(6)
     _, ctx = _ctx(ids, unc(ue=0.9), modalities=("RGB",), notes={"modalities_used": ["RGB"]})
     out = EGDC(ids).decide(ctx)
+    assert out.record.chosen is not None
     assert out.record.chosen.action_type is ActionType.ESCALATE_TO_OPERATOR
+    assert out.routed is not None
     assert out.routed.target is RouteTarget.OPERATOR and out.record.abstained
 
 
 def test_low_consequence_uncertainty_does_not_trigger_sensing():
     ids = IdFactory(7)
     _, ctx = _ctx(ids, unc(uo=0.9), req_kw={"consequence": 0.1})
-    assert EGDC(ids).decide(ctx).record.chosen.action_type is ActionType.CONTINUE_MISSION
+    chosen = EGDC(ids).decide(ctx).record.chosen
+    assert chosen is not None
+    assert chosen.action_type is ActionType.CONTINUE_MISSION
 
 
 @pytest.mark.parametrize(
@@ -142,6 +151,7 @@ def test_imperfect_upstream(kw, expected):
     ids = IdFactory(8)
     _, ctx = _ctx(ids, **kw)
     out = EGDC(ids).decide(ctx)
+    assert out.record.chosen is not None
     assert out.record.chosen.action_type is expected
     assert out.record.chosen.action_type is not ActionType.CONTINUE_MISSION
 
@@ -150,10 +160,12 @@ def test_missing_belief_and_wrong_association():
     ids = IdFactory(9)
     req = make_requirement(ids, belief_ids=[ids.new()])
     out = EGDC(ids).decide(make_context(ids, [], [req]))
+    assert out.record.chosen is not None
     assert out.record.chosen.action_type is ActionType.QUERY_BELIEF
     other = make_belief(ids, world_entity_id=ids.new())
     req2 = make_requirement(ids, belief_ids=[other.belief_id], entity_ids=[ids.new()])
     out2 = EGDC(ids).decide(make_context(ids, [other], [req2]))
+    assert out2.record.chosen is not None
     assert out2.record.chosen.action_type is not ActionType.CONTINUE_MISSION
 
 
@@ -163,8 +175,11 @@ def test_cross_domain_disagreement_requests_coverage():
     s = make_belief(ids, domain=Domain.SPATIAL, coverage=0.1, properties={"occupied": True})
     req = make_requirement(ids, belief_ids=[t.belief_id], context_domains=[Domain.SPATIAL])
     out = EGDC(ids).decide(make_context(ids, [t, s], [req]))
+    assert out.record.chosen is not None
     assert out.record.chosen.action_type is ActionType.REQUEST_INFORMATION
-    assert out.routed.payload.question_type is QuestionType.EXTEND_COVERAGE
+    assert out.routed is not None
+    need = out.routed.payload
+    assert isinstance(need, InformationNeed) and need.question_type is QuestionType.EXTEND_COVERAGE
 
 
 def test_justified_abstention_when_nothing_is_permitted():
@@ -174,6 +189,7 @@ def test_justified_abstention_when_nothing_is_permitted():
     )
     out = EGDC(ids).decide(ctx)
     assert out.record.abstained
+    assert out.record.chosen is not None
     assert out.record.chosen.action_type in (
         ActionType.WAIT,
         ActionType.ESCALATE_TO_OPERATOR,
@@ -197,6 +213,7 @@ def test_repeated_attempts_lead_to_escalation_or_replan():
         for _ in range(3)
     ]
     out = EGDC(ids).decide(make_context(ids, [b], [req], previous=hist))
+    assert out.record.chosen is not None
     assert out.record.chosen.action_type is not ActionType.REQUEST_INFORMATION
 
 
@@ -263,15 +280,18 @@ def test_router_mapping_and_rejected_record():
     _, ctx = _ctx(ids, unc(uo=0.9))
     egdc = EGDC(ids)
     out = egdc.decide(ctx)
+    assert out.routed is not None
     assert out.routed.target is RouteTarget.MCBR and isinstance(out.routed.payload, InformationNeed)
     revisit = next(a for a in out.record.candidates if a.action_type is ActionType.CONTINUE_MISSION)
     graph = egdc.last_graph
+    assert graph is not None
     verdict = egdc.constraints.check(revisit, graph, ctx, egdc.estimator.estimate(revisit, graph, ctx))
     assert "RISK_LIMIT_EXCEEDED" in verdict.reason_codes  # continuing on an open critical gap
     routed = egdc.router.route(revisit, verdict, ctx)
     assert isinstance(routed.payload, RejectedAction) and routed.target is None
     _, ctx2 = _ctx(ids, availability={Domain.TECHNICAL: Availability.UNAVAILABLE})
     out2 = EGDC(ids).decide(ctx2)
+    assert out2.routed is not None
     assert isinstance(out2.routed.payload, NavigationGoal)
 
 

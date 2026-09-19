@@ -49,8 +49,8 @@ def test_moving_one_lineage_member_is_always_detected(samples):
     result = build_splits(samples, spec)
     by_id = {x.sample_id: x for x in samples}
     groups: dict[str, list[str]] = {}
-    for name, ids in result.splits.items():
-        for sid in ids:
+    for name, split_ids in result.splits.items():
+        for sid in split_ids:
             groups.setdefault(name, []).append(sid)
     for name, ids in groups.items():
         if len(ids) < 2:

@@ -91,6 +91,7 @@ def test_expired_command_rejected(system: FakeFullSystem) -> None:
 
 def test_safety_state_forbidding_motion_and_mismatched_authorization(system: FakeFullSystem) -> None:
     cmd = good(system)
+    assert cmd.safety_authorization is not None
     stop = cmd.model_copy(
         update={
             "safety_authorization": cmd.safety_authorization.model_copy(
@@ -173,6 +174,7 @@ def test_ss10_physical_hardware_is_unreachable_without_every_prerequisite(system
 def test_explicit_zero_command_accepted_in_stop_states_but_motion_refused(system: FakeFullSystem) -> None:
     for state in ("EMERGENCY_STOP", "RECOVER", "RETURN"):
         cmd = good(system, thruster_commands={t.thruster_id: 0.0 for t in system.config.thrusters})
+        assert cmd.safety_authorization is not None
         stop = cmd.model_copy(
             update={
                 "safety_authorization": cmd.safety_authorization.model_copy(update={"safety_state": state})
@@ -180,6 +182,7 @@ def test_explicit_zero_command_accepted_in_stop_states_but_motion_refused(system
         )
         assert system.gateway.submit(stop).accepted, state
         move = good(system)
+        assert move.safety_authorization is not None
         moving = move.model_copy(
             update={
                 "safety_authorization": move.safety_authorization.model_copy(update={"safety_state": state})

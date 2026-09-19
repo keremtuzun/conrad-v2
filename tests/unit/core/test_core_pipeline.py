@@ -66,7 +66,9 @@ def test_sequence_index_is_irrelevant_only_physical_time_matters(repo, fac, cfg,
         )
         core.forward_step([(ev, [rec])], stamp(1.0, CLOCK))
         core.forward_step([], stamp(50.0, CLOCK, sequence_index=seq_index * 7))
-        return core.pmbl.node(core.beliefs()[0].belief_id).predicted.estimates["p"].variance
+        predicted = core.pmbl.node(core.beliefs()[0].belief_id).predicted
+        assert predicted is not None
+        return predicted.estimates["p"].variance
 
     assert run(1) == pytest.approx(run(900))
 

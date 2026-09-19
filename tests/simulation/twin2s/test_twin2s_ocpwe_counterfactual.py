@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from typing import TypedDict
 from uuid import UUID
 
 import numpy as np
@@ -26,7 +27,13 @@ from conrad.twins.twin2s.families import generate_scenario
 from conrad.twins.twin2s.ocpwe import InformationConditions, ScheduledView, look_at_pose, plan_schedule
 from conrad.twins.twin2s.world import SpatialWorld
 
-FAST = {"n_surface_samples": 80, "n_azimuths": 6}
+
+class _FastKwargs(TypedDict):
+    n_surface_samples: int
+    n_azimuths: int
+
+
+FAST: _FastKwargs = {"n_surface_samples": 80, "n_azimuths": 6}
 
 
 @pytest.fixture(scope="module")

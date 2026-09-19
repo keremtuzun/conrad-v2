@@ -62,6 +62,7 @@ def test_procedural_tier_episode(tmp_path, tier):
             **curriculum.degradation(spec.sensor_degradation, rng),
         }
         n_obs += len(twin.generate_observation(_ctx(deg, twin.time_s)))
+    assert twin._mcde is not None
     rep = validate_sequence(results, twin._mcde.runtimes)
     assert rep.passed, rep.violations[:3]
     export = twin.export_domain_state()

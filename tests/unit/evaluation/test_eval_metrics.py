@@ -63,6 +63,7 @@ def test_calibration_known_values():
 def test_bootstrap_is_seeded_and_needs_two_values():
     a = bootstrap_ci([1.0, 2.0, 3.0, 4.0], np.random.default_rng(0))
     b = bootstrap_ci([1.0, 2.0, 3.0, 4.0], np.random.default_rng(0))
+    assert a.low is not None and a.high is not None
     assert a == b and a.low <= a.point <= a.high
     single = bootstrap_ci([1.0], np.random.default_rng(0))
     assert single.low is None and not single.excludes_zero

@@ -26,9 +26,13 @@ def run(seconds, fix_period_s, initial_offset=(0.0, 0.0, 0.0), seed=4):
             {"H1": 0.3 * np.sin(0.4 * t) + 0.2, "H2": 0.3, "V1": 0.1, "V2": 0.1, "V3": 0.1, "V4": 0.1},
         )
         hw.advance(dt)
-        ekf.predict(hw.get_imu(), hw.get_thruster_state(), dt)
+        imu = hw.get_imu()
+        assert imu is not None
+        ekf.predict(imu, hw.get_thruster_state(), dt)
         if i % 3 == 0:
-            ekf.update_depth(hw.get_depth())
+            depth = hw.get_depth()
+            assert depth is not None
+            ekf.update_depth(depth)
         if fix_period_s and i % round(fix_period_s / dt) == 0:
             truth = hw.truth_access().true_state().position_world_m  # test-only synthetic USBL-like fix
             ekf.update_map_constraint(MapConstraint(truth + 0.05 * rng.standard_normal(3), 0.05))

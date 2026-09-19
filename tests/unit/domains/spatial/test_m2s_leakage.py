@@ -54,13 +54,12 @@ def test_spatial_package_never_references_truth_types_or_true_poses():
     for path in _modules():
         text = path.read_text(encoding="utf-8")
         for node in ast.walk(ast.parse(text)):
-            ident = (
-                node.id
-                if isinstance(node, ast.Name)
-                else node.attr
-                if isinstance(node, ast.Attribute)
-                else None
-            )
+            if isinstance(node, ast.Name):
+                ident = node.id
+            elif isinstance(node, ast.Attribute):
+                ident = node.attr
+            else:
+                continue
             if ident in FORBIDDEN_NAMES:
                 bad.append(f"{path.name}:{node.lineno} {ident}")
         code_only = "\n".join(line.split("#")[0] for line in text.splitlines())

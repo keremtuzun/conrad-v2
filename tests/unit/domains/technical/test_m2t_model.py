@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from uuid import UUID
+
 import pytest
 from m2t_helpers import DAY, claim, evidence, model
 
@@ -14,7 +16,7 @@ from conrad.schemas.belief import (
     UpdateKind,
 )
 from conrad.schemas.ids import IdFactory
-from conrad.schemas.provenance import SourceType
+from conrad.schemas.provenance import ProvenanceRecord, SourceType
 from conrad.schemas.timebase import stamp
 from conrad.schemas.uncertainty import Uncertainty
 from conrad.schemas.world import Domain
@@ -72,7 +74,13 @@ def test_biofouling_context_raises_uo_ua_not_severity():
     before = m.query(BeliefQuery(entity_ids=(r["seg_a"],)))[0]
     captured = []
     orig = m.engine.drain_provenance
-    m.engine.drain_provenance = lambda rid: captured.extend(orig(rid)) or captured[-1:]
+
+    def spy(rid: UUID) -> list[ProvenanceRecord]:
+        records = orig(rid)
+        captured.extend(records)
+        return records
+
+    m.engine.drain_provenance = spy
     m.receive_context([_biofouling(IdFactory(seed=5), r["seg_a"], 0.9)])
     after = m.query(BeliefQuery(entity_ids=(r["seg_a"],)))[0]
     assert after.uncertainty.observational > before.uncertainty.observational

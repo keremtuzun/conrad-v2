@@ -45,7 +45,9 @@ class IdFactory:
     (logical millisecond counter + seeded PRNG) so that replays reproduce identical identifiers.
     """
 
-    def __init__(self, seed: int | None = None, start_ms: int = 1_700_000_000_000, namespace: str = "") -> None:
+    def __init__(
+        self, seed: int | None = None, start_ms: int = 1_700_000_000_000, namespace: str = ""
+    ) -> None:
         self._seed = seed
         self._namespace = namespace
         if seed is None:

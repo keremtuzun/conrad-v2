@@ -54,7 +54,9 @@ def test_provenance_chain_runs_from_last_command_to_an_observation(page: str, bu
         assert kind in text
     raw = re.findall(r"RAW OBSERVATION ([0-9a-f-]{36})", text)
     assert raw and set(raw) <= obs_ids
-    prov = json.loads(re.search(r'id="prov-data">(.*?)</script>', page, re.S).group(1))
+    prov_match = re.search(r'id="prov-data">(.*?)</script>', page, re.S)
+    assert prov_match is not None
+    prov = json.loads(prov_match.group(1))
     assert last_cmd.payload["provenance_root"] in prov["nodes"]
 
 

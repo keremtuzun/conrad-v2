@@ -110,6 +110,7 @@ def test_determinism_same_seed():
         hw.advance(3.0)
         s = hw.truth_access().true_state()
         imu = hw.get_imu()
+        assert imu is not None
         return s.position_world_m, imu.linear_acceleration_mps2
 
     a, b, c = run(7), run(7), run(8)

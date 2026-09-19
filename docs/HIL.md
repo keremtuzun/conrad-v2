@@ -46,15 +46,24 @@ settings, cfg = load_hil_config("configs/runtime/hil_host.yaml")
 hw = build_sim_hardware(robot_config, seed=settings.run.seed)
 gateway = CommandGateway(hw, robot_config, settings.runtime, settings.run.lane, mission_id, run_id)
 
-def stack_step(frame):                       # the real estimator -> navigation -> control -> allocation chain
+
+def stack_step(frame):  # the real estimator -> navigation -> control -> allocation chain
     command, timings, backlog = conrad_stack.tick(frame)
     return StackOutput(command=command, stage_ns=timings, queue_backlog=backlog)
 
-trials = (FaultTrial("depth_dropout", at_cycle=500,
-                     inject=lambda: hw.inject_fault(FaultType.SENSOR_DROPOUT, target="depth", duration_s=0.5),
-                     recovered=lambda f: f.depth is not None, max_recovery_cycles=100),)
-report = HilHarness(hw, stack_step, gateway.submit, cfg, advance=lambda ns: hw.advance(ns / 1e9),
-                    fault_trials=trials).run()
+
+trials = (
+    FaultTrial(
+        "depth_dropout",
+        at_cycle=500,
+        inject=lambda: hw.inject_fault(FaultType.SENSOR_DROPOUT, target="depth", duration_s=0.5),
+        recovered=lambda f: f.depth is not None,
+        max_recovery_cycles=100,
+    ),
+)
+report = HilHarness(
+    hw, stack_step, gateway.submit, cfg, advance=lambda ns: hw.advance(ns / 1e9), fault_trials=trials
+).run()
 report.write("artifacts/hil/host_gate.json")
 ```
 

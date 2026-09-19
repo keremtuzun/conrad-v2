@@ -58,10 +58,11 @@ def test_scheduler_never_exceeds_link_budget(bw, n, values, policy):
     cfg = BAACConfig()
     ch = ChannelSim([LinkProfile(name="a", bandwidth_bps=bw, packet_loss=0.1)], seed=0)
     builder = UnitBuilder(ids, cfg)
-    entries = [
-        QueueEntry(content=builder.belief_unit(make_belief(ids), None, values[i], stamp(0.0, "SIM"))[0])
-        for i in range(n)
-    ]
+    entries = []
+    for i in range(n):
+        built = builder.belief_unit(make_belief(ids), None, values[i], stamp(0.0, "SIM"))
+        assert built is not None
+        entries.append(QueueEntry(content=built[0]))
     plan = schedule(entries, ch.link_states(0.0), ch, ReceiverKnowledge(), 0, 1.0, policy, cfg)
     assert sum(p.reserved_bits for p in plan) <= bw + 1e-6
     assert all(p.chunk_bits >= 1 for p in plan)
@@ -75,7 +76,9 @@ def test_queue_overload_never_drops_critical(values, cap):
     q = PersistentQueue(cap)
     crit = []
     for v in values:
-        content = builder.belief_unit(make_belief(ids), None, v, stamp(0.0, "SIM"))[0]
+        built = builder.belief_unit(make_belief(ids), None, v, stamp(0.0, "SIM"))
+        assert built is not None
+        content = built[0]
         q.put(content, 0)
         if content.critical:
             crit.append(content.unit.unit_id)

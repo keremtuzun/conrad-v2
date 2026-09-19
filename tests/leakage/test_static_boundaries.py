@@ -102,13 +102,12 @@ def test_deployment_planes_never_name_truth_types() -> None:
         for path in _modules(package):
             tree = ast.parse(path.read_text(encoding="utf-8"))
             for node in ast.walk(tree):
-                ident = (
-                    node.id
-                    if isinstance(node, ast.Name)
-                    else node.attr
-                    if isinstance(node, ast.Attribute)
-                    else None
-                )
+                if isinstance(node, ast.Name):
+                    ident = node.id
+                elif isinstance(node, ast.Attribute):
+                    ident = node.attr
+                else:
+                    continue
                 if ident in banned:
                     violations.append(f"{path.relative_to(ROOT)}:{node.lineno} references {ident}")
     assert not violations, "\n".join(violations)

@@ -26,10 +26,12 @@ from conrad.communication import (
 )
 from conrad.communication.learned import BAACBatch, BAACHeadsConfig, baac_loss, build_heads, train_heads
 from conrad.communication.queue import QueueEntry
+from conrad.communication.units import UnitContent
 from conrad.evaluation.decision_experiments.fixtures import make_belief, unc
 from conrad.schemas.belief import Lifecycle
 from conrad.schemas.comms import DeltaType
 from conrad.schemas.ids import IdFactory
+from conrad.schemas.provenance import ProvenanceRecord
 from conrad.schemas.timebase import stamp
 
 ROOT = pathlib.Path(__file__).resolve().parents[3]
@@ -37,6 +39,13 @@ ROOT = pathlib.Path(__file__).resolve().parents[3]
 
 def _now(t=0.0):
     return stamp(t, "SIM")
+
+
+def _built(
+    result: tuple[UnitContent, ProvenanceRecord] | None,
+) -> tuple[UnitContent, ProvenanceRecord]:
+    assert result is not None, "belief_unit produced no unit"
+    return result
 
 
 def test_delta_round_trip_covers_every_delta_type():
@@ -84,13 +93,13 @@ def test_sizes_are_measured_from_payloads_and_monotonic():
     cfg = BAACConfig()
     b = make_belief(ids, n_evidence=2)
     sizes = dict.fromkeys(b.evidence_support, 1000)
-    content, prov = UnitBuilder(ids, cfg).belief_unit(b, None, 0.95, _now(), sizes)
+    content, prov = _built(UnitBuilder(ids, cfg).belief_unit(b, None, 0.95, _now(), sizes))
     opts = content.unit.fidelity_levels
     assert [int(o.fidelity) for o in opts] == [0, 1, 2, 3, 4]
     assert all(a.size_bits < c.size_bits for a, c in itertools.pairwise(opts))
     assert opts[0].size_bits == payload_bits(content.increments[0])
     assert opts[4].size_bits - opts[3].size_bits == payload_bits(content.increments[4]) + 2 * 8 * 1000
-    routine, _ = UnitBuilder(ids, cfg).belief_unit(b, None, 0.2, _now(), sizes)
+    routine, _ = _built(UnitBuilder(ids, cfg).belief_unit(b, None, 0.2, _now(), sizes))
     assert int(routine.unit.fidelity_levels[0].fidelity) == 1  # no F0 alert for non-critical units
     assert prov.parent_records == b.provenance_refs
 
@@ -101,7 +110,8 @@ def test_scheduler_respects_bandwidth_and_energy_budgets():
     ch = ChannelSim([LinkProfile(name="a", bandwidth_bps=4000.0, energy_per_bit_j=1e-4)], seed=0)
     builder = UnitBuilder(ids, cfg)
     entries = [
-        QueueEntry(content=builder.belief_unit(make_belief(ids), None, 0.5, _now())[0]) for _ in range(6)
+        QueueEntry(content=_built(builder.belief_unit(make_belief(ids), None, 0.5, _now()))[0])
+        for _ in range(6)
     ]
     plan = schedule(entries, ch.link_states(0.0), ch, ReceiverKnowledge(), 0, 1.0, BAAC_POLICY, cfg)
     assert plan
@@ -159,8 +169,8 @@ def test_overload_drops_lowest_value_never_critical():
     ids = IdFactory(8)
     builder = UnitBuilder(ids, BAACConfig())
     q = PersistentQueue(capacity_bits=1)
-    crit = builder.belief_unit(make_belief(ids), None, 0.95, _now())[0]
-    low = builder.belief_unit(make_belief(ids), None, 0.1, _now())[0]
+    crit = _built(builder.belief_unit(make_belief(ids), None, 0.95, _now()))[0]
+    low = _built(builder.belief_unit(make_belief(ids), None, 0.1, _now()))[0]
     q.put(crit, 0)
     dropped = q.put(low, 0)
     assert [d.unit_id for d in dropped] == [low.unit.unit_id]
@@ -193,7 +203,7 @@ def test_multi_link_prefers_cheap_link_for_bulk_and_fast_link_for_critical():
         seed=0,
     )
     builder = UnitBuilder(ids, BAACConfig())
-    crit = QueueEntry(content=builder.belief_unit(make_belief(ids), None, 0.95, _now())[0])
+    crit = QueueEntry(content=_built(builder.belief_unit(make_belief(ids), None, 0.95, _now()))[0])
     plan = schedule([crit], ch.link_states(0.0), ch, ReceiverKnowledge(), 0, 1.0, BAAC_POLICY, BAACConfig())
     assert plan[0].link_name == "optical"
 

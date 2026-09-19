@@ -13,6 +13,7 @@ from conrad.adapters.unity import FaultInjectionRequest, FaultType, UnityBridgeC
 from conrad.robotics.hardware.interface import PhysicalRobotHardware, RobotHardwareInterface
 from conrad.runtime.command_gateway import CommandGateway
 from conrad.schemas.ids import IdFactory
+from conrad.schemas.robot import AllocatedCommand, CommandAck
 from conrad.settings import CommandMode, ExecutionLane, RuntimeSettings
 from conrad.sim.hil import (
     NOT_AVAILABLE,
@@ -57,6 +58,10 @@ def _depth_hold(hw: RobotHardwareInterface, ids: IdFactory, mission, run, target
         )
 
     return step
+
+
+def _never_submit(command: AllocatedCommand) -> CommandAck:
+    raise AssertionError("the stack emits no commands, so nothing may reach the gateway")
 
 
 def _gateway(hw: RobotHardwareInterface, mission, run) -> CommandGateway:
@@ -106,17 +111,24 @@ def test_host_hil_against_unity_bridge_over_socket(ids: IdFactory) -> None:
             UnityBridgeConfig(control_endpoint=srv.control_endpoint), CONFIG, ids, mission, run
         ) as hw:
             hw.connect()
-            trial = FaultTrial(
-                name="imu_dropout",
-                at_cycle=15,
-                inject=lambda: hw.inject_fault(
+
+            def inject_imu_dropout() -> None:
+                hw.inject_fault(
                     FaultInjectionRequest(
                         fault_id="d1",
                         fault_type=FaultType.IMU_DROPOUT,
                         start_time_ns=hw.now_ns(),
                         duration_ns=50_000_000,
                     )
-                ),
+                )
+
+            def advance(period_ns: int) -> None:
+                hw.step(period_ns)
+
+            trial = FaultTrial(
+                name="imu_dropout",
+                at_cycle=15,
+                inject=inject_imu_dropout,
                 recovered=lambda f: (
                     f.imu is not None and f.hw_time_ns - f.imu.timestamp.time_ns <= 20_000_000
                 ),
@@ -134,7 +146,7 @@ def test_host_hil_against_unity_bridge_over_socket(ids: IdFactory) -> None:
                 _depth_hold(hw, ids, mission, run),
                 _gateway(hw, mission, run).submit,
                 cfg,
-                advance=hw.step,
+                advance=advance,
                 fault_trials=(trial,),
                 gpu_probe=_no_gpu,
             ).run()
@@ -159,17 +171,17 @@ def test_target_mode_is_blocked_external_off_target() -> None:
     report = HilHarness(
         PhysicalRobotHardware(),
         lambda f: StackOutput(None),
-        lambda c: None,
-        cfg,  # type: ignore[arg-type,return-value]
+        _never_submit,
+        cfg,
         platform_id=lambda: "Windows-AMD64-devbox",
     ).run()
     assert report.status is GateStatus.BLOCKED_EXTERNAL and report.cycles_run == 0
     assert report.adapter_is_physical and "onboard computer" in (report.blocked_reason or "")
     unset = HilConfig(mode=HilMode.TARGET, rate_hz=50.0, cycles=10, criteria=LENIENT)
     assert (
-        HilHarness(PhysicalRobotHardware(), lambda f: StackOutput(None), lambda c: None, unset).run().status
+        HilHarness(PhysicalRobotHardware(), lambda f: StackOutput(None), _never_submit, unset).run().status
         is GateStatus.BLOCKED_EXTERNAL
-    )  # type: ignore[arg-type,return-value]
+    )
 
 
 def test_gate_fails_on_stack_errors_missing_recovery_and_backlog(ids: IdFactory) -> None:
@@ -188,9 +200,9 @@ def test_gate_fails_on_stack_errors_missing_recovery_and_backlog(ids: IdFactory)
     report = HilHarness(
         hw,
         broken,
-        lambda c: None,
+        _never_submit,
         cfg,
-        advance=lambda ns: hw.advance(ns / 1e9),  # type: ignore[arg-type]
+        advance=lambda ns: hw.advance(ns / 1e9),
         fault_trials=(trial,),
         gpu_probe=_no_gpu,
     ).run()

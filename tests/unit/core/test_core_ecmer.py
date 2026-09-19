@@ -30,6 +30,11 @@ from conrad.schemas.provenance import SourceType
 from conrad.schemas.timebase import stamp
 
 
+def _present(value: float | None) -> float:
+    assert value is not None, "quality feature was not computed"
+    return value
+
+
 def _batch(cfg, b=3, avail=None):
     s = cfg.ecmer.image_size
     avail = avail or {n: torch.ones(b, dtype=torch.bool) for n in MODALITIES}
@@ -111,11 +116,13 @@ def test_handcrafted_quality_features_respond():
     rng = np.random.default_rng(0)
     sharp = (rng.random((64, 64)) > 0.5).astype(np.float32)
     blurred = cv2.GaussianBlur(sharp, (9, 9), 3)
-    assert image_quality(blurred).blur > image_quality(sharp).blur
-    assert image_quality(np.full((8, 8), 0.9)).brightness > image_quality(np.full((8, 8), 0.1)).brightness
+    assert _present(image_quality(blurred).blur) > _present(image_quality(sharp).blur)
+    assert _present(image_quality(np.full((8, 8), 0.9)).brightness) > _present(
+        image_quality(np.full((8, 8), 0.1)).brightness
+    )
     clean = np.vstack([np.zeros((4, 32)) + rng.normal(0, 0.01, (4, 32)), np.ones((28, 32))])
     noisy = clean + rng.normal(0, 0.5, clean.shape)
-    assert sonar_quality(clean).snr_db > sonar_quality(noisy).snr_db
+    assert _present(sonar_quality(clean).snr_db) > _present(sonar_quality(noisy).snr_db)
     assert image_quality(np.full((4, 4), np.nan)).valid_fraction == 0.0
 
 
@@ -189,6 +196,7 @@ def test_service_observation_to_evidence(cfg, ids):
         )
         assert len(ev.embedding) == cfg.evidence_dim and 0 <= ev.reliability <= 1
         assert ev.independence_group == str(src.observation_id)
+        assert ev.spatial_support is not None
         assert ev.spatial_support.frame_id == "WORLD"
     assert out[1].evidence.validity is EvidenceValidity.INVALID
     assert out[2].evidence.measurements == {"temperature_c": 12.0, "salinity_psu": 35.0}

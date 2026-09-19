@@ -5,9 +5,8 @@ Statuses are derived from the files present in the repository; do not edit this 
 
 | status | count |
 |---|---|
-| MISSING | 3 |
-| IMPLEMENTED | 10 |
-| TESTED | 65 |
+| IMPLEMENTED | 3 |
+| TESTED | 75 |
 | INTEGRATED | 1 |
 | BLOCKED_EXTERNAL | 2 |
 | BLOCKED_OPEN_DECISION | 4 |
@@ -18,10 +17,10 @@ Statuses are derived from the files present in the repository; do not edit this 
 | REQ-REPO-002 | prompt s4-s6,s128 | FROZEN_CONTRACT | TESTED | Zero dependency on the legacy repository; operation proven with it absent |  |
 | REQ-REPO-003 | prompt s4,s5,s117 | FROZEN_CONTRACT | IMPLEMENTED | Read-only legacy audit and salvage ledger |  |
 | REQ-SPEC-001 | prompt s7; ch29-30 | FROZEN_CONTRACT | TESTED | Requirements ledger and implementation map |  |
-| REQ-SPEC-002 | prompt s8; ch30 | FROZEN_CONTRACT | IMPLEMENTED | Implementation metadata on every substantial package | tests/contract/test_package_metadata.py |
-| REQ-ARCH-001 | ch1; ch2; INV-ARCH-01 | FROZEN_CONTRACT | TESTED | Twins = truth, Model2 = belief, Model1 = decision; no truth in deployment-equivalent inference | tests/leakage/test_dynamic_leakage.py |
+| REQ-SPEC-002 | prompt s8; ch30 | FROZEN_CONTRACT | TESTED | Implementation metadata on every substantial package |  |
+| REQ-ARCH-001 | ch1; ch2; INV-ARCH-01 | FROZEN_CONTRACT | TESTED | Twins = truth, Model2 = belief, Model1 = decision; no truth in deployment-equivalent inference |  |
 | REQ-ARCH-002 | INV-ARCH-04; prompt s118,s122 | FROZEN_CONTRACT | TESTED | Twin1 scrapped; no obsolete architecture identifiers; no extra subsystem |  |
-| REQ-ARCH-003 | INV-ARCH-07; ch28 | FROZEN_CONTRACT | IMPLEMENTED | Simulator hidden entity ID never an inference feature or belief ID | tests/leakage/test_dynamic_leakage.py |
+| REQ-ARCH-003 | INV-ARCH-07; ch28 | FROZEN_CONTRACT | TESTED | Simulator hidden entity ID never an inference feature or belief ID |  |
 | REQ-SCHEMA-001 | ch2; ch25 Phase 0 | INTERFACE_FROZEN | TESTED | Versioned public schemas: Scenario, WorldEntity, TruthState, Observation, Evidence, Uncertainty, ProvenanceRecord, BeliefCell, BeliefMessage, BeliefQuery, MissionState, ResourceState, SystemHealth, RobotState, RobotConfig, RobotCapabilities, CommunicationState, LinkState | tests/contract/test_schema_compat.py |
 | REQ-SCHEMA-002 | ch2 Global identifiers | INTERFACE_FROZEN | TESTED | Global machine IDs (UUIDv7), deterministic factory for replay |  |
 | REQ-SCHEMA-003 | ch2 Frames; ch28 | INTERFACE_FROZEN | TESTED | Every spatial value carries a frame; explicit T_A_from_B transforms |  |
@@ -52,7 +51,7 @@ Statuses are derived from the files present in the repository; do not edit this 
 | REQ-T2E-001 | ch12-13; ch33 | EXPERIMENTAL_CANDIDATE | TESTED | Twin2E fields + entities, MEIFE, disturbances, counterfactuals |  |
 | REQ-M2E-001 | ch12; ch33 CEFD | EXPERIMENTAL_CANDIDATE | TESTED | Model2E separate entity/field beliefs and CEFD coupling with provenance |  |
 | REQ-BUS-001 | ch2 Belief Bus | FROZEN_CONTRACT | TESTED | Asynchronous versioned bus, availability states, failure isolation, cross-domain context only |  |
-| REQ-XDOM-001 | ch2 Cross-domain | FROZEN_CONTRACT | TESTED | Children never mutate each other; typed uncertain cross-domain relations; biofouling != corrosion | tests/integration/test_multidomain.py |
+| REQ-XDOM-001 | ch2 Cross-domain | FROZEN_CONTRACT | TESTED | Children never mutate each other; typed uncertain cross-domain relations; biofouling != corrosion |  |
 | REQ-SIM-KERNEL | ch20-21; ADR-0005 | FROZEN_CONTRACT | TESTED | 6-DOF underwater dynamics, thruster/sensor/power models, fault injection, validity level L1 |  |
 | REQ-UNITY-001 | ch21; prompt s45-48 | INTERFACE_FROZEN | TESTED | Unity V2 C# project (8 modules) and Python bridge adapter |  |
 | REQ-EST-001 | ch20 State estimator | EXPERIMENTAL_CANDIDATE | TESTED | Conventional estimator baseline with covariance and health; consumes RHI only |  |
@@ -63,13 +62,13 @@ Statuses are derived from the files present in the repository; do not edit this 
 | REQ-MCBR-001 | ch18; ch33 MCBR | EXPERIMENTAL_CANDIDATE | TESTED | MCBR: InformationNeed -> ObservationPlan, cause-specific strategies, feasibility before ranking, baselines, never moves the robot |  |
 | REQ-BAAC-001 | ch19; ch33 BAAC | EXPERIMENTAL_CANDIDATE | TESTED | BAAC: receiver model, semantic deltas, progressive fidelity, store-and-forward, channel simulator, baselines |  |
 | REQ-SCEN-001 | ch2 Shared scenario; prompt s77 | FROZEN_CONTRACT | TESTED | One shared scenario feeds all twins with shared world-entity IDs; impossible worlds rejected |  |
-| REQ-INT-I1 | ch25 Phase 5; gate I1 | FROZEN_CONTRACT | IMPLEMENTED | Twin2S -> sim -> sensors -> ECMER -> Model2S persistent spatial belief, no leakage | tests/integration/test_i1_spatial_loop.py |
+| REQ-INT-I1 | ch25 Phase 5; gate I1 | FROZEN_CONTRACT | TESTED | Twin2S -> sim -> sensors -> ECMER -> Model2S persistent spatial belief, no leakage |  |
 | REQ-INT-I2 | ch25 Phase 6; gate I2 | FROZEN_CONTRACT | TESTED | Autonomous movement on estimated state; nav benchmarks |  |
-| REQ-INT-I3 | ch25 Phase 7; gate I3 | FROZEN_CONTRACT | IMPLEMENTED | Structural inspection with partial observations and persistent uncertain 2T state | tests/integration/test_i3_structural.py |
-| REQ-INT-I4 | ch25 Phase 8; ch35 P1; gate I4 | FROZEN_CONTRACT | IMPLEMENTED | Flagship closed active inspection, quantified and replayable | tests/acceptance/test_flagship_mission.py |
-| REQ-INT-I5 | ch25 Phase 9; gate I5 | FROZEN_CONTRACT | IMPLEMENTED | Model1 decision autonomy integrated; hard constraints deterministic | tests/acceptance/test_flagship_mission.py |
-| REQ-INT-I6 | ch25 Phase 10; gate I6 | FROZEN_CONTRACT | IMPLEMENTED | 2E integrated into multi-domain belief through the bus | tests/integration/test_multidomain.py |
-| REQ-INT-I7 | ch25 Phase 11; gate I7 | FROZEN_CONTRACT | IMPLEMENTED | Constrained BAAC communication in missions: low bandwidth, loss, outage, reconnection | tests/acceptance/test_flagship_mission.py |
+| REQ-INT-I3 | ch25 Phase 7; gate I3 | FROZEN_CONTRACT | TESTED | Structural inspection with partial observations and persistent uncertain 2T state |  |
+| REQ-INT-I4 | ch25 Phase 8; ch35 P1; gate I4 | FROZEN_CONTRACT | TESTED | Flagship closed active inspection, quantified and replayable |  |
+| REQ-INT-I5 | ch25 Phase 9; gate I5 | FROZEN_CONTRACT | TESTED | Model1 decision autonomy integrated; hard constraints deterministic |  |
+| REQ-INT-I6 | ch25 Phase 10; gate I6 | FROZEN_CONTRACT | TESTED | 2E integrated into multi-domain belief through the bus |  |
+| REQ-INT-I7 | ch25 Phase 11; gate I7 | FROZEN_CONTRACT | TESTED | Constrained BAAC communication in missions: low bandwidth, loss, outage, reconnection |  |
 | REQ-HW-012 | ch22; ch25 Phase 12 | FROZEN_CONTRACT | TESTED | Hardware characterization ingestion with value/units/frame/time/uncertainty/provenance/source type |  |
 | REQ-HW-013 | ch22; ch25 Phase 13 | EXPERIMENTAL_CANDIDATE | TESTED | Parameter identification tooling; identification data separated from validation data |  |
 | REQ-HIL-014 | ch22; ch25 Phase 14; gate I8 | FROZEN_CONTRACT | TESTED | HIL harness with latency/CPU/RAM/backlog/deadline metrics; host mode |  |
@@ -85,16 +84,16 @@ Statuses are derived from the files present in the repository; do not edit this 
 | REQ-EXP-002 | ch28 acceptance; prompt s99 | FROZEN_CONTRACT | TESTED | Acceptance records; OPEN threshold -> NOT_EVALUABLE |  |
 | REQ-EXP-003 | ch25 D0-D8; ch27 claims | FROZEN_CONTRACT | TESTED | Maturity ladder and claim ladder enforcement |  |
 | REQ-EXP-004 | prompt s90; ch27 | FROZEN_CONTRACT | BLOCKED_EXTERNAL | Twin usefulness RealOnly vs Twin+Real |  |
-| REQ-GOLD-001 | ch35 P3 | FROZEN_CONTRACT | MISSING | GOLDEN-V0.2 fixtures GS-01..GS-10 | tests/acceptance/test_golden_suite.py, tests/acceptance/test_golden_suite.py |
-| REQ-INTB-001 | ch20 benchmarks; prompt s113 | FROZEN_CONTRACT | MISSING | Intelligence benchmarks INT-001..INT-010 with reproducible artifacts | conrad/evaluation/int_benchmarks, tests/acceptance/test_int_benchmarks.py |
+| REQ-GOLD-001 | ch35 P3 | FROZEN_CONTRACT | TESTED | GOLDEN-V0.2 fixtures GS-01..GS-10 |  |
+| REQ-INTB-001 | ch20 benchmarks; prompt s113 | FROZEN_CONTRACT | IMPLEMENTED | Intelligence benchmarks INT-001..INT-010 with reproducible artifacts | tests/acceptance/test_int_benchmarks.py |
 | REQ-RUN-001 | ch34 state machine; prompt s106 | FROZEN_CONTRACT | TESTED | Runtime state machine, health, SAFE_HOLD on critical failure (SS-06) |  |
 | REQ-RUN-002 | ch34 events; prompt s104 | FROZEN_CONTRACT | TESTED | Structured append-only event log with correlation identity |  |
-| REQ-RUN-003 | ch34 CLI; prompt s108-109 | FROZEN_CONTRACT | TESTED | One Typer CLI; doctor with machine-readable report and nonzero exit | tests/integration/test_cli.py |
+| REQ-RUN-003 | ch34 CLI; prompt s108-109 | FROZEN_CONTRACT | TESTED | One Typer CLI; doctor with machine-readable report and nonzero exit |  |
 | REQ-REPLAY-001 | ch2 replay; CC-10; SS-02; SS-08 | FROZEN_CONTRACT | TESTED | Deterministic replay with digest verification, fail closed; backup/restore |  |
 | REQ-SEC-001 | ch34 network/secrets; prompt s107 | FROZEN_CONTRACT | TESTED | No public control endpoint; private bind; unknown peer rejected; secrets never committed or printed |  |
 | REQ-REL-001 | ch34 release; prompt s116 | FROZEN_CONTRACT | IMPLEMENTED | Release lanes dev/candidate/physical with manifest; physical requires I-gate evidence | tests/unit/runtime/test_release.py |
 | REQ-DASH-001 | ch37; prompt s112 | FROZEN_CONTRACT | TESTED | Operator and replay console: explanatory surface, never a source of truth |  |
-| REQ-ADV-001 | prompt s103; ch36 fault injection | FROZEN_CONTRACT | MISSING | Adversarial / fault-injection suite | tests/regression/test_adversarial.py, tests/regression/test_adversarial.py |
+| REQ-ADV-001 | prompt s103; ch36 fault injection | FROZEN_CONTRACT | TESTED | Adversarial / fault-injection suite |  |
 | REQ-OPEN-001 | ch28; ADR-0002 | OPEN_BLOCKED | BLOCKED_OPEN_DECISION | Physical WORLD frame convention, geodetic origin, body-frame convention |  |
 | REQ-OPEN-002 | ch28 acceptance | OPEN_BLOCKED | BLOCKED_OPEN_DECISION | Numerical research-superiority thresholds |  |
 | REQ-OPEN-003 | ch28; ch34 safe_hold | OPEN_BLOCKED | BLOCKED_OPEN_DECISION | Timeout behaviour, degraded modes, recovery action per physical configuration |  |

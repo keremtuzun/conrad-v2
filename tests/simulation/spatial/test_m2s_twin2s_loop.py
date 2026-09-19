@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import numpy as np
 import pytest
 
@@ -12,7 +14,7 @@ from conrad.schemas.belief import KnowledgeStatus
 from conrad.schemas.ids import IdFactory
 from conrad.schemas.timebase import stamp
 
-SMALL = {
+SMALL: dict[str, dict[str, Any]] = {
     "scenario": {
         "family": "pipeline_with_supports",
         "sensor_overrides": {

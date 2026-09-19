@@ -89,7 +89,9 @@ def test_registry_append_only_and_tamper_detection(tmp_path):
         )
     )
     assert reg.verify() == []
-    assert len(reg.history("CORE-BUO-E001")) == 2 and reg.latest("CORE-BUO-E001").outcome is Outcome.REFUTES
+    latest = reg.latest("CORE-BUO-E001")
+    assert latest is not None
+    assert len(reg.history("CORE-BUO-E001")) == 2 and latest.outcome is Outcome.REFUTES
     assert [r.experiment_id for r in reg.query(prefix="2S-")] == ["2S-UAHSM-E001"]
     assert len(reg.query(hypothesis_id="H-CORE-02", outcome=Outcome.FAILED_RUN)) == 1
     lines = (tmp_path / "exp.jsonl").read_text().splitlines()
