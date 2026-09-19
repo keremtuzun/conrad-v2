@@ -1,23 +1,23 @@
 {
  "meta": {
   "scenario": "I3-UNITY",
-  "seed": 5300058,
-  "partition": "mission/final_test",
-  "run_dir": "artifacts\\unity\\gate_runs\\I3\\I3-UNITY-s5300058-b43c66d9"
+  "seed": 7800001,
+  "partition": "configs/eval/partitions_unity_gates.yaml final_test",
+  "run_dir": "artifacts\\unity\\gate_runs\\I3\\I3-UNITY-s7800001-174fe14f"
  },
  "criteria": {
   "Twin2T + Twin2S -> Unity -> ECMER -> 2S + 2T": {
-   "structural_observations": 19,
-   "associated": 12,
+   "structural_observations": 25,
+   "associated": 25,
    "wrong_associations": 0,
-   "no_match": 7,
+   "no_match": 0,
    "unity_frames_forwarded": {
     "camera": 29,
     "range_imager": 9,
     "sonar": 9
    },
-   "model2s_direct_revisions": 133,
-   "model2t_direct_revisions": 12,
+   "model2s_direct_revisions": 169,
+   "model2t_direct_revisions": 25,
    "adapter": "unity_v2"
   },
   "robot sees only partial infrastructure": {
@@ -27,15 +27,15 @@
    "components_total": 6
   },
   "persistent technical belief": {
-   "technical_revisions": 60,
-   "direct_revisions": 12,
-   "direct_with_evidence": 12,
-   "corrosion_observed_revisions": 12,
-   "max_revision": 13,
+   "technical_revisions": 86,
+   "direct_revisions": 25,
+   "direct_with_evidence": 25,
+   "corrosion_observed_revisions": 25,
+   "max_revision": 8,
    "hidden_components": 3,
    "hidden_component_condition_and_U_O": [
     [
-     "INFERRED",
+     "UNKNOWN",
      1.0
     ],
     [
@@ -48,17 +48,17 @@
     ]
    ],
    "target_condition": "UNKNOWN",
-   "target_U_O": 1.0,
-   "target_near_side_readings": 0
+   "target_U_O": 0.90625,
+   "target_near_side_readings": 9
   },
   "leakage": {
-   "texts_scanned": 1229,
+   "texts_scanned": 1321,
    "violations": []
   },
   "replay": {
    "events": {
-    "original": 1322,
-    "replayed": 1322,
+    "original": 1398,
+    "replayed": 1398,
     "equal": true,
     "first_difference": null
    },
@@ -69,8 +69,8 @@
     "first_difference": null
    },
    "revisions": {
-    "original": 214,
-    "replayed": 214,
+    "original": 262,
+    "replayed": 262,
     "equal": true,
     "first_difference": null
    },
@@ -84,7 +84,7 @@
     "equal": true
    },
    "equal": true,
-   "verified_files": 82,
+   "verified_files": 86,
    "verified_objects": 47,
    "same_player_binary": true
   }

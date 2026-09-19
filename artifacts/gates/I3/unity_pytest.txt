@@ -8,73 +8,16 @@ collecting ... collected 5 items
 
 tests/unity_live/test_i3_unity.py::test_twin2t_twin2s_unity_to_model2s_and_model2t PASSED [ 20%]
 tests/unity_live/test_i3_unity.py::test_robot_sees_only_partial_infrastructure PASSED [ 40%]
-tests/unity_live/test_i3_unity.py::test_persistent_technical_belief FAILED [ 60%]
+tests/unity_live/test_i3_unity.py::test_persistent_technical_belief PASSED [ 60%]
 tests/unity_live/test_i3_unity.py::test_no_twin_truth_leakage_on_runtime_side PASSED [ 80%]
 tests/unity_live/test_i3_unity.py::test_bundle_replays_deterministically PASSED [100%]
 
-================================== FAILURES ===================================
-______________________ test_persistent_technical_belief _______________________
-
-run = (UnitySession(scenario_id='I3-UNITY', settings=ConradSettings(run=RunSettings(architecture_id='conrad_v2_impl_freeze_v... finished=True), WindowsPath('C:/Users/Kerem/Kerem/conrad-v2/artifacts/unity/gate_runs/I3/I3-UNITY-s5300058-b43c66d9'))
-
-    def test_persistent_technical_belief(run):
-        s, _ = run
-        revs = _revs(s, Domain.TECHNICAL)
-        direct = [r for r in revs if r.update_kind is UpdateKind.DIRECT]
-        observed = [
-            r for r in direct if (c := r.cell.claim("corrosion_depth_m")) and c.status.value == "OBSERVED"
-        ]
-        # Hidden = registry components that no structural reading ever saw (truth labels). Since world.py (2026-09-19
-        # 16:49) samples the near side of the target segment too, the target itself is partially seen; its far-side
-        # defect patch is checked in test_robot_sees_only_partial_infrastructure.
-        seen = {x["world_id"] for x in s.world.recorder.series["structural_label"]}
-        hidden = {r for r, w in s.world.mapping.to_world.items() if str(w) not in seen}
-        heads = {m.world_entity_id: m for m in s.runtime.m2t.export_beliefs() if m.world_entity_id is not None}
-        # A registry component without any Model2T belief (e.g. a grouping parent) claims nothing: NO_BELIEF.
-        hidden_state = {
-            str(r): (
-                next(c for c in heads[r].state_summary if c.name == "condition").status.value,
-                heads[r].uncertainty.observational,
-            )
-            if r in heads
-            else ("NO_BELIEF", 1.0)
-            for r in hidden
-        }
-        target = s.world.mapping.to_registry[s.world.target]
-        tcond = next(c for c in heads[target].state_summary if c.name == "condition")
-        per_belief: dict[str, int] = {}
-        for r in direct:
-            per_belief[str(r.belief_id)] = max(per_belief.get(str(r.belief_id), 0), r.revision)
-        measured(
-            GATE,
-            "persistent technical belief",
-            technical_revisions=len(revs),
-            direct_revisions=len(direct),
-            direct_with_evidence=sum(bool(r.consumed_evidence_ids) for r in direct),
-            corrosion_observed_revisions=len(observed),
-            max_revision=max(per_belief.values(), default=0),
-            hidden_components=len(hidden),
-            hidden_component_condition_and_U_O=list(hidden_state.values()),
-            target_condition=tcond.status.value,
-            target_U_O=heads[target].uncertainty.observational,
-            target_near_side_readings=sum(
-                1 for x in s.world.recorder.series["structural_label"] if x["world_id"] == str(s.world.target)
-            ),
-        )
-        assert direct and all(r.consumed_evidence_ids for r in direct) and observed
-        assert max(per_belief.values()) > 0  # revised in place, not re-created
-        believed = [(st, uo) for st, uo in hidden_state.values() if st != "NO_BELIEF"]
->       assert believed and all(st == "UNKNOWN" and uo >= HIDDEN_UO_MIN for st, uo in believed)
-E       AssertionError: assert ([('INFERRED', 1.0), ('UNKNOWN', 1.0)] and False)
-E        +  where False = all(<generator object test_persistent_technical_belief.<locals>.<genexpr> at 0x0000022D9A7CC3C0>)
-
-tests\unity_live\test_i3_unity.py:141: AssertionError
 =================================== PASSES ====================================
 - generated xml file: C:\Users\Kerem\Kerem\conrad-v2\artifacts\gates\I3\unity_pytest.xml -
 =========================== short test summary info ===========================
 PASSED tests/unity_live/test_i3_unity.py::test_twin2t_twin2s_unity_to_model2s_and_model2t
 PASSED tests/unity_live/test_i3_unity.py::test_robot_sees_only_partial_infrastructure
+PASSED tests/unity_live/test_i3_unity.py::test_persistent_technical_belief
 PASSED tests/unity_live/test_i3_unity.py::test_no_twin_truth_leakage_on_runtime_side
 PASSED tests/unity_live/test_i3_unity.py::test_bundle_replays_deterministically
-FAILED tests/unity_live/test_i3_unity.py::test_persistent_technical_belief - ...
-======================== 1 failed, 4 passed in 37.47s =========================
+============================= 5 passed in 32.29s ==============================

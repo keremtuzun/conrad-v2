@@ -1204,7 +1204,7 @@
       "requirement_summary": "Model2T persistent structural belief, direct vs propagated support, TCDP constrained propagation",
       "authority": "EXPERIMENTAL_CANDIDATE",
       "owner": "software",
-      "implementation_status": "EVALUATED",
+      "implementation_status": "INTEGRATED",
       "implementation_paths": [
         "conrad/domains/technical"
       ],
@@ -1218,7 +1218,7 @@
       ],
       "missing_experiment_artifacts": [],
       "gate_id": "2T",
-      "gate_official_status": "NOT_RUN",
+      "gate_official_status": "PASS",
       "configuration_keys": [
         "model.technical"
       ],
@@ -1690,7 +1690,7 @@
       "requirement_summary": "Autonomous movement on estimated state; nav benchmarks",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "TESTED",
+      "implementation_status": "INTEGRATED",
       "implementation_paths": [
         "conrad/evaluation/nav_benchmarks"
       ],
@@ -1720,7 +1720,7 @@
         "NAV-008"
       ],
       "gate_id": "I2",
-      "gate_official_status": "FAIL",
+      "gate_official_status": "PASS",
       "configuration_keys": [],
       "assumptions": [],
       "external_dependencies": [],

@@ -1,50 +1,50 @@
 {
  "meta": {
   "scenario": "I1-UNITY",
-  "seed": 5300059,
-  "partition": "mission/final_test",
-  "run_dir": "artifacts\\unity\\gate_runs\\I1\\I1-UNITY-s5300059-3fdf2d30"
+  "seed": 7800000,
+  "partition": "configs/eval/partitions_unity_gates.yaml final_test",
+  "run_dir": "artifacts\\unity\\gate_runs\\I1\\I1-UNITY-s7800000-71a9bbfd"
  },
  "criteria": {
   "robot moves through synthetic world": {
-   "true_path_length_m": 20.944694,
+   "true_path_length_m": 15.92703,
    "duration_s": 60.0,
    "collisions": 0,
-   "min_clearance_m": 0.532455,
+   "min_clearance_m": 0.695427,
    "commands_accepted": 600,
    "adapter": "unity_v2"
   },
   "persistent map": {
-   "spatial_revisions": 401,
-   "direct_revisions": 346,
-   "max_revision": 18,
-   "beliefs": 69
+   "spatial_revisions": 275,
+   "direct_revisions": 275,
+   "max_revision": 16,
+   "beliefs": 50
   },
   "geometry": {
-   "occupied_claimed_cells": 388,
-   "median_abs_sdf_m": 0.140348,
-   "p90_abs_sdf_m": 0.173563,
+   "occupied_claimed_cells": 206,
+   "median_abs_sdf_m": 0.100901,
+   "p90_abs_sdf_m": 0.164736,
    "fraction_within_tol": 1.0,
    "tol_m": 0.5,
    "required_fraction": 0.9,
-   "scene_conversion_max_error_m": 0.057416
+   "scene_conversion_max_error_m": 0.102814
   },
   "occupancy": {
    "probe_points": 1200,
-   "claimed_free": 127,
+   "claimed_free": 78,
    "wrong_fraction": 0.0,
    "max_wrong": 0.05
   },
   "coverage": {
-   "lane_region_coverage": 0.131542,
-   "target_segment_coverage": 0.736488,
-   "observed_cells": 1600
+   "lane_region_coverage": 0.100983,
+   "target_segment_coverage": 0.456504,
+   "observed_cells": 913
   },
   "observed/inferred/unknown": {
    "cell_status_counts": {
-    "UNKNOWN": 4501,
-    "OBSERVED": 1600,
-    "INFERRED": 61,
+    "UNKNOWN": 3655,
+    "OBSERVED": 913,
+    "INFERRED": 12,
     "PREDICTED": 0
    },
    "hidden_below_seabed": {
@@ -55,47 +55,47 @@
    "channels": "UA,UE,UC,UO",
    "mean_by_status": {
     "OBSERVED": [
-     0.006663,
-     0.248464,
-     0.017461,
-     0.052768
+     0.007303,
+     0.23692,
+     0.019751,
+     0.052111
     ],
     "INFERRED": [
-     0.024396,
-     0.251355,
+     0.023071,
+     0.246129,
      0.0,
-     0.804678
+     0.856202
     ],
     "UNKNOWN": [
-     0.023796,
-     0.255671,
+     0.092385,
+     0.258742,
      0.0,
-     0.851379
+     0.851598
     ]
    },
    "std_per_channel": [
-    0.084864,
-    0.011262,
-    0.034123,
-    0.423998
+    0.21111,
+    0.018118,
+    0.035135,
+    0.404415
    ]
   },
   "provenance": {
-   "direct_spatial_revisions": 346,
-   "evidence_traced": 20,
-   "raw_frames_reproduced": 20,
+   "direct_spatial_revisions": 275,
+   "evidence_traced": 25,
+   "raw_frames_reproduced": 25,
    "problems": []
   },
   "no Twin truth leakage": {
-   "texts_scanned": 2510,
+   "texts_scanned": 2230,
    "world_entity_ids": 12,
    "violations": [],
    "registry_ids_on_cells": 5
   },
   "replay": {
    "events": {
-    "original": 2685,
-    "replayed": 2685,
+    "original": 2508,
+    "replayed": 2508,
     "equal": true,
     "first_difference": null
    },
@@ -106,8 +106,8 @@
     "first_difference": null
    },
    "revisions": {
-    "original": 483,
-    "replayed": 483,
+    "original": 344,
+    "replayed": 344,
     "equal": true,
     "first_difference": null
    },

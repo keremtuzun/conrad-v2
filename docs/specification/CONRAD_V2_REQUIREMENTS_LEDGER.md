@@ -5,9 +5,9 @@ Statuses are derived from the files present in the repository; do not edit this 
 
 | status | count |
 |---|---|
-| TESTED | 74 |
-| INTEGRATED | 5 |
-| EVALUATED | 9 |
+| TESTED | 73 |
+| INTEGRATED | 7 |
+| EVALUATED | 8 |
 | BLOCKED_EXTERNAL | 2 |
 | BLOCKED_OPEN_DECISION | 4 |
 
@@ -56,7 +56,7 @@ Statuses are derived from the files present in the repository; do not edit this 
 | REQ-T2S-001 | ch14-15; ch33 | EXPERIMENTAL_CANDIDATE | TESTED |  | Twin2S canonical geometry, observability truth, OCPWE controls, counterfactual worlds |  |
 | REQ-M2S-001 | ch14; ch33 UAHSM | EXPERIMENTAL_CANDIDATE | INTEGRATED | 2S-FIRST: PASS | Model2S persistent spatial belief, observed/inferred/unknown, pose uncertainty, free-space evidence |  |
 | REQ-T2T-001 | ch10-11; ch33 | EXPERIMENTAL_CANDIDATE | TESTED |  | Twin2T hierarchy, corrosion + fatigue with validity masks, MCDE coupling, interventions |  |
-| REQ-M2T-001 | ch10; ch33 TCDP | EXPERIMENTAL_CANDIDATE | EVALUATED | 2T: NOT_RUN | Model2T persistent structural belief, direct vs propagated support, TCDP constrained propagation |  |
+| REQ-M2T-001 | ch10; ch33 TCDP | EXPERIMENTAL_CANDIDATE | INTEGRATED | 2T: PASS | Model2T persistent structural belief, direct vs propagated support, TCDP constrained propagation |  |
 | REQ-T2E-001 | ch12-13; ch33 | EXPERIMENTAL_CANDIDATE | TESTED |  | Twin2E fields + entities, MEIFE, disturbances, counterfactuals |  |
 | REQ-M2E-001 | ch12; ch33 CEFD | EXPERIMENTAL_CANDIDATE | EVALUATED | 2E: FAIL | Model2E separate entity/field beliefs and CEFD coupling with provenance |  |
 | REQ-BUS-001 | ch2 Belief Bus | FROZEN_CONTRACT | TESTED |  | Asynchronous versioned bus, availability states, failure isolation, cross-domain context only |  |
@@ -72,7 +72,7 @@ Statuses are derived from the files present in the repository; do not edit this 
 | REQ-BAAC-001 | ch19; ch33 BAAC | EXPERIMENTAL_CANDIDATE | TESTED |  | BAAC: receiver model, semantic deltas, progressive fidelity, store-and-forward, channel simulator, baselines |  |
 | REQ-SCEN-001 | ch2 Shared scenario; prompt s77 | FROZEN_CONTRACT | TESTED |  | One shared scenario feeds all twins with shared world-entity IDs; impossible worlds rejected |  |
 | REQ-INT-I1 | ch25 Phase 5; gate I1 | FROZEN_CONTRACT | INTEGRATED | I1: PASS | Twin2S -> sim -> sensors -> ECMER -> Model2S persistent spatial belief, no leakage |  |
-| REQ-INT-I2 | ch25 Phase 6; gate I2 | FROZEN_CONTRACT | TESTED | I2: FAIL | Autonomous movement on estimated state; nav benchmarks |  |
+| REQ-INT-I2 | ch25 Phase 6; gate I2 | FROZEN_CONTRACT | INTEGRATED | I2: PASS | Autonomous movement on estimated state; nav benchmarks |  |
 | REQ-INT-I3 | ch25 Phase 7; gate I3 | FROZEN_CONTRACT | TESTED | I3: FAIL | Structural inspection with partial observations and persistent uncertain 2T state |  |
 | REQ-INT-I4 | ch25 Phase 8; ch35 P1; gate I4 | FROZEN_CONTRACT | TESTED | I4: BLOCKED_UPSTREAM | Flagship closed active inspection, quantified and replayable |  |
 | REQ-INT-I5 | ch25 Phase 9; gate I5 | FROZEN_CONTRACT | TESTED | I5: BLOCKED_UPSTREAM | Model1 decision autonomy integrated; hard constraints deterministic |  |

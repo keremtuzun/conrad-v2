@@ -30,4 +30,4 @@ PASSED tests/unity_live/test_i1_unity.py::test_uncertainty_is_decomposed_and_res
 PASSED tests/unity_live/test_i1_unity.py::test_provenance_to_raw_unity_frames
 PASSED tests/unity_live/test_i1_unity.py::test_no_twin_truth_leakage_on_runtime_side
 PASSED tests/unity_live/test_i1_unity.py::test_bundle_replays_deterministically
-======================== 10 passed in 66.76s (0:01:06) ========================
+============================= 10 passed in 55.39s =============================
