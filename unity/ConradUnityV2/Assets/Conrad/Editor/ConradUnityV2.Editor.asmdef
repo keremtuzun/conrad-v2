@@ -1,0 +1,14 @@
+{
+    "name": "ConradUnityV2.Editor",
+    "rootNamespace": "Conrad.UnityV2.Editor",
+    "references": ["ConradUnityV2", "ConradUnityV2.Transport"],
+    "includePlatforms": ["Editor"],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,44 @@
+{
+  "gate_id": "U0",
+  "evidence_class": "FORMAL",
+  "execution_path": "compiled Unity 6000.5.9f1 player (headless, D3D11) driven through UnityRobotHardware over TCP; tests/unity_live",
+  "git_commit": "6824356bb74f27e5f8fa13ca737bb3ab6144a6e7",
+  "criteria": [
+    {
+      "criterion": "stable physics",
+      "status": "PASS",
+      "measured": "basic_drag_terminal_velocity=PASS (test_surge_terminal_velocity_matches_the_analytic_value); gravity_buoyancy_equilibrium=PASS (test_buoyancy_variants_rise_and_sink_as_the_analytic_heave_model[negative], test_buoyancy_variants_rise_and_sink_as_the_analytic_heave_model[positive], test_neutral_configuration_holds_depth); mass_inertia_com_cob_configurable=PASS (test_com_and_cob_offsets_set_the_trim_angle[cob_forward], test_com_and_cob_offsets_set_the_trim_angle[com_aft], test_inertia_from_robot_config_sets_the_yaw_response, test_open_parameters_are_refused_on_both_sides); stable_physics_6dof_rigid_body=PASS (test_six_dof_rigid_body_is_stable_under_a_long_combined_manoeuvre)"
+    },
+    {
+      "criterion": "known command moves robot correctly",
+      "status": "PASS",
+      "measured": "known_command_moves_robot_correctly=PASS (test_thruster_commands_move_along_the_right_axis_with_the_right_sign[heave-wrench2], test_thruster_commands_move_along_the_right_axis_with_the_right_sign[pitch-wrench4], test_thruster_commands_move_along_the_right_axis_with_the_right_sign[roll-wrench3], test_thruster_commands_move_along_the_right_axis_with_the_right_sign[surge-wrench0], test_thruster_commands_move_along_the_right_axis_with_the_right_sign[sway-wrench1], test_thruster_commands_move_along_the_right_axis_with_the_right_sign[yaw-wrench5])"
+    },
+    {
+      "criterion": "sensor frames correct",
+      "status": "PASS",
+      "measured": "frame_conversion_probes=PASS (test_configured_scene_is_seen_where_conrad_placed_it, test_frame_probe_unit_axes_and_round_trip_through_the_engine, test_heightfield_collider_supports_a_sinking_vehicle); sensor_frames_and_timestamps=PASS (test_imu_depth_camera_frames_and_monotonic_timestamps)"
+    },
+    {
+      "criterion": "timestamps correct",
+      "status": "PASS",
+      "measured": "sensor_frames_and_timestamps=PASS (test_imu_depth_camera_frames_and_monotonic_timestamps)"
+    },
+    {
+      "criterion": "reset/replay works",
+      "status": "PASS",
+      "measured": "deterministic_reset_and_replay=PASS (test_recorded_wire_replays_with_identical_acquisition_timestamps, test_same_seed_same_trajectory_across_resets_and_processes)"
+    },
+    {
+      "criterion": "RobotHardwareInterface works",
+      "status": "PASS",
+      "measured": "robot_hardware_interface_via_command_gateway=PASS (test_full_robot_hardware_interface_through_the_real_command_gateway)"
+    }
+  ],
+  "artifacts": [
+    "artifacts/gates/U0/u0_summary.json",
+    "artifacts/gates/U0/pytest_output.txt",
+    "artifacts/gates/U0/unity_build.log"
+  ],
+  "notes": "validity L1_APPROXIMATE_PHYSICS; all physical parameters SYNTHETIC_ONLY; player sha256 36c5c9f13481406382a8e9ef8fc0ea7cdf055c43bb12fc8fd545b07c199cd277"
+}

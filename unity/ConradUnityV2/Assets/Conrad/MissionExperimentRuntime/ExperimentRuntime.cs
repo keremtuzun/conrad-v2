@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Conrad.UnityV2.Core;
 using Conrad.UnityV2.EnvironmentInteraction;
 using Conrad.UnityV2.Propulsion;
@@ -34,6 +35,8 @@ namespace Conrad.UnityV2.MissionExperimentRuntime
         public VehicleDynamics6Dof vehicle;
         public List<NamedCamera> cameras = new List<NamedCamera>();
         public List<NamedTransform> sonarMounts = new List<NamedTransform>();
+        [Tooltip("Parent of the static world colliders (seafloor, obstacles). CONFIGURE_SCENE replaces or extends it.")]
+        public Transform worldRoot;
 
         public RobotParameters Robot { get; private set; }
         public ScenarioDefinition Scenario { get; private set; }
@@ -60,24 +63,74 @@ namespace Conrad.UnityV2.MissionExperimentRuntime
             return fallback;
         }
 
+        /// <summary>True once every input loaded and every subsystem was built. The bridge refuses to serve otherwise.</summary>
+        public bool Ready { get; private set; }
+        public string FailureReason { get; private set; }
+
         private void Awake()
         {
-            // Any failure here leaves the runtime disabled: the bridge refuses to serve a half-built world.
-            Robot = RobotConfigLoader.LoadJson(File.ReadAllText(Arg("-conradRobotConfig", robotConfigPath)));
-            Scenario = ScenarioDefinition.LoadFile(Arg("-conradScenario", scenarioPath));
-            Experiment = MiniJson.ParseObject(File.ReadAllText(Arg("-conradExperiment", experimentPath)));
-            if (J.Str(Experiment, "format") != ExperimentFormat) throw new JsonException("experiment format must be " + ExperimentFormat);
-            if (vehicle == null) throw new InvalidOperationException("ExperimentRuntime.vehicle is not assigned");
-            Clock = new SimClock(J.Str(Experiment, "clock_domain"));
-            PhysicsDtNs = J.Long(Experiment, "physics_dt_ns");
-            if (PhysicsDtNs <= 0) throw new JsonException("physics_dt_ns must be positive");
-            LockStep = J.Bool(Experiment, "lock_step");
-            TruthEndpointEnabled = J.Has(Experiment, "truth_endpoint_enabled") && J.Bool(Experiment, "truth_endpoint_enabled");
-            Physics.simulationMode = SimulationMode.Script;
-            Time.fixedDeltaTime = PhysicsDtNs / (float)SimClock.NsPerSecond;
-            ValidityLevel = Robot.AssessValidity(true, J.StrOrNull(Experiment, "validation_report_ref"));
-            long seed = J.Has(Experiment, "seed") ? J.Long(Experiment, "seed") : Scenario.Seed;
-            Build((ulong)seed);
+            // Any failure here leaves the runtime NOT Ready: the bridge refuses to serve a half-built world and the
+            // headless player exits with a non-zero code (ConradHeadless).
+            try
+            {
+                Robot = RobotConfigLoader.LoadJson(File.ReadAllText(Arg("-conradRobotConfig", robotConfigPath)));
+                Scenario = ScenarioDefinition.LoadFile(Arg("-conradScenario", scenarioPath));
+                Experiment = MiniJson.ParseObject(File.ReadAllText(Arg("-conradExperiment", experimentPath)));
+                if (J.Str(Experiment, "format") != ExperimentFormat) throw new JsonException("experiment format must be " + ExperimentFormat);
+                if (vehicle == null) throw new InvalidOperationException("ExperimentRuntime.vehicle is not assigned");
+                Clock = new SimClock(J.Str(Experiment, "clock_domain"));
+                PhysicsDtNs = J.Long(Experiment, "physics_dt_ns");
+                if (PhysicsDtNs <= 0) throw new JsonException("physics_dt_ns must be positive");
+                LockStep = J.Bool(Experiment, "lock_step");
+                TruthEndpointEnabled = J.Has(Experiment, "truth_endpoint_enabled") && J.Bool(Experiment, "truth_endpoint_enabled");
+                Physics.simulationMode = SimulationMode.Script;
+                Time.fixedDeltaTime = PhysicsDtNs / (float)SimClock.NsPerSecond;
+                ValidityLevel = Robot.AssessValidity(true, J.StrOrNull(Experiment, "validation_report_ref"));
+                long seed = J.Has(Experiment, "seed") ? J.Long(Experiment, "seed") : Scenario.Seed;
+                Build((ulong)seed);
+                Ready = true;
+            }
+            catch (Exception ex)
+            {
+                Ready = false;
+                FailureReason = ex.GetType().Name + ": " + ex.Message;
+                Debug.LogError("[Conrad] experiment runtime refused to start: " + FailureReason);
+            }
+        }
+
+        /// <summary>Binds a camera / sonar mount for every sensor of the RobotConfig and places it at its mount pose.</summary>
+        private Transform MountFor(SensorParameters sp, bool camera)
+        {
+            Transform t = null;
+            if (camera)
+            {
+                var bound = cameras.Find(c => c.sensorName == sp.Name);
+                if (bound != null && bound.camera != null) t = bound.camera.transform;
+                else
+                {
+                    var go = new GameObject("Camera_" + sp.Name);
+                    go.transform.SetParent(vehicle.transform, false);
+                    cameras.Add(new NamedCamera { sensorName = sp.Name, camera = go.AddComponent<Camera>() });
+                    t = go.transform;
+                }
+            }
+            else
+            {
+                var bound = sonarMounts.Find(m => m.sensorName == sp.Name);
+                if (bound != null && bound.mount != null) t = bound.mount;
+                else
+                {
+                    var go = new GameObject("SonarMount_" + sp.Name);
+                    go.transform.SetParent(vehicle.transform, false);
+                    sonarMounts.Add(new NamedTransform { sensorName = sp.Name, mount = go.transform });
+                    t = go.transform;
+                }
+            }
+            if (t.parent != vehicle.transform) throw new InvalidOperationException("sensor " + sp.Name + " is not mounted on the vehicle");
+            // Mount pose (Conrad BODY) -> Unity local pose. Unity local +Z (look direction) = Conrad body +X.
+            t.localPosition = ConradFrames.ToEngine(ConradFrames.PointToUnity(sp.MountPositionBody));
+            t.localRotation = ConradFrames.ToEngine(ConradFrames.QuatToUnity(sp.MountRotationBody));
+            return t;
         }
 
         private Dictionary<string, object> RenderingParams(SensorParameters sp)
@@ -92,6 +145,7 @@ namespace Conrad.UnityV2.MissionExperimentRuntime
         private void Build(ulong seed)
         {
             Seed = seed;
+            if (Sensors != null) foreach (var old in Sensors) (old as IDisposable)?.Dispose();
             Environment = EnvironmentModel.FromScenario(Scenario.Environment, seed);
             double thrusterNoise = J.Has(Experiment, "thruster_noise_fraction") ? J.Num(Experiment, "thruster_noise_fraction") : 0.0;
             Thrusters = new ThrusterBank(Robot, seed, thrusterNoise);
@@ -104,14 +158,10 @@ namespace Conrad.UnityV2.MissionExperimentRuntime
                     case "IMU": Sensors.Add(new ImuSensor(sp, seed)); break;
                     case "PRESSURE_DEPTH": Sensors.Add(new DepthSensor(sp, seed, Environment.DepthBelowSurface)); break;
                     case "RGB":
-                        var cam = cameras.Find(c => c.sensorName == sp.Name);
-                        if (cam == null || cam.camera == null) throw new InvalidOperationException("no Camera bound for sensor " + sp.Name);
-                        Sensors.Add(new CameraSensor(sp, seed, cam.camera, () => Environment.Turbidity));
+                        Sensors.Add(new CameraSensor(sp, seed, MountFor(sp, true).GetComponent<Camera>(), () => Environment.Turbidity));
                         break;
                     case "SONAR":
-                        var mount = sonarMounts.Find(m => m.sensorName == sp.Name);
-                        if (mount == null || mount.mount == null) throw new InvalidOperationException("no mount bound for sonar " + sp.Name);
-                        Sensors.Add(new SonarSensor(sp, seed, mount.mount));
+                        Sensors.Add(new SonarSensor(sp, seed, MountFor(sp, false)));
                         break;
                     default:
                         throw new InvalidOperationException("unsupported sensor modality " + sp.Modality);
@@ -123,20 +173,23 @@ namespace Conrad.UnityV2.MissionExperimentRuntime
             Server = new RobotHardwareServer(Robot, Thrusters, Sensors, Power, Clock);
             Faults = new FaultInjector(Thrusters, Sensors, Power, Server);
             vehicle.Configure(Robot, Environment, Thrusters);
-            ResetWorld(seed, null);
+            ResetState();
         }
 
-        /// <summary>Deterministic reset: same seed + same config -> same initial world and same fault schedule.</summary>
+        /// <summary>
+        /// Deterministic reset: same seed + same config -> same initial world, same noise streams and same fault
+        /// schedule. EVERY reset rebuilds the seeded subsystems (sensors, thrusters, currents), so a reset with the
+        /// seed already in use restarts its random streams instead of continuing them.
+        /// </summary>
         public string ResetWorld(ulong seed, string scenarioFile)
         {
-            if (scenarioFile != null || seed != Seed)
-            {
-                // A new scenario (environment, initial pose) or a new seed rebuilds every seeded subsystem;
-                // Build() calls back into ResetWorld(seed, null) with Seed already updated.
-                if (scenarioFile != null) Scenario = ScenarioDefinition.LoadFile(scenarioFile);
-                Build(seed);
-                return Scenario.FileDigest;
-            }
+            if (scenarioFile != null) Scenario = ScenarioDefinition.LoadFile(scenarioFile);
+            Build(seed);
+            return Scenario.FileDigest;
+        }
+
+        private void ResetState()
+        {
             Clock.Reset();
             StepIndex = 0;
             Thrusters.Reset();
@@ -161,7 +214,18 @@ namespace Conrad.UnityV2.MissionExperimentRuntime
                 ["scenario_version"] = Scenario.ScenarioVersion, ["validity_level"] = ValidityLevel.ToString(),
                 ["physics_dt_ns"] = PhysicsDtNs, ["lock_step"] = LockStep, ["experiment"] = Experiment,
             });
-            return Scenario.FileDigest;
+        }
+
+        public string SceneDigest { get; private set; }
+
+        /// <summary>CONFIGURE_SCENE: static collider geometry in Conrad WORLD. RESET does not touch it.</summary>
+        public int ConfigureScene(Dictionary<string, object> body)
+        {
+            if (worldRoot == null) worldRoot = new GameObject("World").transform;
+            int count = SceneGeometryBuilder.Apply(worldRoot, body);
+            SceneDigest = ScenarioDefinition.Sha256Hex(Encoding.UTF8.GetBytes(MiniJson.Serialize(body)));
+            LogEvent("scene", new Dictionary<string, object> { ["scene_digest"] = SceneDigest, ["primitive_count"] = (long)count });
+            return count;
         }
 
         public void LogEvent(string kind, Dictionary<string, object> data) => _replay?.Write(kind, Clock.NowNs, data);
@@ -185,7 +249,7 @@ namespace Conrad.UnityV2.MissionExperimentRuntime
 
         private void FixedUpdate()
         {
-            if (!LockStep) StepOnce();
+            if (Ready && !LockStep) StepOnce();
         }
 
         /// <summary>GROUND_TRUTH body in the UNITY wire convention (truth endpoint only).</summary>

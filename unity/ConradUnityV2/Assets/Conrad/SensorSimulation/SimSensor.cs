@@ -102,6 +102,7 @@ namespace Conrad.UnityV2.SensorSimulation
             PeriodNs = (long)Math.Round(SimClock.NsPerSecond / p.RateHz);
             LatencyNs = (long)Math.Round(Math.Max(0, p.LatencyS) * SimClock.NsPerSecond);
             _maxInFlight = maxInFlight;
+            _nextSampleNs = PeriodNs;
         }
 
         /// <summary>Bias + drift + (scaled) white noise for one scalar channel.</summary>
@@ -147,7 +148,7 @@ namespace Conrad.UnityV2.SensorSimulation
         public virtual void Reset()
         {
             _inFlight.Clear();
-            _nextSampleNs = 0;
+            _nextSampleNs = PeriodNs; // first sample one period after reset: acquisitions on the k*period grid
             _seq = 0;
             DroppedFrames = 0;
             Fault.Clear();

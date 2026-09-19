@@ -31,6 +31,10 @@ class MessageKind(str, Enum):
     FAULT_ACK = "FAULT_ACK"
     GET_METRICS = "GET_METRICS"
     METRICS = "METRICS"
+    CONFIGURE_SCENE = "CONFIGURE_SCENE"  # static collider geometry (Conrad WORLD)
+    SCENE_ACK = "SCENE_ACK"
+    FRAME_PROBE = "FRAME_PROBE"  # frame-contract diagnostic; reads/changes no world state
+    FRAME_PROBE_ACK = "FRAME_PROBE_ACK"
     SENSOR = "SENSOR"  # PUB stream
     GET_GROUND_TRUTH = "GET_GROUND_TRUTH"  # truth endpoint only
     GROUND_TRUTH = "GROUND_TRUTH"  # truth endpoint only

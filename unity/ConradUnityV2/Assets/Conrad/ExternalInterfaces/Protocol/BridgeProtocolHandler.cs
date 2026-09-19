@@ -85,10 +85,13 @@ namespace Conrad.UnityV2.ExternalInterfaces
                     }
                     case "INJECT_FAULT": return InjectFault(body, seq);
                     case "GET_METRICS": return Metrics(seq);
+                    case "CONFIGURE_SCENE": return ConfigureScene(body, seq);
+                    case "FRAME_PROBE": return Encode("FRAME_PROBE_ACK", FrameProbe.Run(body), _sessionId, seq);
                     default: return Error("UNSUPPORTED", kind + " is not served on the control endpoint", seq);
                 }
             }
-            catch (Exception ex) when (ex is JsonException || ex is InvalidCastException || ex is FormatException || ex is ArgumentException)
+            catch (Exception ex) when (ex is JsonException || ex is InvalidCastException || ex is FormatException || ex is ArgumentException
+                                       || ex is KeyNotFoundException || ex is OverflowException)
             {
                 return Error("BAD_REQUEST", ex.Message, seq);
             }
@@ -144,6 +147,15 @@ namespace Conrad.UnityV2.ExternalInterfaces
             for (long k = 0; k < dtNs / _rt.PhysicsDtNs; k++) _rt.StepOnce();
             _expectedStep++;
             return Encode("STATE", _rt.Server.BuildState(index, _rt.Clock.Domain), _sessionId, seq);
+        }
+
+        private byte[] ConfigureScene(Dictionary<string, object> b, long seq)
+        {
+            int count = _rt.ConfigureScene(b);
+            return Encode("SCENE_ACK", new Dictionary<string, object>
+            {
+                ["scene_digest"] = _rt.SceneDigest, ["primitive_count"] = (long)count, ["sim_time_ns"] = _rt.Clock.NowNs,
+            }, _sessionId, seq);
         }
 
         private byte[] InjectFault(Dictionary<string, object> b, long seq)

@@ -1,0 +1,59 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.15, pytest-8.4.2, pluggy-1.6.0 -- C:\Users\Kerem\Kerem\conrad-v2\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+hypothesis profile 'default'
+rootdir: C:\Users\Kerem\Kerem\conrad-v2
+configfile: pyproject.toml
+plugins: anyio-4.15.1, hypothesis-6.168.0, cov-6.3.0
+collecting ... collected 23 items
+
+tests/unity_live/test_u0_gate.py::test_six_dof_rigid_body_is_stable_under_a_long_combined_manoeuvre PASSED [  4%]
+tests/unity_live/test_u0_gate.py::test_thruster_commands_move_along_the_right_axis_with_the_right_sign[surge-wrench0] PASSED [  8%]
+tests/unity_live/test_u0_gate.py::test_thruster_commands_move_along_the_right_axis_with_the_right_sign[sway-wrench1] PASSED [ 13%]
+tests/unity_live/test_u0_gate.py::test_thruster_commands_move_along_the_right_axis_with_the_right_sign[heave-wrench2] PASSED [ 17%]
+tests/unity_live/test_u0_gate.py::test_thruster_commands_move_along_the_right_axis_with_the_right_sign[roll-wrench3] PASSED [ 21%]
+tests/unity_live/test_u0_gate.py::test_thruster_commands_move_along_the_right_axis_with_the_right_sign[pitch-wrench4] PASSED [ 26%]
+tests/unity_live/test_u0_gate.py::test_thruster_commands_move_along_the_right_axis_with_the_right_sign[yaw-wrench5] PASSED [ 30%]
+tests/unity_live/test_u0_gate.py::test_neutral_configuration_holds_depth PASSED [ 34%]
+tests/unity_live/test_u0_gate.py::test_buoyancy_variants_rise_and_sink_as_the_analytic_heave_model[positive] PASSED [ 39%]
+tests/unity_live/test_u0_gate.py::test_buoyancy_variants_rise_and_sink_as_the_analytic_heave_model[negative] PASSED [ 43%]
+tests/unity_live/test_u0_gate.py::test_surge_terminal_velocity_matches_the_analytic_value PASSED [ 47%]
+tests/unity_live/test_u0_gate.py::test_inertia_from_robot_config_sets_the_yaw_response PASSED [ 52%]
+tests/unity_live/test_u0_gate.py::test_com_and_cob_offsets_set_the_trim_angle[cob_forward] PASSED [ 56%]
+tests/unity_live/test_u0_gate.py::test_com_and_cob_offsets_set_the_trim_angle[com_aft] PASSED [ 60%]
+tests/unity_live/test_u0_gate.py::test_open_parameters_are_refused_on_both_sides PASSED [ 65%]
+tests/unity_live/test_u0_gate.py::test_imu_depth_camera_frames_and_monotonic_timestamps PASSED [ 69%]
+tests/unity_live/test_u0_gate.py::test_same_seed_same_trajectory_across_resets_and_processes PASSED [ 73%]
+tests/unity_live/test_u0_gate.py::test_recorded_wire_replays_with_identical_acquisition_timestamps PASSED [ 78%]
+tests/unity_live/test_u0_gate.py::test_frame_probe_unit_axes_and_round_trip_through_the_engine PASSED [ 82%]
+tests/unity_live/test_u0_gate.py::test_configured_scene_is_seen_where_conrad_placed_it PASSED [ 86%]
+tests/unity_live/test_u0_gate.py::test_heightfield_collider_supports_a_sinking_vehicle PASSED [ 91%]
+tests/unity_live/test_u0_gate.py::test_full_robot_hardware_interface_through_the_real_command_gateway PASSED [ 95%]
+tests/unity_live/test_u0_gate.py::test_player_binary_is_the_one_just_built PASSED [100%]
+
+=================================== PASSES ====================================
+=========================== short test summary info ===========================
+PASSED tests/unity_live/test_u0_gate.py::test_six_dof_rigid_body_is_stable_under_a_long_combined_manoeuvre
+PASSED tests/unity_live/test_u0_gate.py::test_thruster_commands_move_along_the_right_axis_with_the_right_sign[surge-wrench0]
+PASSED tests/unity_live/test_u0_gate.py::test_thruster_commands_move_along_the_right_axis_with_the_right_sign[sway-wrench1]
+PASSED tests/unity_live/test_u0_gate.py::test_thruster_commands_move_along_the_right_axis_with_the_right_sign[heave-wrench2]
+PASSED tests/unity_live/test_u0_gate.py::test_thruster_commands_move_along_the_right_axis_with_the_right_sign[roll-wrench3]
+PASSED tests/unity_live/test_u0_gate.py::test_thruster_commands_move_along_the_right_axis_with_the_right_sign[pitch-wrench4]
+PASSED tests/unity_live/test_u0_gate.py::test_thruster_commands_move_along_the_right_axis_with_the_right_sign[yaw-wrench5]
+PASSED tests/unity_live/test_u0_gate.py::test_neutral_configuration_holds_depth
+PASSED tests/unity_live/test_u0_gate.py::test_buoyancy_variants_rise_and_sink_as_the_analytic_heave_model[positive]
+PASSED tests/unity_live/test_u0_gate.py::test_buoyancy_variants_rise_and_sink_as_the_analytic_heave_model[negative]
+PASSED tests/unity_live/test_u0_gate.py::test_surge_terminal_velocity_matches_the_analytic_value
+PASSED tests/unity_live/test_u0_gate.py::test_inertia_from_robot_config_sets_the_yaw_response
+PASSED tests/unity_live/test_u0_gate.py::test_com_and_cob_offsets_set_the_trim_angle[cob_forward]
+PASSED tests/unity_live/test_u0_gate.py::test_com_and_cob_offsets_set_the_trim_angle[com_aft]
+PASSED tests/unity_live/test_u0_gate.py::test_open_parameters_are_refused_on_both_sides
+PASSED tests/unity_live/test_u0_gate.py::test_imu_depth_camera_frames_and_monotonic_timestamps
+PASSED tests/unity_live/test_u0_gate.py::test_same_seed_same_trajectory_across_resets_and_processes
+PASSED tests/unity_live/test_u0_gate.py::test_recorded_wire_replays_with_identical_acquisition_timestamps
+PASSED tests/unity_live/test_u0_gate.py::test_frame_probe_unit_axes_and_round_trip_through_the_engine
+PASSED tests/unity_live/test_u0_gate.py::test_configured_scene_is_seen_where_conrad_placed_it
+PASSED tests/unity_live/test_u0_gate.py::test_heightfield_collider_supports_a_sinking_vehicle
+PASSED tests/unity_live/test_u0_gate.py::test_full_robot_hardware_interface_through_the_real_command_gateway
+PASSED tests/unity_live/test_u0_gate.py::test_player_binary_is_the_one_just_built
+======================== 23 passed in 96.12s (0:01:36) ========================

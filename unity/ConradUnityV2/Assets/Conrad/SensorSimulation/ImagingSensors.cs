@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Conrad.UnityV2.SensorSimulation
 {
-    public sealed class CameraSensor : SimSensorBase
+    public sealed class CameraSensor : SimSensorBase, IDisposable
     {
         private readonly Camera _camera;
         private readonly RenderTexture _target;
@@ -24,6 +24,8 @@ namespace Conrad.UnityV2.SensorSimulation
         public CameraSensor(SensorParameters p, ulong seed, Camera camera, Func<double> turbidity) : base(p, seed, 8)
         {
             _camera = camera != null ? camera : throw new ArgumentNullException(nameof(camera));
+            if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null)
+                throw new InvalidOperationException("camera sensor " + p.Name + " needs a graphics device; do not start the player with -nographics");
             _turbidity = turbidity ?? throw new ArgumentNullException(nameof(turbidity));
             _width = (int)J.Num(p.Extra, "width_px");
             _height = (int)J.Num(p.Extra, "height_px");
@@ -36,6 +38,14 @@ namespace Conrad.UnityV2.SensorSimulation
             _camera.targetTexture = _target;
             _camera.enabled = false; // rendered on demand at the sensor rate, in step with simulation time
             if (p.Extra.TryGetValue("vertical_fov_deg", out object fov)) _camera.fieldOfView = (float)J.Num(fov, "vertical_fov_deg");
+        }
+
+        /// <summary>Releases the GPU render target (called when the runtime rebuilds its sensors on reset).</summary>
+        public void Dispose()
+        {
+            if (_camera != null && _camera.targetTexture == _target) _camera.targetTexture = null;
+            if (_target != null) { _target.Release(); UnityEngine.Object.Destroy(_target); }
+            if (_readback != null) UnityEngine.Object.Destroy(_readback);
         }
 
         protected override SensorPacketData Measure(TruthSnapshot truth, double tS)
@@ -71,6 +81,7 @@ namespace Conrad.UnityV2.SensorSimulation
                 {
                     ["fx"] = fy, ["fy"] = fy, ["cx"] = 0.5 * _width, ["cy"] = 0.5 * _height,
                     ["turbidity_applied"] = k, ["renderer"] = "unity_camera",
+                    ["graphics_device"] = SystemInfo.graphicsDeviceType.ToString(),
                 },
             };
         }

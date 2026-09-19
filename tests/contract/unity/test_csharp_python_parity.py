@@ -1,6 +1,6 @@
 """Cross-language contract: the Unity C# sources must speak exactly the Python wire protocol.
 
-The C# cannot be compiled in this environment, so these tests read the C# source text:
+These tests read the C# source text (the compiled player is exercised separately by tests/unity_live):
 * every JSON key C# writes into a message body matches the pydantic model (extra="forbid" on the Python side);
 * layouts, format strings, fault vocabulary and the frame convention string are identical;
 * the C# frame-conversion expressions, transliterated to Python, agree with UnityFrameMapper numerically.
@@ -8,6 +8,7 @@ The C# cannot be compiled in this environment, so these tests read the C# source
 
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
@@ -23,10 +24,12 @@ from conrad.adapters.unity.protocol import (
     ErrorReply,
     FaultAck,
     FaultType,
+    FrameProbeResult,
     HandshakeAck,
     MessageKind,
     MetricsReply,
     ResetAck,
+    SceneAck,
     SensorPacket,
     StatePacket,
     WireBattery,
@@ -36,6 +39,7 @@ from conrad.adapters.unity.protocol import (
     WireHealth,
     WireThrusterState,
 )
+from conrad.adapters.unity.transport import FRAME_HEADER, MAX_FRAME_BYTES
 from conrad.sim.unity.robot_export import BODY_CONVENTION, UNITY_ROBOT_CONFIG_FORMAT
 from conrad.sim.unity.truth import GroundTruthReply
 
@@ -71,7 +75,25 @@ def test_eight_modules_and_asmdefs_exist() -> None:
     ):
         assert list((ROOT / module).rglob("*.cs")), module
     assert (ROOT / "ConradUnityV2.asmdef").is_file()
-    assert (ROOT / "ExternalInterfaces" / "Transport" / "ConradUnityV2.Transport.asmdef").is_file()
+    transport = ROOT / "ExternalInterfaces" / "Transport" / "ConradUnityV2.Transport.asmdef"
+    assert transport.is_file()
+
+
+def test_transport_assembly_needs_no_third_party_dlls() -> None:
+    for asmdef in ROOT.rglob("*.asmdef"):
+        doc = json.loads(asmdef.read_text(encoding="utf-8"))
+        assert doc.get("precompiledReferences", []) == [], asmdef.name
+    assert not list(ROOT.parent.rglob("*.dll")), "no managed DLLs may be vendored under Assets/"
+    src = _src("ExternalInterfaces/Transport/TcpBridgeServer.cs")
+    assert "NetMQ" not in src and "using System.Net.Sockets;" in src
+
+
+def test_frame_header_matches_python() -> None:
+    src = _src("ExternalInterfaces/Transport/TcpBridgeServer.cs")
+    assert FRAME_HEADER.format == ">I" and FRAME_HEADER.size == 4
+    # big-endian length prefix, most significant byte first, same size limit
+    assert "(byte)(n >> 24), (byte)(n >> 16), (byte)(n >> 8), (byte)n" in src
+    assert f"MaxFrameBytes = {MAX_FRAME_BYTES // (1024 * 1024)} * 1024 * 1024" in src
 
 
 def test_sensor_packet_keys_match_exactly() -> None:
@@ -88,12 +110,17 @@ def test_robot_hardware_server_bodies_match() -> None:
 
 def test_protocol_handler_bodies_match() -> None:
     keys = _keys(_src("ExternalInterfaces/Protocol/BridgeProtocolHandler.cs"))
-    models = (WireEnvelope, HandshakeAck, ResetAck, FaultAck, MetricsReply, ErrorReply)
+    models = (WireEnvelope, HandshakeAck, ResetAck, FaultAck, MetricsReply, ErrorReply, SceneAck)
     for m in models:
         assert set(m.model_fields) - {"schema_version", "metrics"} <= keys | {"metrics"}, m.__name__
     metric_keys = {"steps", "battery_remaining_fraction", "power_w", "dropped_frames"}
     replay_log_keys = {"request", "ack", "reasons"}  # JSONL replay records, never sent on the wire
     assert keys <= _fields(*models) | metric_keys | replay_log_keys
+
+
+def test_frame_probe_keys_match() -> None:
+    keys = _keys(_src("ExternalInterfaces/Protocol/FrameProbe.cs"))
+    assert keys == set(FrameProbeResult.model_fields) - {"schema_version"} | {"results"}
 
 
 def test_ground_truth_keys_match() -> None:
@@ -104,7 +131,7 @@ def test_ground_truth_keys_match() -> None:
 
 def test_message_kinds_and_layouts_and_formats() -> None:
     handler = _src("ExternalInterfaces/Protocol/BridgeProtocolHandler.cs") + _src(
-        "ExternalInterfaces/Transport/ZmqBridgeServer.cs"
+        "ExternalInterfaces/Transport/TcpBridgeServer.cs"
     )
     used = set(re.findall(r'"([A-Z_]+)"', handler)) & {k.value for k in MessageKind}
     assert used >= {
@@ -125,6 +152,10 @@ def test_message_kinds_and_layouts_and_formats() -> None:
         "GET_GROUND_TRUTH",
         "GROUND_TRUTH",
         "ERROR",
+        "CONFIGURE_SCENE",
+        "SCENE_ACK",
+        "FRAME_PROBE",
+        "FRAME_PROBE_ACK",
     }
     sensors = _src("SensorSimulation/NavigationSensors.cs") + _src("SensorSimulation/ImagingSensors.cs")
     for layout in (IMU_LAYOUT, DEPTH_LAYOUT, CAMERA_LAYOUT, SONAR_LAYOUT):

@@ -1,4 +1,7 @@
-"""TEST-ONLY stand-in for the Unity V2 player. Speaks the real wire protocol over real ZeroMQ sockets.
+"""TEST-ONLY stand-in for the Unity V2 player. Speaks the real wire protocol over real sockets.
+
+``transport="tcp"`` (default, what the real player serves): length-prefixed JSON frames over TCP.
+``transport="zmq"``: the optional ZeroMQ REQ/REP + PUB transport.
 
 It is not a simulator of record: the vehicle model is a one-line depth integrator so that a closed
 loop has something to react to. Spatial values are hand-written in the UNITY convention (left-handed,
@@ -8,8 +11,10 @@ against an independent encoding.
 
 from __future__ import annotations
 
+import socket
 import threading
 from dataclasses import dataclass, field
+from typing import Literal
 
 import numpy as np
 import zmq
@@ -50,6 +55,7 @@ from conrad.adapters.unity.protocol import (
     encode_message,
     make_sensor_packet,
 )
+from conrad.adapters.unity.transport import FRAME_HEADER, encode_frame
 from conrad.schemas.base import SCHEMA_VERSION
 
 
@@ -76,21 +82,33 @@ class MockUnityServer:
     robot_config_digest: str
     thruster_ids: tuple[str, ...]
     behaviour: MockBehaviour = field(default_factory=MockBehaviour)
+    transport: Literal["tcp", "zmq"] = "tcp"
 
     def __post_init__(self) -> None:
         self._ctx = zmq.Context()
-        self._rep = self._ctx.socket(zmq.REP)
-        self._rep.setsockopt(zmq.LINGER, 0)
-        self._rep.setsockopt(zmq.RCVTIMEO, 1000)
-        self._rep.setsockopt(zmq.SNDTIMEO, 1000)
-        port = self._rep.bind_to_random_port("tcp://127.0.0.1")
-        self.control_endpoint = f"tcp://127.0.0.1:{port}"
-        self._pub = self._ctx.socket(zmq.PUB)
-        self._pub.setsockopt(zmq.LINGER, 0)
-        pub_port = self._pub.bind_to_random_port("tcp://127.0.0.1")
-        self.stream_endpoint = f"tcp://127.0.0.1:{pub_port}"
+        self._stream_clients: list[socket.socket] = []
+        if self.transport == "zmq":
+            self._rep = self._ctx.socket(zmq.REP)
+            self._rep.setsockopt(zmq.LINGER, 0)
+            self._rep.setsockopt(zmq.RCVTIMEO, 1000)
+            self._rep.setsockopt(zmq.SNDTIMEO, 1000)
+            port = self._rep.bind_to_random_port("tcp://127.0.0.1")
+            self.control_endpoint = f"tcp://127.0.0.1:{port}"
+            self._pub = self._ctx.socket(zmq.PUB)
+            self._pub.setsockopt(zmq.LINGER, 0)
+            pub_port = self._pub.bind_to_random_port("tcp://127.0.0.1")
+            self.stream_endpoint = f"tcp://127.0.0.1:{pub_port}"
+            target = self._serve
+        else:
+            self._listener = socket.create_server(("127.0.0.1", 0))
+            self._listener.settimeout(0.05)
+            self.control_endpoint = f"tcp://127.0.0.1:{self._listener.getsockname()[1]}"
+            self._stream_listener = socket.create_server(("127.0.0.1", 0))
+            self._stream_listener.settimeout(0.05)
+            self.stream_endpoint = f"tcp://127.0.0.1:{self._stream_listener.getsockname()[1]}"
+            target = self._serve_tcp
         self._stop = threading.Event()
-        self._thread = threading.Thread(target=self._serve, name="mock-unity", daemon=True)
+        self._thread = threading.Thread(target=target, name="mock-unity", daemon=True)
         self.session_id = "mock-session-1"
         self.sim_time_ns = 0
         self.depth_m = 2.0
@@ -112,6 +130,9 @@ class MockUnityServer:
         self._stop.set()
         self._thread.join(timeout=2.0)
         self._ctx.destroy(linger=0)
+        if self.transport == "tcp":
+            for s in (self._listener, self._stream_listener, *self._stream_clients):
+                s.close()
 
     def __enter__(self) -> MockUnityServer:
         return self.start()
@@ -134,30 +155,85 @@ class MockUnityServer:
                 # Never answer: the client must time out and fail closed. (Socket stays in recv state.)
                 self._stop.wait(timeout=5.0)
                 return
-            env = None
             try:
-                env, body = decode_message(raw)
-                self.requests_seen.append(env.kind)
-                kind, reply = self._handle(env.kind, body)
-            except Exception as exc:  # the mock reports, the client must fail closed
-                self.errors.append(repr(exc))
-                kind, reply = MessageKind.ERROR, ErrorReply(code="BAD_REQUEST", detail=str(exc))
-            seq = env.seq if env is not None else 0
-            try:
-                self._rep.send_multipart(
-                    [
-                        encode_message(
-                            kind,
-                            reply,
-                            session_id=self.session_id,
-                            seq=seq,
-                            protocol_version=self.behaviour.protocol_version,
-                            schema_version=self.behaviour.schema_version,
-                        )
-                    ]
-                )
+                self._rep.send_multipart([self._reply_bytes(raw)])
             except zmq.ZMQError:
                 return
+
+    def _reply_bytes(self, raw: bytes) -> bytes:
+        env = None
+        try:
+            env, body = decode_message(raw)
+            self.requests_seen.append(env.kind)
+            kind, reply = self._handle(env.kind, body)
+        except Exception as exc:  # the mock reports, the client must fail closed
+            self.errors.append(repr(exc))
+            kind, reply = MessageKind.ERROR, ErrorReply(code="BAD_REQUEST", detail=str(exc))
+        return encode_message(
+            kind,
+            reply,
+            session_id=self.session_id,
+            seq=env.seq if env is not None else 0,
+            protocol_version=self.behaviour.protocol_version,
+            schema_version=self.behaviour.schema_version,
+        )
+
+    @staticmethod
+    def _recv_exactly(conn: socket.socket, n: int) -> bytes | None:
+        buf = bytearray()
+        while len(buf) < n:
+            try:
+                chunk = conn.recv(n - len(buf))
+            except TimeoutError:
+                continue
+            if not chunk:
+                return None
+            buf.extend(chunk)
+        return bytes(buf)
+
+    def _accept_stream_clients(self) -> None:
+        while True:
+            try:
+                client, _ = self._stream_listener.accept()
+            except TimeoutError:
+                return
+            self._stream_clients.append(client)
+
+    def _serve_tcp(self) -> None:
+        while not self._stop.is_set():
+            self._accept_stream_clients()
+            try:
+                conn, _ = self._listener.accept()
+            except TimeoutError:
+                continue
+            conn.settimeout(0.05)
+            with conn:
+                while not self._stop.is_set():
+                    self._accept_stream_clients()
+                    try:
+                        header = conn.recv(FRAME_HEADER.size, socket.MSG_PEEK)
+                    except TimeoutError:
+                        continue
+                    if not header:
+                        break
+                    head = self._recv_exactly(conn, FRAME_HEADER.size)
+                    raw = None if head is None else self._recv_exactly(conn, FRAME_HEADER.unpack(head)[0])
+                    if raw is None:
+                        break
+                    if self.behaviour.silent:
+                        self._stop.wait(timeout=5.0)  # never answer: the client must time out
+                        return
+                    conn.sendall(encode_frame(self._reply_bytes(raw)))
+
+    def _publish(self, frame: bytes) -> None:
+        if self.transport == "zmq":
+            self._pub.send_multipart([frame])
+            return
+        for client in list(self._stream_clients):
+            try:
+                client.sendall(encode_frame(frame))
+            except OSError:
+                self._stream_clients.remove(client)
 
     def _active(self, fault_type: FaultType, target: str | None = None) -> FaultInjectionRequest | None:
         for f in self.faults:
@@ -340,8 +416,8 @@ class MockUnityServer:
             packets[0] = first.model_copy(update={"payload_digest": "0" * 64})
         if b.publish_stream:
             for p in packets:
-                self._pub.send_multipart(
-                    [encode_message(MessageKind.SENSOR, p, session_id=self.session_id, seq=self.seq_counter)]
+                self._publish(
+                    encode_message(MessageKind.SENSOR, p, session_id=self.session_id, seq=self.seq_counter)
                 )
         return tuple(packets)
 

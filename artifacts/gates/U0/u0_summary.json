@@ -1,0 +1,569 @@
+{
+  "build_info": {
+    "build_seconds": 25.065065,
+    "build_started_utc": "2026-09-19T06:34:16.7500258Z",
+    "output": "Builds/Win64/ConradSim.exe",
+    "result": "Succeeded",
+    "total_errors": 0,
+    "total_size_bytes": 93412456,
+    "total_warnings": 0,
+    "unity_version": "6000.5.9f1"
+  },
+  "build_log": "artifacts/gates/U0/unity_build.log (copy of unity/ConradUnityV2/Logs/u0_build.log)",
+  "build_log_compiler_errors": 0,
+  "build_log_compiler_warnings": 0,
+  "build_log_result_line": "Build Finished, Result: Success.",
+  "build_log_sha256": "f28cd7ed36b22ca29d9f403e5f69af6b491ee16243271a345e42197624021c62",
+  "criteria": {
+    "basic_drag_terminal_velocity": {
+      "status": "PASS",
+      "tests": [
+        {
+          "measured": {
+            "analytic_terminal_velocity_mps": 0.9441387963324658,
+            "d1": 4.0,
+            "d2": 18.2,
+            "max_velocity_trajectory_error_relative": 2.7474743247207767e-06,
+            "measured_terminal_velocity_mps": 0.9441362023353577,
+            "relative_error": 2.7474743313058773e-06,
+            "surge_force_n": 20.0
+          },
+          "outcome": "passed",
+          "test": "test_surge_terminal_velocity_matches_the_analytic_value"
+        }
+      ]
+    },
+    "deterministic_reset_and_replay": {
+      "status": "PASS",
+      "tests": [
+        {
+          "measured": {
+            "identical": true,
+            "samples": 30,
+            "wire_log_bytes": 472605
+          },
+          "outcome": "passed",
+          "test": "test_recorded_wire_replays_with_identical_acquisition_timestamps"
+        },
+        {
+          "measured": {
+            "declared_tolerance": 1e-09,
+            "max_abs_diff_other_seed_physics": 0.0,
+            "max_abs_diff_same_seed_new_process": 0.0,
+            "max_abs_diff_same_seed_reset": 0.0,
+            "sensor_payload_digests_differ_other_seed": true,
+            "sensor_payload_digests_equal_process": true,
+            "sensor_payload_digests_equal_reset": true,
+            "steps": 100
+          },
+          "outcome": "passed",
+          "test": "test_same_seed_same_trajectory_across_resets_and_processes"
+        }
+      ]
+    },
+    "frame_conversion_probes": {
+      "status": "PASS",
+      "tests": [
+        {
+          "measured": {
+            "bin_size_m": 0.3125,
+            "pole_beam_bearing_rad": 0.3666666666666667,
+            "pole_expected_bearing_rad": 0.35299038782691045,
+            "pole_expected_range_m": 4.812114182829147,
+            "pole_measured_range_m": 4.84375,
+            "scene_primitives": 2,
+            "sonar_horizontal_fov_rad": 1.0,
+            "wall_expected_range_m": 5.75,
+            "wall_measured_range_m": 5.78125
+          },
+          "outcome": "passed",
+          "test": "test_configured_scene_is_seen_where_conrad_placed_it"
+        },
+        {
+          "measured": {
+            "pitch_pos_forward_unity": [
+              0.0,
+              -1.0000001192092896,
+              -1.1920928955078125e-07
+            ],
+            "roll_pos_up_unity": [
+              1.0000001192092896,
+              -1.1920928955078125e-07,
+              0.0
+            ],
+            "round_trip_max_position_error_m": 4.768371586472142e-08,
+            "round_trip_max_quaternion_error": 1.7200151414265008e-08,
+            "unit_axes": {
+              "+X": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "+Y": [
+                -1.0,
+                0.0,
+                0.0
+              ],
+              "+Z": [
+                0.0,
+                1.0,
+                0.0
+              ]
+            },
+            "yaw_left_forward_unity": [
+              -1.0000001192092896,
+              0.0,
+              -1.1920928955078125e-07
+            ]
+          },
+          "outcome": "passed",
+          "test": "test_frame_probe_unit_axes_and_round_trip_through_the_engine"
+        },
+        {
+          "measured": {
+            "expected_rest_z_m": -11.875,
+            "final_vertical_speed_mps": 2.8550857678055783e-08,
+            "ground_z_m": -12.0,
+            "measured_rest_z_m": -11.875
+          },
+          "outcome": "passed",
+          "test": "test_heightfield_collider_supports_a_sinking_vehicle"
+        }
+      ]
+    },
+    "gravity_buoyancy_equilibrium": {
+      "status": "PASS",
+      "tests": [
+        {
+          "measured": {
+            "analytic_terminal_velocity_mps": -0.18643611383541125,
+            "final_displacement_m": -3.407830238342285,
+            "final_vertical_velocity_mps": -0.1864340603351593,
+            "max_trajectory_error_relative": 0.00018593101624921431,
+            "net_buoyancy_n": -2.255529500000004,
+            "reference_displacement_m": -3.408463977513473,
+            "terminal_velocity_error_relative": 1.101449826274375e-05,
+            "variant": "negative"
+          },
+          "outcome": "passed",
+          "test": "test_buoyancy_variants_rise_and_sink_as_the_analytic_heave_model[negative]"
+        },
+        {
+          "measured": {
+            "analytic_terminal_velocity_mps": 0.18643611383541125,
+            "final_displacement_m": 3.4113540649414062,
+            "final_vertical_velocity_mps": 0.1864340752363205,
+            "max_trajectory_error_relative": 2.503842243614276e-05,
+            "net_buoyancy_n": 2.255529500000004,
+            "reference_displacement_m": 3.4112686521558504,
+            "terminal_velocity_error_relative": 1.0934571896079603e-05,
+            "variant": "positive"
+          },
+          "outcome": "passed",
+          "test": "test_buoyancy_variants_rise_and_sink_as_the_analytic_heave_model[positive]"
+        },
+        {
+          "measured": {
+            "max_abs_depth_change_m": 0.0,
+            "max_abs_pitch_deg": 0.0,
+            "rho_kgm3": 1022.2222222222223,
+            "seconds": 20.0
+          },
+          "outcome": "passed",
+          "test": "test_neutral_configuration_holds_depth"
+        }
+      ]
+    },
+    "known_command_moves_robot_correctly": {
+      "status": "PASS",
+      "tests": [
+        {
+          "measured": {
+            "body_velocity": [
+              0.0,
+              0.0,
+              0.212871,
+              0.0,
+              -0.0,
+              0.0
+            ],
+            "commands": {
+              "H1": 0.0,
+              "H2": 0.0,
+              "H3": 0.0,
+              "H4": 0.0,
+              "V1": 0.25,
+              "V2": 0.25,
+              "V3": 0.25,
+              "V4": 0.25
+            },
+            "displacement_world_m": [
+              -0.0,
+              0.0,
+              0.075403
+            ],
+            "dof": "heave"
+          },
+          "outcome": "passed",
+          "test": "test_thruster_commands_move_along_the_right_axis_with_the_right_sign[heave-wrench2]"
+        },
+        {
+          "measured": {
+            "body_velocity": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.4974,
+              0.0
+            ],
+            "commands": {
+              "H1": 0.0,
+              "H2": 0.0,
+              "H3": 0.0,
+              "H4": 0.0,
+              "V1": -0.2635,
+              "V2": -0.2635,
+              "V3": 0.2282,
+              "V4": 0.2282
+            },
+            "displacement_world_m": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "dof": "pitch"
+          },
+          "outcome": "passed",
+          "test": "test_thruster_commands_move_along_the_right_axis_with_the_right_sign[pitch-wrench4]"
+        },
+        {
+          "measured": {
+            "body_velocity": [
+              0.0,
+              0.0,
+              0.0,
+              0.4974,
+              0.0,
+              0.0
+            ],
+            "commands": {
+              "H1": 0.0,
+              "H2": 0.0,
+              "H3": 0.0,
+              "H4": 0.0,
+              "V1": 0.1768,
+              "V2": -0.2041,
+              "V3": 0.1768,
+              "V4": -0.2041
+            },
+            "displacement_world_m": [
+              0.0,
+              -0.0,
+              0.0
+            ],
+            "dof": "roll"
+          },
+          "outcome": "passed",
+          "test": "test_thruster_commands_move_along_the_right_axis_with_the_right_sign[roll-wrench3]"
+        },
+        {
+          "measured": {
+            "body_velocity": [
+              0.32013,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "commands": {
+              "H1": 0.2973,
+              "H2": 0.2973,
+              "H3": 0.2973,
+              "H4": 0.2973,
+              "V1": 0.0,
+              "V2": 0.0,
+              "V3": 0.0,
+              "V4": 0.0
+            },
+            "displacement_world_m": [
+              0.114314,
+              0.0,
+              0.0
+            ],
+            "dof": "surge"
+          },
+          "outcome": "passed",
+          "test": "test_thruster_commands_move_along_the_right_axis_with_the_right_sign[surge-wrench0]"
+        },
+        {
+          "measured": {
+            "body_velocity": [
+              0.0,
+              0.230213,
+              0.0,
+              0.0,
+              0.0,
+              -0.0
+            ],
+            "commands": {
+              "H1": -0.3433,
+              "H2": 0.2973,
+              "H3": 0.2973,
+              "H4": -0.3433,
+              "V1": 0.0,
+              "V2": 0.0,
+              "V3": 0.0,
+              "V4": 0.0
+            },
+            "displacement_world_m": [
+              0.0,
+              0.081172,
+              0.0
+            ],
+            "dof": "sway"
+          },
+          "outcome": "passed",
+          "test": "test_thruster_commands_move_along_the_right_axis_with_the_right_sign[sway-wrench1]"
+        },
+        {
+          "measured": {
+            "body_velocity": [
+              0.0,
+              -0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.770332
+            ],
+            "commands": {
+              "H1": -0.1835,
+              "H2": 0.1589,
+              "H3": -0.1835,
+              "H4": 0.1589,
+              "V1": 0.0,
+              "V2": 0.0,
+              "V3": 0.0,
+              "V4": 0.0
+            },
+            "displacement_world_m": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "dof": "yaw"
+          },
+          "outcome": "passed",
+          "test": "test_thruster_commands_move_along_the_right_axis_with_the_right_sign[yaw-wrench5]"
+        }
+      ]
+    },
+    "mass_inertia_com_cob_configurable": {
+      "status": "PASS",
+      "tests": [
+        {
+          "measured": {
+            "cob_minus_com_m": [
+              0.005,
+              0.0,
+              0.02
+            ],
+            "expected_trim_deg": 14.036243467926479,
+            "measured_trim_deg": 14.036243325897438,
+            "residual_oscillation_deg": 7.033227245578644e-05,
+            "variant": "cob_forward"
+          },
+          "outcome": "passed",
+          "test": "test_com_and_cob_offsets_set_the_trim_angle[cob_forward]"
+        },
+        {
+          "measured": {
+            "cob_minus_com_m": [
+              0.005,
+              0.0,
+              0.02
+            ],
+            "expected_trim_deg": 14.036243467926479,
+            "measured_trim_deg": 14.036243325897438,
+            "residual_oscillation_deg": 7.033227245578644e-05,
+            "variant": "com_aft"
+          },
+          "outcome": "passed",
+          "test": "test_com_and_cob_offsets_set_the_trim_angle[com_aft]"
+        },
+        {
+          "measured": {
+            "inertia_x2": {
+              "inertia_zz": 0.32,
+              "max_relative_error": 1.1959852740410006e-07,
+              "reference_at_0.5s": 0.26554557896662345,
+              "yaw_rate_at_0.5s": 0.26554560661315907
+            },
+            "neutral": {
+              "inertia_zz": 0.16,
+              "max_relative_error": 7.7171784596471e-07,
+              "reference_at_0.5s": 0.35724359662787375,
+              "yaw_rate_at_0.5s": 0.35724353790283203
+            }
+          },
+          "outcome": "passed",
+          "test": "test_inertia_from_robot_config_sets_the_yaw_response"
+        },
+        {
+          "measured": {
+            "player_exit_code": 3,
+            "player_log_mentions_open": true,
+            "python_export": "OpenParameterError"
+          },
+          "outcome": "passed",
+          "test": "test_open_parameters_are_refused_on_both_sides"
+        }
+      ]
+    },
+    "robot_hardware_interface_via_command_gateway": {
+      "status": "PASS",
+      "tests": [
+        {
+          "measured": {
+            "accepted": true,
+            "bad_digest_reasons": [
+              "WRONG_ROBOT_CONFIG_DIGEST"
+            ],
+            "battery_remaining_fraction": 0.9998130684908849,
+            "duplicate_reasons": [
+              "DUPLICATE_COMMAND_ID"
+            ],
+            "forward_displacement_m": 1.7499499320983887,
+            "gateway_accepted": 1,
+            "gateway_rejected": 3,
+            "health": "OK",
+            "thruster_commands_echoed": {
+              "H1": 0.36411882878049256,
+              "H2": 0.36411882878049256,
+              "H3": 0.36411882878049256,
+              "H4": 0.36411882878049256,
+              "V1": 0.0,
+              "V2": 0.0,
+              "V3": 0.0,
+              "V4": 0.0
+            },
+            "unauthorized_reasons": [
+              "MISSING_SAFETY_AUTHORIZATION"
+            ]
+          },
+          "outcome": "passed",
+          "test": "test_full_robot_hardware_interface_through_the_real_command_gateway"
+        }
+      ]
+    },
+    "sensor_frames_and_timestamps": {
+      "status": "PASS",
+      "tests": [
+        {
+          "measured": {
+            "camera": {
+              "clock_domain": "SIM",
+              "count": 14,
+              "frame_id": "SENSOR_CAMERA",
+              "latency_ns": [
+                10000000
+              ],
+              "period_ns": [
+                200000000
+              ],
+              "sequence_consecutive": true,
+              "strictly_increasing": true
+            },
+            "camera_image": {
+              "bottom_quarter_mean_dn": 252.95616319444446,
+              "graphics_device": "Direct3D11",
+              "sensor_frame": "SENSOR_CAMERA",
+              "shape": [
+                48,
+                64,
+                3
+              ],
+              "top_quarter_mean_dn": 50.88368055555556
+            },
+            "depth": {
+              "clock_domain": "SIM",
+              "count": 59,
+              "frame_id": "SENSOR_DEPTH",
+              "latency_ns": [
+                10000000
+              ],
+              "period_ns": [
+                50000000
+              ],
+              "sequence_consecutive": true,
+              "strictly_increasing": true
+            },
+            "depth_mean_m": 10.00192661037963,
+            "imu": {
+              "clock_domain": "SIM",
+              "count": 299,
+              "frame_id": "SENSOR_IMU",
+              "latency_ns": [
+                10000000
+              ],
+              "period_ns": [
+                10000000
+              ],
+              "sequence_consecutive": true,
+              "strictly_increasing": true
+            },
+            "imu_rest_mean_specific_force_mps2": [
+              -0.00028,
+              -0.00024,
+              9.8071
+            ],
+            "imu_yaw_left_gyro_z_rps": 0.4860590608153316,
+            "sonar": {
+              "clock_domain": "SIM",
+              "count": 5,
+              "frame_id": "SENSOR_SONAR",
+              "latency_ns": [
+                10000000
+              ],
+              "period_ns": [
+                500000000
+              ],
+              "sequence_consecutive": true,
+              "strictly_increasing": true
+            }
+          },
+          "outcome": "passed",
+          "test": "test_imu_depth_camera_frames_and_monotonic_timestamps"
+        }
+      ]
+    },
+    "stable_physics_6dof_rigid_body": {
+      "status": "PASS",
+      "tests": [
+        {
+          "measured": {
+            "all_finite": true,
+            "final_rate_rps": 0.0013270870455380174,
+            "final_speed_mps": 0.0002141592793349393,
+            "max_quaternion_norm_error": 1.1102230246251565e-16,
+            "max_rate_rps": 0.8837013871264294,
+            "max_speed_mps": 0.48613720244904046,
+            "sim_seconds": 60.0
+          },
+          "outcome": "passed",
+          "test": "test_six_dof_rigid_body_is_stable_under_a_long_combined_manoeuvre"
+        }
+      ]
+    }
+  },
+  "gate": "U0",
+  "git_commit": "6824356bb74f27e5f8fa13ca737bb3ab6144a6e7",
+  "parameter_provenance": "every physical parameter SYNTHETIC_ONLY (configs/robot/sim_reference.yaml + labelled variants)",
+  "player": "unity\\ConradUnityV2\\Builds\\Win64\\ConradSim.exe",
+  "player_exe_sha256": "36c5c9f13481406382a8e9ef8fc0ea7cdf055c43bb12fc8fd545b07c199cd277",
+  "project_version_txt": "m_EditorVersion: 6000.5.9f1\nm_EditorVersionWithRevision: 6000.5.9f1 (b57deb96f08d)",
+  "pytest_exit_status": 0,
+  "simulation_validity_level": "L1_APPROXIMATE_PHYSICS",
+  "unity_editor_version": "6000.5.9f1"
+}

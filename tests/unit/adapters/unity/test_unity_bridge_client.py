@@ -1,4 +1,4 @@
-"""UnityRobotHardware exercised over real ZeroMQ sockets against the mock Unity server (127.0.0.1)."""
+"""UnityRobotHardware exercised over real sockets (TCP frames and ZeroMQ) against the mock Unity server."""
 
 from __future__ import annotations
 
@@ -19,6 +19,7 @@ from conrad.adapters.unity import (
     RecordingTransport,
     ReplayDivergenceError,
     ReplayTransport,
+    TcpBridgeTransport,
     UnityBridgeConfig,
     UnityBridgeError,
     UnityBridgeTimeout,
@@ -26,6 +27,7 @@ from conrad.adapters.unity import (
     UnityProtocolError,
     UnityRobotHardware,
     ZmqBridgeTransport,
+    open_transport,
     validate_private_endpoint,
 )
 from conrad.persistence.object_store import ObjectStore
@@ -41,14 +43,21 @@ THRUSTERS = tuple(t.thruster_id for t in CONFIG.thrusters)
 DT = 10_000_000
 
 
-def _hw(server: MockUnityServer, ids: IdFactory, store: ObjectStore | None = None, **over: object) -> UnityRobotHardware:
-    cfg = UnityBridgeConfig(control_endpoint=server.control_endpoint, request_timeout_ms=1500, **over)  # type: ignore[arg-type]
+def _hw(
+    server: MockUnityServer, ids: IdFactory, store: ObjectStore | None = None, **over: object
+) -> UnityRobotHardware:
+    cfg = UnityBridgeConfig(
+        control_endpoint=server.control_endpoint,
+        request_timeout_ms=1500,
+        transport=server.transport,
+        **over,  # type: ignore[arg-type]
+    )
     return UnityRobotHardware(cfg, CONFIG, ids, mission_id=ids.new(), run_id=ids.new(), payload_store=store)
 
 
-@pytest.fixture
-def server() -> Iterator[MockUnityServer]:
-    with MockUnityServer(CONFIG.content_digest(), THRUSTERS) as srv:
+@pytest.fixture(params=["tcp", "zmq"])
+def server(request: pytest.FixtureRequest) -> Iterator[MockUnityServer]:
+    with MockUnityServer(CONFIG.content_digest(), THRUSTERS, transport=request.param) as srv:
         yield srv
 
 
@@ -67,7 +76,9 @@ def test_is_a_robot_hardware_interface_and_handshakes(server: MockUnityServer, i
     hw.close()
 
 
-def test_lock_step_sensors_frames_and_acquisition_timestamps(server: MockUnityServer, ids: IdFactory, store: ObjectStore) -> None:
+def test_lock_step_sensors_frames_and_acquisition_timestamps(
+    server: MockUnityServer, ids: IdFactory, store: ObjectStore
+) -> None:
     hw = _hw(server, ids, store)
     hw.connect()
     hw.reset(seed=11)
@@ -102,7 +113,9 @@ def test_lock_step_sensors_frames_and_acquisition_timestamps(server: MockUnitySe
     hw.close()
 
 
-def test_sonar_is_inlined_without_a_store_but_never_silently_dropped(server: MockUnityServer, ids: IdFactory) -> None:
+def test_sonar_is_inlined_without_a_store_but_never_silently_dropped(
+    server: MockUnityServer, ids: IdFactory
+) -> None:
     hw = _hw(server, ids)
     hw.connect()
     for _ in range(5):
@@ -115,12 +128,17 @@ def test_sonar_is_inlined_without_a_store_but_never_silently_dropped(server: Moc
 
 def test_command_through_the_real_gateway_moves_the_vehicle(server: MockUnityServer, ids: IdFactory) -> None:
     mission, run = ids.new(), ids.new()
-    cfg = UnityBridgeConfig(control_endpoint=server.control_endpoint)
+    cfg = UnityBridgeConfig(control_endpoint=server.control_endpoint, transport=server.transport)
     hw = UnityRobotHardware(cfg, CONFIG, ids, mission, run)
     hw.connect()
     hw.step(DT)
     gateway = CommandGateway(
-        hw, CONFIG, RuntimeSettings(command_mode=CommandMode.SIMULATED), ExecutionLane.SIMULATION, mission, run
+        hw,
+        CONFIG,
+        RuntimeSettings(command_mode=CommandMode.SIMULATED),
+        ExecutionLane.SIMULATION,
+        mission,
+        run,
     )
     cmd = make_command(ids, CONFIG, mission, run, hw.now_ns(), {"V1": 0.5, "V2": 0.5})
     ack = gateway.submit(cmd)
@@ -137,7 +155,9 @@ def test_command_through_the_real_gateway_moves_the_vehicle(server: MockUnitySer
     hw.close()
 
 
-def test_adapter_rejects_bad_commands_without_touching_the_wire(server: MockUnityServer, ids: IdFactory) -> None:
+def test_adapter_rejects_bad_commands_without_touching_the_wire(
+    server: MockUnityServer, ids: IdFactory
+) -> None:
     mission, run = ids.new(), ids.new()
     hw = _hw(server, ids)
     hw.connect()
@@ -161,10 +181,14 @@ def test_fault_injection_round_trip(server: MockUnityServer, ids: IdFactory) -> 
     hw.connect()
     hw.step(DT)
     ack = hw.inject_fault(
-        FaultInjectionRequest(fault_id="f-1", fault_type=FaultType.IMU_BIAS, target="imu", start_time_ns=3 * DT, magnitude=0.4)
+        FaultInjectionRequest(
+            fault_id="f-1", fault_type=FaultType.IMU_BIAS, target="imu", start_time_ns=3 * DT, magnitude=0.4
+        )
     )
     assert ack.accepted and ack.scheduled_time_ns == 3 * DT
-    hw.inject_fault(FaultInjectionRequest(fault_id="f-2", fault_type=FaultType.LEAK_SIGNAL, start_time_ns=4 * DT))
+    hw.inject_fault(
+        FaultInjectionRequest(fault_id="f-2", fault_type=FaultType.LEAK_SIGNAL, start_time_ns=4 * DT)
+    )
     hw.step(DT)
     imu = hw.get_imu()
     assert imu is not None and imu.linear_acceleration_mps2[1] == pytest.approx(0.0)
@@ -207,14 +231,19 @@ def test_handshake_fails_closed(behaviour: MockBehaviour, error: type[Exception]
 
 
 def test_thruster_set_mismatch_fails_closed(ids: IdFactory) -> None:
-    with MockUnityServer(CONFIG.content_digest(), ("A", "B")) as srv:
-        with pytest.raises(UnityProtocolError, match="thruster set"):
-            _hw(srv, ids).connect()
+    with (
+        MockUnityServer(CONFIG.content_digest(), ("A", "B")) as srv,
+        pytest.raises(UnityProtocolError, match="thruster set"),
+    ):
+        _hw(srv, ids).connect()
 
 
-def test_timeout_fails_closed(ids: IdFactory) -> None:
-    with MockUnityServer(CONFIG.content_digest(), THRUSTERS, MockBehaviour(silent=True)) as srv:
-        cfg = UnityBridgeConfig(control_endpoint=srv.control_endpoint, request_timeout_ms=150)
+@pytest.mark.parametrize("transport", ["tcp", "zmq"])
+def test_timeout_fails_closed(ids: IdFactory, transport: str) -> None:
+    with MockUnityServer(CONFIG.content_digest(), THRUSTERS, MockBehaviour(silent=True), transport) as srv:  # type: ignore[arg-type]
+        cfg = UnityBridgeConfig(
+            control_endpoint=srv.control_endpoint, request_timeout_ms=150, transport=srv.transport
+        )
         hw = UnityRobotHardware(cfg, CONFIG, ids, ids.new(), ids.new())
         with pytest.raises(UnityBridgeTimeout):
             hw.connect()
@@ -238,20 +267,34 @@ def test_corrupt_payload_and_sensor_clock_domain_fail_closed(ids: IdFactory) -> 
 def test_endpoints_must_be_private_and_allow_listed() -> None:
     assert validate_private_endpoint("tcp://127.0.0.1:5591", ("127.0.0.1",)) == "127.0.0.1"
     assert validate_private_endpoint("tcp://10.0.0.7:5591", ("10.0.0.7",)) == "10.0.0.7"
-    for endpoint in ("tcp://0.0.0.0:5591", "tcp://8.8.8.8:5591", "tcp://localhost:5591", "ipc:///tmp/x", "tcp://127.0.0.1"):
+    for endpoint in (
+        "tcp://0.0.0.0:5591",
+        "tcp://8.8.8.8:5591",
+        "tcp://localhost:5591",
+        "ipc:///tmp/x",
+        "tcp://127.0.0.1",
+    ):
         with pytest.raises(UnityPeerError):
             validate_private_endpoint(endpoint, ("127.0.0.1", "8.8.8.8", "0.0.0.0", "localhost"))
     with pytest.raises(UnityPeerError, match="allowed_peers"):
         validate_private_endpoint("tcp://192.168.1.4:1", ("127.0.0.1",))
     with pytest.raises(UnityPeerError):
         ZmqBridgeTransport("tcp://8.8.4.4:1", None, ("8.8.4.4",), 100)
+    with pytest.raises(UnityPeerError):
+        TcpBridgeTransport("tcp://8.8.4.4:1", None, ("8.8.4.4",), 100)
+    with pytest.raises(UnityPeerError):
+        TcpBridgeTransport("tcp://0.0.0.0:1", None, ("0.0.0.0",), 100)
 
 
-def test_free_running_stream_is_consumed(ids: IdFactory) -> None:
+@pytest.mark.parametrize("transport", ["tcp", "zmq"])
+def test_free_running_stream_is_consumed(ids: IdFactory, transport: str) -> None:
     behaviour = MockBehaviour(lock_step=False, publish_stream=True)
-    with MockUnityServer(CONFIG.content_digest(), THRUSTERS, behaviour) as srv:
+    with MockUnityServer(CONFIG.content_digest(), THRUSTERS, behaviour, transport) as srv:  # type: ignore[arg-type]
         cfg = UnityBridgeConfig(
-            control_endpoint=srv.control_endpoint, stream_endpoint=srv.stream_endpoint, lock_step=False
+            control_endpoint=srv.control_endpoint,
+            stream_endpoint=srv.stream_endpoint,
+            lock_step=False,
+            transport=srv.transport,
         )
         hw = UnityRobotHardware(cfg, CONFIG, ids, ids.new(), ids.new())
         hw.connect()
@@ -263,7 +306,9 @@ def test_free_running_stream_is_consumed(ids: IdFactory) -> None:
         hw.close()
 
 
-def test_recorded_run_replays_with_identical_acquisition_timestamps(server: MockUnityServer, tmp_path: Path) -> None:
+def test_recorded_run_replays_with_identical_acquisition_timestamps(
+    server: MockUnityServer, tmp_path: Path
+) -> None:
     log = tmp_path / "wire.jsonl"
 
     def run(hw: UnityRobotHardware) -> list[tuple[int, int, float]]:
@@ -279,11 +324,11 @@ def test_recorded_run_replays_with_identical_acquisition_timestamps(server: Mock
         return out
 
     ids_live = IdFactory(seed=99)
-    live_cfg = UnityBridgeConfig(control_endpoint=server.control_endpoint)
-    transport = RecordingTransport(
-        ZmqBridgeTransport(server.control_endpoint, None, live_cfg.allowed_peers, 1500), log
+    live_cfg = UnityBridgeConfig(control_endpoint=server.control_endpoint, transport=server.transport)
+    transport = RecordingTransport(open_transport(live_cfg), log)
+    live = run(
+        UnityRobotHardware(live_cfg, CONFIG, ids_live, ids_live.new(), ids_live.new(), transport=transport)
     )
-    live = run(UnityRobotHardware(live_cfg, CONFIG, ids_live, ids_live.new(), ids_live.new(), transport=transport))
 
     ids_replay = IdFactory(seed=99)
     replayed = run(
@@ -296,7 +341,9 @@ def test_recorded_run_replays_with_identical_acquisition_timestamps(server: Mock
 
     # a replay that issues different requests is a divergence, not a silent success
     ids_other = IdFactory(seed=99)
-    hw = UnityRobotHardware(live_cfg, CONFIG, ids_other, ids_other.new(), ids_other.new(), transport=ReplayTransport(log))
+    hw = UnityRobotHardware(
+        live_cfg, CONFIG, ids_other, ids_other.new(), ids_other.new(), transport=ReplayTransport(log)
+    )
     hw.connect()
     with pytest.raises(ReplayDivergenceError):
         hw.reset(seed=4)

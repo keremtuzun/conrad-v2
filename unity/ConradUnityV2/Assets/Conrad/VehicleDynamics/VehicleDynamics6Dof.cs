@@ -47,9 +47,11 @@ namespace Conrad.UnityV2.VehicleDynamics
             _hydro = new HydrodynamicsModel(parameters, environment.WaterDensityKgM3);
             _rb = GetComponent<Rigidbody>();
             _rb.useGravity = false;          // gravity is part of g(eta) below
-            _rb.drag = 0f;                   // hydrodynamic damping is part of D(nu) below
-            _rb.angularDrag = 0f;
+            _rb.linearDamping = 0f;          // hydrodynamic damping is part of D(nu) below
+            _rb.angularDamping = 0f;
             _rb.maxAngularVelocity = 100f;
+            _rb.sleepThreshold = 0f;         // never freeze a slowly drifting vehicle (neutral buoyancy)
+            _rb.isKinematic = false;
             _rb.interpolation = RigidbodyInterpolation.None;
             _rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             _rb.mass = (float)parameters.MassKg;  // used by PhysX for contact impulses only
@@ -57,6 +59,14 @@ namespace Conrad.UnityV2.VehicleDynamics
             Vec3d iu = ConradFrames.PointToUnity(parameters.InertiaDiag);
             _rb.inertiaTensor = new Vector3(Mathf.Abs((float)iu.X), Mathf.Abs((float)iu.Y), Mathf.Abs((float)iu.Z));
             _rb.inertiaTensorRotation = Quaternion.identity;
+            // Hull collider: an axis-aligned box of the RobotConfig dimensions (contacts only; dynamics above).
+            var hull = GetComponent<BoxCollider>();
+            if (hull != null)
+            {
+                Vec3d du = ConradFrames.PointToUnity(parameters.Dimensions);
+                hull.size = new Vector3(Mathf.Abs((float)du.X), Mathf.Abs((float)du.Y), Mathf.Abs((float)du.Z));
+                hull.center = Vector3.zero;
+            }
         }
 
         public void SetExternalForceBody(Vec3d forceBody) { _externalForceBody = forceBody; }
@@ -65,7 +75,7 @@ namespace Conrad.UnityV2.VehicleDynamics
         {
             _rb.position = ConradFrames.ToEngine(ConradFrames.PointToUnity(positionWorld));
             _rb.rotation = ConradFrames.ToEngine(ConradFrames.QuatToUnity(worldFromBody.Normalized));
-            _rb.velocity = Vector3.zero;
+            _rb.linearVelocity = Vector3.zero;
             _rb.angularVelocity = Vector3.zero;
             transform.SetPositionAndRotation(_rb.position, _rb.rotation);
             _lastLinearAccelWorld = Vec3d.Zero;
@@ -75,7 +85,7 @@ namespace Conrad.UnityV2.VehicleDynamics
         {
             pos = ConradFrames.PointToConrad(ConradFrames.FromEngine(_rb.position));
             q = ConradFrames.QuatToConrad(ConradFrames.FromEngine(_rb.rotation)).Normalized;
-            Vec3d vWorld = ConradFrames.PointToConrad(ConradFrames.FromEngine(_rb.velocity));
+            Vec3d vWorld = ConradFrames.PointToConrad(ConradFrames.FromEngine(_rb.linearVelocity));
             Vec3d wWorld = ConradFrames.AxialToConrad(ConradFrames.FromEngine(_rb.angularVelocity));
             vBody = q.InverseRotate(vWorld);
             wBody = q.InverseRotate(wWorld);

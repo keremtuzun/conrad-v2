@@ -12,9 +12,10 @@ implementation_status: EXPERIMENTAL_CANDIDATE
 
 from __future__ import annotations
 
+import json
 from collections.abc import Callable
 from enum import Enum
-from typing import TypeVar
+from typing import Any, TypeVar
 from uuid import UUID
 
 from conrad.adapters.unity import conversion as cv
@@ -26,6 +27,8 @@ from conrad.adapters.unity.protocol import (
     ErrorReply,
     FaultAck,
     FaultInjectionRequest,
+    FrameProbeReply,
+    FrameProbeRequest,
     HandshakeAck,
     HandshakeRequest,
     MessageKind,
@@ -34,6 +37,8 @@ from conrad.adapters.unity.protocol import (
     PollRequest,
     ResetAck,
     ResetRequest,
+    SceneAck,
+    SceneConfigureRequest,
     SensorPacket,
     SimulationValidityLevel,
     StatePacket,
@@ -44,7 +49,12 @@ from conrad.adapters.unity.protocol import (
     decode_message,
     encode_message,
 )
-from conrad.adapters.unity.transport import BridgeTransport, UnityBridgeError, ZmqBridgeTransport
+from conrad.adapters.unity.transport import (
+    BridgeTransport,
+    TcpBridgeTransport,
+    UnityBridgeError,
+    ZmqBridgeTransport,
+)
 from conrad.robotics.hardware.interface import RobotHardwareInterface
 from conrad.schemas.frames import FrameConvention
 from conrad.schemas.ids import IdFactory
@@ -70,6 +80,21 @@ class BridgeState(str, Enum):
     CONNECTED = "CONNECTED"
     FAULTED = "FAULTED"
     CLOSED = "CLOSED"
+
+
+def open_transport(cfg: UnityBridgeConfig) -> BridgeTransport:
+    """The configured live transport. ``tcp`` is what the Unity player serves."""
+    if cfg.transport == "tcp":
+        return TcpBridgeTransport(
+            cfg.control_endpoint,
+            cfg.stream_endpoint,
+            cfg.allowed_peers,
+            cfg.request_timeout_ms,
+            connect_timeout_ms=cfg.connect_timeout_ms,
+        )
+    return ZmqBridgeTransport(
+        cfg.control_endpoint, cfg.stream_endpoint, cfg.allowed_peers, cfg.request_timeout_ms
+    )
 
 
 class UnityRobotHardware(RobotHardwareInterface):
@@ -134,10 +159,7 @@ class UnityRobotHardware(RobotHardwareInterface):
             raise UnityBridgeError(f"connect() in state {self._state.value}")
         try:
             if self._transport is None:
-                c = self._cfg
-                self._transport = ZmqBridgeTransport(
-                    c.control_endpoint, c.stream_endpoint, c.allowed_peers, c.request_timeout_ms
-                )
+                self._transport = open_transport(self._cfg)
             nonce = self._ids.new().hex
             request = HandshakeRequest(
                 client_name=self._cfg.client_name,
@@ -272,6 +294,30 @@ class UnityRobotHardware(RobotHardwareInterface):
             self._fail("fault ack for a different fault")
             raise UnityProtocolError("fault ack for a different fault")
         return ack
+
+    def configure_scene(self, scene_json: dict[str, Any] | str) -> SceneAck:
+        """Load static collider geometry (Conrad WORLD). Build ``scene_json`` with ``conrad.sim.unity.scene``.
+
+        Unity refuses the whole request on the first bad primitive; any refusal faults the adapter.
+        """
+        raw = json.loads(scene_json) if isinstance(scene_json, str) else scene_json
+        try:
+            request = SceneConfigureRequest.model_validate(raw)
+        except ValueError as exc:
+            raise UnityProtocolError(f"invalid scene description: {exc}") from exc
+        ack = self._call(MessageKind.CONFIGURE_SCENE, request, MessageKind.SCENE_ACK, SceneAck)
+        if request.replace and ack.primitive_count != len(request.primitives):
+            self._fail("scene ack reports a different primitive count")
+            raise UnityProtocolError("Unity built a different number of primitives than requested")
+        return ack
+
+    def frame_probe(self, request: FrameProbeRequest) -> FrameProbeReply:
+        """Frame-contract diagnostic: Conrad poses through the C# frame map into the engine and back."""
+        reply = self._call(MessageKind.FRAME_PROBE, request, MessageKind.FRAME_PROBE_ACK, FrameProbeReply)
+        if len(reply.results) != len(request.poses):
+            self._fail("frame probe answered a different number of poses")
+            raise UnityProtocolError("frame probe answered a different number of poses")
+        return reply
 
     def get_metrics(self) -> MetricsReply:
         return self._call(MessageKind.GET_METRICS, MetricsRequest(), MessageKind.METRICS, MetricsReply)

@@ -14,6 +14,8 @@ build/
 artifacts/*
 !artifacts/spec/
 !artifacts/migration/
+# gate evidence (small JSON/text written by executed gate tests, e.g. tests/unity_live -> artifacts/gates/U0)
+!artifacts/gates/
 !artifacts/gates/
 !artifacts/experiments/
 !artifacts/registry/
@@ -30,3 +32,9 @@ unity/**/Library/
 unity/**/Temp/
 unity/**/Obj/
 unity/**/Logs/
+unity/**/Builds/
+unity/**/UserSettings/
+unity/**/MemoryCaptures/
+unity/**/*.csproj
+unity/**/*.sln
+

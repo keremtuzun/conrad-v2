@@ -190,6 +190,49 @@ class MetricsReply(WireModel):
     metrics: dict[str, float] = Field(default_factory=dict)
 
 
+class SceneConfigureRequest(WireModel):
+    """Static collider geometry in the Conrad WORLD frame (built by ``conrad.sim.unity.scene``).
+
+    Primitive dicts are validated strictly on the sim side; Unity validates them again and refuses the
+    whole request (leaving the previous world untouched) on the first bad primitive.
+    """
+
+    frame: str = "WORLD"
+    replace: bool = True
+    primitives: tuple[dict[str, Any], ...]
+
+
+class SceneAck(WireModel):
+    scene_digest: str = Field(pattern=_DIGEST)
+    primitive_count: int = Field(ge=0)
+    sim_time_ns: int = Field(ge=0)
+
+
+class ProbePose(WireModel):
+    position_m: tuple[float, float, float]
+    orientation_wxyz: tuple[float, float, float, float]
+
+
+class FrameProbeRequest(WireModel):
+    poses: tuple[ProbePose, ...] = Field(min_length=1, max_length=256)
+
+
+class FrameProbeResult(WireModel):
+    """Engine answers (Unity convention) plus the pose converted back to Conrad by the C# frame map."""
+
+    unity_position: tuple[float, float, float]
+    unity_rotation_wxyz: tuple[float, float, float, float]
+    unity_forward: tuple[float, float, float]
+    unity_right: tuple[float, float, float]
+    unity_up: tuple[float, float, float]
+    conrad_position: tuple[float, float, float]
+    conrad_orientation_wxyz: tuple[float, float, float, float]
+
+
+class FrameProbeReply(WireModel):
+    results: tuple[FrameProbeResult, ...]
+
+
 class ErrorReply(WireModel):
     code: str
     detail: str = ""

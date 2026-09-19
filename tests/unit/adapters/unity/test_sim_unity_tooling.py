@@ -24,7 +24,7 @@ from conrad.adapters.unity.protocol import (
 )
 from conrad.robotics.hardware.config import load_robot_config
 from conrad.schemas.base import SCHEMA_VERSION
-from conrad.schemas.robot import OpenParameterError, SourceKind, Sourced
+from conrad.schemas.robot import OpenParameterError, Sourced, SourceKind
 from conrad.sim.unity import (
     FaultSpec,
     assess_validity_level,
@@ -50,7 +50,9 @@ def test_export_embeds_digest_and_sources(tmp_path: Path) -> None:
 def test_export_refuses_open_parameters() -> None:
     with pytest.raises(OpenParameterError, match="OPEN"):
         robot_config_to_unity(load_robot_config("configs/robot/physical_template.yaml"))
-    opened = CONFIG.model_copy(update={"mass_kg": Sourced[float](value=None, units="kg", source=SourceKind.OPEN)})
+    opened = CONFIG.model_copy(
+        update={"mass_kg": Sourced[float](value=None, units="kg", source=SourceKind.OPEN)}
+    )
     with pytest.raises(OpenParameterError, match="mass_kg"):
         robot_config_to_unity(opened)
 
@@ -58,8 +60,13 @@ def test_export_refuses_open_parameters() -> None:
 def test_fault_schedule_is_deterministic_per_seed() -> None:
     specs = (
         FaultSpec(fault_type=FaultType.THRUSTER_FAILURE, target="H1", probability=0.7, start_window_s=(1, 5)),
-        FaultSpec(fault_type=FaultType.IMU_BIAS, probability=0.7, start_window_s=(0, 2), duration_window_s=(1, 2),
-                  magnitude_window=(0.01, 0.1)),
+        FaultSpec(
+            fault_type=FaultType.IMU_BIAS,
+            probability=0.7,
+            start_window_s=(0, 2),
+            duration_window_s=(1, 2),
+            magnitude_window=(0.01, 0.1),
+        ),
     )
     a, da = draw_fault_schedule(specs, 5)
     b, db = draw_fault_schedule(specs, 5)
@@ -76,16 +83,31 @@ def _grounded(value: Sourced[object], kind: SourceKind) -> Sourced[object]:
 def test_validity_levels_follow_provenance() -> None:
     assert assess_validity_level(CONFIG).level is SimulationValidityLevel.L1_APPROXIMATE_PHYSICS
     assert assess_validity_level(CONFIG, physics_enabled=False).level is SimulationValidityLevel.L0_FUNCTIONAL
-    mass = {n: _grounded(getattr(CONFIG, n), SourceKind.MEASURED) for n in
-            ("mass_kg", "displaced_volume_m3", "center_of_mass_body_m", "center_of_buoyancy_body_m", "inertia_diag_kgm2")}
+    mass = {
+        n: _grounded(getattr(CONFIG, n), SourceKind.MEASURED)
+        for n in (
+            "mass_kg",
+            "displaced_volume_m3",
+            "center_of_mass_body_m",
+            "center_of_buoyancy_body_m",
+            "inertia_diag_kgm2",
+        )
+    }
     thrusters = tuple(
-        t.model_copy(update={f: _grounded(getattr(t, f), SourceKind.IDENTIFIED) for f in
-                             ("thrust_coefficient", "time_constant_s", "deadzone_command", "position_body_m")})
+        t.model_copy(
+            update={
+                f: _grounded(getattr(t, f), SourceKind.IDENTIFIED)
+                for f in ("thrust_coefficient", "time_constant_s", "deadzone_command", "position_body_m")
+            }
+        )
         for t in CONFIG.thrusters
     )
     l2 = CONFIG.model_copy(update={**mass, "thrusters": thrusters})
     assert assess_validity_level(l2).level is SimulationValidityLevel.L2_CHARACTERIZED
-    dyn = {n: _grounded(getattr(CONFIG, n), SourceKind.IDENTIFIED) for n in ("linear_drag", "quadratic_drag", "added_mass_diag")}
+    dyn = {
+        n: _grounded(getattr(CONFIG, n), SourceKind.IDENTIFIED)
+        for n in ("linear_drag", "quadratic_drag", "added_mass_diag")
+    }
     l3 = l2.model_copy(update=dyn)
     assert assess_validity_level(l3).level is SimulationValidityLevel.L3_IDENTIFIED
     l4 = assess_validity_level(l3, validation_report_ref="reports/val-001.json")
@@ -116,20 +138,37 @@ def _truth_server(ctx: zmq.Context, digest: str, stop: threading.Event) -> tuple
                 raw = rep.recv()
             except zmq.Again:
                 continue
-            registry = {MessageKind.HANDSHAKE: HandshakeRequest, MessageKind.GET_GROUND_TRUTH: GroundTruthRequest}
+            registry = {
+                MessageKind.HANDSHAKE: HandshakeRequest,
+                MessageKind.GET_GROUND_TRUTH: GroundTruthRequest,
+            }
             env, body = decode_message(raw, registry)
             if env.kind is MessageKind.HANDSHAKE:
                 reply = HandshakeAck(
-                    simulator_id="conrad-unity-v2", simulator_version="t", protocol_version=PROTOCOL_VERSION,
-                    schema_version=SCHEMA_VERSION, robot_config_digest=digest, clock_domain="SIM",
-                    frame_convention=UNITY_FRAME_CONVENTION, lock_step=True, session_id="truth-1",
-                    nonce=body.nonce, validity_level=SimulationValidityLevel.L1_APPROXIMATE_PHYSICS,  # type: ignore[attr-defined]
-                    physics_dt_ns=5_000_000, sim_time_ns=0, capabilities=WireCapabilities(capability_version="t"),
+                    simulator_id="conrad-unity-v2",
+                    simulator_version="t",
+                    protocol_version=PROTOCOL_VERSION,
+                    schema_version=SCHEMA_VERSION,
+                    robot_config_digest=digest,
+                    clock_domain="SIM",
+                    frame_convention=UNITY_FRAME_CONVENTION,
+                    lock_step=True,
+                    session_id="truth-1",
+                    nonce=body.nonce,
+                    validity_level=SimulationValidityLevel.L1_APPROXIMATE_PHYSICS,  # type: ignore[attr-defined]
+                    physics_dt_ns=5_000_000,
+                    sim_time_ns=0,
+                    capabilities=WireCapabilities(capability_version="t"),
                 )
                 rep.send(encode_message(MessageKind.HANDSHAKE_ACK, reply, session_id="truth-1", seq=env.seq))
             else:
-                truth = GroundTruthReply(sim_time_ns=7, position_m=(-2.0, -5.0, 1.0), orientation_wxyz=(1, 0, 0, 0),
-                                         linear_velocity_mps=(0.0, 0.0, 0.5), angular_velocity_rps=(0.0, -0.2, 0.0))
+                truth = GroundTruthReply(
+                    sim_time_ns=7,
+                    position_m=(-2.0, -5.0, 1.0),
+                    orientation_wxyz=(1, 0, 0, 0),
+                    linear_velocity_mps=(0.0, 0.0, 0.5),
+                    angular_velocity_rps=(0.0, -0.2, 0.0),
+                )
                 rep.send(encode_message(MessageKind.GROUND_TRUTH, truth, session_id="truth-1", seq=env.seq))
         rep.close(linger=0)
 
@@ -161,9 +200,15 @@ def test_truth_client_converts_frames_on_its_own_endpoint() -> None:
 def test_truth_bodies_are_not_accepted_on_the_control_endpoint() -> None:
     raw = encode_message(
         MessageKind.GROUND_TRUTH,
-        GroundTruthReply(sim_time_ns=0, position_m=(0, 0, 0), orientation_wxyz=(1, 0, 0, 0),
-                         linear_velocity_mps=(0, 0, 0), angular_velocity_rps=(0, 0, 0)),
-        session_id="s", seq=1,
+        GroundTruthReply(
+            sim_time_ns=0,
+            position_m=(0, 0, 0),
+            orientation_wxyz=(1, 0, 0, 0),
+            linear_velocity_mps=(0, 0, 0),
+            angular_velocity_rps=(0, 0, 0),
+        ),
+        session_id="s",
+        seq=1,
     )
     with pytest.raises(UnityProtocolError, match="not permitted"):
         decode_message(raw)

@@ -1,22 +1,33 @@
-"""Transports for the Unity bridge: ZeroMQ (live), recording wrapper and deterministic replay.
+"""Transports for the Unity bridge: TCP (live, default), ZeroMQ (optional), recording and deterministic replay.
 
-The protocol is transport independent (ch20 Technology bridge); ZeroMQ is the first concrete choice.
+The protocol is transport independent (ch20 Technology bridge). The Unity player speaks
+:class:`TcpBridgeTransport`: length-prefixed JSON frames over plain TCP (``System.Net.Sockets`` on the C#
+side, no third-party DLLs). :class:`ZmqBridgeTransport` stays as an optional alternative for Python-side
+peers (the test mock); the Unity player does not serve ZeroMQ because NetMQ was never vendored.
 Endpoints must be literal loopback/private addresses that appear in the configured allow-list.
+
+Wire frame (both directions, both languages): ``uint32 big-endian payload length`` + ``payload`` where the
+payload is one UTF-8 JSON envelope. Frames above :data:`MAX_FRAME_BYTES` are refused.
 
 implementation_status: EXPERIMENTAL_CANDIDATE
 """
 
 from __future__ import annotations
 
+import contextlib
 import ipaddress
 import json
+import socket
+import struct
+import time
 from pathlib import Path
-from typing import Protocol
+from typing import Any, Protocol
 from urllib.parse import urlparse
 
-import zmq
-
 from conrad.robotics.hardware.interface import HardwareUnavailableError
+
+FRAME_HEADER = struct.Struct(">I")
+MAX_FRAME_BYTES = 64 * 1024 * 1024  # same limit as LengthPrefixedFraming.MaxFrameBytes in C#
 
 
 class UnityBridgeError(HardwareUnavailableError):
@@ -56,6 +67,13 @@ def validate_private_endpoint(endpoint: str, allowed_peers: tuple[str, ...]) -> 
     return host
 
 
+def encode_frame(payload: bytes) -> bytes:
+    """One wire frame: 4-byte unsigned big-endian length, then the payload."""
+    if len(payload) > MAX_FRAME_BYTES:
+        raise UnityBridgeError(f"frame of {len(payload)} bytes exceeds {MAX_FRAME_BYTES}")
+    return FRAME_HEADER.pack(len(payload)) + payload
+
+
 class BridgeTransport(Protocol):
     def request(self, payload: bytes) -> bytes: ...
 
@@ -64,8 +82,139 @@ class BridgeTransport(Protocol):
     def close(self) -> None: ...
 
 
+def _split_endpoint(endpoint: str, allowed_peers: tuple[str, ...]) -> tuple[str, int]:
+    host = validate_private_endpoint(endpoint, allowed_peers)
+    port = urlparse(endpoint).port
+    if port is None:  # pragma: no cover - validate_private_endpoint already guarantees a port
+        raise UnityPeerError(f"endpoint {endpoint!r} has no port")
+    return host, port
+
+
+class TcpBridgeTransport:
+    """Length-prefixed JSON frames over TCP: one request/reply connection + an optional push stream.
+
+    Fail closed: a timeout, a short read, an oversized frame or a peer that is not the validated
+    address closes the transport, after which every call raises :class:`UnityBridgeError`.
+    """
+
+    def __init__(
+        self,
+        control_endpoint: str,
+        stream_endpoint: str | None,
+        allowed_peers: tuple[str, ...],
+        request_timeout_ms: int,
+        connect_timeout_ms: int | None = None,
+    ) -> None:
+        if request_timeout_ms <= 0:
+            raise ValueError("request_timeout_ms must be positive")
+        host, port = _split_endpoint(control_endpoint, allowed_peers)
+        stream = None if stream_endpoint is None else _split_endpoint(stream_endpoint, allowed_peers)
+        self._timeout_s = request_timeout_ms / 1000.0
+        connect_s = self._timeout_s if connect_timeout_ms is None else connect_timeout_ms / 1000.0
+        self._stream: socket.socket | None = None
+        self._stream_buf = bytearray()
+        self._sock: socket.socket | None = self._connect(host, port, connect_s)
+        if stream is not None:
+            try:
+                self._stream = self._connect(stream[0], stream[1], connect_s)
+            except UnityBridgeError:
+                self.close()
+                raise
+            self._stream.setblocking(False)
+
+    @staticmethod
+    def _connect(host: str, port: int, timeout_s: float) -> socket.socket:
+        try:
+            sock = socket.create_connection((host, port), timeout=timeout_s)
+        except OSError as exc:
+            raise UnityBridgeError(f"cannot connect to Unity at {host}:{port}: {exc}") from exc
+        peer = str(sock.getpeername()[0])
+        if ipaddress.ip_address(peer) != ipaddress.ip_address(host):
+            sock.close()
+            raise UnityPeerError(f"connected peer {peer} is not the validated endpoint host {host}")
+        sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+        return sock
+
+    @staticmethod
+    def _read_exactly(sock: socket.socket, n: int, deadline: float) -> bytes:
+        buf = bytearray()
+        while len(buf) < n:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError
+            sock.settimeout(remaining)
+            chunk = sock.recv(min(n - len(buf), 1 << 20))
+            if not chunk:
+                raise ConnectionError("Unity closed the connection")
+            buf.extend(chunk)
+        return bytes(buf)
+
+    @property
+    def closed(self) -> bool:
+        return self._sock is None
+
+    def request(self, payload: bytes) -> bytes:
+        sock = self._sock
+        if sock is None:
+            raise UnityBridgeError("bridge transport is closed")
+        deadline = time.monotonic() + self._timeout_s
+        try:
+            sock.settimeout(self._timeout_s)
+            sock.sendall(encode_frame(payload))
+            (length,) = FRAME_HEADER.unpack(self._read_exactly(sock, FRAME_HEADER.size, deadline))
+            if length > MAX_FRAME_BYTES:
+                raise UnityBridgeError(f"Unity announced a {length}-byte frame (limit {MAX_FRAME_BYTES})")
+            return self._read_exactly(sock, length, deadline)
+        except TimeoutError as exc:  # socket.timeout is TimeoutError on 3.10+
+            # A request/reply stream that missed its reply is out of step; never send on it again.
+            self.close()
+            raise UnityBridgeTimeout(f"no reply from Unity within {self._timeout_s * 1000:.0f} ms") from exc
+        except UnityBridgeError:
+            self.close()
+            raise
+        except OSError as exc:
+            self.close()
+            raise UnityBridgeError(f"TCP failure: {exc}") from exc
+
+    def poll_stream(self, max_messages: int = 64) -> list[bytes]:
+        stream = self._stream
+        if stream is None:
+            return []
+        try:
+            while True:
+                chunk = stream.recv(1 << 20)
+                if not chunk:
+                    raise ConnectionError("Unity closed the sensor stream")
+                self._stream_buf.extend(chunk)
+        except BlockingIOError:
+            pass
+        except OSError as exc:
+            self.close()
+            raise UnityBridgeError(f"sensor stream failure: {exc}") from exc
+        out: list[bytes] = []
+        while len(out) < max_messages and len(self._stream_buf) >= FRAME_HEADER.size:
+            (length,) = FRAME_HEADER.unpack_from(self._stream_buf, 0)
+            if length > MAX_FRAME_BYTES:
+                self.close()
+                raise UnityBridgeError(f"stream frame of {length} bytes exceeds the limit")
+            end = FRAME_HEADER.size + length
+            if len(self._stream_buf) < end:
+                break
+            out.append(bytes(self._stream_buf[FRAME_HEADER.size : end]))
+            del self._stream_buf[:end]
+        return out
+
+    def close(self) -> None:
+        for sock in (self._sock, self._stream):
+            if sock is not None:
+                with contextlib.suppress(OSError):
+                    sock.close()
+        self._sock = None
+        self._stream = None
+
+
 class ZmqBridgeTransport:
-    """REQ socket for control + optional SUB socket for the sensor PUB stream."""
+    """Optional: REQ socket for control + optional SUB socket for a PUB stream (Python peers only)."""
 
     def __init__(
         self,
@@ -79,14 +228,17 @@ class ZmqBridgeTransport:
             validate_private_endpoint(stream_endpoint, allowed_peers)
         if request_timeout_ms <= 0:
             raise ValueError("request_timeout_ms must be positive")
+        import zmq  # optional: the default TCP transport needs nothing beyond the standard library
+
+        self._zmq: Any = zmq
         self._timeout_ms = request_timeout_ms
-        self._ctx = zmq.Context()
-        self._req: zmq.Socket[bytes] | None = self._ctx.socket(zmq.REQ)
+        self._ctx: Any = zmq.Context()
+        self._req: Any = self._ctx.socket(zmq.REQ)
         self._req.setsockopt(zmq.LINGER, 0)
         self._req.setsockopt(zmq.RCVTIMEO, request_timeout_ms)
         self._req.setsockopt(zmq.SNDTIMEO, request_timeout_ms)
         self._req.connect(control_endpoint)
-        self._sub: zmq.Socket[bytes] | None = None
+        self._sub: Any = None
         if stream_endpoint is not None:
             self._sub = self._ctx.socket(zmq.SUB)
             self._sub.setsockopt(zmq.LINGER, 0)
@@ -95,6 +247,7 @@ class ZmqBridgeTransport:
             self._sub.subscribe(b"")
 
     def request(self, payload: bytes) -> bytes:
+        zmq = self._zmq
         if self._req is None:
             raise UnityBridgeError("bridge transport is closed")
         try:
@@ -110,9 +263,10 @@ class ZmqBridgeTransport:
         if len(parts) != 1:
             self.close()
             raise UnityBridgeError(f"expected a single-frame reply, got {len(parts)} frames")
-        return parts[0]
+        return bytes(parts[0])
 
     def poll_stream(self, max_messages: int = 64) -> list[bytes]:
+        zmq = self._zmq
         if self._sub is None:
             return []
         out: list[bytes] = []
@@ -121,7 +275,7 @@ class ZmqBridgeTransport:
                 parts = self._sub.recv_multipart(flags=zmq.NOBLOCK)
             except zmq.Again:
                 break
-            out.append(parts[-1])
+            out.append(bytes(parts[-1]))
         return out
 
     def close(self) -> None:

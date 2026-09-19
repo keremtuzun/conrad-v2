@@ -9,7 +9,7 @@ implementation_status: EXPERIMENTAL_CANDIDATE
 from __future__ import annotations
 
 import math
-from typing import Protocol
+from typing import Literal, Protocol
 from uuid import UUID, uuid5
 
 from pydantic import Field
@@ -56,6 +56,10 @@ class PayloadStore(Protocol):
 
 
 class UnityBridgeConfig(ConradModel):
+    transport: Literal["tcp", "zmq"] = Field(
+        default="tcp", description="tcp = length-prefixed JSON (what the Unity player serves); zmq = optional"
+    )
+    connect_timeout_ms: int = Field(default=2000, gt=0)
     control_endpoint: str = "tcp://127.0.0.1:5591"
     stream_endpoint: str | None = None
     allowed_peers: tuple[str, ...] = ("127.0.0.1",)
