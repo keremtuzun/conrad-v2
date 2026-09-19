@@ -1,0 +1,42 @@
+# Gate I2 criterion "faults reach defined safe states" (ch26 Phase 6 pass criterion). SYNTHETIC_ONLY.
+# Each case runs the NAV-001 transit on Unity and injects ONE fault at fault_t_s on the hardware-adapter side:
+# Unity faults go through the bridge (INJECT_FAULT, the player's FaultInjector); FIX_OUTAGE stops the synthetic
+# USBL-like fix (the adapter-level position sensor). No Twin truth enters the stack.
+#
+# expect = the SafetySupervisor's DEFINED response (conrad/robotics/safety/supervisor.py, ch20 Safety states):
+#   state        safety state that must be reached within deadline_s of the fault and then held to the run's end
+#   reason       reason code that must accompany it
+#   motion       "zero": every command authorized after the state is reached is all-zero thrust, and the vehicle
+#                        really stops (mean true speed over the last 10 s <= 0.1 m/s): refused commands must not
+#                        leave the hardware on its last command
+#                "refused": no non-zero command is authorized after the state is reached, and the vehicle stops
+#                "hold": the stack holds the position it had when the state was reached (safe_hold_action
+#                        STATION_KEEP of RobotConfig): estimate within hold_radius_m of that point, vehicle stopped
+#                "avoid_target": no non-zero command to the faulted thruster after the state is reached, while
+#                        the other thrusters keep being commanded and >= 90 % of those commands are executed
+# deadline_s is an evaluation allowance, not a spec number: for LOCALIZATION_LOST it covers the covariance growth
+# to RobotConfig.safety.max_pose_sigma_m (18.6 s in NAV-CAL-E001 before the I2 repair, about 28.7 s after it);
+# every other case is immediate (1 s).
+base_benchmark: NAV-001
+duration_s: 50.0
+fault_t_s: 10.0
+cases:
+  LOSS_OF_LOCALIZATION:
+    fault: {kind: FIX_OUTAGE}
+    expect: {state: HOLD, reason: LOCALIZATION_LOST, motion: hold, deadline_s: 35.0, hold_radius_m: 1.0}
+  THRUSTER_FAULT:
+    fault: {kind: THRUSTER_FAILURE, target: H1}
+    expect: {state: DEGRADED, reason: DEGRADED_MANEUVERABILITY, motion: avoid_target, deadline_s: 1.0}
+  STALE_STATE:
+    fault: {kind: IMU_DROPOUT}
+    expect: {state: HOLD, reason: STATE_STALE, motion: zero, deadline_s: 1.0}
+  LOW_BATTERY:
+    # The player clamps the capacity factor at 0.01. With the 960 kJ reference battery that still leaves more than
+    # the ~0.3 kJ used by t = 10 s, so this case declares a 20 kJ SYNTHETIC_ONLY battery: 0.99 remaining before the
+    # fault, 200 J effective capacity after it.
+    battery_capacity_j: 20000.0
+    fault: {kind: BATTERY_DEGRADATION, magnitude: 0.01}
+    expect: {state: RETURN, reason: BATTERY_LOW, motion: zero, deadline_s: 1.0}
+  LEAK:
+    fault: {kind: LEAK_SIGNAL}
+    expect: {state: RECOVER, reason: LEAK_DETECTED, motion: zero, deadline_s: 1.0}

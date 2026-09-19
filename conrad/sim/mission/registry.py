@@ -159,5 +159,6 @@ def build_mission_context(
         launch_pose=launch,
         transit_lane=tuple((float(p[0]), float(p[1]), float(p[2])) for p in lane),
         seabed_z_m=float(seabed_z_m + survey_sigma_m * rng.standard_normal()),
+        water_surface_z_m=float(scenario.environment["water_surface_z_m"]),
     )
     return ctx, RegistryMapping(to_world)

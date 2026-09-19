@@ -93,6 +93,9 @@ class SafetyConfig(ConradModel):
     tracking_error_limit_m: float = Field(default=2.0, gt=0)
     degraded_dwell_s: float = Field(default=1.0, ge=0, description="min time in DEGRADED before NORMAL")
     boundary: MissionBoundary | None = None
+    water_surface_z_m: float = Field(
+        default=0.0, description="WORLD z of the water surface from the mission context; depth = surface - z"
+    )
 
 
 @dataclass(frozen=True)

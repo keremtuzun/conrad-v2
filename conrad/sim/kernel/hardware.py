@@ -133,7 +133,13 @@ class SimRobotHardware(FaultInjectionMixin, RobotHardwareInterface):
             if ch.due(t):
                 noise = ch.fault.noise_scale * ch.noise_std * float(self._rng.standard_normal())
                 if not ch.fault.dropped(t):
-                    ch.queue.append((t + ch.latency_s, t, np.array([-p[2] + ch.total_bias(t) + noise])))
+                    ch.queue.append(
+                        (
+                            t + ch.latency_s,
+                            t,
+                            np.array([cfg.water_surface_z_m - p[2] + ch.total_bias(t) + noise]),
+                        )
+                    )
             ch.deliver(t)
 
     # -- RHI getters ----------------------------------------------------------------------------

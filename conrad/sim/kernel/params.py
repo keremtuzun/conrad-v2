@@ -15,7 +15,7 @@ from pydantic import Field
 from conrad.schemas.base import ConradModel
 from conrad.schemas.robot import RobotConfig
 
-SIM_FRAME_CONVENTION = "SIMULATION_DEFAULT: WORLD right-handed +Z up (depth=-z); body +X fwd, +Y left, +Z up"
+SIM_FRAME_CONVENTION = "SIMULATION_DEFAULT: WORLD right-handed +Z up (depth = water_surface_z_m - z); body +X fwd, +Y left, +Z up"
 
 
 class SimValidityLevel(str, Enum):
@@ -33,6 +33,9 @@ class SimKernelConfig(ConradModel):
     physics_dt_s: float = Field(default=0.01, gt=0)
     water_density_kgm3: float = Field(default=1025.0, gt=0)
     gravity_mps2: float = Field(default=9.80665, gt=0)
+    water_surface_z_m: float = Field(
+        default=0.0, description="WORLD z of the surface; pressure depth = s - z"
+    )
     thrust_noise_fraction: float = Field(default=0.01, ge=0)
     thruster_power_w_per_n15: float = Field(default=6.0, ge=0, description="P = c |T|^1.5 (synthetic)")
     hotel_power_w: float = Field(default=25.0, ge=0)

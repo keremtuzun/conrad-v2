@@ -42,7 +42,7 @@ from conrad.robotics.safety.monitors import (
     SafetyState,
     collision_envelope,
 )
-from conrad.robotics.safety.supervisor import SafetySupervisor
+from conrad.robotics.safety.supervisor import MOTION_STATES, SafetySupervisor
 from conrad.robotics.trajectory.generator import TrajectoryGenerator, TrajectorySampler
 from conrad.schemas.decision import NavigationGoal, Trajectory
 from conrad.schemas.frames import ROBOT, Pose
@@ -151,7 +151,7 @@ class NavigationStack:
         return traj
 
     def _check_envelope(self, obj: NavigationObjective) -> None:
-        if np.any(-obj.waypoints[:, 2] > self._max_depth):
+        if np.any(self.config.safety.water_surface_z_m - obj.waypoints[:, 2] > self._max_depth):
             raise GoalRejectedError("GOAL_OUTSIDE_ENVELOPE", "waypoint deeper than safety.max_depth_m")
         boundary = self.config.safety.boundary
         if boundary is not None and not all(boundary.contains(w) for w in obj.waypoints):
@@ -190,7 +190,7 @@ class NavigationStack:
             if self._hold_pose is None:
                 hold_p = p.copy()
                 if self.supervisor.safe_hold_action is SafeHoldAction.SURFACE:
-                    hold_p[2] = 0.0  # only because RobotConfig says so
+                    hold_p[2] = self.config.safety.water_surface_z_m  # only because RobotConfig says so
                 self._hold_pose = (hold_p, quat_from_yaw(yaw_of(q)))
             return ControlReference(self._hold_pose[0], self._hold_pose[1], speed_limit_mps=0.25)
         self._hold_pose = None
@@ -275,7 +275,9 @@ class NavigationStack:
         stamp = TimeStamp(time_ns=now, clock_domain=self._clock)
         goal_id = self.objective.goal.goal_id if self.objective else None
         traj_id = self.trajectory.trajectory_id if self.trajectory else None
-        if a.zero_thrust_required:
+        # a state that forbids motion (RETURN before a return behaviour exists, RECOVER, E-STOP) gets an explicit
+        # all-zero command: a refused motion command would leave the hardware on its last command (I2 fault runs)
+        if a.zero_thrust_required or a.state not in MOTION_STATES:
             self.controller.reset()
             wrench = WrenchCommand(
                 command_id=self._ids.new(),

@@ -10,17 +10,14 @@ from __future__ import annotations
 import functools
 
 import pytest
-from unity_gate_support import GATE_RUNS, NAV_SEEDS, measured, reset_measured
+from unity_gate_support import FAULT_CASES, FAULT_SEEDS, GATE_RUNS, NAV_SEEDS, measured, reset_measured
 
+from conrad.sim.mission.unity_faults import run_fault_case
 from conrad.sim.mission.unity_run import NAV_UNITY_IDS, replay_unity_nav, run_unity_nav
 
 GATE = "I2"
 BIAS_Y_M = 0.5  # counterfactual USBL bias for the estimated-state check
 BIAS_TOL_M = 0.15
-_I2_FAIL = (
-    "GATE I2 = FAIL (docs/audits/UNITY_INTEGRATION_I1_I3.md): NAV-005 station RMS 0.1534 m > 0.15 m on the "
-    "held-out seed (python kernel 0.1574 m on the same seed)"
-)
 
 
 @functools.cache
@@ -34,7 +31,14 @@ def nav(benchmark: str, bias_y: float = 0.0) -> dict:
 @pytest.fixture(scope="module", autouse=True)
 def _meta():
     reset_measured(
-        GATE, {"scenario": "I2-UNITY-NAV", "seeds": NAV_SEEDS, "bundles": "artifacts/unity/gate_runs/I2"}
+        GATE,
+        {
+            "scenario": "I2-UNITY-NAV",
+            "seeds": NAV_SEEDS,
+            "fault_seeds": FAULT_SEEDS,
+            "seed_partition": "configs/eval/partitions_nav.yaml final_test",
+            "bundles": "artifacts/unity/gate_runs/I2",
+        },
     )
 
 
@@ -64,7 +68,7 @@ def _keep(r: dict) -> dict:
         ("reach waypoint", ("NAV-001", "NAV-002")),
         ("avoid obstacle", ("NAV-003",)),
         ("follow pipeline", ("NAV-004",)),
-        pytest.param("station keep", ("NAV-005",), marks=pytest.mark.xfail(strict=True, reason=_I2_FAIL)),
+        ("station keep", ("NAV-005",)),
     ],
 )
 def test_primitive(criterion, benchmarks):
@@ -73,7 +77,6 @@ def test_primitive(criterion, benchmarks):
     assert all(r["success"] for r in results.values()), {b: r["checks"] for b, r in results.items()}
 
 
-@pytest.mark.xfail(strict=True, reason=_I2_FAIL)
 def test_nav_001_to_006():
     results = {b: nav(b) for b in NAV_UNITY_IDS}
     measured(
@@ -110,3 +113,13 @@ def test_bundle_replays_deterministically(benchmark):
     rep = replay_unity_nav(GATE_RUNS / GATE / benchmark, GATE_RUNS / "replay" / GATE)
     measured(GATE, f"replay {benchmark}", **rep)
     assert rep["equal"], rep
+
+
+@pytest.mark.parametrize("case", FAULT_CASES)
+def test_fault_reaches_defined_safe_state(case):
+    """ch26 Phase 6: an injected fault (Unity bridge fault, or loss of the USBL-like fix) drives the
+    SafetySupervisor to the state declared in configs/sim/nav_fault_cases.yaml, in time, and it is held."""
+    r = run_fault_case(case, FAULT_SEEDS[case], GATE_RUNS / GATE / "faults" / case)
+    ss = r["safe_state"]
+    measured(GATE, f"fault {case}", seed=FAULT_SEEDS[case], **{k: v for k, v in ss.items() if k != "case"})
+    assert ss["passed"], ss

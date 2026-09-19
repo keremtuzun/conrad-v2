@@ -288,12 +288,33 @@ def battery_from_state(state: StatePacket) -> BatteryState | None:
     )
 
 
+DEVICE_PREFIXES = ("thruster:", "sensor:")
+
+
+def device_id(wire_name: str) -> str:
+    """Unity names devices ``thruster:<id>`` / ``sensor:<name>``; the RHI (and the SafetySupervisor) key them by
+    the RobotConfig thruster_id / sensor_name, as the kernel does. Unknown names pass through unchanged."""
+    for prefix in DEVICE_PREFIXES:
+        if wire_name.startswith(prefix):
+            return wire_name[len(prefix) :]
+    return wire_name
+
+
 def health_from_state(state: StatePacket) -> SystemHealth:
+    """RHI health. The player reports ``overall = FAULT`` for a failed thruster; the RHI (as the kernel) reports
+    that as DEGRADED with the thruster itself at FAULT, so the stack can degrade gracefully (ch20) instead of
+    losing every command to the gateway's FAULT rule. A leak or any non-thruster FAULT stays FAULT."""
     h = state.health
+    devices = {device_id(k): health_level(v) for k, v in h.devices.items()}
+    overall = health_level(h.overall)
+    thrusters = {t.thruster_id for t in state.thrusters}
+    faulted = {k for k, v in devices.items() if v is HealthLevel.FAULT}
+    if overall is HealthLevel.FAULT and not h.leak_detected and faulted and faulted <= thrusters:
+        overall = HealthLevel.DEGRADED
     return SystemHealth(
         timestamp=TimeStamp(time_ns=h.time_ns, clock_domain=state.clock_domain),
-        overall=health_level(h.overall),
+        overall=overall,
         leak_detected=h.leak_detected,
-        devices={k: health_level(v) for k, v in h.devices.items()},
+        devices=devices,
         faults=h.faults,
     )

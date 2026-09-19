@@ -118,7 +118,7 @@ class SafetySupervisor:
                     for code in x.estimator_reasons:
                         add(SafetyState.DEGRADED, code)
             p = np.asarray(x.state.pose.position_m)
-            depth, depth_sigma = -float(p[2]), (sigma or 0.0)
+            depth, depth_sigma = c.water_surface_z_m - float(p[2]), (sigma or 0.0)
             if depth + c.depth_sigma_k * depth_sigma > self.max_depth:
                 add(SafetyState.HOLD, Reason.DEPTH_LIMIT)
             if c.boundary is not None and not c.boundary.contains(p):
@@ -135,7 +135,11 @@ class SafetySupervisor:
                         faulted.add(name)
                 elif level is HealthLevel.DEGRADED and name in self._thrusters:
                     add(SafetyState.DEGRADED, Reason.DEGRADED_MANEUVERABILITY)
-            if x.health.overall is HealthLevel.FAULT and not x.health.leak_detected:
+            faulted_devices = {n for n, lv in x.health.devices.items() if lv is HealthLevel.FAULT}
+            # a FAULT fully explained by failed thrusters is DEGRADED_MANEUVERABILITY (ch20: the allocator
+            # recomputes the feasible wrench), not an unexplained hardware fault
+            explained = bool(faulted_devices) and faulted_devices <= self._thrusters
+            if x.health.overall is HealthLevel.FAULT and not x.health.leak_detected and not explained:
                 add(SafetyState.HOLD, Reason.HARDWARE_FAULT)
         faulted |= {t.thruster_id for t in x.thrusters if t.health is HealthLevel.FAULT}
         if x.battery is None:

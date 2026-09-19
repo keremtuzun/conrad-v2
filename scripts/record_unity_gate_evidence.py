@@ -29,7 +29,10 @@ from conrad.evaluation.gates import (  # noqa: E402
     evaluate_gates,
     write_evidence,
 )
+from conrad.sim.mission.unity_faults import fault_cases  # noqa: E402
 from conrad.sim.mission.unity_run import git_commit, player_identity  # noqa: E402
+
+I2_FAULT_CASES = tuple(fault_cases()["cases"])  # configs/sim/nav_fault_cases.yaml
 
 T1 = "tests/unity_live/test_i1_unity.py::"
 T2 = "tests/unity_live/test_i2_unity.py::"
@@ -79,6 +82,11 @@ PLAN: dict[str, list[tuple[str, list[str], list[str]]]] = {
         ("station keep", [T2 + "test_primitive[station keep-benchmarks3]"], ["station keep"]),
         ("uses estimated state", [T2 + "test_uses_estimated_state"], ["uses estimated state"]),
         ("NAV-001..NAV-006", [T2 + "test_nav_001_to_006"], ["NAV-001..NAV-006"]),
+        (
+            "faults reach defined safe states",
+            [T2 + f"test_fault_reaches_defined_safe_state[{c}]" for c in I2_FAULT_CASES],
+            [f"fault {c}" for c in I2_FAULT_CASES],
+        ),
     ],
     "I3": [
         (
@@ -198,6 +206,9 @@ def record(gate: str, rerun: bool = True) -> GateEvidence:
 
 
 if __name__ == "__main__":
+    if "--help" in sys.argv or "-h" in sys.argv:
+        print(__doc__)
+        raise SystemExit(0)
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     rerun = "--no-run" not in sys.argv
     for g in args or ["I1", "I2", "I3"]:

@@ -110,16 +110,14 @@ def _mount(spec: SensorSpec) -> list[float]:
 def unity_robot_config(
     base: RobotConfig,
     geometric: tuple[SensorSpec, ...],
-    surface_z_m: float,
     geometric_period_s: float,
     opts: UnityWorldOptions,
 ) -> RobotConfig:
     """``base`` plus the Unity range imager, the Twin2S-declared sonar geometry and AHRS orientation.
 
-    The pressure sensor bias is ``-surface_z_m``: the mission WORLD puts the water surface at z = surface_z_m
-    while the deployment estimator assumes depth = -z (``conrad.robotics.estimation.ekf``). The kernel path
-    reports depth = -z directly; on Unity the physical surface stays at surface_z_m (so buoyancy is real) and
-    this declared bias makes the reading identical to the kernel convention. SYNTHETIC_ONLY; see the audit.
+    The pressure sensor keeps the base config (no bias): Unity reports the true depth below its surface at the
+    scenario's ``surface_z_m``, and the deployment estimator takes the surface height from the mission context
+    (``MissionContext.water_surface_z_m``). The former -surface_z_m bias workaround is gone (I2 repair).
     """
     by_mod = {s.modality: s for s in geometric}
     if set(by_mod) != {"DEPTH_RANGE", "SONAR"}:
@@ -132,8 +130,6 @@ def unity_robot_config(
         s = dict(s)
         if s["modality"] == "IMU":
             s["parameters"] = {"report_orientation": True, "gyro_noise_std": 0.002}
-        elif s["modality"] == "PRESSURE_DEPTH":
-            s["bias"] = _sourced(-float(surface_z_m), "m")
         elif s["modality"] == "RGB":
             s["rate_hz"] = _sourced(opts.camera_rate_hz, "Hz")
             s["parameters"] = {"width_px": 64, "height_px": 48, "vertical_fov_deg": 60.0}
@@ -481,10 +477,8 @@ class UnityMissionWorld:
         base = MissionWorld.build(seed, scenario_id, options, run_id, run_dir / "objects")
         ctx = base.context
         geometric = tuple(s for s in ctx.sensors if s.modality in ("DEPTH_RANGE", "SONAR"))
-        surface = float(base.scenario.environment.get("water_surface_z_m", 0.0))
-        robot = unity_robot_config(
-            load_robot_config(ROBOT_CONFIG), geometric, surface, options.geometric_period_s, u
-        )
+        surface = float(base.scenario.environment["water_surface_z_m"])
+        robot = unity_robot_config(load_robot_config(ROBOT_CONFIG), geometric, options.geometric_period_s, u)
         rel = write_robot_config(robot)
         scene, report = twin_scene(base.t2s.world, u.scene)
         scene_json = scene.to_json()

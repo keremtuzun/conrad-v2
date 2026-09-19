@@ -42,6 +42,10 @@ namespace Conrad.UnityV2.RobotHardwareSimulation
     public sealed class RobotHardwareServer
     {
         public static readonly HashSet<string> MotionPermittedSafetyStates = new HashSet<string> { "NORMAL", "DEGRADED", "HOLD" };
+        // Explicit stop commands (every thruster exactly 0) are accepted in these states, as by the Command Gateway.
+        public static readonly HashSet<string> ZeroOnlySafetyStates = new HashSet<string> { "EMERGENCY_STOP", "RECOVER", "RETURN" };
+        private long? _commandDeadlineNs;   // deadline of the last accepted command (command-timeout watchdog)
+        public long WatchdogTrips { get; private set; }
 
         private readonly RobotParameters _p;
         private readonly ThrusterBank _bank;
@@ -96,9 +100,12 @@ namespace Conrad.UnityV2.RobotHardwareSimulation
             if (J.Long(body, "issued_time_ns") > _clock.NowNs) reasons.Add("ISSUED_IN_FUTURE");
             if (_seenCommands.Contains(id)) reasons.Add("DUPLICATE_COMMAND_ID");
             string state = J.StrOrNull(body, "safety_state");
-            if (J.StrOrNull(body, "safety_authorization_id") == null || state == null || !MotionPermittedSafetyStates.Contains(state))
-                reasons.Add("MISSING_SAFETY_AUTHORIZATION");
             var cmds = J.Obj(body, "thruster_commands");
+            bool allZero = true;
+            foreach (var kv in cmds) if (J.Num(kv.Value, kv.Key) != 0.0) allZero = false;
+            bool stateOk = state != null && (MotionPermittedSafetyStates.Contains(state) || (allZero && ZeroOnlySafetyStates.Contains(state)));
+            if (J.StrOrNull(body, "safety_authorization_id") == null || !stateOk)
+                reasons.Add("MISSING_SAFETY_AUTHORIZATION");
             var expected = new HashSet<string>(_bank.Ids);
             if (!expected.SetEquals(cmds.Keys)) reasons.Add("INVALID_ACTUATOR_SET");
             foreach (var kv in cmds)
@@ -109,6 +116,7 @@ namespace Conrad.UnityV2.RobotHardwareSimulation
             if (reasons.Count == 0)
             {
                 _seenCommands.Add(id);
+                _commandDeadlineNs = J.Long(body, "deadline_ns");
                 foreach (var kv in cmds)
                     if (_bank.TryGet(kv.Key, out Thruster t)) t.Command(_clock.NowNs, J.Num(kv.Value, kv.Key));
             }
@@ -117,6 +125,16 @@ namespace Conrad.UnityV2.RobotHardwareSimulation
                 ["command_id"] = id, ["accepted"] = reasons.Count == 0, ["reason_codes"] = reasons,
                 ["ack_time_ns"] = _clock.NowNs, ["sim_time_ns"] = _clock.NowNs,
             };
+        }
+
+        /// <summary>Command-timeout watchdog (same rule as the Python kernel): once the last accepted command's
+        /// deadline has passed, every thruster is commanded to zero. Called every physics step.</summary>
+        public void Watchdog()
+        {
+            if (!_commandDeadlineNs.HasValue || _clock.NowNs < _commandDeadlineNs.Value) return;
+            foreach (var t in _bank.Thrusters) t.Command(_clock.NowNs, 0.0);
+            _commandDeadlineNs = null;
+            WatchdogTrips++;
         }
 
         /// <summary>Collect delivered sensor packets (called every physics step so latency is honoured).</summary>
@@ -196,6 +214,8 @@ namespace Conrad.UnityV2.RobotHardwareSimulation
         {
             _seenCommands.Clear();
             _undelivered.Clear();
+            _commandDeadlineNs = null;
+            WatchdogTrips = 0;
             DroppedFrames = 0;
             CommLoss = false;
             LeakDetected = false;

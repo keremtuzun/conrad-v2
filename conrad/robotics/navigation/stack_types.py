@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from conrad.robotics.allocation.allocator import AllocationConfig
 from conrad.robotics.control.pid import ControlConfig, ControlReference
@@ -29,6 +29,24 @@ class NavigationStackConfig(ConradModel):
     planner: PlannerConfig = PlannerConfig()
     local: LocalPlannerConfig = LocalPlannerConfig()
     safety: SafetyConfig = SafetyConfig()
+
+    @model_validator(mode="after")
+    def _one_surface(self) -> NavigationStackConfig:
+        if self.estimator.water_surface_z_m != self.safety.water_surface_z_m:
+            raise ValueError("estimator and safety must use the same water_surface_z_m (mission context)")
+        return self
+
+    @classmethod
+    def for_surface(cls, water_surface_z_m: float, **kw: object) -> NavigationStackConfig:
+        """``kw`` as the constructor; the estimator and safety configs get the mission-context surface height."""
+        est = kw.pop("estimator", None) or EkfConfig()
+        safety = kw.pop("safety", None) or SafetyConfig()
+        assert isinstance(est, EkfConfig) and isinstance(safety, SafetyConfig)
+        return cls(
+            estimator=est.model_copy(update={"water_surface_z_m": water_surface_z_m}),
+            safety=safety.model_copy(update={"water_surface_z_m": water_surface_z_m}),
+            **kw,
+        )
 
 
 class GoalStatus(str, Enum):

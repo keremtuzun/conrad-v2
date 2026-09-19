@@ -124,6 +124,10 @@ class MissionContext(ConradModel):
     launch_pose: Pose
     transit_lane: tuple[Vec3, ...] = Field(min_length=2)
     seabed_z_m: float
+    water_surface_z_m: float = Field(
+        default=0.0,
+        description="WORLD z of the water surface (surveyed datum); a pressure sensor reads depth = surface - z",
+    )
     lane_speed_mps: float = Field(default=0.3, gt=0)
 
     def component(self, registry_id: UUID) -> DesignComponent:

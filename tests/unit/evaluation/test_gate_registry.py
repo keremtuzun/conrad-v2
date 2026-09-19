@@ -61,4 +61,16 @@ def test_recorder_labels_surrogate_runs_as_surrogate() -> None:
     spec.loader.exec_module(mod)
     src = (root / "scripts" / "record_gate_evidence.py").read_text(encoding="utf-8")
     assert "EvidenceClass.SURROGATE if surrogate else EvidenceClass.FORMAL" in src
-    assert set(mod.SURROGATE_PLAN).isdisjoint(set(mod.PLAN)), "a gate must not have both a formal and surrogate plan here"
+    # A gate may have both plans only when the formal plan leaves every mission/integration criterion to the
+    # formal (Unity) harness: I5's action matrix is formal by construction, its mission criteria are surrogate here.
+    both = set(mod.SURROGATE_PLAN) & set(mod.PLAN)
+    assert both <= {"I5"}, both
+    surrogate_i5 = {name for name, _, _ in mod.SURROGATE_PLAN.get("I5", [])}
+    missions = {c for c in surrogate_i5 if "mission" in c or "UIR" in c}
+    assert missions
+    for name, nodes, check in mod.PLAN.get("I5", []):
+        if (
+            name in missions
+        ):  # formal entry exists only to record NOT_RUN: no tests, and the check never passes
+            assert not nodes and check is not None
+            assert check()[0] is not mod.CriterionStatus.PASS, name

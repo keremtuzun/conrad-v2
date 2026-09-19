@@ -1,8 +1,8 @@
 """Shared helpers of the formal Unity gate tests I1 / I2 / I3 (ADR-0008 FORMAL path; U0 has its own harness).
 
 * Seeds: held-out FINAL partition of ``configs/eval/partitions.yaml`` (domain ``mission``), purpose
-  final_evaluation. The NAV benchmarks have no partition domain; their noise seeds are a fixed list disjoint from
-  every partition range (documented in docs/audits/UNITY_INTEGRATION_I1_I3.md).
+  final_evaluation. The NAV benchmark noise seeds come from the ``nav`` final_test split
+  (``configs/eval/partitions_nav.yaml``; see the I2 repair section of docs/audits/UNITY_INTEGRATION_I1_I3.md).
 * Every test records what it measured with ``measured(gate, criterion, ...)``; the numbers land in
   ``artifacts/gates/<gate>/unity_measured.json`` and are copied into the formal evidence by
   ``scripts/record_unity_gate_evidence.py``.
@@ -20,13 +20,20 @@ from typing import Any
 import numpy as np
 
 from conrad.evaluation.partitions import split
+from conrad.sim.mission.unity_faults import fault_cases
 
 REPO = Path(__file__).resolve().parents[2]
 GATE_RUNS = REPO / "artifacts" / "unity" / "gate_runs"
 GATES = REPO / "artifacts" / "gates"
 MISSION_CONFIG = "configs/sim/mission_test_small.yaml"
-# NAV noise seeds: outside every range of configs/eval/partitions.yaml (abstract 3.1M-3.4M, mission 5.1M-5.4M).
-NAV_SEEDS = {f"NAV-00{i}": 7_300_000 + i for i in range(1, 7)}
+# NAV noise seeds: held-out final_test split of configs/eval/partitions_nav.yaml (7400001..7400006, digest-pinned,
+# disjoint from partitions.yaml). The former I2 seeds 7300001..7300006 are CONTAMINATED_FOR_FINAL_EVALUATION
+# (seen before the I2 repair) and are development seeds of that file now.
+_NAV_FINAL = split("nav", "final_test", "final_evaluation")
+NAV_SEEDS = dict(zip(_NAV_FINAL.families, _NAV_FINAL.world_seeds, strict=True))
+# Fault cases (configs/sim/nav_fault_cases.yaml): case k runs on the k-th held-out NAV noise seed.
+FAULT_CASES = tuple(fault_cases()["cases"])
+FAULT_SEEDS = dict(zip(FAULT_CASES, _NAV_FINAL.world_seeds[: len(FAULT_CASES)], strict=True))
 TWIN_ONLY_KEYS = ("true_world_entity_id", "entity_id_table", "true_robot_pose", "supervision", "twin2t_truth")
 RUNTIME_TABLES = (
     "observations",

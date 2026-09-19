@@ -1,0 +1,22 @@
+# Immutable NAV benchmark noise-seed partition (gate I2, NAV-001..NAV-006). SYNTHETIC_ONLY. Created 2026-09-19.
+# DO NOT EDIT: conrad.evaluation.partitions pins the digest of this file's canonical content (NAV_PARTITIONS_SHA256)
+# and refuses to load a changed copy. A new split needs a new version.
+#
+# Why a separate file: configs/eval/partitions.yaml (v1) is digest-pinned by the I4 artifacts and
+# configs/active/mcbr_frozen.yaml, so adding a domain there would break those pins.
+#
+# A NAV seed seeds one benchmark run (kernel sensor noise, the USBL-like fix noise, Unity sensor noise).
+# final_test[i] is the noise seed of benchmarks[i]. Checked on load: disjoint from every seed of partitions.yaml.
+#
+# 7300001..7300006 were the I2 held-out seeds until 2026-09-19. Their results were seen (NAV-005 failed on
+# 7300005) before the I2 repair, so they are CONTAMINATED_FOR_FINAL_EVALUATION and are development only now.
+# 7100001 was the development seed of the first I2 write-up.
+version: partitions-nav-2026-09-19-v1
+benchmarks: [NAV-001, NAV-002, NAV-003, NAV-004, NAV-005, NAV-006]
+noise_seeds:
+  development: {explicit: [7100001, 7300001, 7300002, 7300003, 7300004, 7300005, 7300006], range: [7410001, 7410021]}
+  final_test: {explicit: [], range: [7400001, 7400007]}
+contaminated:
+  - seeds: [7300001, 7300002, 7300003, 7300004, 7300005, 7300006]
+    label: DEVELOPMENT / CONTAMINATED_FOR_FINAL_EVALUATION
+    reason: former I2 held-out seeds; results seen before the I2 repair (NAV-005 failed on 7300005)

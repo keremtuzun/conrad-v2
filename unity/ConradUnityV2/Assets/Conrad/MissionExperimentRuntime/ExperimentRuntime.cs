@@ -238,6 +238,7 @@ namespace Conrad.UnityV2.MissionExperimentRuntime
         {
             double dtS = PhysicsDtNs / (double)SimClock.NsPerSecond;
             Faults.Apply(Clock.NowNs);
+            Server.Watchdog();
             Thrusters.Step(Clock.NowNs, dtS);
             vehicle.ApplyDynamics(Clock.Seconds);
             Physics.Simulate((float)dtS);

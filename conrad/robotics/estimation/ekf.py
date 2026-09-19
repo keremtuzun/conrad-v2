@@ -2,7 +2,9 @@
 
 IMU propagation; updates: pressure depth, AHRS orientation (when the IMU supplies one), WORLD position
 fixes (USBL/DVL-like, visual, map constraint) and a body-velocity prior from the static thrust/drag model.
-Frame: SIMULATION_DEFAULT (+Z up, depth = -z). Sensor lever arms ignored.
+Frame: SIMULATION_DEFAULT (+Z up). Depth is measured below the configured water surface: depth = s - z, with
+s = ``EkfConfig.water_surface_z_m`` taken from the mission context (0 for the NAV benchmarks). Sensor lever
+arms ignored.
 
 Why the prior-mismatch state exists (NAV-007 finding): the thrust/drag model predicts the WATER-relative
 velocity. Any water current or drag-model error is a slowly varying (time-correlated) velocity offset.
@@ -60,6 +62,9 @@ _SYN = "SYNTHETIC_ONLY configured default"
 
 class EkfConfig(ConradModel):
     gravity_mps2: float = Field(default=9.80665, gt=0)
+    water_surface_z_m: float = Field(
+        default=0.0, description="WORLD z of the water surface from the mission context; depth = surface - z"
+    )
     # -- process noise ------------------------------------------------------------------------------
     accel_noise: float = Field(
         default=0.03, gt=0, description=f"m/s^2/sqrt(Hz) incl. unmodelled effects; {_SYN}"
@@ -73,6 +78,17 @@ class EkfConfig(ConradModel):
         default=(0.25, 0.25, 0.4),
         description=f"white part of the prior error (unmodelled turning/coupling; correlated part is c); {_SYN}",
     )
+    velocity_prior_quiet_sigma_mps: tuple[float, float, float] | None = Field(
+        default=(0.03, 0.03, 0.4),
+        description=(
+            "white prior error while the vehicle does not turn (hover, straight transit); it rises linearly to "
+            "velocity_prior_sigma_mps at velocity_prior_turn_rate_ref_rps. None = constant "
+            f"velocity_prior_sigma_mps (EST-B1 before the I2 repair); {_SYN}"
+        ),
+    )
+    velocity_prior_turn_rate_ref_rps: float = Field(
+        default=0.5, gt=0, description=f"body turn rate at which the full prior error applies; {_SYN}"
+    )
     use_velocity_prior: bool = True
     velocity_prior_correlation_s: float = Field(default=2.0, gt=0, description=_SYN)
     model_mismatch_state: bool = Field(
@@ -84,7 +100,18 @@ class EkfConfig(ConradModel):
     )
     mismatch_walk_mps_per_sqrt_s: tuple[float, float, float] = Field(
         default=(0.02, 0.02, 0.005),
-        description=f"random-walk density of c (how fast the offset may change unobserved); {_SYN}",
+        description=f"random-walk density of c while blind (how fast the offset may change unobserved); {_SYN}",
+    )
+    mismatch_walk_observed_mps_per_sqrt_s: tuple[float, float, float] | None = Field(
+        default=(0.005, 0.005, 0.005),
+        description=(
+            "random-walk density of c while position fixes keep arriving (a faster change then shows up in the "
+            "NIS and scales this by process_noise_scale). None = always mismatch_walk_mps_per_sqrt_s; "
+            f"{_SYN}"
+        ),
+    )
+    blind_after_s: float = Field(
+        default=3.0, gt=0, description=f"no accepted fix for this long = blind (full walk); {_SYN}"
     )
     # -- adaptive noise --------------------------------------------------------------------------------------
     imu_noise_adaptation: bool = True
@@ -118,6 +145,8 @@ class EkfConfig(ConradModel):
             orientation_noise_adaptation=False,
             consistency_monitoring=False,
             depth_gate_nis=None,
+            velocity_prior_quiet_sigma_mps=None,
+            mismatch_walk_observed_mps_per_sqrt_s=None,
         )
 
 
@@ -152,6 +181,7 @@ class EkfStateEstimator(StateEstimator):
         self._last_imu_ns = -1
         self._fix_rejections = 0
         self._depth_rejections = 0
+        self._last_fix_ns: int | None = None
         self.last_nis: float | None = None
         # consistency / adaptation state (all inferred from received data)
         self.nis_ratio_ewma: float | None = None
@@ -222,7 +252,7 @@ class EkfStateEstimator(StateEstimator):
         qd[9:12] = c.accel_bias_walk**2 * dt
         qd[12:15] = c.gyro_bias_walk**2 * dt
         if c.model_mismatch_state:
-            walk = np.square(np.asarray(c.mismatch_walk_mps_per_sqrt_s))
+            walk = np.square(np.asarray(self._mismatch_walk()))
             qd[15:18] = walk * self.process_noise_scale * dt
         self._P = phi @ self._P @ phi.T + np.diag(qd)
         if fresh:  # never advance the stamp without a measurement: staleness must stay visible
@@ -247,9 +277,32 @@ class EkfStateEstimator(StateEstimator):
         if self.config.model_mismatch_state:
             h[:, 15:18] = -rot.T
         # the white part of the model error is still band-limited: de-weight per-tick updates
-        inflate = max(1.0, self.config.velocity_prior_correlation_s / max(dt, 1e-6))
-        r = np.diag(np.square(self.config.velocity_prior_sigma_mps)) * inflate
+        c = self.config
+        inflate = max(1.0, c.velocity_prior_correlation_s / max(dt, 1e-6))
+        r = np.diag(np.square(self._prior_sigma())) * inflate
         self._correct(self._v_model - v_rel_body, h, r)
+
+    def _prior_sigma(self) -> np.ndarray:
+        """White prior error: small while the vehicle does not turn (the static thrust/drag model omits turning
+        coupling, not the steady state), full ``velocity_prior_sigma_mps`` at the reference turn rate
+        (I2 repair, NAV-005 finding)."""
+        c = self.config
+        full = np.asarray(c.velocity_prior_sigma_mps)
+        if c.velocity_prior_quiet_sigma_mps is None:
+            return full
+        quiet = np.minimum(np.asarray(c.velocity_prior_quiet_sigma_mps), full)
+        turning = min(1.0, float(np.linalg.norm(self._w)) / c.velocity_prior_turn_rate_ref_rps)
+        return quiet + (full - quiet) * turning
+
+    def _mismatch_walk(self) -> tuple[float, float, float]:
+        """Blind: the configured envelope of unobserved change. Observed: the smaller rate (NIS-scaled)."""
+        c = self.config
+        observed = c.mismatch_walk_observed_mps_per_sqrt_s
+        if observed is None or self._last_fix_ns is None:
+            return c.mismatch_walk_mps_per_sqrt_s
+        if (self._stamp.time_ns - self._last_fix_ns) / 1e9 > c.blind_after_s:
+            return c.mismatch_walk_mps_per_sqrt_s
+        return observed
 
     # -- measurement updates -------------------------------------------------------------------------
     def _correct(self, residual: np.ndarray, h: np.ndarray, r: np.ndarray) -> float:
@@ -301,7 +354,7 @@ class EkfStateEstimator(StateEstimator):
         sigma = 0.05 if depth.health is HealthLevel.OK else 0.2
         h = np.zeros((1, N_STATE))
         h[0, 2] = 1.0
-        residual = np.array([-depth.depth_m - self._p[2]])
+        residual = np.array([self.config.water_surface_z_m - depth.depth_m - self._p[2]])
         r = np.array([[sigma**2]])
         gate = self.config.depth_gate_nis
         if gate is not None:
@@ -326,6 +379,7 @@ class EkfStateEstimator(StateEstimator):
             self._fix_rejections += 1
             return False
         self._fix_rejections = 0
+        self._last_fix_ns = self._stamp.time_ns
         self._correct(residual, h, r)
         return True
 
