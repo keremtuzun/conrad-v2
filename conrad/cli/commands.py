@@ -64,11 +64,22 @@ def data_verify(
     manifest: str = typer.Option(..., "--manifest", help="manifest id, id@version, or path"),
 ) -> None:
     """Verify a dataset manifest (files, checksums, licence, declared transformations). Fails closed."""
-    from conrad.data.manifest import verify_manifest, verify_manifest_by_id
+    from conrad.data.manifest import (
+        ManifestError,
+        data_root_for,
+        load_manifest,
+        verify_manifest,
+        verify_manifest_by_id,
+    )
 
     path = Path(manifest)
     if path.suffix in (".yaml", ".yml") and path.exists():
-        problems = [str(p) for p in verify_manifest(path, path.parent)]
+        # data lives outside git (same root as the id form), not next to the manifest yaml
+        try:
+            root = data_root_for(load_manifest(path).dataset_id)
+        except ManifestError:
+            root = path.parent  # verify_manifest reports the invalid manifest itself
+        problems = [str(p) for p in verify_manifest(path, root)]
     else:
         problems = verify_manifest_by_id(manifest)
     for p in problems:

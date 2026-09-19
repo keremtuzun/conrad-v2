@@ -95,6 +95,7 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
     "2E-E002-R3": ("conrad.evaluation.ecological_experiments.e002_turbidity", "configs/eval/2e_e002_r3.yaml"),
     "2E-E003-R3": ("conrad.evaluation.ecological_experiments.e003_coupling", "configs/eval/2e_e003_r3.yaml"),
     "NAV-CAL-E001": ("conrad.evaluation.nav_benchmarks.calibration", "configs/sim/nav_calibration.yaml"),
+    "DATA-REAL-SMOKE-E001": ("conrad.data.real_smoke", "datasets/experiments/data_real_smoke_e001.yaml"),
 }
 DEFAULT_SEEDS = [2026201, 2026202, 2026203]
 
@@ -160,7 +161,13 @@ def run_experiment(
         artifact_paths=(str(out),),
         # Outcome judgement (SUPPORTS/REFUTES) needs a paired effect and an ADR; dispatch never grants it.
         outcome=Outcome.INCONCLUSIVE,
-        limitations=("synthetic data only", "simulation validity L1 or abstract sandbox"),
+        # The config states its own limitations (e.g. a real-data smoke run); the default is the synthetic case.
+        limitations=tuple(
+            str(x)
+            for x in config.get(
+                "limitations", ("synthetic data only", "simulation validity L1 or abstract sandbox")
+            )
+        ),
         recorded_time_ns=time.time_ns(),
     )
     ExperimentRegistry(REGISTRY_PATH).append(registry_record)

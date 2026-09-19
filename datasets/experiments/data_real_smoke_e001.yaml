@@ -15,3 +15,6 @@ pass_fraction: 0.9          # ENGINEERING_ESTIMATE acceptance for a smoke check
 primary_metric: min_fraction_expected_direction
 direction: higher
 baselines: [clean_frames]
+limitations:
+  - real public video (UVVID, CC BY 4.0), 2 sequences, 48 frames; no labels or poses
+  - smoke check of feature direction and encoding only; ECMER quality head untrained
