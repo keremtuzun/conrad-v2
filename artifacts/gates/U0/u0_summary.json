@@ -1,11 +1,11 @@
 {
   "build_info": {
-    "build_seconds": 25.065065,
-    "build_started_utc": "2026-09-19T06:34:16.7500258Z",
+    "build_seconds": 9.3473161,
+    "build_started_utc": "2026-09-19T07:14:16.4719719Z",
     "output": "Builds/Win64/ConradSim.exe",
     "result": "Succeeded",
     "total_errors": 0,
-    "total_size_bytes": 93412456,
+    "total_size_bytes": 93416040,
     "total_warnings": 0,
     "unity_version": "6000.5.9f1"
   },
@@ -40,7 +40,7 @@
           "measured": {
             "identical": true,
             "samples": 30,
-            "wire_log_bytes": 472605
+            "wire_log_bytes": 472856
           },
           "outcome": "passed",
           "test": "test_recorded_wire_replays_with_identical_acquisition_timestamps"
@@ -558,7 +558,7 @@
     }
   },
   "gate": "U0",
-  "git_commit": "6824356bb74f27e5f8fa13ca737bb3ab6144a6e7",
+  "git_commit": "5369cbe11bae88bbc1bb7bf319bc9110105632f4",
   "parameter_provenance": "every physical parameter SYNTHETIC_ONLY (configs/robot/sim_reference.yaml + labelled variants)",
   "player": "unity\\ConradUnityV2\\Builds\\Win64\\ConradSim.exe",
   "player_exe_sha256": "36c5c9f13481406382a8e9ef8fc0ea7cdf055c43bb12fc8fd545b07c199cd277",

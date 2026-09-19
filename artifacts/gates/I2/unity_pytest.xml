@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="8" time="512.278" timestamp="2026-09-19T16:53:20.175581+03:00" hostname="KeremTüzün"><testcase classname="tests.unity_live.test_i2_unity" name="test_primitive[reach waypoint-benchmarks0]" time="115.162" /><testcase classname="tests.unity_live.test_i2_unity" name="test_primitive[avoid obstacle-benchmarks1]" time="70.505" /><testcase classname="tests.unity_live.test_i2_unity" name="test_primitive[follow pipeline-benchmarks2]" time="75.600" /><testcase classname="tests.unity_live.test_i2_unity" name="test_primitive[station keep-benchmarks3]" time="55.392"><failure message="AssertionError: {'NAV-005': {'collisions': True, 'final_position': True, 'goal_accepted': True, 'station_keeping': False}}&#10;assert False&#10; +  where False = all(&lt;generator object test_primitive.&lt;locals&gt;.&lt;genexpr&gt; at 0x00000150B211DFF0&gt;)">criterion = 'station keep', benchmarks = ('NAV-005',)
+
+    @pytest.mark.parametrize(
+        ("criterion", "benchmarks"),
+        [
+            ("reach waypoint", ("NAV-001", "NAV-002")),
+            ("avoid obstacle", ("NAV-003",)),
+            ("follow pipeline", ("NAV-004",)),
+            ("station keep", ("NAV-005",)),
+        ],
+    )
+    def test_primitive(criterion, benchmarks):
+        results = {b: nav(b) for b in benchmarks}
+        measured(GATE, criterion, **{b: _keep(r) for b, r in results.items()})
+&gt;       assert all(r["success"] for r in results.values()), {b: r["checks"] for b, r in results.items()}
+E       AssertionError: {'NAV-005': {'collisions': True, 'final_position': True, 'goal_accepted': True, 'station_keeping': False}}
+E       assert False
+E        +  where False = all(&lt;generator object test_primitive.&lt;locals&gt;.&lt;genexpr&gt; at 0x00000150B211DFF0&gt;)
+
+tests\unity_live\test_i2_unity.py:69: AssertionError</failure></testcase><testcase classname="tests.unity_live.test_i2_unity" name="test_nav_001_to_006" time="54.428"><failure message="AssertionError: {'NAV-001': {'collisions': True, 'final_position': True, 'goal_accepted': True}, 'NAV-002': {'collisions': True, 'final_position': True, 'goal_accepted': True}, 'NAV-003': {'collisions': True, 'final_position': True, 'goal_accepted': True}, 'NAV-004': {'collisions': True, 'final_position': True, 'goal_accepted': True, 'standoff': True}, ...}&#10;assert False&#10; +  where False = all(&lt;generator object test_nav_001_to_006.&lt;locals&gt;.&lt;genexpr&gt; at 0x00000150B20A9E50&gt;)">def test_nav_001_to_006():
+        results = {b: nav(b) for b in NAV_UNITY_IDS}
+        measured(
+            GATE,
+            "NAV-001..NAV-006",
+            **{b: _keep(r) for b, r in results.items()},
+            passed=sum(r["success"] for r in results.values()),
+        )
+&gt;       assert all(r["success"] for r in results.values()), {b: r["checks"] for b, r in results.items()}
+E       AssertionError: {'NAV-001': {'collisions': True, 'final_position': True, 'goal_accepted': True}, 'NAV-002': {'collisions': True, 'final_position': True, 'goal_accepted': True}, 'NAV-003': {'collisions': True, 'final_position': True, 'goal_accepted': True}, 'NAV-004': {'collisions': True, 'final_position': True, 'goal_accepted': True, 'standoff': True}, ...}
+E       assert False
+E        +  where False = all(&lt;generator object test_nav_001_to_006.&lt;locals&gt;.&lt;genexpr&gt; at 0x00000150B20A9E50&gt;)
+
+tests\unity_live\test_i2_unity.py:80: AssertionError</failure></testcase><testcase classname="tests.unity_live.test_i2_unity" name="test_uses_estimated_state" time="37.058" /><testcase classname="tests.unity_live.test_i2_unity" name="test_bundle_replays_deterministically[NAV-003]" time="48.689" /><testcase classname="tests.unity_live.test_i2_unity" name="test_bundle_replays_deterministically[NAV-006]" time="43.285" /></testsuite></testsuites>

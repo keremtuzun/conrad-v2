@@ -77,6 +77,26 @@ namespace Conrad.UnityV2.EnvironmentInteraction
         }
     }
 
+    /// <summary>Scenario-declared current gusts: extra uniform velocity during [start_s, start_s + duration_s).</summary>
+    public sealed class GustScheduleCurrent : ICurrentField
+    {
+        private readonly ICurrentField _base;
+        private readonly List<(double Start, double End, Vec3d V)> _gusts;
+
+        public GustScheduleCurrent(ICurrentField baseField, List<(double, double, Vec3d)> gusts)
+        {
+            _base = baseField ?? throw new ArgumentNullException(nameof(baseField));
+            _gusts = gusts ?? throw new ArgumentNullException(nameof(gusts));
+        }
+
+        public Vec3d VelocityAt(Vec3d p, double tS)
+        {
+            Vec3d v = _base.VelocityAt(p, tS);
+            foreach (var g in _gusts) if (tS >= g.Start && tS < g.End) v += g.V;
+            return v;
+        }
+    }
+
     /// <summary>Scenario-supplied environment. Missing required values (e.g. water density) are errors.</summary>
     public sealed class EnvironmentModel
     {
@@ -127,6 +147,18 @@ namespace Conrad.UnityV2.EnvironmentInteraction
                         J.Has(tv, "turbulence_sigma_mps") ? J.Num(tv, "turbulence_sigma_mps") : 0.0,
                         J.Has(tv, "turbulence_update_s") ? J.Num(tv, "turbulence_update_s") : 0.5,
                         new SeededRandom(seed, "current.turbulence"));
+                }
+                if (J.Has(c, "gusts"))
+                {
+                    var gusts = new List<(double, double, Vec3d)>();
+                    foreach (object o in J.Arr(c, "gusts"))
+                    {
+                        var g = o as Dictionary<string, object> ?? throw new JsonException("current gust must be an object");
+                        double start = J.Num(g, "start_s"), duration = J.Num(g, "duration_s");
+                        if (!(start >= 0) || !(duration > 0)) throw new JsonException("current gust needs start_s >= 0 and duration_s > 0");
+                        gusts.Add((start, start + duration, Vec(g, "velocity_mps")));
+                    }
+                    field = new GustScheduleCurrent(field, gusts);
                 }
             }
             return new EnvironmentModel(rho, surfaceZ, turbidity, field);

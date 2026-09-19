@@ -1,0 +1,68 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.15, pytest-8.4.2, pluggy-1.6.0 -- C:\Users\Kerem\Kerem\conrad-v2\.venv\Scripts\python.exe
+hypothesis profile 'default'
+rootdir: C:\Users\Kerem\Kerem\conrad-v2
+configfile: pyproject.toml
+plugins: anyio-4.15.1, hypothesis-6.168.0, cov-6.3.0
+collecting ... collected 8 items
+
+tests/unity_live/test_i2_unity.py::test_primitive[reach waypoint-benchmarks0] PASSED [ 12%]
+tests/unity_live/test_i2_unity.py::test_primitive[avoid obstacle-benchmarks1] PASSED [ 25%]
+tests/unity_live/test_i2_unity.py::test_primitive[follow pipeline-benchmarks2] PASSED [ 37%]
+tests/unity_live/test_i2_unity.py::test_primitive[station keep-benchmarks3] FAILED [ 50%]
+tests/unity_live/test_i2_unity.py::test_nav_001_to_006 FAILED            [ 62%]
+tests/unity_live/test_i2_unity.py::test_uses_estimated_state PASSED      [ 75%]
+tests/unity_live/test_i2_unity.py::test_bundle_replays_deterministically[NAV-003] PASSED [ 87%]
+tests/unity_live/test_i2_unity.py::test_bundle_replays_deterministically[NAV-006] PASSED [100%]
+
+================================== FAILURES ===================================
+__________________ test_primitive[station keep-benchmarks3] ___________________
+
+criterion = 'station keep', benchmarks = ('NAV-005',)
+
+    @pytest.mark.parametrize(
+        ("criterion", "benchmarks"),
+        [
+            ("reach waypoint", ("NAV-001", "NAV-002")),
+            ("avoid obstacle", ("NAV-003",)),
+            ("follow pipeline", ("NAV-004",)),
+            ("station keep", ("NAV-005",)),
+        ],
+    )
+    def test_primitive(criterion, benchmarks):
+        results = {b: nav(b) for b in benchmarks}
+        measured(GATE, criterion, **{b: _keep(r) for b, r in results.items()})
+>       assert all(r["success"] for r in results.values()), {b: r["checks"] for b, r in results.items()}
+E       AssertionError: {'NAV-005': {'collisions': True, 'final_position': True, 'goal_accepted': True, 'station_keeping': False}}
+E       assert False
+E        +  where False = all(<generator object test_primitive.<locals>.<genexpr> at 0x00000150B211DFF0>)
+
+tests\unity_live\test_i2_unity.py:69: AssertionError
+_____________________________ test_nav_001_to_006 _____________________________
+
+    def test_nav_001_to_006():
+        results = {b: nav(b) for b in NAV_UNITY_IDS}
+        measured(
+            GATE,
+            "NAV-001..NAV-006",
+            **{b: _keep(r) for b, r in results.items()},
+            passed=sum(r["success"] for r in results.values()),
+        )
+>       assert all(r["success"] for r in results.values()), {b: r["checks"] for b, r in results.items()}
+E       AssertionError: {'NAV-001': {'collisions': True, 'final_position': True, 'goal_accepted': True}, 'NAV-002': {'collisions': True, 'final_position': True, 'goal_accepted': True}, 'NAV-003': {'collisions': True, 'final_position': True, 'goal_accepted': True}, 'NAV-004': {'collisions': True, 'final_position': True, 'goal_accepted': True, 'standoff': True}, ...}
+E       assert False
+E        +  where False = all(<generator object test_nav_001_to_006.<locals>.<genexpr> at 0x00000150B20A9E50>)
+
+tests\unity_live\test_i2_unity.py:80: AssertionError
+=================================== PASSES ====================================
+- generated xml file: C:\Users\Kerem\Kerem\conrad-v2\artifacts\gates\I2\unity_pytest.xml -
+=========================== short test summary info ===========================
+PASSED tests/unity_live/test_i2_unity.py::test_primitive[reach waypoint-benchmarks0]
+PASSED tests/unity_live/test_i2_unity.py::test_primitive[avoid obstacle-benchmarks1]
+PASSED tests/unity_live/test_i2_unity.py::test_primitive[follow pipeline-benchmarks2]
+PASSED tests/unity_live/test_i2_unity.py::test_uses_estimated_state
+PASSED tests/unity_live/test_i2_unity.py::test_bundle_replays_deterministically[NAV-003]
+PASSED tests/unity_live/test_i2_unity.py::test_bundle_replays_deterministically[NAV-006]
+FAILED tests/unity_live/test_i2_unity.py::test_primitive[station keep-benchmarks3]
+FAILED tests/unity_live/test_i2_unity.py::test_nav_001_to_006 - AssertionErro...
+=================== 2 failed, 6 passed in 512.28s (0:08:32) ===================

@@ -417,6 +417,11 @@ class UnityRobotHardware(RobotHardwareInterface):
     def get_sonar(self) -> Observation | None:
         return self._image(Modality.SONAR, self._require_ack().capabilities.sonars)
 
+    def get_range_image(self) -> Observation | None:
+        """Newest DEPTH_RANGE frame (``range_f32_hw_v1``). Not part of RobotHardwareInterface: a Unity-only
+        imaging channel that truth-side mission harnesses forward as payload observations."""
+        return self._image(Modality.DEPTH_RANGE, self._require_ack().capabilities.range_imagers)
+
     def get_thruster_state(self) -> tuple[ThrusterState, ...]:
         state = self._state_or_poll()
         return self._guard("thrusters", lambda: cv.thrusters_from_state(state))

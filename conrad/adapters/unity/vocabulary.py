@@ -87,6 +87,7 @@ IMU_LAYOUT = "imu_v1"  # [ax, ay, az, gx, gy, gz, qw, qx, qy, qz]; q = NaN x4 wh
 DEPTH_LAYOUT = "depth_v1"  # [depth_m]
 CAMERA_LAYOUT = "rgb8_hwc_v1"
 SONAR_LAYOUT = "sonar_beam_bin_v1"  # [n_beams, n_bins] intensity proxy
+RANGE_LAYOUT = "range_f32_hw_v1"  # [H, W] range along each pinhole ray (m), top row first, NaN = no return
 
 
 class WireModel(ConradModel):

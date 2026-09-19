@@ -62,11 +62,13 @@ namespace Conrad.UnityV2.RobotHardwareSimulation
 
         public Dictionary<string, object> Capabilities()
         {
-            var cams = new List<object>(); var sonars = new List<object>(); bool imu = false, depth = false;
+            var cams = new List<object>(); var sonars = new List<object>(); var ranges = new List<object>();
+            bool imu = false, depth = false;
             foreach (var s in _sensors)
             {
                 if (s.Modality == "RGB") cams.Add(s.Name);
                 else if (s.Modality == "SONAR") sonars.Add(s.Name);
+                else if (s.Modality == "DEPTH_RANGE") ranges.Add(s.Name);
                 else if (s.Modality == "IMU") imu = true;
                 else if (s.Modality == "PRESSURE_DEPTH") depth = true;
             }
@@ -75,6 +77,7 @@ namespace Conrad.UnityV2.RobotHardwareSimulation
             return new Dictionary<string, object>
             {
                 ["capability_version"] = "unity-v2:" + _p.ConfigVersion, ["cameras"] = cams, ["sonars"] = sonars,
+                ["range_imagers"] = ranges,
                 ["imu"] = imu, ["depth"] = depth, ["environmental_sensors"] = new List<object>(),
                 ["thruster_ids"] = ids, ["controllable_dof"] = new List<object> { "surge", "sway", "heave", "roll", "pitch", "yaw" },
                 ["communication_links"] = new List<object> { "unity_bridge" }, ["onboard_compute"] = null,

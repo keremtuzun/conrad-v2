@@ -19,6 +19,7 @@ from conrad.adapters.unity.protocol import (
     CAMERA_LAYOUT,
     DEPTH_LAYOUT,
     IMU_LAYOUT,
+    RANGE_LAYOUT,
     SONAR_LAYOUT,
     HandshakeAck,
     SensorPacket,
@@ -189,6 +190,19 @@ def check_image_layout(packet: SensorPacket, modality: Modality) -> None:
         raise UnityProtocolError("camera packet must be rgb8_hwc_v1 with shape (H, W, 3)")
     if modality is Modality.SONAR and (packet.layout != SONAR_LAYOUT or len(packet.shape) != 2):
         raise UnityProtocolError("sonar packet must be sonar_beam_bin_v1 with shape (beams, bins)")
+    if modality is Modality.DEPTH_RANGE and (
+        packet.layout != RANGE_LAYOUT or len(packet.shape) != 2 or packet.units != "m"
+    ):
+        raise UnityProtocolError("range packet must be range_f32_hw_v1 with shape (H, W) in m")
+    if modality not in (Modality.RGB, Modality.SONAR, Modality.DEPTH_RANGE):
+        raise UnityProtocolError(f"{modality.value} is not an imaging modality of the Unity bridge")
+
+
+_MEDIA = {
+    Modality.RGB: "application/x-conrad-rgb8",
+    Modality.SONAR: "application/x-conrad-sonar",
+    Modality.DEPTH_RANGE: "application/x-conrad-range-f32",
+}
 
 
 def observation_from_packet(
@@ -209,8 +223,7 @@ def observation_from_packet(
     payload_ref: PayloadRef | None = None
     inline: tuple[float, ...] | None = None
     if store is not None:
-        media = "application/x-conrad-rgb8" if modality is Modality.RGB else "application/x-conrad-sonar"
-        payload_ref = store.put_bytes(raw, media, packet.shape, str(array.dtype))
+        payload_ref = store.put_bytes(raw, _MEDIA[modality], packet.shape, str(array.dtype))
         if payload_ref.digest != packet.payload_digest:
             raise UnityProtocolError("payload store digest differs from the wire digest")
     elif array.size <= MAX_INLINE_VALUES:

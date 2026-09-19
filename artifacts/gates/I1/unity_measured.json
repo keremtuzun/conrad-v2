@@ -1,0 +1,129 @@
+{
+ "meta": {
+  "scenario": "I1-UNITY",
+  "seed": 5300059,
+  "partition": "mission/final_test",
+  "run_dir": "artifacts\\unity\\gate_runs\\I1\\I1-UNITY-s5300059-3fdf2d30"
+ },
+ "criteria": {
+  "robot moves through synthetic world": {
+   "true_path_length_m": 21.540833,
+   "duration_s": 60.0,
+   "collisions": 0,
+   "min_clearance_m": 0.531137,
+   "commands_accepted": 600,
+   "adapter": "unity_v2"
+  },
+  "persistent map": {
+   "spatial_revisions": 390,
+   "direct_revisions": 361,
+   "max_revision": 17,
+   "beliefs": 69
+  },
+  "geometry": {
+   "occupied_claimed_cells": 395,
+   "median_abs_sdf_m": 0.151531,
+   "p90_abs_sdf_m": 0.176835,
+   "fraction_within_tol": 1.0,
+   "tol_m": 0.5,
+   "required_fraction": 0.9,
+   "scene_conversion_max_error_m": 0.057416
+  },
+  "occupancy": {
+   "probe_points": 1200,
+   "claimed_free": 134,
+   "wrong_fraction": 0.0,
+   "max_wrong": 0.05
+  },
+  "coverage": {
+   "lane_region_coverage": 0.146259,
+   "target_segment_coverage": 0.763223,
+   "observed_cells": 1591
+  },
+  "observed/inferred/unknown": {
+   "cell_status_counts": {
+    "UNKNOWN": 4788,
+    "OBSERVED": 1591,
+    "INFERRED": 54,
+    "PREDICTED": 0
+   },
+   "hidden_below_seabed": {
+    "UNKNOWN": 500
+   }
+  },
+  "uncertainty": {
+   "channels": "UA,UE,UC,UO",
+   "mean_by_status": {
+    "OBSERVED": [
+     0.006893,
+     0.276771,
+     0.015401,
+     0.056003
+    ],
+    "INFERRED": [
+     0.021769,
+     0.27397,
+     0.0,
+     0.726615
+    ],
+    "UNKNOWN": [
+     0.047522,
+     0.279467,
+     0.0,
+     0.824156
+    ]
+   },
+   "std_per_channel": [
+    0.140975,
+    0.008344,
+    0.030486,
+    0.402209
+   ]
+  },
+  "provenance": {
+   "direct_spatial_revisions": 361,
+   "evidence_traced": 21,
+   "raw_frames_reproduced": 21,
+   "problems": []
+  },
+  "no Twin truth leakage": {
+   "texts_scanned": 2455,
+   "world_entity_ids": 12,
+   "violations": [],
+   "registry_ids_on_cells": 5
+  },
+  "replay": {
+   "events": {
+    "original": 2638,
+    "replayed": 2638,
+    "equal": true,
+    "first_difference": null
+   },
+   "decisions": {
+    "original": 30,
+    "replayed": 30,
+    "equal": true,
+    "first_difference": null
+   },
+   "revisions": {
+    "original": 456,
+    "replayed": 456,
+    "equal": true,
+    "first_difference": null
+   },
+   "trajectory": {
+    "samples": [
+     61,
+     61
+    ],
+    "max_abs_difference": 0.0,
+    "tolerance": 0.0,
+    "equal": true
+   },
+   "equal": true,
+   "verified_files": 152,
+   "verified_objects": 97,
+   "same_player_binary": true
+  }
+ }
+}

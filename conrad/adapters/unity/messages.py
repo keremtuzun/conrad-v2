@@ -28,6 +28,7 @@ class WireCapabilities(WireModel):
     capability_version: str
     cameras: tuple[str, ...] = ()
     sonars: tuple[str, ...] = ()
+    range_imagers: tuple[str, ...] = ()  # DEPTH_RANGE sensors (range_f32_hw_v1); optional, older players omit it
     imu: bool = False
     depth: bool = False
     environmental_sensors: tuple[str, ...] = ()

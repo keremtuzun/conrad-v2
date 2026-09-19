@@ -1,0 +1,92 @@
+{
+ "meta": {
+  "scenario": "I3-UNITY",
+  "seed": 5300058,
+  "partition": "mission/final_test",
+  "run_dir": "artifacts\\unity\\gate_runs\\I3\\I3-UNITY-s5300058-b43c66d9"
+ },
+ "criteria": {
+  "Twin2T + Twin2S -> Unity -> ECMER -> 2S + 2T": {
+   "structural_observations": 19,
+   "associated": 12,
+   "wrong_associations": 0,
+   "no_match": 7,
+   "unity_frames_forwarded": {
+    "camera": 29,
+    "range_imager": 9,
+    "sonar": 9
+   },
+   "model2s_direct_revisions": 133,
+   "model2t_direct_revisions": 12,
+   "adapter": "unity_v2"
+  },
+  "robot sees only partial infrastructure": {
+   "patch_max_visible_fraction": 0.0,
+   "patch_checks": 30,
+   "components_observed": 3,
+   "components_total": 6
+  },
+  "persistent technical belief": {
+   "technical_revisions": 60,
+   "direct_revisions": 12,
+   "direct_with_evidence": 12,
+   "corrosion_observed_revisions": 12,
+   "max_revision": 13,
+   "hidden_components": 3,
+   "hidden_component_condition_and_U_O": [
+    [
+     "INFERRED",
+     1.0
+    ],
+    [
+     "NO_BELIEF",
+     1.0
+    ],
+    [
+     "UNKNOWN",
+     1.0
+    ]
+   ],
+   "target_condition": "UNKNOWN",
+   "target_U_O": 1.0,
+   "target_near_side_readings": 0
+  },
+  "leakage": {
+   "texts_scanned": 1229,
+   "violations": []
+  },
+  "replay": {
+   "events": {
+    "original": 1322,
+    "replayed": 1322,
+    "equal": true,
+    "first_difference": null
+   },
+   "decisions": {
+    "original": 15,
+    "replayed": 15,
+    "equal": true,
+    "first_difference": null
+   },
+   "revisions": {
+    "original": 214,
+    "replayed": 214,
+    "equal": true,
+    "first_difference": null
+   },
+   "trajectory": {
+    "samples": [
+     31,
+     31
+    ],
+    "max_abs_difference": 0.0,
+    "tolerance": 0.0,
+    "equal": true
+   },
+   "equal": true,
+   "verified_files": 82,
+   "verified_objects": 47,
+   "same_player_binary": true
+  }
+ }
+}

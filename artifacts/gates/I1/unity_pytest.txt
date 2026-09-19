@@ -1,0 +1,33 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.15, pytest-8.4.2, pluggy-1.6.0 -- C:\Users\Kerem\Kerem\conrad-v2\.venv\Scripts\python.exe
+hypothesis profile 'default'
+rootdir: C:\Users\Kerem\Kerem\conrad-v2
+configfile: pyproject.toml
+plugins: anyio-4.15.1, hypothesis-6.168.0, cov-6.3.0
+collecting ... collected 10 items
+
+tests/unity_live/test_i1_unity.py::test_robot_moves_through_synthetic_world PASSED [ 10%]
+tests/unity_live/test_i1_unity.py::test_persistent_map PASSED            [ 20%]
+tests/unity_live/test_i1_unity.py::test_geometry_occupied_claims_lie_on_twin2s_surfaces PASSED [ 30%]
+tests/unity_live/test_i1_unity.py::test_occupancy_free_claims_agree_with_truth PASSED [ 40%]
+tests/unity_live/test_i1_unity.py::test_coverage PASSED                  [ 50%]
+tests/unity_live/test_i1_unity.py::test_observed_inferred_unknown_and_hidden_is_unknown PASSED [ 60%]
+tests/unity_live/test_i1_unity.py::test_uncertainty_is_decomposed_and_responds PASSED [ 70%]
+tests/unity_live/test_i1_unity.py::test_provenance_to_raw_unity_frames PASSED [ 80%]
+tests/unity_live/test_i1_unity.py::test_no_twin_truth_leakage_on_runtime_side PASSED [ 90%]
+tests/unity_live/test_i1_unity.py::test_bundle_replays_deterministically PASSED [100%]
+
+=================================== PASSES ====================================
+- generated xml file: C:\Users\Kerem\Kerem\conrad-v2\artifacts\gates\I1\unity_pytest.xml -
+=========================== short test summary info ===========================
+PASSED tests/unity_live/test_i1_unity.py::test_robot_moves_through_synthetic_world
+PASSED tests/unity_live/test_i1_unity.py::test_persistent_map
+PASSED tests/unity_live/test_i1_unity.py::test_geometry_occupied_claims_lie_on_twin2s_surfaces
+PASSED tests/unity_live/test_i1_unity.py::test_occupancy_free_claims_agree_with_truth
+PASSED tests/unity_live/test_i1_unity.py::test_coverage
+PASSED tests/unity_live/test_i1_unity.py::test_observed_inferred_unknown_and_hidden_is_unknown
+PASSED tests/unity_live/test_i1_unity.py::test_uncertainty_is_decomposed_and_responds
+PASSED tests/unity_live/test_i1_unity.py::test_provenance_to_raw_unity_frames
+PASSED tests/unity_live/test_i1_unity.py::test_no_twin_truth_leakage_on_runtime_side
+PASSED tests/unity_live/test_i1_unity.py::test_bundle_replays_deterministically
+======================== 10 passed in 60.67s (0:01:00) ========================

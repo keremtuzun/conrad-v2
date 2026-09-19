@@ -87,11 +87,77 @@ namespace Conrad.UnityV2.SensorSimulation
         }
     }
 
+    /// <summary>
+    /// Range imager (modality DEPTH_RANGE): geometric ray casts on a pinhole grid, range along each pixel ray.
+    /// Sensor frame is the Conrad convention (+X boresight, +Y left, +Z up); image u grows right (-Y), v grows down
+    /// (-Z), row-major, top row first: exactly the pinhole model of conrad.twins.twin2s.raycast / Model2S.
+    /// NaN = no return (nothing inside range_max_m, below range_min_m, or a dropout). Not an optical depth camera.
+    /// </summary>
+    public sealed class RangeImageSensor : SimSensorBase
+    {
+        private readonly Transform _mount;
+        private readonly int _width, _height, _layerMask;
+        private readonly double _rangeMax, _rangeMin, _dropoutProb;
+        private readonly Vector3[] _localDirs;
+
+        public override string Modality => "DEPTH_RANGE";
+
+        public RangeImageSensor(SensorParameters p, ulong seed, Transform mount) : base(p, seed, 16)
+        {
+            _mount = mount != null ? mount : throw new ArgumentNullException(nameof(mount));
+            _width = (int)J.Num(p.Extra, "width_px");
+            _height = (int)J.Num(p.Extra, "height_px");
+            double hFovDeg = J.Num(p.Extra, "hfov_deg");
+            _rangeMax = J.Num(p.Extra, "max_range_m");
+            _rangeMin = p.Extra.TryGetValue("min_range_m", out object mn) ? J.Num(mn, "min_range_m") : 0.0;
+            _dropoutProb = p.Extra.TryGetValue("dropout_prob", out object d) ? J.Num(d, "dropout_prob") : 0.0;
+            if (_width <= 0 || _height <= 0 || !(_rangeMax > 0) || !(hFovDeg > 0 && hFovDeg < 180))
+                throw new ArgumentException("range imager needs width_px, height_px, 0 < hfov_deg < 180 and max_range_m");
+            _layerMask = Physics.DefaultRaycastLayers;
+            double f = 0.5 * _width / Math.Tan(0.5 * hFovDeg * Math.PI / 180.0);
+            _localDirs = new Vector3[_width * _height];
+            for (int j = 0; j < _height; j++)
+                for (int i = 0; i < _width; i++)
+                {
+                    double u = (i + 0.5 - 0.5 * _width) / f, v = (j + 0.5 - 0.5 * _height) / f;
+                    // Conrad sensor direction (1, -u, -v) -> Unity local (-y, z, x) = (u, -v, 1).
+                    _localDirs[j * _width + i] = new Vector3((float)u, (float)-v, 1f).normalized;
+                }
+        }
+
+        protected override SensorPacketData Measure(TruthSnapshot truth, double tS)
+        {
+            var img = new float[_width * _height];
+            double sigma = P.NoiseStd * Fault.NoiseScale;
+            Vector3 origin = _mount.position;
+            Quaternion rot = _mount.rotation;
+            for (int k = 0; k < img.Length; k++)
+            {
+                double r = double.NaN;
+                if (Physics.Raycast(origin, rot * _localDirs[k], out RaycastHit hit, (float)_rangeMax, _layerMask, QueryTriggerInteraction.Ignore))
+                    r = hit.distance + P.Bias + Fault.ExtraBias + Rng.Gaussian(sigma);
+                if (_dropoutProb > 0 && Rng.NextDouble() < _dropoutProb) r = double.NaN;
+                if (!(r >= _rangeMin && r <= _rangeMax)) r = double.NaN;
+                img[k] = (float)r;
+            }
+            return new SensorPacketData
+            {
+                Layout = "range_f32_hw_v1", Encoding = PayloadEncoding.f32le, Units = "m",
+                Shape = new[] { _height, _width }, Payload = Pack(img),
+                Context = new Dictionary<string, object>
+                {
+                    ["hfov_deg"] = J.Num(P.Extra, "hfov_deg"), ["max_range_m"] = _rangeMax, ["min_range_m"] = _rangeMin,
+                    ["missing"] = "NaN", ["model"] = "geometric_raycast_pinhole_v1",
+                },
+            };
+        }
+    }
+
     public sealed class SonarSensor : SimSensorBase
     {
         private readonly Transform _mount;
-        private readonly int _beams, _bins, _layerMask;
-        private readonly double _rangeMax, _hFov, _attenuation, _falseReturnProb;
+        private readonly int _beams, _bins, _layerMask, _elevationRays;
+        private readonly double _rangeMax, _hFov, _vFov, _attenuation, _falseReturnProb;
 
         public override string Modality => "SONAR";
 
@@ -104,9 +170,23 @@ namespace Conrad.UnityV2.SensorSimulation
             _hFov = J.Num(p.Extra, "horizontal_fov_rad");
             _attenuation = p.Extra.TryGetValue("attenuation_per_m", out object a) ? J.Num(a, "attenuation_per_m") : 0.0;
             _falseReturnProb = p.Extra.TryGetValue("false_return_prob", out object f) ? J.Num(f, "false_return_prob") : 0.0;
+            // Optional vertical fan: elevation_rays rays per beam spread over vertical_fov_rad (default: one ray).
+            _elevationRays = p.Extra.TryGetValue("elevation_rays", out object er) ? (int)J.Num(er, "elevation_rays") : 1;
+            _vFov = p.Extra.TryGetValue("vertical_fov_rad", out object vf) ? J.Num(vf, "vertical_fov_rad") : 0.0;
             _layerMask = Physics.DefaultRaycastLayers;
             if (_beams <= 0 || _bins <= 0 || !(_rangeMax > 0) || !(_hFov > 0))
                 throw new ArgumentException("sonar needs beams, bins, range_max_m and horizontal_fov_rad");
+            if (_elevationRays < 1 || (_elevationRays > 1 && !(_vFov > 0 && _vFov < Math.PI)))
+                throw new ArgumentException("sonar elevation_rays > 1 needs 0 < vertical_fov_rad < pi");
+        }
+
+        /// <summary>Unity-local direction of (bearing, elevation); Conrad sensor (cos e cos a, cos e sin a, sin e).</summary>
+        private Vector3 LocalDir(double bearing, double elevation)
+        {
+            if (_elevationRays == 1)
+                return Quaternion.AngleAxis((float)(-bearing * 180.0 / Math.PI), Vector3.up) * Vector3.forward;
+            double ce = Math.Cos(elevation);
+            return new Vector3((float)(-ce * Math.Sin(bearing)), (float)Math.Sin(elevation), (float)(ce * Math.Cos(bearing)));
         }
 
         protected override SensorPacketData Measure(TruthSnapshot truth, double tS)
@@ -117,14 +197,18 @@ namespace Conrad.UnityV2.SensorSimulation
             {
                 double bearing = _beams == 1 ? 0 : -0.5 * _hFov + _hFov * b / (_beams - 1);
                 // Conrad bearing is positive to the LEFT (+Y); Unity yaw about +Y is positive to the RIGHT.
-                Vector3 dir = _mount.rotation * Quaternion.AngleAxis((float)(-bearing * 180.0 / Math.PI), Vector3.up) * Vector3.forward;
-                if (Physics.Raycast(_mount.position, dir, out RaycastHit hit, (float)_rangeMax, _layerMask, QueryTriggerInteraction.Ignore))
+                for (int e = 0; e < _elevationRays; e++)
                 {
-                    double r = hit.distance;
-                    double incidence = Math.Abs(Vector3.Dot(-dir, hit.normal));
-                    double intensity = incidence * Math.Exp(-2.0 * _attenuation * r);
-                    int bin = Math.Min(_bins - 1, (int)(r / binSize));
-                    img[b * _bins + bin] += (float)intensity;
+                    double elevation = _elevationRays == 1 ? 0 : -0.5 * _vFov + _vFov * e / (_elevationRays - 1);
+                    Vector3 dir = _mount.rotation * LocalDir(bearing, elevation);
+                    if (Physics.Raycast(_mount.position, dir, out RaycastHit hit, (float)_rangeMax, _layerMask, QueryTriggerInteraction.Ignore))
+                    {
+                        double r = hit.distance;
+                        double incidence = Math.Abs(Vector3.Dot(-dir, hit.normal));
+                        double intensity = incidence * Math.Exp(-2.0 * _attenuation * r);
+                        int bin = Math.Min(_bins - 1, (int)(r / binSize));
+                        img[b * _bins + bin] += (float)intensity;
+                    }
                 }
                 if (_falseReturnProb > 0 && Rng.NextDouble() < _falseReturnProb)
                     img[b * _bins + (int)(Rng.NextDouble() * _bins)] += (float)(0.5 * Rng.NextDouble());
@@ -139,6 +223,7 @@ namespace Conrad.UnityV2.SensorSimulation
                 Context = new Dictionary<string, object>
                 {
                     ["range_max_m"] = _rangeMax, ["horizontal_fov_rad"] = _hFov,
+                    ["vertical_fov_rad"] = _vFov, ["elevation_rays"] = (long)_elevationRays,
                     ["model"] = "geometric_raycast_v1_not_acoustic_physics",
                 },
             };

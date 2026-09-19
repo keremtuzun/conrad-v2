@@ -163,6 +163,9 @@ namespace Conrad.UnityV2.MissionExperimentRuntime
                     case "SONAR":
                         Sensors.Add(new SonarSensor(sp, seed, MountFor(sp, false)));
                         break;
+                    case "DEPTH_RANGE":
+                        Sensors.Add(new RangeImageSensor(sp, seed, MountFor(sp, false)));
+                        break;
                     default:
                         throw new InvalidOperationException("unsupported sensor modality " + sp.Modality);
                 }

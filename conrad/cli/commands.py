@@ -238,3 +238,69 @@ def _register_gates() -> None:
 
 
 _register_gates()
+
+
+# ---------------------------------------------------------------------- Unity backend (gates I1-I3, formal path)
+# Appended: `conrad sim run` gains --backend {python,unity} and `conrad replay run` dispatches Unity bundles.
+sim_app.registered_commands = [c for c in sim_app.registered_commands if c.name != "run"]
+replay_app.registered_commands = [c for c in replay_app.registered_commands if c.name != "run"]
+
+
+@sim_app.command("run")
+def sim_run_backend(
+    scenario: str = typer.Option(..., "--scenario", help="GOLDEN-SMOKE, FLAGSHIP-I4, I1-UNITY, I2-UNITY-NAV ..."),
+    config: str = typer.Option(DEFAULT_SIM_CONFIG, "--config"),
+    run_id: str = typer.Option(None, "--run-id"),
+    backend: str = typer.Option("python", "--backend", help="python (L1 kernel, SURROGATE) or unity (FORMAL)"),
+    seed: int = typer.Option(None, "--seed", help="override run.seed (unity backend)"),
+) -> None:
+    """Run an integrated scenario on the Python kernel or on the built Unity player and write its bundle."""
+    if backend == "python":
+        sim_run(scenario, config, run_id)
+        return
+    if backend != "unity":
+        raise typer.BadParameter("--backend must be python or unity")
+    from conrad.sim.mission.unity_run import UNITY_SCENARIO_IDS, run_unity_scenario
+
+    if scenario not in UNITY_SCENARIO_IDS:
+        raise typer.BadParameter(f"Unity scenarios: {', '.join(UNITY_SCENARIO_IDS)}")
+    out = run_unity_scenario(scenario, config, run_id, seed=seed)
+    rep = out["report"]
+    summary = (
+        {k: {"success": v["success"], "checks": v["checks"]} for k, v in rep.items()}
+        if scenario == "I2-UNITY-NAV"
+        else {"target_after": rep.get("target_after"), "unity": rep.get("unity", {}).get("forwarded_frames")}
+    )
+    typer.echo(json.dumps({"run_id": out["run_id"], "run_dir": out["run_dir"], **summary}, indent=2, default=str))
+
+
+@replay_app.command("run")
+def replay_run_backend(
+    run: str = typer.Option(..., "--run", help="run ID under paths.runs_dir, or a run directory"),
+    config: str = typer.Option(DEFAULT_SIM_CONFIG, "--config"),
+) -> None:
+    """Verify digests, re-execute (Python kernel or Unity, from the bundle's own backend), compare signatures."""
+    from conrad.persistence.replay_store import ReplayIntegrityError, load_bundle_manifest
+    from conrad.settings import load_settings
+
+    run_dir = Path(run)
+    if not run_dir.exists():
+        s = load_settings(config)
+        run_dir = s.resolve(s.paths.runs_dir) / run
+    try:
+        backend = load_bundle_manifest(run_dir).replay_inputs.get("backend", "python")
+    except ReplayIntegrityError:
+        backend = "python"
+    if backend != "unity":
+        replay_run_cmd(run, config)
+        return
+    from conrad.sim.mission.unity_run import replay_unity_run
+
+    try:
+        report = replay_unity_run(run_dir)
+    except ReplayIntegrityError as exc:
+        typer.echo(json.dumps({"verified": False, "problems": exc.problems}, indent=2))
+        raise typer.Exit(2) from exc
+    typer.echo(json.dumps(report, indent=2, default=str))
+    typer.echo("RESULT: " + ("REPRODUCED" if report["equal"] else "MISMATCH"))
+    raise typer.Exit(0 if report["equal"] else 1)

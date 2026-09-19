@@ -1,0 +1,264 @@
+{
+ "meta": {
+  "scenario": "I2-UNITY-NAV",
+  "seeds": {
+   "NAV-001": 7300001,
+   "NAV-002": 7300002,
+   "NAV-003": 7300003,
+   "NAV-004": 7300004,
+   "NAV-005": 7300005,
+   "NAV-006": 7300006
+  },
+  "bundles": "artifacts/unity/gate_runs/I2"
+ },
+ "criteria": {
+  "reach waypoint": {
+   "NAV-001": {
+    "success": true,
+    "checks": {
+     "goal_accepted": true,
+     "final_position": true,
+     "collisions": true
+    },
+    "final_position_error_m": 0.0859,
+    "path_rms_error_m": 0.0912,
+    "estimation_rms_error_m": 0.1231,
+    "collisions": 0,
+    "min_clearance_m": null,
+    "time_to_goal_s": 21.54,
+    "gateway_accepted": 2000,
+    "gateway_rejected": 0,
+    "position_fixes_accepted": 40
+   },
+   "NAV-002": {
+    "success": true,
+    "checks": {
+     "goal_accepted": true,
+     "final_position": true,
+     "collisions": true
+    },
+    "final_position_error_m": 0.2397,
+    "path_rms_error_m": 0.1043,
+    "estimation_rms_error_m": 0.129,
+    "collisions": 0,
+    "min_clearance_m": null,
+    "time_to_goal_s": 43.66,
+    "gateway_accepted": 3500,
+    "gateway_rejected": 0,
+    "position_fixes_accepted": 70
+   }
+  },
+  "avoid obstacle": {
+   "NAV-003": {
+    "success": true,
+    "checks": {
+     "goal_accepted": true,
+     "final_position": true,
+     "collisions": true
+    },
+    "final_position_error_m": 0.1167,
+    "path_rms_error_m": 0.151,
+    "estimation_rms_error_m": 0.1152,
+    "collisions": 0,
+    "min_clearance_m": 0.469,
+    "time_to_goal_s": 41.52,
+    "gateway_accepted": 3000,
+    "gateway_rejected": 0,
+    "position_fixes_accepted": 60
+   }
+  },
+  "follow pipeline": {
+   "NAV-004": {
+    "success": true,
+    "checks": {
+     "goal_accepted": true,
+     "final_position": true,
+     "collisions": true,
+     "standoff": true
+    },
+    "final_position_error_m": 0.0799,
+    "path_rms_error_m": 0.0865,
+    "estimation_rms_error_m": 0.1195,
+    "collisions": 0,
+    "min_clearance_m": 0.952,
+    "time_to_goal_s": 64.82,
+    "standoff_rms_error_m": 0.0112,
+    "pipeline_cross_track_rms_m": 0.0833,
+    "gateway_accepted": 3500,
+    "gateway_rejected": 0,
+    "position_fixes_accepted": 70
+   }
+  },
+  "station keep": {
+   "NAV-005": {
+    "success": false,
+    "checks": {
+     "goal_accepted": true,
+     "final_position": true,
+     "collisions": true,
+     "station_keeping": false
+    },
+    "final_position_error_m": 0.0718,
+    "path_rms_error_m": 0.15,
+    "estimation_rms_error_m": 0.1402,
+    "collisions": 0,
+    "min_clearance_m": null,
+    "time_to_goal_s": 0.12,
+    "station_rms_error_m": 0.1534,
+    "gateway_accepted": 3000,
+    "gateway_rejected": 0,
+    "position_fixes_accepted": 60
+   }
+  },
+  "NAV-001..NAV-006": {
+   "NAV-001": {
+    "success": true,
+    "checks": {
+     "goal_accepted": true,
+     "final_position": true,
+     "collisions": true
+    },
+    "final_position_error_m": 0.0859,
+    "path_rms_error_m": 0.0912,
+    "estimation_rms_error_m": 0.1231,
+    "collisions": 0,
+    "min_clearance_m": null,
+    "time_to_goal_s": 21.54,
+    "gateway_accepted": 2000,
+    "gateway_rejected": 0,
+    "position_fixes_accepted": 40
+   },
+   "NAV-002": {
+    "success": true,
+    "checks": {
+     "goal_accepted": true,
+     "final_position": true,
+     "collisions": true
+    },
+    "final_position_error_m": 0.2397,
+    "path_rms_error_m": 0.1043,
+    "estimation_rms_error_m": 0.129,
+    "collisions": 0,
+    "min_clearance_m": null,
+    "time_to_goal_s": 43.66,
+    "gateway_accepted": 3500,
+    "gateway_rejected": 0,
+    "position_fixes_accepted": 70
+   },
+   "NAV-003": {
+    "success": true,
+    "checks": {
+     "goal_accepted": true,
+     "final_position": true,
+     "collisions": true
+    },
+    "final_position_error_m": 0.1167,
+    "path_rms_error_m": 0.151,
+    "estimation_rms_error_m": 0.1152,
+    "collisions": 0,
+    "min_clearance_m": 0.469,
+    "time_to_goal_s": 41.52,
+    "gateway_accepted": 3000,
+    "gateway_rejected": 0,
+    "position_fixes_accepted": 60
+   },
+   "NAV-004": {
+    "success": true,
+    "checks": {
+     "goal_accepted": true,
+     "final_position": true,
+     "collisions": true,
+     "standoff": true
+    },
+    "final_position_error_m": 0.0799,
+    "path_rms_error_m": 0.0865,
+    "estimation_rms_error_m": 0.1195,
+    "collisions": 0,
+    "min_clearance_m": 0.952,
+    "time_to_goal_s": 64.82,
+    "standoff_rms_error_m": 0.0112,
+    "pipeline_cross_track_rms_m": 0.0833,
+    "gateway_accepted": 3500,
+    "gateway_rejected": 0,
+    "position_fixes_accepted": 70
+   },
+   "NAV-005": {
+    "success": false,
+    "checks": {
+     "goal_accepted": true,
+     "final_position": true,
+     "collisions": true,
+     "station_keeping": false
+    },
+    "final_position_error_m": 0.0718,
+    "path_rms_error_m": 0.15,
+    "estimation_rms_error_m": 0.1402,
+    "collisions": 0,
+    "min_clearance_m": null,
+    "time_to_goal_s": 0.12,
+    "station_rms_error_m": 0.1534,
+    "gateway_accepted": 3000,
+    "gateway_rejected": 0,
+    "position_fixes_accepted": 60
+   },
+   "NAV-006": {
+    "success": true,
+    "checks": {
+     "goal_accepted": true,
+     "final_position": true,
+     "collisions": true
+    },
+    "final_position_error_m": 0.118,
+    "path_rms_error_m": 0.0902,
+    "estimation_rms_error_m": 0.109,
+    "collisions": 0,
+    "min_clearance_m": null,
+    "time_to_goal_s": 25.54,
+    "gateway_accepted": 3000,
+    "gateway_rejected": 0,
+    "position_fixes_accepted": 60
+   },
+   "passed": 5
+  },
+  "uses estimated state": {
+   "estimation_rms_error_m": {
+    "NAV-001": 0.1231,
+    "NAV-002": 0.129,
+    "NAV-003": 0.1152,
+    "NAV-004": 0.1195,
+    "NAV-005": 0.1402,
+    "NAV-006": 0.109
+   },
+   "fix_bias_y_m": 0.5,
+   "true_final_y_shift_m": -0.494836,
+   "tolerance_m": 0.15,
+   "stack_inputs": "UnityRobotHardware readings + synthetic USBL-like fix; no truth client in the stack"
+  },
+  "replay NAV-003": {
+   "verified_files": 427,
+   "trajectory_max_abs_difference": 0.0,
+   "tolerance": 0.0,
+   "commands_equal": true,
+   "commands": [
+    3000,
+    3000
+   ],
+   "equal": true,
+   "replay_dir": "C:\\Users\\Kerem\\Kerem\\conrad-v2\\artifacts\\unity\\gate_runs\\replay\\I2\\NAV-003",
+   "same_player_binary": true
+  },
+  "replay NAV-006": {
+   "verified_files": 427,
+   "trajectory_max_abs_difference": 0.0,
+   "tolerance": 0.0,
+   "commands_equal": true,
+   "commands": [
+    3000,
+    3000
+   ],
+   "equal": true,
+   "replay_dir": "C:\\Users\\Kerem\\Kerem\\conrad-v2\\artifacts\\unity\\gate_runs\\replay\\I2\\NAV-006",
+   "same_player_binary": true
+  }
+ }
+}
