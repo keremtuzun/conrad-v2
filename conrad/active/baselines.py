@@ -4,6 +4,7 @@ All baselines share candidate generation and the feasibility filter (filter-befo
 rule, not an MCBR feature); they differ only in the ranking rule. Baselines never refuse to plan
 (``value_gate=False``) because a stop condition is part of the MCBR hypothesis under test.
 A-B8 (RL active perception) is OPEN: no RL baseline is implemented.
+A-B6b / A-B11 / A-B12 are the belief-predictive rankers of ``conrad.active.rankers`` (2026-09-19).
 """
 
 from __future__ import annotations
@@ -13,6 +14,7 @@ import numpy as np
 from conrad.active.config import MCBRConfig
 from conrad.active.gap import KnowledgeGap
 from conrad.active.planner import MCBRPlanner, PlanningRequest, ScoredCandidate
+from conrad.active.rankers import DEFAULT_RANKERS, ranker_planner
 from conrad.schemas.ids import IdFactory
 
 
@@ -82,4 +84,6 @@ def make_planners(id_factory: IdFactory, config: MCBRConfig | None = None) -> di
         name: MCBRPlanner(id_factory, cfg, rule, name=name, value_gate=False) for name, rule in rules.items()
     }
     planners["A-B10_mcbr_full"] = MCBRPlanner(id_factory, cfg, name="A-B10_mcbr_full")
+    for name, ranker in DEFAULT_RANKERS.items():
+        planners[name] = ranker_planner(id_factory, cfg, ranker, name)
     return planners

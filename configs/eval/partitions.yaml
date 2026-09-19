@@ -1,0 +1,39 @@
+# Immutable evaluation partitions for active information acquisition (MCBR re-evaluation, gate I4).
+# SYNTHETIC_ONLY. Created 2026-09-19. DO NOT EDIT: conrad.evaluation.partitions pins the digest of this
+# file's canonical content and refuses to load a changed copy. A new split needs a new file + new version.
+#
+# Seeds and world families are disjoint across partitions (checked on load).
+# - abstract:  ACTIVE-MCBR-E001/E002 occlusion world. A "world seed" samples one world; each world is run with
+#              `replicates_per_world` independent observation-noise seeds.
+# - mission:   integrated surrogate mission (python kernel). The run seed builds the world; one run per seed.
+# 2026201 is DEVELOPMENT / CONTAMINATED_FOR_FINAL_EVALUATION: the cosine-incidence weighting of MCBR predicted
+# visibility was added after inspecting that seed. 2026202/2026203 were also inspected in the 2026-09-18/19
+# write-ups, and 1000/1001 were used for scratch timing runs on 2026-09-19, so they are development too.
+version: partitions-2026-09-19-v1
+replicates_per_world: 3
+abstract:
+  families:
+    development: [open_field, standard, cluttered]
+    validation: [open_field, standard, cluttered]
+    final_test: [open_field, standard, cluttered]
+    ood_test: [ood_dense_occluders, ood_wide_weld]
+  world_seeds:
+    development: {explicit: [2026201, 2026202, 2026203, 1000, 1001], range: [3100000, 3100040]}
+    validation: {explicit: [], range: [3200000, 3200040]}
+    final_test: {explicit: [], range: [3300000, 3300040]}
+    ood_test: {explicit: [], range: [3400000, 3400030]}
+mission:
+  families:
+    development: [straight_pipeline]
+    validation: [straight_pipeline]
+    final_test: [straight_pipeline]
+    ood_test: [pipeline_with_supports]
+  world_seeds:
+    development: {explicit: [2026201, 2026202, 2026203, 1000, 1001], range: [5100000, 5100040]}
+    validation: {explicit: [], range: [5200000, 5200040]}
+    final_test: {explicit: [], range: [5300000, 5300060]}
+    ood_test: {explicit: [], range: [5400000, 5400040]}
+contaminated:
+  - seed: 2026201
+    label: DEVELOPMENT / CONTAMINATED_FOR_FINAL_EVALUATION
+    reason: cosine-incidence weighting of MCBR predicted visibility added after inspecting this seed

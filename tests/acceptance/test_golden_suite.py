@@ -94,7 +94,7 @@ def _need(s, belief):
     )
 
 
-def test_gs02_mcbr_picks_a_feasible_discriminating_view_or_reports_none(gs, monkeypatch):
+def test_gs02_smoke_mcbr_returns_a_feasible_view_or_a_stop_status(gs, monkeypatch):
     _comp, belief = _target(gs)
     d = gs.runtime.deliberation
     decision = d.decisions[-1]

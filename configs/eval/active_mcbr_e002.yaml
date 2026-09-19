@@ -1,0 +1,14 @@
+# ACTIVE-MCBR-E002: final evaluation of the FROZEN production planner, abstract occlusion world. SYNTHETIC_ONLY.
+# FINAL_TEST + OOD_TEST partitions of configs/eval/partitions.yaml (purpose=final_evaluation).
+experiment_id: ACTIVE-MCBR-E002
+stage: e002
+hypothesis: the frozen production planner beats fixed, random and coverage views on actual hidden-state error under matched budgets
+primary_metric: mission_error_reduction
+direction: higher
+baselines: [A-B0_random, A-B1_fixed_inspection, A-B2_coverage, A-B3_frontier, A-B4_geometric_nbv, A-B5_entropy_nbv, A-B6_standard_eig, A-B6b_bayes_eig, A-B7_uncertainty_nbv, A-B9_mcbr_no_mission, A-B10_mcbr_full, A-B11_mission_conditioned, A-B12_hypothesis_discrimination]
+mcbr: {n_azimuth: 8}
+budget: {max_observations: 4, energy_j: 900.0, time_s: 90.0}
+workers: 12
+# registry seed record = the partition's world seeds (the runner re-reads them from the partition file and
+# refuses any seed outside the partition for its stage)
+seeds: [3300000, 3300001, 3300002, 3300003, 3300004, 3300005, 3300006, 3300007, 3300008, 3300009, 3300010, 3300011, 3300012, 3300013, 3300014, 3300015, 3300016, 3300017, 3300018, 3300019, 3300020, 3300021, 3300022, 3300023, 3300024, 3300025, 3300026, 3300027, 3300028, 3300029, 3300030, 3300031, 3300032, 3300033, 3300034, 3300035, 3300036, 3300037, 3300038, 3300039, 3400000, 3400001, 3400002, 3400003, 3400004, 3400005, 3400006, 3400007, 3400008, 3400009, 3400010, 3400011, 3400012, 3400013, 3400014, 3400015, 3400016, 3400017, 3400018, 3400019, 3400020, 3400021, 3400022, 3400023, 3400024, 3400025, 3400026, 3400027, 3400028, 3400029]

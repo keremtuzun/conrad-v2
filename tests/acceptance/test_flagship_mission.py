@@ -1,7 +1,11 @@
-"""FLAGSHIP-I4 closed active inspection: the full causal chain, measured on a real run (no fakes).
+"""FLAGSHIP-I4 closed active inspection: INTEGRATION checks of the causal chain on a real run (no fakes).
 
-Truth is read only from the evaluation-only truth record. I4 thresholds are OPEN, so the acceptance record
-is NOT_EVALUABLE; this test asserts the mechanism chain, not a performance claim.
+Truth is read only from the evaluation-only truth record. These tests assert the mechanism chain, NOT a
+performance claim: "a plan was produced" is a smoke check. The I4 behavioral criterion (the production
+planner beats fixed / random / coverage views under matched budgets on the final partition) lives in
+``tests/acceptance/test_i4_matched_policy.py``. This run uses seed 2026201, which is
+DEVELOPMENT / CONTAMINATED_FOR_FINAL_EVALUATION (configs/eval/partitions.yaml): fine for integration, never
+evidence for I4.
 """
 
 from __future__ import annotations
@@ -58,7 +62,7 @@ def test_egdc_raises_an_information_need_routed_to_mcbr(run):
     assert need and need[0].payload["action"] == "REQUEST_INFORMATION"
 
 
-def test_mcbr_plan_has_candidate_table_and_rejections(run):
+def test_smoke_mcbr_produces_a_plan_with_candidate_table_and_rejections(run):
     tables = json.loads((run["dir"] / "mission" / "mcbr_candidate_tables.json").read_text(encoding="utf-8"))
     planned = [t for t in tables if t["plan"]["status"] == "PLAN"]
     assert planned, "MCBR produced no ObservationPlan"
@@ -135,7 +139,7 @@ def test_trace_from_last_command_to_a_raw_observation(run):
     assert any(raw(s) for r in leaves for s in r.source_ids)
 
 
-def test_i4_acceptance_record_is_not_evaluable(run):
+def test_integration_i4_open_threshold_record_stays_not_evaluable(run):
     record = AcceptanceRecord(
         gate_id="I4", primary_metric="target_hidden_state_abs_error", baseline="FLAGSHIP-I4-FIXEDVIEW"
     )

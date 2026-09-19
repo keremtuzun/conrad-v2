@@ -44,7 +44,11 @@ class MissionRuntimeConfig(ConradModel):
     decision_period_s: float = Field(default=2.0, gt=0)
     decision_history_s: float = Field(default=20.0, gt=0, description="decision history H_t window")
     comms_period_s: float = Field(default=1.0, gt=0)
-    planner: str = "A-B10_mcbr_full"
+    planner: str = Field(
+        default="PRODUCTION",
+        description="PRODUCTION = frozen validation-selected planner (configs/active/mcbr_frozen.yaml); "
+        "or any conrad.active.make_planners name (baselines)",
+    )
     mcbr: dict[str, Any] = Field(default_factory=lambda: {"n_azimuth": 8, "elevations_rad": [0.0, 0.35]})
     decision: dict[str, Any] = Field(default_factory=dict)
     model2s: dict[str, Any] = Field(

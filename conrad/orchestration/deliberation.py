@@ -20,6 +20,7 @@ import numpy as np
 
 from conrad.active import MCBRConfig, MCBRPlanner, PlanningRequest, SensorOption, make_planners
 from conrad.active.planner import PlanResult
+from conrad.active.production import PRODUCTION, production_planner
 from conrad.decision.config import DecisionConfig
 from conrad.decision.context import DecisionContext, DecisionSummary, MissionRequirement
 from conrad.decision.egdc import EGDC, DecisionOutcome
@@ -73,10 +74,14 @@ class Deliberation:
         ids = s.ids.child("deliberation")
         self.ids = ids
         self.egdc = EGDC(s.ids.child("egdc"), DecisionConfig(**cfg.decision))
-        planners = make_planners(s.ids.child("mcbr"), MCBRConfig(**cfg.mcbr))
-        if cfg.planner not in planners:
-            raise KeyError(f"unknown planner {cfg.planner!r}; known {sorted(planners)}")
-        self.planner: MCBRPlanner = planners[cfg.planner]
+        mcbr_cfg = MCBRConfig(**cfg.mcbr)
+        if cfg.planner == PRODUCTION:  # default: the frozen, validation-selected planner (configs/active)
+            self.planner: MCBRPlanner = production_planner(s.ids.child("mcbr"), mcbr_cfg)
+        else:
+            planners = make_planners(s.ids.child("mcbr"), mcbr_cfg)
+            if cfg.planner not in planners:
+                raise KeyError(f"unknown planner {cfg.planner!r}; known {sorted([PRODUCTION, *planners])}")
+            self.planner = planners[cfg.planner]
         self.query = BeliefQueryEngine(bus, s.ids.child("query"))
         self.requirements = self._requirements()
         self.history: list[DecisionSummary] = []

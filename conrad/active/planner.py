@@ -28,6 +28,7 @@ from conrad.active.candidates import (
 from conrad.active.config import MCBRConfig
 from conrad.active.eig import GainBreakdown, InformationGainEstimator
 from conrad.active.gap import KnowledgeGap, PriorView, build_knowledge_gaps, need_satisfied
+from conrad.active.predictive import PredictiveBelief, predicted_coverage
 from conrad.schemas.belief import BeliefMessage
 from conrad.schemas.decision import (
     InformationNeed,
@@ -58,6 +59,9 @@ class PlanningRequest:
     prior_views: tuple[PriorView, ...] = ()
     bounds: MissionBounds | None = None
     rng: np.random.Generator | None = None
+    # Optional belief-side predictive model (conrad.active.predictive). Planners that need it fall back to
+    # the analytic channel estimate when it is absent; it is computed from BELIEF, never from twin truth.
+    predictive: PredictiveBelief | None = None
 
 
 @dataclass
@@ -89,8 +93,18 @@ class CandidateScorer(Protocol):
     def __call__(self, gap: KnowledgeGap, c: ScoredCandidate, req: PlanningRequest) -> float: ...
 
 
+class StopRule(Protocol):
+    """True = the best feasible candidate is not worth taking (NOT_WORTH_COST)."""
+
+    def __call__(self, best: ScoredCandidate, req: PlanningRequest) -> bool: ...
+
+
 class MCBRPlanner:
-    """Shared pipeline; ``scorer`` is the ranking rule. Default = full MCBR (mission value - cost)."""
+    """Shared pipeline; ``scorer`` is the ranking rule. Default = full MCBR (mission value - cost).
+
+    Stop rule: ``stop`` if given; otherwise the legacy MCBR gate (value < cost or gain < min) when
+    ``value_gate`` is True; otherwise the planner never refuses a feasible candidate.
+    """
 
     def __init__(
         self,
@@ -99,11 +113,13 @@ class MCBRPlanner:
         scorer: CandidateScorer | None = None,
         name: str = "mcbr_full",
         value_gate: bool = True,
+        stop: StopRule | None = None,
     ) -> None:
         self._ids = id_factory
         self.config = config or MCBRConfig()
         self.name = name
         self.value_gate = value_gate
+        self.stop = stop
         self.generator = ViewpointGenerator(self.config)
         self.filter = FeasibilityFilter(self.config)
         self.eig = InformationGainEstimator(self.config)
@@ -128,6 +144,8 @@ class MCBRPlanner:
         rejected: list[RejectedCandidate] = []
         for raw, ok in zip(raws, free, strict=True):
             vis = float(np.clip(request.predicted_visibility(raw.pose, gap.target_region), 0.0, 1.0))
+            if request.predictive is not None and self.config.sensor_aware_visibility:
+                vis = min(vis, predicted_coverage(request.predictive, raw.pose, raw.sensor))
             cost = request.navigation_cost(request.robot_pose, raw.pose)
             reasons = self.filter.reasons(raw, bool(ok), vis, cost, need, request.bounds)
             scored = self._score(gap, raw, vis, cost, need)
@@ -141,9 +159,13 @@ class MCBRPlanner:
             c.score = float(self.scorer(gap, c, request))
         feasible.sort(key=lambda c: (-c.score, c.raw.index))
         best = feasible[0]
-        if self.value_gate and (
-            best.mission_value < best.cost or best.gain.total < self.config.min_expected_gain
-        ):
+        if self.stop is not None:
+            refuse = bool(self.stop(best, request))
+        else:
+            refuse = self.value_gate and (
+                best.mission_value < best.cost or best.gain.total < self.config.min_expected_gain
+            )
+        if refuse:
             return self._finish(request, PlanStatus.NOT_WORTH_COST, feasible, rejected, targeted, gaps)
         return self._finish(request, PlanStatus.PLAN, feasible, rejected, targeted, gaps)
 

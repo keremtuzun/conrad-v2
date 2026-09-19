@@ -34,4 +34,10 @@ class MCBRConfig(ConradModel):
     redundancy_sigma_m: float = Field(default=1.0, gt=0)
     min_expected_gain: float = Field(default=0.02, ge=0)
     n_alternatives: int = Field(default=3, ge=0)
+    sensor_aware_visibility: bool = Field(
+        default=True,
+        description="when the request carries a predictive belief, candidate visibility = mission-weighted "
+        "fraction of target elements that the candidate's SENSOR is predicted to measure (range, incidence, "
+        "believed occluders); False = the legacy sensor-agnostic region visibility only",
+    )
     cost: CostWeights = CostWeights()

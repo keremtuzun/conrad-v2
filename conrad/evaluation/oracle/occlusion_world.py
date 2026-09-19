@@ -46,15 +46,45 @@ class OcclusionWorld:
         return TARGET_RADIUS_M * self.sector_normal(s)
 
 
-def sample_world(rng: np.random.Generator, n_sectors: int = 9, n_occluders: int = 3) -> OcclusionWorld:
+@dataclass(frozen=True)
+class WorldFamily:
+    """Structural generator family (partitions hold out whole families for OOD, never single seeds)."""
+
+    n_sectors: int = 9
+    n_occluders: int = 3
+    occluder_ring_m: tuple[float, float] = (2.0, 4.0)
+    occluder_radius_m: tuple[float, float] = (0.4, 0.8)
+    weld_cos: float = 0.7  # sectors whose normal is within acos(weld_cos) of +x are mission-relevant
+
+
+WORLD_FAMILIES: dict[str, WorldFamily] = {
+    "open_field": WorldFamily(n_occluders=2),
+    "standard": WorldFamily(),
+    "cluttered": WorldFamily(n_occluders=4),
+    # held-out (OOD) structural families
+    "ood_dense_occluders": WorldFamily(
+        n_occluders=6, occluder_ring_m=(1.8, 3.2), occluder_radius_m=(0.4, 0.7)
+    ),
+    "ood_wide_weld": WorldFamily(n_sectors=12, weld_cos=0.45),
+}
+
+
+def sample_world(
+    rng: np.random.Generator, n_sectors: int = 9, n_occluders: int = 3, family: str | None = None
+) -> OcclusionWorld:
+    fam = WORLD_FAMILIES[family] if family is not None else WorldFamily(n_sectors, n_occluders)
+    n_sectors = fam.n_sectors
     defects = rng.uniform(0.0, 1.0, n_sectors)
-    weld = tuple(s for s in range(n_sectors) if math.cos(2 * math.pi * s / n_sectors) > 0.7)
+    weld = tuple(s for s in range(n_sectors) if math.cos(2 * math.pi * s / n_sectors) > fam.weld_cos)
     occluders = []
-    for _ in range(n_occluders):
-        r = rng.uniform(2.0, 4.0)
+    for _ in range(fam.n_occluders):
+        r = rng.uniform(*fam.occluder_ring_m)
         a = rng.uniform(-math.pi, math.pi)
         occluders.append(
-            (np.array([r * math.cos(a), r * math.sin(a), rng.uniform(-0.5, 0.5)]), rng.uniform(0.4, 0.8))
+            (
+                np.array([r * math.cos(a), r * math.sin(a), rng.uniform(-0.5, 0.5)]),
+                rng.uniform(*fam.occluder_radius_m),
+            )
         )
     sensors = {
         "RGB": SensorModel("RGB", 0.5, 4.0, 0.12, 0.05, 0.55, ood_noise_multiplier=6.0),

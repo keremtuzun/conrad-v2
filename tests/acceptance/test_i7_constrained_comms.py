@@ -1,0 +1,121 @@
+"""Gate I7 (ch25): full mission under bandwidth, then outages; BAAC must retain more mission-relevant
+information than raw / FIFO / fixed-priority. Reads the stored FINAL artifacts of COM-I7-E001/E002 (python-kernel
+SURROGATE missions); a missing artifact FAILS the test, it is never skipped.
+"""
+
+import json
+from pathlib import Path
+
+import pytest
+
+from conrad.evaluation.partitions import Partition, partition_of
+
+ROOT = Path(__file__).resolve().parents[2]
+E001 = ROOT / "artifacts" / "experiments" / "COM-I7-E001" / "com_i7_e001.json"
+E002 = ROOT / "artifacts" / "experiments" / "COM-I7-E002" / "com_i7_e002.json"
+SPEC_SET = ("raw", "fifo", "fixed_priority")
+POLICIES = ("baac", "raw", "fifo", "fixed_priority", "value_per_bit")
+
+
+def _load(path):
+    if not path.exists():
+        pytest.fail(f"I7 artifact missing: {path} (run COM-I7-E001/E002 first)")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+@pytest.fixture(scope="module")
+def e001():
+    return _load(E001)
+
+
+@pytest.fixture(scope="module")
+def e002():
+    return _load(E002)
+
+
+def _shadow(d):
+    return [r for r in d["per_run"] if r["run_id"].endswith("-shadow")]
+
+
+def test_artifacts_are_final_split_surrogate(e001, e002):
+    for d in (e001, e002):
+        assert d["partition"] == "final_test"
+        assert d["evidence_class"].startswith("SURROGATE")
+        assert d["seeds"] and all(partition_of("mission", s) is Partition.FINAL_TEST for s in d["seeds"])
+
+
+def test_full_mission_under_constrained_bandwidth(e001):
+    levels = e001["config"]["bandwidth_levels"]
+    assert {1.0, 0.5, 0.1, 0.01, 0.001} <= set(levels)
+    runs = _shadow(e001)
+    assert len(runs) == len(levels) * len(e001["seeds"])
+    ref = runs[0]["link"]["bandwidth_bps"] / runs[0]["bandwidth_factor"]
+    for r in runs:
+        assert set(r["arms"]) == set(POLICIES)
+        assert r["link"]["bandwidth_bps"] == pytest.approx(ref * r["bandwidth_factor"])
+        assert r["critical_offers"], f"{r['run_id']}: no critical finding in the mission"
+        # every arm saw the identical mission offer stream (shadow arms)
+        assert r["offers"] > 0
+
+
+def test_outage_finding_is_created_while_the_link_is_down(e002):
+    for r in _shadow(e002):
+        (a, b), *_ = r["link"]["outages_s"]
+        crit = r["arms"]["baac"]["critical"]
+        assert crit, f"{r['run_id']}: no critical finding"
+        assert a <= crit[0]["finding_t_s"] < b and crit[0]["link_down_at_finding"]
+        assert r["patch_first_visible_t_s"] is not None and r["patch_first_visible_t_s"] >= a
+
+
+def test_critical_delta_is_delivered_first_after_reconnection(e002):
+    for r in _shadow(e002):
+        rec = r["reconnection"]["baac"][0]
+        assert rec["findings_during_outage"]
+        assert rec["critical_delivered_first"], f"{r['run_id']}: {rec['first_receipts_after_reconnect'][:4]}"
+        assert r["arms"]["baac"]["critical_delta_latency_s"] is not None
+
+
+def test_no_duplicate_contribution_at_the_receiver(e001, e002):
+    for d in (e001, e002):
+        for r in _shadow(d):
+            for p, arm in r["arms"].items():
+                assert arm["duplicate_contributions"] == 0, (r["run_id"], p)
+            for s in r["arms"]["baac"]["sync_critical"]:
+                assert s["duplicates"] == 0
+
+
+def test_receiver_synchronised_for_critical_beliefs_after_reconnection(e002):
+    for r in _shadow(e002):
+        if r["bandwidth_factor"] < 1.0:
+            continue
+        sync = r["arms"]["baac"]["sync_critical"]
+        assert sync and all(s["equal"] for s in sync), (r["run_id"], sync)
+
+
+def test_stale_and_redundant_units_are_coalesced_or_dropped(e002):
+    for r in _shadow(e002):
+        arm = r["arms"]["baac"]
+        assert arm["coalesced"] + sum(arm["drop_reasons"].values()) > 0
+
+
+def _check_strict(d):
+    bad = []
+    for r in _shadow(d):
+        if r["bandwidth_factor"] <= 0:
+            continue
+        base = r["arms"]["baac"]["mission_information_retained"]
+        for p in SPEC_SET:
+            other = r["arms"][p]["mission_information_retained"]
+            if not base > other:
+                bad.append((r["run_id"], p, base, other))
+    return bad
+
+
+def test_baac_retains_more_than_raw_fifo_fixed_priority_every_nonzero_level(e001, e002):
+    bad = _check_strict(e001) + _check_strict(e002)
+    assert not bad, bad
+
+
+def test_value_per_bit_comparison_is_reported(e001):
+    for cond, row in e001["comparisons"].items():
+        assert "value_per_bit" in row, cond

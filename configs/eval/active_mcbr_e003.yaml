@@ -1,0 +1,17 @@
+# ACTIVE-MCBR-E003: integrated SURROGATE mission (python sim kernel, FLAGSHIP-I4 family). SYNTHETIC_ONLY.
+# SURROGATE evidence: the formal Unity run comes later from the integrator. Same mission duration (time budget),
+# same max plans per need (observation budget), same sensor for every planner; energy and travel are measured.
+experiment_id: ACTIVE-MCBR-E003
+stage: e003
+hypothesis: the frozen production planner beats fixed, random and coverage views on target hidden-state error in the integrated surrogate mission
+primary_metric: hidden_state_error_improvement
+direction: higher
+baselines: [A-B0_random, A-B1_fixed_inspection, A-B2_coverage, A-B10_mcbr_full]
+planners: [PRODUCTION, A-B1_fixed_inspection, A-B0_random, A-B2_coverage, A-B10_mcbr_full]
+partitions: [final_test, ood_test]
+runtime: {duration_s: 100.0, control_period_s: 0.1, max_plans_per_need: 4}
+workers: 12
+max_worlds: 30   # per partition (time budget): final 30 of 60 listed worlds; OOD 30 of 40
+# registry seed record = the partition's world seeds (the runner re-reads them from the partition file and
+# refuses any seed outside the partition for its stage)
+seeds: [5300000, 5300001, 5300002, 5300003, 5300004, 5300005, 5300006, 5300007, 5300008, 5300009, 5300010, 5300011, 5300012, 5300013, 5300014, 5300015, 5300016, 5300017, 5300018, 5300019, 5300020, 5300021, 5300022, 5300023, 5300024, 5300025, 5300026, 5300027, 5300028, 5300029, 5300030, 5300031, 5300032, 5300033, 5300034, 5300035, 5300036, 5300037, 5300038, 5300039, 5300040, 5300041, 5300042, 5300043, 5300044, 5300045, 5300046, 5300047, 5300048, 5300049, 5300050, 5300051, 5300052, 5300053, 5300054, 5300055, 5300056, 5300057, 5300058, 5300059, 5400000, 5400001, 5400002, 5400003, 5400004, 5400005, 5400006, 5400007, 5400008, 5400009, 5400010, 5400011, 5400012, 5400013, 5400014, 5400015, 5400016, 5400017, 5400018, 5400019, 5400020, 5400021, 5400022, 5400023, 5400024, 5400025, 5400026, 5400027, 5400028, 5400029, 5400030, 5400031, 5400032, 5400033, 5400034, 5400035, 5400036, 5400037, 5400038, 5400039]

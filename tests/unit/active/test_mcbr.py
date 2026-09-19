@@ -170,7 +170,7 @@ def test_redundant_view_has_lower_coverage_gain():
 def test_all_baselines_share_interface():
     ids = IdFactory(8)
     planners = make_planners(ids, MCBRConfig(n_azimuth=6))
-    assert len(planners) == 10
+    assert len(planners) == 13  # A-B0..A-B10 (no A-B8) + A-B6b, A-B11, A-B12
     for p in planners.values():
         r = p.plan(_request(ids, unc(uo=0.9), QuestionType.EXTEND_COVERAGE))
         assert r.plan.status in (PlanStatus.PLAN, PlanStatus.NOT_WORTH_COST)

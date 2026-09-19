@@ -1,0 +1,32 @@
+# FROZEN production planner behind the MCBR interface. DO NOT EDIT: conrad.active.production verifies
+# config_digest = sha256(canonical JSON of `planner`). Selected on VALIDATION only (ACTIVE-MCBR-SEL001).
+planner:
+  selected: V-bayes_eig_ratio
+  ranker:
+    kind: bayes_eig
+    cost_mode: ratio
+    cost_weight: 1.0
+config_digest: 8eca16cc896e560b26cbe9814828fe9f75801d843e0e38bedb5442299805d903
+partitions_digest: 074ae11310252217315b2ac3324fd914d1964a3e34b76b57a65f0ca3a3acb904
+git_commit: 0918f5547e9f9f75f159f9194428f121a436e4e8
+git_commit_note: git rev-parse HEAD at freeze time; the frozen code is the UNCOMMITTED working tree whose parent
+  is this commit (the agent cannot commit)
+frozen_on: '2026-09-19'
+selection:
+  experiment_id: ACTIVE-MCBR-SEL001
+  partition: validation
+  n_worlds: 40
+  primary_metric: mission_error_reduction
+  validation_mean: 0.5052
+  runner_up: A-B6b_bayes_eig
+  selection_config_digest: 4462c7f7f36fd911a37a0c52f7acaf4a807f08f8fa4f0db4a550cadb5890788a
+  note: conventional Bayesian EIG per unit cost won on validation; per the brief it becomes the production planner
+    behind the MCBR interface. Its lead over A-B6b and A-B11 is not significant (paired CI includes 0).
+shared_candidate_generation:
+  abstract_world:
+    n_azimuth: 8
+  mission: MissionRuntimeConfig.mcbr (deployment config)
+  sensor_aware_visibility: true
+mission_note: 'the integrated runtime supplies no PredictiveBelief (Model2T messages carry no variances), so in
+  missions the ranker uses its documented fallback value: the analytic MCBR mission value divided by (cost_floor
+  + cost_weight * cost)'

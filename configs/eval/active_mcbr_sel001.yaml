@@ -1,0 +1,25 @@
+# ACTIVE-MCBR-SEL001: select the production planner on the VALIDATION partition (abstract world). SYNTHETIC_ONLY.
+# Seeds come from configs/eval/partitions.yaml (purpose=selection); the `seeds` argument is ignored.
+experiment_id: ACTIVE-MCBR-SEL001
+stage: selection
+hypothesis: the planner with the highest mean actual mission-relevant hidden-state error reduction on validation worlds
+primary_metric: mission_error_reduction
+direction: higher
+mcbr: {n_azimuth: 8}   # 2 sensors x 3 standoffs x 2 elevations x 8 azimuths = 96 candidates (<= 128)
+budget: {max_observations: 4, energy_j: 900.0, time_s: 90.0}
+workers: 12
+diagnostics: true
+# registry seed record = the partition's world seeds (the runner re-reads them from the partition file and
+# refuses any seed outside the partition for its stage)
+seeds: [3200000, 3200001, 3200002, 3200003, 3200004, 3200005, 3200006, 3200007, 3200008, 3200009, 3200010, 3200011, 3200012, 3200013, 3200014, 3200015, 3200016, 3200017, 3200018, 3200019, 3200020, 3200021, 3200022, 3200023, 3200024, 3200025, 3200026, 3200027, 3200028, 3200029, 3200030, 3200031, 3200032, 3200033, 3200034, 3200035, 3200036, 3200037, 3200038, 3200039]
+# Tuned variants (designed on DEVELOPMENT worlds, design run 2026-09-19); selection compares them with every
+# baseline on VALIDATION. Sections use the conrad.active.production.build_planner format.
+variants:
+  V-mission_ratio: {ranker: {kind: mission_conditioned, cost_mode: ratio, cost_weight: 1.0}}
+  V-mission_ratio_w05: {ranker: {kind: mission_conditioned, cost_mode: ratio, cost_weight: 0.5}}
+  V-mission_ratio_w2: {ranker: {kind: mission_conditioned, cost_mode: ratio, cost_weight: 2.0}}
+  V-mission_ratio_stop: {ranker: {kind: mission_conditioned, cost_mode: ratio, cost_weight: 1.0, stop_min_value: 0.001}, with_stop: true}
+  V-mission_stop: {ranker: {kind: mission_conditioned, stop_min_value: 0.001}, with_stop: true}
+  V-bayes_eig_ratio: {ranker: {kind: bayes_eig, cost_mode: ratio, cost_weight: 1.0}}
+  V-hypdisc_ratio: {ranker: {kind: hypothesis_discrimination, cost_mode: ratio, cost_weight: 1.0}}
+  V-A-B10_legacy_visibility: {base: A-B10_mcbr_full, mcbr: {sensor_aware_visibility: false}}
