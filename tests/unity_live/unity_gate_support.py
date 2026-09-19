@@ -19,7 +19,7 @@ from typing import Any
 
 import numpy as np
 
-from conrad.evaluation.partitions import split
+from conrad.evaluation.partitions import split, unity_gate_seed
 from conrad.sim.mission.unity_faults import fault_cases
 
 REPO = Path(__file__).resolve().parents[2]
@@ -51,11 +51,13 @@ def final_seeds() -> tuple[tuple[int, ...], tuple[str, ...]]:
 
 
 def i1_seed() -> int:
-    return final_seeds()[0][-1]
+    # Formal Unity gate worlds: configs/eval/partitions_unity_gates.yaml (the mission final_test worlds
+    # 5300000-5300059 of partitions.yaml are SPENT; the former I1/I3 seeds 5300059/5300058 are no longer used).
+    return unity_gate_seed("I1")
 
 
 def i3_seed() -> int:
-    return final_seeds()[0][-2]
+    return unity_gate_seed("I3")
 
 
 def _to_json(v: Any) -> Any:

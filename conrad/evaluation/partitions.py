@@ -41,6 +41,11 @@ NAV_DOMAIN = "nav"
 I5_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_i5.yaml"
 I5_PARTITIONS_SHA256 = "a6342e86ccaa9c391d351a181064048cc1479a5af177bdd70912ac096d4f67c8"
 I5_DOMAIN = "i5_mission"
+# Formal Unity integration gates: the mission final_test worlds of partitions.yaml are SPENT (2T-R2, MCBR-E003),
+# so I1/I3 moved to fresh worlds. Pinned on 2026-09-19 before any run on its final_test seeds.
+UNITY_GATES_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_unity_gates.yaml"
+UNITY_GATES_PARTITIONS_SHA256 = "ad753291d5825dace90f5757790efd096a5f867d51abe51de6545dceff12f88c"
+UNITY_GATES_DOMAIN = "unity_gate"
 
 
 class Partition(StrEnum):
@@ -239,6 +244,66 @@ def _i5_split(part: Partition) -> Split:
     )
 
 
+def load_unity_gates(
+    path: Path = UNITY_GATES_PARTITIONS_PATH, *, verify_digest: bool = True
+) -> dict[str, Any]:
+    """The formal Unity gate worlds; disjoint from every other partition file and the reserved ranges."""
+    digest = canonical_digest(path)
+    if verify_digest and digest != UNITY_GATES_PARTITIONS_SHA256:
+        raise PartitionIntegrityError(
+            f"{path} changed after freezing: digest {digest} != pinned {UNITY_GATES_PARTITIONS_SHA256}"
+        )
+    raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+    validate_unity_gates(raw, load()["raw"], load_nav()["raw"], load_i5()["raw"])
+    return {"raw": raw, "digest": digest}
+
+
+def validate_unity_gates(
+    raw: dict[str, Any], main: dict[str, Any], nav: dict[str, Any], i5: dict[str, Any]
+) -> None:
+    seeds = raw["world_seeds"]
+    dev, final = set(_seeds(seeds["development"])), set(_seeds(seeds["final_test"]))
+    if dev & final:
+        raise PartitionIntegrityError("unity_gate: final_test and development seeds overlap")
+    taken = {
+        s
+        for domain in ("abstract", "mission")
+        for p in Partition
+        for s in _seeds(main[domain]["world_seeds"][p.value])
+    }
+    taken |= {s for part in nav["noise_seeds"].values() for s in _seeds(part)}
+    taken |= {s for part in i5["world_seeds"].values() for s in _seeds(part)}
+    for r in raw.get("reserved_elsewhere", []):
+        taken |= set(_seeds(r))
+    if (dev | final) & taken:
+        raise PartitionIntegrityError(
+            "unity_gate seeds collide with seeds used by another partition or experiment"
+        )
+    if not set(raw.get("roles", {}).values()) <= final:
+        raise PartitionIntegrityError("unity_gate roles must name final_test seeds")
+
+
+def unity_gate_seed(gate: str) -> int:
+    """The held-out world of one formal Unity gate (final evaluation only)."""
+    check_access(Partition.FINAL_TEST, Purpose.FINAL_EVALUATION)
+    return int(load_unity_gates()["raw"]["roles"][gate])
+
+
+def _unity_gates_split(part: Partition) -> Split:
+    loaded = load_unity_gates()
+    raw = loaded["raw"]
+    if part.value not in raw["world_seeds"]:
+        raise KeyError(f"unity_gate partition has no {part.value!r} split")
+    return Split(
+        domain=UNITY_GATES_DOMAIN,
+        partition=part,
+        world_seeds=_seeds(raw["world_seeds"][part.value]),
+        families=tuple(raw["families"]),
+        replicates_per_world=1,
+        digest=loaded["digest"],
+    )
+
+
 def split(domain: str, partition: str | Partition, purpose: str | Purpose) -> Split:
     """The only sanctioned way to obtain evaluation seeds. Raises on a forbidden (purpose, partition)."""
     part = Partition(partition)
@@ -247,6 +312,8 @@ def split(domain: str, partition: str | Partition, purpose: str | Purpose) -> Sp
         return _nav_split(part)
     if domain == I5_DOMAIN:
         return _i5_split(part)
+    if domain == UNITY_GATES_DOMAIN:
+        return _unity_gates_split(part)
     loaded = load()
     raw = loaded["raw"]
     if domain not in ("abstract", "mission"):

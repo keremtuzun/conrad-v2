@@ -43,7 +43,7 @@ def run():
         {
             "scenario": "I1-UNITY",
             "seed": seed,
-            "partition": "mission/final_test",
+            "partition": "configs/eval/partitions_unity_gates.yaml final_test",
             "run_dir": str(Path(out["run_dir"]).relative_to(root.parents[3])),
         },
     )

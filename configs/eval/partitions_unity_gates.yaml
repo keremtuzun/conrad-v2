@@ -1,0 +1,25 @@
+# Immutable seed partition for the FORMAL Unity integration gates (I1, I3, later I4/I6/flagship). SYNTHETIC_ONLY.
+# Created 2026-09-19. DO NOT EDIT: conrad.evaluation.partitions pins the digest of this file's canonical content
+# (UNITY_GATES_PARTITIONS_SHA256) and refuses to load a changed copy. A new split needs a new version.
+#
+# Why: every final_test seed of partitions.yaml's mission domain (5300000-5300059) is SPENT. 2T-E00x-R2 and
+# ACTIVE-MCBR-E003 ran on all 60 of those worlds and their results were inspected before later repairs, and the
+# I3 seed 5300058 was used to diagnose the I3 failure. The formal Unity gates therefore move to these fresh
+# worlds. A seed is the run seed of one mission world (family straight_pipeline, as in partitions.yaml).
+#
+# final_test roles (fixed before any run on them): 7800000 = I1, 7800001 = I3; 7800002.. reserved for the next
+# formal Unity gates in dependency order. Checked on load: disjoint from every seed of partitions.yaml,
+# partitions_nav.yaml and partitions_i5.yaml, and from the ranges under reserved_elsewhere.
+version: partitions-unity-gates-2026-09-19-v1
+families: [straight_pipeline]
+roles: {I1: 7800000, I3: 7800001}
+world_seeds:
+  development: {explicit: [], range: [7810000, 7810020]}
+  final_test: {explicit: [], range: [7800000, 7800020]}
+reserved_elsewhere:
+  - {range: [5300000, 5300060], owner: partitions.yaml mission final_test (SPENT)}
+  - {range: [6300000, 6300012], owner: 2E-E00x-R2 final}
+  - {range: [6400000, 6400020], owner: 2E-E00x-R3 final}
+  - {range: [6500000, 6500060], owner: 2T-E00x-R3 final}
+  - {range: [7100000, 7100010], owner: M1-ACTION-E001 development}
+  - {range: [7300000, 7300010], owner: M1-ACTION-E001 final; former I2 NAV final}
