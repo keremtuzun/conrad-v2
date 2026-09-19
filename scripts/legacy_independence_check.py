@@ -104,8 +104,6 @@ def main() -> int:
                         "run",
                         "--scenario",
                         "GOLDEN-SMOKE",
-                        "--config",
-                        "configs/sim/default.yaml",
                         "--run-id",
                         "independence-smoke",
                     ],
