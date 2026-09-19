@@ -1,0 +1,39 @@
+{
+  "gate_id": "2E",
+  "evidence_class": "FORMAL",
+  "execution_path": "pytest nodes + retained experiment artifacts (2E)",
+  "git_commit": "2e3ae327bfb44c86fe9e0a5d90e200c2fafe3072",
+  "criteria": [
+    {
+      "criterion": "entity model works",
+      "status": "FAIL",
+      "measured": "test_entity_and_field_beliefs_are_separate_state_types=PASS; test_stress_is_inferred_and_never_observed_damage=PASS; test_cover_belief_stays_bounded=PASS; experiment: {\"candidate\": \"production\", \"turbidity_1\": {\"rmse\": 0.0475, \"coverage95\": 1.0, \"mean_z2\": 0.193}, \"turbidity_4\": {\"rmse\": 0.0712, \"coverage95\": 0.998, \"mean_z2\": 0.308}, \"turbidity_10\": {\"rmse\": 0.1302, \"coverage95\": 0.984, \"mean_z2\": 0.711}, \"turbidity_25\": {\"rmse\": 0.2788, \"coverage95\": 0.849, \"mean_z2\": 2.102}}"
+    },
+    {
+      "criterion": "field model works",
+      "status": "FAIL",
+      "measured": "test_variance_grows_away_from_sensor_and_with_time=PASS; test_error_does_not_grow_with_more_sensors_on_a_near_uniform_field=PASS; test_tau2_shrinks_when_stations_agree_and_grows_when_they_differ=PASS; test_noise_scale_and_drift_are_learned_from_the_readings=PASS; test_field_variance_stays_between_floor_and_prior=PASS; test_prediction_variance_is_monotone_in_delta_t=PASS; experiment: {\"temperature\": {\"rmse\": {\"1\": 0.5873, \"2\": 0.1549, \"4\": 0.0681, \"8\": 0.0451}, \"non_increasing\": true, \"not_worse_than_static_k>=4\": true, \"calibrated\": false, \"coverage95/mean_z2\": {\"1\": [1.0, 0.477], \"2\": [1.0, 0.322], \"4\": [0.983, 0.701], \"8\": [0.996, 0.471]}}, \"turbidity\": {\"rmse\": {\"1\": 0.081, \"2\": 0.0634, \"4\": 0.0433, \"8\": 0.0338}, \"non_increasing\": true, \"not_worse_than_static_k>=4\": true, \"calibrated\": true, \"coverage95/mean_z2\": {\"1\": [0.995, 0.401], \"2\": [0.983, 0.61], \"4\": [0.965, 0.728], \"8\": [0.985, 0.602]}}}"
+    },
+    {
+      "criterion": "persistent inference works",
+      "status": "PASS",
+      "measured": "test_reset_working_memory_preserves_persistent_state=PASS; test_persisted_revisions_and_query=PASS; test_each_observation_uses_its_own_timestamp=PASS; test_internal_exception_sets_unavailable_and_is_raised=PASS"
+    }
+  ],
+  "artifacts": [
+    "tests/property/domains/ecological/test_eco_belief_properties.py::test_cover_belief_stays_bounded",
+    "tests/property/domains/ecological/test_eco_belief_properties.py::test_field_variance_stays_between_floor_and_prior",
+    "tests/property/domains/ecological/test_eco_belief_properties.py::test_prediction_variance_is_monotone_in_delta_t",
+    "tests/unit/domains/ecological/test_eco_field_eb.py::test_error_does_not_grow_with_more_sensors_on_a_near_uniform_field",
+    "tests/unit/domains/ecological/test_eco_field_eb.py::test_noise_scale_and_drift_are_learned_from_the_readings",
+    "tests/unit/domains/ecological/test_eco_field_eb.py::test_tau2_shrinks_when_stations_agree_and_grows_when_they_differ",
+    "tests/unit/domains/ecological/test_eco_model2e.py::test_each_observation_uses_its_own_timestamp",
+    "tests/unit/domains/ecological/test_eco_model2e.py::test_entity_and_field_beliefs_are_separate_state_types",
+    "tests/unit/domains/ecological/test_eco_model2e.py::test_internal_exception_sets_unavailable_and_is_raised",
+    "tests/unit/domains/ecological/test_eco_model2e.py::test_persisted_revisions_and_query",
+    "tests/unit/domains/ecological/test_eco_model2e.py::test_reset_working_memory_preserves_persistent_state",
+    "tests/unit/domains/ecological/test_eco_model2e.py::test_stress_is_inferred_and_never_observed_damage",
+    "tests/unit/domains/ecological/test_eco_model2e.py::test_variance_grows_away_from_sensor_and_with_time"
+  ],
+  "notes": ""
+}

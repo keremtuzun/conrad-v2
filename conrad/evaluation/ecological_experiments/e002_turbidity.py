@@ -30,6 +30,7 @@ from conrad.evaluation.ecological_experiments.harness import (
 from conrad.evaluation.ecological_experiments.metrics import (
     cover_errors,
     entity_channels,
+    experiment_id,
     gaussian_scores,
     run_seeds,
 )
@@ -97,5 +98,11 @@ def _seed_run(config: Mapping[str, Any], seed: int) -> dict[str, Any]:
 def run(config: Mapping[str, Any], seeds: Sequence[int], out_dir: str | Path) -> dict[str, Any]:
     variants = list(config.get("variants", VARIANTS))
     return run_seeds(
-        EXPERIMENT_ID, _seed_run, config, seeds, out_dir, candidate=variants[0], baselines=variants[1:]
+        experiment_id(config, EXPERIMENT_ID),
+        _seed_run,
+        config,
+        seeds,
+        out_dir,
+        candidate=variants[0],
+        baselines=variants[1:],
     )

@@ -32,8 +32,10 @@ from conrad.evaluation.ecological_experiments.harness import (
 )
 from conrad.evaluation.ecological_experiments.metrics import (
     cover_errors,
+    experiment_id,
     field_errors,
     gaussian_scores,
+    paired_ci,
     run_seeds,
     unsupported_damage_claims,
 )
@@ -143,27 +145,30 @@ def _world_run(config: Mapping[str, Any], seed: int, scenario: Scenario) -> dict
         )
         out[v]["confident_stress_on_healthy_fraction"] = float(np.mean(spurious)) if spurious else 0.0
         out[v].update(unsupported_damage_claims(m))
-    if "cefd" in models and "uncoupled" in models:
-        c, u = out["cefd"], out["uncoupled"]
-        out["CB_entity_cover_rmse"] = u["cover"]["rmse"] - c["cover"]["rmse"]
-        out["CB_field_temperature_rmse"] = u["temperature"]["rmse"] - c["temperature"]["rmse"]
-        out["CB_field_turbidity_rmse"] = u["turbidity"]["rmse"] - c["turbidity"]["rmse"]
-        diffs = _cover_shift(models, twin.now().time_ns)
-        out["mean_abs_cover_shift_cefd_vs_uncoupled"] = float(np.mean(diffs)) if diffs else 0.0
+    for base in ("uncoupled", "production"):
+        if "cefd" not in models or base not in models:
+            continue
+        c, u = out["cefd"], out[base]
+        sfx = "" if base == "uncoupled" else f"_vs_{base}"
+        out[f"CB_entity_cover_rmse{sfx}"] = u["cover"]["rmse"] - c["cover"]["rmse"]
+        out[f"CB_field_temperature_rmse{sfx}"] = u["temperature"]["rmse"] - c["temperature"]["rmse"]
+        out[f"CB_field_turbidity_rmse{sfx}"] = u["turbidity"]["rmse"] - c["turbidity"]["rmse"]
+        diffs = _cover_shift(models, twin.now().time_ns, base)
+        out[f"mean_abs_cover_shift_cefd_vs_{base}"] = float(np.mean(diffs)) if diffs else 0.0
     return out
 
 
-def _cover_shift(models: dict[str, Model2E], t_ns: int) -> list[float]:
-    """|cover mean(cefd) - cover mean(uncoupled)| per registered sessile asset."""
+def _cover_shift(models: dict[str, Model2E], t_ns: int, base: str = "uncoupled") -> list[float]:
+    """|cover mean(cefd) - cover mean(base)| per registered sessile asset."""
     out = []
     for b in models["cefd"].entities.beliefs.values():
         if not b.sessile or b.asset is None:
             continue
-        other = models["uncoupled"].entities.by_registry(b.asset.registry_id)
+        other = models[base].entities.by_registry(b.asset.registry_id)
         if other is None:
             continue
         c = models["cefd"].entities.cover_moments_at(b, t_ns)[0]
-        u = models["uncoupled"].entities.cover_moments_at(other, t_ns)[0]
+        u = models[base].entities.cover_moments_at(other, t_ns)[0]
         out.append(abs(c - u))
     return out
 
@@ -172,8 +177,45 @@ def _seed_run(config: Mapping[str, Any], seed: int) -> dict[str, Any]:
     return {name: _world_run(config, seed, scen) for name, scen in _worlds(config, seed).items()}
 
 
+def _paired(per_seed: Mapping[int, Mapping[str, Any]]) -> dict[str, Any]:
+    """Coupling benefit as paired (seed, world) differences, and the spurious-claim tallies of ``cefd``.
+
+    The 2E-CEFD research gate reads this block: benefit > 0 with the paired CI above 0, and no confident
+    stress claim on an entity whose true condition stayed healthy (and no non-UNKNOWN damage claim)."""
+    out: dict[str, Any] = {}
+    cells = [(w, r) for res in per_seed.values() for w, r in res.items() if isinstance(r, Mapping)]
+    worlds = sorted({w for w, _ in cells})
+    for key in ("CB_entity_cover_rmse", "CB_entity_cover_rmse_vs_production"):
+        vals = [float(r[key]) for _, r in cells if key in r]
+        if not vals:
+            continue
+        out[key] = {
+            "pooled": paired_ci(vals),
+            **{w: paired_ci([float(r[key]) for ww, r in cells if ww == w and key in r]) for w in worlds},
+        }
+    for v in ("cefd", "uncoupled", "production"):
+        spur = [float(r[v]["confident_stress_on_healthy_fraction"]) for _, r in cells if v in r]
+        uei = [float(r[v]["UEI"]) for _, r in cells if v in r]
+        if spur:
+            out[f"{v}_confident_stress_on_healthy"] = {
+                "max": max(spur),
+                "mean": float(np.mean(spur)),
+                "worlds_with_any": float(sum(s > 0 for s in spur)),
+                "n": float(len(spur)),
+            }
+            out[f"{v}_UEI_max"] = max(uei)
+    return out
+
+
 def run(config: Mapping[str, Any], seeds: Sequence[int], out_dir: str | Path) -> dict[str, Any]:
     variants = list(config.get("variants", VARIANTS))
     return run_seeds(
-        EXPERIMENT_ID, _seed_run, config, seeds, out_dir, candidate=variants[0], baselines=variants[1:]
+        experiment_id(config, EXPERIMENT_ID),
+        _seed_run,
+        config,
+        seeds,
+        out_dir,
+        candidate=variants[0],
+        baselines=variants[1:],
+        post=_paired,
     )

@@ -1,0 +1,1356 @@
+{
+  "experiment_id": "2E-E001",
+  "architecture_id": "conrad_v2_impl_freeze_v0_2",
+  "data": "SYNTHETIC_ONLY Twin2E small world (configs/sim/twin2e_test_small.yaml)",
+  "candidate": "cefd",
+  "baselines": [
+    "field_only",
+    "static_field"
+  ],
+  "seeds": [
+    2026201,
+    2026202,
+    2026203
+  ],
+  "config": {
+    "experiment": {
+      "id": "2E-E001"
+    },
+    "seeds": [
+      2026201,
+      2026202,
+      2026203
+    ],
+    "twin_config": "configs/sim/twin2e_test_small.yaml",
+    "sensor_counts": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "variants": [
+      "cefd",
+      "field_only",
+      "static_field"
+    ],
+    "n_steps": 96,
+    "dt_s": 900.0,
+    "eval_every_steps": 12,
+    "anomaly_c": 3.0,
+    "spike_ntu": 8.0,
+    "event_radius_m": 25.0,
+    "pose_sigma_m": 0.3,
+    "model2e": {
+      "entity": {
+        "cover_process_sd_per_sqrt_day": 0.35
+      }
+    }
+  },
+  "per_seed": {
+    "2026201": {
+      "cefd": {
+        "k1": {
+          "temperature": {
+            "rmse": 0.4440891554415834,
+            "coverage95": 1.0,
+            "mean_z2": 0.08209474255140495,
+            "nll": 1.3458974728564017,
+            "n": 504.0
+          },
+          "turbidity": {
+            "rmse": 0.10762070064183178,
+            "coverage95": 1.0,
+            "mean_z2": 0.0008849629541733007,
+            "nll": 2.207248830133387,
+            "n": 504.0
+          },
+          "late_evidence": 0.0
+        },
+        "k2": {
+          "temperature": {
+            "rmse": 0.29027583871839274,
+            "coverage95": 1.0,
+            "mean_z2": 0.06812884517355357,
+            "nll": 1.0823730759317534,
+            "n": 496.0
+          },
+          "turbidity": {
+            "rmse": 0.11926024920438984,
+            "coverage95": 1.0,
+            "mean_z2": 0.0016838028271957818,
+            "nll": 2.044420278395572,
+            "n": 496.0
+          },
+          "late_evidence": 0.0
+        },
+        "k4": {
+          "temperature": {
+            "rmse": 0.238788227472845,
+            "coverage95": 1.0,
+            "mean_z2": 0.07994250265784004,
+            "nll": 0.6158620180239555,
+            "n": 480.0
+          },
+          "turbidity": {
+            "rmse": 0.13950285438006227,
+            "coverage95": 1.0,
+            "mean_z2": 0.004118319769549797,
+            "nll": 1.730948982962069,
+            "n": 480.0
+          },
+          "late_evidence": 0.0
+        },
+        "k8": {
+          "temperature": {
+            "rmse": 0.2027937569064251,
+            "coverage95": 1.0,
+            "mean_z2": 0.19123152178870073,
+            "nll": 0.1917458769594773,
+            "n": 456.0
+          },
+          "turbidity": {
+            "rmse": 0.1782433156570834,
+            "coverage95": 1.0,
+            "mean_z2": 0.0143856996154406,
+            "nll": 1.3612511672609577,
+            "n": 456.0
+          },
+          "late_evidence": 0.0
+        }
+      },
+      "field_only": {
+        "k1": {
+          "temperature": {
+            "rmse": 0.4440891554415834,
+            "coverage95": 1.0,
+            "mean_z2": 0.08209474255140495,
+            "nll": 1.3458974728564017,
+            "n": 504.0
+          },
+          "turbidity": {
+            "rmse": 0.10762070064183178,
+            "coverage95": 1.0,
+            "mean_z2": 0.0008849629541733007,
+            "nll": 2.207248830133387,
+            "n": 504.0
+          },
+          "late_evidence": 0.0
+        },
+        "k2": {
+          "temperature": {
+            "rmse": 0.29027583871839274,
+            "coverage95": 1.0,
+            "mean_z2": 0.06812884517355357,
+            "nll": 1.0823730759317534,
+            "n": 496.0
+          },
+          "turbidity": {
+            "rmse": 0.11926024920438984,
+            "coverage95": 1.0,
+            "mean_z2": 0.0016838028271957818,
+            "nll": 2.044420278395572,
+            "n": 496.0
+          },
+          "late_evidence": 0.0
+        },
+        "k4": {
+          "temperature": {
+            "rmse": 0.238788227472845,
+            "coverage95": 1.0,
+            "mean_z2": 0.07994250265784004,
+            "nll": 0.6158620180239555,
+            "n": 480.0
+          },
+          "turbidity": {
+            "rmse": 0.13950285438006227,
+            "coverage95": 1.0,
+            "mean_z2": 0.004118319769549797,
+            "nll": 1.730948982962069,
+            "n": 480.0
+          },
+          "late_evidence": 0.0
+        },
+        "k8": {
+          "temperature": {
+            "rmse": 0.2027937569064251,
+            "coverage95": 1.0,
+            "mean_z2": 0.19123152178870073,
+            "nll": 0.1917458769594773,
+            "n": 456.0
+          },
+          "turbidity": {
+            "rmse": 0.1782433156570834,
+            "coverage95": 1.0,
+            "mean_z2": 0.0143856996154406,
+            "nll": 1.3612511672609577,
+            "n": 456.0
+          },
+          "late_evidence": 0.0
+        }
+      },
+      "static_field": {
+        "k1": {
+          "temperature": {
+            "rmse": 0.39725657465683506,
+            "coverage95": 1.0,
+            "mean_z2": 0.03651560494270779,
+            "nll": 1.669637835941589,
+            "n": 504.0
+          },
+          "turbidity": {
+            "rmse": 0.083633036654966,
+            "coverage95": 1.0,
+            "mean_z2": 0.00039149831447613345,
+            "nll": 2.341035516238622,
+            "n": 504.0
+          },
+          "late_evidence": 0.0
+        },
+        "k2": {
+          "temperature": {
+            "rmse": 0.42949259140218665,
+            "coverage95": 1.0,
+            "mean_z2": 0.044359626508878126,
+            "nll": 1.6546610803919022,
+            "n": 496.0
+          },
+          "turbidity": {
+            "rmse": 0.08414508069259655,
+            "coverage95": 1.0,
+            "mean_z2": 0.00042613736878761404,
+            "nll": 2.324776723753626,
+            "n": 496.0
+          },
+          "late_evidence": 0.0
+        },
+        "k4": {
+          "temperature": {
+            "rmse": 0.3950531249855216,
+            "coverage95": 1.0,
+            "mean_z2": 0.03837232307604331,
+            "nll": 1.63962884573208,
+            "n": 480.0
+          },
+          "turbidity": {
+            "rmse": 0.07202140811687975,
+            "coverage95": 1.0,
+            "mean_z2": 0.0003176147560198152,
+            "nll": 2.3135679551923625,
+            "n": 480.0
+          },
+          "late_evidence": 0.0
+        },
+        "k8": {
+          "temperature": {
+            "rmse": 0.41787445549008456,
+            "coverage95": 1.0,
+            "mean_z2": 0.04336630474093575,
+            "nll": 1.6370725730034184,
+            "n": 456.0
+          },
+          "turbidity": {
+            "rmse": 0.07071973997251076,
+            "coverage95": 1.0,
+            "mean_z2": 0.00031022079363428204,
+            "nll": 2.30866707489683,
+            "n": 456.0
+          },
+          "late_evidence": 0.0
+        }
+      }
+    },
+    "2026202": {
+      "cefd": {
+        "k1": {
+          "temperature": {
+            "rmse": 0.7817178372601138,
+            "coverage95": 1.0,
+            "mean_z2": 0.24013958186930315,
+            "nll": 1.2892594516750473,
+            "n": 504.0
+          },
+          "turbidity": {
+            "rmse": 0.29857686940450556,
+            "coverage95": 1.0,
+            "mean_z2": 0.006680065746051159,
+            "nll": 2.10273163530194,
+            "n": 504.0
+          },
+          "late_evidence": 0.0
+        },
+        "k2": {
+          "temperature": {
+            "rmse": 0.23047510536544882,
+            "coverage95": 1.0,
+            "mean_z2": 0.04051231792102378,
+            "nll": 0.8760761892611542,
+            "n": 496.0
+          },
+          "turbidity": {
+            "rmse": 0.23030053210860815,
+            "coverage95": 1.0,
+            "mean_z2": 0.004858647845331071,
+            "nll": 1.9649553171064926,
+            "n": 496.0
+          },
+          "late_evidence": 0.0
+        },
+        "k4": {
+          "temperature": {
+            "rmse": 0.24344279286366297,
+            "coverage95": 1.0,
+            "mean_z2": 0.14145268702375283,
+            "nll": 0.34453721775087437,
+            "n": 480.0
+          },
+          "turbidity": {
+            "rmse": 0.2726499335863209,
+            "coverage95": 1.0,
+            "mean_z2": 0.020090594263828424,
+            "nll": 1.5415169022810054,
+            "n": 480.0
+          },
+          "late_evidence": 0.0
+        },
+        "k8": {
+          "temperature": {
+            "rmse": 0.24479611941071455,
+            "coverage95": 1.0,
+            "mean_z2": 0.38752855962188953,
+            "nll": -0.1288386615968611,
+            "n": 448.0
+          },
+          "turbidity": {
+            "rmse": 0.18879466669569317,
+            "coverage95": 1.0,
+            "mean_z2": 0.02941096457685028,
+            "nll": 1.0874930138913326,
+            "n": 448.0
+          },
+          "late_evidence": 0.0
+        }
+      },
+      "field_only": {
+        "k1": {
+          "temperature": {
+            "rmse": 0.7817178372601138,
+            "coverage95": 1.0,
+            "mean_z2": 0.24013958186930315,
+            "nll": 1.2892594516750473,
+            "n": 504.0
+          },
+          "turbidity": {
+            "rmse": 0.29857686940450556,
+            "coverage95": 1.0,
+            "mean_z2": 0.006680065746051159,
+            "nll": 2.10273163530194,
+            "n": 504.0
+          },
+          "late_evidence": 0.0
+        },
+        "k2": {
+          "temperature": {
+            "rmse": 0.23047510536544882,
+            "coverage95": 1.0,
+            "mean_z2": 0.04051231792102378,
+            "nll": 0.8760761892611542,
+            "n": 496.0
+          },
+          "turbidity": {
+            "rmse": 0.23030053210860815,
+            "coverage95": 1.0,
+            "mean_z2": 0.004858647845331071,
+            "nll": 1.9649553171064926,
+            "n": 496.0
+          },
+          "late_evidence": 0.0
+        },
+        "k4": {
+          "temperature": {
+            "rmse": 0.24344279286366297,
+            "coverage95": 1.0,
+            "mean_z2": 0.14145268702375283,
+            "nll": 0.34453721775087437,
+            "n": 480.0
+          },
+          "turbidity": {
+            "rmse": 0.2726499335863209,
+            "coverage95": 1.0,
+            "mean_z2": 0.020090594263828424,
+            "nll": 1.5415169022810054,
+            "n": 480.0
+          },
+          "late_evidence": 0.0
+        },
+        "k8": {
+          "temperature": {
+            "rmse": 0.24479611941071455,
+            "coverage95": 1.0,
+            "mean_z2": 0.38752855962188953,
+            "nll": -0.1288386615968611,
+            "n": 448.0
+          },
+          "turbidity": {
+            "rmse": 0.18879466669569317,
+            "coverage95": 1.0,
+            "mean_z2": 0.02941096457685028,
+            "nll": 1.0874930138913326,
+            "n": 448.0
+          },
+          "late_evidence": 0.0
+        }
+      },
+      "static_field": {
+        "k1": {
+          "temperature": {
+            "rmse": 0.7845656510610781,
+            "coverage95": 1.0,
+            "mean_z2": 0.1464705388781288,
+            "nll": 1.7101144893352804,
+            "n": 504.0
+          },
+          "turbidity": {
+            "rmse": 0.059894440893297665,
+            "coverage95": 1.0,
+            "mean_z2": 0.00021208670920709537,
+            "nll": 2.328664624973699,
+            "n": 504.0
+          },
+          "late_evidence": 0.0
+        },
+        "k2": {
+          "temperature": {
+            "rmse": 0.619873269765235,
+            "coverage95": 1.0,
+            "mean_z2": 0.09312422408578115,
+            "nll": 1.6742799372623218,
+            "n": 496.0
+          },
+          "turbidity": {
+            "rmse": 0.049118774328652914,
+            "coverage95": 1.0,
+            "mean_z2": 0.0001468217577441291,
+            "nll": 2.32032806627949,
+            "n": 496.0
+          },
+          "late_evidence": 0.0
+        },
+        "k4": {
+          "temperature": {
+            "rmse": 0.7832672072415942,
+            "coverage95": 1.0,
+            "mean_z2": 0.15168254506487505,
+            "nll": 1.693597577782273,
+            "n": 480.0
+          },
+          "turbidity": {
+            "rmse": 0.027735325604444836,
+            "coverage95": 1.0,
+            "mean_z2": 4.754103310574043e-05,
+            "nll": 2.310850073570819,
+            "n": 480.0
+          },
+          "late_evidence": 0.0
+        },
+        "k8": {
+          "temperature": {
+            "rmse": 0.7090564105884264,
+            "coverage95": 1.0,
+            "mean_z2": 0.12502988861558145,
+            "nll": 1.677271967507854,
+            "n": 448.0
+          },
+          "turbidity": {
+            "rmse": 0.026532897347554967,
+            "coverage95": 1.0,
+            "mean_z2": 4.3715414332232346e-05,
+            "nll": 2.3079113632692234,
+            "n": 448.0
+          },
+          "late_evidence": 0.0
+        }
+      }
+    },
+    "2026203": {
+      "cefd": {
+        "k1": {
+          "temperature": {
+            "rmse": 0.41017220765251894,
+            "coverage95": 1.0,
+            "mean_z2": 0.06501824783580464,
+            "nll": 1.3303579491347775,
+            "n": 504.0
+          },
+          "turbidity": {
+            "rmse": 0.16708953675170443,
+            "coverage95": 1.0,
+            "mean_z2": 0.0020226275311055596,
+            "nll": 2.204391092421213,
+            "n": 504.0
+          },
+          "late_evidence": 0.0
+        },
+        "k2": {
+          "temperature": {
+            "rmse": 0.20271205481596163,
+            "coverage95": 1.0,
+            "mean_z2": 0.018725201998979084,
+            "nll": 1.0499940373869112,
+            "n": 496.0
+          },
+          "turbidity": {
+            "rmse": 0.16846968140054958,
+            "coverage95": 1.0,
+            "mean_z2": 0.002702081695133444,
+            "nll": 2.073761834702479,
+            "n": 496.0
+          },
+          "late_evidence": 0.0
+        },
+        "k4": {
+          "temperature": {
+            "rmse": 0.23679721249154712,
+            "coverage95": 1.0,
+            "mean_z2": 0.049724545673222736,
+            "nll": 0.5653010629438427,
+            "n": 480.0
+          },
+          "turbidity": {
+            "rmse": 0.1464349162385172,
+            "coverage95": 1.0,
+            "mean_z2": 0.004809306811797154,
+            "nll": 1.6854581415056245,
+            "n": 480.0
+          },
+          "late_evidence": 0.0
+        },
+        "k8": {
+          "temperature": {
+            "rmse": 0.07916390125361557,
+            "coverage95": 1.0,
+            "mean_z2": 0.04973337670320957,
+            "nll": -0.1572291244977479,
+            "n": 456.0
+          },
+          "turbidity": {
+            "rmse": 0.2561842488013313,
+            "coverage95": 1.0,
+            "mean_z2": 0.030590960786076305,
+            "nll": 1.1653496539599304,
+            "n": 456.0
+          },
+          "late_evidence": 0.0
+        }
+      },
+      "field_only": {
+        "k1": {
+          "temperature": {
+            "rmse": 0.41017220765251894,
+            "coverage95": 1.0,
+            "mean_z2": 0.06501824783580464,
+            "nll": 1.3303579491347775,
+            "n": 504.0
+          },
+          "turbidity": {
+            "rmse": 0.16708953675170443,
+            "coverage95": 1.0,
+            "mean_z2": 0.0020226275311055596,
+            "nll": 2.204391092421213,
+            "n": 504.0
+          },
+          "late_evidence": 0.0
+        },
+        "k2": {
+          "temperature": {
+            "rmse": 0.20271205481596163,
+            "coverage95": 1.0,
+            "mean_z2": 0.018725201998979084,
+            "nll": 1.0499940373869112,
+            "n": 496.0
+          },
+          "turbidity": {
+            "rmse": 0.16846968140054958,
+            "coverage95": 1.0,
+            "mean_z2": 0.002702081695133444,
+            "nll": 2.073761834702479,
+            "n": 496.0
+          },
+          "late_evidence": 0.0
+        },
+        "k4": {
+          "temperature": {
+            "rmse": 0.23679721249154712,
+            "coverage95": 1.0,
+            "mean_z2": 0.049724545673222736,
+            "nll": 0.5653010629438427,
+            "n": 480.0
+          },
+          "turbidity": {
+            "rmse": 0.1464349162385172,
+            "coverage95": 1.0,
+            "mean_z2": 0.004809306811797154,
+            "nll": 1.6854581415056245,
+            "n": 480.0
+          },
+          "late_evidence": 0.0
+        },
+        "k8": {
+          "temperature": {
+            "rmse": 0.07916390125361557,
+            "coverage95": 1.0,
+            "mean_z2": 0.04973337670320957,
+            "nll": -0.1572291244977479,
+            "n": 456.0
+          },
+          "turbidity": {
+            "rmse": 0.2561842488013313,
+            "coverage95": 1.0,
+            "mean_z2": 0.030590960786076305,
+            "nll": 1.1653496539599304,
+            "n": 456.0
+          },
+          "late_evidence": 0.0
+        }
+      },
+      "static_field": {
+        "k1": {
+          "temperature": {
+            "rmse": 0.40643670121537956,
+            "coverage95": 1.0,
+            "mean_z2": 0.03825691740592507,
+            "nll": 1.6705084921731979,
+            "n": 504.0
+          },
+          "turbidity": {
+            "rmse": 0.08944651513063234,
+            "coverage95": 1.0,
+            "mean_z2": 0.0004394982310073489,
+            "nll": 2.341059516196887,
+            "n": 504.0
+          },
+          "late_evidence": 0.0
+        },
+        "k2": {
+          "temperature": {
+            "rmse": 0.4383566751573604,
+            "coverage95": 1.0,
+            "mean_z2": 0.0461095127804867,
+            "nll": 1.6555360235277066,
+            "n": 496.0
+          },
+          "turbidity": {
+            "rmse": 0.07907109542248221,
+            "coverage95": 1.0,
+            "mean_z2": 0.00035939451362592274,
+            "nll": 2.3247433523260446,
+            "n": 496.0
+          },
+          "late_evidence": 0.0
+        },
+        "k4": {
+          "temperature": {
+            "rmse": 0.5079782175528843,
+            "coverage95": 1.0,
+            "mean_z2": 0.06360746175961714,
+            "nll": 1.650718211270006,
+            "n": 480.0
+          },
+          "turbidity": {
+            "rmse": 0.05578928755769482,
+            "coverage95": 1.0,
+            "mean_z2": 0.00018955075808384155,
+            "nll": 2.3120393604145884,
+            "n": 480.0
+          },
+          "late_evidence": 0.0
+        },
+        "k8": {
+          "temperature": {
+            "rmse": 0.40187869255143727,
+            "coverage95": 1.0,
+            "mean_z2": 0.040127963930359195,
+            "nll": 1.635266088643349,
+            "n": 456.0
+          },
+          "turbidity": {
+            "rmse": 0.05047679424529796,
+            "coverage95": 1.0,
+            "mean_z2": 0.00015743255683859728,
+            "nll": 2.308406801650074,
+            "n": 456.0
+          },
+          "late_evidence": 0.0
+        }
+      }
+    }
+  },
+  "summary": {
+    "cefd.k1.late_evidence": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "cefd.k1.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "cefd.k1.temperature.mean_z2": {
+      "mean": 0.1290841907521709,
+      "std": 0.09655504435335004,
+      "n": 3.0
+    },
+    "cefd.k1.temperature.n": {
+      "mean": 504.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "cefd.k1.temperature.nll": {
+      "mean": 1.3218382912220754,
+      "std": 0.029264394561428854,
+      "n": 3.0
+    },
+    "cefd.k1.temperature.rmse": {
+      "mean": 0.5453264001180721,
+      "std": 0.2054221835693298,
+      "n": 3.0
+    },
+    "cefd.k1.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "cefd.k1.turbidity.mean_z2": {
+      "mean": 0.0031958854104433398,
+      "std": 0.0030705381662957353,
+      "n": 3.0
+    },
+    "cefd.k1.turbidity.n": {
+      "mean": 504.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "cefd.k1.turbidity.nll": {
+      "mean": 2.17145718595218,
+      "std": 0.05953522193073551,
+      "n": 3.0
+    },
+    "cefd.k1.turbidity.rmse": {
+      "mean": 0.1910957022660139,
+      "std": 0.09771533443710359,
+      "n": 3.0
+    },
+    "cefd.k2.late_evidence": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "cefd.k2.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "cefd.k2.temperature.mean_z2": {
+      "mean": 0.042455455031185474,
+      "std": 0.024759075631005205,
+      "n": 3.0
+    },
+    "cefd.k2.temperature.n": {
+      "mean": 496.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "cefd.k2.temperature.nll": {
+      "mean": 1.002814434193273,
+      "std": 0.11094610214256012,
+      "n": 3.0
+    },
+    "cefd.k2.temperature.rmse": {
+      "mean": 0.24115433296660108,
+      "std": 0.04474805570576025,
+      "n": 3.0
+    },
+    "cefd.k2.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "cefd.k2.turbidity.mean_z2": {
+      "mean": 0.0030815107892200994,
+      "std": 0.0016210752759740004,
+      "n": 3.0
+    },
+    "cefd.k2.turbidity.n": {
+      "mean": 496.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "cefd.k2.turbidity.nll": {
+      "mean": 2.027712476734848,
+      "std": 0.056294560528455946,
+      "n": 3.0
+    },
+    "cefd.k2.turbidity.rmse": {
+      "mean": 0.17267682090451586,
+      "std": 0.055639564376139615,
+      "n": 3.0
+    },
+    "cefd.k4.late_evidence": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "cefd.k4.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "cefd.k4.temperature.mean_z2": {
+      "mean": 0.09037324511827187,
+      "std": 0.046745195155359,
+      "n": 3.0
+    },
+    "cefd.k4.temperature.n": {
+      "mean": 480.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "cefd.k4.temperature.nll": {
+      "mean": 0.5085667662395575,
+      "std": 0.14428573085272237,
+      "n": 3.0
+    },
+    "cefd.k4.temperature.rmse": {
+      "mean": 0.2396760776093517,
+      "std": 0.0034105927665486644,
+      "n": 3.0
+    },
+    "cefd.k4.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "cefd.k4.turbidity.mean_z2": {
+      "mean": 0.009672740281725125,
+      "std": 0.009028738946688935,
+      "n": 3.0
+    },
+    "cefd.k4.turbidity.n": {
+      "mean": 480.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "cefd.k4.turbidity.nll": {
+      "mean": 1.6526413422495663,
+      "std": 0.09888799235927773,
+      "n": 3.0
+    },
+    "cefd.k4.turbidity.rmse": {
+      "mean": 0.18619590140163345,
+      "std": 0.07495157190576854,
+      "n": 3.0
+    },
+    "cefd.k8.late_evidence": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "cefd.k8.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "cefd.k8.temperature.mean_z2": {
+      "mean": 0.20949781937126657,
+      "std": 0.16963678734666385,
+      "n": 3.0
+    },
+    "cefd.k8.temperature.n": {
+      "mean": 453.3333333333333,
+      "std": 4.618802153517007,
+      "n": 3.0
+    },
+    "cefd.k8.temperature.nll": {
+      "mean": -0.03144063637837723,
+      "std": 0.1938057517151204,
+      "n": 3.0
+    },
+    "cefd.k8.temperature.rmse": {
+      "mean": 0.17558459252358508,
+      "std": 0.08610320489226586,
+      "n": 3.0
+    },
+    "cefd.k8.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "cefd.k8.turbidity.mean_z2": {
+      "mean": 0.02479587499278906,
+      "std": 0.009034761275419018,
+      "n": 3.0
+    },
+    "cefd.k8.turbidity.n": {
+      "mean": 453.3333333333333,
+      "std": 4.618802153517007,
+      "n": 3.0
+    },
+    "cefd.k8.turbidity.nll": {
+      "mean": 1.204697945037407,
+      "std": 0.14105707228680583,
+      "n": 3.0
+    },
+    "cefd.k8.turbidity.rmse": {
+      "mean": 0.20774074371803594,
+      "std": 0.04228371602344617,
+      "n": 3.0
+    },
+    "field_only.k1.late_evidence": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "field_only.k1.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "field_only.k1.temperature.mean_z2": {
+      "mean": 0.1290841907521709,
+      "std": 0.09655504435335004,
+      "n": 3.0
+    },
+    "field_only.k1.temperature.n": {
+      "mean": 504.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "field_only.k1.temperature.nll": {
+      "mean": 1.3218382912220754,
+      "std": 0.029264394561428854,
+      "n": 3.0
+    },
+    "field_only.k1.temperature.rmse": {
+      "mean": 0.5453264001180721,
+      "std": 0.2054221835693298,
+      "n": 3.0
+    },
+    "field_only.k1.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "field_only.k1.turbidity.mean_z2": {
+      "mean": 0.0031958854104433398,
+      "std": 0.0030705381662957353,
+      "n": 3.0
+    },
+    "field_only.k1.turbidity.n": {
+      "mean": 504.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "field_only.k1.turbidity.nll": {
+      "mean": 2.17145718595218,
+      "std": 0.05953522193073551,
+      "n": 3.0
+    },
+    "field_only.k1.turbidity.rmse": {
+      "mean": 0.1910957022660139,
+      "std": 0.09771533443710359,
+      "n": 3.0
+    },
+    "field_only.k2.late_evidence": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "field_only.k2.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "field_only.k2.temperature.mean_z2": {
+      "mean": 0.042455455031185474,
+      "std": 0.024759075631005205,
+      "n": 3.0
+    },
+    "field_only.k2.temperature.n": {
+      "mean": 496.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "field_only.k2.temperature.nll": {
+      "mean": 1.002814434193273,
+      "std": 0.11094610214256012,
+      "n": 3.0
+    },
+    "field_only.k2.temperature.rmse": {
+      "mean": 0.24115433296660108,
+      "std": 0.04474805570576025,
+      "n": 3.0
+    },
+    "field_only.k2.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "field_only.k2.turbidity.mean_z2": {
+      "mean": 0.0030815107892200994,
+      "std": 0.0016210752759740004,
+      "n": 3.0
+    },
+    "field_only.k2.turbidity.n": {
+      "mean": 496.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "field_only.k2.turbidity.nll": {
+      "mean": 2.027712476734848,
+      "std": 0.056294560528455946,
+      "n": 3.0
+    },
+    "field_only.k2.turbidity.rmse": {
+      "mean": 0.17267682090451586,
+      "std": 0.055639564376139615,
+      "n": 3.0
+    },
+    "field_only.k4.late_evidence": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "field_only.k4.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "field_only.k4.temperature.mean_z2": {
+      "mean": 0.09037324511827187,
+      "std": 0.046745195155359,
+      "n": 3.0
+    },
+    "field_only.k4.temperature.n": {
+      "mean": 480.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "field_only.k4.temperature.nll": {
+      "mean": 0.5085667662395575,
+      "std": 0.14428573085272237,
+      "n": 3.0
+    },
+    "field_only.k4.temperature.rmse": {
+      "mean": 0.2396760776093517,
+      "std": 0.0034105927665486644,
+      "n": 3.0
+    },
+    "field_only.k4.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "field_only.k4.turbidity.mean_z2": {
+      "mean": 0.009672740281725125,
+      "std": 0.009028738946688935,
+      "n": 3.0
+    },
+    "field_only.k4.turbidity.n": {
+      "mean": 480.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "field_only.k4.turbidity.nll": {
+      "mean": 1.6526413422495663,
+      "std": 0.09888799235927773,
+      "n": 3.0
+    },
+    "field_only.k4.turbidity.rmse": {
+      "mean": 0.18619590140163345,
+      "std": 0.07495157190576854,
+      "n": 3.0
+    },
+    "field_only.k8.late_evidence": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "field_only.k8.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "field_only.k8.temperature.mean_z2": {
+      "mean": 0.20949781937126657,
+      "std": 0.16963678734666385,
+      "n": 3.0
+    },
+    "field_only.k8.temperature.n": {
+      "mean": 453.3333333333333,
+      "std": 4.618802153517007,
+      "n": 3.0
+    },
+    "field_only.k8.temperature.nll": {
+      "mean": -0.03144063637837723,
+      "std": 0.1938057517151204,
+      "n": 3.0
+    },
+    "field_only.k8.temperature.rmse": {
+      "mean": 0.17558459252358508,
+      "std": 0.08610320489226586,
+      "n": 3.0
+    },
+    "field_only.k8.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "field_only.k8.turbidity.mean_z2": {
+      "mean": 0.02479587499278906,
+      "std": 0.009034761275419018,
+      "n": 3.0
+    },
+    "field_only.k8.turbidity.n": {
+      "mean": 453.3333333333333,
+      "std": 4.618802153517007,
+      "n": 3.0
+    },
+    "field_only.k8.turbidity.nll": {
+      "mean": 1.204697945037407,
+      "std": 0.14105707228680583,
+      "n": 3.0
+    },
+    "field_only.k8.turbidity.rmse": {
+      "mean": 0.20774074371803594,
+      "std": 0.04228371602344617,
+      "n": 3.0
+    },
+    "static_field.k1.late_evidence": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "static_field.k1.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "static_field.k1.temperature.mean_z2": {
+      "mean": 0.07374768707558722,
+      "std": 0.06298585494374477,
+      "n": 3.0
+    },
+    "static_field.k1.temperature.n": {
+      "mean": 504.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "static_field.k1.temperature.nll": {
+      "mean": 1.6834202724833558,
+      "std": 0.02312196835417765,
+      "n": 3.0
+    },
+    "static_field.k1.temperature.rmse": {
+      "mean": 0.5294196423110976,
+      "std": 0.2210105948064291,
+      "n": 3.0
+    },
+    "static_field.k1.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "static_field.k1.turbidity.mean_z2": {
+      "mean": 0.00034769441823019257,
+      "std": 0.00011986695147796436,
+      "n": 3.0
+    },
+    "static_field.k1.turbidity.n": {
+      "mean": 504.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "static_field.k1.turbidity.nll": {
+      "mean": 2.3369198858030695,
+      "std": 0.00714927566402372,
+      "n": 3.0
+    },
+    "static_field.k1.turbidity.rmse": {
+      "mean": 0.077657997559632,
+      "std": 0.015655896399609712,
+      "n": 3.0
+    },
+    "static_field.k2.late_evidence": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "static_field.k2.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "static_field.k2.temperature.mean_z2": {
+      "mean": 0.06119778779171533,
+      "std": 0.027662945004467143,
+      "n": 3.0
+    },
+    "static_field.k2.temperature.n": {
+      "mean": 496.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "static_field.k2.temperature.nll": {
+      "mean": 1.6614923470606435,
+      "std": 0.01108301532739475,
+      "n": 3.0
+    },
+    "static_field.k2.temperature.rmse": {
+      "mean": 0.49590751210826073,
+      "std": 0.10744894042662988,
+      "n": 3.0
+    },
+    "static_field.k2.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "static_field.k2.turbidity.mean_z2": {
+      "mean": 0.00031078454671922196,
+      "std": 0.0001458646609194693,
+      "n": 3.0
+    },
+    "static_field.k2.turbidity.n": {
+      "mean": 496.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "static_field.k2.turbidity.nll": {
+      "mean": 2.32328271411972,
+      "std": 0.002558854491345233,
+      "n": 3.0
+    },
+    "static_field.k2.turbidity.rmse": {
+      "mean": 0.07077831681457723,
+      "std": 0.01892850145032629,
+      "n": 3.0
+    },
+    "static_field.k4.late_evidence": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "static_field.k4.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "static_field.k4.temperature.mean_z2": {
+      "mean": 0.08455410996684516,
+      "std": 0.059488428749863695,
+      "n": 3.0
+    },
+    "static_field.k4.temperature.n": {
+      "mean": 480.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "static_field.k4.temperature.nll": {
+      "mean": 1.661314878261453,
+      "std": 0.02850215822130135,
+      "n": 3.0
+    },
+    "static_field.k4.temperature.rmse": {
+      "mean": 0.5620995165933333,
+      "std": 0.19968570222439674,
+      "n": 3.0
+    },
+    "static_field.k4.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "static_field.k4.turbidity.mean_z2": {
+      "mean": 0.00018490218240313242,
+      "std": 0.00013509685745442625,
+      "n": 3.0
+    },
+    "static_field.k4.turbidity.n": {
+      "mean": 480.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "static_field.k4.turbidity.nll": {
+      "mean": 2.3121524630592565,
+      "std": 0.0013624662503541405,
+      "n": 3.0
+    },
+    "static_field.k4.turbidity.rmse": {
+      "mean": 0.051848673759673135,
+      "std": 0.022404477318237477,
+      "n": 3.0
+    },
+    "static_field.k8.late_evidence": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "static_field.k8.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "static_field.k8.temperature.mean_z2": {
+      "mean": 0.0695080524289588,
+      "std": 0.048110575063617586,
+      "n": 3.0
+    },
+    "static_field.k8.temperature.n": {
+      "mean": 453.3333333333333,
+      "std": 4.618802153517007,
+      "n": 3.0
+    },
+    "static_field.k8.temperature.nll": {
+      "mean": 1.6498702097182072,
+      "std": 0.023747801875282047,
+      "n": 3.0
+    },
+    "static_field.k8.temperature.rmse": {
+      "mean": 0.5096031862099827,
+      "std": 0.17291662049732434,
+      "n": 3.0
+    },
+    "static_field.k8.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "static_field.k8.turbidity.mean_z2": {
+      "mean": 0.00017045625493503723,
+      "std": 0.00013372917345632834,
+      "n": 3.0
+    },
+    "static_field.k8.turbidity.n": {
+      "mean": 453.3333333333333,
+      "std": 4.618802153517007,
+      "n": 3.0
+    },
+    "static_field.k8.turbidity.nll": {
+      "mean": 2.3083284132720423,
+      "std": 0.00038390567771618165,
+      "n": 3.0
+    },
+    "static_field.k8.turbidity.rmse": {
+      "mean": 0.049243143855121234,
+      "std": 0.022119237899496897,
+      "n": 3.0
+    }
+  },
+  "wall_time_s": 44.58298379999178,
+  "environment": {
+    "python": "3.11.15",
+    "device": "cpu",
+    "platform": "Windows-10-10.0.26200-SP0"
+  },
+  "claim_note": "Numbers are what this run produced; baseline wins are reported as they are."
+}

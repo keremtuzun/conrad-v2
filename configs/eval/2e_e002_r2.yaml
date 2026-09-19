@@ -1,0 +1,24 @@
+# 2E-E002-R2 entity cover estimation under turbidity, production (uncoupled) arm first
+experiment: {id: 2E-E002-R2}
+# Local 2E seed partitions (SYNTHETIC_ONLY; configs/eval/partitions.yaml covers MCBR/mission only).
+# Disjoint. 2026201-2026203 were inspected in earlier 2E work, so they are development.
+# Design on development, select on validation, report final ONCE.
+partition: final
+partitions:
+  development: [2026201, 2026202, 2026203, 6100000, 6100001, 6100002, 6100003, 6100004]
+  validation: [6200000, 6200001, 6200002, 6200003, 6200004, 6200005, 6200006, 6200007]
+  final: [6300000, 6300001, 6300002, 6300003, 6300004, 6300005, 6300006, 6300007, 6300008, 6300009, 6300010, 6300011]
+seeds: [6300000, 6300001, 6300002, 6300003, 6300004, 6300005, 6300006, 6300007, 6300008, 6300009, 6300010, 6300011]
+twin_config: configs/sim/twin2e_test_small.yaml
+turbidity_levels_ntu: [1.0, 4.0, 10.0, 25.0]
+variants: [production, cefd, uncoupled, entity_only]
+n_steps: 96
+dt_s: 900.0
+eval_every_steps: 12
+n_moorings: 3
+footprint_radius_m: 6.0
+survey_altitude_m: 2.5
+pose_sigma_m: 0.3
+# Belief process noise matched to the twin's LOGGED ecology.time_scale (50x): 0.05 * sqrt(50) ~= 0.35
+model2e:
+  entity: {cover_process_sd_per_sqrt_day: 0.35}

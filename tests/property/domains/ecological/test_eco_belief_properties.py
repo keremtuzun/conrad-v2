@@ -21,7 +21,8 @@ reading = st.tuples(
 def test_field_variance_stays_between_floor_and_prior(readings):
     fg = FieldBeliefGrid(CFG)
     fb = fg.fields["temperature"]
-    floor = CFG.variance_floor_fraction * fb.prior_var
+    # level floor + local floor; prior_var = level prior + largest admissible (EB) local + trend variance
+    floor = CFG.variance_floor_fraction * (fb.spec.prior_sd**2 + fb.spec.local_sd**2)
     for x, y, z, v, t in readings:
         fg.update_point("temperature", 0, np.array([x, y, z]), v, 0.05**2, round(t * NS))
         assert np.all(fb.var >= floor - 1e-12) and np.all(fb.var <= fb.prior_var * (1 + 1e-9))

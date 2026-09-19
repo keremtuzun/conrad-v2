@@ -14,6 +14,10 @@ EXPERIMENTS = {
     "2e_e001": e001_field.run,
     "2e_e002": e002_turbidity.run,
     "2e_e003": e003_coupling.run,
+    # R2: repaired field model, production arm, FINAL partition (docs/audits/MODEL2E_REPAIR.md)
+    "2e_e001_r2": e001_field.run,
+    "2e_e002_r2": e002_turbidity.run,
+    "2e_e003_r2": e003_coupling.run,
 }
 
 

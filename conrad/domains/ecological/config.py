@@ -38,6 +38,9 @@ class FieldSpec(ConradModel):
     correlation_time_s: float = Field(gt=0, description="OU relaxation time of local deviations")
     level_correlation_time_s: float = Field(gt=0, description="OU relaxation time of the level")
     sensor_sd: float = Field(gt=0, description="datasheet sensor noise (not taken from the simulator)")
+    depth_trend_sd: float = Field(
+        default=0.0, ge=0, description="prior sd of a linear depth trend in the mean, per metre (0 = none)"
+    )
     nonnegative: bool = False
 
 
@@ -52,13 +55,32 @@ class FieldModelConfig(ConradModel):
     """
 
     local_var_prior_log10_sd: float = Field(
-        default=1.0, gt=0, description="width of the log-normal tau^2 prior, in decades (ENGINEERING_ESTIMATE)"
+        default=1.0,
+        gt=0,
+        description="width of the log-normal tau^2 prior, in decades (ENGINEERING_ESTIMATE)",
     )
     tau2_grid_decades: tuple[float, float] = Field(
-        default=(-5.0, 1.0), description="EB search range for tau^2 around local_sd^2, in decades"
+        default=(-4.0, 4.0), description="EB search range for tau^2 around local_sd^2, in decades"
     )
-    drift_prior_pairs: float = Field(
-        default=2.0, gt=0, description="pseudo-count (reading pairs) of the drift-rate prior 2 local_sd^2 / T"
+    length_scale_multipliers: tuple[float, ...] = Field(
+        default=(0.5, 1.0, 2.0, 4.0),
+        description="EB candidates for the (horizontal, vertical) kernel length scales, x the configured ones",
+    )
+    length_scale_prior_log2_sd: float = Field(
+        default=1.0, gt=0, description="log-normal prior width of each length-scale multiplier, in octaves"
+    )
+    drift_prior_exposure: float = Field(
+        default=1.0,
+        gt=0,
+        description="weight of the drift-rate prior 2 local_sd^2 / T, as elapsed station time in units of T",
+    )
+    noise_prior_pairs: float = Field(
+        default=20.0,
+        gt=0,
+        description="pseudo-count (reading pairs) keeping the noise scale at the datasheet 1",
+    )
+    noise_scale_bounds: tuple[float, float] = Field(
+        default=(0.01, 10.0), description="admissible EB factor on the stated sensor noise variance"
     )
     station_merge_radius_m: float = Field(
         default=2.0, gt=0, description="readings within this distance of a station join it (pose noise)"
@@ -74,18 +96,20 @@ def _default_fields() -> dict[str, FieldSpec]:
             units="degC",
             prior_mean=17.0,
             prior_sd=6.0,
-            local_sd=2.0,
+            local_sd=0.11,  # EB_DEV_ESTIMATE: pooled tau^2 ~0.012 degC^2 (2E-E001 DEV, k=8, with depth trend); was 2.0
             level_correlation_time_s=864000.0,
             length_scale_h_m=40.0,
             length_scale_v_m=6.0,
             correlation_time_s=86400.0,
             sensor_sd=0.05,
+            # ENGINEERING_ESTIMATE: stratified shelf seas show vertical gradients of order 0.1 degC/m
+            depth_trend_sd=0.1,
         ),
         "turbidity": FieldSpec(
             units="NTU",
             prior_mean=3.0,
             prior_sd=4.0,
-            local_sd=4.0,
+            local_sd=0.063,  # EB_DEV_ESTIMATE: pooled tau^2 ~0.004 NTU^2 (2E-E001 DEV, k=8); was 4.0 (no source)
             level_correlation_time_s=86400.0,
             length_scale_h_m=30.0,
             length_scale_v_m=8.0,

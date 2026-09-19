@@ -1,0 +1,23 @@
+# 2E-E001-R2 field reconstruction vs sensor count, repaired field model (docs/audits/MODEL2E_REPAIR.md)
+experiment: {id: 2E-E001-R2}
+# Local 2E seed partitions (SYNTHETIC_ONLY; configs/eval/partitions.yaml covers MCBR/mission only).
+# Disjoint. 2026201-2026203 were inspected in earlier 2E work, so they are development.
+# Design on development, select on validation, report final ONCE.
+partition: final
+partitions:
+  development: [2026201, 2026202, 2026203, 6100000, 6100001, 6100002, 6100003, 6100004]
+  validation: [6200000, 6200001, 6200002, 6200003, 6200004, 6200005, 6200006, 6200007]
+  final: [6300000, 6300001, 6300002, 6300003, 6300004, 6300005, 6300006, 6300007, 6300008, 6300009, 6300010, 6300011]
+seeds: [6300000, 6300001, 6300002, 6300003, 6300004, 6300005, 6300006, 6300007, 6300008, 6300009, 6300010, 6300011]
+twin_config: configs/sim/twin2e_test_small.yaml
+sensor_counts: [1, 2, 4, 8]
+variants: [production, field_only, static_field, cefd]
+n_steps: 96
+dt_s: 900.0
+eval_every_steps: 12
+anomaly_c: 3.0
+spike_ntu: 8.0
+event_radius_m: 25.0
+pose_sigma_m: 0.3
+model2e:
+  entity: {cover_process_sd_per_sqrt_day: 0.35}

@@ -60,27 +60,29 @@ def test_field_only_baseline_ignores_survey_evidence(make_model, maker, reg):
 def test_variance_grows_away_from_sensor_and_with_time(make_model, maker):
     m = make_model()
     sensor = np.array([-30.0, -30.0, -17.5])
-    # the first reading mostly pins the domain-wide level; the second resolves the local structure
-    m.ingest([maker.field("temperature", 20.0, t, pos=tuple(sensor)) for t in (9.0, 10.0)])
+    # turbidity has no depth trend, so the residual variance is purely the local-deviation GP
+    m.ingest([maker.field("turbidity", 5.0, t, pos=tuple(sensor)) for t in (9.0, 10.0)])
     m.update_beliefs(stamp(10, "SIM"))
-    fb = m.fields.fields["temperature"]
+    fb = m.fields.fields["turbidity"]
     d = np.linalg.norm(m.fields.grid.centers - sensor, axis=1)
     near, far = np.argmin(d), np.argmax(d)
     assert fb.resid_var[0, near] < 0.5 * fb.resid_var[0, far]  # local variance
-    assert fb.resid_var[0, far] == pytest.approx(fb.local_var, rel=1e-3)
+    # far away the local variance returns to the (empirical-Bayes) local scale; resid_var also carries the
+    # level/deviation posterior covariance, hence the ~1 % tolerance
+    assert fb.resid_var[0, far] == pytest.approx(fb.local_var, rel=2e-2)
     assert fb.var[0, near] < fb.var[0, far]  # total variance too
     k = m.fields.grid.kernel(sensor, fb.spec)  # anisotropic correlation to the sensor
     order = np.argsort(-k)
     assert np.all(np.diff(fb.var[0, order]) >= -1e-9)  # variance grows as correlation falls
     t0 = fb.time_ns
-    _, v1 = m.fields.moments_at_time("temperature", t0 + 3600 * 10**9)
-    _, v2 = m.fields.moments_at_time("temperature", t0 + 36000 * 10**9)
+    _, v1 = m.fields.moments_at_time("turbidity", t0 + 3600 * 10**9)
+    _, v2 = m.fields.moments_at_time("turbidity", t0 + 36000 * 10**9)
     assert v1[0].min() > fb.var[0].min() and v2[0].min() > v1[0].min()
     p_short = m.predict(60.0, stamp(10, "SIM"))
     p_long = m.predict(86400.0, stamp(10, "SIM"))
 
     def sd(ms):
-        return next(x for x in ms if x.belief_id == m.field_ids["temperature"]).ecological.quantities["sd"]
+        return next(x for x in ms if x.belief_id == m.field_ids["turbidity"]).ecological.quantities["sd"]
 
     assert sd(p_long) > sd(p_short)
     assert all(c.status in (K.PREDICTED, K.UNKNOWN) for x in p_long for c in x.state_summary)

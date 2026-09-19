@@ -1,0 +1,1785 @@
+{
+  "experiment_id": "2E-E003",
+  "architecture_id": "conrad_v2_impl_freeze_v0_2",
+  "data": "SYNTHETIC_ONLY Twin2E small world (configs/sim/twin2e_test_small.yaml)",
+  "candidate": "cefd",
+  "baselines": [
+    "uncoupled"
+  ],
+  "seeds": [
+    2026201,
+    2026202,
+    2026203
+  ],
+  "config": {
+    "experiment": {
+      "id": "2E-E003"
+    },
+    "seeds": [
+      2026201,
+      2026202,
+      2026203
+    ],
+    "twin_config": "configs/sim/twin2e_test_small.yaml",
+    "variants": [
+      "cefd",
+      "uncoupled"
+    ],
+    "n_steps": 96,
+    "dt_s": 900.0,
+    "eval_every_steps": 12,
+    "n_moorings": 4,
+    "base_temperature_c": 14.0,
+    "hot_delta_c": 8.0,
+    "confounder_magnitude": 8.0,
+    "spike_ntu": 15.0,
+    "spike_radius_m": 30.0,
+    "spike_time_s": 21600.0,
+    "pose_sigma_m": 0.3,
+    "model2e": {
+      "entity": {
+        "cover_process_sd_per_sqrt_day": 0.35
+      },
+      "coupling": {
+        "stress_threshold_c": 20.0
+      }
+    }
+  },
+  "per_seed": {
+    "2026201": {
+      "base": {
+        "cefd": {
+          "cover": {
+            "rmse": 0.04932438438475289,
+            "coverage95": 1.0,
+            "mean_z2": 0.32475253955578753,
+            "nll": -1.3528689990591918,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.2126044103486729,
+            "coverage95": 1.0,
+            "mean_z2": 0.13243344335135282,
+            "nll": 0.2220407565426231,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.31116123802976575,
+            "coverage95": 1.0,
+            "mean_z2": 0.03954398793938642,
+            "nll": 1.3942550516950274,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 1.5071533891318774e-21,
+          "confident_stress_on_healthy_fraction": 0.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.0449074008067858,
+            "coverage95": 1.0,
+            "mean_z2": 0.16723287487822783,
+            "nll": -1.222391128429553,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.2126044103486729,
+            "coverage95": 1.0,
+            "mean_z2": 0.13243344335135282,
+            "nll": 0.2220407565426231,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.3111252211810663,
+            "coverage95": 1.0,
+            "mean_z2": 0.03953551405636317,
+            "nll": 1.394250814753516,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 0.0,
+          "confident_stress_on_healthy_fraction": 0.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "true_mean_condition": 0.9537790662334705,
+        "CB_entity_cover_rmse": -0.00441698357796709,
+        "CB_field_temperature_rmse": 0.0,
+        "CB_field_turbidity_rmse": -3.601684869947164e-05,
+        "mean_abs_cover_shift_cefd_vs_uncoupled": 0.00993917020494974
+      },
+      "hot_counterfactual": {
+        "cefd": {
+          "cover": {
+            "rmse": 0.05564875033985639,
+            "coverage95": 1.0,
+            "mean_z2": 0.3627230336583187,
+            "nll": -1.3066114248600782,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.22158499486079095,
+            "coverage95": 1.0,
+            "mean_z2": 0.18076928275163454,
+            "nll": 0.24620867624276394,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.31115943122771267,
+            "coverage95": 1.0,
+            "mean_z2": 0.039543408399347765,
+            "nll": 1.3942547619250083,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 0.9521340381004239,
+          "confident_stress_on_healthy_fraction": 0.16666666666666666,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.05585640083856178,
+            "coverage95": 1.0,
+            "mean_z2": 0.2342935074202989,
+            "nll": -1.1888608121585174,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.22158499486079095,
+            "coverage95": 1.0,
+            "mean_z2": 0.18076928275163454,
+            "nll": 0.24620867624276394,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.31112532608871696,
+            "coverage95": 1.0,
+            "mean_z2": 0.039535534187026336,
+            "nll": 1.3942508248188474,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 0.0,
+          "confident_stress_on_healthy_fraction": 0.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "true_mean_condition": 0.1711523570161888,
+        "CB_entity_cover_rmse": 0.00020765049870539315,
+        "CB_field_temperature_rmse": 0.0,
+        "CB_field_turbidity_rmse": -3.410513899571033e-05,
+        "mean_abs_cover_shift_cefd_vs_uncoupled": 0.012855508933409218
+      },
+      "confounded_stable": {
+        "cefd": {
+          "cover": {
+            "rmse": 0.05133124899002089,
+            "coverage95": 1.0,
+            "mean_z2": 0.33418359597654596,
+            "nll": -1.3208854339241,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.22158499486079095,
+            "coverage95": 1.0,
+            "mean_z2": 0.18076928275163454,
+            "nll": 0.24620867624276394,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.31116114261626676,
+            "coverage95": 1.0,
+            "mean_z2": 0.039543963566475784,
+            "nll": 1.3942550395085724,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 0.9521340381004239,
+          "confident_stress_on_healthy_fraction": 1.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.0449074008067858,
+            "coverage95": 1.0,
+            "mean_z2": 0.16723287487822783,
+            "nll": -1.222391128429553,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.22158499486079095,
+            "coverage95": 1.0,
+            "mean_z2": 0.18076928275163454,
+            "nll": 0.24620867624276394,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.3111252211810663,
+            "coverage95": 1.0,
+            "mean_z2": 0.03953551405636317,
+            "nll": 1.394250814753516,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 0.0,
+          "confident_stress_on_healthy_fraction": 0.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "true_mean_condition": 0.9537790662334705,
+        "CB_entity_cover_rmse": -0.00642384818323509,
+        "CB_field_temperature_rmse": 0.0,
+        "CB_field_turbidity_rmse": -3.592143520048108e-05,
+        "mean_abs_cover_shift_cefd_vs_uncoupled": 0.013920247736376444
+      },
+      "confounded_disturbed": {
+        "cefd": {
+          "cover": {
+            "rmse": 0.061283151266836165,
+            "coverage95": 1.0,
+            "mean_z2": 0.3745229095739148,
+            "nll": -1.3279733009898045,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.2126044103486729,
+            "coverage95": 1.0,
+            "mean_z2": 0.13243344335135282,
+            "nll": 0.2220407565426231,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.3111449350461267,
+            "coverage95": 1.0,
+            "mean_z2": 0.03953986563535221,
+            "nll": 1.3942529905430106,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 1.5071533891318774e-21,
+          "confident_stress_on_healthy_fraction": 0.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.0713118012478662,
+            "coverage95": 1.0,
+            "mean_z2": 0.356086492498255,
+            "nll": -1.1279643196195392,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.2126044103486729,
+            "coverage95": 1.0,
+            "mean_z2": 0.13243344335135282,
+            "nll": 0.2220407565426231,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.3111255977741839,
+            "coverage95": 1.0,
+            "mean_z2": 0.03953558060333058,
+            "nll": 1.3942508480269997,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 0.0,
+          "confident_stress_on_healthy_fraction": 0.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "true_mean_condition": 0.9537790662334705,
+        "CB_entity_cover_rmse": 0.010028649981030029,
+        "CB_field_temperature_rmse": 0.0,
+        "CB_field_turbidity_rmse": -1.9337271942809764e-05,
+        "mean_abs_cover_shift_cefd_vs_uncoupled": 0.004066932810812991
+      }
+    },
+    "2026202": {
+      "base": {
+        "cefd": {
+          "cover": {
+            "rmse": 0.05876551953593053,
+            "coverage95": 1.0,
+            "mean_z2": 0.28000116980339046,
+            "nll": -1.0585714935815338,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.10867189384240396,
+            "coverage95": 1.0,
+            "mean_z2": 0.03595736634882814,
+            "nll": 0.16569151386656802,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.25991561510023725,
+            "coverage95": 1.0,
+            "mean_z2": 0.01973960353449159,
+            "nll": 1.3828855879209805,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 5.81033810534886e-70,
+          "confident_stress_on_healthy_fraction": 0.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.06286334647462119,
+            "coverage95": 1.0,
+            "mean_z2": 0.2759039675675448,
+            "nll": -1.0316888157084108,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.10867189384240396,
+            "coverage95": 1.0,
+            "mean_z2": 0.03595736634882814,
+            "nll": 0.16569151386656802,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.26010423409616945,
+            "coverage95": 1.0,
+            "mean_z2": 0.01976469761402548,
+            "nll": 1.3828981349607474,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 0.0,
+          "confident_stress_on_healthy_fraction": 0.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "true_mean_condition": 0.9911923737014989,
+        "CB_entity_cover_rmse": 0.004097826938690659,
+        "CB_field_temperature_rmse": 0.0,
+        "CB_field_turbidity_rmse": 0.00018861899593219933,
+        "mean_abs_cover_shift_cefd_vs_uncoupled": 0.011709343703116985
+      },
+      "hot_counterfactual": {
+        "cefd": {
+          "cover": {
+            "rmse": 0.05906947751849377,
+            "coverage95": 1.0,
+            "mean_z2": 0.26708579973862406,
+            "nll": -1.0304983721061147,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.19526427289794054,
+            "coverage95": 1.0,
+            "mean_z2": 0.08764334794893733,
+            "nll": 0.1915345046666226,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.2599211328482185,
+            "coverage95": 1.0,
+            "mean_z2": 0.01974018041475583,
+            "nll": 1.3828858763611125,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 0.9999748095005133,
+          "confident_stress_on_healthy_fraction": 0.8333333333333334,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.05887468365883319,
+            "coverage95": 1.0,
+            "mean_z2": 0.24478444505778593,
+            "nll": -1.04724857696329,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.19526427289794054,
+            "coverage95": 1.0,
+            "mean_z2": 0.08764334794893733,
+            "nll": 0.1915345046666226,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.2601042308937669,
+            "coverage95": 1.0,
+            "mean_z2": 0.019764695802987287,
+            "nll": 1.3828981340552282,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 0.0,
+          "confident_stress_on_healthy_fraction": 0.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "true_mean_condition": 0.8250200255971615,
+        "CB_entity_cover_rmse": -0.0001947938596605775,
+        "CB_field_temperature_rmse": 0.0,
+        "CB_field_turbidity_rmse": 0.00018309804554839104,
+        "mean_abs_cover_shift_cefd_vs_uncoupled": 0.007831145937508438
+      },
+      "confounded_stable": {
+        "cefd": {
+          "cover": {
+            "rmse": 0.06035374397489318,
+            "coverage95": 1.0,
+            "mean_z2": 0.2734684730123283,
+            "nll": -1.0273071585451974,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.19526427289794054,
+            "coverage95": 1.0,
+            "mean_z2": 0.08764334794893733,
+            "nll": 0.1915345046666226,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.25991632348090404,
+            "coverage95": 1.0,
+            "mean_z2": 0.019739681883823544,
+            "nll": 1.3828856270956464,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 0.9999748095005133,
+          "confident_stress_on_healthy_fraction": 1.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.06286334647462119,
+            "coverage95": 1.0,
+            "mean_z2": 0.2759039675675448,
+            "nll": -1.0316888157084108,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.19526427289794054,
+            "coverage95": 1.0,
+            "mean_z2": 0.08764334794893733,
+            "nll": 0.1915345046666226,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.26010423409616945,
+            "coverage95": 1.0,
+            "mean_z2": 0.01976469761402548,
+            "nll": 1.3828981349607474,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 0.0,
+          "confident_stress_on_healthy_fraction": 0.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "true_mean_condition": 0.9911923737014989,
+        "CB_entity_cover_rmse": 0.0025096024997280086,
+        "CB_field_temperature_rmse": 0.0,
+        "CB_field_turbidity_rmse": 0.00018791061526540753,
+        "mean_abs_cover_shift_cefd_vs_uncoupled": 0.01608078718673655
+      },
+      "confounded_disturbed": {
+        "cefd": {
+          "cover": {
+            "rmse": 0.07633896965283475,
+            "coverage95": 1.0,
+            "mean_z2": 0.349093396640242,
+            "nll": -1.0240205647742058,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.10867189384240396,
+            "coverage95": 1.0,
+            "mean_z2": 0.03595736634882814,
+            "nll": 0.16569151386656802,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.2600398817130711,
+            "coverage95": 1.0,
+            "mean_z2": 0.01975643830501879,
+            "nll": 1.3828940053062442,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 5.81033810534886e-70,
+          "confident_stress_on_healthy_fraction": 0.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.077242176538163,
+            "coverage95": 1.0,
+            "mean_z2": 0.3347306721253654,
+            "nll": -1.0022754634295004,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.10867189384240396,
+            "coverage95": 1.0,
+            "mean_z2": 0.03595736634882814,
+            "nll": 0.16569151386656802,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.260104085212468,
+            "coverage95": 1.0,
+            "mean_z2": 0.019764637147457152,
+            "nll": 1.382898104727463,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 0.0,
+          "confident_stress_on_healthy_fraction": 0.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "true_mean_condition": 0.9911923737014989,
+        "CB_entity_cover_rmse": 0.0009032068853282449,
+        "CB_field_temperature_rmse": 0.0,
+        "CB_field_turbidity_rmse": 6.420349939689762e-05,
+        "mean_abs_cover_shift_cefd_vs_uncoupled": 0.0027230291920994753
+      }
+    },
+    "2026203": {
+      "base": {
+        "cefd": {
+          "cover": {
+            "rmse": 0.05236005369157596,
+            "coverage95": 1.0,
+            "mean_z2": 0.3666227664236376,
+            "nll": -1.3468872574804127,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.03007396419452488,
+            "coverage95": 1.0,
+            "mean_z2": 0.004124674709193497,
+            "nll": 0.14841889847291612,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.24326005805006864,
+            "coverage95": 1.0,
+            "mean_z2": 0.01937222564208818,
+            "nll": 1.4060335758306906,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 5.328045547785208e-32,
+          "confident_stress_on_healthy_fraction": 0.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.04796596942197274,
+            "coverage95": 1.0,
+            "mean_z2": 0.19877785578101878,
+            "nll": -1.2401835413318183,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.03007396419452488,
+            "coverage95": 1.0,
+            "mean_z2": 0.004124674709193497,
+            "nll": 0.14841889847291612,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.24322933762914345,
+            "coverage95": 1.0,
+            "mean_z2": 0.01936988810412593,
+            "nll": 1.4060324070617094,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 0.0,
+          "confident_stress_on_healthy_fraction": 0.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "true_mean_condition": 0.9730973112698554,
+        "CB_entity_cover_rmse": -0.004394084269603221,
+        "CB_field_temperature_rmse": 0.0,
+        "CB_field_turbidity_rmse": -3.0720420925195446e-05,
+        "mean_abs_cover_shift_cefd_vs_uncoupled": 0.019520672309478997
+      },
+      "hot_counterfactual": {
+        "cefd": {
+          "cover": {
+            "rmse": 0.05419261700855238,
+            "coverage95": 1.0,
+            "mean_z2": 0.37587228385332017,
+            "nll": -1.3063665796559,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.1695199154931143,
+            "coverage95": 1.0,
+            "mean_z2": 0.08174238814035255,
+            "nll": 0.1872277551884956,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.24326003479078723,
+            "coverage95": 1.0,
+            "mean_z2": 0.01937223682114522,
+            "nll": 1.406033581420219,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 0.9993875531558373,
+          "confident_stress_on_healthy_fraction": 0.6666666666666666,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.048689687677235416,
+            "coverage95": 1.0,
+            "mean_z2": 0.2038048494073719,
+            "nll": -1.2376700445186417,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.1695199154931143,
+            "coverage95": 1.0,
+            "mean_z2": 0.08174238814035255,
+            "nll": 0.1872277551884956,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.24322933610807587,
+            "coverage95": 1.0,
+            "mean_z2": 0.019369887719785706,
+            "nll": 1.4060324068695391,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 0.0,
+          "confident_stress_on_healthy_fraction": 0.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "true_mean_condition": 0.6525378009467353,
+        "CB_entity_cover_rmse": -0.005502929331316964,
+        "CB_field_temperature_rmse": 0.0,
+        "CB_field_turbidity_rmse": -3.069868271135534e-05,
+        "mean_abs_cover_shift_cefd_vs_uncoupled": 0.021235996947645636
+      },
+      "confounded_stable": {
+        "cefd": {
+          "cover": {
+            "rmse": 0.05378118914419979,
+            "coverage95": 1.0,
+            "mean_z2": 0.36928822070496675,
+            "nll": -1.3096587914492115,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.1695199154931143,
+            "coverage95": 1.0,
+            "mean_z2": 0.08174238814035255,
+            "nll": 0.1872277551884956,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.24325987935252052,
+            "coverage95": 1.0,
+            "mean_z2": 0.019372210716491745,
+            "nll": 1.4060335683678922,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 0.9993875531558373,
+          "confident_stress_on_healthy_fraction": 1.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.04796596942197274,
+            "coverage95": 1.0,
+            "mean_z2": 0.19877785578101878,
+            "nll": -1.2401835413318183,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.1695199154931143,
+            "coverage95": 1.0,
+            "mean_z2": 0.08174238814035255,
+            "nll": 0.1872277551884956,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.24322933762914345,
+            "coverage95": 1.0,
+            "mean_z2": 0.01936988810412593,
+            "nll": 1.4060324070617094,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 0.0,
+          "confident_stress_on_healthy_fraction": 0.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "true_mean_condition": 0.9730973112698554,
+        "CB_entity_cover_rmse": -0.005815219722227052,
+        "CB_field_temperature_rmse": 0.0,
+        "CB_field_turbidity_rmse": -3.05417233770755e-05,
+        "mean_abs_cover_shift_cefd_vs_uncoupled": 0.022295468282376645
+      },
+      "confounded_disturbed": {
+        "cefd": {
+          "cover": {
+            "rmse": 0.06234609470639041,
+            "coverage95": 1.0,
+            "mean_z2": 0.42463039358841287,
+            "nll": -1.317881715590489,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.03007396419452488,
+            "coverage95": 1.0,
+            "mean_z2": 0.004124674709193497,
+            "nll": 0.14841889847291612,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.24324347441242375,
+            "coverage95": 1.0,
+            "mean_z2": 0.01937097014378356,
+            "nll": 1.4060329480815381,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 5.328045547785208e-32,
+          "confident_stress_on_healthy_fraction": 0.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.06153136497531346,
+            "coverage95": 0.9791666666666666,
+            "mean_z2": 0.2838585937891446,
+            "nll": -1.1976431723277556,
+            "n": 48.0
+          },
+          "temperature": {
+            "rmse": 0.03007396419452488,
+            "coverage95": 1.0,
+            "mean_z2": 0.004124674709193497,
+            "nll": 0.14841889847291612,
+            "n": 512.0
+          },
+          "turbidity": {
+            "rmse": 0.24322914856726513,
+            "coverage95": 1.0,
+            "mean_z2": 0.019369836264735114,
+            "nll": 1.406032381142014,
+            "n": 512.0
+          },
+          "mean_stress_likelihood": 0.0,
+          "confident_stress_on_healthy_fraction": 0.0,
+          "damage_claims": 6.0,
+          "non_unknown_damage_claims": 0.0,
+          "observed_damage_claims": 0.0,
+          "UEI": 0.0
+        },
+        "true_mean_condition": 0.9730973112698554,
+        "CB_entity_cover_rmse": -0.0008147297310769491,
+        "CB_field_temperature_rmse": 0.0,
+        "CB_field_turbidity_rmse": -1.4325845158619233e-05,
+        "mean_abs_cover_shift_cefd_vs_uncoupled": 0.01014797022508686
+      }
+    }
+  },
+  "summary": {
+    "base.CB_entity_cover_rmse": {
+      "mean": -0.0015710803029598843,
+      "std": 0.004909431034285884,
+      "n": 3.0
+    },
+    "base.CB_field_temperature_rmse": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.CB_field_turbidity_rmse": {
+      "mean": 4.062724210251075e-05,
+      "std": 0.00012819197493596233,
+      "n": 3.0
+    },
+    "base.cefd.UEI": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.cefd.confident_stress_on_healthy_fraction": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.cefd.cover.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.cefd.cover.mean_z2": {
+      "mean": 0.32379215859427185,
+      "std": 0.04331878344267801,
+      "n": 3.0
+    },
+    "base.cefd.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.cefd.cover.nll": {
+      "mean": -1.252775916707046,
+      "std": 0.16821255535545968,
+      "n": 3.0
+    },
+    "base.cefd.cover.rmse": {
+      "mean": 0.053483319204086464,
+      "std": 0.0048197564559215155,
+      "n": 3.0
+    },
+    "base.cefd.damage_claims": {
+      "mean": 6.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.cefd.mean_stress_likelihood": {
+      "mean": 5.023844630617192e-22,
+      "std": 8.701554149099654e-22,
+      "n": 3.0
+    },
+    "base.cefd.non_unknown_damage_claims": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.cefd.observed_damage_claims": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.cefd.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.cefd.temperature.mean_z2": {
+      "mean": 0.05750516146979148,
+      "std": 0.06681328934836281,
+      "n": 3.0
+    },
+    "base.cefd.temperature.n": {
+      "mean": 512.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.cefd.temperature.nll": {
+      "mean": 0.17871705629403575,
+      "std": 0.038500559256410036,
+      "n": 3.0
+    },
+    "base.cefd.temperature.rmse": {
+      "mean": 0.11711675612853391,
+      "std": 0.09155778348989155,
+      "n": 3.0
+    },
+    "base.cefd.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.cefd.turbidity.mean_z2": {
+      "mean": 0.026218605705322067,
+      "std": 0.011541581364435947,
+      "n": 3.0
+    },
+    "base.cefd.turbidity.n": {
+      "mean": 512.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.cefd.turbidity.nll": {
+      "mean": 1.3943914051488993,
+      "std": 0.011574596332715365,
+      "n": 3.0
+    },
+    "base.cefd.turbidity.rmse": {
+      "mean": 0.2714456370600239,
+      "std": 0.035388537910652315,
+      "n": 3.0
+    },
+    "base.mean_abs_cover_shift_cefd_vs_uncoupled": {
+      "mean": 0.013723062072515243,
+      "std": 0.005098293037695423,
+      "n": 3.0
+    },
+    "base.true_mean_condition": {
+      "mean": 0.9726895837349416,
+      "std": 0.018709985976246818,
+      "n": 3.0
+    },
+    "base.uncoupled.UEI": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.uncoupled.confident_stress_on_healthy_fraction": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.uncoupled.cover.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.uncoupled.cover.mean_z2": {
+      "mean": 0.21397156607559717,
+      "std": 0.05590606604796311,
+      "n": 3.0
+    },
+    "base.uncoupled.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.uncoupled.cover.nll": {
+      "mean": -1.164754495156594,
+      "std": 0.11558113502849922,
+      "n": 3.0
+    },
+    "base.uncoupled.cover.rmse": {
+      "mean": 0.05191223890112657,
+      "std": 0.009606444623696114,
+      "n": 3.0
+    },
+    "base.uncoupled.damage_claims": {
+      "mean": 6.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.uncoupled.mean_stress_likelihood": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.uncoupled.non_unknown_damage_claims": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.uncoupled.observed_damage_claims": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.uncoupled.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.uncoupled.temperature.mean_z2": {
+      "mean": 0.05750516146979148,
+      "std": 0.06681328934836281,
+      "n": 3.0
+    },
+    "base.uncoupled.temperature.n": {
+      "mean": 512.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.uncoupled.temperature.nll": {
+      "mean": 0.17871705629403575,
+      "std": 0.038500559256410036,
+      "n": 3.0
+    },
+    "base.uncoupled.temperature.rmse": {
+      "mean": 0.11711675612853391,
+      "std": 0.09155778348989155,
+      "n": 3.0
+    },
+    "base.uncoupled.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.uncoupled.turbidity.mean_z2": {
+      "mean": 0.02622336659150486,
+      "std": 0.011530347836551895,
+      "n": 3.0
+    },
+    "base.uncoupled.turbidity.n": {
+      "mean": 512.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "base.uncoupled.turbidity.nll": {
+      "mean": 1.3943937855919908,
+      "std": 0.011567798706142303,
+      "n": 3.0
+    },
+    "base.uncoupled.turbidity.rmse": {
+      "mean": 0.27148626430212636,
+      "std": 0.03535004539644968,
+      "n": 3.0
+    },
+    "confounded_disturbed.CB_entity_cover_rmse": {
+      "mean": 0.0033723757117604413,
+      "std": 0.005828148669629295,
+      "n": 3.0
+    },
+    "confounded_disturbed.CB_field_temperature_rmse": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.CB_field_turbidity_rmse": {
+      "mean": 1.0180127431822875e-05,
+      "std": 4.68526641554239e-05,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.UEI": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.confident_stress_on_healthy_fraction": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.cover.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.cover.mean_z2": {
+      "mean": 0.3827488999341899,
+      "std": 0.03843448536200917,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.cover.nll": {
+      "mean": -1.2232918604514997,
+      "std": 0.17264775406777974,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.cover.rmse": {
+      "mean": 0.06665607187535377,
+      "std": 0.008402460604833703,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.damage_claims": {
+      "mean": 6.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.mean_stress_likelihood": {
+      "mean": 5.023844630617192e-22,
+      "std": 8.701554149099654e-22,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.non_unknown_damage_claims": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.observed_damage_claims": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.temperature.mean_z2": {
+      "mean": 0.05750516146979148,
+      "std": 0.06681328934836281,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.temperature.n": {
+      "mean": 512.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.temperature.nll": {
+      "mean": 0.17871705629403575,
+      "std": 0.038500559256410036,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.temperature.rmse": {
+      "mean": 0.11711675612853391,
+      "std": 0.09155778348989155,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.turbidity.mean_z2": {
+      "mean": 0.026222424694718183,
+      "std": 0.011534852462484639,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.turbidity.n": {
+      "mean": 512.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.turbidity.nll": {
+      "mean": 1.3943933146435976,
+      "std": 0.011570109607496638,
+      "n": 3.0
+    },
+    "confounded_disturbed.cefd.turbidity.rmse": {
+      "mean": 0.27147609705720716,
+      "std": 0.035365835987513,
+      "n": 3.0
+    },
+    "confounded_disturbed.mean_abs_cover_shift_cefd_vs_uncoupled": {
+      "mean": 0.005645977409333109,
+      "std": 0.00395632073003714,
+      "n": 3.0
+    },
+    "confounded_disturbed.true_mean_condition": {
+      "mean": 0.9726895837349416,
+      "std": 0.018709985976246818,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.UEI": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.confident_stress_on_healthy_fraction": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.cover.coverage95": {
+      "mean": 0.9930555555555555,
+      "std": 0.012028130608117225,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.cover.mean_z2": {
+      "mean": 0.32489191947092166,
+      "std": 0.037105499974126106,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.cover.nll": {
+      "mean": -1.1092943184589317,
+      "std": 0.0990129391925175,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.cover.rmse": {
+      "mean": 0.07002844758711423,
+      "std": 0.0079336402398121,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.damage_claims": {
+      "mean": 6.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.mean_stress_likelihood": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.non_unknown_damage_claims": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.observed_damage_claims": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.temperature.mean_z2": {
+      "mean": 0.05750516146979148,
+      "std": 0.06681328934836281,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.temperature.n": {
+      "mean": 512.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.temperature.nll": {
+      "mean": 0.17871705629403575,
+      "std": 0.038500559256410036,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.temperature.rmse": {
+      "mean": 0.11711675612853391,
+      "std": 0.09155778348989155,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.turbidity.mean_z2": {
+      "mean": 0.026223351338507617,
+      "std": 0.011530418593167217,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.turbidity.n": {
+      "mean": 512.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.turbidity.nll": {
+      "mean": 1.3943937779654922,
+      "std": 0.011567800483743586,
+      "n": 3.0
+    },
+    "confounded_disturbed.uncoupled.turbidity.rmse": {
+      "mean": 0.27148627718463897,
+      "std": 0.03535035607027802,
+      "n": 3.0
+    },
+    "confounded_stable.CB_entity_cover_rmse": {
+      "mean": -0.003243155135244711,
+      "std": 0.004991319710852025,
+      "n": 3.0
+    },
+    "confounded_stable.CB_field_temperature_rmse": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.CB_field_turbidity_rmse": {
+      "mean": 4.0482485562616986e-05,
+      "std": 0.0001277048370093038,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.UEI": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.confident_stress_on_healthy_fraction": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.cover.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.cover.mean_z2": {
+      "mean": 0.32564676323128033,
+      "std": 0.04847694448870208,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.cover.nll": {
+      "mean": -1.2192837946395032,
+      "std": 0.16635137805223862,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.cover.rmse": {
+      "mean": 0.05515539403637129,
+      "std": 0.004665584985000539,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.damage_claims": {
+      "mean": 6.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.mean_stress_likelihood": {
+      "mean": 0.9838321335855915,
+      "std": 0.027452926265585858,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.non_unknown_damage_claims": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.observed_damage_claims": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.temperature.mean_z2": {
+      "mean": 0.11671833961364148,
+      "std": 0.05554815765905696,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.temperature.n": {
+      "mean": 512.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.temperature.nll": {
+      "mean": 0.2083236453659607,
+      "std": 0.03287998929697342,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.temperature.rmse": {
+      "mean": 0.19545639441728194,
+      "std": 0.026033071378522798,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.turbidity.mean_z2": {
+      "mean": 0.026218618722263692,
+      "std": 0.011541549730325751,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.turbidity.n": {
+      "mean": 512.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.turbidity.nll": {
+      "mean": 1.3943914116573703,
+      "std": 0.011574573180383808,
+      "n": 3.0
+    },
+    "confounded_stable.cefd.turbidity.rmse": {
+      "mean": 0.2714457818165638,
+      "std": 0.03538844013711863,
+      "n": 3.0
+    },
+    "confounded_stable.mean_abs_cover_shift_cefd_vs_uncoupled": {
+      "mean": 0.01743216773516321,
+      "std": 0.004348074497813422,
+      "n": 3.0
+    },
+    "confounded_stable.true_mean_condition": {
+      "mean": 0.9726895837349416,
+      "std": 0.018709985976246818,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.UEI": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.confident_stress_on_healthy_fraction": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.cover.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.cover.mean_z2": {
+      "mean": 0.21397156607559717,
+      "std": 0.05590606604796311,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.cover.nll": {
+      "mean": -1.164754495156594,
+      "std": 0.11558113502849922,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.cover.rmse": {
+      "mean": 0.05191223890112657,
+      "std": 0.009606444623696114,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.damage_claims": {
+      "mean": 6.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.mean_stress_likelihood": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.non_unknown_damage_claims": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.observed_damage_claims": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.temperature.mean_z2": {
+      "mean": 0.11671833961364148,
+      "std": 0.05554815765905696,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.temperature.n": {
+      "mean": 512.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.temperature.nll": {
+      "mean": 0.2083236453659607,
+      "std": 0.03287998929697342,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.temperature.rmse": {
+      "mean": 0.19545639441728194,
+      "std": 0.026033071378522798,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.turbidity.mean_z2": {
+      "mean": 0.02622336659150486,
+      "std": 0.011530347836551895,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.turbidity.n": {
+      "mean": 512.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.turbidity.nll": {
+      "mean": 1.3943937855919908,
+      "std": 0.011567798706142303,
+      "n": 3.0
+    },
+    "confounded_stable.uncoupled.turbidity.rmse": {
+      "mean": 0.27148626430212636,
+      "std": 0.03535004539644968,
+      "n": 3.0
+    },
+    "hot_counterfactual.CB_entity_cover_rmse": {
+      "mean": -0.0018300242307573826,
+      "std": 0.003187187517809799,
+      "n": 3.0
+    },
+    "hot_counterfactual.CB_field_temperature_rmse": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.CB_field_turbidity_rmse": {
+      "mean": 3.9431407947108456e-05,
+      "std": 0.00012443061542822973,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.UEI": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.confident_stress_on_healthy_fraction": {
+      "mean": 0.5555555555555555,
+      "std": 0.3469443332443555,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.cover.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.cover.mean_z2": {
+      "mean": 0.33522703908342094,
+      "std": 0.0593771594955195,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.cover.nll": {
+      "mean": -1.2144921255406977,
+      "std": 0.15934331164031668,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.cover.rmse": {
+      "mean": 0.056303614955634185,
+      "std": 0.002503513103042362,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.damage_claims": {
+      "mean": 6.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.mean_stress_likelihood": {
+      "mean": 0.9838321335855915,
+      "std": 0.027452926265585858,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.non_unknown_damage_claims": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.observed_damage_claims": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.temperature.mean_z2": {
+      "mean": 0.11671833961364148,
+      "std": 0.05554815765905696,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.temperature.n": {
+      "mean": 512.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.temperature.nll": {
+      "mean": 0.2083236453659607,
+      "std": 0.03287998929697342,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.temperature.rmse": {
+      "mean": 0.19545639441728194,
+      "std": 0.026033071378522798,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.turbidity.mean_z2": {
+      "mean": 0.026218608545082938,
+      "std": 0.011541081577962341,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.turbidity.n": {
+      "mean": 512.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.turbidity.nll": {
+      "mean": 1.39439140656878,
+      "std": 0.011574457490303782,
+      "n": 3.0
+    },
+    "hot_counterfactual.cefd.turbidity.rmse": {
+      "mean": 0.2714468662889061,
+      "std": 0.03538663459039344,
+      "n": 3.0
+    },
+    "hot_counterfactual.mean_abs_cover_shift_cefd_vs_uncoupled": {
+      "mean": 0.01397421727285443,
+      "std": 0.006772085270620288,
+      "n": 3.0
+    },
+    "hot_counterfactual.true_mean_condition": {
+      "mean": 0.5495700611866953,
+      "std": 0.33887681917969503,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.UEI": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.confident_stress_on_healthy_fraction": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.cover.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.cover.mean_z2": {
+      "mean": 0.22762760062848555,
+      "std": 0.021287497502893934,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.cover.nll": {
+      "mean": -1.1579264778801497,
+      "std": 0.09890795521300504,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.cover.rmse": {
+      "mean": 0.05447359072487679,
+      "std": 0.005231410769971407,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.damage_claims": {
+      "mean": 6.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.mean_stress_likelihood": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.non_unknown_damage_claims": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.observed_damage_claims": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.temperature.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.temperature.mean_z2": {
+      "mean": 0.11671833961364148,
+      "std": 0.05554815765905696,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.temperature.n": {
+      "mean": 512.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.temperature.nll": {
+      "mean": 0.2083236453659607,
+      "std": 0.03287998929697342,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.temperature.rmse": {
+      "mean": 0.19545639441728194,
+      "std": 0.026033071378522798,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.turbidity.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.turbidity.mean_z2": {
+      "mean": 0.02622337256993311,
+      "std": 0.011530360078737695,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.turbidity.n": {
+      "mean": 512.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.turbidity.nll": {
+      "mean": 1.3943937885812048,
+      "std": 0.011567798997205636,
+      "n": 3.0
+    },
+    "hot_counterfactual.uncoupled.turbidity.rmse": {
+      "mean": 0.27148629769685323,
+      "std": 0.03535010533782423,
+      "n": 3.0
+    }
+  },
+  "wall_time_s": 91.49971029999142,
+  "environment": {
+    "python": "3.11.15",
+    "device": "cpu",
+    "platform": "Windows-10-10.0.26200-SP0"
+  },
+  "claim_note": "Numbers are what this run produced; baseline wins are reported as they are."
+}

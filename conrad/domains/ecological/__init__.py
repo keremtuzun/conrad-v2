@@ -36,12 +36,14 @@ IMPLEMENTATION_METADATA = {
         "model2e.entity.*",
         "model2e.coupling.*",
         "model2e.switches.*",
+        "model2e.field_model.*",
         "learned CEFD: conrad.domains.ecological.learned.LearnedCEFDConfig",
     ],
     "assumptions": [
-        "field belief = coarse grid with per-cell mean/variance; GP-lite rank-1 kernel update with marginal "
-        "variances only (no full covariance)",
-        "field temporal model = OU relaxation to a configured prior over physical delta_t (ENGINEERING_ESTIMATE)",
+        "field belief = hierarchical empirical-Bayes kriging over sensor stations (unknown level + optional "
+        "depth trend + SE-kernel local deviation); tau^2, length scales, drift and noise scale learned per run",
+        "field temporal model = per-station random walk with an EB drift rate over physical delta_t; "
+        "turbidity/temperature local_sd priors are EB estimates from the 2E DEV partition (SYNTHETIC_ONLY)",
         "cover temporal model = bounded random walk with no trend; stress only inflates its process noise",
         "late evidence is applied without rewind, with measurement variance inflated by the lag",
         "survey measurement noise from the turbidity BELIEF via a beam-attenuation law (ENGINEERING_ESTIMATE)",

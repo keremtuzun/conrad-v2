@@ -11,6 +11,7 @@ SYNTHETIC_ONLY.
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
+from itertools import pairwise
 from pathlib import Path
 from typing import Any
 
@@ -25,7 +26,13 @@ from conrad.evaluation.ecological_experiments.harness import (
     run_steps,
     twin_config,
 )
-from conrad.evaluation.ecological_experiments.metrics import field_errors, gaussian_scores, run_seeds
+from conrad.evaluation.ecological_experiments.metrics import (
+    experiment_id,
+    field_errors,
+    gaussian_scores,
+    paired_ci,
+    run_seeds,
+)
 
 EXPERIMENT_ID = "2E-E001"
 FIELDS = ("temperature", "turbidity")
@@ -118,17 +125,53 @@ def _seed_run(config: Mapping[str, Any], seed: int) -> dict[str, Any]:
         )
     for v in variants:
         for k in counts:
-            out[v][f"k{k}"]["late_evidence"] = float(models[(v, k)].stats.get("late_evidence", 0))
+            m = models[(v, k)]
+            out[v][f"k{k}"]["late_evidence"] = float(m.stats.get("late_evidence", 0))
+            for name in FIELDS:  # learned (empirical-Bayes) hyper-parameters at the end of the run
+                fb = m.fields.fields[name]
+                out[v][f"k{k}"][f"{name}_eb"] = {
+                    "tau2": float(fb.tau2[0]),
+                    "drift_q_per_s": float(fb.q[0]),
+                    "noise_scale": float(fb.noise_scale[0]),
+                    "length_mult_h": float(fb.ls_mult[0, 0]),
+                    "length_mult_v": float(fb.ls_mult[0, 1]),
+                    "stations": float(len(fb.stations)),
+                }
+    return out
+
+
+def _paired(config: Mapping[str, Any], per_seed: Mapping[int, Mapping[str, Any]]) -> dict[str, Any]:
+    """Per-seed paired RMSE differences for the candidate (first variant): more sensors, and vs static."""
+    variants = list(config.get("variants", ["cefd", "field_only", "static_field"]))
+    cand = variants[0]
+    counts = [int(c) for c in config.get("sensor_counts", [1, 2, 4, 8])]
+    out: dict[str, Any] = {"candidate": cand}
+    for name in FIELDS:
+
+        def rmse(v: str, k: int, name: str = name) -> list[float]:
+            return [float(r[v][f"k{k}"][name]["rmse"]) for r in per_seed.values()]
+
+        f: dict[str, Any] = {}
+        for a, b in pairwise(counts):
+            f[f"k{b}_minus_k{a}"] = paired_ci(np.subtract(rmse(cand, b), rmse(cand, a)).tolist())
+        if "static_field" in variants and cand != "static_field":
+            for k in counts:
+                f[f"k{k}_minus_static"] = paired_ci(
+                    np.subtract(rmse(cand, k), rmse("static_field", k)).tolist()
+                )
+        out[name] = f
     return out
 
 
 def run(config: Mapping[str, Any], seeds: Sequence[int], out_dir: str | Path) -> dict[str, Any]:
+    variants = list(config.get("variants", ["cefd", "field_only", "static_field"]))
     return run_seeds(
-        EXPERIMENT_ID,
+        experiment_id(config, EXPERIMENT_ID),
         _seed_run,
         config,
         seeds,
         out_dir,
-        candidate="cefd",
-        baselines=list(config.get("variants", ["cefd", "field_only", "static_field"]))[1:],
+        candidate=variants[0],
+        baselines=variants[1:],
+        post=lambda per_seed: _paired(config, per_seed),
     )

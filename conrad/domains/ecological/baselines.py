@@ -1,5 +1,6 @@
 """2E baselines behind ONE interface: each is Model2E with different CEFD switches (ch12 E-B*).
 
+* ``production``    the production default switches (``CefdSwitches()``; uncoupled per ADR-0007)
 * ``cefd``          full analytic CEFD (field->entity observability + stress context, entity->field sink)
 * ``entity_only``   entity beliefs only; field evidence ignored; turbidity-blind survey noise (E-B2-like)
 * ``field_only``    field beliefs only; survey evidence ignored (E-B3)
@@ -19,6 +20,7 @@ from conrad.schemas.ids import IdFactory
 _NO_COUPLING = {"field_to_entity": False, "entity_to_field": False}
 
 BASELINES: dict[str, CefdSwitches] = {
+    "production": CefdSwitches(),  # the shipped default (ADR-0007: uncoupled), whatever it currently is
     "cefd": CefdSwitches(field_to_entity=True, entity_to_field=True),
     "entity_only": CefdSwitches(fields=False, **_NO_COUPLING),
     "field_only": CefdSwitches(entities=False, **_NO_COUPLING),

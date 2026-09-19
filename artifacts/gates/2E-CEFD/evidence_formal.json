@@ -1,0 +1,17 @@
+{
+  "gate_id": "2E-CEFD",
+  "evidence_class": "FORMAL",
+  "execution_path": "pytest nodes + retained experiment artifacts (2E-CEFD)",
+  "git_commit": "2e3ae327bfb44c86fe9e0a5d90e200c2fafe3072",
+  "criteria": [
+    {
+      "criterion": "CEFD beats uncoupled baselines without unsupported ecological claims",
+      "status": "FAIL",
+      "measured": "test_stress_is_inferred_and_never_observed_damage=PASS; experiment: {\"CB_entity_cover_rmse\": {\"mean\": 0.00091, \"ci_low\": -0.00047, \"ci_high\": 0.00229, \"n\": 48.0}, \"CB_entity_cover_rmse_vs_production\": {\"mean\": 0.00091, \"ci_low\": -0.00047, \"ci_high\": 0.00229, \"n\": 48.0}, \"cefd_confident_stress_on_healthy\": {\"max\": 1.0, \"mean\": 0.2916666666666667, \"worlds_with_any\": 16.0, \"n\": 48.0}, \"cefd_UEI_max\": 0.0}"
+    }
+  ],
+  "artifacts": [
+    "tests/unit/domains/ecological/test_eco_model2e.py::test_stress_is_inferred_and_never_observed_damage"
+  ],
+  "notes": ""
+}

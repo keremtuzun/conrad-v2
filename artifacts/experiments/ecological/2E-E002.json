@@ -1,0 +1,1034 @@
+{
+  "experiment_id": "2E-E002",
+  "architecture_id": "conrad_v2_impl_freeze_v0_2",
+  "data": "SYNTHETIC_ONLY Twin2E small world (configs/sim/twin2e_test_small.yaml)",
+  "candidate": "cefd",
+  "baselines": [
+    "uncoupled",
+    "entity_only"
+  ],
+  "seeds": [
+    2026201,
+    2026202,
+    2026203
+  ],
+  "config": {
+    "experiment": {
+      "id": "2E-E002"
+    },
+    "seeds": [
+      2026201,
+      2026202,
+      2026203
+    ],
+    "twin_config": "configs/sim/twin2e_test_small.yaml",
+    "turbidity_levels_ntu": [
+      1.0,
+      4.0,
+      10.0,
+      25.0
+    ],
+    "variants": [
+      "cefd",
+      "uncoupled",
+      "entity_only"
+    ],
+    "n_steps": 96,
+    "dt_s": 900.0,
+    "eval_every_steps": 12,
+    "n_moorings": 3,
+    "footprint_radius_m": 6.0,
+    "survey_altitude_m": 2.5,
+    "pose_sigma_m": 0.3,
+    "model2e": {
+      "entity": {
+        "cover_process_sd_per_sqrt_day": 0.35
+      }
+    }
+  },
+  "per_seed": {
+    "2026201": {
+      "turbidity_1": {
+        "detections_per_survey": 0.9690721649484536,
+        "cefd": {
+          "cover": {
+            "rmse": 0.05077700451917961,
+            "coverage95": 1.0,
+            "mean_z2": 0.30192707783592876,
+            "nll": -1.4154344548060476,
+            "n": 48.0
+          },
+          "mean_UA": 0.057950817196876024,
+          "mean_UO": 0.03240473622744058,
+          "ambiguous_association": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.04774396732869196,
+            "coverage95": 1.0,
+            "mean_z2": 0.17721824154303964,
+            "nll": -1.2307025446001165,
+            "n": 48.0
+          },
+          "mean_UA": 0.16000000000000003,
+          "mean_UO": 0.07894154707359054,
+          "ambiguous_association": 0.0
+        },
+        "entity_only": {
+          "cover": {
+            "rmse": 0.04774396732869196,
+            "coverage95": 1.0,
+            "mean_z2": 0.17721824154303964,
+            "nll": -1.2307025446001165,
+            "n": 48.0
+          },
+          "mean_UA": 0.16000000000000003,
+          "mean_UO": 0.07894154707359054,
+          "ambiguous_association": 0.0
+        }
+      },
+      "turbidity_4": {
+        "detections_per_survey": 0.711340206185567,
+        "cefd": {
+          "cover": {
+            "rmse": 0.049855274533943505,
+            "coverage95": 1.0,
+            "mean_z2": 0.19926152404128317,
+            "nll": -1.235763851548279,
+            "n": 48.0
+          },
+          "mean_UA": 0.13644781492854,
+          "mean_UO": 0.05551095526061989,
+          "ambiguous_association": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.05220158452623296,
+            "coverage95": 1.0,
+            "mean_z2": 0.1975848344807795,
+            "nll": -1.131248579563826,
+            "n": 48.0
+          },
+          "mean_UA": 0.16000000000000003,
+          "mean_UO": 0.08640308424298722,
+          "ambiguous_association": 0.0
+        },
+        "entity_only": {
+          "cover": {
+            "rmse": 0.05220158452623296,
+            "coverage95": 1.0,
+            "mean_z2": 0.1975848344807795,
+            "nll": -1.131248579563826,
+            "n": 48.0
+          },
+          "mean_UA": 0.16000000000000003,
+          "mean_UO": 0.08640308424298722,
+          "ambiguous_association": 0.0
+        }
+      },
+      "turbidity_10": {
+        "detections_per_survey": 0.26804123711340205,
+        "cefd": {
+          "cover": {
+            "rmse": 0.09824676693447111,
+            "coverage95": 1.0,
+            "mean_z2": 0.19396827086243282,
+            "nll": -0.649712326093905,
+            "n": 48.0
+          },
+          "mean_UA": 0.2870765822166143,
+          "mean_UO": 0.17258324562865976,
+          "ambiguous_association": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.12189073511181092,
+            "coverage95": 1.0,
+            "mean_z2": 0.3284900213571058,
+            "nll": -0.6831719401719513,
+            "n": 48.0
+          },
+          "mean_UA": 0.16000000000000003,
+          "mean_UO": 0.11158929625954057,
+          "ambiguous_association": 0.0
+        },
+        "entity_only": {
+          "cover": {
+            "rmse": 0.12189073511181092,
+            "coverage95": 1.0,
+            "mean_z2": 0.3284900213571058,
+            "nll": -0.6831719401719513,
+            "n": 48.0
+          },
+          "mean_UA": 0.16000000000000003,
+          "mean_UO": 0.11158929625954057,
+          "ambiguous_association": 0.0
+        }
+      },
+      "turbidity_25": {
+        "detections_per_survey": 0.08247422680412371,
+        "cefd": {
+          "cover": {
+            "rmse": 0.21847567113048996,
+            "coverage95": 1.0,
+            "mean_z2": 0.5243112421272033,
+            "nll": 0.038855495865529624,
+            "n": 48.0
+          },
+          "mean_UA": 0.8333333333333334,
+          "mean_UO": 0.8178551156136136,
+          "ambiguous_association": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.24529793900437422,
+            "coverage95": 0.9166666666666666,
+            "mean_z2": 1.1871965133108586,
+            "nll": 0.10383886046002126,
+            "n": 48.0
+          },
+          "mean_UA": 0.13333333333333336,
+          "mean_UO": 0.2773100719596702,
+          "ambiguous_association": 0.0
+        },
+        "entity_only": {
+          "cover": {
+            "rmse": 0.24529793900437422,
+            "coverage95": 0.9166666666666666,
+            "mean_z2": 1.1871965133108586,
+            "nll": 0.10383886046002126,
+            "n": 48.0
+          },
+          "mean_UA": 0.13333333333333336,
+          "mean_UO": 0.2773100719596702,
+          "ambiguous_association": 0.0
+        }
+      }
+    },
+    "2026202": {
+      "turbidity_1": {
+        "detections_per_survey": 1.1030927835051547,
+        "cefd": {
+          "cover": {
+            "rmse": 0.0444397349928436,
+            "coverage95": 1.0,
+            "mean_z2": 0.2587686295417988,
+            "nll": -1.4566489296514054,
+            "n": 48.0
+          },
+          "mean_UA": 0.0666343998951127,
+          "mean_UO": 0.03907186496838699,
+          "ambiguous_association": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.04307045667616539,
+            "coverage95": 1.0,
+            "mean_z2": 0.12544178125977826,
+            "nll": -1.2746719315779345,
+            "n": 48.0
+          },
+          "mean_UA": 0.16000000000000003,
+          "mean_UO": 0.07744206569096607,
+          "ambiguous_association": 0.0
+        },
+        "entity_only": {
+          "cover": {
+            "rmse": 0.04307045667616539,
+            "coverage95": 1.0,
+            "mean_z2": 0.12544178125977826,
+            "nll": -1.2746719315779345,
+            "n": 48.0
+          },
+          "mean_UA": 0.16000000000000003,
+          "mean_UO": 0.07744206569096607,
+          "ambiguous_association": 0.0
+        }
+      },
+      "turbidity_4": {
+        "detections_per_survey": 0.8041237113402062,
+        "cefd": {
+          "cover": {
+            "rmse": 0.06271093866980977,
+            "coverage95": 1.0,
+            "mean_z2": 0.20742189146752518,
+            "nll": -1.1762290751074387,
+            "n": 48.0
+          },
+          "mean_UA": 0.2009264387342853,
+          "mean_UO": 0.08500833232810105,
+          "ambiguous_association": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.06540350023643891,
+            "coverage95": 1.0,
+            "mean_z2": 0.19999184625883348,
+            "nll": -1.096262929204184,
+            "n": 48.0
+          },
+          "mean_UA": 0.16000000000000003,
+          "mean_UO": 0.08451171695252785,
+          "ambiguous_association": 0.0
+        },
+        "entity_only": {
+          "cover": {
+            "rmse": 0.06540350023643891,
+            "coverage95": 1.0,
+            "mean_z2": 0.19999184625883348,
+            "nll": -1.096262929204184,
+            "n": 48.0
+          },
+          "mean_UA": 0.16000000000000003,
+          "mean_UO": 0.08451171695252785,
+          "ambiguous_association": 0.0
+        }
+      },
+      "turbidity_10": {
+        "detections_per_survey": 0.422680412371134,
+        "cefd": {
+          "cover": {
+            "rmse": 0.10772818437182104,
+            "coverage95": 1.0,
+            "mean_z2": 0.3568074065649168,
+            "nll": -0.7104732963028907,
+            "n": 48.0
+          },
+          "mean_UA": 0.5162672724029026,
+          "mean_UO": 0.1510151256011185,
+          "ambiguous_association": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.14133755159676145,
+            "coverage95": 0.9375,
+            "mean_z2": 0.7283004720168375,
+            "nll": -0.6620112233134868,
+            "n": 48.0
+          },
+          "mean_UA": 0.16000000000000003,
+          "mean_UO": 0.09278386116016919,
+          "ambiguous_association": 0.0
+        },
+        "entity_only": {
+          "cover": {
+            "rmse": 0.14133755159676145,
+            "coverage95": 0.9375,
+            "mean_z2": 0.7283004720168375,
+            "nll": -0.6620112233134868,
+            "n": 48.0
+          },
+          "mean_UA": 0.16000000000000003,
+          "mean_UO": 0.09278386116016919,
+          "ambiguous_association": 0.0
+        }
+      },
+      "turbidity_25": {
+        "detections_per_survey": 0.09278350515463918,
+        "cefd": {
+          "cover": {
+            "rmse": 0.17786202507882887,
+            "coverage95": 1.0,
+            "mean_z2": 0.3477229936684587,
+            "nll": -0.09004828291582279,
+            "n": 48.0
+          },
+          "mean_UA": 0.8333333333333334,
+          "mean_UO": 0.8125255080905444,
+          "ambiguous_association": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.18873056293395277,
+            "coverage95": 0.9375,
+            "mean_z2": 0.8685871952342166,
+            "nll": -0.0955541074587221,
+            "n": 48.0
+          },
+          "mean_UA": 0.13333333333333336,
+          "mean_UO": 0.272823636717969,
+          "ambiguous_association": 0.0
+        },
+        "entity_only": {
+          "cover": {
+            "rmse": 0.18873056293395277,
+            "coverage95": 0.9375,
+            "mean_z2": 0.8685871952342166,
+            "nll": -0.0955541074587221,
+            "n": 48.0
+          },
+          "mean_UA": 0.13333333333333336,
+          "mean_UO": 0.272823636717969,
+          "ambiguous_association": 0.0
+        }
+      }
+    },
+    "2026203": {
+      "turbidity_1": {
+        "detections_per_survey": 1.1546391752577319,
+        "cefd": {
+          "cover": {
+            "rmse": 0.050585990836962316,
+            "coverage95": 1.0,
+            "mean_z2": 0.3746897417102983,
+            "nll": -1.3849503159962462,
+            "n": 48.0
+          },
+          "mean_UA": 0.07017616469694336,
+          "mean_UO": 0.03592577538504361,
+          "ambiguous_association": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.04805698611364462,
+            "coverage95": 1.0,
+            "mean_z2": 0.22492787449540444,
+            "nll": -1.2327841989836,
+            "n": 48.0
+          },
+          "mean_UA": 0.16000000000000003,
+          "mean_UO": 0.0833212377178212,
+          "ambiguous_association": 0.0
+        },
+        "entity_only": {
+          "cover": {
+            "rmse": 0.04805698611364462,
+            "coverage95": 1.0,
+            "mean_z2": 0.22492787449540444,
+            "nll": -1.2327841989836,
+            "n": 48.0
+          },
+          "mean_UA": 0.16000000000000003,
+          "mean_UO": 0.0833212377178212,
+          "ambiguous_association": 0.0
+        }
+      },
+      "turbidity_4": {
+        "detections_per_survey": 0.9175257731958762,
+        "cefd": {
+          "cover": {
+            "rmse": 0.06482551791690946,
+            "coverage95": 1.0,
+            "mean_z2": 0.4234408802437814,
+            "nll": -1.1895618860597377,
+            "n": 48.0
+          },
+          "mean_UA": 0.16335790487954047,
+          "mean_UO": 0.056442401416296785,
+          "ambiguous_association": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.07708566121409662,
+            "coverage95": 0.9791666666666666,
+            "mean_z2": 0.49555996062720115,
+            "nll": -1.039981066464054,
+            "n": 48.0
+          },
+          "mean_UA": 0.16000000000000003,
+          "mean_UO": 0.08620899087423765,
+          "ambiguous_association": 0.0
+        },
+        "entity_only": {
+          "cover": {
+            "rmse": 0.07708566121409662,
+            "coverage95": 0.9791666666666666,
+            "mean_z2": 0.49555996062720115,
+            "nll": -1.039981066464054,
+            "n": 48.0
+          },
+          "mean_UA": 0.16000000000000003,
+          "mean_UO": 0.08620899087423765,
+          "ambiguous_association": 0.0
+        }
+      },
+      "turbidity_10": {
+        "detections_per_survey": 0.4020618556701031,
+        "cefd": {
+          "cover": {
+            "rmse": 0.12133700685886743,
+            "coverage95": 1.0,
+            "mean_z2": 0.4501530469667269,
+            "nll": -0.6079714892191226,
+            "n": 48.0
+          },
+          "mean_UA": 0.40579943738138086,
+          "mean_UO": 0.1564465532173703,
+          "ambiguous_association": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.1393598408303121,
+            "coverage95": 0.9791666666666666,
+            "mean_z2": 0.9479319327854719,
+            "nll": -0.4776626437447386,
+            "n": 48.0
+          },
+          "mean_UA": 0.16000000000000003,
+          "mean_UO": 0.10000560403591646,
+          "ambiguous_association": 0.0
+        },
+        "entity_only": {
+          "cover": {
+            "rmse": 0.1393598408303121,
+            "coverage95": 0.9791666666666666,
+            "mean_z2": 0.9479319327854719,
+            "nll": -0.4776626437447386,
+            "n": 48.0
+          },
+          "mean_UA": 0.16000000000000003,
+          "mean_UO": 0.10000560403591646,
+          "ambiguous_association": 0.0
+        }
+      },
+      "turbidity_25": {
+        "detections_per_survey": 0.05154639175257732,
+        "cefd": {
+          "cover": {
+            "rmse": 0.163764892394331,
+            "coverage95": 1.0,
+            "mean_z2": 0.3231894592819276,
+            "nll": -0.12710851146706068,
+            "n": 48.0
+          },
+          "mean_UA": 0.6666666666666666,
+          "mean_UO": 0.8147892323284823,
+          "ambiguous_association": 0.0
+        },
+        "uncoupled": {
+          "cover": {
+            "rmse": 0.18481867980076158,
+            "coverage95": 0.9583333333333334,
+            "mean_z2": 1.1099304079974284,
+            "nll": 0.13886558684899789,
+            "n": 48.0
+          },
+          "mean_UA": 0.10666666666666669,
+          "mean_UO": 0.419850070053633,
+          "ambiguous_association": 0.0
+        },
+        "entity_only": {
+          "cover": {
+            "rmse": 0.18481867980076158,
+            "coverage95": 0.9583333333333334,
+            "mean_z2": 1.1099304079974284,
+            "nll": 0.13886558684899789,
+            "n": 48.0
+          },
+          "mean_UA": 0.10666666666666669,
+          "mean_UO": 0.419850070053633,
+          "ambiguous_association": 0.0
+        }
+      }
+    }
+  },
+  "summary": {
+    "turbidity_1.cefd.ambiguous_association": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_1.cefd.cover.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_1.cefd.cover.mean_z2": {
+      "mean": 0.3117951496960086,
+      "std": 0.0585872016166691,
+      "n": 3.0
+    },
+    "turbidity_1.cefd.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_1.cefd.cover.nll": {
+      "mean": -1.4190112334845664,
+      "std": 0.03598288217061377,
+      "n": 3.0
+    },
+    "turbidity_1.cefd.cover.rmse": {
+      "mean": 0.048600910116328506,
+      "std": 0.003604948732358171,
+      "n": 3.0
+    },
+    "turbidity_1.cefd.mean_UA": {
+      "mean": 0.0649204605963107,
+      "std": 0.006290307728111092,
+      "n": 3.0
+    },
+    "turbidity_1.cefd.mean_UO": {
+      "mean": 0.035800792193623726,
+      "std": 0.003335321125572703,
+      "n": 3.0
+    },
+    "turbidity_1.detections_per_survey": {
+      "mean": 1.0756013745704467,
+      "std": 0.09578941487811925,
+      "n": 3.0
+    },
+    "turbidity_1.entity_only.ambiguous_association": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_1.entity_only.cover.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_1.entity_only.cover.mean_z2": {
+      "mean": 0.17586263243274078,
+      "std": 0.04975689845505717,
+      "n": 3.0
+    },
+    "turbidity_1.entity_only.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_1.entity_only.cover.nll": {
+      "mean": -1.2460528917205502,
+      "std": 0.02480666045665914,
+      "n": 3.0
+    },
+    "turbidity_1.entity_only.cover.rmse": {
+      "mean": 0.04629047003950065,
+      "std": 0.0027930019217638547,
+      "n": 3.0
+    },
+    "turbidity_1.entity_only.mean_UA": {
+      "mean": 0.16000000000000003,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_1.entity_only.mean_UO": {
+      "mean": 0.07990161682745926,
+      "std": 0.003054908571391154,
+      "n": 3.0
+    },
+    "turbidity_1.uncoupled.ambiguous_association": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_1.uncoupled.cover.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_1.uncoupled.cover.mean_z2": {
+      "mean": 0.17586263243274078,
+      "std": 0.04975689845505717,
+      "n": 3.0
+    },
+    "turbidity_1.uncoupled.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_1.uncoupled.cover.nll": {
+      "mean": -1.2460528917205502,
+      "std": 0.02480666045665914,
+      "n": 3.0
+    },
+    "turbidity_1.uncoupled.cover.rmse": {
+      "mean": 0.04629047003950065,
+      "std": 0.0027930019217638547,
+      "n": 3.0
+    },
+    "turbidity_1.uncoupled.mean_UA": {
+      "mean": 0.16000000000000003,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_1.uncoupled.mean_UO": {
+      "mean": 0.07990161682745926,
+      "std": 0.003054908571391154,
+      "n": 3.0
+    },
+    "turbidity_10.cefd.ambiguous_association": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_10.cefd.cover.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_10.cefd.cover.mean_z2": {
+      "mean": 0.33364290813135883,
+      "std": 0.12965379040992422,
+      "n": 3.0
+    },
+    "turbidity_10.cefd.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_10.cefd.cover.nll": {
+      "mean": -0.6560523705386394,
+      "std": 0.05154417752307636,
+      "n": 3.0
+    },
+    "turbidity_10.cefd.cover.rmse": {
+      "mean": 0.10910398605505318,
+      "std": 0.011606438628848852,
+      "n": 3.0
+    },
+    "turbidity_10.cefd.mean_UA": {
+      "mean": 0.40304776400029924,
+      "std": 0.11462011994765105,
+      "n": 3.0
+    },
+    "turbidity_10.cefd.mean_UO": {
+      "mean": 0.16001497481571617,
+      "std": 0.011218118153605922,
+      "n": 3.0
+    },
+    "turbidity_10.detections_per_survey": {
+      "mean": 0.36426116838487976,
+      "std": 0.08396420428089771,
+      "n": 3.0
+    },
+    "turbidity_10.entity_only.ambiguous_association": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_10.entity_only.cover.coverage95": {
+      "mean": 0.9722222222222222,
+      "std": 0.03182344232608222,
+      "n": 3.0
+    },
+    "turbidity_10.entity_only.cover.mean_z2": {
+      "mean": 0.6682408087198052,
+      "std": 0.3140580245353104,
+      "n": 3.0
+    },
+    "turbidity_10.entity_only.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_10.entity_only.cover.nll": {
+      "mean": -0.6076152690767256,
+      "std": 0.11303852267036163,
+      "n": 3.0
+    },
+    "turbidity_10.entity_only.cover.rmse": {
+      "mean": 0.1341960425129615,
+      "std": 0.010702489320085338,
+      "n": 3.0
+    },
+    "turbidity_10.entity_only.mean_UA": {
+      "mean": 0.16000000000000003,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_10.entity_only.mean_UO": {
+      "mean": 0.10145958715187542,
+      "std": 0.009486656286347026,
+      "n": 3.0
+    },
+    "turbidity_10.uncoupled.ambiguous_association": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_10.uncoupled.cover.coverage95": {
+      "mean": 0.9722222222222222,
+      "std": 0.03182344232608222,
+      "n": 3.0
+    },
+    "turbidity_10.uncoupled.cover.mean_z2": {
+      "mean": 0.6682408087198052,
+      "std": 0.3140580245353104,
+      "n": 3.0
+    },
+    "turbidity_10.uncoupled.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_10.uncoupled.cover.nll": {
+      "mean": -0.6076152690767256,
+      "std": 0.11303852267036163,
+      "n": 3.0
+    },
+    "turbidity_10.uncoupled.cover.rmse": {
+      "mean": 0.1341960425129615,
+      "std": 0.010702489320085338,
+      "n": 3.0
+    },
+    "turbidity_10.uncoupled.mean_UA": {
+      "mean": 0.16000000000000003,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_10.uncoupled.mean_UO": {
+      "mean": 0.10145958715187542,
+      "std": 0.009486656286347026,
+      "n": 3.0
+    },
+    "turbidity_25.cefd.ambiguous_association": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_25.cefd.cover.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_25.cefd.cover.mean_z2": {
+      "mean": 0.39840789835919654,
+      "std": 0.10972334553934926,
+      "n": 3.0
+    },
+    "turbidity_25.cefd.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_25.cefd.cover.nll": {
+      "mean": -0.059433766172451274,
+      "std": 0.08711457632937011,
+      "n": 3.0
+    },
+    "turbidity_25.cefd.cover.rmse": {
+      "mean": 0.18670086286788326,
+      "std": 0.028406180974836232,
+      "n": 3.0
+    },
+    "turbidity_25.cefd.mean_UA": {
+      "mean": 0.7777777777777778,
+      "std": 0.09622504486493767,
+      "n": 3.0
+    },
+    "turbidity_25.cefd.mean_UO": {
+      "mean": 0.8150566186775468,
+      "std": 0.002674845917476087,
+      "n": 3.0
+    },
+    "turbidity_25.detections_per_survey": {
+      "mean": 0.07560137457044673,
+      "std": 0.02146047422130034,
+      "n": 3.0
+    },
+    "turbidity_25.entity_only.ambiguous_association": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_25.entity_only.cover.coverage95": {
+      "mean": 0.9375,
+      "std": 0.02083333333333337,
+      "n": 3.0
+    },
+    "turbidity_25.entity_only.cover.mean_z2": {
+      "mean": 1.0552380388475011,
+      "std": 0.166196918815421,
+      "n": 3.0
+    },
+    "turbidity_25.entity_only.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_25.entity_only.cover.nll": {
+      "mean": 0.049050113283432346,
+      "std": 0.12644960807656289,
+      "n": 3.0
+    },
+    "turbidity_25.entity_only.cover.rmse": {
+      "mean": 0.20628239391302952,
+      "std": 0.03384501848859001,
+      "n": 3.0
+    },
+    "turbidity_25.entity_only.mean_UA": {
+      "mean": 0.12444444444444447,
+      "std": 0.015396007178390023,
+      "n": 3.0
+    },
+    "turbidity_25.entity_only.mean_UO": {
+      "mean": 0.3233279262437574,
+      "std": 0.08362072236913064,
+      "n": 3.0
+    },
+    "turbidity_25.uncoupled.ambiguous_association": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_25.uncoupled.cover.coverage95": {
+      "mean": 0.9375,
+      "std": 0.02083333333333337,
+      "n": 3.0
+    },
+    "turbidity_25.uncoupled.cover.mean_z2": {
+      "mean": 1.0552380388475011,
+      "std": 0.166196918815421,
+      "n": 3.0
+    },
+    "turbidity_25.uncoupled.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_25.uncoupled.cover.nll": {
+      "mean": 0.049050113283432346,
+      "std": 0.12644960807656289,
+      "n": 3.0
+    },
+    "turbidity_25.uncoupled.cover.rmse": {
+      "mean": 0.20628239391302952,
+      "std": 0.03384501848859001,
+      "n": 3.0
+    },
+    "turbidity_25.uncoupled.mean_UA": {
+      "mean": 0.12444444444444447,
+      "std": 0.015396007178390023,
+      "n": 3.0
+    },
+    "turbidity_25.uncoupled.mean_UO": {
+      "mean": 0.3233279262437574,
+      "std": 0.08362072236913064,
+      "n": 3.0
+    },
+    "turbidity_4.cefd.ambiguous_association": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_4.cefd.cover.coverage95": {
+      "mean": 1.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_4.cefd.cover.mean_z2": {
+      "mean": 0.2767080985841966,
+      "std": 0.12713980418933468,
+      "n": 3.0
+    },
+    "turbidity_4.cefd.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_4.cefd.cover.nll": {
+      "mean": -1.2005182709051516,
+      "std": 0.031243066080745372,
+      "n": 3.0
+    },
+    "turbidity_4.cefd.cover.rmse": {
+      "mean": 0.05913057704022092,
+      "std": 0.0081019311762865,
+      "n": 3.0
+    },
+    "turbidity_4.cefd.mean_UA": {
+      "mean": 0.16691071951412192,
+      "std": 0.032385800914003636,
+      "n": 3.0
+    },
+    "turbidity_4.cefd.mean_UO": {
+      "mean": 0.06565389633500592,
+      "std": 0.01676790214795351,
+      "n": 3.0
+    },
+    "turbidity_4.detections_per_survey": {
+      "mean": 0.8109965635738831,
+      "std": 0.10326446186471969,
+      "n": 3.0
+    },
+    "turbidity_4.entity_only.ambiguous_association": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_4.entity_only.cover.coverage95": {
+      "mean": 0.9930555555555555,
+      "std": 0.012028130608117225,
+      "n": 3.0
+    },
+    "turbidity_4.entity_only.cover.mean_z2": {
+      "mean": 0.29771221378893803,
+      "std": 0.17134540152323322,
+      "n": 3.0
+    },
+    "turbidity_4.entity_only.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_4.entity_only.cover.nll": {
+      "mean": -1.0891641917440211,
+      "std": 0.046045996481784375,
+      "n": 3.0
+    },
+    "turbidity_4.entity_only.cover.rmse": {
+      "mean": 0.0648969153255895,
+      "std": 0.01244977065474682,
+      "n": 3.0
+    },
+    "turbidity_4.entity_only.mean_UA": {
+      "mean": 0.16000000000000003,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_4.entity_only.mean_UO": {
+      "mean": 0.08570793068991757,
+      "std": 0.0010404871638266659,
+      "n": 3.0
+    },
+    "turbidity_4.uncoupled.ambiguous_association": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_4.uncoupled.cover.coverage95": {
+      "mean": 0.9930555555555555,
+      "std": 0.012028130608117225,
+      "n": 3.0
+    },
+    "turbidity_4.uncoupled.cover.mean_z2": {
+      "mean": 0.29771221378893803,
+      "std": 0.17134540152323322,
+      "n": 3.0
+    },
+    "turbidity_4.uncoupled.cover.n": {
+      "mean": 48.0,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_4.uncoupled.cover.nll": {
+      "mean": -1.0891641917440211,
+      "std": 0.046045996481784375,
+      "n": 3.0
+    },
+    "turbidity_4.uncoupled.cover.rmse": {
+      "mean": 0.0648969153255895,
+      "std": 0.01244977065474682,
+      "n": 3.0
+    },
+    "turbidity_4.uncoupled.mean_UA": {
+      "mean": 0.16000000000000003,
+      "std": 0.0,
+      "n": 3.0
+    },
+    "turbidity_4.uncoupled.mean_UO": {
+      "mean": 0.08570793068991757,
+      "std": 0.0010404871638266659,
+      "n": 3.0
+    }
+  },
+  "wall_time_s": 82.72040740000375,
+  "environment": {
+    "python": "3.11.15",
+    "device": "cpu",
+    "platform": "Windows-10-10.0.26200-SP0"
+  },
+  "claim_note": "Numbers are what this run produced; baseline wins are reported as they are."
+}

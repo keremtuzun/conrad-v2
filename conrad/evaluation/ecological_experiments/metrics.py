@@ -23,6 +23,28 @@ from conrad.twins.twin2e import Twin2E
 Z95 = 1.959964
 
 
+def experiment_id(config: Mapping[str, Any], default: str) -> str:
+    """Result ID from the config's ``experiment.id`` (e.g. 2E-E001-R2), else the module default."""
+    exp = config.get("experiment")
+    return str(exp.get("id", default)) if isinstance(exp, Mapping) else default
+
+
+def paired_ci(diffs: Sequence[float], z: float = Z95) -> dict[str, float]:
+    """Mean and normal-approximation 95 % CI of paired differences (t-quantile for small n)."""
+    d = np.asarray(diffs, dtype=np.float64)
+    n = int(d.size)
+    if n == 0:
+        return {"mean": float("nan"), "ci_low": float("nan"), "ci_high": float("nan"), "n": 0.0}
+    mean = float(d.mean())
+    if n < 2:
+        return {"mean": mean, "ci_low": float("-inf"), "ci_high": float("inf"), "n": float(n)}
+    # two-sided 97.5 % Student-t quantiles for small samples; z beyond 30 degrees of freedom
+    t_tab = {1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571, 6: 2.447, 7: 2.365, 8: 2.306, 9: 2.262}
+    q = t_tab.get(n - 1, 2.228 if n - 1 <= 10 else (2.086 if n - 1 <= 20 else (2.042 if n - 1 <= 30 else z)))
+    half = q * float(d.std(ddof=1)) / math.sqrt(n)
+    return {"mean": mean, "ci_low": mean - half, "ci_high": mean + half, "n": float(n)}
+
+
 def gaussian_scores(err: np.ndarray, var: np.ndarray) -> dict[str, float]:
     var = np.maximum(var, 1e-12)
     z2 = err**2 / var
@@ -125,6 +147,7 @@ def run_seeds(
     out_dir: str | Path,
     candidate: str,
     baselines: Sequence[str],
+    post: Callable[[Mapping[int, Mapping[str, Any]]], dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     started = time.perf_counter()
     per_seed = {int(s): seed_run(config, int(s)) for s in seeds}
@@ -146,6 +169,10 @@ def run_seeds(
         },
         "claim_note": "Numbers are what this run produced; baseline wins are reported as they are.",
     }
+    if "partition" in config:
+        result["partition"] = config["partition"]
+    if post is not None:
+        result["paired"] = post(per_seed)
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     (out / f"{experiment_id}.json").write_text(json.dumps(result, indent=2, default=str), encoding="utf-8")
