@@ -149,6 +149,47 @@ def make_world(seed: int, scenario: Scenario, store_dir: Path) -> World:
 Estimates = dict[str, dict[UUID, dict[str, tuple[float, float] | None]]]
 
 
+def experiment_id(config: Mapping[str, Any], default: str) -> str:
+    return str(dict(config.get("experiment", {})).get("id", default))
+
+
+def checked_seeds(config: Mapping[str, Any], seeds: Sequence[int]) -> list[int]:
+    """Enforce the declared partition: every seed must belong to it and the purpose must allow reading it.
+
+    Configs without ``partition`` are legacy (2026201-3 are DEVELOPMENT seeds, not held-out)."""
+    from conrad.evaluation import partitions
+
+    seeds = list(seeds)
+    part = config.get("partition")
+    if part is None:
+        return seeds
+    purpose = str(config.get("purpose", "design"))
+    partitions.check_access(part, purpose)
+    domain = str(config.get("partition_domain", "mission"))
+    wrong = [s for s in seeds if partitions.partition_of(domain, s) != partitions.Partition(part)]
+    if wrong:
+        raise partitions.PartitionAccessError(f"seeds {wrong} are not in {domain}:{part}")
+    return seeds
+
+
+def paired_bootstrap(
+    diffs: Sequence[float | None], n_boot: int = 10000, seed: int = 0, level: float = 0.95
+) -> dict[str, float] | None:
+    """Mean paired difference with a percentile bootstrap CI over the paired units (seeds)."""
+    x = np.asarray([d for d in diffs if d is not None and math.isfinite(d)], dtype=np.float64)
+    if x.size < 2:
+        return None
+    rng = np.random.default_rng(seed)
+    boots = x[rng.integers(0, x.size, size=(n_boot, x.size))].mean(axis=1)
+    a = (1.0 - level) / 2.0
+    return {
+        "mean": float(x.mean()),
+        "ci_low": float(np.quantile(boots, a)),
+        "ci_high": float(np.quantile(boots, 1.0 - a)),
+        "n": float(x.size),
+    }
+
+
 def run_episode(
     world: World,
     estimators: Sequence[StructuralEstimator],
@@ -171,9 +212,13 @@ def run_episode(
         evs = world.observe(visible, degradation_level)
         seen = {c.registry_entity_id for e in evs for c in e.entity_candidates}
         est: Estimates = {}
+        latent: Estimates = {}
         for m in estimators:
             m.step(now, evs)
             est[m.name] = {rid: {q: m.estimate(rid, q) for q in QUANTITIES} for rid in world.component_ids}
+            lat = getattr(m, "latent", None)
+            if lat is not None:
+                latent[m.name] = {rid: {q: lat(rid, q) for q in QUANTITIES} for rid in world.component_ids}
         records.append(
             {
                 "step": k,
@@ -181,6 +226,7 @@ def run_episode(
                 "observed": seen,
                 "truth": world.truth(),
                 "est": est,
+                "latent": latent,
                 "probe": None if probe is None else probe(),
             }
         )

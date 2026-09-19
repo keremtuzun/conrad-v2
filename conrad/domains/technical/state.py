@@ -66,6 +66,10 @@ class ComponentBelief:
     conflicts: list[UUID] = field(default_factory=list)
     consumed: set[UUID] = field(default_factory=set)
     groups: set[str] = field(default_factory=set)
+    locus: dict[str, tuple[tuple[float, float, float], float, float]] = field(default_factory=dict)
+    """Per quantity: (measured surface point, its sigma, reading size) of the worst indication seen so far."""
+    bias_counts: dict[tuple[str, str], float] = field(default_factory=dict)
+    """Readings consumed per (sensor bias group, quantity); distinct groups set the persistent-bias floor."""
     last_evidence: tuple[UUID, ...] = ()
     reported_level: dict[str, float] = field(default_factory=dict)
     change_state: str = "STABLE"

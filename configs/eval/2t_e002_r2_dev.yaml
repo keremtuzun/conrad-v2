@@ -1,0 +1,11 @@
+# 2T-E002-R2-DEV (SYNTHETIC_ONLY; REALISTIC Twin2T sensor; docs/audits/MODEL2T_REPAIR.md). DEVELOPMENT seeds: design only, never evidence.
+experiment: {id: 2T-E002-R2-DEV}
+partition: development
+purpose: design
+seeds: [5100000, 5100001, 5100002, 5100003, 5100004, 5100005, 5100006, 5100007, 5100008, 5100009]
+scenario: {kind: tier, tier: 3}
+coverages: [0.5, 0.2, 0.05]
+episodes_per_seed: 2
+steps: 20
+dt_days: 45
+gru: {hidden: 16, epochs: 150, lr: 0.01, train_episodes: 6}

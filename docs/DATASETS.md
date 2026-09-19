@@ -4,7 +4,8 @@
 corpus report and the sim/real ledger. The manifests on disk and their status are listed in
 [DATASET_REGISTER.md](DATASET_REGISTER.md); this page describes the code.
 
-**No real dataset is downloaded, licensed or used.** Every experiment so far used synthetic generators.
+One real public sample is downloaded and verified: two UVVID videos (CC BY 4.0). They are used only by the
+smoke experiment DATA-REAL-SMOKE-E001. Every other experiment uses synthetic generators.
 
 ## Manifests (`manifest_model.py`, `manifest.py`)
 
@@ -23,8 +24,8 @@ CLI:
 uv run conrad data verify --manifest subpipe            # id, id@version, or a .yaml path
 ```
 
-It prints each problem and `RESULT: OK` or `RESULT: FAIL (n problems)`. The public manifests are templates, so
-they fail today. `conrad doctor` verifies every ID in `data.manifest_ids`.
+It prints each problem and `RESULT: OK` or `RESULT: FAIL (n problems)`. Only `public.uvvid` passes today. Use the id
+form: given a `.yaml` path, the CLI takes the manifest's own folder as the data root. `conrad doctor` verifies every ID in `data.manifest_ids`.
 
 ## Splits (`splits.py`)
 
@@ -39,8 +40,10 @@ test_ood. `compute_split_hash` is recorded in checkpoints; `assert_no_lineage_le
 - `simreal_ledger.py`: SIMREAL-LEDGER-01. `datasets/simreal_ledger.yaml` (revision `0.1.0-unmeasured`) marks
   every row unmeasured; UNMEASURED parameters are never treated as calibrated.
 - `inventory.py`: hashes files into manifest rows.
-- `adapters/`: `ImageFolderSequenceAdapter` (bytes unchanged, no labels), `PublicDatasetAdapter` (every access
+- `adapters/`: `ImageFolderSequenceAdapter` (bytes unchanged, no labels), `UvvidVideoAdapter` (UVVID MP4 to RGB
+  observations with container-time ns; pose, calibration and labels are None), `PublicDatasetAdapter` (every access
   raises `DatasetNotAvailableError`), `SyntheticTwinAdapter`.
+- `real_smoke.py`: DATA-REAL-SMOKE-E001 runs ECMER quality features and encoding on the real UVVID frames.
 
 ## Forbidden data
 
@@ -49,4 +52,6 @@ The legacy Model 2 datasets must never be used: their observation confidence was
 
 ## Blocked
 
-Rights-cleared real data: BLOCKED_EXTERNAL (EXT-DATA-01). Tests: `uv run pytest tests/unit/data tests/property/data -q`.
+Per-dataset verdicts are in [audits/PUBLIC_DATA_PROCUREMENT.md](audits/PUBLIC_DATA_PROCUREMENT.md). Labelled real task
+data is still missing: SubPipe and SeaClear need a download-budget decision, and five candidates need human rights review.
+Conrad-owned captures are still external. Tests: `uv run pytest tests/unit/data tests/property/data -q`.

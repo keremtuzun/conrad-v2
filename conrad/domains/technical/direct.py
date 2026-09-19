@@ -8,6 +8,11 @@
   innov^2 - S, so a genuine change (run-away crack, repair) is followed instead of smoothed away.
 * If that reading is also reliable, a conflict is recorded, U_C rises, and the variance is floored at the
   equal-weight two-hypothesis mixture: the disagreement is carried forward, not averaged into certainty.
+* Wall loss and crack length (default ``SENSOR_CHARACTERISED``) use the declared sensor characteristics
+  (``measurement.py``): relative error, a persistent per-sensor bias (variance floor per distinct sensor),
+  censored non-detections, partial views as lower bounds, and "surprise" defined as the belief putting
+  almost no mass on the reading's plausible set. A crack becomes OBSERVED only from a detection; readings
+  that never detected it update the latent estimate but leave the claim UNKNOWN.
 
 implementation_status: EXPERIMENTAL_CANDIDATE
 """
@@ -21,6 +26,12 @@ from uuid import UUID
 
 from conrad.domains.technical.config import Model2TConfig
 from conrad.domains.technical.dynamics import predict_estimate
+from conrad.domains.technical.measurement import (
+    MODELLED,
+    Reading,
+    grid_update,
+    scatter_sigmas,
+)
 from conrad.domains.technical.registry import CORROSION_DEPTH, CRACK_LENGTH, QUANTITY_UNITS, SURFACE_ANOMALY
 from conrad.domains.technical.state import ComponentBelief, Estimate
 from conrad.schemas.belief import KnowledgeStatus, Lifecycle
@@ -76,6 +87,72 @@ def _kalman(est: Estimate, z: float, r: float) -> tuple[float, float]:
     return innov / math.sqrt(s), k0
 
 
+UNATTRIBUTED = "unattributed-sensor"
+"""Bias group of evidence that names no sensor: conservatively treated as one shared sensor."""
+
+
+def bias_group(ev: Evidence) -> str:
+    """Persistent-bias group: the ``sensor:<id>`` prefix of a ``sensor:<id>|<reading group>`` group."""
+    g = ev.independence_group or ""
+    return g.split("|", 1)[0] if "|" in g else UNATTRIBUTED
+
+
+def _elsewhere(belief: ComponentBelief, q: str, ev: Evidence, locality_m: float) -> bool:
+    known = belief.locus.get(q)
+    sup = ev.spatial_support
+    if known is None or sup is None:
+        return False
+    (x, y, zc), sigma, _ = known
+    d = math.dist(sup.center_m, (x, y, zc))
+    return d > locality_m + 2.0 * math.hypot(sigma, sup.position_sigma_m or 0.0)
+
+
+def _characterised(
+    belief: ComponentBelief,
+    est: Estimate,
+    q: str,
+    members: Sequence[Evidence],
+    z: float,
+    cfg: Model2TConfig,
+) -> tuple[bool, float, float, bool]:
+    """Sensor-characterised update of est in place. Returns (surprise, innovation, reading var, detected).
+
+    Each reading's likelihood carries only its independent scatter. The persistent per-sensor bias cannot
+    be averaged away, so afterwards the level variance is floored at (bias * level)^2 / (number of distinct
+    sensors that have read this quantity): repeated same-sensor looks never buy certainty below the bias,
+    while a changing state is still followed at full weight (the bias cancels in differences)."""
+    sc = cfg.sensor
+    rel = sum(m.reliability for m in members) / len(members)
+    ua = sum(m.aleatoric_uncertainty for m in members) / len(members)
+    key = (bias_group(members[0]), q)
+    ind, sys_ = scatter_sigmas(q, z, ua, sc)
+    reading = Reading(q, z, rel, ua, elsewhere=_elsewhere(belief, q, members[0], sc.defect_locality_m))
+    mean, var = est.level, est.level_var
+    first = not est.direct_lineage
+    tail = (cfg.prior.tail_weight.get(q, 0.0), cfg.prior.tail_scale_m.get(q, 1.0)) if first else None
+    post = grid_update(mean, var, reading, sc, inflate_on_surprise=not first, prior_tail=tail)
+    innov = post.mode - mean
+    if post.surprise and not first:
+        est.level_var += innov * innov  # mirror the grid's inflation so the rate can follow a real change
+    prior_var = est.level_var
+    if post.var < prior_var * (1.0 - 1e-9):
+        r_eq = 1.0 / (1.0 / post.var - 1.0 / prior_var)
+        y = mean + (post.mean - mean) * (prior_var + r_eq) / prior_var
+        _kalman(est, y, r_eq)
+        est.level_var = post.var
+    else:
+        est.level, est.level_var = post.mean, post.var
+    belief.bias_counts[key] = belief.bias_counts.get(key, 0.0) + 1.0
+    sup = members[0].spatial_support
+    if sup is not None and reading.detected(sc) and z >= belief.locus.get(q, ((0.0, 0.0, 0.0), 0.0, -1.0))[2]:
+        belief.locus[q] = (sup.center_m, sup.position_sigma_m or 0.0, z)
+    if reading.detected(sc):
+        sensors = sum(1 for g, qq in belief.bias_counts if qq == q)
+        est.level_var = max(est.level_var, (sys_ * max(est.level, 0.0)) ** 2 / sensors)
+    r_read = (math.hypot(ind, sys_) * max(abs(z), abs(mean))) ** 2
+    return post.surprise, innov, r_read, reading.detected(sc)
+
+
 def _groups(evidence: Sequence[Evidence]) -> list[tuple[str, list[Evidence]]]:
     grouped: dict[str, list[Evidence]] = {}
     for ev in sorted(evidence, key=lambda e: (e.timestamp.time_ns, str(e.evidence_id))):
@@ -96,6 +173,7 @@ def apply_direct(
             continue
         fresh.append(ev)
     reliable_consistent = False
+    characterised = cfg.direct.measurement_model == "SENSOR_CHARACTERISED"
     for group, members in _groups(fresh):
         seen_before = group in belief.groups
         t_ns = max(m.timestamp.time_ns for m in members)
@@ -117,20 +195,26 @@ def apply_direct(
                 predict_estimate(est, q, (t_ns - est.updated_ns) / 1e9, cfg)
             before = (est.level_var, est.rate_var)
             had_direct = est.direct_lineage and est.known
-            innov = z - est.level
-            surprise = abs(innov) / (est.level_var + r) ** 0.5
             reliable = rel >= cfg.direct.conflict_min_reliability
-            if had_direct and surprise > cfg.direct.conflict_sigma:
-                # Adaptive (innovation-matched) process noise: a genuine change is not smoothed away.
-                est.level_var += innov * innov - (est.level_var + r)
-            nis, _ = _kalman(est, z, r)
+            detected = True
+            if characterised and q in MODELLED:
+                surprise_flag, innov, r, detected = _characterised(belief, est, q, members, z, cfg)
+                nis = innov / (before[0] + r) ** 0.5
+                surprise = cfg.direct.conflict_sigma + 1.0 if surprise_flag else 0.0
+            else:
+                innov = z - est.level
+                surprise = abs(innov) / (est.level_var + r) ** 0.5
+                if had_direct and surprise > cfg.direct.conflict_sigma:
+                    # Adaptive (innovation-matched) process noise: a genuine change is not smoothed away.
+                    est.level_var += innov * innov - (est.level_var + r)
+                _kalman(est, z, r)
+                nis = innov / (before[0] + r) ** 0.5
             if had_direct and reliable and surprise > cfg.direct.conflict_sigma:
                 # Reliable contradiction: keep both hypotheses' spread and raise U_C (not averaged away).
                 est.level_var = max(est.level_var, 0.5 * before[0] + 0.5 * r + 0.25 * innov * innov)
                 group_conflict = True
             elif had_direct and reliable:
                 reliable_consistent = True
-            nis = innov / (before[0] + r) ** 0.5
             if seen_before:
                 est.level_var = max(est.level_var, before[0])
                 est.rate_var = max(est.rate_var, before[1])
@@ -138,7 +222,9 @@ def apply_direct(
                 big = abs(nis) > cfg.condition.change_sigma
                 belief.change_state = ("PROGRESSING" if nis > 0 else "IMPROVED") if big else "STABLE"
                 belief.change_status, belief.change_provenance = KnowledgeStatus.OBSERVED, provenance_id
-            est.status, est.provenance_id = KnowledgeStatus.OBSERVED, provenance_id
+            if detected or est.known:
+                est.status, est.provenance_id = KnowledgeStatus.OBSERVED, provenance_id
+            # else: a crack never detected stays UNKNOWN; the censored evidence lives in the latent estimate
             est.direct_lineage, est.updated_ns = True, max(t_ns, est.updated_ns)
             belief.estimates[q] = est
             out.changed = True

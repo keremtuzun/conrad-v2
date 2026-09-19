@@ -1,0 +1,11 @@
+# 2T-E002-R2 (SYNTHETIC_ONLY; REALISTIC Twin2T sensor; docs/audits/MODEL2T_REPAIR.md). FINAL_TEST seeds: run once for the report.
+experiment: {id: 2T-E002-R2}
+partition: final_test
+purpose: final_evaluation
+seeds: [5300000, 5300001, 5300002, 5300003, 5300004, 5300005, 5300006, 5300007, 5300008, 5300009, 5300010, 5300011, 5300012, 5300013, 5300014, 5300015, 5300016, 5300017, 5300018, 5300019]  # first 20 FINAL seeds: B2 is refit per seed (~70 s each)
+scenario: {kind: tier, tier: 3}
+coverages: [0.5, 0.2, 0.05]
+episodes_per_seed: 2
+steps: 20
+dt_days: 45
+gru: {hidden: 16, epochs: 150, lr: 0.01, train_episodes: 6}

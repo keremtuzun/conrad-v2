@@ -20,27 +20,31 @@ licensed, labelled or accepted.
 4. Splits come from `conrad.data.splits.build_splits`, which keeps lineage together. Its
    `split_hash` is recorded in every checkpoint and run.
 
-## Public candidates (all `UNVERIFIED_NOT_DOWNLOADED`, license `REVIEW_REQUIRED`)
+## Public candidates (audit 2026-09-19, [audits/PUBLIC_DATA_PROCUREMENT.md](audits/PUBLIC_DATA_PROCUREMENT.md))
 
-| manifest | candidate | spec status |
-|---|---|---|
-| datasets/public/subpipe.manifest.yaml | SubPipe | source pointer checked 2026-09-17; audit open |
-| datasets/public/aqualoc.manifest.yaml | AQUALOC | source pointer checked 2026-09-17; audit open |
-| datasets/public/benthicnet.manifest.yaml | BenthicNet (seafloor imagery compilation) | source pointer checked 2026-09-17; audit open |
-| datasets/public/fathomnet.manifest.yaml | FathomNet | source pointer checked 2026-09-17; rights vary per asset |
-| datasets/public/uvvid.manifest.yaml | UVVID | OPEN source audit |
-| datasets/public/underwater_caves_sonar.manifest.yaml | Underwater Caves sonar | OPEN source audit |
-| datasets/public/uw_slam.manifest.yaml | UW-SLAM | OPEN source audit |
-| datasets/public/seaview.manifest.yaml | Seaview | OPEN source audit |
-| datasets/public/suim.manifest.yaml | SUIM | OPEN source audit |
-| datasets/public/seaclear.manifest.yaml | SeaClear | OPEN source audit |
+Each manifest carries `procurement_status`, `verified_on`, `source_urls`, `conrad_tasks`, `restrictions` and
+`forbidden_uses`. A PUBLIC_REAL manifest may list files only when `procurement_status` is APPROVED or
+APPROVED_WITH_RESTRICTIONS.
 
-The ch24 dedicated 2T search (corrosion, crack, material loss, NDT/SHM, fatigue) and the 2E
-search (oceanographic time series) have no named candidates yet, so they have no manifests.
+| manifest | candidate | procurement_status | licence | on disk |
+|---|---|---|---|---|
+| datasets/public/uvvid.manifest.yaml | UVVID (DTU, v5) | APPROVED_WITH_RESTRICTIONS | CC-BY-4.0 | 2 MP4s, 10.8 MB, VERIFIED |
+| datasets/public/subpipe.manifest.yaml | SubPipe (Zenodo v3.0.1) | APPROVED_WITH_RESTRICTIONS | CC-BY-4.0 | no (smallest file 4.9 GB) |
+| datasets/public/seaclear.manifest.yaml | SeaClear (4TU v1) | APPROVED_WITH_RESTRICTIONS | CC-BY-4.0 | no (1.7 GB) |
+| datasets/public/underwater_caves_sonar.manifest.yaml | Underwater Caves (Zenodo) | APPROVED_WITH_RESTRICTIONS | CC-BY-NC-SA-4.0 | no |
+| datasets/public/aqualoc.manifest.yaml | AQUALOC | NEEDS_HUMAN_RIGHTS_REVIEW | none stated | no |
+| datasets/public/benthicnet.manifest.yaml | BenthicNet | NEEDS_HUMAN_RIGHTS_REVIEW | per source dataset | no |
+| datasets/public/fathomnet.manifest.yaml | FathomNet | NEEDS_HUMAN_RIGHTS_REVIEW | per asset | no |
+| datasets/public/seaview.manifest.yaml | Seaview | NEEDS_HUMAN_RIGHTS_REVIEW | unreadable (403) | no |
+| datasets/public/suim.manifest.yaml | SUIM | NEEDS_HUMAN_RIGHTS_REVIEW | none found | no |
+| datasets/public/uw_slam.manifest.yaml | UW-SLAM | UNAVAILABLE | n/a | no |
 
-`conrad.data.adapters.public_adapter(name)` returns an adapter that raises
-`DatasetNotAvailableError` from every data method. The error names the manifest and each
-missing artefact.
+The ch24 dedicated 2T search (corrosion, crack, material loss, NDT/SHM, fatigue) and the 2E search
+(oceanographic time series) name no dataset, so they have no manifests.
+
+`conrad.data.adapters.UvvidVideoAdapter` reads the UVVID sample. Verify it with
+`conrad data verify --manifest public.uvvid`. `public_adapter(name)` still raises
+`DatasetNotAvailableError` for every other candidate, naming the manifest and each missing artefact.
 
 ## Conrad-owned corpus: DATA-CONRAD-SSL-01
 

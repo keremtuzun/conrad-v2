@@ -23,13 +23,17 @@ from conrad.domains.technical.baselines import (
     Model2TEstimator,
     StructuralEstimator,
 )
+from conrad.evaluation.partitions import purpose_scope
 from conrad.evaluation.structural_experiments.common import (
     CLOCK,
     DAY,
     QUANTITIES,
     World,
+    checked_seeds,
+    experiment_id,
     gaussian_scores,
     make_world,
+    paired_bootstrap,
     run_episode,
     summarize,
     write_result,
@@ -179,8 +183,11 @@ def _persisted_episode(config: Mapping[str, Any], seed: int, tmp: Path) -> dict[
 
 def run(config: Mapping[str, Any], seeds: int | Sequence[int], out_dir: str | Path) -> dict[str, Any]:
     started = time.perf_counter()
-    seeds = [seeds] if isinstance(seeds, int) else list(seeds)
-    with tempfile.TemporaryDirectory(prefix="m2t_e002_", ignore_cleanup_errors=True) as tmp:
+    seeds = checked_seeds(config, [seeds] if isinstance(seeds, int) else list(seeds))
+    with (
+        purpose_scope(str(config.get("purpose", "design"))),
+        tempfile.TemporaryDirectory(prefix="m2t_e002_", ignore_cleanup_errors=True) as tmp,
+    ):
         per_seed = {s: run_seed(config, s, Path(tmp)) for s in seeds}
     verdicts: dict[str, Any] = {}
     for cov in config.get("coverages", [0.5, 0.2, 0.05]):
@@ -201,4 +208,17 @@ def run(config: Mapping[str, Any], seeds: int | Sequence[int], out_dir: str | Pa
                 for s in seeds
             ]
             verdicts[f"coverage_{cov}.{q}.independent_unknown_rate_on_never_observed"] = ur
-    return write_result(EXPERIMENT_ID, config, seeds, per_seed, out_dir, started, verdicts)
+            for base in ("LATEST_OBSERVATION", "GRU_TEMPORAL"):
+                diffs = []
+                for s in seeds:
+                    c = per_seed[s][f"coverage_{cov}"]
+                    a, b = (
+                        c.get(f"hidden_seen_before.{base}.{q}.mae_mm"),
+                        c.get(f"hidden_seen_before.MODEL2T.{q}.mae_mm"),
+                    )
+                    if a is not None and b is not None:
+                        diffs.append(a - b)
+                verdicts[f"coverage_{cov}.{q}.hidden_mae_gain_vs_{base}_ci"] = paired_bootstrap(diffs)
+    return write_result(
+        experiment_id(config, EXPERIMENT_ID), config, seeds, per_seed, out_dir, started, verdicts
+    )

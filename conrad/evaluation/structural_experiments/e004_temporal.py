@@ -19,11 +19,15 @@ import numpy as np
 
 from conrad.domains.technical import Model2TConfig, PropagationMode
 from conrad.domains.technical.baselines import EngineEstimator, LatestObservation
+from conrad.evaluation.partitions import purpose_scope
 from conrad.evaluation.structural_experiments.common import (
     DAY,
     QUANTITIES,
+    checked_seeds,
+    experiment_id,
     gaussian_scores,
     make_world,
+    paired_bootstrap,
     run_episode,
     write_result,
 )
@@ -110,14 +114,24 @@ def run_seed(config: Mapping[str, Any], seed: int, tmp: Path) -> dict[str, Any]:
 
 def run(config: Mapping[str, Any], seeds: int | Sequence[int], out_dir: str | Path) -> dict[str, Any]:
     started = time.perf_counter()
-    seeds = [seeds] if isinstance(seeds, int) else list(seeds)
-    with tempfile.TemporaryDirectory(prefix="m2t_e004_", ignore_cleanup_errors=True) as tmp:
+    seeds = checked_seeds(config, [seeds] if isinstance(seeds, int) else list(seeds))
+    with (
+        purpose_scope(str(config.get("purpose", "design"))),
+        tempfile.TemporaryDirectory(prefix="m2t_e004_", ignore_cleanup_errors=True) as tmp,
+    ):
         per_seed = {s: run_seed(config, s, Path(tmp)) for s in seeds}
-    verdicts = {
+    verdicts: dict[str, Any] = {
         f"{sub}.{q}.TB_positive_all_seeds": all(
             (per_seed[s].get(f"{sub}.{q}.TB_mm") or 0.0) > 0 for s in seeds
         )
         for sub in ("between", "before_next")
         for q in QUANTITIES
     }
-    return write_result(EXPERIMENT_ID, config, seeds, per_seed, out_dir, started, verdicts)
+    for sub in ("between", "before_next"):
+        for q in QUANTITIES:
+            verdicts[f"{sub}.{q}.TB_mm_ci"] = paired_bootstrap(
+                [per_seed[s].get(f"{sub}.{q}.TB_mm") for s in seeds]
+            )
+    return write_result(
+        experiment_id(config, EXPERIMENT_ID), config, seeds, per_seed, out_dir, started, verdicts
+    )

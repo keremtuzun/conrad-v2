@@ -1,0 +1,29 @@
+{
+  "experiment_id": "2T-E002-R2",
+  "module": "conrad.evaluation.structural_experiments.e002_persistent",
+  "config": "configs\\eval\\2t_e002_r2.yaml",
+  "seeds": [
+    5300000,
+    5300001,
+    5300002,
+    5300003,
+    5300004,
+    5300005,
+    5300006,
+    5300007,
+    5300008,
+    5300009,
+    5300010,
+    5300011,
+    5300012,
+    5300013,
+    5300014,
+    5300015,
+    5300016,
+    5300017,
+    5300018,
+    5300019
+  ],
+  "wall_s": 308.8,
+  "out_dir": "C:\\Users\\Kerem\\Kerem\\conrad-v2\\artifacts\\experiments\\2T-E002-R2"
+}

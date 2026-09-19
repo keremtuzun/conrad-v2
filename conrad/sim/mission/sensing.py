@@ -2,8 +2,10 @@
 
 Every emitted Observation carries only the ESTIMATED pose (from the deployment's pose provider). Structural
 inspection readings come from Twin2T with visibility from the Twin2S oracle on surface samples (for the
-target segment: the far-side defect patch), turbidity/biofouling from Twin2E, and a noisy sensor-frame
-range/bearing/elevation to the observed surface. Samples are emitted in observation-ID order, never in
+target segment: the far-side defect patch and, separately, the rest of its surface, each read from its own
+Twin2T state), turbidity/biofouling from Twin2E, and a noisy sensor-frame range/bearing/elevation to the
+observed surface. A near-side view of the target therefore reports "no crack detected here": negative
+evidence about that region, never a claim about the far side. Samples are emitted in observation-ID order, never in
 world-entity order, and no world-entity ID reaches an Observation.
 
 implementation_status: EXPERIMENTAL_CANDIDATE
@@ -37,9 +39,17 @@ Recorder = Callable[[str, dict[str, Any]], None]
 @dataclass
 class SurfaceTarget:
     world_id: UUID
+    """The component the surface belongs to (truth label for association checks)."""
     points: np.ndarray
     normals: np.ndarray
     is_patch: bool = False
+    twin_id: UUID | None = None
+    """Twin2T component whose state this surface shows (default: world_id). A surface region of a
+    component with a local defect has its own truth-side component, so a view of it reports only it."""
+
+    @property
+    def state_id(self) -> UUID:
+        return self.twin_id or self.world_id
 
 
 @dataclass
@@ -201,7 +211,7 @@ class MissionSensorSuite:
                 continue
             point = tgt.points[mask].mean(axis=0)
             deg = {
-                f"visibility:{tgt.world_id}": frac,
+                f"visibility:{tgt.state_id}": frac,
                 **self._quality(point),
                 **self.opts.structural.degradation,
             }
@@ -226,6 +236,7 @@ class MissionSensorSuite:
                             "world_id": str(tgt.world_id),
                             "visible_fraction": frac,
                             "patch": tgt.is_patch,
+                            "surface_region": tgt.twin_id is not None,
                             "aux": sensor is not spec,
                         },
                     )

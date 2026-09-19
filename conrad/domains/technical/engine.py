@@ -6,7 +6,7 @@ Provenance records are minted per change and buffered per component until draine
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import replace
 from uuid import UUID
 
@@ -14,6 +14,7 @@ from conrad.domains.technical.config import Model2TConfig, PropagationMode
 from conrad.domains.technical.context import ContextEffect, apply_context
 from conrad.domains.technical.direct import DirectOutcome, apply_direct
 from conrad.domains.technical.dynamics import predict_belief
+from conrad.domains.technical.measurement import tail_moments
 from conrad.domains.technical.registry import AssetRegistry
 from conrad.domains.technical.state import ComponentBelief, Estimate, new_belief
 from conrad.domains.technical.tcdp import EdgeKey, edge_key, infer
@@ -160,7 +161,7 @@ class StructuralBeliefEngine:
 
     def propagate(self, now: TimeStamp) -> set[UUID]:
         self.now = now
-        results = infer(self.beliefs, self.registry, self.edge_ids, self.cfg.tcdp)
+        results = infer(self.beliefs, self.registry, self.edge_ids, self.cfg.tcdp, self._population_prior())
         changed: set[UUID] = set()
         support: dict[UUID, float] = {}
         for (rid, q), inf in sorted(results.items(), key=lambda kv: (str(kv[0][0]), kv[0][1])):
@@ -206,6 +207,20 @@ class StructuralBeliefEngine:
                 b.propagated_support = new
                 changed.add(rid)
         return changed
+
+    def _population_prior(self) -> Callable[[str, Estimate], Estimate] | None:
+        if self.cfg.direct.measurement_model != "SENSOR_CHARACTERISED":
+            return None
+        pc = self.cfg.prior
+
+        def heavy(q: str, core: Estimate) -> Estimate:
+            w, s = pc.tail_weight.get(q, 0.0), pc.tail_scale_m.get(q, 1.0)
+            if w <= 0.0:
+                return core
+            m, v = tail_moments(core.level, core.level_var, w, s)
+            return Estimate(level=m, level_var=v)
+
+        return heavy
 
     def apply_context(self, effects: Sequence[ContextEffect], now: TimeStamp) -> set[UUID]:
         self.now = now

@@ -23,6 +23,7 @@ def predict_estimate(est: Estimate, q: str, dt_s: float, cfg: Model2TConfig) -> 
     dt = dt_s / YEAR_S
     d = cfg.dynamics
     ql = d.level_process_noise.get(q, 0.0) ** 2 * dt
+    ql += (d.relative_level_noise.get(q, 0.0) * max(est.level, 0.0)) ** 2 * dt
     qr = d.rate_process_noise.get(q, 0.0) ** 2 * dt
     p00, p01, p11 = est.level_var, est.cov, est.rate_var
     est.level = est.level + est.rate * dt

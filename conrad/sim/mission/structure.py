@@ -5,7 +5,11 @@ copy of the Scenario whose section follows their documented contract; the world-
 
 * Twin2T: generic Twin2S labels are mapped onto the Twin2T component/material registries, design topology
   (JOINED_BY adjacency) becomes CONNECTED_TO relations, and the hidden defect is set as the target segment's
-  initial corrosion depth and crack length.
+  initial corrosion depth and crack length. Twin2T state is per component, but the defect is local (the
+  far-side patch), so the rest of the target's surface gets its own truth-side Twin2T component (a
+  "surface region" entity that exists only in the Twin2T copy, sampled from the ordinary priors). Near-side
+  views of the target read that region: they legitimately report "no crack here" without revealing the
+  defect. The region entity never reaches the registry, the mapping or any Observation.
 * Twin2E: the environment carries values with units, every ecological entity gets ``position_m`` from the
   Twin2S geometry, and the sea surface is the scenario's declared water surface.
 
@@ -19,7 +23,8 @@ from uuid import UUID
 
 import numpy as np
 
-from conrad.schemas.world import Scenario
+from conrad.schemas.ids import IdFactory
+from conrad.schemas.world import DomainOwnership, Scenario, WorldEntity
 from conrad.sim.mission.options import MissionWorldOptions
 from conrad.twins.twin2e import Twin2EConfig, populate_ecological_state
 from conrad.twins.twin2e.config import GridConfig
@@ -68,7 +73,42 @@ def structural_scenario(scenario: Scenario, target: UUID, opts: MissionWorldOpti
     struct = {k: dict(v) for k, v in sc.structural_state["entities"].items()}
     struct[str(target)]["initial_corrosion_depth_m"] = opts.defect.corrosion_depth_m
     struct[str(target)]["initial_crack_length_m"] = opts.defect.crack_length_m
-    return sc.model_copy(update={"structural_state": {**sc.structural_state, "entities": struct}})
+    sc = sc.model_copy(update={"structural_state": {**sc.structural_state, "entities": struct}})
+    return _with_rest_region(sc, target, seed)
+
+
+REGION_OF = "surface_region_of"
+"""WorldEntity.metadata key naming the component whose non-defect surface a region entity represents."""
+
+
+def _with_rest_region(sc: Scenario, target: UUID, seed: int) -> Scenario:
+    """Add the target's non-defect surface as its own Twin2T component (populated from the normal priors).
+
+    Populated with a dedicated RNG after every real component, so no existing component's state changes."""
+    base = next(e for e in sc.world_entities if e.id == target)
+    region = WorldEntity(
+        id=IdFactory(seed).child("twin2t-surface-regions").new(),
+        entity_type=base.entity_type,
+        reference_frame=base.reference_frame,
+        created_at=base.created_at,
+        domain_ownership=DomainOwnership(spatial=False, technical=True, ecological=False),
+        metadata={REGION_OF: str(target)},
+    )
+    design = {
+        k: v for k, v in sc.structural_state["entities"][str(target)].items() if not k.startswith("initial_")
+    }  # same segment: same design, exposure and loading; its own initial degradation is sampled
+    struct = {**sc.structural_state["entities"], str(region.id): design}
+    sc = sc.model_copy(
+        update={
+            "world_entities": (*sc.world_entities, region),
+            "structural_state": {**sc.structural_state, "entities": struct},
+        }
+    )
+    return populate_structural_state(sc, np.random.default_rng([seed, 0x2E7, 1]))
+
+
+def rest_region_of(t2t_scenario: Scenario, target: UUID) -> UUID | None:
+    return next((e.id for e in t2t_scenario.world_entities if e.metadata.get(REGION_OF) == str(target)), None)
 
 
 def entity_centres(world: SpatialWorld) -> dict[UUID, np.ndarray]:

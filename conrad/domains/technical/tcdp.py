@@ -16,7 +16,7 @@ inferred sources re-broadcast (multi-hop). It exists to measure relational conta
 from __future__ import annotations
 
 import math
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from uuid import UUID
 
@@ -91,8 +91,17 @@ def infer(
     registry: AssetRegistry,
     edge_ids: Mapping[EdgeKey, UUID],
     cfg: TCDPConfig,
+    prior_of: Callable[[str, Estimate], Estimate] | None = None,
 ) -> dict[tuple[UUID, str], Inference | None]:
-    """Jacobi pass(es) over all non-direct targets; ``None`` means "no admissible support"."""
+    """Jacobi pass(es) over all non-direct targets; ``None`` means "no admissible support".
+
+    ``prior_of`` maps a component's Gaussian-core prior to the population prior the estimates are actually
+    formed under (the moment-matched heavy-tailed prior of the sensor-characterised model), so the Gaussian
+    conditional compares posteriors with a consistent prior on both ends of the edge."""
+
+    def pri(q: str, core: Estimate) -> Estimate:
+        return core if prior_of is None else prior_of(q, core)
+
     if cfg.mode is PropagationMode.NONE:
         return {}
     generic = cfg.mode is PropagationMode.GENERIC
@@ -126,7 +135,7 @@ def infer(
                         if gate < cfg.min_source_support or gate * rho < cfg.min_gate:
                             continue
                     bound = 0.0 if generic else cfg.max_shift_sd
-                    mean, var = _message(target.prior[q], src_b.prior[q], src, rho, bound)
+                    mean, var = _message(pri(q, target.prior[q]), pri(q, src_b.prior[q]), src, rho, bound)
                     msgs.append((mean, var, gate))
                     sources.append(
                         MessageSource(
@@ -140,7 +149,7 @@ def infer(
                 if not msgs:
                     nxt[(tid, q)] = None
                     continue
-                mean, var = _fuse(target.prior[q], msgs)
+                mean, var = _fuse(pri(q, target.prior[q]), msgs)
                 support = 1.0 - math.prod(1.0 - min(g, 1.0) for _, _, g in msgs)
                 p = target.prior[q]
                 nxt[(tid, q)] = Inference(tid, q, mean, var, p.rate, p.rate_var, support, tuple(sources))

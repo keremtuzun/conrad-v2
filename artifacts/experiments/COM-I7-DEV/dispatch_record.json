@@ -1,0 +1,11 @@
+{
+  "experiment_id": "COM-I7-DEV",
+  "module": "conrad.evaluation.decision_experiments.com_i7",
+  "config": "configs/eval/com_i7_dev.yaml",
+  "seeds": [
+    5100000
+  ],
+  "wall_s": 327.3,
+  "out_dir": "artifacts/experiments/COM-I7-DEV",
+  "note": "run directly (not via conrad eval run) so no git subprocess is invoked"
+}

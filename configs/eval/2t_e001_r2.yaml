@@ -1,0 +1,24 @@
+# 2T-E001-R2 (SYNTHETIC_ONLY; REALISTIC Twin2T sensor; docs/audits/MODEL2T_REPAIR.md). FINAL_TEST seeds: run once for the report.
+experiment: {id: 2T-E001-R2}
+partition: final_test
+purpose: final_evaluation
+seeds: [5300000, 5300001, 5300002, 5300003, 5300004, 5300005, 5300006, 5300007, 5300008, 5300009, 5300010, 5300011, 5300012, 5300013, 5300014, 5300015, 5300016, 5300017, 5300018, 5300019, 5300020, 5300021, 5300022, 5300023, 5300024, 5300025, 5300026, 5300027, 5300028, 5300029, 5300030, 5300031, 5300032, 5300033, 5300034, 5300035, 5300036, 5300037, 5300038, 5300039, 5300040, 5300041, 5300042, 5300043, 5300044, 5300045, 5300046, 5300047, 5300048, 5300049, 5300050, 5300051, 5300052, 5300053, 5300054, 5300055, 5300056, 5300057, 5300058, 5300059]
+scenario: {kind: tier, tier: 3}
+episodes_per_seed: 3
+steps: 16
+dt_days: 60
+coverage: 0.8
+degradation_levels: [0.0, 0.4]
+gru: true
+gru_training:
+  train_seed: 5100039  # DEVELOPMENT seed, excluded from the DEV evaluation list
+  scenario: {kind: tier, tier: 3}
+  steps: 16
+  dt_days: 60
+  coverages: [0.8]
+  gru: {hidden: 16, epochs: 150, lr: 0.01, train_episodes: 6}
+# Declared BEFORE the final run: 95% interval coverage of Model2T must lie in this band.
+coverage_band: [0.90, 0.99]
+hypothesis: "Model2T direct inference (sensor-characterised) has lower MAE than latest-observation for corrosion and crack, with calibrated 95% intervals"
+primary_metric: "paired MAE gain (latest - model) per seed, bootstrap 95% CI"
+baselines: [LATEST_OBSERVATION, LATEST_OBSERVATION_DEBIASED, SINGLE_FRAME, GRU_TEMPORAL, MODEL2T_ABSOLUTE]

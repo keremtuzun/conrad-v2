@@ -87,6 +87,16 @@ class EngineEstimator(StructuralEstimator):
         e = b.estimates[quantity]
         return e.level, e.level_var
 
+    def latent(self, registry_id: UUID, quantity: str) -> Estimate2:
+        """The internal estimate whether or not it is claimed (e.g. a crack only ever seen as non-detected
+        is UNKNOWN as a claim but carries censored direct evidence). Evaluation use only."""
+        assert self.engine is not None
+        b = self.engine.beliefs.get(registry_id)
+        if b is None or quantity not in b.valid:
+            return None
+        e = b.estimates[quantity]
+        return e.level, e.level_var
+
 
 class Model2TEstimator(StructuralEstimator):
     """The full Model2Child path (ingest / predict / update_beliefs); optional Repository persistence."""
@@ -176,6 +186,22 @@ class LatestObservation(StructuralEstimator):
 
     def estimate(self, registry_id: UUID, quantity: str) -> Estimate2:
         return self.last.get((registry_id, quantity))
+
+
+class LatestObservationDebiased(LatestObservation):
+    """B1 variant: the latest reading divided by the sensor's DECLARED median sizing factor (Model2T's own
+    datasheet value). Separates "knows the datasheet" from "does inference"."""
+
+    name = "LATEST_OBSERVATION_DEBIASED"
+
+    def estimate(self, registry_id: UUID, quantity: str) -> Estimate2:
+        e = super().estimate(registry_id, quantity)
+        if e is None:
+            return None
+        sc = self.config.sensor
+        f = {CORROSION_DEPTH: sc.wall_sizing_median_factor, CRACK_LENGTH: sc.crack_sizing_median_factor}
+        k = f.get(quantity, 1.0)
+        return e[0] / k, e[1] / (k * k)
 
 
 class SingleFrame(LatestObservation):

@@ -1,0 +1,19 @@
+{
+  "experiment_id": "2T-E004-R2-DEV",
+  "module": "conrad.evaluation.structural_experiments.e004_temporal",
+  "config": "configs\\eval\\2t_e004_r2_dev.yaml",
+  "seeds": [
+    5100000,
+    5100001,
+    5100002,
+    5100003,
+    5100004,
+    5100005,
+    5100006,
+    5100007,
+    5100008,
+    5100009
+  ],
+  "wall_s": 40.7,
+  "out_dir": "C:\\Users\\Kerem\\Kerem\\conrad-v2\\artifacts\\experiments\\2T-E004-R2-DEV"
+}

@@ -3,6 +3,11 @@
 It reads only the Observation contract: ``inline_values`` + ``sensor_context['measurements'/'units']``.
 Reliability and aleatoric level come from reported sensor health (own ENGINEERING_ESTIMATE table).
 The association hint (``registry_entity_id``) is supplied by the caller's association step.
+
+Independence groups are written as ``sensor:<sensor id>|<reading group>`` (reading group = the caller's group,
+else ``obs:<observation id>``). Evidence sharing the full group is one reading; evidence sharing only the
+``sensor:`` prefix comes from one sensor and shares its persistent sizing bias (Model2T's bias floor,
+docs/audits/MODEL2T_REPAIR.md). The sensor id is a deployment-side identity, never a world-entity id.
 """
 
 from __future__ import annotations
@@ -49,6 +54,7 @@ def structured_evidence(
     if len(names) != len(obs.inline_values) or len(units) != len(names):
         raise NotStructuredObservation("measurement names/units do not match inline values")
     rel, ua, validity = HEALTH_RELIABILITY[obs.sensor_health]
+    group = f"sensor:{obs.sensor_id}|{independence_group or f'obs:{obs.observation_id}'}"
     pid, eid = ids.new(), ids.new()
     prov = ProvenanceRecord(
         record_id=pid,
@@ -82,7 +88,7 @@ def structured_evidence(
         sensor_context=QualityContext(sensor_health=obs.sensor_health),
         measurements=dict(zip(names, (float(v) for v in obs.inline_values), strict=True)),
         measurement_units=dict(zip(names, units, strict=True)),
-        independence_group=independence_group,
+        independence_group=group,
         provenance_id=pid,
         encoder_version=ENCODER_VERSION,
     )

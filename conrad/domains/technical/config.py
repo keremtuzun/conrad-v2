@@ -33,7 +33,14 @@ class DirectConfig:
             "surface_anomaly": 0.08,
         }
     )
-    """Nominal 1-sigma measurement noise per quantity at reliability 1 (own guess, not Twin2T's)."""
+    """Nominal 1-sigma measurement noise per quantity at reliability 1 (own guess, not Twin2T's).
+
+    Used for the surface anomaly score always, and for wall loss / crack length only under the legacy
+    ``ABSOLUTE_GAUSSIAN`` measurement model."""
+    measurement_model: str = "SENSOR_CHARACTERISED"
+    """``SENSOR_CHARACTERISED`` (default, docs/audits/MODEL2T_REPAIR.md): wall loss and crack length use the
+    declared :class:`SensorCharacteristics` (relative error, persistent bias, POD, partial view).
+    ``ABSOLUTE_GAUSSIAN``: the pre-repair fixed absolute-sigma Kalman update (kept as an ablation)."""
     min_reliability: float = 0.05
     conflict_sigma: float = 3.5
     """Normalised innovation above which reliable evidence is a contradiction."""
@@ -41,6 +48,71 @@ class DirectConfig:
     uc_gain: float = 0.35
     uc_resolve_factor: float = 0.7
     ua_smoothing: float = 0.5
+
+    def __post_init__(self) -> None:
+        if self.measurement_model not in ("SENSOR_CHARACTERISED", "ABSOLUTE_GAUSSIAN"):
+            raise ValueError(f"unknown direct.measurement_model {self.measurement_model!r}")
+
+
+@dataclass(frozen=True)
+class SensorCharacteristics:
+    """Datasheet-style characterisation of the STRUCTURED inspection sensor type, as Model2T ASSUMES it.
+
+    ENGINEERING_ESTIMATE (uncalibrated): a generic close-range visual / structured-light inspection payload.
+    These are Model2T's own declared numbers. They are NOT read from Twin2T or its config; where they match
+    or differ from the simulated sensor is documented in docs/audits/MODEL2T_REPAIR.md.
+
+    Model (per reading, per quantity; ``f`` = unknown fraction of the defect that is in view):
+      * crack: the reading is a *call* only if it is at least ``crack_call_threshold_m``; below that it is a
+        non-detection (censored, weak negative evidence). P(detect) is log-logistic in the in-view length
+        ``f * L`` with a50 ``crack_pod_a50_m`` (raised by reported degradation via ``pod_ua_gain``).
+        A detection is log-normal around ``crack_sizing_median_factor * f * L`` with relative scatter
+        ``crack_rel_sigma`` plus a persistent per-sensor bias ``crack_systematic_rel_sigma``, plus an absolute
+        floor ``crack_abs_sigma_m``. An undetected crack still produces an indication from the noise floor
+        (half-normal with sd ``crack_abs_sigma_m``), which can exceed the call threshold (a false call).
+      * wall loss: always measured; log-normal around ``wall_sizing_median_factor * L`` (partial view:
+        ``f * L``) with ``wall_rel_sigma`` + persistent ``wall_systematic_rel_sigma`` + ``wall_abs_sigma_m``.
+      * partial view: the sensor never reports how much of a component it saw. Every reading is therefore a
+        mixture: with probability ``full_view_prob`` (scaled by reading reliability) the whole defect is in
+        view (f = 1), otherwise f ~ Uniform(``*_partial_view_min_fraction``, 1): a low reading is a lower
+        bound, not a contradiction.
+      * correlation: readings from one sensor on one component share the persistent bias, so n of them carry
+        no more certainty than the bias allows: the level variance is floored at (bias * level)^2 / #sensors.
+    """
+
+    crack_call_threshold_m: float = 2.5e-3
+    crack_pod_a50_m: float = 8.0e-3
+    crack_pod_log_width: float = 0.6
+    pod_ua_gain: float = 2.0
+    """a50 multiplier per unit of evidence aleatoric level (turbid / fouled views detect less)."""
+    crack_sizing_median_factor: float = 0.9
+    crack_rel_sigma: float = 0.30
+    crack_systematic_rel_sigma: float = 0.25
+    crack_abs_sigma_m: float = 1.0e-3
+    noise_ua_gain: float = 3.0
+    """Every scatter / noise-floor sigma is multiplied by (1 + noise_ua_gain * evidence aleatoric level)."""
+    wall_sizing_median_factor: float = 1.0
+    wall_rel_sigma: float = 0.12
+    wall_systematic_rel_sigma: float = 0.06
+    wall_abs_sigma_m: float = 3.0e-4
+    full_view_prob: float = 0.8
+    crack_partial_view_min_fraction: float = 0.2
+    """Smallest in-view fraction of a crack's length in a partial view."""
+    wall_partial_view_min_fraction: float = 0.5
+    """Smallest ratio of the viewed region's wall loss to the component worst case in a partial view."""
+    partial_view_nodes: int = 9
+    """Quadrature nodes over the partial-view fraction."""
+    defect_locality_m: float = 0.3
+    """An indication is a local feature. A reading whose measured surface point (Evidence.spatial_support, from
+    association) lies further than this plus 2 sigma from where the component's worst indication was seen
+    views another region: it only bounds the worst case from below, and a miss there is uninformative.
+    Readings without a measured surface point are treated as views of the whole component."""
+    grid_points: int = 400
+    """Grid resolution of the per-reading Bayesian update (moment-matched back to the Gaussian belief)."""
+    plausible_likelihood_ratio: float = 0.01
+    """A reading's plausible set: states whose likelihood is at least this fraction of the maximum."""
+    contradiction_prior_mass: float = 1.0e-3
+    """Credible disagreement: the belief puts less than this probability on the reading's plausible set."""
 
 
 @dataclass(frozen=True)
@@ -67,6 +139,12 @@ class DynamicsConfig:
             "surface_anomaly": 0.0,
         }
     )
+    relative_level_noise: dict[str, float] = field(
+        default_factory=lambda: {"corrosion_depth_m": 0.0, "crack_length_m": 0.0}
+    )
+    """Level random-walk sd per sqrt(year) PROPORTIONAL to the current level (Paris-type growth: a long crack
+    can grow by a large amount). Default 0 (DEV runs with 1.0 and 2.0 for cracks made small, near-static
+    cracks drift upward more than they helped run-away cracks; docs/audits/MODEL2T_REPAIR.md)."""
     support_timescale_s: float = 180 * 86400.0
     """Direct support decays with this e-folding time while a component is not re-observed."""
     epistemic_growth_per_yr: float = 0.1
@@ -90,6 +168,15 @@ class PriorConfig:
             "surface_anomaly": 0.2,
         }
     )
+    tail_weight: dict[str, float] = field(
+        default_factory=lambda: {"corrosion_depth_m": 0.1, "crack_length_m": 0.05}
+    )
+    """Heavy tail of the population prior (SENSOR_CHARACTERISED model only): the probability that a component
+    carries a real defect outside the Gaussian core. Own ENGINEERING_ESTIMATE."""
+    tail_scale_m: dict[str, float] = field(
+        default_factory=lambda: {"corrosion_depth_m": 3.0e-3, "crack_length_m": 1.0e-2}
+    )
+    """Exponential scale (m) of that tail."""
     base_epistemic: float = 0.2
     unknown_material_epistemic: float = 0.4
 
@@ -167,6 +254,7 @@ class LearnedTCDPConfig:
 @dataclass(frozen=True)
 class Model2TConfig:
     direct: DirectConfig = field(default_factory=DirectConfig)
+    sensor: SensorCharacteristics = field(default_factory=SensorCharacteristics)
     dynamics: DynamicsConfig = field(default_factory=DynamicsConfig)
     prior: PriorConfig = field(default_factory=PriorConfig)
     tcdp: TCDPConfig = field(default_factory=TCDPConfig)
@@ -188,6 +276,7 @@ def model2t_config_from_dict(data: dict[str, Any]) -> Model2TConfig:
     data = dict(data)
     sub = {
         "direct": DirectConfig,
+        "sensor": SensorCharacteristics,
         "dynamics": DynamicsConfig,
         "prior": PriorConfig,
         "tcdp": TCDPConfig,

@@ -1,0 +1,20 @@
+{
+  "gate_id": "2T",
+  "evidence_class": "FORMAL",
+  "execution_path": "pytest nodes + retained experiment artifacts (2T)",
+  "git_commit": "a6b9e99e6d193a06bdaaef30f82f2bd821b9330d",
+  "criteria": [
+    {
+      "criterion": "direct inference works before TCDP gets credit",
+      "status": "FAIL",
+      "measured": "test_direct_update_is_observed_and_reduces_uo=PASS; test_contradiction_raises_uc_and_is_not_averaged_away=PASS; test_missed_detection_never_drags_a_large_crack_to_zero=PASS; test_same_sensor_bias_floor_is_not_averaged_away=PASS; experiment: {\"partition\": \"final_test\", \"coverage_band\": [0.9, 0.99], \"level_0.0.corrosion_depth_m\": {\"mae_gain_mm\": {\"mean\": 0.0656, \"ci_low\": 0.0637, \"ci_high\": 0.0676, \"n\": 60.0}, \"cov95\": 0.995, \"beats_latest\": true, \"calibrated\": false}, \"level_0.0.crack_length_m\": {\"mae_gain_mm\": {\"mean\": -1.6264, \"ci_low\": -3.1287, \"ci_high\": -0.0836, \"n\": 60.0}, \"cov95\": 0.825, \"beats_latest\": false, \"calibrated\": false}, \"level_0.4.corrosion_depth_m\": {\"mae_gain_mm\": {\"mean\": 0.3597, \"ci_low\": 0.3528, \"ci_high\": 0.3666, \"n\": 60.0}, \"cov95\": 0.945, \"beats_latest\": true, \"calibrated\": true}, \"level_0.4.crack_length_m\": {\"mae_gain_mm\": {\"mean\": 15.9984, \"ci_low\": 10.3348, \"ci_high\": 21.4731, \"n\": 60.0}, \"cov95\": 0.716, \"beats_latest\": true, \"calibrated\": false}}"
+    }
+  ],
+  "artifacts": [
+    "tests/unit/domains/technical/test_m2t_direct.py::test_contradiction_raises_uc_and_is_not_averaged_away",
+    "tests/unit/domains/technical/test_m2t_direct.py::test_direct_update_is_observed_and_reduces_uo",
+    "tests/unit/domains/technical/test_m2t_measurement.py::test_missed_detection_never_drags_a_large_crack_to_zero",
+    "tests/unit/domains/technical/test_m2t_measurement.py::test_same_sensor_bias_floor_is_not_averaged_away"
+  ],
+  "notes": ""
+}

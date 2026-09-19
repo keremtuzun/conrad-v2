@@ -2,7 +2,9 @@
 
 Every component gets its own ``IdFactory(seed).child("<name>")`` stream so no two components mint the same
 IDs. The robot is spawned at the start of the -Y transit lane; the hidden defect sits on the +Y side of the
-target segment.
+target segment. The target is observable through two surface targets: the defect patch (Twin2T target
+component) and the rest of its surface (a truth-side Twin2T region component without the defect), so a
+near-side view reports what is really there instead of nothing.
 
 implementation_status: EXPERIMENTAL_CANDIDATE
 """
@@ -29,7 +31,12 @@ from conrad.sim.mission.hardware import MissionHardware, build_mission_hardware
 from conrad.sim.mission.options import MissionWorldOptions
 from conrad.sim.mission.registry import RegistryMapping, build_mission_context, transit_lane
 from conrad.sim.mission.sensing import MissionSensorSuite, SuiteSensors, SurfaceTarget
-from conrad.sim.mission.structure import ecological_scenario, structural_scenario, twin2e_config
+from conrad.sim.mission.structure import (
+    ecological_scenario,
+    rest_region_of,
+    structural_scenario,
+    twin2e_config,
+)
 from conrad.sim.mission.truth import MissionTruthRecorder
 from conrad.sim.scenarios.pipeline_inspection import build_pipeline_inspection_scenario
 from conrad.twins.twin2e import Twin2E
@@ -39,6 +46,11 @@ from conrad.twins.twin2s.world import SpatialWorld
 from conrad.twins.twin2t import Twin2T
 
 ROBOT_CONFIG = "configs/robot/sim_reference.yaml"
+REGION_READINGS = False
+"""Emit readings of the target's non-defect surface (docs/audits/MODEL2T_REPAIR.md). Implemented and tested,
+but OFF by default: with it on, lane views make the target OBSERVED before any inspection, so EGDC raises no
+information need, MCBR plans nothing and four I3/FLAGSHIP tests that encode the "hidden target" premise fail.
+Model2T cannot tell a near-side view from a full view without coverage geometry (open item in the doc)."""
 
 
 def _spec(
@@ -77,16 +89,15 @@ def _pipe_axis(world: SpatialWorld, segments: list[UUID]) -> list[np.ndarray]:
     return uniq
 
 
-def _patch(
-    world: SpatialWorld,
-    target: UUID,
+def _patch_mask(
+    pts: np.ndarray,
+    nrm: np.ndarray,
+    a: np.ndarray,
+    b: np.ndarray,
     axis: list[np.ndarray],
     opts: MissionWorldOptions,
-    rng: np.random.Generator,
-) -> SurfaceTarget:
-    i = world.index_of(target)
-    prim = world.entities[i].primitive
-    a, b = np.asarray(prim.a, dtype=np.float64), np.asarray(prim.b, dtype=np.float64)  # type: ignore[attr-defined]
+) -> np.ndarray:
+    """True for surface samples inside the hidden defect patch of the target segment."""
     d = (axis[-1] - axis[0]) / np.linalg.norm(axis[-1] - axis[0])
     left = np.array([-d[1], d[0], 0.0])
     if left[1] < 0:
@@ -95,14 +106,53 @@ def _patch(
         left = -left
     tilt = math.radians(opts.defect.patch_tilt_deg)
     left = math.cos(tilt) * left + math.sin(tilt) * np.array([0.0, 0.0, 1.0])
-    pts, nrm = sample_surface(world, i, opts.defect.patch_samples * 12, rng)
     t = ((pts - a) @ (b - a)) / float((b - a) @ (b - a))
     half = opts.defect.patch_axial_fraction / 2.0
-    keep = (nrm @ left > math.cos(math.radians(opts.defect.patch_half_angle_deg))) & (np.abs(t - 0.5) <= half)
+    return np.asarray(
+        (nrm @ left > math.cos(math.radians(opts.defect.patch_half_angle_deg))) & (np.abs(t - 0.5) <= half)
+    )
+
+
+def _ends(world: SpatialWorld, target: UUID) -> tuple[int, np.ndarray, np.ndarray]:
+    i = world.index_of(target)
+    prim = world.entities[i].primitive
+    a, b = np.asarray(prim.a, dtype=np.float64), np.asarray(prim.b, dtype=np.float64)  # type: ignore[attr-defined]
+    return i, a, b
+
+
+def _patch(
+    world: SpatialWorld,
+    target: UUID,
+    axis: list[np.ndarray],
+    opts: MissionWorldOptions,
+    rng: np.random.Generator,
+) -> SurfaceTarget:
+    i, a, b = _ends(world, target)
+    pts, nrm = sample_surface(world, i, opts.defect.patch_samples * 12, rng)
+    keep = _patch_mask(pts, nrm, a, b, axis, opts)
     idx = np.nonzero(keep)[0][: opts.defect.patch_samples]
     if len(idx) < 4:
         raise RuntimeError("defect patch has too few surface samples; increase patch size")
     return SurfaceTarget(target, pts[idx], nrm[idx], is_patch=True)
+
+
+def _rest_of_target(
+    world: SpatialWorld,
+    target: UUID,
+    region: UUID,
+    axis: list[np.ndarray],
+    opts: MissionWorldOptions,
+    seed: int,
+) -> SurfaceTarget | None:
+    """The target's surface OUTSIDE the defect patch, read through its own Twin2T region component."""
+    i, a, b = _ends(world, target)
+    pts, nrm = sample_surface(
+        world, i, opts.structural.surface_samples * 2, np.random.default_rng([seed, 0x5F, 2])
+    )
+    rest = ~_patch_mask(pts, nrm, a, b, axis, opts)
+    if int(rest.sum()) < 4:
+        return None
+    return SurfaceTarget(target, pts[rest], nrm[rest], twin_id=region)
 
 
 def _seabed_height(world: SpatialWorld, floor: UUID, lane: list[np.ndarray]) -> float:
@@ -234,6 +284,10 @@ class MissionWorld:
         )
         surf_rng = np.random.default_rng([seed, 0x5F])
         targets = [_patch(t2s.world, target, axis, opts, surf_rng)]
+        region = rest_region_of(t2t_scenario, target) if REGION_READINGS else None
+        rest = None if region is None else _rest_of_target(t2s.world, target, region, axis, opts, seed)
+        if rest is not None:
+            targets.append(rest)
         for we in scenario.world_entities:
             if (
                 we.domain_ownership.technical
