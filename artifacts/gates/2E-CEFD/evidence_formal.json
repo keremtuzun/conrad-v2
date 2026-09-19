@@ -2,12 +2,12 @@
   "gate_id": "2E-CEFD",
   "evidence_class": "FORMAL",
   "execution_path": "pytest nodes + retained experiment artifacts (2E-CEFD)",
-  "git_commit": "a6b9e99e6d193a06bdaaef30f82f2bd821b9330d",
+  "git_commit": "1d2b15d8d1e58b97ecdd52b14b10c5c98288f1e1",
   "criteria": [
     {
       "criterion": "CEFD beats uncoupled baselines without unsupported ecological claims",
       "status": "FAIL",
-      "measured": "test_stress_is_inferred_and_never_observed_damage=PASS; experiment: {\"CB_entity_cover_rmse\": {\"mean\": -0.00062, \"ci_low\": -0.00152, \"ci_high\": 0.00028, \"n\": 80.0}, \"CB_entity_cover_rmse_vs_production\": {\"mean\": -0.00044, \"ci_low\": -0.00062, \"ci_high\": -0.00026, \"n\": 80.0}, \"cefd_confident_stress_on_healthy\": {\"max\": 1.0, \"mean\": 0.29375, \"worlds_with_any\": 28.0, \"n\": 80.0}, \"cefd_UEI_max\": 0.0}"
+      "measured": "test_stress_is_inferred_and_never_observed_damage=PASS; experiment: {\"CB_entity_cover_rmse\": {\"mean\": -0.00114, \"ci_low\": -0.00225, \"ci_high\": -3e-05, \"n\": 80.0}, \"CB_entity_cover_rmse_vs_production\": {\"mean\": -0.00038, \"ci_low\": -0.00055, \"ci_high\": -0.00022, \"n\": 80.0}, \"cefd_confident_stress_on_healthy\": {\"max\": 1.0, \"mean\": 0.30416666666666664, \"worlds_with_any\": 30.0, \"n\": 80.0}, \"cefd_UEI_max\": 0.0}"
     }
   ],
   "artifacts": [

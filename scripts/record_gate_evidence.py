@@ -347,7 +347,7 @@ ECO = "artifacts/experiments/ecological/"
 
 
 def _eco_entity_check(d: dict) -> tuple[bool, str]:
-    """2E-E002-R3 (thresholds as set for R2) production arm: cover error well below the prior sd in clear/moderate water, calibrated
+    """2E-E002-R4 (thresholds as set for R2, unchanged) production arm: cover error well below the prior sd in clear/moderate water, calibrated
     (coverage95 >= 0.85, mean z^2 <= 2) at every turbidity level. Thresholds fixed before the FINAL run."""
     s, cand = d["summary"], d.get("candidate", "production")
     levels = sorted({k.split(".")[0] for k in s if k.startswith("turbidity_")}, key=lambda x: float(x[10:]))
@@ -362,7 +362,7 @@ def _eco_entity_check(d: dict) -> tuple[bool, str]:
 
 
 def _eco_field_check(d: dict) -> tuple[bool, str]:
-    """2E-E001-R3 (thresholds as set for R2) production arm, per field: RMSE not significantly increasing with sensor count (paired 95 % CI
+    """2E-E001-R4 (thresholds as set for R2, unchanged) production arm, per field: RMSE not significantly increasing with sensor count (paired 95 % CI
     low <= 0 at each step) and lower at 8 than at 1 sensor; not significantly worse than the static field at
     >= 4 sensors; calibrated at every count (coverage95 >= 0.85 and 1/3 <= mean z^2 <= 3)."""
     s, p = d["summary"], d.get("paired", {})
@@ -392,7 +392,7 @@ def _eco_field_check(d: dict) -> tuple[bool, str]:
 
 
 def _cefd_check(d: dict) -> tuple[bool, str]:
-    """2E-E003-R3 (thresholds as set for R2): CEFD cover benefit over BOTH uncoupled arms > 0 with the pooled paired 95 % CI above 0, AND
+    """2E-E003-R4 (thresholds as set for R2, unchanged): CEFD cover benefit over BOTH uncoupled arms > 0 with the pooled paired 95 % CI above 0, AND
     zero confident stress claims on healthy entities AND zero non-UNKNOWN damage claims. Otherwise FAIL."""
     p = d.get("paired", {})
     got: dict[str, object] = {}
@@ -420,7 +420,7 @@ PLAN["2E"] = [
             EM + "test_observability_context_sets_survey_noise_but_never_couples_ecology",
             EP + "test_cover_belief_stays_bounded",
         ],
-        _exp(ECO + "2E-E002-R3.json", _eco_entity_check),
+        _exp(ECO + "2E-E002-R4.json", _eco_entity_check),
     ),
     (
         "field model works",
@@ -434,7 +434,7 @@ PLAN["2E"] = [
             EP + "test_field_variance_stays_between_floor_and_prior",
             EP + "test_prediction_variance_is_monotone_in_delta_t",
         ],
-        _exp(ECO + "2E-E001-R3.json", _eco_field_check),
+        _exp(ECO + "2E-E001-R4.json", _eco_field_check),
     ),
     (
         "persistent inference works",
@@ -451,7 +451,7 @@ PLAN["2E-CEFD"] = [
     (
         "CEFD beats uncoupled baselines without unsupported ecological claims",
         [EM + "test_stress_is_inferred_and_never_observed_damage"],
-        _exp(ECO + "2E-E003-R3.json", _cefd_check),
+        _exp(ECO + "2E-E003-R4.json", _cefd_check),
     ),
 ]
 

@@ -307,3 +307,169 @@ python -m uv run python scripts/record_gate_evidence.py 2E 2E-CEFD
 ```
 
 Wall time with the three runs in parallel: E001-R3 527 s, E002-R3 743 s, E003-R3 951 s.
+
+## Iteration 3 (2026-09-19): 1-sensor temperature over-caution, EB depth-trend prior, fresh FINAL-3
+
+Model version: `model2e-uncoupled-obsctx-analytic-0.5.0`. R2 and R3 artifacts are kept unchanged. Gate
+thresholds in `scripts/record_gate_evidence.py` are **unchanged**; only the three 2E artifact paths moved
+from R3 to R4. Production switches are unchanged (coupling OFF, ADR-0007 addendum).
+
+### I3.1 Cause
+
+Diagnosed on DEV only (production arm, 2E-E001 hidden cells, a variance decomposition logged at every
+evaluation time).
+
+- With one station the depth-trend slope is not identified: its posterior variance stays at the prior,
+  0.00999 of 0.01 (degC/m)^2. The predictive variance of a hidden cell is then dominated by the trend term
+  `depth_trend_sd^2 (z_cell - z_station)^2`. On the 8 DEV seeds this term is **81-96 %** of the mean k = 1
+  predictive variance. tau^2 (0.0121), the level variance and the station variance (about 0.001 degC^2) are
+  small next to it.
+- `depth_trend_sd` was 0.1 degC/m, an ENGINEERING_ESTIMATE, not a calibrated value. The k = 1 mean z^2 of a
+  seed tracks that world's squared slope (correlation 0.92 over the DEV seeds between the k = 8 slope
+  estimate squared and the k = 1 z^2). Worlds with a weak stratification get a far too wide belief.
+- So there is no double-counted variance term and no process-noise or drift problem. q (about 2e-7 degC^2/s)
+  and the change-point machinery do not matter at k = 1. The cause is a mis-scaled prior on the one parameter
+  that one sensor cannot learn.
+
+### I3.2 Fix
+
+`depth_trend_sd` is now set by type-II maximum likelihood across worlds, the same method and data rule as
+`local_sd` in section 3. The prior is still zero-mean Gaussian. Its variance is the ML estimate from the
+8 DEV worlds' k = 8 slope estimates, computed from sensor readings only and de-shrunk from the old 0.1 prior
+(EM fixed point): sigma^2 = 0.00606 (degC/m)^2, **sd 0.078 degC/m** (was 0.1). The fix does not depend on k:
+at k >= 2 the slope is learned from the data, and the change there is a small amount of extra shrinkage.
+
+A second variant was also implemented and tested: `FieldSpec.depth_trend_mean`, which gives the prior mean
+of the trend (default 0, so behaviour is identical unless set). Its hierarchical EB on DEV gave mean 0.0743
+and sd 0.0226. It is kept in the code for ablation but is not used (see I3.4).
+
+Code: `conrad/domains/ecological/config.py` (the prior, the new field, the version) and
+`conrad/domains/ecological/field_belief.py` (`_prior_mean`, used by the EB marginal likelihood and the
+posterior). No test was changed.
+
+### I3.3 DEV (design data, not a result)
+
+Temperature, production arm, 8 seeds. Values are RMSE (degC) / mean z^2. Turbidity is identical in every
+arm: 0.093 / 0.52, 0.059 / 0.39, 0.042 / 0.41, 0.037 / 0.58.
+
+| arm | k=1 | k=2 | k=4 | k=8 |
+|---|---|---|---|---|
+| A: sd 0.1 (R3) | 0.507 / 0.451 | 0.162 / 0.429 | 0.072 / 0.429 | 0.045 / 0.423 |
+| B: EB sd 0.078, zero mean | 0.513 / 0.723 | 0.175 / 0.492 | 0.082 / 0.457 | 0.045 / 0.423 |
+| C: EB mean 0.0743, sd 0.0226 | 0.150 / 0.605 | 0.090 / 0.462 | 0.065 / 0.506 | 0.046 / 0.439 |
+
+### I3.4 VALIDATION (selection, 20 seeds)
+
+Temperature, production arm. Values are RMSE / coverage95 / mean z^2. Turbidity is identical in every arm:
+RMSE 0.076 / 0.058 / 0.042 / 0.033, z^2 0.35 / 0.42 / 0.49 / 0.53.
+
+| arm | k=1 | k=2 | k=4 | k=8 |
+|---|---|---|---|---|
+| A | 0.565 / 1.000 / 0.441 | 0.161 / 1.000 / 0.375 | 0.070 / 0.968 / 0.800 | 0.047 / 0.996 / 0.477 |
+| **B (chosen)** | 0.569 / 1.000 / 0.712 | 0.188 / 0.995 / 0.470 | 0.073 / 0.968 / 0.802 | 0.047 / 0.996 / 0.473 |
+| C | 0.302 / 0.855 / 1.574 | 0.199 / 0.941 / 1.082 | 0.096 / 0.956 / 0.952 | 0.049 / 0.998 / 0.462 |
+
+Paired RMSE change B - A on VALIDATION (95 % CI, n = 20):
+- k = 1: +0.004 [-0.009, +0.018]
+- k = 2: **+0.027 [+0.003, +0.051]**
+- k = 4: +0.002 [-0.003, +0.007]
+- k = 8: 0.000 [-0.000, +0.000]
+
+The selection was made after all three VALIDATION results were in, so the rationale is stated in full.
+
+- **A** is the configuration that failed on FINAL-2. Its VALIDATION z^2 at k = 1 and k = 2 is only 0.04-0.11
+  above the 1/3 bound.
+- **C** has the best k = 1 RMSE. But its VALIDATION k = 1 coverage is 0.855, only 0.005 above the gate bound.
+  Its k = 2 and k = 4 RMSE are worse than A's. Its prior sd was fitted on 8 worlds and under-represents the
+  between-world spread in the slope. That trades an over-caution failure for a likely over-confidence
+  failure.
+- **B** keeps every calibration margin (z^2 0.47-0.80, coverage >= 0.968). Its cost is a small, significant
+  RMSE increase at k = 2 from the extra slope shrinkage.
+
+B was frozen as the config default before FINAL-3.
+
+### I3.5 FINAL-3 (20 fresh seeds, run once)
+
+Declared before any run: 6600000-6600019 (`final_3` in `configs/eval/2e_e00{1,2,3}_r4.yaml`). It was checked
+for collisions against every seed and range in `configs/`: `partitions.yaml` (3100000-5400040),
+`partitions_i5.yaml`, `partitions_nav.yaml`, `partitions_unity_gates.yaml` (including 6500000-6500059,
+7400001-7410020, 7500000-7600009 and 7800000-7810019) and the 2E lists. No seed with the 66 prefix appears
+anywhere in `configs/`, `conrad/`, `scripts/` or `tests/`. FINAL (6300000-6300011) and FINAL-2
+(6400000-6400019) are listed as spent.
+
+Artifacts: `artifacts/experiments/ecological/2E-E00{1,2,3}-R4.json`.
+
+**2E-E001-R4, production** (RMSE / coverage95 / mean z^2):
+
+| field | k=1 | k=2 | k=4 | k=8 |
+|---|---|---|---|---|
+| temperature | 0.625 / 0.999 / **0.858** | 0.157 / 0.999 / 0.366 | 0.060 / 0.977 / 0.642 | 0.045 / 0.997 / 0.461 |
+| temperature, static | 0.615 | 0.496 | 0.488 | 0.457 |
+| turbidity | 0.076 / 0.995 / 0.399 | 0.058 / 0.975 / 0.525 | 0.051 / 0.965 / 0.737 | 0.046 / 0.942 / 1.028 |
+| turbidity, static | 0.070 | 0.065 | 0.061 | 0.061 |
+
+Paired per-seed 95 % CIs for the RMSE differences (n = 20):
+
+- **Temperature, more sensors:**
+  - k2 - k1: -0.468 [-0.673, -0.263]
+  - k4 - k2: -0.097 [-0.191, -0.003]
+  - k8 - k4: -0.015 [-0.025, -0.005]
+- **Temperature vs static:**
+  - k1: +0.010 [-0.016, +0.035]
+  - k2: -0.339 [-0.466, -0.212]
+  - k4: -0.428 [-0.542, -0.313]
+  - k8: -0.412 [-0.512, -0.313]
+- **Turbidity, more sensors:**
+  - k2 - k1: -0.017 [-0.028, -0.007]
+  - k4 - k2: -0.007 [-0.014, -0.000]
+  - k8 - k4: -0.005 [-0.010, +0.001]
+- **Turbidity vs static:**
+  - k4: -0.011 [-0.030, +0.009]
+  - k8: -0.015 [-0.035, +0.006]
+
+  The point estimates are better; the differences are not significant.
+
+The k = 1 temperature z^2 moved from 0.323 (FINAL-2, old prior) to 0.858. Every count is now inside
+[1/3, 3] with coverage >= 0.94. The tightest point is now temperature k = 2 at 0.366, 0.03 above the bound.
+Turbidity did not regress: its code path is unchanged and z^2 is 0.40-1.03.
+
+**2E-E002-R4, production cover** (RMSE / coverage95 / z^2):
+- 1 NTU: 0.048 / 0.999 / 0.36
+- 4 NTU: 0.065 / 0.998 / 0.35
+- 10 NTU: 0.110 / 0.999 / 0.35
+- 25 NTU: 0.180 / 1.0 / 0.37
+
+**2E-E003-R4, turbidity after the 15 NTU spike** (production, all worlds): RMSE 0.119, coverage 0.972,
+mean z^2 0.59. Change detection still holds.
+
+### I3.6 Gate outcomes (re-recorded, `artifacts/gates/2E*/evidence_formal.json`)
+
+**2E (functional): PASS**
+- entity model works: **PASS**
+- field model works: **PASS** (was FAIL on temperature z^2 at k = 1)
+- persistent inference works: **PASS**
+
+**2E-CEFD (research): FAIL**
+- **Benefit.** Pooled CB over `uncoupled` is -0.0011 [-0.0023, -0.00003] (80 pairs). Over `production` it
+  is -0.0004 [-0.0006, -0.0002]. The full coupling is significantly worse than both.
+- **Unsupported claims.** `cefd` made confident stress claims on healthy entities in 30 of 80 worlds.
+  UEI = 0. Ecological coupling stays OFF, and no attempt was made to make this gate pass.
+
+### I3.7 Open items
+
+- The temperature k = 2 z^2 margin is thin (0.366 on FINAL-3). With 2 stations the slope is only weakly
+  identified. A future step would be a hierarchical trend prior fitted on more worlds than 8.
+- At k = 1 temperature RMSE equals the static field's (+0.010 [-0.016, +0.035]). A single sensor cannot
+  learn stratification. Only a better-informed trend prior (variant C) would change that, and it was
+  rejected here for calibration risk.
+- `depth_trend_sd` 0.078 is an EB_DEV_ESTIMATE on SYNTHETIC_ONLY Twin2E worlds. It is not a real-ocean value.
+
+### I3.8 Reproduce
+
+```
+python -m uv run python -m conrad.evaluation.ecological_experiments.run_all artifacts/experiments/ecological 2e_e001_r4
+# likewise 2e_e002_r4, 2e_e003_r4 (always with a name filter)
+python -m uv run python scripts/record_gate_evidence.py 2E 2E-CEFD
+```
+
+Wall time with the three runs in parallel: E001-R4 692 s, E002-R4 868 s, E003-R4 1149 s.

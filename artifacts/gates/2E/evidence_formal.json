@@ -2,17 +2,17 @@
   "gate_id": "2E",
   "evidence_class": "FORMAL",
   "execution_path": "pytest nodes + retained experiment artifacts (2E)",
-  "git_commit": "a6b9e99e6d193a06bdaaef30f82f2bd821b9330d",
+  "git_commit": "1d2b15d8d1e58b97ecdd52b14b10c5c98288f1e1",
   "criteria": [
     {
       "criterion": "entity model works",
       "status": "PASS",
-      "measured": "test_entity_and_field_beliefs_are_separate_state_types=PASS; test_stress_is_inferred_and_never_observed_damage=PASS; test_observability_context_sets_survey_noise_but_never_couples_ecology=PASS; test_cover_belief_stays_bounded=PASS; experiment: {\"candidate\": \"production\", \"turbidity_1\": {\"rmse\": 0.0493, \"coverage95\": 1.0, \"mean_z2\": 0.309}, \"turbidity_4\": {\"rmse\": 0.0686, \"coverage95\": 0.999, \"mean_z2\": 0.331}, \"turbidity_10\": {\"rmse\": 0.1183, \"coverage95\": 0.999, \"mean_z2\": 0.41}, \"turbidity_25\": {\"rmse\": 0.1828, \"coverage95\": 1.0, \"mean_z2\": 0.374}}"
+      "measured": "test_entity_and_field_beliefs_are_separate_state_types=PASS; test_stress_is_inferred_and_never_observed_damage=PASS; test_observability_context_sets_survey_noise_but_never_couples_ecology=PASS; test_cover_belief_stays_bounded=PASS; experiment: {\"candidate\": \"production\", \"turbidity_1\": {\"rmse\": 0.0481, \"coverage95\": 0.999, \"mean_z2\": 0.358}, \"turbidity_4\": {\"rmse\": 0.0647, \"coverage95\": 0.998, \"mean_z2\": 0.347}, \"turbidity_10\": {\"rmse\": 0.1095, \"coverage95\": 0.999, \"mean_z2\": 0.349}, \"turbidity_25\": {\"rmse\": 0.1804, \"coverage95\": 1.0, \"mean_z2\": 0.373}}"
     },
     {
       "criterion": "field model works",
-      "status": "FAIL",
-      "measured": "test_variance_grows_away_from_sensor_and_with_time=PASS; test_error_does_not_grow_with_more_sensors_on_a_near_uniform_field=PASS; test_tau2_shrinks_when_stations_agree_and_grows_when_they_differ=PASS; test_noise_scale_and_drift_are_learned_from_the_readings=PASS; test_abrupt_change_is_detected_and_not_over_confident=PASS; test_change_detection_is_quiet_on_a_stationary_field=PASS; test_field_variance_stays_between_floor_and_prior=PASS; test_prediction_variance_is_monotone_in_delta_t=PASS; experiment: {\"temperature\": {\"rmse\": {\"1\": 0.4549, \"2\": 0.0994, \"4\": 0.057, \"8\": 0.0429}, \"non_increasing\": true, \"not_worse_than_static_k>=4\": true, \"calibrated\": false, \"coverage95/mean_z2\": {\"1\": [1.0, 0.323], \"2\": [0.998, 0.409], \"4\": [0.98, 0.532], \"8\": [0.995, 0.403]}}, \"turbidity\": {\"rmse\": {\"1\": 0.0742, \"2\": 0.0595, \"4\": 0.0496, \"8\": 0.043}, \"non_increasing\": true, \"not_worse_than_static_k>=4\": true, \"calibrated\": true, \"coverage95/mean_z2\": {\"1\": [1.0, 0.373], \"2\": [0.991, 0.479], \"4\": [0.966, 0.672], \"8\": [0.952, 0.874]}}}"
+      "status": "PASS",
+      "measured": "test_variance_grows_away_from_sensor_and_with_time=PASS; test_error_does_not_grow_with_more_sensors_on_a_near_uniform_field=PASS; test_tau2_shrinks_when_stations_agree_and_grows_when_they_differ=PASS; test_noise_scale_and_drift_are_learned_from_the_readings=PASS; test_abrupt_change_is_detected_and_not_over_confident=PASS; test_change_detection_is_quiet_on_a_stationary_field=PASS; test_field_variance_stays_between_floor_and_prior=PASS; test_prediction_variance_is_monotone_in_delta_t=PASS; experiment: {\"temperature\": {\"rmse\": {\"1\": 0.6248, \"2\": 0.1569, \"4\": 0.06, \"8\": 0.0447}, \"non_increasing\": true, \"not_worse_than_static_k>=4\": true, \"calibrated\": true, \"coverage95/mean_z2\": {\"1\": [0.999, 0.858], \"2\": [0.999, 0.366], \"4\": [0.977, 0.642], \"8\": [0.997, 0.461]}}, \"turbidity\": {\"rmse\": {\"1\": 0.0756, \"2\": 0.0582, \"4\": 0.0508, \"8\": 0.0462}, \"non_increasing\": true, \"not_worse_than_static_k>=4\": true, \"calibrated\": true, \"coverage95/mean_z2\": {\"1\": [0.995, 0.399], \"2\": [0.975, 0.525], \"4\": [0.965, 0.737], \"8\": [0.942, 1.028]}}}"
     },
     {
       "criterion": "persistent inference works",

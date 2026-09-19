@@ -1,0 +1,31 @@
+# 2E-E003-R4 CEFD coupling benefit vs uncoupled and production + counterfactual/confounded worlds
+experiment: {id: 2E-E003-R4}
+# Local 2E seed partitions, iteration 3 (SYNTHETIC_ONLY; configs/eval/partitions.yaml is pinned and covers
+# MCBR/mission only). Disjoint. FINAL (6300000-6300011) and FINAL-2 (6400000-6400019) are SPENT. final_3
+# (6600000-6600019) was checked against every range in configs/ (incl. partitions_*.yaml) before use, declared
+# before any run, and is run ONCE after freezing the design (docs/audits/MODEL2E_REPAIR.md, iteration 3).
+partition: final_3
+partitions:
+  development: [2026201, 2026202, 2026203, 6100000, 6100001, 6100002, 6100003, 6100004]
+  validation: [6200000, 6200001, 6200002, 6200003, 6200004, 6200005, 6200006, 6200007,
+               6300000, 6300001, 6300002, 6300003, 6300004, 6300005, 6300006, 6300007, 6300008, 6300009, 6300010, 6300011]
+  final_3: [6600000, 6600001, 6600002, 6600003, 6600004, 6600005, 6600006, 6600007, 6600008, 6600009, 6600010, 6600011, 6600012, 6600013, 6600014, 6600015, 6600016, 6600017, 6600018, 6600019]
+  spent_final: [6300000, 6300001, 6300002, 6300003, 6300004, 6300005, 6300006, 6300007, 6300008, 6300009, 6300010, 6300011]
+  spent_final_2: [6400000, 6400001, 6400002, 6400003, 6400004, 6400005, 6400006, 6400007, 6400008, 6400009, 6400010, 6400011, 6400012, 6400013, 6400014, 6400015, 6400016, 6400017, 6400018, 6400019]
+seeds: [6600000, 6600001, 6600002, 6600003, 6600004, 6600005, 6600006, 6600007, 6600008, 6600009, 6600010, 6600011, 6600012, 6600013, 6600014, 6600015, 6600016, 6600017, 6600018, 6600019]
+twin_config: configs/sim/twin2e_test_small.yaml
+variants: [cefd, uncoupled, production]
+n_steps: 96
+dt_s: 900.0
+eval_every_steps: 12
+n_moorings: 4
+base_temperature_c: 14.0
+hot_delta_c: 8.0
+confounder_magnitude: 8.0
+spike_ntu: 15.0
+spike_radius_m: 30.0
+spike_time_s: 21600.0
+pose_sigma_m: 0.3
+model2e:
+  entity: {cover_process_sd_per_sqrt_day: 0.35}
+  coupling: {stress_threshold_c: 20.0}   # ENGINEERING_ESTIMATE; the registry gives no thresholds

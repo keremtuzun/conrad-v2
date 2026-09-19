@@ -240,6 +240,13 @@ class FieldBeliefGrid:
             return ones, np.array([[spec.prior_sd**2]])
         return np.hstack([ones, pts[:, 2:3] - self._z_ref]), np.diag([spec.prior_sd**2, tv])
 
+    def _prior_mean(self, spec: FieldSpec, pts: np.ndarray) -> np.ndarray:
+        """Prior mean of the field value at ``pts``: prior_mean + depth_trend_mean (z - z_ref) (trend on)."""
+        base = np.full(pts.shape[0], spec.prior_mean, dtype=np.float64)
+        if self._trend_var(spec) <= 0:
+            return base
+        return np.asarray(base + spec.depth_trend_mean * (pts[:, 2] - self._z_ref))
+
     # ------------------------------------------------------------------ hyper-parameters
     def _q_prior(self, spec: FieldSpec) -> float:
         if not self.cfg.switches.field_dynamics:
@@ -341,7 +348,7 @@ class FieldBeliefGrid:
                 fb.ls_mult[c] = (1.0, 1.0)
                 continue
             ks = np.stack([kernel_between(pos, pos, s, hv) for hv in mults])  # (L,S,S)
-            r = m - s.prior_mean
+            r = m - self._prior_mean(s, pos)
             eye = np.eye(m.size)
             hs, pb = self._basis(s, pos)
             mean_cov = hs @ pb @ hs.T
@@ -391,9 +398,9 @@ class FieldBeliefGrid:
             cmat = hs @ a + t2 * k_ss + np.diag(v) + self.fm.jitter_fraction * (p0 + t2) * np.eye(m.size)
             cov_cs = hc @ a + t2 * k_cs  # cov(cell value, station values)
             nb = a.shape[0]
-            sol = np.linalg.solve(cmat, np.column_stack([m - s.prior_mean, a.T, cov_cs.T]))
+            sol = np.linalg.solve(cmat, np.column_stack([m - self._prior_mean(s, pos), a.T, cov_cs.T]))
             alpha, c_inv_at, c_inv_cov = sol[:, 0], sol[:, 1 : 1 + nb], sol[:, 1 + nb :]
-            mean_f = s.prior_mean + cov_cs @ alpha
+            mean_f = self._prior_mean(s, self.grid.centers) + cov_cs @ alpha
             prior_f = np.einsum("ij,jk,ik->i", hc, pb, hc) + t2
             var_f = prior_f - np.einsum("ij,ji->i", cov_cs, c_inv_cov)
             level[c] = s.prior_mean + float(a[0] @ alpha)  # the level coefficient (value at mean depth)

@@ -22,6 +22,10 @@ EXPERIMENTS = {
     "2e_e001_r3": e001_field.run,
     "2e_e002_r3": e002_turbidity.run,
     "2e_e003_r3": e003_coupling.run,
+    # R4: iteration 3 (EB-calibrated temperature depth-trend prior), fresh FINAL-3 partition
+    "2e_e001_r4": e001_field.run,
+    "2e_e002_r4": e002_turbidity.run,
+    "2e_e003_r4": e003_coupling.run,
 }
 
 

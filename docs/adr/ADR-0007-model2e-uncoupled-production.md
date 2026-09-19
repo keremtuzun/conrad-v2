@@ -43,3 +43,7 @@ that path is still OFF. `tests/contract/test_runtime_defaults.py` asserts
 `ecological_coupling is False`, `entity_to_field is False` and `observability_context is True`, and that the
 switch set is exhaustive. The model version is `model2e-uncoupled-obsctx-analytic-0.4.0`. Evidence:
 `docs/audits/MODEL2E_REPAIR.md`, Iteration 2.
+
+Addendum (iteration 3, 2026-09-19). The switches are unchanged. Only the temperature depth-trend prior was
+recalibrated (empirical Bayes on DEV). The model version is now `model2e-uncoupled-obsctx-analytic-0.5.0`.
+Evidence: `docs/audits/MODEL2E_REPAIR.md`, Iteration 3.

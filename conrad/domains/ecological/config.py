@@ -41,6 +41,10 @@ class FieldSpec(ConradModel):
     depth_trend_sd: float = Field(
         default=0.0, ge=0, description="prior sd of a linear depth trend in the mean, per metre (0 = none)"
     )
+    depth_trend_mean: float = Field(
+        default=0.0,
+        description="prior mean of that depth trend, per metre (used only when depth_trend_sd > 0)",
+    )
     nonnegative: bool = False
 
 
@@ -116,8 +120,10 @@ def _default_fields() -> dict[str, FieldSpec]:
             length_scale_v_m=6.0,
             correlation_time_s=86400.0,
             sensor_sd=0.05,
-            # ENGINEERING_ESTIMATE: stratified shelf seas show vertical gradients of order 0.1 degC/m
-            depth_trend_sd=0.1,
+            # EB_DEV_ESTIMATE (iteration 3): type-II ML of the zero-mean slope prior across the 8 DEV worlds,
+            # from the k=8 posterior slopes (sensor readings only); was 0.1 (ENGINEERING_ESTIMATE), which made
+            # the 1-sensor temperature belief over-cautious (docs/audits/MODEL2E_REPAIR.md, iteration 3)
+            depth_trend_sd=0.078,
         ),
         "turbidity": FieldSpec(
             units="NTU",
@@ -219,7 +225,7 @@ class Model2EConfig(ConradModel):
     switches: CefdSwitches = CefdSwitches()
     variance_floor_fraction: float = Field(default=1e-4, gt=0)
     material_change_fraction: float = Field(default=0.01, ge=0, description="publish threshold")
-    model_version: str = "model2e-uncoupled-obsctx-analytic-0.4.0"
+    model_version: str = "model2e-uncoupled-obsctx-analytic-0.5.0"
     clock_domain: str = "SIM"
 
 
