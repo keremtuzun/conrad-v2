@@ -25,8 +25,14 @@ DEFAULT_LEGACY = Path.home() / "OneDrive" / "Documents" / "ChatGPT" / "conrad"
 
 
 def uv_cmd() -> list[str]:
-    exe = shutil.which("uv")
-    return [exe] if exe else [sys.executable, "-m", "uv"]
+    """Resolve uv: $UV (exported by `uv run`), then PATH, then `<this python> -m uv`."""
+    exe = os.environ.get("UV") or shutil.which("uv")
+    if exe:
+        return [exe]
+    probe = subprocess.run([sys.executable, "-m", "uv", "--version"], capture_output=True, text=True)
+    if probe.returncode != 0:
+        raise SystemExit("uv not found: install uv or run this script with a Python that has the uv module")
+    return [sys.executable, "-m", "uv"]
 
 
 def step(name: str, cmd: list[str], cwd: Path, env: dict[str, str], results: list[dict[str, object]]) -> bool:
