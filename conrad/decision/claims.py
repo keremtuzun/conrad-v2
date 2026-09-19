@@ -210,6 +210,11 @@ class ClaimGraphBuilder:
                 if status is GroundingStatus.GROUNDED:
                     uncertainties.append(prop.uncertainty if prop is not None else message.uncertainty)
                     uncertainties.append(message.uncertainty)
+                elif not hard.intersection(p_issues) - {ISSUE_UNKNOWN_STATUS}:
+                    # The belief exists and honestly says "not observed": its uncertainty (U_O) still
+                    # diagnoses WHY the requirement is open, so an information need can be raised. The
+                    # claim itself stays UNSUPPORTED and is never relied on as fact.
+                    uncertainties.append(prop.uncertainty if prop is not None else message.uncertainty)
 
         disagreeing = self._cross_domain(ctx, req, primary, graph, claim_ids)
         if disagreeing:

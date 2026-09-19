@@ -1,0 +1,12 @@
+# Integrated mission evaluation runs (gates I1-I7, flagship I4, INT benchmarks). SYNTHETIC_ONLY settings.
+# Scenario IDs (conrad.sim.mission.scenarios) layer their own overrides on top of this section.
+extends: [configs/sim/default.yaml]
+run:
+  seed: 2026201
+sim:
+  mission:
+    world: {}
+    runtime:
+      duration_s: 120.0
+      control_period_s: 0.05
+      decision_period_s: 2.0

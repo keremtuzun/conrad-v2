@@ -1,0 +1,10 @@
+# GOLDEN-SMOKE fixture config (GOLDEN-V0.2 compact subset). Fixed seed; small sensors; short mission.
+extends: [configs/sim/default.yaml]
+run:
+  seed: 2026201
+sim:
+  mission:
+    world: {}
+    runtime:
+      control_period_s: 0.1
+      decision_period_s: 2.0

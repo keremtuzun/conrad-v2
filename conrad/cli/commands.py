@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from uuid import UUID
 
 import typer
 
-from conrad.cli.app import data_app, eval_app, train_app
+from conrad.cli.app import data_app, eval_app, replay_app, runtime_app, sim_app, train_app
 
 
 @train_app.command("run")
@@ -74,3 +75,137 @@ def data_verify(
         typer.echo(f"PROBLEM: {p}")
     typer.echo("RESULT: " + ("OK" if not problems else f"FAIL ({len(problems)} problems)"))
     raise typer.Exit(0 if not problems else 1)
+
+
+# ---------------------------------------------------------------------- integrated mission (gates I1-I7)
+DEFAULT_SIM_CONFIG = "configs/sim/mission_default.yaml"
+
+
+@sim_app.command("run")
+def sim_run(
+    scenario: str = typer.Option(..., "--scenario", help="GOLDEN-SMOKE, FLAGSHIP-I4, INT-001 ..."),
+    config: str = typer.Option(DEFAULT_SIM_CONFIG, "--config"),
+    run_id: str = typer.Option(None, "--run-id"),
+) -> None:
+    """Run an integrated scenario and write a complete, replayable run bundle."""
+    from conrad.sim.mission.run import run_scenario
+
+    out = run_scenario(scenario, config, run_id)
+    report = out["report"]
+    rt = report.get("runtime", {})
+    typer.echo(
+        json.dumps(
+            {
+                "run_id": out["run_id"],
+                "run_dir": out["run_dir"],
+                "decisions": rt.get("decisions"),
+                "commands_accepted": rt.get("commands_accepted"),
+                "commands_rejected": rt.get("commands_rejected"),
+                "target_after": report.get("target_after"),
+            },
+            indent=2,
+            default=str,
+        )
+    )
+
+
+@replay_app.command("run")
+def replay_run_cmd(
+    run: str = typer.Option(..., "--run", help="run ID under paths.runs_dir, or a run directory"),
+    config: str = typer.Option(DEFAULT_SIM_CONFIG, "--config"),
+) -> None:
+    """Verify bundle digests (fail closed), re-execute from the stored seed/config, compare signatures."""
+    from conrad.persistence.replay_store import ReplayIntegrityError
+    from conrad.settings import load_settings
+    from conrad.sim.mission.replay import replay_run
+
+    run_dir = Path(run)
+    if not run_dir.exists():
+        s = load_settings(config)
+        run_dir = s.resolve(s.paths.runs_dir) / run
+    try:
+        report = replay_run(run_dir)
+    except ReplayIntegrityError as exc:
+        typer.echo(json.dumps({"verified": False, "problems": exc.problems}, indent=2))
+        raise typer.Exit(2) from exc
+    typer.echo(json.dumps(report, indent=2))
+    typer.echo("RESULT: " + ("REPRODUCED" if report["equal"] else "MISMATCH"))
+    raise typer.Exit(0 if report["equal"] else 1)
+
+
+@runtime_app.command("start")
+def runtime_start(config: str = typer.Option("configs/runtime/default.yaml", "--config")) -> None:
+    """Simulation lane: run GOLDEN-SMOKE under the supervisor. HIL/physical lanes are refused by the gates."""
+    from conrad.runtime.health import HealthRegistry
+    from conrad.runtime.supervisor import RuntimeSupervisor
+    from conrad.settings import ExecutionLane, load_settings
+
+    settings = load_settings(config)
+    if settings.run.lane in (ExecutionLane.HIL, ExecutionLane.PHYSICAL):
+        sup = RuntimeSupervisor(settings, HealthRegistry(lambda: 0), lambda *a, **k: None, UUID(int=0))
+        reasons = sup.hardware_gate_reasons()
+        typer.echo(
+            json.dumps({"refused": True, "lane": settings.run.lane.value, "reasons": reasons}, indent=2)
+        )
+        raise typer.Exit(3)
+    from conrad.sim.mission.run import run_scenario
+
+    out = run_scenario("GOLDEN-SMOKE", settings)
+    rt = out["report"]["runtime"]
+    typer.echo(
+        json.dumps(
+            {
+                "run_id": out["run_id"],
+                "run_dir": out["run_dir"],
+                "runtime_state_history": rt["runtime_state_history"],
+            },
+            indent=2,
+            default=str,
+        )
+    )
+
+
+@runtime_app.command("safe-hold")
+def runtime_safe_hold(
+    mission: str = typer.Option(..., "--mission", help="mission UUID"),
+    config: str = typer.Option(DEFAULT_SIM_CONFIG, "--config"),
+    reason: str = typer.Option("operator request", "--reason"),
+) -> None:
+    """Record an operator SAFE_HOLD request for the latest run of a mission (append-only, outside digests)."""
+    from conrad.settings import load_settings
+
+    s = load_settings(config)
+    runs = s.resolve(s.paths.runs_dir)
+    matches = []
+    for d in sorted(runs.glob("*"), key=lambda p: p.stat().st_mtime, reverse=True) if runs.exists() else []:
+        ev = d / "events.jsonl"
+        if ev.exists():
+            with ev.open(encoding="utf-8") as handle:
+                first = handle.readline()
+            if first and json.loads(first)["envelope"]["mission_id"] == mission:
+                matches.append(d)
+    if not matches:
+        typer.echo(f"no run found for mission {mission} under {runs}")
+        raise typer.Exit(1)
+    run_dir = matches[0]
+    inbox = run_dir / "notes" / "operator_requests.jsonl"
+    inbox.parent.mkdir(parents=True, exist_ok=True)
+    request = {"action": "safe_hold", "mission_id": mission, "operator": "cli", "reason": reason}
+    with inbox.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(request) + "\n")
+    finished = (run_dir / "bundle_manifest.json").exists()
+    typer.echo(
+        json.dumps(
+            {
+                "run_dir": str(run_dir),
+                "request_file": str(inbox),
+                "live_process": not finished,
+                "status": "RECORDED_NO_LIVE_PROCESS: the run has finished; the request is recorded for the audit "
+                "trail and cannot affect the vehicle"
+                if finished
+                else "RECORDED: a live MissionRuntime polls this "
+                "inbox at its decision cadence and enters SAFE_HOLD through the supervisor",
+            },
+            indent=2,
+        )
+    )

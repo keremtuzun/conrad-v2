@@ -1,0 +1,4 @@
+# FLAGSHIP-I4 / fixed-view seed replicate (2026202); identical to mission_default except the seed.
+extends: [configs/sim/mission_default.yaml]
+run:
+  seed: 2026202

@@ -1,0 +1,11 @@
+# Small, CPU-fast mission config for tests (coarse control period, short duration).
+extends: [configs/sim/default.yaml]
+run:
+  seed: 2026201
+sim:
+  mission:
+    world: {}
+    runtime:
+      duration_s: 100.0
+      control_period_s: 0.1
+      decision_period_s: 2.0
