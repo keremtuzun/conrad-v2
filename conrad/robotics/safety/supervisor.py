@@ -111,6 +111,12 @@ class SafetySupervisor:
                 self._loss_since_ns = None
                 if sigma is not None and sigma > c.degraded_sigma_fraction * self.max_sigma:
                     add(SafetyState.DEGRADED, Reason.POSE_SIGMA_ELEVATED)
+                if x.state.estimator_health is HealthLevel.DEGRADED:
+                    # estimator-declared inconsistency (NIS, gated fixes/depth) slows the vehicle even
+                    # when the reported sigma still looks small: the sigma itself is then suspect.
+                    add(SafetyState.DEGRADED, Reason.ESTIMATOR_DEGRADED)
+                    for code in x.estimator_reasons:
+                        add(SafetyState.DEGRADED, code)
             p = np.asarray(x.state.pose.position_m)
             depth, depth_sigma = -float(p[2]), (sigma or 0.0)
             if depth + c.depth_sigma_k * depth_sigma > self.max_depth:

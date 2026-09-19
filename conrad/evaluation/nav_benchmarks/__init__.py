@@ -9,8 +9,13 @@ IMPLEMENTATION_METADATA = {
         "ch20 Navigation benchmarks",
         "ch20 Navigation metrics",
         "ch21 Navigation benchmarks",
+        "ch20 Localization-loss behavior (NAV-CAL-E001 estimator calibration)",
     ],
-    "configuration_keys": ["configs/sim/nav_benchmarks.yaml", "configs/robot/sim_reference.yaml"],
+    "configuration_keys": [
+        "configs/sim/nav_benchmarks.yaml",
+        "configs/robot/sim_reference.yaml",
+        "configs/sim/nav_calibration.yaml",
+    ],
     "assumptions": [
         "scenarios are SYNTHETIC_ONLY on the L1 Python kernel; results say nothing about the physical robot",
         "position fixes come from a synthetic USBL-like sensor rendered on the sonar slot",
@@ -18,6 +23,7 @@ IMPLEMENTATION_METADATA = {
     ],
     "baselines": ["EKF + A* + trapezoidal trajectory + cascaded PID + BVLS allocation + rule supervisor"],
     "acceptance_tests": ["tests/simulation/nav"],
+    "experiments": {"NAV-CAL-E001": "conrad.evaluation.nav_benchmarks.calibration"},
     "claim_status": "EVALUATED",
 }
 

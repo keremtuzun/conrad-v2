@@ -1,0 +1,35 @@
+# NAV-CAL-E001: state-estimator covariance calibration during position-fix outages (ch20 Localization-loss).
+# SYNTHETIC_ONLY: every value is a simulator input or a configured evaluation threshold, not a measurement.
+label: SYNTHETIC_ONLY
+hypothesis: >
+  With the prior-mismatch state, IMU/AHRS noise adaptation and NIS monitoring, the EKF position covariance
+  stays consistent through fix outages (containment near 68/95/99.7 %, NEES/3 near 1) and LOCALIZATION_LOST
+  fires before the true error exceeds the collision-envelope allowance, unlike the legacy EST-B0 filter.
+primary_metric: missed_danger_s
+direction: lower
+baselines: [EST-B0 legacy 15-state EKF (EkfConfig.legacy_baseline)]
+# Seed partitions. dev_seeds were the only seeds used while designing/tuning the estimator.
+# seeds (= held-out final partition) are used only for the reported numbers.
+dev_seeds: [101, 102, 103, 104, 105]
+seeds: [9001, 9002, 9003, 9004, 9005, 9006, 9007, 9008, 9009, 9010]
+partitions: [final]            # add "dev" to re-run the design partition
+variants: [before_fix, after_fix]
+outage_durations_s: [5, 15, 30, 60]
+imu_noise_multipliers: [1.0, 3.0, 5.0]
+scenario:
+  control_period_s: 0.02
+  start: [0.0, 0.0, -5.0]
+  goal_target: [60.0, 0.0, -5.0]   # far enough that the vehicle is still transiting when the outage starts
+  outage_start_s: 20.0
+  post_outage_s: 5.0
+  fixes: {period_s: 1.0, sigma_m: 0.10}
+  # per-seed synthetic environment (drawn from the seed; the estimator is told none of it)
+  current_speed_max_mps: 0.25     # horizontal, uniform magnitude and direction
+  gust_speed_max_mps: 0.15        # one horizontal gust starting uniformly inside the outage
+  gust_duration_s: 10.0
+metrics:
+  sample_period_s: 0.5
+  # danger = true 3D error larger than the collision-envelope allowance at the LOCALIZATION_LOST threshold,
+  # i.e. SafetyConfig.sigma_k * RobotConfig.safety.max_pose_sigma_m (both configured, SYNTHETIC_ONLY).
+  danger_uses_envelope_allowance: true
+workers: 8
