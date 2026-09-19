@@ -4,8 +4,12 @@
 corpus report and the sim/real ledger. The manifests on disk and their status are listed in
 [DATASET_REGISTER.md](DATASET_REGISTER.md); this page describes the code.
 
-One real public sample is downloaded and verified: two UVVID videos (CC BY 4.0). They are used only by the
-smoke experiment DATA-REAL-SMOKE-E001. Every other experiment uses synthetic generators.
+Two real public datasets are downloaded and verified:
+
+- two UVVID videos (CC BY 4.0), used by DATA-REAL-SMOKE-E001;
+- SubPipeMini2.zip (CC BY 4.0, 4.9 GB), downloaded after user approval and used by DATA-REAL-E002.
+
+Every other experiment uses synthetic generators.
 
 ## Manifests (`manifest_model.py`, `manifest.py`)
 
@@ -24,7 +28,7 @@ CLI:
 uv run conrad data verify --manifest subpipe            # id, id@version, or a .yaml path
 ```
 
-It prints each problem and `RESULT: OK` or `RESULT: FAIL (n problems)`. Only `public.uvvid` passes today. Use the id
+It prints each problem and `RESULT: OK` or `RESULT: FAIL (n problems)`. Only `public.uvvid` and `public.subpipe` pass today. Use the id
 form: given a `.yaml` path, the CLI takes the manifest's own folder as the data root. `conrad doctor` verifies every ID in `data.manifest_ids`.
 
 ## Splits (`splits.py`)
@@ -44,6 +48,10 @@ test_ood. `compute_split_hash` is recorded in checkpoints; `assert_no_lineage_le
   observations with container-time ns; pose, calibration and labels are None), `PublicDatasetAdapter` (every access
   raises `DatasetNotAvailableError`), `SyntheticTwinAdapter`.
 - `real_smoke.py`: DATA-REAL-SMOKE-E001 runs ECMER quality features and encoding on the real UVVID frames.
+- `adapters/subpipe.py`: `SubPipeAdapter` reads SubPipeMini2 camera and side-scan images from the verified zip. Its
+  side-scan "Pipeline" presence labels come only through `map_labels`.
+- `real_e002.py`: DATA-REAL-E002, a probe on ECMER evidence for side-scan pipeline presence over held-out time blocks, plus a
+  camera quality check.
 
 ## Forbidden data
 
@@ -52,6 +60,7 @@ The legacy Model 2 datasets must never be used: their observation confidence was
 
 ## Blocked
 
-Per-dataset verdicts are in [audits/PUBLIC_DATA_PROCUREMENT.md](audits/PUBLIC_DATA_PROCUREMENT.md). Labelled real task
-data is still missing: SubPipe and SeaClear need a download-budget decision, and five candidates need human rights review.
+Per-dataset verdicts are in [audits/PUBLIC_DATA_PROCUREMENT.md](audits/PUBLIC_DATA_PROCUREMENT.md). SubPipeMini2 gives
+real side-scan pipeline-presence labels from one mission. SeaClear needs a download-budget decision, and five candidates need
+human rights review.
 Conrad-owned captures are still external. Tests: `uv run pytest tests/unit/data tests/property/data -q`.

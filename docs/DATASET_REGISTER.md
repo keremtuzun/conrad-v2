@@ -29,7 +29,7 @@ APPROVED_WITH_RESTRICTIONS.
 | manifest | candidate | procurement_status | licence | on disk |
 |---|---|---|---|---|
 | datasets/public/uvvid.manifest.yaml | UVVID (DTU, v5) | APPROVED_WITH_RESTRICTIONS | CC-BY-4.0 | 2 MP4s, 10.8 MB, VERIFIED |
-| datasets/public/subpipe.manifest.yaml | SubPipe (Zenodo v3.0.1) | APPROVED_WITH_RESTRICTIONS | CC-BY-4.0 | no (smallest file 4.9 GB) |
+| datasets/public/subpipe.manifest.yaml | SubPipe (Zenodo v3.0.1, SubPipeMini2.zip only) | APPROVED (user approved download 2026-09-19) | CC-BY-4.0 | 4,945,761,374 B zip + 8 extracted metadata files, APPROVED |
 | datasets/public/seaclear.manifest.yaml | SeaClear (4TU v1) | APPROVED_WITH_RESTRICTIONS | CC-BY-4.0 | no (1.7 GB) |
 | datasets/public/underwater_caves_sonar.manifest.yaml | Underwater Caves (Zenodo) | APPROVED_WITH_RESTRICTIONS | CC-BY-NC-SA-4.0 | no |
 | datasets/public/aqualoc.manifest.yaml | AQUALOC | NEEDS_HUMAN_RIGHTS_REVIEW | none stated | no |
@@ -42,8 +42,9 @@ APPROVED_WITH_RESTRICTIONS.
 The ch24 dedicated 2T search (corrosion, crack, material loss, NDT/SHM, fatigue) and the 2E search
 (oceanographic time series) name no dataset, so they have no manifests.
 
-`conrad.data.adapters.UvvidVideoAdapter` reads the UVVID sample. Verify it with
-`conrad data verify --manifest public.uvvid`. `public_adapter(name)` still raises
+`conrad.data.adapters.UvvidVideoAdapter` reads the UVVID sample (verify with
+`conrad data verify --manifest public.uvvid`). `conrad.data.adapters.SubPipeAdapter` reads SubPipeMini2 images
+straight from the verified zip (verify with `conrad data verify --manifest public.subpipe`). `public_adapter(name)` still raises
 `DatasetNotAvailableError` for every other candidate, naming the manifest and each missing artefact.
 
 ## Conrad-owned corpus: DATA-CONRAD-SSL-01

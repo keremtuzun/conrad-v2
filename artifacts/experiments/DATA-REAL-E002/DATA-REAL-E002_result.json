@@ -1,0 +1,223 @@
+{
+  "experiment_id": "DATA-REAL-E002",
+  "dataset": {
+    "manifest_id": "public.subpipe",
+    "manifest_digest": "75e1bf661c1269130aee21926ce1153f1dc643fe0b8a61283263379f5f086a4e",
+    "archive_sha256": "a3068be28471786c726cd6100e0b1d92d1c17615a4dcfe7f5544ba758821188f",
+    "license": "CC-BY-4.0",
+    "adapter": "subpipe_zip@subpipe_zip-1.0.0"
+  },
+  "sonar": {
+    "stream": "sss_lf",
+    "n_listed_images": 1055,
+    "n_by_split": {
+      "train": 720,
+      "validation": 100,
+      "test": 199
+    },
+    "positives_by_split": {
+      "train": 443,
+      "validation": 100,
+      "test": 129
+    },
+    "dropped_by_boundary_guard": 36,
+    "time_span_s": 4173.02,
+    "majority_class_train": 1,
+    "majority_test_balanced_accuracy": 0.5,
+    "per_seed": {
+      "seed_2026201": {
+        "ecmer_probe": {
+          "l2_selected_on_validation": 0.001,
+          "validation_balanced_accuracy_by_l2": {
+            "0.001": NaN,
+            "0.01": NaN,
+            "0.1": NaN,
+            "1.0": NaN
+          },
+          "test_balanced_accuracy": 0.8394241417497231,
+          "test_balanced_accuracy_ci95": [
+            0.7828327664709837,
+            0.8896523920433742
+          ],
+          "test_auroc": 0.9055370985603544
+        },
+        "engineered_quality_probe": {
+          "l2_selected_on_validation": 0.001,
+          "validation_balanced_accuracy_by_l2": {
+            "0.001": NaN,
+            "0.01": NaN,
+            "0.1": NaN,
+            "1.0": NaN
+          },
+          "test_balanced_accuracy": 0.5,
+          "test_balanced_accuracy_ci95": [
+            0.5,
+            0.5
+          ],
+          "test_auroc": 0.7910299003322259
+        },
+        "reliability_mean_untrained": 0.5127999576347134,
+        "embeddings_finite": true,
+        "pass": true
+      },
+      "seed_2026202": {
+        "ecmer_probe": {
+          "l2_selected_on_validation": 0.001,
+          "validation_balanced_accuracy_by_l2": {
+            "0.001": NaN,
+            "0.01": NaN,
+            "0.1": NaN,
+            "1.0": NaN
+          },
+          "test_balanced_accuracy": 0.8114617940199336,
+          "test_balanced_accuracy_ci95": [
+            0.7511073586411309,
+            0.8690549407424849
+          ],
+          "test_auroc": 0.9056478405315614
+        },
+        "engineered_quality_probe": {
+          "l2_selected_on_validation": 0.001,
+          "validation_balanced_accuracy_by_l2": {
+            "0.001": NaN,
+            "0.01": NaN,
+            "0.1": NaN,
+            "1.0": NaN
+          },
+          "test_balanced_accuracy": 0.5,
+          "test_balanced_accuracy_ci95": [
+            0.5,
+            0.5
+          ],
+          "test_auroc": 0.7910299003322259
+        },
+        "reliability_mean_untrained": 0.48748826412793017,
+        "embeddings_finite": true,
+        "pass": true
+      },
+      "seed_2026203": {
+        "ecmer_probe": {
+          "l2_selected_on_validation": 0.001,
+          "validation_balanced_accuracy_by_l2": {
+            "0.001": NaN,
+            "0.01": NaN,
+            "0.1": NaN,
+            "1.0": NaN
+          },
+          "test_balanced_accuracy": 0.8102436323366555,
+          "test_balanced_accuracy_ci95": [
+            0.7474462013074208,
+            0.8629804533986424
+          ],
+          "test_auroc": 0.8941306755260243
+        },
+        "engineered_quality_probe": {
+          "l2_selected_on_validation": 0.001,
+          "validation_balanced_accuracy_by_l2": {
+            "0.001": NaN,
+            "0.01": NaN,
+            "0.1": NaN,
+            "1.0": NaN
+          },
+          "test_balanced_accuracy": 0.5,
+          "test_balanced_accuracy_ci95": [
+            0.5,
+            0.5
+          ],
+          "test_auroc": 0.7910299003322259
+        },
+        "reliability_mean_untrained": 0.4807571567912802,
+        "embeddings_finite": true,
+        "pass": true
+      }
+    },
+    "ecmer_probe_test_balanced_accuracy_mean": 0.8203765227021039,
+    "check": "PASS"
+  },
+  "camera": {
+    "n_frames": 120,
+    "time_span_s": 119.148,
+    "frame_shape": [
+      1520,
+      2704,
+      3
+    ],
+    "calibration": {
+      "model": "pinhole+radtan (k1, k2, p1, p2)",
+      "fx": 1612.36,
+      "fy": 1622.56,
+      "cx": 1365.43,
+      "cy": 741.27,
+      "distortion": [
+        -0.247,
+        0.0869,
+        -0.006,
+        0.001
+      ],
+      "width_px": 2704,
+      "height_px": 1520,
+      "source": "SubPipe config.yaml cam0"
+    },
+    "quality": {
+      "blur": {
+        "mean": 0.9979412641940226,
+        "std": 0.0010849754356536932,
+        "min": 0.9895017436110607,
+        "max": 0.9987559648514955
+      },
+      "brightness": {
+        "mean": 0.4735641568543487,
+        "std": 0.04381502648016852,
+        "min": 0.15826247168129168,
+        "max": 0.5386230514667718
+      },
+      "contrast": {
+        "mean": 0.05544221098158484,
+        "std": 0.04819145901202521,
+        "min": 0.03166078299228907,
+        "max": 0.3477714939385155
+      },
+      "snr_db": {
+        "mean": 112.41162104689523,
+        "std": 8.086806699054069,
+        "min": 49.46716783933496,
+        "max": 114.34006409110967
+      }
+    },
+    "corruption_response": {
+      "blur.blur": {
+        "mean_delta": 0.0011835094884531364,
+        "fraction_expected_direction": 1.0
+      },
+      "noise.snr_db": {
+        "mean_delta": -92.05503080294051,
+        "fraction_expected_direction": 1.0
+      },
+      "darken.brightness": {
+        "mean_delta": -0.28497002273575,
+        "fraction_expected_direction": 1.0
+      },
+      "darken.contrast": {
+        "mean_delta": -0.0331783587186478,
+        "fraction_expected_direction": 1.0
+      }
+    },
+    "min_fraction_expected_direction": 1.0,
+    "all_embeddings_finite": true,
+    "reliability_mean_untrained": {
+      "seed_2026201": 0.5259416530529658,
+      "seed_2026202": 0.4877394676208497,
+      "seed_2026203": 0.4795121577878793
+    },
+    "check": "PASS"
+  },
+  "model2s": "NOT_RUN: see config limitations",
+  "limitations": [
+    "single mission: held-out time blocks of one survey, not an independent sequence or site",
+    "labels are human 'Pipeline' boxes on colormapped side-scan images; presence only, no structural condition",
+    "ECMER weights are random (untrained); a probe on random features tests information retention, not a trained ECMER",
+    "sonar images are colormapped PPM renderings (TVG/normalisation applied by the dataset), not raw backscatter",
+    "this archive (SubPipeMiniSSS) contains no RGB segmentation masks; camera frames are unlabelled",
+    "(b) Model2S not run: EstimatedState is the vehicle's own navigation estimate with undocumented frame conventions (not ground truth), and the side-scan/DVL mount geometry needed for range integration is not published"
+  ]
+}

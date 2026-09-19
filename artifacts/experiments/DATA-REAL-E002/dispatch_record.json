@@ -1,0 +1,12 @@
+{
+  "experiment_id": "DATA-REAL-E002",
+  "module": "conrad.data.real_e002",
+  "config": "datasets\\experiments\\data_real_e002.yaml",
+  "seeds": [
+    2026201,
+    2026202,
+    2026203
+  ],
+  "wall_s": 2004.3,
+  "out_dir": "C:\\Users\\Kerem\\Kerem\\conrad-v2\\artifacts\\experiments\\DATA-REAL-E002"
+}

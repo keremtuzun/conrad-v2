@@ -19,7 +19,7 @@ REJECTED, because no licence found forbids research use.
 | Candidate | Status | Licence (evidence) | Official source | Conrad task | Downloaded |
 |---|---|---|---|---|---|
 | UVVID | APPROVED_WITH_RESTRICTIONS | CC BY 4.0 (figshare API `license`, article 27694068 v5) | https://data.dtu.dk/articles/dataset/Underwater_Visual_and_Visual-Inertial_Datasets_UVVID_/27694068 | ECMER quality/representation; 2S smoke only | yes, 10,787,881 B |
-| SubPipe | APPROVED_WITH_RESTRICTIONS | CC BY 4.0 (Zenodo `license.id=cc-by-4.0`) | https://zenodo.org/records/12666132 | 2S, ECMER-SSL via manifest, 2T appearance context only | no, the smallest file is 4.9 GB |
+| SubPipe | APPROVED (user approved download 2026-09-19) | CC BY 4.0 (Zenodo `license.id=cc-by-4.0`) | https://zenodo.org/records/12666132 | ECMER, side-scan pipeline presence; 2S limited (no nav truth) | yes, SubPipeMini2.zip only, 4,945,761,374 B |
 | SeaClear Marine Debris | APPROVED_WITH_RESTRICTIONS | CC BY 4.0 (4TU.ResearchData API `license`) | https://data.4tu.nl/datasets/4f1dff25-e157-4399-a5d4-478055461689/1 | ECMER object-perception baseline | no, a single 1.7 GB rar |
 | Underwater Caves sonar | APPROVED_WITH_RESTRICTIONS | CC BY-NC-SA 4.0 (Zenodo `license.id`). The CIRS page gives no licence. | https://zenodo.org/records/7828405 | 2S sonar geometry | no, see note |
 | AQUALOC | NEEDS_HUMAN_RIGHTS_REVIEW | none stated | https://www.lirmm.fr/aqualoc/ | 2S | no |
@@ -43,10 +43,81 @@ REJECTED, because no licence found forbids research use.
 - Forbidden uses: supervising any head, localisation ground truth, and cross-video pairing.
 
 **SubPipe** (Zenodo 12666132, version 3.0.1, 2024-07-05).
-- Files: SubPipeMini2.zip is 4,945,761,374 B, SubPipeMini.zip is 6,078,303,615 B and SubPipe.zip is 28,011,923,314 B. All are over the sample budget.
-- Content (per the record): pipeline segmentation, visual-inertial localisation and sonar.
-- Forbidden uses: segmentation masks must not supervise 2T material loss, corrosion or fatigue.
-- Open: timestamps, calibration and chunk boundaries have to be read from the archive, which needs a budget decision.
+- Attribution: Alvarez-Tunon, Marnet, Antal, Aubard, Costa, Brodskiy (2024), SubPipe, doi:10.5281/zenodo.12666132. The data belongs to Oceanscan-MST and was acquired in the H2020 REMARO project.
+- Approval: the user approved downloading one file, SubPipeMini2.zip, on 2026-09-19. SubPipeMini.zip (6,078,303,615 B) and SubPipe.zip (28,011,923,314 B) were not downloaded.
+
+Download:
+
+| file | bytes | Zenodo md5 (matched) | sha256 |
+|---|---|---|---|
+| raw/SubPipeMini2.zip | 4,945,761,374 | 7e0d925f93a89bc0e8715e4f6f7caecb | a3068be28471786c726cd6100e0b1d92d1c17615a4dcfe7f5544ba758821188f |
+
+It came from `https://zenodo.org/api/records/12666132/files/SubPipeMini2.zip/content` (resumable curl). Both `conrad data verify --manifest public.subpipe` and `strict_inventory=True` return no problems.
+
+Inventory. The archive root is `SubPipeMiniSSS/`: one mission and 20,089 zip entries.
+
+| stream | files | span | cadence | notes |
+|---|---|---|---|---|
+| Cam0_images (GoPro) | 16,200 JPEG, 3,993 MB | 540.6 s | 33 ms | 2704x1520 RGB; intrinsics + radtan distortion in config.yaml |
+| Cam1_images (grey) | 430 JPEG, 44 MB | 107.2 s | 242 ms | 1936x1216; mount offset only, no intrinsics |
+| SSS_LF_images (455 kHz) | 1,055 | 4,173 s | 1.0 s | binary PPM (`P6`) with a `.pbm` name, 2500x500, colormapped |
+| SSS_HF_images (900 kHz) | 1,011 (903 `.pbm` + 108 `.bpm`) | 4,172 s | 1.0 s | binary PPM, 5000x500, colormapped |
+| CSV (EstimatedState, Altitude, Depth, ForwardDistance, Acceleration, AngularVelocity, Pressure, Rpm, Temperature, WaterVelocity) | 16,200 rows each | cam0 span | per cam0 frame | `image`, `timestamp` columns; the image paths say `Chunk0` |
+
+- Labels: the COCO file per sonar frequency has one category, "Pipeline", with boxes only.
+  - LF: 1,055 images listed, 726 boxes, 696 images with at least one box.
+  - HF: 903 images listed, 593 boxes, 566 images with at least one box.
+  - YOLO copies are also included; the file `d.860.txt` does not follow the stamp naming.
+- No RGB segmentation masks: this archive has no `Segmentation` folder.
+- Timestamps: UNIX epoch seconds with millisecond resolution in the file names. The adapter converts them to integer ns in clock domain `subpipe:vehicle_unix`, with a time uncertainty of 1 ms.
+- Pose: `EstimatedState.csv` is the vehicle's own navigation solution. Its frame conventions are undocumented and it is not ground truth, so the adapter's `robot_pose_estimate` is None.
+
+Manifest (`datasets/public/subpipe.manifest.yaml`):
+- It lists the archive plus 8 metadata members extracted losslessly (config.yaml, both COCO files, classes.txt, EstimatedState, Altitude, Depth and ForwardDistance CSVs) as derived files, under transformation `subpipe-zip-extract-v1`.
+- Images are never extracted. `SubPipeAdapter` reads them from the verified zip, and zipfile checks each member's CRC-32.
+
+Adapter (`conrad.data.adapters.SubPipeAdapter`, `subpipe_zip-1.0.0`):
+- Streams: cam0, cam1, sss_lf, sss_hf.
+- Frames: `subpipe.cam0_optical`, `subpipe.cam1_optical`, `subpipe.sss_lf`, `subpipe.sss_hf`.
+- `calibration_ref` is set for cam0 only.
+- Labels come only through `map_labels((stream, refs))`, which returns `PartialTruth` with `pipeline_present` and `pipeline_box_count`. Images not listed in COCO are masked out. No label value is written to `sensor_context`.
+
+Forbidden uses:
+- Pipeline boxes must not supervise 2T material loss, corrosion or fatigue.
+- EstimatedState must not be scored as localisation truth.
+- One mission is not independent-site evidence.
+
+### DATA-REAL-E002 (SubPipe)
+
+Pre-registration: the hypothesis, split and thresholds were written in `datasets/experiments/data_real_e002.yaml` before the first run.
+- Split: the LF sonar images, sorted by time, form 10 equal-count blocks. Blocks 2 and 7 are test, block 4 is validation, the rest is train. 3 images are dropped on each side of a split boundary.
+- Probe: a class-balanced L2 logistic probe on the 256-d ECMER event embedding, using a randomly initialised encoder, one per seed.
+- Pass rule: test balanced accuracy of at least 0.60, at least 0.10 above the majority baseline, and a 95% bootstrap CI whose lower bound is above 0.5, for every seed.
+
+The run went through `run_experiment` and is recorded in the registry once. Wall time was 2004 s on CPU. Two earlier attempts died with MemoryError while another agent's worker pool held about 56 GB of commit, and recorded nothing.
+
+Data: 1,055 labelled LF images. Train 720 (443 positive), validation 100 (100 positive), test 199 (129 positive), and 36 dropped by the boundary guard.
+
+| seed | ECMER probe test BA [95% CI] | AUROC | quality-only probe BA | quality AUROC | majority BA |
+|---|---|---|---|---|---|
+| 2026201 | 0.839 [0.783, 0.890] | 0.906 | 0.500 | 0.791 | 0.500 |
+| 2026202 | 0.811 [0.751, 0.869] | 0.906 | 0.500 | 0.791 | 0.500 |
+| 2026203 | 0.810 [0.747, 0.863] | 0.894 | 0.500 | 0.791 | 0.500 |
+
+(a2) PASS: the mean ECMER-probe balanced accuracy was 0.820. Caveats:
+- The fixed validation block turned out to contain only positives, so validation balanced accuracy is undefined. The L2 strength therefore defaulted to the first grid value (0.001). Nothing was tuned on the test blocks, and the split was not changed after seeing the result.
+- The engineered-quality probe ranks reasonably (AUROC 0.791), but at the fixed threshold it predicts a single class on the test blocks.
+- The encoder is untrained. The result shows that ECMER evidence keeps enough image information for a linear probe to recover the human "Pipeline" presence label on held-out time blocks of the same mission. It is not a trained detector, and it is not evidence of cross-site generalisation.
+
+(a1) camera, 120 cam0 frames at 1 Hz (119 s), PASS on the pre-registered rule. Every corruption moved its feature in the expected direction on 100% of frames, and all embeddings were finite. The feature scaling is not informative on these frames:
+- `blur` averages 0.998 (range 0.990 to 0.999), so blurring can only add +0.001.
+- `snr_db` averages 112 dB. This is consistent with a near-zero MAD noise estimate on smooth, turbid 4 MP frames, but it was not checked frame by frame.
+- The ENGINEERING_ESTIMATE constants in `quality_features.py` need recalibrating on real data before these features can carry weight.
+
+(b) Model2S: not run.
+- EstimatedState is not ground truth, and its frame is undocumented.
+- The DVL, echo-sounder and side-scan mount geometry needed for range integration is not published.
+- Running it would require inventing extrinsics.
 
 **SeaClear** (4TU doi:10.4121/4f1dff25-e157-4399-a5d4-478055461689.v1, 2024-01-08; paper doi:10.1038/s41597-024-03759-2).
 - Files: one rar of 1,711,829,309 B (MD5 1cfcf0c2fa3ef0dc219a66f063c2fe99).
@@ -149,7 +220,7 @@ The registry record written by `dispatch.run_experiment` hard-codes the limitati
 
 ## Remaining human actions
 
-1. SubPipe (4.9 GB) and SeaClear (1.7 GB): decide whether to spend the budget. Both licences are already clear.
+1. SeaClear (1.7 GB): decide whether to spend the budget; the licence is already clear. SubPipeMini2 is downloaded. RGB masks would need another SubPipe archive, which is not approved.
 2. Underwater Caves: accept the NC-SA terms, then download `full_dataset.zip` (38 MB) and write a sonar adapter.
 3. AQUALOC and SUIM: request written terms from the authors.
 4. Seaview, UWslam (Deep Blue) and BenthicNet (FRDR): read the licence in a browser, since this host got 403 or no access.
