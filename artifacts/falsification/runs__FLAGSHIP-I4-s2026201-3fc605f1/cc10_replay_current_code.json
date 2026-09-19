@@ -1,0 +1,77 @@
+{
+ "bundle": "artifacts/runs/FLAGSHIP-I4-s2026201-3fc605f1",
+ "note": "conrad replay run (replay_run) executed with the live tree on 2026-09-19; the bundle verified (436 files, 120 objects) before re-execution",
+ "recorded_git_commit": "4478cd98c696e6c598b0ce44cd979e1cfaa32a22",
+ "recorded_headline": {
+  "commands_accepted": 2400,
+  "corrosion_depth_estimate_m": 0.005995008181734413,
+  "crack_length_abs_error_m": 0.0002423183480788904,
+  "crack_length_estimate_m": 0.08024476398284602,
+  "decisions": 60,
+  "target_structural_observations": 57
+ },
+ "replay_as_shipped": {
+  "cause_of_first_difference": "event 5 RUN_STARTED planner A-B10_mcbr_full (recorded) vs PRODUCTION (replay re-resolved the scenario with the current default)",
+  "decisions": {
+   "equal": false,
+   "first_difference": 1,
+   "original": 60,
+   "replayed": 60
+  },
+  "equal": false,
+  "events": {
+   "equal": false,
+   "first_difference": 5,
+   "original": 9998,
+   "replayed": 9978
+  },
+  "headline": {
+   "commands_accepted": 2400,
+   "corrosion_depth_estimate_m": 0.006487613856756082,
+   "crack_length_abs_error_m": 0.029936088426034888,
+   "crack_length_estimate_m": 0.0500651185111325,
+   "decisions": 60,
+   "target_structural_observations": 56
+  },
+  "revisions": {
+   "equal": false,
+   "first_difference": 45,
+   "original": 2132,
+   "replayed": 2117
+  },
+  "verified_files": 436,
+  "verified_objects": 120
+ },
+ "replay_with_stored_options_fix": {
+  "cause_of_first_difference": "event 12, the first COMMAND_SENT: thruster values differ at the 2nd significant digit (H1 -0.09250 recorded vs -0.09328 replayed) (navigation/estimation code changed since 4478cd98)",
+  "decisions": {
+   "equal": false,
+   "first_difference": 1,
+   "original": 60,
+   "replayed": 60
+  },
+  "equal": false,
+  "events": {
+   "equal": false,
+   "first_difference": 12,
+   "original": 9998,
+   "replayed": 9476
+  },
+  "headline": {
+   "commands_accepted": 2400,
+   "corrosion_depth_estimate_m": null,
+   "crack_length_abs_error_m": null,
+   "crack_length_estimate_m": null,
+   "decisions": 60,
+   "target_structural_observations": 0
+  },
+  "revisions": {
+   "equal": false,
+   "first_difference": 45,
+   "original": 2132,
+   "replayed": 1800
+  },
+  "verified_files": 436,
+  "verified_objects": 120
+ }
+}

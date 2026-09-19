@@ -1,0 +1,77 @@
+{
+ "bundle": "artifacts/runs/FLAGSHIP-I4-s2026201-3fc605f1",
+ "has_observation_capture": false,
+ "legacy_cc10_replay": {
+  "note": "replay_run / replay_unity_run then re-simulate the Twin world (MissionWorld / UnityMissionWorld)",
+  "problems": [],
+  "truth_files_opened_by_verify_bundle": [
+   "reports/metrics.json",
+   "truth/truth_record.json"
+  ],
+  "verify_bundle_ok": true
+ },
+ "provenance": {
+  "backend": "python",
+  "config_digest": "3fc605f1f398862b45ae85ceb20f4d4e067bc3a7082e657770001b54b7c99941",
+  "git_commit": "4478cd98c696e6c598b0ce44cd979e1cfaa32a22",
+  "manifest_files": 436,
+  "scenario_id": "FLAGSHIP-I4",
+  "seed": 2026201
+ },
+ "removed_entries": [
+  "truth",
+  "reports"
+ ],
+ "truth_layout": {
+  "reports": [
+   "reports/metrics.json"
+  ],
+  "truth": [
+   "truth/truth_record.json"
+  ],
+  "unity": []
+ },
+ "truth_removed_replay": {
+  "comparison_with_original": {
+   "equal": false,
+   "note": "no playback output"
+  },
+  "forbidden_modules_imported": [],
+  "opened": {
+   "bundle": {
+    "by_entry": {
+     "bundle_manifest.json": 1,
+     "config.resolved.yaml": 1,
+     "objects/sha256/*": 423
+    },
+    "distinct": 425
+   },
+   "bundle_files_except_objects": [
+    "bundle_manifest.json",
+    "config.resolved.yaml"
+   ],
+   "distinct_paths": 2202,
+   "outside_repo_non_code": [
+    "\\\\.\\nul"
+   ],
+   "playback_output": {
+    "by_entry": {},
+    "distinct": 0
+   },
+   "python_code_and_libraries": 1776,
+   "repo_non_code": [],
+   "truth_paths_opened": []
+  },
+  "playback": {
+   "absent_manifest_files": 2,
+   "problems": [
+    "bundle has no capture/rhi_tape.jsonl.gz (recorded before observation capture existed)",
+    "bundle has no capture/mission_context.json (recorded before observation capture existed)",
+    "bundle has no capture/robot_config.json (recorded before observation capture existed)",
+    "bundle has no capture/capture_meta.json (recorded before observation capture existed)"
+   ],
+   "ran": false
+  }
+ },
+ "verdict": "NOT_REPLAYABLE_FROM_OBSERVATIONS"
+}

@@ -25,6 +25,8 @@ from typing import Any
 
 import numpy as np
 
+from conrad.adapters.unity import FaultInjectionRequest
+from conrad.adapters.unity import FaultType as UnityFaultType
 from conrad.evaluation.nav_benchmarks.runner import ROBOT_CONFIG as NAV_ROBOT_CONFIG
 from conrad.evaluation.nav_benchmarks.runner import _goal, _metrics
 from conrad.evaluation.nav_benchmarks.scenarios import (
@@ -59,6 +61,7 @@ from conrad.settings import (
     RuntimeSettings,
     snapshot_yaml,
 )
+from conrad.sim.mission.capture import TAPE, RecordingHardware, Tape, record_driver_event, write_capture_files
 from conrad.sim.mission.options import MissionWorldOptions, world_options
 from conrad.sim.mission.replay import compare
 from conrad.sim.mission.run import settings_for
@@ -164,6 +167,7 @@ class UnitySession:
     run_uuid: Any
     inspection_s: float | None = None
     finished: bool = False
+    tape: Tape | None = None
 
     def step(self) -> None:
         rt, world = self.runtime, self.world
@@ -174,7 +178,10 @@ class UnitySession:
         ):
             self.inspection_s = world.t_s
         for fired in world.due_faults(self.inspection_s):
+            record_driver_event(self.tape, EventType.FAULT_INJECTED, DRIVER, rt.s.run_id, fired)
             self.log.emit(EventType.FAULT_INJECTED, DRIVER, rt.s.run_id, fired)
+        if self.tape is not None:
+            self.tape.marker("tick")
         rt.tick()
         world.advance(self.rcfg.control_period_s)
 
@@ -184,6 +191,8 @@ class UnitySession:
 
     def finish(self) -> dict[str, Any]:
         rt, world = self.runtime, self.world
+        if self.tape is not None:
+            self.tape.marker("finish")
         rt.finish()
         self.log.close()
         world.recorder.snapshot_target("end", world.t2t, world.target, world.t_s)
@@ -194,7 +203,13 @@ class UnitySession:
         world.recorder.meta["unity_validity_level"] = world.hardware.validity_level.value
         truth = world.truth_access()
         world.recorder.finish(truth, self.run_dir)
+        if self.tape is not None:
+            self.tape.marker("artifacts")
         runtime_metrics = write_mission_artifacts(rt, self.run_dir)
+        if self.tape is not None:
+            write_capture_files(
+                self.run_dir, self.tape, world.context, rt.robot_config, self.run_uuid, PRODUCER
+            )
         exit_code = world.close()
         self.engine.dispose()
         report = evaluate_run_dir(self.run_dir)
@@ -226,6 +241,8 @@ class UnitySession:
             self.world.close()
             self.log.close()
             self.engine.dispose()
+            if self.tape is not None:
+                self.tape.close()
 
 
 def unity_replay_inputs(s: UnitySession) -> dict[str, Any]:
@@ -274,13 +291,17 @@ def prepare_unity(
     runs_root: Path | None = None,
     seed: int | None = None,
     uopts: UnityWorldOptions | None = None,
+    capture: bool = True,
+    stored_world: MissionWorldOptions | None = None,
+    stored_runtime: MissionRuntimeConfig | None = None,
 ) -> UnitySession:
     settings = settings_for(config)
     if seed is not None:
         settings = settings.model_copy(update={"run": settings.run.model_copy(update={"seed": seed})})
     u = uopts or UnityWorldOptions()
     world_raw, runtime_raw = resolve_unity(scenario_id, dict(settings.sim.get("mission", {})))
-    wopts, rcfg = world_options(world_raw), runtime_config(runtime_raw)
+    wopts = stored_world or world_options(world_raw)
+    rcfg = stored_runtime or runtime_config(runtime_raw)
     steps = rcfg.control_period_s * 1e9 / u.physics_dt_ns
     if abs(steps - round(steps)) > 1e-9 or round(steps) < 1:
         raise ValueError(
@@ -307,7 +328,8 @@ def prepare_unity(
         migrate(db_path)
         engine = make_engine(db_path)
         repo = Repository(engine)
-        hw = world.hardware
+        tape = Tape(run_dir / TAPE) if capture else None
+        hw = world.hardware if tape is None else RecordingHardware(world.hardware, tape)
         ctx = RunContext(
             run_uuid,
             world.context.mission_id,
@@ -330,14 +352,29 @@ def prepare_unity(
             seed_,
             operator_inbox=run_dir / "notes" / "operator_requests.jsonl",
         )
-        hw.set_estimated_pose_provider(runtime.estimated_pose)
+        world.hardware.set_estimated_pose_provider(runtime.estimated_pose)
         world.advance(0.1)
+        if tape is not None:
+            tape.marker("start")
         runtime.start()
     except BaseException:
         world.close()
         raise
     return UnitySession(
-        scenario_id, settings, run_name, run_dir, world, runtime, log, repo, engine, rcfg, wopts, u, run_uuid
+        scenario_id,
+        settings,
+        run_name,
+        run_dir,
+        world,
+        runtime,
+        log,
+        repo,
+        engine,
+        rcfg,
+        wopts,
+        u,
+        run_uuid,
+        tape=tape,
     )
 
 
@@ -347,6 +384,8 @@ def run_unity_scenario(
     run_id: str | None = None,
     runs_root: Path | None = None,
     seed: int | None = None,
+    stored_world: MissionWorldOptions | None = None,
+    stored_runtime: MissionRuntimeConfig | None = None,
 ) -> dict[str, Any]:
     """Run ``I1-UNITY`` / ``I3-UNITY`` (or ``I2-UNITY-NAV``: all six NAV benchmarks) and store the bundle."""
     if scenario_id == "I2-UNITY-NAV":
@@ -355,7 +394,9 @@ def run_unity_scenario(
         root = (runs_root or settings.resolve(settings.paths.runs_dir)) / (run_id or f"I2-UNITY-NAV-s{s}")
         results = {b: run_unity_nav(b, s, root / b) for b in NAV_UNITY_IDS}
         return {"run_id": root.name, "run_dir": str(root), "report": results}
-    session = prepare_unity(scenario_id, config, run_id, runs_root, seed)
+    session = prepare_unity(
+        scenario_id, config, run_id, runs_root, seed, stored_world=stored_world, stored_runtime=stored_runtime
+    )
     try:
         session.run()
         return session.finish()
@@ -381,10 +422,22 @@ def replay_unity_run(run_dir: Path, scratch: Path | None = None) -> dict[str, An
     settings = ConradSettings.model_validate(inputs["config_resolved"])
     if settings.config_digest() != inputs["config_digest"]:
         raise ReplayIntegrityError(["stored configuration does not match its recorded digest"])
+    try:
+        wopts = world_options(inputs["mission_world_options"]) if "mission_world_options" in inputs else None
+        rcfg = (
+            runtime_config(inputs["mission_runtime_config"]) if "mission_runtime_config" in inputs else None
+        )
+    except ValueError as exc:
+        raise ReplayIntegrityError([f"stored mission options no longer validate: {exc}"]) from exc
     now = player_identity()["player_exe_sha256"]
     root = scratch or Path(tempfile.mkdtemp(prefix="conrad-unity-replay-"))
     out = run_unity_scenario(
-        str(inputs["scenario_id"]), settings, run_id=str(inputs["run_name"]), runs_root=root
+        str(inputs["scenario_id"]),
+        settings,
+        run_id=str(inputs["run_name"]),
+        runs_root=root,
+        stored_world=wopts,
+        stored_runtime=rcfg,
     )
     replayed = Path(out["run_dir"])
     report = compare(run_dir, replayed)
@@ -405,14 +458,23 @@ def replay_unity_run(run_dir: Path, scratch: Path | None = None) -> dict[str, An
 
 
 # ====================================================================================== NAV-001..006 on Unity
-def unity_nav_robot_config() -> tuple[RobotConfig, str]:
-    """``sim_reference`` with AHRS orientation from the Unity IMU (the kernel benchmark's IMU provides it)."""
+def unity_nav_robot_config(battery_capacity_j: float | None = None) -> tuple[RobotConfig, str]:
+    """``sim_reference`` with AHRS orientation from the Unity IMU (the kernel benchmark's IMU provides it).
+
+    ``battery_capacity_j`` (fault cases only) replaces the SYNTHETIC_ONLY battery capacity."""
     base = load_robot_config(NAV_ROBOT_CONFIG)
     doc = base.model_dump(mode="json")
     for s in doc["sensors"]:
         if s["modality"] == "IMU":
             s["parameters"] = {"report_orientation": True, "gyro_noise_std": 0.002}
     doc["config_name"] = f"{base.config_name}_unity_nav"
+    if battery_capacity_j is not None:
+        doc["battery"]["capacity_j"] = {
+            "value": float(battery_capacity_j),
+            "units": "J",
+            "source": "SYNTHETIC_ONLY",
+        }
+        doc["config_name"] += f"_battery{round(battery_capacity_j)}J"
     robot = RobotConfig.model_validate(doc)
     return robot, write_robot_config(robot)
 
@@ -477,15 +539,39 @@ def _files_digest(folder: Path) -> dict[str, str]:
     }
 
 
+@dataclass(frozen=True)
+class NavFault:
+    """A fault injected on the hardware-adapter side of a Unity NAV run (gate I2 "faults reach defined safe
+    states"). ``kind`` is a Unity ``FaultType`` (sent through the bridge) or ``FIX_OUTAGE`` (the synthetic USBL-like
+    fix stops from ``t_s`` on)."""
+
+    kind: str
+    t_s: float
+    target: str | None = None
+    magnitude: float = 1.0
+
+    def as_json(self) -> dict[str, Any]:
+        return {"kind": self.kind, "t_s": self.t_s, "target": self.target, "magnitude": self.magnitude}
+
+
+FIX_OUTAGE = "FIX_OUTAGE"
+
+
 def run_unity_nav(
     benchmark_id: str,
     seed: int,
     bundle_dir: str | Path,
     fix_bias_m: tuple[float, float, float] = (0.0, 0.0, 0.0),
     uopts: UnityWorldOptions | None = None,
+    faults: tuple[NavFault, ...] = (),
+    duration_s: float | None = None,
+    battery_capacity_j: float | None = None,
 ) -> dict[str, Any]:
     """One NAV benchmark through Unity. The stack sees only ``UnityRobotHardware``; ``fix_bias_m`` (evaluation
-    counterfactual) biases the synthetic USBL-like fix to show that control acts on the ESTIMATED state."""
+    counterfactual) biases the synthetic USBL-like fix to show that control acts on the ESTIMATED state.
+
+    ``faults`` are injected at their time on the adapter side; with faults the bundle also holds ``safety.json``
+    (per-step safety state, reasons, the authorized thruster commands and whether the RHI accepted them)."""
     if benchmark_id not in NAV_UNITY_IDS:
         raise KeyError(f"{benchmark_id} is not part of the Unity NAV set {NAV_UNITY_IDS}")
     u = uopts or UnityWorldOptions()
@@ -494,8 +580,12 @@ def run_unity_nav(
         shutil.rmtree(out)
     out.mkdir(parents=True)
     scn = load_scenario(benchmark_id)
-    robot, robot_path = unity_nav_robot_config()
+    robot, robot_path = unity_nav_robot_config(battery_capacity_j)
     ids = IdFactory(seed=seed)
+    unknown = [f.kind for f in faults if f.kind != FIX_OUTAGE and f.kind not in UnityFaultType.__members__]
+    if unknown:
+        raise ValueError(f"unsupported NAV fault kinds {unknown}")
+    run_s = float(scn["duration_s"]) if duration_s is None else float(duration_s)
     mission_id, run_id = ids.new(), ids.new()
     geo = geometry_of(scn)
     dt = float(scn["control_period_s"])
@@ -510,7 +600,7 @@ def run_unity_nav(
         np.random.default_rng([seed, 17]),
         fixes["period_s"],
         fixes["sigma_m"],
-        fixes["outages"],
+        [*fixes["outages"], *([f.t_s, math.inf] for f in faults if f.kind == FIX_OUTAGE)],
     )
     start = np.asarray(scn["start"], dtype=np.float64)
     scenario = scenario_document(
@@ -570,11 +660,28 @@ def run_unity_nav(
         refused, collisions, in_collision, min_clear = 0, 0, False, math.inf
         arrived_s: float | None = None
         fixes_applied = 0
+        pending = sorted((f for f in faults if f.kind != FIX_OUTAGE), key=lambda f: f.t_s)
+        fault_acks: list[dict[str, Any]] = []
+        safety_log: list[list[Any]] = []
         s = truth.get_ground_truth()
-        for _ in range(round(float(scn["duration_s"]) / dt)):
+        for _ in range(round(run_s / dt)):
             now = hw.now_ns()
             if s.sim_time_ns != now:
                 raise RuntimeError(f"truth endpoint at {s.sim_time_ns} ns, control at {now} ns")
+            while pending and now >= round(pending[0].t_s * 1e9):
+                f = pending.pop(0)
+                fack = hw.inject_fault(
+                    FaultInjectionRequest(
+                        fault_id=f"{benchmark_id}-{f.kind}-{len(fault_acks)}",
+                        fault_type=UnityFaultType(f.kind),
+                        target=f.target,
+                        start_time_ns=now,
+                        magnitude=f.magnitude,
+                    )
+                )
+                if not fack.accepted:
+                    raise RuntimeError(f"Unity refused fault {f}: {fack.reason_codes}")
+                fault_acks.append({**f.as_json(), "scheduled_time_ns": fack.scheduled_time_ns})
             biased = s.pose.model_copy(
                 update={"position_m": tuple(float(v) for v in np.asarray(s.pose.position_m) + bias)}
             )
@@ -589,6 +696,11 @@ def run_unity_nav(
                 commands.append([now, bool(ack.accepted), list(ack.reason_codes)])
             else:
                 refused += 1
+            if faults:
+                a = res.assessment
+                sent = dict(res.command.thruster_commands) if res.decision.authorized else None
+                executed = bool(commands[-1][1]) if res.decision.authorized else None
+                safety_log.append([now, a.state.value, list(a.reason_codes), sent, executed])
             hw.step(dt_ns)
             s = truth.get_ground_truth()
             p = np.asarray(s.pose.position_m, dtype=np.float64)
@@ -641,6 +753,8 @@ def run_unity_nav(
         "gateway_rejected": gateway.rejected,
         "position_fixes_delivered": renderer.delivered,
         "position_fixes_accepted": fixes_applied,
+        "faults": fault_acks + [f.as_json() for f in faults if f.kind == FIX_OUTAGE],
+        "duration_s": run_s,
         "estimator_inputs": "UnityRobotHardware readings + synthetic USBL-like fix; no truth client in the stack",
         "robot_config": robot_path,
         "robot_config_digest": robot.content_digest(),
@@ -650,11 +764,16 @@ def run_unity_nav(
         json.dumps({"t_s": tt.tolist(), "true_m": tr.tolist(), "estimated_m": est.tolist()}), encoding="utf-8"
     )
     (out / "commands.json").write_text(json.dumps(commands), encoding="utf-8")
+    if faults:
+        (out / "safety.json").write_text(json.dumps(safety_log), encoding="utf-8")
     inputs = {
         "backend": BACKEND,
         "benchmark_id": benchmark_id,
         "seed": seed,
         "fix_bias_m": list(bias),
+        "faults": [f.as_json() for f in faults],
+        "duration_s": run_s,
+        "battery_capacity_j": battery_capacity_j,
         "scenario": scn,
         "unity_world_options": u.model_dump(mode="json"),
         "robot_config_digest": robot.content_digest(),
@@ -682,7 +801,15 @@ def replay_unity_nav(bundle_dir: str | Path, scratch: Path | None = None) -> dic
         raise ReplayIntegrityError(["NAV scenario definition changed since the run"])
     root = scratch or Path(tempfile.mkdtemp(prefix="conrad-unity-nav-replay-"))
     dst = root / src.name
-    run_unity_nav(inp["benchmark_id"], int(inp["seed"]), dst, tuple(inp["fix_bias_m"]))
+    run_unity_nav(
+        inp["benchmark_id"],
+        int(inp["seed"]),
+        dst,
+        tuple(inp["fix_bias_m"]),
+        faults=tuple(NavFault(**f) for f in inp.get("faults", [])),
+        duration_s=inp.get("duration_s"),
+        battery_capacity_j=inp.get("battery_capacity_j"),
+    )
     a = json.loads((src / "trajectory.json").read_text(encoding="utf-8"))
     b = json.loads((dst / "trajectory.json").read_text(encoding="utf-8"))
     ta, tb = np.asarray(a["true_m"]), np.asarray(b["true_m"])

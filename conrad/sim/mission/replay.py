@@ -2,7 +2,10 @@
 
 1. ``verify_bundle`` checks every file and object digest; anything missing or corrupt fails closed before
    any re-execution (SS-04).
-2. The run is re-executed from the stored seed and resolved configuration into a scratch location.
+2. The run is re-executed from the stored seed and resolved configuration into a scratch location. The mission
+   world options and runtime configuration are taken from the bundle (``mission_world_options`` /
+   ``mission_runtime_config``), not re-resolved from the current scenario table: a changed code default must show
+   up as a replay mismatch of the recorded run, not silently re-define it.
 3. Event signatures (order, type, module, payload digest), decision sequences and belief revision headers
    must be identical. Any mismatch is reported with its first differing index.
 
@@ -16,12 +19,14 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
+from conrad.orchestration.mission_config import runtime_config
 from conrad.persistence.db import make_engine
 from conrad.persistence.object_store import ObjectStore
 from conrad.persistence.replay_store import ReplayIntegrityError, verify_bundle
 from conrad.persistence.repository import Repository
 from conrad.runtime.event_log import event_signature, read_events
 from conrad.settings import ConradSettings
+from conrad.sim.mission.options import world_options
 from conrad.sim.mission.run import run_scenario
 
 
@@ -83,8 +88,22 @@ def replay_run(run_dir: Path, scratch: Path | None = None) -> dict[str, Any]:
     settings = ConradSettings.model_validate(inputs["config_resolved"])
     if settings.config_digest() != inputs["config_digest"]:
         raise ReplayIntegrityError(["stored configuration does not match its recorded digest"])
+    try:
+        wopts = world_options(inputs["mission_world_options"]) if "mission_world_options" in inputs else None
+        rcfg = (
+            runtime_config(inputs["mission_runtime_config"]) if "mission_runtime_config" in inputs else None
+        )
+    except ValueError as exc:
+        raise ReplayIntegrityError([f"stored mission options no longer validate: {exc}"]) from exc
     root = scratch or Path(tempfile.mkdtemp(prefix="conrad-replay-"))
-    out = run_scenario(str(inputs["scenario_id"]), settings, run_id=str(inputs["run_name"]), runs_root=root)
+    out = run_scenario(
+        str(inputs["scenario_id"]),
+        settings,
+        run_id=str(inputs["run_name"]),
+        runs_root=root,
+        stored_world=wopts,
+        stored_runtime=rcfg,
+    )
     replayed = Path(out["run_dir"])
     report = compare(run_dir, replayed)
     report["replay_dir"] = str(replayed)

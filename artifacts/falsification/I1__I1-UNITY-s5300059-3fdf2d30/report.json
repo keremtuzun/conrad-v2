@@ -1,0 +1,87 @@
+{
+ "bundle": "artifacts/unity/gate_runs/I1/I1-UNITY-s5300059-3fdf2d30",
+ "has_observation_capture": false,
+ "legacy_cc10_replay": {
+  "note": "replay_run / replay_unity_run then re-simulate the Twin world (MissionWorld / UnityMissionWorld)",
+  "problems": [],
+  "truth_files_opened_by_verify_bundle": [
+   "reports/metrics.json",
+   "truth/truth_record.json",
+   "unity/experiment.json",
+   "unity/player.log",
+   "unity/robot_config.json",
+   "unity/scenario.json"
+  ],
+  "verify_bundle_ok": true
+ },
+ "provenance": {
+  "backend": "unity",
+  "config_digest": "f56f9865f33290e43a203714657d26c4f651c41a0f9e6a5606a78c0d41f8a234",
+  "git_commit": "5369cbe11bae88bbc1bb7bf319bc9110105632f4",
+  "manifest_files": 152,
+  "scenario_id": "I1-UNITY",
+  "seed": 5300059
+ },
+ "removed_entries": [
+  "truth",
+  "reports",
+  "unity"
+ ],
+ "truth_layout": {
+  "reports": [
+   "reports/metrics.json"
+  ],
+  "truth": [
+   "truth/truth_record.json"
+  ],
+  "unity": [
+   "unity/experiment.json",
+   "unity/player.log",
+   "unity/robot_config.json",
+   "unity/scenario.json"
+  ]
+ },
+ "truth_removed_replay": {
+  "comparison_with_original": {
+   "equal": false,
+   "note": "no playback output"
+  },
+  "forbidden_modules_imported": [],
+  "opened": {
+   "bundle": {
+    "by_entry": {
+     "bundle_manifest.json": 1,
+     "config.resolved.yaml": 1,
+     "objects/sha256/*": 135
+    },
+    "distinct": 137
+   },
+   "bundle_files_except_objects": [
+    "bundle_manifest.json",
+    "config.resolved.yaml"
+   ],
+   "distinct_paths": 1914,
+   "outside_repo_non_code": [
+    "\\\\.\\nul"
+   ],
+   "playback_output": {
+    "by_entry": {},
+    "distinct": 0
+   },
+   "python_code_and_libraries": 1776,
+   "repo_non_code": [],
+   "truth_paths_opened": []
+  },
+  "playback": {
+   "absent_manifest_files": 6,
+   "problems": [
+    "bundle has no capture/rhi_tape.jsonl.gz (recorded before observation capture existed)",
+    "bundle has no capture/mission_context.json (recorded before observation capture existed)",
+    "bundle has no capture/robot_config.json (recorded before observation capture existed)",
+    "bundle has no capture/capture_meta.json (recorded before observation capture existed)"
+   ],
+   "ran": false
+  }
+ },
+ "verdict": "NOT_REPLAYABLE_FROM_OBSERVATIONS"
+}

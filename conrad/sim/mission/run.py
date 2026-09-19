@@ -30,6 +30,8 @@ from conrad.schemas.base import ARCHITECTURE_ID, STACK_ID
 from conrad.schemas.events import EventType
 from conrad.schemas.ids import IdFactory
 from conrad.settings import REPO_ROOT, ConradSettings, load_settings, snapshot_yaml
+from conrad.sim.mission.capture import TAPE, RecordingHardware, Tape, record_driver_event, write_capture_files
+from conrad.sim.mission.obstacles import add_lane_obstacle
 from conrad.sim.mission.options import MissionWorldOptions, world_options
 from conrad.sim.mission.scenarios import resolve
 from conrad.sim.mission.world import MissionWorld
@@ -74,6 +76,8 @@ class MissionSession:
     rcfg: MissionRuntimeConfig
     wopts: MissionWorldOptions
     inspection_s: float | None = None
+    tape: Tape | None = None
+    run_uuid: Any = None
 
     def step(self) -> None:
         rt, world = self.runtime, self.world
@@ -84,7 +88,10 @@ class MissionSession:
         ):
             self.inspection_s = world.t_s
         for fired in world.due_faults(self.inspection_s):
+            record_driver_event(self.tape, EventType.FAULT_INJECTED, DRIVER, rt.s.run_id, fired)
             self.log.emit(EventType.FAULT_INJECTED, DRIVER, rt.s.run_id, fired)
+        if self.tape is not None:
+            self.tape.marker("tick")
         rt.tick()
         world.advance(self.rcfg.control_period_s)
 
@@ -94,12 +101,20 @@ class MissionSession:
 
     def finish(self) -> dict[str, Any]:
         rt, world = self.runtime, self.world
+        if self.tape is not None:
+            self.tape.marker("finish")
         rt.finish()
         self.log.close()
         world.recorder.snapshot_target("end", world.t2t, world.target, world.t_s)
         world.recorder.meta["inspection_goal_started_s"] = self.inspection_s
         world.recorder.finish(world.hardware.truth_access(), self.run_dir)
+        if self.tape is not None:
+            self.tape.marker("artifacts")
         runtime_metrics = write_mission_artifacts(rt, self.run_dir)
+        if self.tape is not None:
+            write_capture_files(
+                self.run_dir, self.tape, world.context, rt.robot_config, self.run_uuid, PRODUCER
+            )
         self.engine.dispose()
         report = evaluate_run_dir(self.run_dir)
         report["runtime"] = runtime_metrics
@@ -129,11 +144,16 @@ def prepare(
     config: str | Path | ConradSettings,
     run_id: str | None = None,
     runs_root: Path | None = None,
+    stored_world: MissionWorldOptions | None = None,
+    stored_runtime: MissionRuntimeConfig | None = None,
+    capture: bool = True,
 ) -> MissionSession:
+    """``stored_world`` / ``stored_runtime`` (replay) replace the options resolved from the current scenario table."""
     settings = settings_for(config)
     seed = settings.run.seed
     world_raw, runtime_raw = resolve(scenario_id, dict(settings.sim.get("mission", {})))
-    wopts, rcfg = world_options(world_raw), runtime_config(runtime_raw)
+    wopts = stored_world or world_options(world_raw)
+    rcfg = stored_runtime or runtime_config(runtime_raw)
     ratio = rcfg.control_period_s / wopts.physics_dt_s
     if abs(ratio - round(ratio)) > 1e-9 or round(ratio) < 1:
         raise ValueError(
@@ -154,7 +174,10 @@ def prepare(
     engine = make_engine(db_path)
     repo = Repository(engine)
     world = MissionWorld.build(seed, scenario_id, wopts, run_uuid, run_dir / "objects")
-    hw = world.hardware
+    if wopts.lane_obstacle is not None:
+        add_lane_obstacle(world, wopts.lane_obstacle)
+    tape = Tape(run_dir / TAPE) if capture else None
+    hw = world.hardware if tape is None else RecordingHardware(world.hardware, tape)
     ctx = RunContext(
         run_uuid, world.context.mission_id, None, ids.child("events"), hw.now_ns, hw.clock_domain(), PRODUCER
     )
@@ -171,11 +194,26 @@ def prepare(
         seed,
         operator_inbox=run_dir / "notes" / "operator_requests.jsonl",
     )
-    hw.set_estimated_pose_provider(runtime.estimated_pose)
+    world.hardware.set_estimated_pose_provider(runtime.estimated_pose)
     world.advance(0.1)
+    if tape is not None:
+        tape.marker("start")
     runtime.start()
     return MissionSession(
-        scenario_id, settings, run_name, run_dir, world, runtime, log, repo, engine, rcfg, wopts
+        scenario_id,
+        settings,
+        run_name,
+        run_dir,
+        world,
+        runtime,
+        log,
+        repo,
+        engine,
+        rcfg,
+        wopts,
+        None,
+        tape,
+        run_uuid,
     )
 
 
@@ -184,8 +222,10 @@ def run_scenario(
     config: str | Path | ConradSettings,
     run_id: str | None = None,
     runs_root: Path | None = None,
+    stored_world: MissionWorldOptions | None = None,
+    stored_runtime: MissionRuntimeConfig | None = None,
 ) -> dict[str, Any]:
-    session = prepare(scenario_id, config, run_id, runs_root)
+    session = prepare(scenario_id, config, run_id, runs_root, stored_world, stored_runtime)
     session.run()
     return session.finish()
 

@@ -19,6 +19,8 @@ artifacts/*
 !artifacts/gates/
 !artifacts/experiments/
 !artifacts/registry/
+# truth-removal falsification reports (small JSON, scripts/falsify_truth_removal.py)
+!artifacts/falsification/
 !artifacts/README.md
 mlruns/
 # secrets and machine-local overrides

@@ -1,0 +1,262 @@
+{
+ "bundle": "artifacts/runs_capture/FLAGSHIP-I4-s2026201-3fc605f1",
+ "checks": {
+  "identical_without_truth": true,
+  "no_truth_path_opened_no_truth_module_imported": true,
+  "observation_change_is_detected": true,
+  "same_code_as_recording": true,
+  "truth_corruption_has_no_effect": true,
+  "unsealed_edit_refused": true
+ },
+ "control_observation_altered": {
+  "depth_sample_altered": {
+   "command_mismatches": 0,
+   "edit": {
+    "after": 29.111464961810533,
+    "before": 28.611464961810533,
+    "field": "get_depth.depth_m",
+    "tape_record": 58866
+   },
+   "events": {
+    "bytes_equal": false,
+    "first_difference": 4821,
+    "original": 9893,
+    "replayed": 4822,
+    "signature_equal": false
+   },
+   "mission_files_changed": [
+    "baac_transmissions.jsonl",
+    "decisions.jsonl",
+    "mcbr_candidate_tables.json",
+    "receiver_state.json",
+    "requirements.json",
+    "runtime_metrics.json",
+    "structural_associations.json",
+    "trajectories.json"
+   ],
+   "output_changed": true,
+   "sqlite_tables_changed": [
+    "belief_revisions",
+    "beliefs",
+    "commands",
+    "evidence",
+    "evidence_contributions",
+    "observations",
+    "provenance_edges",
+    "provenance_nodes"
+   ],
+   "tape_divergence": "tape record 58874: runtime called now_ns, tape has clock_domain"
+  },
+  "payload_observation_dropped": {
+   "command_mismatches": 0,
+   "edit": {
+    "dropped_observation_id": "018bcfe5-6802-77db-bc85-56ad1c2582ac",
+    "modality": "STRUCTURED",
+    "remaining_in_call": 0,
+    "tape_record": 35
+   },
+   "events": {
+    "bytes_equal": false,
+    "first_difference": 9,
+    "original": 9893,
+    "replayed": 11,
+    "signature_equal": false
+   },
+   "mission_files_changed": [
+    "baac_transmissions.jsonl",
+    "decisions.jsonl",
+    "mcbr_candidate_tables.json",
+    "receiver_state.json",
+    "requirements.json",
+    "runtime_metrics.json",
+    "structural_associations.json",
+    "trajectories.json"
+   ],
+   "output_changed": true,
+   "sqlite_tables_changed": [
+    "belief_revisions",
+    "beliefs",
+    "commands",
+    "evidence",
+    "evidence_contributions",
+    "observations",
+    "provenance_edges",
+    "provenance_nodes",
+    "relationships"
+   ],
+   "tape_divergence": "tape record 45: runtime called now_ns, tape has get_imu"
+  }
+ },
+ "control_truth_corrupted": {
+  "files_corrupted": [
+   "truth/truth_record.json",
+   "reports/metrics.json"
+  ],
+  "output_identical_to_truth_removed_replay": true,
+  "playback": {
+   "absent_manifest_files": 0,
+   "code_digest_now": "d5c669e54971af5f8f942a7b93f801589a09f2df062b8278624d86925bb24317",
+   "code_digest_recorded": "d5c669e54971af5f8f942a7b93f801589a09f2df062b8278624d86925bb24317",
+   "command_mismatches": 0,
+   "commands_checked": 2400,
+   "ran": true,
+   "same_code": true,
+   "tape_divergence": null,
+   "tape_records": 118085,
+   "ticks": 2400,
+   "verified_files": 423
+  },
+  "truth_paths_opened": []
+ },
+ "control_unsealed_tape_refused": [
+  "required file corrupt: capture/rhi_tape.jsonl.gz"
+ ],
+ "has_observation_capture": true,
+ "headline_after_truth_restored": {
+  "all_equal": true,
+  "available": true,
+  "corrosion_depth_estimate_m": {
+   "original": 0.005768349359501571,
+   "replayed": 0.005768349359501571
+  },
+  "crack_length_abs_error_m": {
+   "original": 0.026762866290141893,
+   "replayed": 0.026762866290141893
+  },
+  "crack_length_estimate_m": {
+   "original": 0.0532383406470255,
+   "replayed": 0.0532383406470255
+  },
+  "differing_keys": [],
+  "keys_compared": 17
+ },
+ "legacy_cc10_replay": {
+  "note": "replay_run / replay_unity_run then re-simulate the Twin world (MissionWorld / UnityMissionWorld)",
+  "problems": [],
+  "truth_files_opened_by_verify_bundle": [
+   "reports/metrics.json",
+   "truth/truth_record.json"
+  ],
+  "verify_bundle_ok": true
+ },
+ "provenance": {
+  "backend": "python",
+  "config_digest": "3fc605f1f398862b45ae85ceb20f4d4e067bc3a7082e657770001b54b7c99941",
+  "git_commit": "UNAVAILABLE_NO_GIT_METADATA",
+  "manifest_files": 435,
+  "scenario_id": "FLAGSHIP-I4",
+  "seed": 2026201
+ },
+ "removed_entries": [
+  "truth",
+  "reports"
+ ],
+ "truth_layout": {
+  "reports": [
+   "reports/metrics.json"
+  ],
+  "truth": [
+   "truth/truth_record.json"
+  ],
+  "unity": []
+ },
+ "truth_removed_replay": {
+  "comparison_with_original": {
+   "commands": {
+    "equal": true,
+    "original": 2400,
+    "replayed": 2400
+   },
+   "equal": true,
+   "events": {
+    "bytes_equal": true,
+    "first_difference": null,
+    "original": 9893,
+    "replayed": 9893,
+    "signature_equal": true
+   },
+   "mission_files": {
+    "baac_transmissions.jsonl": true,
+    "decisions.jsonl": true,
+    "mcbr_candidate_tables.json": true,
+    "receiver_state.json": true,
+    "requirements.json": true,
+    "runtime_metrics.json": true,
+    "structural_associations.json": true,
+    "trajectories.json": true
+   },
+   "sqlite_tables": {
+    "alembic_version": true,
+    "artifact_refs": true,
+    "belief_lineage": true,
+    "belief_revisions": true,
+    "beliefs": true,
+    "commands": true,
+    "dataset_manifests": true,
+    "events": true,
+    "evidence": true,
+    "evidence_contributions": true,
+    "experiments": true,
+    "migration_history": true,
+    "observations": true,
+    "provenance_edges": true,
+    "provenance_nodes": true,
+    "relationships": true,
+    "runs": true,
+    "scenarios": true
+   }
+  },
+  "forbidden_modules_imported": [],
+  "opened": {
+   "bundle": {
+    "by_entry": {
+     "bundle_manifest.json": 1,
+     "capture": 4,
+     "config.resolved.yaml": 1,
+     "objects/sha256/*": 418
+    },
+    "distinct": 424
+   },
+   "bundle_files_except_objects": [
+    "bundle_manifest.json",
+    "capture/capture_meta.json",
+    "capture/mission_context.json",
+    "capture/rhi_tape.jsonl.gz",
+    "capture/robot_config.json",
+    "config.resolved.yaml"
+   ],
+   "distinct_paths": 3069,
+   "outside_repo_non_code": [
+    "\\\\.\\nul"
+   ],
+   "playback_output": {
+    "by_entry": {
+     "events.jsonl": 1,
+     "mission": 8,
+     "objects/sha256/*": 418,
+     "robot_config.captured.json": 1
+    },
+    "distinct": 428
+   },
+   "python_code_and_libraries": 2215,
+   "repo_non_code": [
+    "configs/active/mcbr_frozen.yaml"
+   ],
+   "truth_paths_opened": []
+  },
+  "playback": {
+   "absent_manifest_files": 2,
+   "code_digest_now": "d5c669e54971af5f8f942a7b93f801589a09f2df062b8278624d86925bb24317",
+   "code_digest_recorded": "d5c669e54971af5f8f942a7b93f801589a09f2df062b8278624d86925bb24317",
+   "command_mismatches": 0,
+   "commands_checked": 2400,
+   "ran": true,
+   "same_code": true,
+   "tape_divergence": null,
+   "tape_records": 118085,
+   "ticks": 2400,
+   "verified_files": 423
+  }
+ },
+ "verdict": "PASS"
+}
