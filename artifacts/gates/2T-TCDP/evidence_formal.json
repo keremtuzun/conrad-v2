@@ -2,12 +2,12 @@
   "gate_id": "2T-TCDP",
   "evidence_class": "FORMAL",
   "execution_path": "pytest nodes + retained experiment artifacts (2T-TCDP)",
-  "git_commit": "a6b9e99e6d193a06bdaaef30f82f2bd821b9330d",
+  "git_commit": "9847234e0b2f2421c8e1aacb78acb2faf1f40279",
   "criteria": [
     {
       "criterion": "TCDP improves hidden-state reconstruction vs generic/no propagation without excessive contamination",
       "status": "FAIL",
-      "measured": "test_no_propagation_over_invalid_relation_types=PASS; experiment: {\"corrosion_depth_m.RB_tcdp_ci\": {\"mean\": -0.10361749430677701, \"ci_low\": -0.1103001630172527, \"ci_high\": -0.09679524089177358, \"n\": 60.0}, \"corrosion_depth_m.rc_generic_minus_tcdp_ci\": {\"mean\": 0.3785317448306827, \"ci_low\": 0.3526954041102625, \"ci_high\": 0.40432545972866507, \"n\": 60.0}, \"crack_length_m.RB_tcdp_ci\": {\"mean\": -0.005030114069089309, \"ci_low\": -0.02249723329231374, \"ci_high\": 0.012513921715920064, \"n\": 44.0}, \"crack_length_m.rc_generic_minus_tcdp_ci\": {\"mean\": 0.0, \"ci_low\": 0.0, \"ci_high\": 0.0, \"n\": 60.0}, \"partition\": \"final_test\", \"tcdp_benefit\": false, \"tcdp_contamination_lower_than_generic\": false, \"excessive_contamination_threshold\": \"OPEN\"}"
+      "measured": "test_no_propagation_over_invalid_relation_types=PASS; experiment: {\"corrosion_depth_m.RB_tcdp_ci\": {\"mean\": -0.10963655430556186, \"ci_low\": -0.11614646559522133, \"ci_high\": -0.10301432721591086, \"n\": 60.0}, \"corrosion_depth_m.rc_generic_minus_tcdp_ci\": {\"mean\": 0.38306861650602203, \"ci_low\": 0.3643690160780287, \"ci_high\": 0.40296337210067407, \"n\": 60.0}, \"crack_length_m.RB_tcdp_ci\": {\"mean\": -0.03768086821585755, \"ci_low\": -0.1073253702359844, \"ci_high\": 0.0329927711847014, \"n\": 45.0}, \"crack_length_m.rc_generic_minus_tcdp_ci\": {\"mean\": 0.21205037760028864, \"ci_low\": 0.18795937236044394, \"ci_high\": 0.23612531745051815, \"n\": 60.0}, \"partition\": \"final_3\", \"tcdp_benefit\": false, \"tcdp_contamination_lower_than_generic\": true, \"excessive_contamination_threshold\": \"OPEN\"}"
     }
   ],
   "artifacts": [

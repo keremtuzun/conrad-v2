@@ -13,7 +13,7 @@ from conrad.domains.ecological import EcologicalEncoder, Model2E
 from conrad.domains.ecological.config import Model2EConfig
 from conrad.domains.spatial.config import spatial_config
 from conrad.domains.spatial.model import Model2S
-from conrad.domains.technical import Model2T, PropagationMode, model2t_config_from_dict
+from conrad.domains.technical import Model2T, model2t_config_from_dict, production_propagation_mode
 from conrad.orchestration.mission_config import MissionRuntimeConfig
 from conrad.orchestration.mission_context import MissionContext
 from conrad.persistence.object_store import ObjectStore
@@ -60,11 +60,16 @@ def build_children(
     m2s = Model2S(ids.child("model2s"), store, spatial_config(cfg.model2s), repository=repo, run_id=run_id)
     m2s.initialize({"sensors": geometric, "asset_registry": ctx.model2s_registry(), "run_id": run_id})
     m2t_cfg = model2t_config_from_dict({**cfg.model2t, "clock_domain": clock})
-    m2t = Model2T(
-        ids.child("model2t"), m2t_cfg, repository=repo, run_id=run_id, mode=PropagationMode(cfg.model2t_mode)
-    )
+    # ADR-0009: relational propagation is an EXPERIMENTAL arm; NONE unless model2t.tcdp.experimental_enabled.
+    mode = production_propagation_mode(cfg.model2t_mode, m2t_cfg)
+    m2t = Model2T(ids.child("model2t"), m2t_cfg, repository=repo, run_id=run_id, mode=mode)
     m2t.initialize(
-        {"asset_registry": ctx.asset_registry, "timestamp": TimeStamp(time_ns=now_ns, clock_domain=clock)}
+        {
+            "asset_registry": ctx.asset_registry,
+            # surveyed design surfaces (deployment-plane mission context): Model2T surface coverage
+            "design_geometry": [c.model_dump(mode="json") for c in ctx.design],
+            "timestamp": TimeStamp(time_ns=now_ns, clock_domain=clock),
+        }
     )
     if not ecological:
         return Children(m2s, m2t, None, None)

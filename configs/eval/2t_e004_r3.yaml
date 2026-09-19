@@ -1,0 +1,22 @@
+# 2T-E004-R3 (SYNTHETIC_ONLY; REALISTIC Twin2T sensor; docs/audits/MODEL2T_REPAIR.md iteration 3). FINAL-3 seeds: run ONCE after freezing the design.
+experiment: {id: 2T-E004-R3}
+partition: final_3
+purpose: final_evaluation
+# Config-local 2T partitions (iteration 3; configs/eval/partitions.yaml is digest-pinned). Disjoint. The R2
+# FINAL seeds 5300000-5300059 were inspected in the R2 write-up, so they are SPENT and never read again.
+# final_3 was checked against every seed range in configs/ before it was declared (docs/audits/MODEL2T_REPAIR.md).
+partitions:
+  development: {range: [5100000, 5100040]}
+  validation: {range: [5200000, 5200040]}
+  final_3: {range: [6500000, 6500060]}
+  spent_final: {range: [5300000, 5300060]}
+seeds: [6500000, 6500001, 6500002, 6500003, 6500004, 6500005, 6500006, 6500007, 6500008, 6500009, 6500010, 6500011, 6500012, 6500013, 6500014, 6500015, 6500016, 6500017, 6500018, 6500019, 6500020, 6500021, 6500022, 6500023, 6500024, 6500025, 6500026, 6500027, 6500028, 6500029, 6500030, 6500031, 6500032, 6500033, 6500034, 6500035, 6500036, 6500037, 6500038, 6500039, 6500040, 6500041, 6500042, 6500043, 6500044, 6500045, 6500046, 6500047, 6500048, 6500049, 6500050, 6500051, 6500052, 6500053, 6500054, 6500055, 6500056, 6500057, 6500058, 6500059]
+scenarios:
+  - {kind: small, n_segments: 4}
+  - {kind: tier, tier: 3}
+episodes_per_scenario: 2
+tick_days: 30
+horizon_days: 1800
+inspection_days: [30, 180, 360, 720, 1080, 1440, 1800]
+# Declared before the run: Model2T arms scored on their internal estimate, only on items every arm estimates.
+scoring: paired_latent

@@ -1,0 +1,46 @@
+# ADR-0009 Model2T production path does not propagate condition; TCDP is an EXPERIMENTAL arm
+
+- Date: 2026-09-19
+- Packages: conrad.domains.technical, conrad.orchestration (children.py)
+- Source: ch10 Model 2T (TCDP, anti-contamination), ch25 2T Gate (research part: "TCDP improves hidden-state
+  reconstruction vs generic/no propagation without excessive contamination"), ch36 kill conditions.
+- Status: ACCEPTED
+
+## Evidence
+- 2T-E003-R2 on the FINAL partition (60 seeds, `docs/audits/MODEL2T_REPAIR.md`): corrosion RB_TCDP
+  -0.104 [-0.110, -0.097] mm. TCDP is worse than no propagation, and its CI lies entirely below 0. Crack
+  RB_TCDP -0.005 [-0.022, 0.013]. Gate 2T-TCDP = FAIL.
+- Gate I3 on Unity (`docs/audits/UNITY_INTEGRATION_I1_I3.md`): a never-observed component carried an
+  INFERRED condition with U_O 1.0 instead of UNKNOWN. Cause: the mission runtime built Model2T with
+  `model2t_mode = "TCDP"` (default in `conrad/orchestration/mission_config.py`), so after a neighbour was read,
+  `StructuralBeliefEngine.propagate` wrote an INFERRED corrosion estimate into the unseen component, and the
+  derived condition claim took that status. No other Model2T operator sets INFERRED: the population prior and
+  temporal prediction leave a never-read quantity UNKNOWN.
+
+## Decision
+- `TCDPConfig.mode` defaults to `NONE`. `TCDPConfig.experimental_enabled` (default False) is the explicit
+  opt-in for the mission runtime.
+- The mission runtime resolves its mode through `production_propagation_mode(cfg.model2t_mode, m2t_cfg)`
+  (`conrad/orchestration/children.py`). It returns `NONE` unless `model2t.tcdp.experimental_enabled` is true,
+  whatever `model2t_mode` says. The `model2t_mode` field in `mission_config.py` still defaults to `"TCDP"`.
+  That file belongs to another workstream and was not edited. The resolver makes that default inert.
+- TCDP and GENERIC stay reachable as EXPERIMENTAL arms: pass `mode=` explicitly to `Model2T` or
+  `StructuralBeliefEngine` (2T-E003 experiments and unit tests do this), or set the opt-in in a mission config.
+- `tests/contract/test_runtime_defaults.py` enforces this. It checks the config default, the resolver for
+  every requested mode, that `children.py` builds the mode only through the resolver, and that a default
+  Model2T leaves a never-observed neighbour of a corroded component UNKNOWN (no INFERRED, U_O >= 0.9).
+
+## Consequences
+- A never-observed component reports UNKNOWN with U_O 1.0 on the production path (surrogate check in the
+  contract test and `tests/integration/test_i3_structural.py`; the Unity I3 test was not re-run here).
+- There is no relational benefit in production. That benefit was negative on the FINAL partition anyway.
+- The TCDP-only claims in the golden suite still run: `test_golden_suite.py::gs04` passes `mode=TCDP`
+  explicitly.
+
+## Revisit when
+TCDP beats no propagation on a fresh held-out split with a paired CI above 0 for at least one quantity, below
+0 for none, and contamination below GENERIC. The E003 contamination rule should first treat identical zero
+contamination as "not higher", declared before that run.
+
+## Approval
+Kerem: PENDING REVIEW

@@ -137,6 +137,14 @@ class Model2TEstimator(StructuralEstimator):
             return None
         return b.estimates[quantity].level, b.estimates[quantity].level_var
 
+    def latent(self, registry_id: UUID, quantity: str) -> Estimate2:
+        """Internal estimate whether or not it is claimed (see EngineEstimator.latent). Evaluation use only."""
+        assert self.model is not None
+        b = self.model.beliefs.get(registry_id)
+        if b is None or quantity not in b.valid:
+            return None
+        return b.estimates[quantity].level, b.estimates[quantity].level_var
+
 
 def _registry_dict(registry: AssetRegistry) -> dict[str, Any]:
     comps = [

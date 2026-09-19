@@ -24,6 +24,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 from uuid import UUID
 
+from conrad.domains.technical import crack_filter
 from conrad.domains.technical.config import Model2TConfig
 from conrad.domains.technical.dynamics import predict_estimate
 from conrad.domains.technical.measurement import (
@@ -33,8 +34,9 @@ from conrad.domains.technical.measurement import (
     scatter_sigmas,
 )
 from conrad.domains.technical.registry import CORROSION_DEPTH, CRACK_LENGTH, QUANTITY_UNITS, SURFACE_ANOMALY
-from conrad.domains.technical.state import ComponentBelief, Estimate
+from conrad.domains.technical.state import ComponentBelief, Estimate, sync_crack
 from conrad.schemas.belief import KnowledgeStatus, Lifecycle
+from conrad.schemas.frames import WORLD
 from conrad.schemas.observation import Evidence, EvidenceValidity
 
 MEASUREMENT_ALIASES: dict[str, str] = {
@@ -127,6 +129,8 @@ def _characterised(
     key = (bias_group(members[0]), q)
     ind, sys_ = scatter_sigmas(q, z, ua, sc)
     reading = Reading(q, z, rel, ua, elsewhere=_elsewhere(belief, q, members[0], sc.defect_locality_m))
+    if q == CRACK_LENGTH and belief.crack_grid is not None:
+        return _crack_grid_update(belief, belief.crack_grid, est, reading, key, members[0], (ind, sys_), cfg)
     mean, var = est.level, est.level_var
     first = not est.direct_lineage
     tail = (cfg.prior.tail_weight.get(q, 0.0), cfg.prior.tail_scale_m.get(q, 1.0)) if first else None
@@ -151,6 +155,34 @@ def _characterised(
         est.level_var = max(est.level_var, (sys_ * max(est.level, 0.0)) ** 2 / sensors)
     r_read = (math.hypot(ind, sys_) * max(abs(z), abs(mean))) ** 2
     return post.surprise, innov, r_read, reading.detected(sc)
+
+
+def _crack_grid_update(
+    belief: ComponentBelief,
+    grid: crack_filter.CrackGrid,
+    est: Estimate,
+    reading: Reading,
+    key: tuple[str, str],
+    first: Evidence,
+    sigmas: tuple[float, float],
+    cfg: Model2TConfig,
+) -> tuple[bool, float, float, bool]:
+    """Regime-mixture crack update (the grid already holds the prediction to the reading time)."""
+    sc = cfg.sensor
+    mean = est.level
+    res = crack_filter.update(grid, reading, sc, cfg.crack_growth)
+    belief.bias_counts[key] = belief.bias_counts.get(key, 0.0) + 1.0
+    detected = reading.detected(sc)
+    sup = first.spatial_support
+    q = reading.quantity
+    if sup is not None and detected and reading.value >= belief.locus.get(q, ((0.0, 0.0, 0.0), 0.0, -1.0))[2]:
+        belief.locus[q] = (sup.center_m, sup.position_sigma_m or 0.0, reading.value)
+    if detected:
+        sensors = sum(1 for _, qq in belief.bias_counts if qq == q)
+        crack_filter.floor_log_sd(grid, sigmas[1] / math.sqrt(sensors), cfg.crack_growth)
+    sync_crack(est, grid, cfg)
+    r_read = (math.hypot(*sigmas) * max(abs(reading.value), abs(mean))) ** 2
+    return res.surprise, res.mode - mean, r_read, detected
 
 
 def _groups(evidence: Sequence[Evidence]) -> list[tuple[str, list[Evidence]]]:
@@ -189,9 +221,16 @@ def apply_direct(
             z = sum(v for v, _ in vals) / len(vals)
             r = sum(v for _, v in vals) / len(vals)
             est = belief.estimates[q]
-            if not est.direct_lineage:
+            grid = belief.crack_grid if characterised and q == CRACK_LENGTH else None
+            if grid is not None:
+                # the grid IS the working crack state (population prior until the first reading)
+                crack_filter.propagate(
+                    grid, max(t_ns - est.updated_ns, 0) / 1e9, cfg.crack_growth, force=True
+                )
+                sync_crack(est, grid, cfg)
+            elif not est.direct_lineage:
                 est = belief.prior[q].copy()
-            if t_ns > est.updated_ns:
+            if grid is None and t_ns > est.updated_ns:
                 predict_estimate(est, q, (t_ns - est.updated_ns) / 1e9, cfg)
             before = (est.level_var, est.rate_var)
             had_direct = est.direct_lineage and est.known
@@ -211,11 +250,13 @@ def apply_direct(
                 nis = innov / (before[0] + r) ** 0.5
             if had_direct and reliable and surprise > cfg.direct.conflict_sigma:
                 # Reliable contradiction: keep both hypotheses' spread and raise U_C (not averaged away).
-                est.level_var = max(est.level_var, 0.5 * before[0] + 0.5 * r + 0.25 * innov * innov)
+                # (The crack grid carries both hypotheses itself through its surprise mixing.)
+                if grid is None:
+                    est.level_var = max(est.level_var, 0.5 * before[0] + 0.5 * r + 0.25 * innov * innov)
                 group_conflict = True
             elif had_direct and reliable:
                 reliable_consistent = True
-            if seen_before:
+            if seen_before and grid is None:
                 est.level_var = max(est.level_var, before[0])
                 est.rate_var = max(est.rate_var, before[1])
             if q in (CORROSION_DEPTH, CRACK_LENGTH) and had_direct:
@@ -231,6 +272,12 @@ def apply_direct(
         if group_conflict:
             belief.uc = min(1.0, belief.uc + cfg.direct.uc_gain)
             out.conflicts.extend(m.evidence_id for m in members)
+        if belief.geometry is not None:
+            for m in members:
+                sup = m.spatial_support
+                if sup is not None and sup.frame_id == WORLD:
+                    belief.covered.add(belief.geometry.cell_of(sup.center_m))
+                    belief.coverage_provenance = provenance_id
         if not seen_before:
             belief.direct_support = 1.0 - (1.0 - belief.direct_support) * (1.0 - rel)
         belief.groups.add(group)

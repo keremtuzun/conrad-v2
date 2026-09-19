@@ -1,0 +1,22 @@
+# 2T-E004-R3-DEV (SYNTHETIC_ONLY; REALISTIC Twin2T sensor; docs/audits/MODEL2T_REPAIR.md iteration 3). DEVELOPMENT seeds: design only, never evidence.
+experiment: {id: 2T-E004-R3-DEV}
+partition: development
+purpose: design
+# Config-local 2T partitions (iteration 3; configs/eval/partitions.yaml is digest-pinned). Disjoint. The R2
+# FINAL seeds 5300000-5300059 were inspected in the R2 write-up, so they are SPENT and never read again.
+# final_3 was checked against every seed range in configs/ before it was declared (docs/audits/MODEL2T_REPAIR.md).
+partitions:
+  development: {range: [5100000, 5100040]}
+  validation: {range: [5200000, 5200040]}
+  final_3: {range: [6500000, 6500060]}
+  spent_final: {range: [5300000, 5300060]}
+seeds: [5100000, 5100001, 5100002, 5100003, 5100004, 5100005, 5100006, 5100007, 5100008, 5100009]
+scenarios:
+  - {kind: small, n_segments: 4}
+  - {kind: tier, tier: 3}
+episodes_per_scenario: 2
+tick_days: 30
+horizon_days: 1800
+inspection_days: [30, 180, 360, 720, 1080, 1440, 1800]
+# Declared before the run: Model2T arms scored on their internal estimate, only on items every arm estimates.
+scoring: paired_latent

@@ -67,13 +67,19 @@ class GridPosterior:
     """Most likely level under the reading alone (0 for a non-detection)."""
 
 
+def noise_scale(aleatoric: float, sc: SensorCharacteristics) -> float:
+    """Multiplier on every declared scatter / noise-floor sigma: 1 for a healthy sensor (reported aleatoric level
+    at or below ``noise_ua_reference``), growing with the excess degradation."""
+    return 1.0 + sc.noise_ua_gain * max(0.0, aleatoric - sc.noise_ua_reference)
+
+
 def scatter_sigmas(q: str, value: float, aleatoric: float, sc: SensorCharacteristics) -> tuple[float, float]:
     """(independent per-reading relative sd, persistent per-sensor relative sd) for a reading of size value."""
     if q == CRACK_LENGTH:
         rel, sys_, absolute = sc.crack_rel_sigma, sc.crack_systematic_rel_sigma, sc.crack_abs_sigma_m
     else:
         rel, sys_, absolute = sc.wall_rel_sigma, sc.wall_systematic_rel_sigma, sc.wall_abs_sigma_m
-    scale = 1.0 + sc.noise_ua_gain * aleatoric
+    scale = noise_scale(aleatoric, sc)
     ind = math.hypot(rel * scale, absolute * scale / max(abs(value), absolute))
     return ind, sys_
 
@@ -110,7 +116,7 @@ def log_likelihood(r: Reading, grid: np.ndarray, sc: SensorCharacteristics) -> n
         return _elsewhere_log_likelihood(r, grid, sc)
     f, w = view_mixture(r.quantity, r.reliability, sc)
     a = np.maximum(grid, 0.0)[:, None] * f[None, :]  # in-view size per (L, f)
-    scale = 1.0 + sc.noise_ua_gain * r.aleatoric
+    scale = noise_scale(r.aleatoric, sc)
     if r.quantity == CORROSION_DEPTH:
         mu = sc.wall_sizing_median_factor * a
         sd = np.sqrt((sc.wall_rel_sigma * scale * mu) ** 2 + (sc.wall_abs_sigma_m * scale) ** 2)
@@ -138,7 +144,7 @@ def _elsewhere_log_likelihood(r: Reading, grid: np.ndarray, sc: SensorCharacteri
     """Another region's reading: P(region value <= worst case), a soft lower bound; a miss is uninformative."""
     if not r.detected(sc):
         return np.zeros_like(grid)
-    scale = 1.0 + sc.noise_ua_gain * r.aleatoric
+    scale = noise_scale(r.aleatoric, sc)
     if r.quantity == CORROSION_DEPTH:
         mu = sc.wall_sizing_median_factor * np.maximum(grid, 0.0)
         sd = np.sqrt((sc.wall_rel_sigma * scale * mu) ** 2 + (sc.wall_abs_sigma_m * scale) ** 2)

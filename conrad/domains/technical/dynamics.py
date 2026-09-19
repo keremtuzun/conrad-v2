@@ -1,6 +1,9 @@
 """Temporal prediction over PHYSICAL delta_t (TBD-T analytic default, ch10 Model 2T temporal dynamics).
 
-Constant-rate [level, rate] Kalman prediction with the model's own engineering-prior rates. Results
+Constant-rate [level, rate] Kalman prediction with the model's own engineering-prior rates (wall loss, surface
+anomaly, and crack length under the CONSTANT_RATE ablation). Crack length under the default REGIME_MIXTURE
+model is predicted by ``crack_filter.propagate`` (stable / run-away regimes, uncertainty growing with
+delta_t). Results
 become PREDICTED (never OBSERVED); direct support decays, epistemic uncertainty grows with horizon.
 
 implementation_status: EXPERIMENTAL_CANDIDATE
@@ -12,7 +15,9 @@ import math
 from uuid import UUID
 
 from conrad.domains.technical.config import YEAR_S, Model2TConfig
-from conrad.domains.technical.state import ComponentBelief, Estimate
+from conrad.domains.technical.crack_filter import propagate
+from conrad.domains.technical.registry import CRACK_LENGTH
+from conrad.domains.technical.state import ComponentBelief, Estimate, sync_crack
 from conrad.schemas.belief import KnowledgeStatus
 
 
@@ -45,7 +50,11 @@ def predict_belief(
     if dt_s == 0.0:
         return False
     for q, est in belief.estimates.items():
-        predict_estimate(est, q, dt_s, cfg)
+        grid = belief.crack_grid if q == CRACK_LENGTH else None
+        if grid is None:
+            predict_estimate(est, q, dt_s, cfg)
+        elif propagate(grid, dt_s, cfg.crack_growth):
+            sync_crack(est, grid, cfg)
         est.updated_ns = now_ns
         if est.known:
             est.status = KnowledgeStatus.PREDICTED

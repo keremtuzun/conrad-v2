@@ -14,7 +14,7 @@ def _observe(m, r, ev, name, **meas):
 
 
 def test_propagated_is_inferred_with_relational_provenance():
-    m, r, ev = model()
+    m, r, ev = model(mode=PropagationMode.TCDP)  # EXPERIMENTAL arm, explicitly enabled (ADR-0009)
     msgs = _observe(m, r, ev, "seg_a", wall=3e-3, crack=8e-3)
     b = msgs[r["seg_b"]]
     c = claim(b, CORROSION_DEPTH)
@@ -29,7 +29,7 @@ def test_propagated_is_inferred_with_relational_provenance():
 
 
 def test_relational_record_source_type():
-    m, r, ev = model()
+    m, r, ev = model(mode=PropagationMode.TCDP)  # EXPERIMENTAL arm, explicitly enabled (ADR-0009)
     captured = []
     orig = m.engine.drain_provenance
 
@@ -47,7 +47,7 @@ def test_relational_record_source_type():
 
 
 def test_no_propagation_over_invalid_relation_types():
-    m, r, ev = model()
+    m, r, ev = model(mode=PropagationMode.TCDP)  # EXPERIMENTAL arm, explicitly enabled (ADR-0009)
     _observe(m, r, ev, "seg_a", wall=4e-3, crack=1e-2)
     beliefs = m.beliefs
     # ADJACENT_TO carries nothing; concrete is not susceptible; SUPPORTED_BY is not a corrosion path
@@ -85,13 +85,13 @@ def test_healthy_observed_neighbour_is_never_overridden():
 
 
 def test_unreliable_source_is_gated():
-    m, r, ev = model()
+    m, r, ev = model(mode=PropagationMode.TCDP)  # EXPERIMENTAL arm, explicitly enabled (ADR-0009)
     _observe(m, r, ev, "seg_a", wall=4e-3, rel=0.1)
     assert m.beliefs[r["seg_b"]].estimates[CORROSION_DEPTH].status is KnowledgeStatus.UNKNOWN
 
 
 def test_message_is_attenuated():
-    m, r, ev = model()
+    m, r, ev = model(mode=PropagationMode.TCDP)  # EXPERIMENTAL arm, explicitly enabled (ADR-0009)
     _observe(m, r, ev, "seg_a", wall=4e-3)
     a = m.beliefs[r["seg_a"]].estimates[CORROSION_DEPTH]
     b = m.beliefs[r["seg_b"]].estimates[CORROSION_DEPTH]
@@ -106,7 +106,7 @@ def test_contamination_metric():
 
 
 def test_message_shift_is_bounded():
-    m, r, ev = model()
+    m, r, ev = model(mode=PropagationMode.TCDP)  # EXPERIMENTAL arm, explicitly enabled (ADR-0009)
     _observe(m, r, ev, "seg_a", crack=1.0)  # a failed 1 m crack must not become a 300 mm neighbour crack
     sup = m.beliefs[r["support_steel"]]
     prior = sup.prior[CRACK_LENGTH]

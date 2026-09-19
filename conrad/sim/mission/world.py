@@ -46,11 +46,11 @@ from conrad.twins.twin2s.world import SpatialWorld
 from conrad.twins.twin2t import Twin2T
 
 ROBOT_CONFIG = "configs/robot/sim_reference.yaml"
-REGION_READINGS = False
-"""Emit readings of the target's non-defect surface (docs/audits/MODEL2T_REPAIR.md). Implemented and tested,
-but OFF by default: with it on, lane views make the target OBSERVED before any inspection, so EGDC raises no
-information need, MCBR plans nothing and four I3/FLAGSHIP tests that encode the "hidden target" premise fail.
-Model2T cannot tell a near-side view from a full view without coverage geometry (open item in the doc)."""
+REGION_READINGS = True
+"""Emit readings of the target's non-defect surface (docs/audits/MODEL2T_REPAIR.md). ON since iteration 3:
+Model2T tracks surface coverage on the surveyed design geometry, so a near-side lane view makes only the read
+cells OBSERVED; the target's component-level condition stays UNKNOWN with high U_O and the information need is
+still raised."""
 
 
 def _spec(
@@ -302,7 +302,10 @@ class MissionWorld:
         hw = build_mission_hardware(
             load_robot_config(ROBOT_CONFIG),
             seed,
-            SimKernelConfig(physics_dt_s=opts.physics_dt_s),
+            SimKernelConfig(
+                physics_dt_s=opts.physics_dt_s,
+                water_surface_z_m=float(scenario.environment["water_surface_z_m"]),
+            ),
             t2s.world.sdf,
             (lambda p, t: np.asarray(opts.current_mps)) if any(opts.current_mps) else None,
             t2e is not None,

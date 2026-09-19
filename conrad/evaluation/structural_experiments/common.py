@@ -153,16 +153,61 @@ def experiment_id(config: Mapping[str, Any], default: str) -> str:
     return str(dict(config.get("experiment", {})).get("id", default))
 
 
+def _local_seeds(spec: Any) -> set[int]:
+    if isinstance(spec, Mapping):
+        lo, hi = spec.get("range", [0, 0])
+        return {int(s) for s in spec.get("explicit", [])} | set(range(int(lo), int(hi)))
+    return {int(s) for s in spec}
+
+
+def _checked_local(config: Mapping[str, Any], seeds: list[int], part: str, purpose: str) -> list[int]:
+    """Config-local 2T partitions (iteration 3): ``partitions: {name: [seeds] | {range, explicit}}``.
+
+    ``configs/eval/partitions.yaml`` is digest-pinned, so a fresh held-out split for 2T lives in the configs.
+    A partition named ``final*`` is read with FINAL_TEST access; ``spent*`` lists are never readable. Every
+    non-spent local partition must be disjoint from the others and from every pinned mission/abstract seed,
+    except that development/validation may reuse the pinned mission development/validation seeds."""
+    from conrad.evaluation import partitions
+
+    local = {str(k): _local_seeds(v) for k, v in dict(config["partitions"]).items()}
+    if part not in local or part.startswith("spent"):
+        raise partitions.PartitionAccessError(f"partition {part!r} is not a readable local 2T partition")
+    names = [k for k in local if not k.startswith("spent")]
+    for i, a in enumerate(names):
+        for b in names[i + 1 :]:
+            if local[a] & local[b]:
+                raise partitions.PartitionAccessError(f"local partitions {a} and {b} overlap")
+        spent = set().union(*(v for k, v in local.items() if k.startswith("spent")))
+        if a.startswith("final") and local[a] & spent:
+            raise partitions.PartitionAccessError(f"local partition {a} reuses spent seeds")
+    access = partitions.Partition.FINAL_TEST if part.startswith("final") else partitions.Partition(part)
+    partitions.check_access(access, purpose)
+    domain = str(config.get("partition_domain", "mission"))
+    for s in local[part]:
+        pinned = partitions.partition_of(domain, s) or partitions.partition_of("abstract", s)
+        if access is partitions.Partition.FINAL_TEST and pinned is not None:
+            raise partitions.PartitionAccessError(f"final seed {s} is already in the pinned {pinned} split")
+        if access is not partitions.Partition.FINAL_TEST and pinned not in (None, access):
+            raise partitions.PartitionAccessError(f"seed {s} is pinned as {pinned}, not {access}")
+    wrong = [s for s in seeds if s not in local[part]]
+    if wrong:
+        raise partitions.PartitionAccessError(f"seeds {wrong} are not in local partition {part}")
+    return seeds
+
+
 def checked_seeds(config: Mapping[str, Any], seeds: Sequence[int]) -> list[int]:
     """Enforce the declared partition: every seed must belong to it and the purpose must allow reading it.
 
-    Configs without ``partition`` are legacy (2026201-3 are DEVELOPMENT seeds, not held-out)."""
+    Configs without ``partition`` are legacy (2026201-3 are DEVELOPMENT seeds, not held-out). Configs with a
+    ``partitions`` mapping use config-local 2T partitions (``_checked_local``)."""
     from conrad.evaluation import partitions
 
     seeds = list(seeds)
     part = config.get("partition")
     if part is None:
         return seeds
+    if config.get("partitions"):
+        return _checked_local(config, seeds, str(part), str(config.get("purpose", "design")))
     purpose = str(config.get("purpose", "design"))
     partitions.check_access(part, purpose)
     domain = str(config.get("partition_domain", "mission"))

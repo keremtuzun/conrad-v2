@@ -6,12 +6,13 @@ Provenance records are minted per change and buffered per component until draine
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import replace
 from uuid import UUID
 
 from conrad.domains.technical.config import Model2TConfig, PropagationMode
 from conrad.domains.technical.context import ContextEffect, apply_context
+from conrad.domains.technical.coverage import SurfaceGeometry
 from conrad.domains.technical.direct import DirectOutcome, apply_direct
 from conrad.domains.technical.dynamics import predict_belief
 from conrad.domains.technical.measurement import tail_moments
@@ -37,6 +38,7 @@ class StructuralBeliefEngine:
         ids: IdFactory,
         now: TimeStamp,
         mode: PropagationMode | None = None,
+        geometry: Mapping[UUID, SurfaceGeometry] | None = None,
     ) -> None:
         if mode is not None:
             config = replace(config, tcdp=replace(config.tcdp, mode=mode))
@@ -54,7 +56,9 @@ class StructuralBeliefEngine:
         )
         self.beliefs: dict[UUID, ComponentBelief] = {}
         for rid in registry.stateful_ids:
-            b = new_belief(ids.new(), registry.components[rid], config, now.time_ns)
+            b = new_belief(
+                ids.new(), registry.components[rid], config, now.time_ns, (geometry or {}).get(rid)
+            )
             b.provenance_root = self._record(
                 b, SourceType.PRIOR, (rid,), (self.registry_record.record_id,), "create_from_registry"
             )
@@ -81,6 +85,23 @@ class StructuralBeliefEngine:
             )
             src.relationship_ids += (rel_id,)
             dst.relationship_ids += (rel_id,)
+        for b in self.beliefs.values():
+            if b.geometry is None:
+                continue
+            # read-surface part of the component (coverage, docs/audits/MODEL2T_REPAIR.md iteration 3)
+            b.surface_id, rel_id = ids.new(), ids.new()
+            b.surface_relationship = rel_id
+            self.relationships[rel_id] = Relationship(
+                relationship_id=rel_id,
+                relation_type="PART_OF",
+                source_belief_id=b.surface_id,
+                target_belief_id=b.belief_id,
+                source_domain=Domain.TECHNICAL,
+                target_domain=Domain.TECHNICAL,
+                confidence=1.0,
+                uncertainty=zero_u,
+                provenance_id=self.registry_record.record_id,
+            )
 
     # ------------------------------------------------------------------ provenance
     def _record(

@@ -120,7 +120,8 @@ def test_availability_and_query_filters():
 
 def test_persistence_commits_every_kind(repo):
     run_id = IdFactory(seed=9).new()
-    m, r, ev = model(repository=repo, run_id=run_id)
+    # RELATIONAL commits exist only on the explicitly enabled EXPERIMENTAL TCDP arm (ADR-0009).
+    m, r, ev = model(repository=repo, run_id=run_id, mode=PropagationMode.TCDP)
     m.ingest([evidence(ev, r["seg_a"], 10.0, wall=3e-3, crack=6e-3, run_id=run_id)])
     m.update_beliefs(stamp(10.0, "sim"))
     m.predict(30 * DAY, stamp(10.0 + 30 * DAY, "sim"))

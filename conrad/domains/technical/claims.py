@@ -1,7 +1,9 @@
 """Interpretable claims and TechnicalPayload from a component belief (ch10 Model 2T state heads).
 
 Each claim carries its own status. Derived claims (condition, severity, ...) take the status of the
-quantity that dominates them, so a severity driven by an INFERRED corrosion value is INFERRED.
+quantity that dominates them, so a severity driven by an INFERRED corrosion value is INFERRED. With surveyed
+design geometry, a partially covered component keeps its component-level condition UNKNOWN (the read part
+is ``observed_region_condition``) unless the read part alone already reaches the worst band.
 """
 
 from __future__ import annotations
@@ -59,8 +61,39 @@ def condition_of(severity: float, cfg: ConditionConfig) -> str:
     )
 
 
-def build_claims(belief: ComponentBelief, cfg: ConditionConfig) -> tuple[PropertyClaim, ...]:
-    u = belief.uncertainty()
+def _open_component_claims(
+    belief: ComponentBelief, cfg: ConditionConfig, u: Uncertainty
+) -> tuple[PropertyClaim, ...]:
+    """Component view while its condition is open (partial coverage, worst band not reached): the component-level
+    worst case is UNKNOWN. What the readings showed lives in the read-surface part; the component carries only
+    the coverage and the read part's condition, INFERRED through PART_OF (relational, rule 6)."""
+    unknown = KnowledgeStatus.UNKNOWN
+    claims: list[PropertyClaim] = []
+    for q in (CORROSION_DEPTH, CRACK_LENGTH, SURFACE_ANOMALY):
+        if q not in belief.valid and not belief.estimates[q].known:
+            continue
+        claims.append(_claim(q, None, QUANTITY_UNITS[q], unknown, None, u))
+        if q != SURFACE_ANOMALY:
+            claims.append(_claim(f"{q}.variance", None, "m^2", unknown, None, u))
+    claims += [_claim(n, None, None, unknown, None, u) for n in ("condition", "severity")]
+    parts = severity_parts(belief, cfg)
+    inferred, prov = KnowledgeStatus.INFERRED, belief.coverage_provenance
+    if parts:
+        sev = max(v for v, _ in parts.values())
+        claims.append(_claim("observed_region_condition", condition_of(sev, cfg), None, inferred, prov, u))
+    cov = belief.coverage_fraction()
+    claims.append(_claim("surface_coverage", cov, "1", inferred if belief.covered else unknown, prov, u))
+    claims += [_claim(n, None, None, unknown, None, u) for n in ("geometry_change", "change_state")]
+    return tuple(claims)
+
+
+def build_claims(
+    belief: ComponentBelief, cfg: ConditionConfig, *, surface: bool = False
+) -> tuple[PropertyClaim, ...]:
+    """Claims of the component (default) or of its read-surface part (``surface=True``)."""
+    u = belief.uncertainty(surface=surface)
+    if not surface and belief.condition_open():
+        return _open_component_claims(belief, cfg, u)
     claims: list[PropertyClaim] = []
     for q in (CORROSION_DEPTH, CRACK_LENGTH, SURFACE_ANOMALY):
         est = belief.estimates[q]
@@ -96,6 +129,10 @@ def build_claims(belief: ComponentBelief, cfg: ConditionConfig) -> tuple[Propert
     else:
         claims += [_claim(n, None, None, KnowledgeStatus.UNKNOWN, None, u) for n in ("condition", "severity")]
     corr = belief.estimates[CORROSION_DEPTH]
+    cov = belief.coverage_fraction()
+    if cov is not None:
+        read = KnowledgeStatus.OBSERVED if belief.covered else KnowledgeStatus.UNKNOWN
+        claims.append(_claim("surface_coverage", cov, "1", read, belief.coverage_provenance, u))
     geo = max(0.0, corr.level) / wall_m(belief, cfg) if corr.known else None
     claims.append(_claim("geometry_change", geo, "1", corr.status, corr.provenance_id, u))
     claims.append(
@@ -105,9 +142,9 @@ def build_claims(belief: ComponentBelief, cfg: ConditionConfig) -> tuple[Propert
 
 
 def technical_payload(
-    belief: ComponentBelief, cfg: ConditionConfig, claims: tuple[PropertyClaim, ...]
+    belief: ComponentBelief, cfg: ConditionConfig, claims: tuple[PropertyClaim, ...], *, surface: bool = False
 ) -> TechnicalPayload:
-    parts = severity_parts(belief, cfg)
+    parts = {} if not surface and belief.condition_open() else severity_parts(belief, cfg)
     corr, crack = belief.estimates[CORROSION_DEPTH], belief.estimates[CRACK_LENGTH]
     sev = max((v for v, _ in parts.values()), default=None)
     dtype = next((c.value for c in claims if c.name == "degradation_type"), None)

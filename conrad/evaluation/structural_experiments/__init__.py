@@ -12,6 +12,7 @@ IMPLEMENTATION_METADATA = {
         "configs/eval/2t_e002.yaml",
         "configs/eval/2t_e003.yaml",
         "configs/eval/2t_e004.yaml",
+        "configs/eval/2t_e00{1,2,3,4}_r3.yaml (FINAL-3) and *_r3_dev.yaml (iteration 3)",
     ],
     "assumptions": [
         "SYNTHETIC_ONLY Twin2T scenarios with T0 abstract observations",
@@ -30,4 +31,17 @@ IMPLEMENTATION_METADATA = {
     ],
     "acceptance_tests": ["tests/unit/domains/technical/test_m2t_experiment_smoke.py"],
     "claim_status": "EVALUATED",
+}
+
+_M = "conrad.evaluation.structural_experiments."
+EXPERIMENTS: dict[str, tuple[str, str]] = {
+    # Iteration 3 (docs/audits/MODEL2T_REPAIR.md): DEV configs for design, FINAL-3 configs run once.
+    "2T-E001-R3-DEV": (_M + "e001_r2", "configs/eval/2t_e001_r3_dev.yaml"),
+    "2T-E001-R3": (_M + "e001_r2", "configs/eval/2t_e001_r3.yaml"),
+    "2T-E002-R3-DEV": (_M + "e002_persistent", "configs/eval/2t_e002_r3_dev.yaml"),
+    "2T-E002-R3": (_M + "e002_persistent", "configs/eval/2t_e002_r3.yaml"),
+    "2T-E003-R3-DEV": (_M + "e003_r2", "configs/eval/2t_e003_r3_dev.yaml"),
+    "2T-E003-R3": (_M + "e003_r2", "configs/eval/2t_e003_r3.yaml"),
+    "2T-E004-R3-DEV": (_M + "e004_temporal", "configs/eval/2t_e004_r3_dev.yaml"),
+    "2T-E004-R3": (_M + "e004_temporal", "configs/eval/2t_e004_r3.yaml"),
 }

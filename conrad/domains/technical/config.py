@@ -89,12 +89,16 @@ class SensorCharacteristics:
     crack_rel_sigma: float = 0.30
     crack_systematic_rel_sigma: float = 0.25
     crack_abs_sigma_m: float = 1.0e-3
-    noise_ua_gain: float = 3.0
-    """Every scatter / noise-floor sigma is multiplied by (1 + noise_ua_gain * evidence aleatoric level)."""
+    noise_ua_gain: float = 5.0
+    """Every scatter / noise-floor sigma is multiplied by 1 + noise_ua_gain * max(0, aleatoric -
+    noise_ua_reference) (evidence aleatoric level from reported sensor health)."""
+    noise_ua_reference: float = 0.1
+    """Aleatoric level of a healthy sensor, for which the declared sigmas hold (iteration 2 used 0 with gain 3;
+    DEV iteration 3: healthy readings were over-covered, 0.997, docs/audits/MODEL2T_REPAIR.md)."""
     wall_sizing_median_factor: float = 1.0
     wall_rel_sigma: float = 0.12
     wall_systematic_rel_sigma: float = 0.06
-    wall_abs_sigma_m: float = 3.0e-4
+    wall_abs_sigma_m: float = 2.5e-4
     full_view_prob: float = 0.8
     crack_partial_view_min_fraction: float = 0.2
     """Smallest in-view fraction of a crack's length in a partial view."""
@@ -151,6 +155,54 @@ class DynamicsConfig:
 
 
 @dataclass(frozen=True)
+class CrackGrowthConfig:
+    """Crack temporal model (SENSOR_CHARACTERISED measurement model only). Own ENGINEERING_ESTIMATE.
+
+    ``REGIME_MIXTURE`` (default, docs/audits/MODEL2T_REPAIR.md iteration 3): the crack belief is a discrete
+    joint over log length and a growth regime. Regime 0 is STABLE (below the growth threshold: no growth);
+    the other regimes are RUN-AWAY exponential growth d ln L / dt = g with g on a log-spaced grid. Regimes
+    switch with hazards (initiation, arrest, rate drift), and log length diffuses, so predictive uncertainty
+    grows with PHYSICAL elapsed time and the predictive distribution is heavy-tailed (a minority of cracks run
+    away). ``CONSTANT_RATE``: the iteration-2 Gaussian [level, rate] Kalman model (kept as an ablation)."""
+
+    model: str = "REGIME_MIXTURE"
+    min_length_m: float = 1.0e-4
+    """Bottom of the log-length grid (a smaller crack is indistinguishable from none)."""
+    max_length_m: float = 3.0
+    """Top of the grid: a generic component-scale bound on crack length (growth past it is refuted)."""
+    grid_points: int = 240
+    stable_prob: float = 0.85
+    """Prior probability that a never-seen crack is in the STABLE regime."""
+    runaway_rates_per_yr: tuple[float, ...] = (0.2, 0.45, 1.0, 2.2, 5.0, 11.0)
+    """Run-away regimes: exponential growth rates of the length (1/yr), equally likely a priori."""
+    initiation_per_yr: float = 0.02
+    """Hazard of a STABLE crack starting to grow (to any run-away regime)."""
+    arrest_per_yr: float = 0.3
+    """Hazard of a run-away crack arresting (e.g. load shedding, or reaching a geometric limit)."""
+    rate_drift_per_yr: float = 0.5
+    """Hazard of moving to a neighbouring run-away rate (the growth rate is itself uncertain over time)."""
+    log_diffusion_per_sqrt_yr: float = 0.1
+    """Random-walk sd of ln(length) per sqrt(year) in every regime."""
+    surprise_mix: float = 0.02
+    """On a reading the belief cannot explain (see ``contradiction_prior_mass``), this fraction of the belief is
+    replaced by a log-uniform length before the update: a genuine change is followed, not smoothed away."""
+    min_propagation_s: float = 3600.0
+    """Elapsed physical time is accumulated and applied to the grid once it exceeds this (a mission tick of
+    0.1 s does not need a grid convolution; the pending time is always applied before a reading)."""
+    max_substep_s: float = 30 * 86400.0
+    """A long elapsed time is applied in sub-steps of at most this (operator-splitting accuracy)."""
+    point_estimate: str = "MEDIAN"
+    """Reported crack length: posterior ``MEDIAN`` (default; the skewed run-away tail pulls the mean up) or
+    ``MEAN``. The variance is always the posterior's."""
+
+    def __post_init__(self) -> None:
+        if self.model not in ("REGIME_MIXTURE", "CONSTANT_RATE"):
+            raise ValueError(f"unknown crack_growth.model {self.model!r}")
+        if self.point_estimate not in ("MEAN", "MEDIAN"):
+            raise ValueError(f"unknown crack_growth.point_estimate {self.point_estimate!r}")
+
+
+@dataclass(frozen=True)
 class PriorConfig:
     """Population prior for a never-observed component (reported as UNKNOWN; used only internally)."""
 
@@ -183,7 +235,12 @@ class PriorConfig:
 
 @dataclass(frozen=True)
 class TCDPConfig:
-    mode: PropagationMode = PropagationMode.TCDP
+    mode: PropagationMode = PropagationMode.NONE
+    """Production default NONE (ADR-0009): gate 2T-TCDP FAILED, so no condition is propagated to neighbours.
+    TCDP / GENERIC are EXPERIMENTAL arms: pass ``mode=`` explicitly (experiments, tests) or, on the mission
+    runtime, set ``experimental_enabled``."""
+    experimental_enabled: bool = False
+    """Explicit opt-in that lets the mission runtime honour a relational ``model2t_mode`` (ADR-0009)."""
     mechanism_relations: dict[str, tuple[str, ...]] = field(
         default_factory=lambda: {
             "CORROSION": ("CONNECTED_TO", "ATTACHED_TO", "CONTACTS", "EXPOSED_TO"),
@@ -232,6 +289,22 @@ class ConditionConfig:
 
 
 @dataclass(frozen=True)
+class CoverageConfig:
+    """Surface coverage (``coverage.py``). Used only for components whose surveyed design geometry is in the
+    mission context (``design_geometry``); otherwise every reading is treated as a whole-component view."""
+
+    enabled: bool = True
+    cell_m: float = 0.5
+    """Axial length of one coverage cell of a capsule (pipe segment)."""
+    sectors: int = 8
+    """Circumferential sectors of a capsule."""
+    complete_fraction: float = 0.8
+    """Component-level condition is OBSERVED only once this fraction of the cells has been read (or once the
+    observed part alone already puts the component in the worst condition band). Below it the condition is
+    UNKNOWN, U_O >= 1 - coverage, and the observed part is reported as ``observed_region_condition``."""
+
+
+@dataclass(frozen=True)
 class LearnedTCDPConfig:
     """ch33 defaults: z 256, r 64, mechanism 128, message 512->256->256, gate 512->128->1, 3 layers."""
 
@@ -256,13 +329,22 @@ class Model2TConfig:
     direct: DirectConfig = field(default_factory=DirectConfig)
     sensor: SensorCharacteristics = field(default_factory=SensorCharacteristics)
     dynamics: DynamicsConfig = field(default_factory=DynamicsConfig)
+    crack_growth: CrackGrowthConfig = field(default_factory=CrackGrowthConfig)
     prior: PriorConfig = field(default_factory=PriorConfig)
     tcdp: TCDPConfig = field(default_factory=TCDPConfig)
     context: ContextConfig = field(default_factory=ContextConfig)
     condition: ConditionConfig = field(default_factory=ConditionConfig)
+    coverage: CoverageConfig = field(default_factory=CoverageConfig)
     learned_tcdp: LearnedTCDPConfig = field(default_factory=LearnedTCDPConfig)
     clock_domain: str = "sim"
     model_version: str = "model2t-analytic-0.1.0"
+
+
+def production_propagation_mode(requested: str | PropagationMode, config: Model2TConfig) -> PropagationMode:
+    """Propagation mode of the PRODUCTION mission runtime (ADR-0009). Gate 2T-TCDP FAILED, so a relational
+    mode is honoured only with the explicit opt-in ``tcdp.experimental_enabled``; otherwise NONE."""
+    mode = PropagationMode(requested)
+    return mode if config.tcdp.experimental_enabled else PropagationMode.NONE
 
 
 def _build(cls: type[Any], data: dict[str, Any]) -> Any:
@@ -278,10 +360,12 @@ def model2t_config_from_dict(data: dict[str, Any]) -> Model2TConfig:
         "direct": DirectConfig,
         "sensor": SensorCharacteristics,
         "dynamics": DynamicsConfig,
+        "crack_growth": CrackGrowthConfig,
         "prior": PriorConfig,
         "tcdp": TCDPConfig,
         "context": ContextConfig,
         "condition": ConditionConfig,
+        "coverage": CoverageConfig,
         "learned_tcdp": LearnedTCDPConfig,
     }
     unknown = set(data) - {f.name for f in fields(Model2TConfig)}

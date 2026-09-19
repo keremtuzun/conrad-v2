@@ -13,7 +13,9 @@ import math
 from dataclasses import dataclass, field
 from uuid import UUID
 
-from conrad.domains.technical.config import Model2TConfig
+from conrad.domains.technical.config import ConditionConfig, Model2TConfig
+from conrad.domains.technical.coverage import SurfaceGeometry
+from conrad.domains.technical.crack_filter import CrackGrid, moments, population_prior
 from conrad.domains.technical.registry import (
     CORROSION_DEPTH,
     CRACK_LENGTH,
@@ -68,8 +70,23 @@ class ComponentBelief:
     groups: set[str] = field(default_factory=set)
     locus: dict[str, tuple[tuple[float, float, float], float, float]] = field(default_factory=dict)
     """Per quantity: (measured surface point, its sigma, reading size) of the worst indication seen so far."""
+    crack_grid: CrackGrid | None = None
+    """Regime-mixture crack belief (``crack_filter``); None under the CONSTANT_RATE / legacy models."""
     bias_counts: dict[tuple[str, str], float] = field(default_factory=dict)
     """Readings consumed per (sensor bias group, quantity); distinct groups set the persistent-bias floor."""
+    geometry: SurfaceGeometry | None = None
+    """Surveyed design surface (mission context) for coverage; None = readings are whole-component views."""
+    covered: set[int] = field(default_factory=set)
+    """Coverage cells of ``geometry`` that a reading's measured surface point fell in."""
+    coverage_complete: float = 0.8
+    coverage_provenance: UUID | None = None
+    surface_id: UUID | None = None
+    """Belief id of the component's READ-SURFACE part (only with geometry): the surface the readings actually
+    showed. While the component-level condition is open, readings are committed to this part (DIRECT) and the
+    component itself gets a coverage revision; registry_entity_id of the part is None (not a registry item)."""
+    surface_revision: int = -1
+    surface_relationship: UUID | None = None
+    condition_cfg: ConditionConfig = field(default_factory=ConditionConfig)
     last_evidence: tuple[UUID, ...] = ()
     reported_level: dict[str, float] = field(default_factory=dict)
     change_state: str = "STABLE"
@@ -85,8 +102,29 @@ class ComponentBelief:
     def valid(self) -> frozenset[str]:
         return self.spec.valid_quantities()
 
-    def uncertainty(self) -> Uncertainty:
+    def coverage_fraction(self) -> float | None:
+        if self.geometry is None:
+            return None
+        return len(self.covered) / max(self.geometry.n_cells, 1)
+
+    def condition_open(self) -> bool:
+        """The component-level condition is not determined by what was read: coverage is partial AND the read
+        part alone does not already put the component in the worst band (a worst case can only be worse)."""
+        cov = self.coverage_fraction()
+        if cov is None or cov >= self.coverage_complete:
+            return False
+        from conrad.domains.technical.claims import severity_parts  # local: claims imports this module
+
+        parts = severity_parts(self, self.condition_cfg)
+        sev = max((v for v, _ in parts.values()), default=None)
+        return sev is None or sev < self.condition_cfg.bands[2]
+
+    def uncertainty(self, surface: bool = False) -> Uncertainty:
+        """Component uncertainty; ``surface=True``: of the read-surface part (no coverage term)."""
         uo = max(1.0 - self.direct_support, self.uo_context)
+        cov = self.coverage_fraction()
+        if not surface and cov is not None and self.condition_open():
+            uo = max(uo, 1.0 - cov)
         return Uncertainty(
             aleatoric=min(1.0, self.ua + self.ua_context),
             epistemic=min(1.0, self.ue),
@@ -104,8 +142,36 @@ def _prior_estimate(q: str, cfg: Model2TConfig) -> Estimate:
     return Estimate(level=cfg.prior.mean[q], level_var=cfg.prior.sd[q] ** 2, rate=rate, rate_var=rate_sd**2)
 
 
-def new_belief(belief_id: UUID, spec: ComponentSpec, cfg: Model2TConfig, now_ns: int) -> ComponentBelief:
+def uses_crack_grid(cfg: Model2TConfig) -> bool:
+    return (
+        cfg.direct.measurement_model == "SENSOR_CHARACTERISED" and cfg.crack_growth.model == "REGIME_MIXTURE"
+    )
+
+
+def sync_crack(est: Estimate, grid: CrackGrid, cfg: Model2TConfig) -> None:
+    """Copy the crack grid's posterior moments into the Gaussian summary (status is left untouched)."""
+    m = moments(grid, cfg.crack_growth)
+    est.level, est.level_var, est.rate, est.rate_var, est.cov = (
+        m.level,
+        m.level_var,
+        m.rate,
+        m.rate_var,
+        m.cov,
+    )
+
+
+def new_belief(
+    belief_id: UUID,
+    spec: ComponentSpec,
+    cfg: Model2TConfig,
+    now_ns: int,
+    geometry: SurfaceGeometry | None = None,
+) -> ComponentBelief:
     prior = {q: _prior_estimate(q, cfg) for q in QUANTITIES}
+    grid = None
+    if uses_crack_grid(cfg) and CRACK_LENGTH in spec.valid_quantities():
+        grid = population_prior(cfg.crack_growth, cfg.prior)
+        sync_crack(prior[CRACK_LENGTH], grid, cfg)
     for est in prior.values():
         est.updated_ns = now_ns
     ue = cfg.prior.base_epistemic + (0.0 if spec.material_known else cfg.prior.unknown_material_epistemic)
@@ -116,4 +182,8 @@ def new_belief(belief_id: UUID, spec: ComponentSpec, cfg: Model2TConfig, now_ns:
         prior=prior,
         ue=ue,
         head_time_ns=now_ns,
+        crack_grid=grid,
+        geometry=geometry if cfg.coverage.enabled else None,
+        coverage_complete=cfg.coverage.complete_fraction,
+        condition_cfg=cfg.condition,
     )

@@ -8,6 +8,8 @@ from __future__ import annotations
 from conrad.domains.technical.config import (
     ConditionConfig,
     ContextConfig,
+    CoverageConfig,
+    CrackGrowthConfig,
     DirectConfig,
     DynamicsConfig,
     LearnedTCDPConfig,
@@ -16,6 +18,7 @@ from conrad.domains.technical.config import (
     PropagationMode,
     TCDPConfig,
     model2t_config_from_dict,
+    production_propagation_mode,
 )
 from conrad.domains.technical.engine import StructuralBeliefEngine
 from conrad.domains.technical.evidence import structured_evidence
@@ -51,6 +54,11 @@ IMPLEMENTATION_METADATA = {
         "generic_correlation,generic_iterations}",
         "model2t.context.{biofouling_keys,turbidity_keys,visibility_keys,uo_gain,ua_gain,surface_variance_gain}",
         "model2t.condition.{nominal_wall_m,crack_critical_m,bands,change_sigma}",
+        "model2t.crack_growth.{model,min_length_m,max_length_m,grid_points,stable_prob,runaway_rates_per_yr,"
+        "initiation_per_yr,arrest_per_yr,rate_drift_per_yr,log_diffusion_per_sqrt_yr,surprise_mix,"
+        "min_propagation_s,point_estimate}",
+        "model2t.coverage.{enabled,cell_m,sectors,complete_fraction}",
+        "model2t.tcdp.experimental_enabled (ADR-0009: relational propagation OFF in production)",
         "model2t.learned_tcdp.{d_node_in,d_z,d_r,d_mech,d_hidden,d_gate,d_head,n_layers,n_mechanisms,"
         "partitions,mutable_partitions,dropout}",
     ],
@@ -70,6 +78,11 @@ IMPLEMENTATION_METADATA = {
         "TCDP message shift bounded to max_shift_sd target-prior sd (added after run 1 showed a failed 1 m "
         "crack propagating ~300 mm cracks); GENERIC stays unbounded",
         "2T-E001..E004 executed on SYNTHETIC_ONLY Twin2T data (artifacts/experiments/structural); mixed results",
+        "production runtime: no relational propagation (ADR-0009); a never-observed component stays UNKNOWN",
+        "crack length (default): regime-mixture grid filter (stable / run-away exponential growth, regime "
+        "hazards, log-length diffusion over physical delta_t); reported level = posterior median",
+        "surface coverage: one cell per reading at its measured surface point on the surveyed design surface; "
+        "partial coverage keeps the component-level condition UNKNOWN (docs/audits/MODEL2T_REPAIR.md it. 3)",
     ],
     "baselines": [
         "LATEST_OBSERVATION (B1)",
@@ -95,6 +108,8 @@ __all__ = [
     "ComponentSpec",
     "ConditionConfig",
     "ContextConfig",
+    "CoverageConfig",
+    "CrackGrowthConfig",
     "DegradationMechanism",
     "DirectConfig",
     "DynamicsConfig",
@@ -108,6 +123,7 @@ __all__ = [
     "StructuralBeliefEngine",
     "TCDPConfig",
     "model2t_config_from_dict",
+    "production_propagation_mode",
     "relational_contamination",
     "structured_evidence",
 ]

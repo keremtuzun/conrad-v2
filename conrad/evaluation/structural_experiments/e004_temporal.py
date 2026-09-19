@@ -2,7 +2,10 @@
 
 Full-coverage inspections only on the configured days (default 30, 180, 360, 720, 1080, 1440, 1800);
 between them every arm must predict. Arms: MODEL2T_TEMPORAL (analytic core, engineering-prior rates),
-NO_RATE_PRIOR (ablation: same filter, zero prior rate), LATEST_OBSERVATION (hold-last).
+NO_RATE_PRIOR (ablation: same filter, zero prior rate / no crack growth), LATEST_OBSERVATION (hold-last).
+``scoring: paired_latent`` (R3 configs, declared before the run): Model2T arms are scored on their internal
+estimate (claimed or not), an item counts only when every arm has an estimate, and the iteration-2 crack
+dynamics run as MODEL2T_CONSTANT_RATE. Unpaired (R2): each arm on the items it claims.
 """
 
 from __future__ import annotations
@@ -18,7 +21,7 @@ from uuid import UUID
 import numpy as np
 
 from conrad.domains.technical import Model2TConfig, PropagationMode
-from conrad.domains.technical.baselines import EngineEstimator, LatestObservation
+from conrad.domains.technical.baselines import EngineEstimator, LatestObservation, StructuralEstimator
 from conrad.evaluation.partitions import purpose_scope
 from conrad.evaluation.structural_experiments.common import (
     DAY,
@@ -49,6 +52,7 @@ def run_seed(config: Mapping[str, Any], seed: int, tmp: Path) -> dict[str, Any]:
     steps = int(config.get("horizon_days", 1800) // tick)
     inspect_steps = {round(d / tick) for d in days}
     before_next = {s - 1 for s in inspect_steps if s - 1 not in inspect_steps}
+    paired = str(config.get("scoring", "unpaired")) == "paired_latent"
     acc: dict[str, list[float]] = {}
     for spec in config.get("scenarios", [{"kind": "small", "n_segments": 4}, {"kind": "tier", "tier": 3}]):
         for ep in range(int(config.get("episodes_per_scenario", 2))):
@@ -56,13 +60,21 @@ def run_seed(config: Mapping[str, Any], seed: int, tmp: Path) -> dict[str, Any]:
             world = make_world(eseed, make_scenario(eseed, spec), tmp)
             base = Model2TConfig()
             ablate = replace(
-                base, dynamics=replace(base.dynamics, corrosion_rate_m_per_yr=0.0, crack_rate_m_per_yr=0.0)
+                base,
+                dynamics=replace(base.dynamics, corrosion_rate_m_per_yr=0.0, crack_rate_m_per_yr=0.0),
+                # regime-mixture crack model: no growth prior = every crack STABLE, never initiating
+                crack_growth=replace(base.crack_growth, stable_prob=1.0, initiation_per_yr=0.0),
             )
             model = EngineEstimator(PropagationMode.NONE, base, seed=eseed)
             model.name = "MODEL2T_TEMPORAL"
             no_rate = EngineEstimator(PropagationMode.NONE, ablate, seed=eseed)
             no_rate.name = "NO_RATE_PRIOR"
-            arms = [model, no_rate, LatestObservation()]
+            arms: list[StructuralEstimator] = [model, no_rate, LatestObservation()]
+            if paired:
+                constant = replace(base, crack_growth=replace(base.crack_growth, model="CONSTANT_RATE"))
+                it2 = EngineEstimator(PropagationMode.NONE, constant, seed=eseed)
+                it2.name = "MODEL2T_CONSTANT_RATE"  # iteration-2 crack dynamics (ablation)
+                arms.append(it2)
             comps = list(world.component_ids)
             recs = run_episode(
                 world,
@@ -81,8 +93,16 @@ def run_seed(config: Mapping[str, Any], seed: int, tmp: Path) -> dict[str, Any]:
                     for q in QUANTITIES:
                         if tr[q] is None:
                             continue
+                        ests = {
+                            a.name: rec["latent"][a.name][rid][q]
+                            if paired and a.name in rec["latent"]
+                            else rec["est"][a.name][rid][q]
+                            for a in arms
+                        }
+                        if paired and any(e is None for e in ests.values()):
+                            continue
                         for a in arms:
-                            e = rec["est"][a.name][rid][q]
+                            e = ests[a.name]
                             if e is None:
                                 continue
                             err, nll, cov = gaussian_scores(e[0], e[1], tr[q])

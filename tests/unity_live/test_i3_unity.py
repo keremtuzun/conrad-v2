@@ -91,11 +91,9 @@ def test_robot_sees_only_partial_infrastructure(run):
     assert 0 < len(seen & technical) < len(technical)
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="GATE I3 = FAIL (docs/audits/UNITY_INTEGRATION_I1_I3.md): a never-observed component carries an "
-    "INFERRED condition (U_O 1.0) instead of UNKNOWN",
-)
+# Was a strict xfail (GATE I3 = FAIL: a never-observed component carried an INFERRED condition). Cause: the mission
+# runtime ran Model2T with TCDP. Fixed by ADR-0009 (no relational propagation in production); verified on the
+# surrogate path only (docs/audits/MODEL2T_REPAIR.md iteration 3). Not re-run on Unity by that change.
 def test_persistent_technical_belief(run):
     s, _ = run
     revs = _revs(s, Domain.TECHNICAL)

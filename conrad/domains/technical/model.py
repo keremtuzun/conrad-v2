@@ -1,7 +1,9 @@
 """Model2T: the structural BELIEF child of Model 2 (ch10, ch33). BELIEF PLANE ONLY.
 
-Default operators are analytic (Kalman direct update, engineering-prior temporal prediction, analytic
-TCDP). The learned TCDP (``learned_tcdp``) is an EXPERIMENTAL_CANDIDATE and is not on this runtime path.
+Default operators are analytic (sensor-characterised direct update, regime-mixture crack prediction,
+engineering-prior wall-loss prediction, surface coverage from surveyed design geometry). Relational
+propagation is OFF by default (ADR-0009: gate 2T-TCDP failed); analytic TCDP / GENERIC run only when a mode is
+passed explicitly (EXPERIMENTAL arm). The learned TCDP (``learned_tcdp``) is never on this runtime path.
 """
 
 from __future__ import annotations
@@ -13,6 +15,7 @@ from uuid import UUID
 from conrad.domains.base import Model2Child
 from conrad.domains.technical.config import Model2TConfig, PropagationMode
 from conrad.domains.technical.context import context_effects
+from conrad.domains.technical.coverage import geometry_from_context
 from conrad.domains.technical.engine import StructuralBeliefEngine
 from conrad.domains.technical.persist import build_message, commit_revision
 from conrad.domains.technical.registry import AssetRegistry
@@ -76,7 +79,11 @@ class Model2T(Model2Child):
     def initialize(self, context: dict[str, Any]) -> None:
         registry = AssetRegistry.from_context(context)
         now = context.get("timestamp") or TimeStamp(time_ns=0, clock_domain=self.config.clock_domain)
-        self._engine = StructuralBeliefEngine(registry, self.config, self.ids, now, self._mode)
+        geometry = geometry_from_context(context, self.config.coverage)
+        unknown = set(geometry) - set(registry.components)
+        if unknown:
+            raise ValueError(f"design_geometry names non-registry components: {sorted(map(str, unknown))}")
+        self._engine = StructuralBeliefEngine(registry, self.config, self.ids, now, self._mode, geometry)
         if self.repository is not None:
             self.repository.put_provenance(self.run_id, [self._engine.registry_record])
         for rid in self._engine.beliefs:
@@ -100,6 +107,24 @@ class Model2T(Model2Child):
         out: list[BeliefMessage] = []
         for rid, res in sorted(direct.items(), key=lambda kv: str(kv[0])):
             summary = f"direct:{len(res.accepted)} conflicts:{len(res.conflicts)}"
+            b = engine.beliefs[rid]
+            if b.surface_id is not None and b.condition_open():
+                # Partial coverage: the readings determine the READ SURFACE, not the component worst case.
+                # The surface part takes the DIRECT revision (it consumes the evidence); the component gets a
+                # coverage revision through PART_OF, with its worst case still UNKNOWN.
+                out.append(
+                    self._commit(
+                        rid,
+                        UpdateKind.DIRECT,
+                        now,
+                        res.accepted,
+                        res.max_time_ns,
+                        summary=summary,
+                        surface=True,
+                    )
+                )
+                out.append(self._commit(rid, UpdateKind.RELATIONAL, now, summary="surface coverage"))
+                continue
             out.append(
                 self._commit(rid, UpdateKind.DIRECT, now, res.accepted, res.max_time_ns, summary=summary)
             )
@@ -156,10 +181,11 @@ class Model2T(Model2Child):
         return out
 
     def export_beliefs(self) -> list[BeliefMessage]:
-        return [
-            self._message(b, self.engine.now)
-            for _, b in sorted(self.engine.beliefs.items(), key=lambda kv: str(kv[0]))
-        ]
+        """Every component belief, then every read-surface part that has been committed."""
+        items = sorted(self.engine.beliefs.items(), key=lambda kv: str(kv[0]))
+        out = [self._message(b, self.engine.now) for _, b in items]
+        out += [self._message(b, self.engine.now, surface=True) for _, b in items if b.surface_revision >= 0]
+        return out
 
     def reset_working_memory(self) -> None:
         """Drops un-applied evidence and counters; persistent beliefs, relationships and archive survive."""
@@ -202,21 +228,22 @@ class Model2T(Model2Child):
         *,
         summary: str | None = None,
         prediction: str | None = None,
+        surface: bool = False,
     ) -> BeliefMessage:
         engine = self.engine
         b = engine.beliefs[rid]
         records = engine.drain_provenance(rid)
         message_id = self.ids.new()
         if self.repository is None:
-            b.revision += 1
+            if surface:
+                b.surface_revision += 1
+            else:
+                b.revision += 1
         else:
             rels = []
-            if kind is UpdateKind.RELATIONAL:
-                rels = [
-                    engine.relationships[r]
-                    for r in b.relationship_ids
-                    if r not in self._committed_relationships
-                ]
+            if kind is UpdateKind.RELATIONAL or surface:
+                own = (b.surface_relationship,) if surface and b.surface_relationship else b.relationship_ids
+                rels = [engine.relationships[r] for r in own if r not in self._committed_relationships]
                 self._committed_relationships.update(r.relationship_id for r in rels)
             commit_revision(
                 self.repository,
@@ -230,6 +257,7 @@ class Model2T(Model2Child):
                 consumed=consumed,
                 measurement_time_ns=measurement_time_ns,
                 relationships=rels,
+                surface=surface,
             )
         support = consumed if kind is UpdateKind.DIRECT else ()
         return build_message(
@@ -241,4 +269,5 @@ class Model2T(Model2Child):
             change_summary=summary,
             prediction_summary=prediction,
             availability=self.availability(),
+            surface=surface,
         )

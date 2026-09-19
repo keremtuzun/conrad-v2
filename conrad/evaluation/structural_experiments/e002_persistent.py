@@ -1,6 +1,7 @@
 """2T-E002: persistent updating under partial coverage (2T-D2, T3; coverage levels from ch10).
 
-Arms: MODEL2T (full Model2Child path, TCDP on), INDEPENDENT_COMPONENT, LATEST_OBSERVATION, GRU_TEMPORAL.
+Arms: MODEL2T (full Model2Child path with its production defaults: TCDP on until ADR-0009, OFF since),
+INDEPENDENT_COMPONENT, LATEST_OBSERVATION, GRU_TEMPORAL.
 Metrics: error on components hidden now but seen before; UNKNOWN / INFERRED rate on never-observed
 components; U_O by visibility class; one persisted episode per seed through the Repository.
 """
@@ -86,7 +87,11 @@ def train_gru(config: Mapping[str, Any], seed: int, tmp: Path) -> GRUTemporal:
     return gru
 
 
-def _score(recs: list[dict[str, Any]]) -> dict[str, float | None]:
+def _score(recs: list[dict[str, Any]], paired: bool = False) -> dict[str, float | None]:
+    """Per visibility class. ``paired`` (R3 configs, declared before the run): Model2T arms are scored on their
+    internal estimate (``latent``, claimed or not, as in 2T-E001-R2) and an item counts only if EVERY arm has an
+    estimate, so all arms are compared on the same components. Unpaired (R2 and earlier): each arm on the
+    items it claims, which compared Model2T's detected cracks against the baselines' every crack."""
     acc: dict[str, list[float]] = {}
     seen: set[Any] = set()
     for rec in recs:
@@ -96,9 +101,16 @@ def _score(recs: list[dict[str, Any]]) -> dict[str, float | None]:
             for q in QUANTITIES:
                 if tr[q] is None:
                     continue
+                ests: dict[str, Any] = {}
                 for name, per in rec["est"].items():
                     e = per[rid][q]
                     acc.setdefault(f"{cls}.{name}.{q}.unknown_rate", []).append(float(e is None))
+                    if paired and name in rec["latent"] and cls != "never_observed":
+                        e = rec["latent"][name][rid][q]
+                    ests[name] = e
+                if paired and any(e is None for e in ests.values()):
+                    continue
+                for name, e in ests.items():
                     if e is not None:
                         err, _nll, cov = gaussian_scores(e[0], e[1], tr[q])
                         acc.setdefault(f"{cls}.{name}.{q}.mae_mm", []).append(err)
@@ -139,7 +151,7 @@ def run_seed(config: Mapping[str, Any], seed: int, tmp: Path) -> dict[str, Any]:
                 visible_at=coverage_schedule(world.component_ids, float(cov), eseed),
                 probe=_uo_probe(model),
             )
-            scores.append(_score(recs))
+            scores.append(_score(recs, str(config.get("scoring", "unpaired")) == "paired_latent"))
         keys = sorted({k for s in scores for k in s})
         out[f"coverage_{cov}"] = {
             k: float(np.mean(v)) if (v := [float(x) for s in scores if (x := s.get(k)) is not None]) else None
