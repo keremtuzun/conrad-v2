@@ -186,6 +186,7 @@ GATES: tuple[GateDefinition, ...] = (
             "station keep",
             "uses estimated state",
             "NAV-001..NAV-006",
+            "faults reach defined safe states",  # ch26 Phase 6 pass criterion
         ),
         formal_path="estimator -> planner -> trajectory -> controller -> allocator -> RHI on Unity",
     ),
@@ -247,6 +248,9 @@ GATES: tuple[GateDefinition, ...] = (
             "escalate",
             "hard constraints inviolable",
             "actions exercised correctly inside integrated missions",
+            # ch26 Phase 9 pass criterion
+            "traceable decisions with low measured UIR",
+            "competitive mission outcomes vs decision baselines",
         ),
         formal_path="Model1 action-matrix suite on imperfect beliefs + integrated mission",
     ),
@@ -287,6 +291,7 @@ GATES: tuple[GateDefinition, ...] = (
             "full mission under constrained bandwidth",
             "full mission under outages",
             "BAAC retains more mission-relevant information than raw/FIFO/fixed-priority",
+            "critical latency and sync error compared against baselines",  # ch26 Phase 11 pass criterion
         ),
         formal_path="integrated missions over the channel simulator with baselines",
     ),

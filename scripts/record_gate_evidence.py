@@ -494,6 +494,29 @@ def _i7_retention_check(d: dict) -> tuple[bool, str]:
     return ok, "BAAC minus policy retained (mean): " + "; ".join(rows)
 
 
+def _i7_latency_sync_check(d: dict) -> tuple[bool, str]:
+    """ch26 Phase 11 asks for a COMPARISON of critical latency and sync error (superiority is the retention
+    criterion). PASS = every arm has both measures at every non-zero level; cases where BAAC is worse are listed."""
+    s, ok, worse = d["summary"], d.get("partition") == "final_test", []
+    inf = float("inf")
+    for cond, arms in s.items():
+        if cond in ("bw_0pct", "bw_0.0pct"):
+            continue
+        for m in arms.values():
+            ok = ok and "critical_alert_latency_s" in m and "sync_critical_all_equal_fraction" in m
+        b = arms["baac"]
+        b_lat = b["critical_alert_latency_s"] if b["critical_alert_latency_s"] is not None else inf
+        for arm, m in arms.items():
+            if arm == "baac":
+                continue
+            lat = m["critical_alert_latency_s"] if m["critical_alert_latency_s"] is not None else inf
+            if lat < b_lat:
+                worse.append(f"{cond} alert latency: {arm} {lat:.2f}s < baac {b_lat:.2f}s")
+            if m["sync_critical_all_equal_fraction"] > b["sync_critical_all_equal_fraction"]:
+                worse.append(f"{cond} sync: {arm} better than baac")
+    return ok, "compared for every arm and level; BAAC worse in: " + ("; ".join(worse) or "none")
+
+
 I1S = "tests/integration/test_i1_spatial_loop.py::"
 I3S = "tests/integration/test_i3_structural.py::"
 # SURROGATE evidence: the same criteria exercised through the Python L1 kernel instead of Unity (ADR-0008).
@@ -550,6 +573,11 @@ SURROGATE_PLAN: dict[str, list[tuple[str, list[str], Callable[[], tuple[Criterio
                 I7A + "test_value_per_bit_comparison_is_reported",
             ],
             _exp(I7_E001, _i7_retention_check),
+        ),
+        (
+            "critical latency and sync error compared against baselines",
+            [I7A + "test_value_per_bit_comparison_is_reported"],
+            _exp(I7_E001, _i7_latency_sync_check),
         ),
     ],
     "I3": [

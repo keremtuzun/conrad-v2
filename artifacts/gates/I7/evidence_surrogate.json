@@ -2,7 +2,7 @@
   "gate_id": "I7",
   "evidence_class": "SURROGATE",
   "execution_path": "python L1 kernel instead of Unity; pytest nodes + retained experiment artifacts (I7)",
-  "git_commit": "4f55d32efae281d351f900c2d098e58185d6c6c3",
+  "git_commit": "afad38a2e1b8358865da1e063b98e85bcc364934",
   "criteria": [
     {
       "criterion": "full mission under constrained bandwidth",
@@ -18,6 +18,11 @@
       "criterion": "BAAC retains more mission-relevant information than raw/FIFO/fixed-priority",
       "status": "PASS",
       "measured": "test_baac_retains_more_than_raw_fifo_fixed_priority_every_nonzero_level=PASS; test_value_per_bit_comparison_is_reported=PASS; experiment: BAAC minus policy retained (mean): bw_100pct: raw +0.401, fifo +0.401, fixed_priority +0.469, value_per_bit +0.070; bw_50pct: raw +0.362, fifo +0.362, fixed_priority +0.534, value_per_bit +0.088; bw_10pct: raw +0.103, fifo +0.103, fixed_priority +0.330, value_per_bit +0.091; bw_1pct: raw +0.060, fifo +0.060, fixed_priority +0.060, value_per_bit +0.025; bw_0.1pct: raw +0.060, fifo +0.060, fixed_priority +0.060, value_per_bit +0.060"
+    },
+    {
+      "criterion": "critical latency and sync error compared against baselines",
+      "status": "PASS",
+      "measured": "test_value_per_bit_comparison_is_reported=PASS; experiment: compared for every arm and level; BAAC worse in: bw_50pct alert latency: value_per_bit 1.00s < baac 2.38s"
     }
   ],
   "artifacts": [
