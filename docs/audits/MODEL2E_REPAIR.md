@@ -473,3 +473,121 @@ python -m uv run python scripts/record_gate_evidence.py 2E 2E-CEFD
 ```
 
 Wall time with the three runs in parallel: E001-R4 692 s, E002-R4 868 s, E003-R4 1149 s.
+
+## Iteration 4 (2026-09-20): one CEFD redesign attempt. Claims fixed, benefit still absent
+
+Scope: the research gate **2E-CEFD** only. Production switches are unchanged (`ecological_coupling` OFF,
+`entity_to_field` OFF, `observability_context` ON; ADR-0007), and `tests/contract/test_runtime_defaults.py`
+is unchanged. Design and evaluation on DEVELOPMENT and VALIDATION seeds only. **No final split was read or
+spent**, and `scripts/record_gate_evidence.py` was not touched. All data SYNTHETIC_ONLY.
+
+### I4.1 Diagnosis (DEV, per entity, against the twin's own state)
+
+A per-entity trace of the 2E-E003 worlds on 4 DEV seeds, logged next to each entity's TRUE thermal stress
+and condition:
+
+| world | entities truly stressed | mean true condition | mean stress claim (old coupling) | confident claims |
+|---|---|---|---|---|
+| base (14 degC) | 0 / 24 | 0.97 | 0.00 | 0 |
+| hot_counterfactual (22 degC) | 10 / 24 | 0.58 | 0.78 | 18 / 24 |
+| confounded_stable (22 degC, tolerant community) | 0 / 24 | 0.97 | 0.78 | 18 / 24 |
+| confounded_disturbed (14 degC, disease pressure) | 0 / 24 | 0.97 | 0.00 | 0 |
+
+Two separate defects.
+
+1. **The claim was about the water, not about the entity.** The old `stress()` is
+   `P(temperature > threshold)` with a POINT threshold (20 degC in this experiment's config). The twin's
+   stress onset is per community and lies anywhere between about 15 and 33 degC, and the
+   HIGH_TEMPERATURE_STABLE_ECOLOGY confounder shifts the community's thermal optimum up with the water. So
+   in the confounded world every entity is warm, none is stressed, and the model claimed stress on all of
+   them. That is the 30 of 80 worlds in the iteration-3 FINAL record.
+2. **The benefit channel is inert.** The coupling's only effect on the cover estimate was the stress-gated
+   process-noise inflation. Split by the twin's TRUE thermal stress on the same DEV worlds (cover RMSE,
+   `cefd` against `production`):
+
+   | group | cefd | production | difference |
+   |---|---|---|---|
+   | hot_counterfactual, truly stressed | 0.0730 | 0.0730 | -0.00002 |
+   | hot_counterfactual, not stressed | 0.0751 | 0.0741 | -0.00109 |
+   | confounded_stable (none stressed) | 0.0720 | 0.0713 | -0.00074 |
+
+   Inflating the process noise does not help even where the stress is real: the entity filter already
+   tracks (its process sd is matched to the twin's accelerated ecology), so the extra process noise only
+   admits more survey noise. The channel can lose and cannot win.
+
+### I4.2 The attempt: evidence-gated causal coupling
+
+One redesign, addressing both defects. The field states the HYPOTHESIS and the entity's own readings decide
+it.
+
+* **Uncertainty-aware exposure.** `AnalyticCEFD.exposure` combines the temperature field's credible interval
+  with a prior sd on the onset temperature (`stress_threshold_sd_c`, 4 degC, ENGINEERING_ESTIMATE). A
+  registry asset that declares `stress_threshold_c` keeps a sharp threshold; an uncharacterised community
+  does not, so a warm world alone can never make the exposure certain.
+* **Minimum direct evidence.** `stress_min_direct_hits` (1): an entity with no cover reading gets no
+  cross-domain claim at all.
+* **Confounder control from the entity's own evidence.** Each cover reading accumulates the sufficient
+  statistics of a likelihood ratio for "this cover is declining", computed against the innovation the entity
+  would have shown WITHOUT the drift already attributed to stress (so the mechanism never confirms its own
+  output), with a 10-day forgetting time. The decline rate is not assumed: it carries a half-normal prior of
+  scale `stress_cover_loss_per_day` and is marginalised out in closed form, giving a Bayes factor
+  `2 / (tau sqrt(A)) exp(S^2 / 2A) Phi(S / sqrt(A))` with `A = N + 1/tau^2`. The stress posterior is the
+  exposure prior times that Bayes factor.
+* **Causal effect.** The coupling now moves the cover mean: prediction applies a fractional loss
+  `posterior x gate x E[rate | readings]`, next to the existing process-noise inflation. A warm world with
+  no observed decline gives a rate of about zero; an observed decline in cool water is not attributed to
+  stress because the exposure prior keeps the posterior low.
+
+Code: `conrad/domains/ecological/cefd_analytic.py` (`exposure`, `_decline_posterior`, `decline_log_lr`,
+`stress`, `stress_drift`), `entity_belief.py` (`decline_stat`, `decline_norm`, `stress_drift_per_day`,
+`_accumulate_decline`, drift in `cover_moments_at`), `model2e.py` (sets the drift), `config.py` (the four
+new `CouplingConfig` entries and `EntityConfig.decline_memory_days`). Every term that can move a belief is
+behind `field_to_entity`; the decline statistics are accumulated for every arm but are read only by the
+coupling, so the `uncoupled` and `production` arms are unchanged.
+
+### I4.3 DEV and VALIDATION (design data, not evidence)
+
+CB = cover RMSE(baseline) minus cover RMSE(cefd), paired per (seed, world), 95 % percentile CI.
+
+| partition | pairs | CB over `uncoupled` | CB over `production` | confident stress claims on healthy |
+|---|---|---|---|---|
+| DEV (8 seeds) | 32 | +0.00056 [-0.00077, +0.00188] | **-0.00035 [-0.00056, -0.00015]** | 0 worlds (max 0.0) |
+| VALIDATION (20 seeds) | 80 | +0.00020 [-0.00090, +0.00130] | **-0.00033 [-0.00044, -0.00021]** | 0 worlds (max 0.0) |
+
+VALIDATION per world, CB over `production`: base -0.000054 [-0.000073, -0.000035], confounded_disturbed
++0.000085 [+0.000040, +0.000129], confounded_stable -0.000773 [-0.001018, -0.000528], hot_counterfactual
+-0.000557 [-0.000834, -0.000280]. UEI is 0 for every arm.
+
+* **Unsupported claims: fixed.** Confident thermal-stress claims on entities whose true condition stayed
+  at or above 0.9 fall from 30 of 80 worlds (iteration 3, FINAL-3) to **0 of 80** on VALIDATION, including
+  every HIGH_TEMPERATURE_STABLE_ECOLOGY world, where the old coupling claimed stress on 100 % of entities.
+  The mean stress posterior is still about 0.58 in both hot worlds, so the mechanism is not certain either
+  way; it simply never crosses the 0.9 confidence bar without entity evidence.
+* **Benefit: still absent.** Against `production` the coupling is significantly WORSE on both partitions.
+  The residual cost is the drift and the inflation that the non-zero posterior still applies in the
+  confounded and hot worlds. Against `uncoupled` the point estimate is positive but the CI contains 0, and
+  almost all of that difference is the observability context, which `production` also has.
+
+### I4.4 Gate status and decision
+
+**2E-CEFD: FAIL** (unchanged). The recorded FORMAL evidence remains the iteration-3 FINAL-3 run
+(`artifacts/experiments/ecological/2E-E003-R4.json`): CB over `uncoupled` -0.0011 [-0.0023, -0.00003], over
+`production` -0.0004 [-0.0006, -0.0002], confident stress on healthy entities in 30 of 80 worlds. A redesign
+that fails the benefit criterion on DEVELOPMENT and VALIDATION must not be taken to a final split, so no
+final seeds were used and the gate evidence was not re-recorded.
+
+**Recommendation: kill the ecological coupling.** Keep `ecological_coupling = False`,
+`entity_to_field = False` and `observability_context = True` (ADR-0007, unchanged). Keep the redesigned
+mechanism as the experimental `cefd` arm, because it is strictly safer than the one it replaces: the same
+benefit, and no unsupported claims. The benefit half cannot be earned in this world set as it stands.
+Thermal stress and ecological change are deliberately decorrelated there (the two confounders are the whole
+point of the design), and the one world where stress is real, `hot_counterfactual`, is also the one where
+the entity filter is already survey-noise limited. A future retry needs either an entity model whose
+predictive error between surveys is large enough for a causal drift to matter, or worlds in which thermal
+stress and ecological change genuinely co-occur alongside the confounders.
+
+### I4.5 Reproduce
+
+The DEV and VALIDATION runs use `configs/eval/2e_e003_r4.yaml` with `partition` set to `development` or
+`validation` and `purpose` set to `design`, through `conrad.evaluation.ecological_experiments.e003_coupling.run`.
+Wall time on this CPU: DEV (8 seeds) 370 s, VALIDATION (20 seeds) 956 s.

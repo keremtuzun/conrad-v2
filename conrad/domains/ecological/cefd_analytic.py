@@ -93,16 +93,69 @@ class AnalyticCEFD:
         var = ec.cover_meas_sd**2 / vis**2 * min(spread, 1.0 / self.cc.min_visibility**2)
         return SurveyNoise(min(var, 0.25), m, vis)
 
+    def exposure(self, fields: FieldBeliefGrid, b: EntityBelief) -> float:
+        """P(the water is above this community's stress onset).
+
+        The onset temperature is NOT known: the registry gives one only for a characterised asset, and
+        thermal tolerance varies between communities. The field's credible interval and that prior
+        uncertainty are combined, so a warm world alone can never make the exposure certain."""
+        m, v = fields.sample("temperature", b.position_m)
+        thr = self.threshold(b)
+        sd = (
+            0.0
+            if (b.asset is not None and b.asset.stress_threshold_c is not None)
+            else (self.cc.stress_threshold_sd_c)
+        )
+        return normal_sf((thr - m) / math.sqrt(max(v, 1e-12) + sd * sd))
+
+    def _decline_posterior(self, b: EntityBelief) -> tuple[float, float]:
+        """(log Bayes factor for a decline, posterior mean loss rate) from the entity's OWN readings.
+
+        The loss rate d is not assumed: it carries a half-normal prior of scale
+        ``stress_cover_loss_per_day`` and is marginalised out, so the coupling does not depend on guessing
+        how fast a stressed community loses cover. With S and N the accumulated sufficient statistics,
+        A = N + 1/tau^2 and the Bayes factor is 2 / (tau sqrt(A)) exp(S^2 / 2A) Phi(S / sqrt(A))."""
+        tau = max(self.cc.stress_cover_loss_per_day, 1e-9)
+        a = b.decline_norm + 1.0 / (tau * tau)
+        s = b.decline_stat
+        z = s / math.sqrt(a)
+        cdf = 1.0 - normal_sf(z)
+        log_bf = math.log(2.0 / (tau * math.sqrt(a))) + 0.5 * z * z + math.log(max(cdf, 1e-300))
+        pdf = math.exp(-0.5 * z * z) / math.sqrt(2.0 * math.pi)
+        mean = s / a + pdf / (math.sqrt(a) * max(cdf, 1e-12))
+        return max(-self.cc.stress_llr_clip, min(self.cc.stress_llr_clip, log_bf)), max(mean, 0.0)
+
+    def decline_log_lr(self, b: EntityBelief) -> float:
+        """Log Bayes factor of the entity's OWN cover readings for a decline vs none."""
+        return self._decline_posterior(b)[0]
+
     def stress(self, fields: FieldBeliefGrid, b: EntityBelief) -> tuple[float, float] | None:
-        """(stress likelihood, gate) or None when temperature is unobserved or coupling is off."""
+        """(stress posterior, gate) or None when the coupling may not apply to this entity.
+
+        The field states the HYPOTHESIS (this water can stress this community) and the entity's own cover
+        readings decide it. A high temperature over a tolerant community that is not losing cover produces
+        no claim, and a decline without thermal exposure is not attributed to stress."""
         if not self.field_to_entity or not b.sessile or "temperature" not in fields.fields:
             return None
         if fields.fields["temperature"].n_obs == 0:
             return None
-        m, v = fields.sample("temperature", b.position_m)
-        thr = self.threshold(b)
-        p = normal_sf((thr - m) / math.sqrt(max(v, 1e-12)))
+        if b.n_hits < self.cc.stress_min_direct_hits:
+            return None
+        prior = min(max(self.exposure(fields, b), 1e-6), 1.0 - 1e-6)
+        odds = math.log(prior / (1.0 - prior)) + self.decline_log_lr(b)
+        p = 1.0 / (1.0 + math.exp(-max(-50.0, min(50.0, odds))))
         return p, self.gate(fields, "temperature", b.position_m)
+
+    def stress_drift(self, b: EntityBelief, gate: float) -> float:
+        """Fractional cover loss per day attributed to thermal stress.
+
+        It is the posterior mean loss rate the entity's own readings support, weighted by the posterior
+        probability that the decline is thermal and by the field coverage gate. A warm world with no
+        observed decline gives a rate of about zero, and an observed decline in cool water is not
+        attributed to stress because the exposure prior keeps the posterior low."""
+        if not self.field_to_entity or b.stress_p is None:
+            return 0.0
+        return gate * b.stress_p * self._decline_posterior(b)[1]
 
     def threshold(self, b: EntityBelief) -> float:
         if b.asset is not None and b.asset.stress_threshold_c is not None:

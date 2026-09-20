@@ -47,3 +47,31 @@ switch set is exhaustive. The model version is `model2e-uncoupled-obsctx-analyti
 Addendum (iteration 3, 2026-09-19). The switches are unchanged. Only the temperature depth-trend prior was
 recalibrated (empirical Bayes on DEV). The model version is now `model2e-uncoupled-obsctx-analytic-0.5.0`.
 Evidence: `docs/audits/MODEL2E_REPAIR.md`, Iteration 3.
+
+## Addendum 2026-09-20: one redesign attempt. Unsupported claims fixed, benefit still absent, decision unchanged
+
+The ecological coupling was redesigned once and measured on DEVELOPMENT (8 seeds) and VALIDATION (20 seeds)
+only. The thermal-stress claim is no longer `P(water above a point threshold)`. It is a posterior: an
+exposure prior that carries the onset temperature's own uncertainty (sharp only where the registry declares
+`stress_threshold_c`), times a Bayes factor computed from the entity's own cover readings for "this cover is
+declining", with the decline rate marginalised out. The coupling now also moves the cover mean, as a
+posterior-weighted fractional loss, instead of only inflating process noise.
+
+Result. Confident stress claims on entities whose true condition stayed at or above 0.9 fall from 30 of 80
+worlds to **0 of 80** on VALIDATION, including every HIGH_TEMPERATURE_STABLE_ECOLOGY confounder world, where
+the old coupling claimed stress on 100 % of entities. UEI stays 0. The benefit half still fails: paired
+cover-RMSE benefit over `production` is -0.00035 [-0.00056, -0.00015] on DEV and -0.00033 [-0.00044,
+-0.00021] on VALIDATION (significantly worse), and over `uncoupled` +0.00020 [-0.00090, +0.00130] on
+VALIDATION (CI contains 0).
+
+No final split was read or spent, and the recorded 2E-CEFD FORMAL evidence is unchanged (FAIL, iteration-3
+FINAL-3). The switches are unchanged: `ecological_coupling` False, `entity_to_field` False,
+`observability_context` True, enforced by `tests/contract/test_runtime_defaults.py`. The redesigned
+mechanism is kept as the experimental `cefd` arm because it is strictly safer than the one it replaces.
+Evidence: `docs/audits/MODEL2E_REPAIR.md`, iteration 4.
+
+The "revisit when" condition above is unchanged, with one addition. In the 2E-E003 world set, thermal stress
+and ecological change are decorrelated by design, and in the one world where stress is real the entity
+filter is already survey-noise limited, so no field-to-entity term can show a cover benefit there. A retry
+needs worlds where stress and ecological change genuinely co-occur alongside the confounders, or an entity
+model whose predictive error between surveys is large enough for a causal drift to matter.

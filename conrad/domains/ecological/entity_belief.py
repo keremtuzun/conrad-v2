@@ -95,6 +95,13 @@ class EntityBelief:
     ambiguous_hits: int = 0
     stress_p: float | None = None
     stress_time_ns: int | None = None
+    decline_stat: float = 0.0
+    """Sufficient statistic of the entity's OWN cover innovations for a decline of unit rate:
+    sum over readings of (-innovation) * elapsed_days / innovation_variance (CEFD confounder control)."""
+    decline_norm: float = 0.0
+    """Matching normaliser: sum of elapsed_days^2 / innovation variance."""
+    stress_drift_per_day: float = 0.0
+    """Cover loss per day currently attributed to thermal stress (0 unless ecological coupling is ON)."""
 
     @property
     def sessile(self) -> bool:
@@ -162,7 +169,8 @@ class EntityBeliefStore:
             return b.cover_mean, b.cover_var
         days = (to_ns - b.time_ns) / NS_PER_S / 86400.0
         q = inflation * self.cfg.cover_process_sd_per_sqrt_day**2 * days
-        return b.cover_mean, min(_MAX_COVER_VAR, b.cover_var + q)
+        mean = b.cover_mean * math.exp(-b.stress_drift_per_day * days)
+        return float(np.clip(mean, 0.0, 1.0)), min(_MAX_COVER_VAR, b.cover_var + q)
 
     def presence_at(self, b: EntityBelief, to_ns: int) -> float:
         if b.time_ns is None or to_ns <= b.time_ns:
@@ -182,6 +190,7 @@ class EntityBeliefStore:
         self, b: EntityBelief, y: float, meas_var: float, t_ns: int, inflation: float = 1.0
     ) -> bool:
         late = b.time_ns is not None and t_ns < b.time_ns
+        gap_days = 0.0 if b.time_ns is None else max((t_ns - b.time_ns) / NS_PER_S / 86400.0, 0.0)
         if late:
             assert b.time_ns is not None
             lag_days = (b.time_ns - t_ns) / NS_PER_S / 86400.0
@@ -190,6 +199,8 @@ class EntityBeliefStore:
             self.advance(b, t_ns, inflation)
         s = b.cover_var + meas_var
         innov = y - b.cover_mean
+        drift_applied = b.cover_mean * math.expm1(b.stress_drift_per_day * gap_days)
+        self._accumulate_decline(b, innov + drift_applied, b.cover_mean * gap_days, gap_days, s)
         k = b.cover_var / s
         b.cover_mean = float(np.clip(b.cover_mean + k * innov, 0.0, 1.0))
         b.cover_var = max(1e-6, (1.0 - k) * b.cover_var)
@@ -197,6 +208,21 @@ class EntityBeliefStore:
         b.meas_var_ema = 0.8 * b.meas_var_ema + 0.2 * meas_var if b.n_hits else meas_var
         b.n_hits += 1
         return late
+
+    def _accumulate_decline(
+        self, b: EntityBelief, innov0: float, scale: float, gap_days: float, s: float
+    ) -> None:
+        """Sufficient statistics of a sequential likelihood ratio for "the cover is declining".
+
+        ``innov0`` is the innovation the entity would have shown WITHOUT any drift already attributed to
+        stress, so the statistic never confirms the drift it produced itself. ``scale`` is the expected
+        decline per unit fractional loss rate (cover x elapsed days). For a fractional loss rate d the
+        log-likelihood ratio against no decline is ``d * decline_stat - 0.5 * d^2 * decline_norm``."""
+        if gap_days <= 0.0 or s <= 0.0 or scale <= 0.0:
+            return
+        keep = math.exp(-gap_days / max(self.cfg.decline_memory_days, 1e-6))
+        b.decline_stat = keep * b.decline_stat + (-innov0) * scale / s
+        b.decline_norm = keep * b.decline_norm + scale * scale / s
 
     def update_detection(self, b: EntityBelief, t_ns: int) -> bool:
         late = b.time_ns is not None and t_ns < b.time_ns

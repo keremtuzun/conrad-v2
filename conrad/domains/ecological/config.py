@@ -178,6 +178,9 @@ class EntityConfig(ConradModel):
     presence_false_alarm: float = Field(default=0.02, gt=0, lt=1)
     default_radius_m: float = Field(default=1.5, gt=0, description="footprint when the registry has none")
     presence_decay_time_s: float = Field(default=21600.0, gt=0)
+    decline_memory_days: float = Field(
+        default=10.0, gt=0, description="forgetting time of the cover-decline evidence statistic"
+    )
 
 
 class CouplingConfig(ConradModel):
@@ -192,6 +195,25 @@ class CouplingConfig(ConradModel):
     filtration_mixing_volume_m3: float = Field(default=2000.0, gt=0)
     gate_prior: float = Field(default=0.5, ge=0, le=1, description="coupling gate before evidence")
     confident_probability: float = Field(default=0.9, gt=0.5, le=1)
+    stress_threshold_sd_c: float = Field(
+        default=4.0,
+        ge=0,
+        description="prior sd of the stress onset temperature across communities; the belief plane never "
+        "knows a community's thermal tolerance, so a point threshold is over-confident "
+        "(ENGINEERING_ESTIMATE, MODEL2E_REPAIR.md iteration 4)",
+    )
+    stress_min_direct_hits: int = Field(
+        default=1,
+        ge=0,
+        description="cover readings the entity must carry before any ecological coupling applies; a "
+        "poorly observed entity gets no cross-domain claim",
+    )
+    stress_cover_loss_per_day: float = Field(
+        default=0.03,
+        ge=0,
+        description="fraction of remaining cover lost per day by a thermally stressed sessile community; expressed in the same time base as cover_process_sd_per_sqrt_day (ENGINEERING_ESTIMATE)",
+    )
+    stress_llr_clip: float = Field(default=20.0, gt=0, description="bound on the decline log-odds")
 
 
 class CefdSwitches(ConradModel):

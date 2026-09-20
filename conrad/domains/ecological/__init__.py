@@ -44,10 +44,12 @@ IMPLEMENTATION_METADATA = {
         "depth trend + SE-kernel local deviation); tau^2, length scales, drift and noise scale learned per run",
         "field temporal model = per-station random walk with an EB drift rate over physical delta_t; "
         "turbidity/temperature local_sd priors are EB estimates from the 2E DEV partition (SYNTHETIC_ONLY)",
-        "cover temporal model = bounded random walk with no trend; stress only inflates its process noise",
+        "cover temporal model = bounded random walk with no trend unless the ecological coupling is ON, in "
+        "which case a stress posterior adds a fractional loss and inflates the process noise (OFF by default)",
         "late evidence is applied without rewind, with measurement variance inflated by the lag",
         "survey measurement noise from the turbidity BELIEF via a beam-attenuation law (ENGINEERING_ESTIMATE)",
-        "thermal stress likelihood = P(T > threshold) under the temperature belief; INFERRED only",
+        "thermal stress = posterior of an exposure prior (temperature belief x an uncertain onset "
+        "temperature) times a Bayes factor from the entity's own cover readings; INFERRED only",
         "ecological_damage is always UNKNOWN: no analytic decoder of condition from E0/E1 evidence",
         "E1 feature surveys only count as hits; cover decoding from features needs a trained ECMER-E head",
         "mobile-group non-detections are not emitted as negative evidence, so presence decays to the prior",

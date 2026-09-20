@@ -245,6 +245,7 @@ class Model2E(Model2Child):
             old = b.stress_p
             b.stress_p = p
             b.stress_time_ns = self.fields.fields["temperature"].time_ns
+            b.stress_drift_per_day = self.cefd.stress_drift(b, gate)
             if old is None or abs(p - old) > self.cfg.material_change_fraction:
                 changed[bid] = gate
         return changed
