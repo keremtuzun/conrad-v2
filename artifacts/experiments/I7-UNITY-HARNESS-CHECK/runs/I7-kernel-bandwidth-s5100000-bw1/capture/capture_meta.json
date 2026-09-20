@@ -1,9 +1,0 @@
-{
- "code_digest": "62dd543b28268dee4a91da3940ae73bc8239115c58ac041ebbf3291ce5667578",
- "note": "Everything the deployment runtime received through RobotHardwareInterface, in call order.",
- "producer": "conrad-mission-0.1",
- "records": 121623,
- "robot_config_digest": "a60e059bc63999017e31e04b92e534cb65feea795d984f938090c8226ba4a117",
- "run_uuid": "018bcfe5-6801-79f4-9064-8d74d134dc28",
- "tape_version": "rhi-tape-1"
-}

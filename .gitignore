@@ -44,3 +44,6 @@ unity/**/*.csproj
 unity/**/*.sln
 
 artifacts/experiments/ID-REHEARSAL-E001/delivery/
+
+# harness-check run bundles: diagnostic output, not gate evidence (511 MB)
+artifacts/experiments/I7-UNITY-HARNESS-CHECK/runs/
