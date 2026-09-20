@@ -594,12 +594,6 @@ MISSION_CONFIG = "configs/sim/mission_test_small.yaml"
 
 def _mission_job(args: tuple[Any, ...]) -> dict[str, Any]:
     seed, family, planner, runtime, keep_root = args
-    from uuid import UUID
-
-    from conrad.orchestration.evaluation import evaluate_run_dir
-    from conrad.persistence.db import make_engine
-    from conrad.persistence.repository import Repository
-    from conrad.schemas.world import Domain
     from conrad.settings import load_settings
     from conrad.sim.mission.run import run_scenario
 
@@ -610,6 +604,26 @@ def _mission_job(args: tuple[Any, ...]) -> dict[str, Any]:
     root = Path(tempfile.mkdtemp(prefix="mcbr-e003-"))
     out = run_scenario("FLAGSHIP-I4", s, run_id=f"E003-{seed}-{planner}", runs_root=root)
     d = Path(out["run_dir"])
+    row = score_mission_run(d, int(seed), family, planner, float(rt.get("duration_s", 100.0)))
+    if keep_root:
+        dest = Path(keep_root) / d.name
+        if dest.exists():
+            shutil.rmtree(dest)
+        shutil.copytree(d, dest)
+        row["run_dir"] = str(dest)
+    shutil.rmtree(root, ignore_errors=True)
+    return row
+
+
+def score_mission_run(d: Path, seed: int, family: str, planner: str, duration: float) -> dict[str, Any]:
+    """Actual target hidden-state error and resource use of one FLAGSHIP-I4-style run bundle (python or Unity)."""
+    from uuid import UUID
+
+    from conrad.orchestration.evaluation import evaluate_run_dir
+    from conrad.persistence.db import make_engine
+    from conrad.persistence.repository import Repository
+    from conrad.schemas.world import Domain
+
     rep = evaluate_run_dir(d)
     rtm = json.loads((d / "mission" / "runtime_metrics.json").read_text(encoding="utf-8"))
     truth = json.loads((d / "truth" / "truth_record.json").read_text(encoding="utf-8"))
@@ -643,7 +657,6 @@ def _mission_job(args: tuple[Any, ...]) -> dict[str, Any]:
         norm.append(float(err) / float(prior) if (prior and err is not None) else 1.0)
     hse = float(np.mean(norm))
     energy = float(truth["vehicle"]["energy_used_j"])
-    duration = float(rt.get("duration_s", 100.0))
     comm = rtm["communication"]
     after = rep["target_after"] or {}
     row = {
@@ -674,13 +687,6 @@ def _mission_job(args: tuple[Any, ...]) -> dict[str, Any]:
         "plans": [p["status"] for p in rtm["plans"]],
         "uir": rtm["uir"],
     }
-    if keep_root:
-        dest = Path(keep_root) / d.name
-        if dest.exists():
-            shutil.rmtree(dest)
-        shutil.copytree(d, dest)
-        row["run_dir"] = str(dest)
-    shutil.rmtree(root, ignore_errors=True)
     return row
 
 

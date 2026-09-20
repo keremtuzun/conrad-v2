@@ -92,6 +92,9 @@ def _i5_constraints_check(d: dict) -> tuple[bool, str]:
 
 I5M = "tests/acceptance/test_i5_integrated_missions.py::"
 I5_E002 = "artifacts/experiments/M1-ACTION-E002/m1_action_e002.json"
+# I5 iteration 2: the surrogate mission criteria now point at M1-ACTION-E003 (fresh final seeds of
+# configs/eval/partitions_i5_v2.yaml); E002 stays on disk as the spent iteration-1 record.
+I5_E003 = "artifacts/experiments/M1-ACTION-E003/m1_action_e003.json"
 I5_MISSION_CRITERIA = (
     "actions exercised correctly inside integrated missions",
     "traceable decisions with low measured UIR",
@@ -594,6 +597,41 @@ def _i7_latency_sync_check(d: dict) -> tuple[bool, str]:
     return ok, "compared for every arm and level; BAAC worse in: " + ("; ".join(worse) or "none")
 
 
+I4A = "tests/acceptance/test_i4_matched_policy.py::"
+I4_E004 = "artifacts/experiments/ACTIVE-MCBR-E004/active_mcbr_e004.json"
+I4_BASES = ("A-B1_fixed_inspection", "A-B0_random", "A-B2_coverage")
+
+
+def _i4_row(d: dict, base: str, metric: str) -> tuple[bool, str]:
+    r = d["partitions"]["final_test"]["paired_production_vs"][base][metric]
+    low, high = r["ci95"]
+    ok = low is not None and low > 0.0
+    return ok, f"{metric} vs {base}: {r['benefit_mean']:+.3f} [{low:+.3f}, {high:+.3f}] n={r['n_worlds']}"
+
+
+def _i4_beats(bases: tuple[str, ...], metrics: tuple[str, ...]) -> Callable[[dict], tuple[bool, str]]:
+    """ACTIVE-MCBR-E004 (12 declared unity_gate final_test worlds): paired CI95 lower bound > 0 (pre-declared)."""
+
+    def check(d: dict) -> tuple[bool, str]:
+        rows = [_i4_row(d, b, m) for b in bases for m in metrics]
+        return all(ok for ok, _ in rows), "; ".join(t for _, t in rows)
+
+    return check
+
+
+def _i4_closed_loop(d: dict) -> tuple[bool, str]:
+    pw = d["partitions"]["final_test"]["per_world"]
+    prod = [pw[w]["PRODUCTION"] for w in pw]
+    planned = [r for r in prod if "PLAN" in r["plans"]]
+    informative = [r for r in planned if r["observations"] > r["redundant_observations"]]
+    hse = sum(r["hidden_state_error_improvement"] for r in prod) / max(len(prod), 1)
+    ok = bool(planned) and len(informative) * 2 >= len(planned) and hse > 0.0
+    return ok, (
+        f"worlds {len(prod)}, MCBR planned in {len(planned)}, informative view in {len(informative)}, "
+        f"mean hidden-state error improvement {hse:.3f}"
+    )
+
+
 I1S = "tests/integration/test_i1_spatial_loop.py::"
 I3S = "tests/integration/test_i3_structural.py::"
 # SURROGATE evidence: the same criteria exercised through the Python L1 kernel instead of Unity (ADR-0008).
@@ -658,7 +696,7 @@ SURROGATE_PLAN: dict[str, list[tuple[str, list[str], Callable[[], tuple[Criterio
         ),
     ],
     # I5: the action-matrix criteria (belief-level fixtures, identical to the formal record) plus the integrated
-    # missions of M1-ACTION-E002 (python kernel, FINAL seeds of configs/eval/partitions_i5.yaml).
+    # missions of M1-ACTION-E003 (python kernel, FINAL seeds of configs/eval/partitions_i5_v2.yaml; I5 iteration 2).
     "I5": [
         *[c for c in PLAN["I5"] if c[0] not in I5_MISSION_CRITERIA],
         (
@@ -667,12 +705,12 @@ SURROGATE_PLAN: dict[str, list[tuple[str, list[str], Callable[[], tuple[Criterio
                 I5M + "test_artifact_is_final_split_surrogate",
                 I5M + "test_every_scenario_and_arm_ran_on_every_final_seed",
             ],
-            _exp(I5_E002, _i5_actions_check),
+            _exp(I5_E003, _i5_actions_check),
         ),
         (
             I5_MISSION_CRITERIA[1],
             [I5M + "test_artifact_is_final_split_surrogate", I5M + "test_uir_is_measured_on_the_e001_basis"],
-            _exp(I5_E002, _i5_trace_check),
+            _exp(I5_E003, _i5_trace_check),
         ),
         (
             I5_MISSION_CRITERIA[2],
@@ -680,7 +718,36 @@ SURROGATE_PLAN: dict[str, list[tuple[str, list[str], Callable[[], tuple[Criterio
                 I5M + "test_artifact_is_final_split_surrogate",
                 I5M + "test_baselines_ran_closed_loop_on_the_same_seeds",
             ],
-            _exp(I5_E002, _i5_competitive_check),
+            _exp(I5_E003, _i5_competitive_check),
+        ),
+    ],
+    # I4: ACTIVE-MCBR-E004, integrated python-kernel mission on the 12 pre-declared I4 worlds (unity_gate
+    # final_test 7800002-7800013), frozen planner configs/active/mcbr_frozen_v2.yaml.
+    "I4": [
+        (
+            "critical structure partly hidden -> uncertain -> MCBR view -> navigation -> new evidence -> belief improves",
+            [I4A + "test_i4_e004_artifact_is_the_frozen_planner_on_the_declared_worlds"],
+            _exp(I4_E004, _i4_closed_loop),
+        ),
+        (
+            "beats fixed views on actual hidden-state reconstruction",
+            [I4A + "test_i4_e004_artifact_is_the_frozen_planner_on_the_declared_worlds"],
+            _exp(I4_E004, _i4_beats(("A-B1_fixed_inspection",), ("hidden_state_error_improvement",))),
+        ),
+        (
+            "beats random views",
+            [I4A + "test_i4_e004_artifact_is_the_frozen_planner_on_the_declared_worlds"],
+            _exp(I4_E004, _i4_beats(("A-B0_random",), ("hidden_state_error_improvement",))),
+        ),
+        (
+            "beats coverage-only",
+            [I4A + "test_i4_e004_artifact_is_the_frozen_planner_on_the_declared_worlds"],
+            _exp(I4_E004, _i4_beats(("A-B2_coverage",), ("hidden_state_error_improvement",))),
+        ),
+        (
+            "beats simple views on information/time/energy",
+            [I4A + "test_i4_e004_artifact_is_the_frozen_planner_on_the_declared_worlds"],
+            _exp(I4_E004, _i4_beats(I4_BASES, ("info_per_time", "info_per_kj"))),
         ),
     ],
     "I3": [
@@ -701,6 +768,54 @@ SURROGATE_PLAN: dict[str, list[tuple[str, list[str], Callable[[], tuple[Criterio
         ),
     ],
 }
+
+# ---------------------------------------------------------------- I6 (surrogate): I6-MULTIDOMAIN-E001, python kernel
+# Worlds 7800014-7800016 x {TURBID, CLEAR}, declared in configs/eval/i6_multidomain.yaml before any run
+# (scripts/run_i6_multidomain.py --partition final_test). A criterion passes iff it passes on all three worlds.
+I6S = "tests/integration/test_i6_multi_domain.py::"
+I6_E001 = "artifacts/experiments/I6-MULTIDOMAIN-E001/i6_e001.json"
+
+
+def _i6_check(criterion: str) -> Callable[[dict], tuple[bool, str]]:
+    def check(d: dict) -> tuple[bool, str]:
+        if d.get("partition") != "final_test":
+            return False, f"artifact partition is {d.get('partition')!r}, not final_test"
+        per = {w: v[criterion] for w, v in d["per_world"].items()}
+        return bool(d["summary"][criterion]) and all(per.values()), json.dumps({"worlds": per})
+
+    return check
+
+
+SURROGATE_PLAN["I6"] = [
+    (
+        "one mission produces 2S, 2T and 2E beliefs",
+        [
+            I6S + "test_artifact_is_final_split_surrogate",
+            I6S + "test_one_mission_produces_2s_2t_2e_beliefs",
+            I6S + "test_dev_mission_meets_every_i6_rule",
+        ],
+        _exp(I6_E001, _i6_check("one mission produces 2S, 2T and 2E beliefs")),
+    ),
+    (
+        "Model1 reasons across all three via the Belief Bus",
+        [
+            I6S + "test_artifact_is_final_split_surrogate",
+            I6S + "test_model1_reasons_across_all_three_via_the_belief_bus",
+            I6S + "test_dev_deferral_is_recorded_with_provenance",
+        ],
+        _exp(I6_E001, _i6_check("Model1 reasons across all three via the Belief Bus")),
+    ),
+    (
+        "children remain authoritative within domains",
+        [
+            I6S + "test_artifact_is_final_split_surrogate",
+            I6S + "test_children_remain_authoritative_within_domains",
+            "tests/integration/test_multidomain.py::test_three_domains_publish_on_one_bus",
+            "tests/integration/test_multidomain.py::test_ecological_context_reaches_2t_only_as_context",
+        ],
+        _exp(I6_E001, _i6_check("children remain authoritative within domains")),
+    ),
+]
 
 
 def run_nodes(nodes: list[str]) -> dict[str, str]:

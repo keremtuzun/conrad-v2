@@ -4,7 +4,8 @@ All data is SYNTHETIC_ONLY. Nothing here is real-data or physical validation.
 
 ## Verdict
 
-**I4 is FAIL.** In the abstract occlusion world (ACTIVE-MCBR-E002), the frozen production planner clearly beats fixed, random and coverage views on the final partition. It does the same on the held-out OOD families. In the integrated surrogate mission (ACTIVE-MCBR-E003, FLAGSHIP-I4 family), it is **worse than fixed views and coverage**, and the paired 95 % CIs lie entirely below 0. The behavioral test `tests/acceptance/test_i4_matched_policy.py` fixed its criterion before any final result existed. That test fails on E003.
+**I4 is FAIL** (re-confirmed 2026-09-20 with the belief-side predictive model and a formal Unity run: see
+section 8). In the abstract occlusion world (ACTIVE-MCBR-E002), the frozen production planner clearly beats fixed, random and coverage views on the final partition. It does the same on the held-out OOD families. In the integrated surrogate mission (ACTIVE-MCBR-E003, FLAGSHIP-I4 family), it is **worse than fixed views and coverage**, and the paired 95 % CIs lie entirely below 0. The behavioral test `tests/acceptance/test_i4_matched_policy.py` fixed its criterion before any final result existed. That test fails on E003.
 
 The old MCBR (A-B10_mcbr_full) remains a failed hypothesis. It loses to every simple baseline in both settings, except fixed views and uncertainty-NBV in the abstract world.
 
@@ -194,3 +195,149 @@ MCBR never acted, so this partition is **non-informative** about view selection.
 The integrated runtime gives the planner no predictive belief. It would need a belief-side predictive model: Model2T variances for the target quantities, plus a sensor model of the structural payload through the 2S map. Without that, the production ranker falls back to the analytic value, which loses to fixed views in the mission.
 
 Building it touches perception/twin-side files owned by another agent, and it would need a **new** selection round on development/validation. The current final partitions have now been seen, so an I4 re-test would need a new partition version with fresh final seeds.
+
+## 8. I4 repair: the belief-side predictive model (2026-09-19/20)
+
+Section 7 named the missing piece: in missions MCBR had no predictive belief, so the frozen ranker fell back to
+the analytic mission value. Model2T iteration 3 (surface coverage geometry, calibrated crack/corrosion
+variances, region readings) supplies what a predictive model needs. All data is SYNTHETIC_ONLY.
+
+### 8.1 The model
+
+`conrad/active/surface_predictive.py` (belief plane, generic) plus `conrad/orchestration/mission_predictive.py`
+(builds it from the mission's own Model2T / Model2S). For the need's target component:
+
+- Cells: the SURVEYED design surface of the component (the geometry association already uses) is divided
+  exactly as Model2T's coverage divides it (`capsule_cells` reproduces `SurfaceGeometry.cell_of`).
+- P(the unread worst case lies in cell c): uniform over cells, zero on cells a reading already covered
+  (Model2T `covered`), and multiplied by `1 - 0.8 * w`, where `w` is the best observation weight that cell had
+  from the robot's OWN estimated past positions (its track, the sensor range, the incidence cosine and the
+  Model2S clear-ray probability). Model2T credits only the one cell that holds a reading's measured point, so
+  without this term the lane pass leaves the near side as "unread" as the far side.
+- Per quantity (corrosion depth, crack length) a scalar `q:unread` with the Model2T population prior as its
+  belief and a one-reading noise std built from the declared `SensorCharacteristics`: relative sizing scatter,
+  absolute floor, the partial-view mixture and the persistent per-sensor bias. For cracks the value is also
+  multiplied by the declared probability of detection at that level.
+- A candidate's value for that scalar is the EXPECTED entropy reduction of an erasure channel,
+  `phi(v) * 0.5 ln(var / var_post)`, with `phi(v) = sum_c P(defect in c) * w_c(v)` computed by Model2S
+  ray-casting through the belief map at the candidate pose. It reaches the unchanged rankers as an
+  information-equivalent noise std, so the production ranker's `entropy` value IS this conventional EIG.
+- An optional `q:read` scalar (refining the worst indication at its Model2T locus, capped by the persistent-bias
+  floor) was implemented and tested, and DEVELOPMENT selected it OFF.
+- Motion cost stays where it was: the shared `navigation_cost` of the request.
+- Every candidate always reports every scalar, so `predicted_coverage` is 1 and the feasibility filter is
+  identical for every planner. The model changes ranking only. The same `PlanningRequest` (predictive included)
+  goes to every planner, so budgets and inputs stay matched.
+- No truth: `tests/leakage` (27 tests) passes, including the static import guard for `conrad.orchestration`.
+
+Runtime hook (minimal, additive): `Deliberation.predictive_provider` (default None) is set by `MissionRuntime`
+from `mission_predictive_provider(...)`, which reads the frozen config; the provider also receives the runtime's
+own estimated track.
+
+### 8.2 Selection (DEVELOPMENT only)
+
+Arms were compared on 26 DEVELOPMENT worlds where MCBR actually plans (8 of the `unity_gate` development worlds
+7810000-7810019 and 18 of the `mission` development worlds; in the other worlds the lane pass already closes the
+target and every planner ties). Mean hidden-state error improvement:
+
+| arm | dev mean |
+|---|---|
+| C: track discount 0.8, read channel off (SELECTED) | 0.730 |
+| A: same, read channel on above a 5 % worst-band probability | 0.727 |
+| B: same, read channel always on | 0.547 |
+| D: PRODUCTION without any predictive model (the v1 fallback) | 0.636 |
+| A-B2 coverage | 0.736 |
+| A-B1 fixed views | 0.756 |
+
+Paired against C: fixed -0.026 [-0.064, +0.011], coverage -0.006 [-0.151, +0.136], no-predictive
++0.094 [-0.075, +0.335]. So on development the model helps against the old fallback, and it does NOT beat fixed
+or coverage. That was known before any final world was touched.
+
+### 8.3 Frozen production planner v2
+
+`configs/active/mcbr_frozen_v2.yaml` (`conrad.active.production.FROZEN_PATH` now points at it). The `planner`
+section is identical to v1, so `config_digest` is still
+`8eca16cc896e560b26cbe9814828fe9f75801d843e0e38bedb5442299805d903` and the E002 artifacts stay valid. The new
+`mission_predictive` section carries the selected model and its configuration, digest
+`2fa5b75d6e9618c0a1274eff284d014a30df4c0ba17a8d83969c2c8609d41431`, verified on load.
+
+### 8.4 I4 worlds
+
+Declared in `configs/eval/active_mcbr_e004.yaml` BEFORE any run: `unity_gate` final_test seeds 7800002-7800013
+(12 worlds), the range the partition file reserves for the next formal gates; 7800000 / 7800001 are the I1 / I3
+roles. `configs/eval/partitions_unity_gates.yaml` was not edited (it is digest-pinned). The same 12 worlds carry
+the surrogate and the formal run. Decision rule, also pre-declared: paired percentile bootstrap over worlds
+(4000 resamples), "beats" means the 95 % CI lower bound is above 0.
+
+### 8.5 ACTIVE-MCBR-E004 (surrogate, python kernel, run once)
+
+12 worlds x 5 planners, 100 s mission, `max_plans_per_need` 4, one structural sensor, energy and travel measured.
+
+| planner | HSE improvement | obs | energy J | info/kJ | target OBSERVED |
+|---|---|---|---|---|---|
+| A-B1 fixed | 0.806 | 0.92 | 15847 | 0.055 | 1.00 |
+| A-B2 coverage | 0.790 | 0.83 | 16910 | 0.052 | 1.00 |
+| PRODUCTION | 0.707 | 1.33 | 16228 | 0.049 | 0.83 |
+| A-B10 MCBR (old) | 0.630 | 0.50 | 15394 | 0.045 | 0.75 |
+| A-B0 random | 0.592 | 1.25 | 16903 | 0.042 | 0.75 |
+
+Paired benefit of PRODUCTION on HSE improvement: vs fixed **-0.099 [-0.273, +0.012]**, vs random
++0.116 [-0.067, +0.342], vs coverage **-0.083 [-0.261, +0.067]**, vs A-B10 +0.077 [-0.007, +0.237]. On
+information per time and per kJ, PRODUCTION is below fixed (info/kJ -0.006 [-0.014, -0.000]). In 5 of the 12
+worlds the lane pass already closed the target and every planner tied.
+
+**Surrogate I4 = FAIL** (`artifacts/gates/I4/evidence_surrogate.json`, recorded with
+`scripts/record_gate_evidence.py I4 --surrogate`).
+
+### 8.6 Formal Unity run (I4-UNITY, run once, sequential)
+
+`tests/unity_live/test_i4_unity.py`: the same 12 worlds, 4 planners, 48 sequential flights through the built
+Unity player (1:08 h), recorded by `scripts/record_unity_gate_evidence.py I4`. Means over the 12 worlds:
+
+| planner | HSE improvement | info/s | info/kJ |
+|---|---|---|---|
+| PRODUCTION | 0.857 | 0.0086 | 0.232 |
+| A-B1 fixed | 0.792 | 0.0079 | 0.218 |
+| A-B0 random | 0.609 | 0.0061 | 0.171 |
+| A-B2 coverage | 0.472 | 0.0047 | 0.139 |
+
+Paired benefit of PRODUCTION (95 % CI over worlds):
+
+| vs | HSE improvement | info/s | info/kJ |
+|---|---|---|---|
+| fixed | **+0.066 [-0.043, +0.236]** | +0.0007 [-0.0004, +0.0024] | +0.014 [-0.013, +0.055] |
+| random | +0.249 [+0.074, +0.453] | +0.0025 [+0.0007, +0.0045] | +0.061 [+0.019, +0.110] |
+| coverage | +0.386 [+0.017, +1.009] | +0.0039 [+0.0002, +0.0101] | +0.093 [+0.005, +0.240] |
+
+Closed loop: MCBR planned in 7 of the 12 worlds, and every one of those 7 produced new target evidence; the
+target ended OBSERVED in 12 of 12. The bundle of the first world replays bit-exactly, and the leakage scan over
+all 12 PRODUCTION bundles is clean.
+
+**Formal I4 = FAIL.** Three of the five criteria pass (closed loop, beats random views, beats coverage-only).
+The two that fail are "beats fixed views on actual hidden-state reconstruction" and "beats simple views on
+information/time/energy", both because the fixed inspection route is not beaten with a CI above 0.
+
+### 8.7 Reading of the result
+
+- The predictive model is what turned the mission comparison around against random and coverage views: in E003
+  MCBR lost to both or tied, and in the formal Unity run it beats both with CIs above 0. It also beats the old
+  A-B10 on the surrogate.
+- Fixed views remain unbeaten. In this scenario family the fixed route's first candidate is already an oblique
+  far-side view of the inspection station, and the outcome is dominated by whether one reading of the far-side
+  patch lands in Model2T's worst condition band. That is a Model2T calibration question (partial-view lower
+  bounds under-size a crack seen at a 0.4 to 0.9 in-view fraction), not a view-selection question. The same
+  effect makes 5 of the 12 surrogate worlds ties.
+- The surrogate and the formal run disagree in size (-0.099 vs +0.066 against fixed). Both CIs include 0, so
+  neither supports a claim. The python kernel is not the formal path; only the Unity numbers are formal evidence.
+- Nothing was tuned on the 12 I4 worlds: the model and its configuration were frozen before the first run on
+  them, and the surrogate and the formal run were each executed once.
+
+### 8.8 What would be needed next (not done here)
+
+- Model2T crack sizing under partial views: the worst-band decision, and therefore the whole mission metric,
+  hangs on it. A view-quality aware likelihood (in-view fraction from the planner's own geometry) is the
+  candidate, and it needs its own development/validation round.
+- A scenario family where a fixed route cannot see the defect (the current family rewards it), so that view
+  selection is what the metric measures.
+- The predictive model ranks one component's surface. Multi-component needs, and the read-surface refinement
+  channel, stay open.

@@ -31,7 +31,9 @@ Arms:
   shadow arms (same basis as E001).
 - Closed loop: each baseline also drives its own mission on the same seed, for the mission-outcome comparison.
 
-Seeds come from ``configs/eval/partitions_i5.yaml`` (``conrad.evaluation.partitions``, domain ``i5_mission``).
+Seeds come from ``configs/eval/partitions_i5.yaml`` (domain ``i5_mission``, M1-ACTION-E002) or, from iteration 2
+on, ``configs/eval/partitions_i5_v2.yaml`` (domain ``i5_mission_v2``, M1-ACTION-E003; the v1 final seeds are SPENT).
+The config key ``partition_domain`` selects the file (default ``i5_mission``).
 
 implementation_status: EXPERIMENTAL_CANDIDATE (evaluation harness). data_status: SYNTHETIC_ONLY.
 Evidence class: SURROGATE (python L1 kernel, not Unity). It never promotes the formal gate.
@@ -56,7 +58,15 @@ from conrad.decision.consequence import ConsequenceVector
 from conrad.decision.egdc import DecisionOutcome
 from conrad.decision.policy import _stable_sort, _with_score
 from conrad.evaluation.decision_experiments.action_matrix import ALWAYS_OK, RETREAT, audit_violations
-from conrad.evaluation.partitions import I5_DOMAIN, Partition, Purpose, check_access, partition_of, split
+from conrad.evaluation.partitions import (
+    I5_DOMAIN,
+    I5_V2_DOMAIN,
+    Partition,
+    Purpose,
+    check_access,
+    partition_of,
+    split,
+)
 from conrad.schemas.belief import KnowledgeStatus
 from conrad.schemas.comms import LinkStatus
 from conrad.schemas.decision import (
@@ -73,6 +83,10 @@ from conrad.twins.twin2s.sdf import Box
 
 EXPERIMENT_ID = "M1-ACTION-E002"
 RESULT_FILE = "m1_action_e002.json"
+PARTITION_FILES = {
+    I5_DOMAIN: "configs/eval/partitions_i5.yaml",
+    I5_V2_DOMAIN: "configs/eval/partitions_i5_v2.yaml",
+}
 DEFAULT_CONFIG = "configs/sim/mission_default.yaml"
 EVIDENCE_CLASS = "SURROGATE (python L1 kernel mission, not Unity)"
 PRIMARY = "egdc_structured"
@@ -153,6 +167,17 @@ SPECS: dict[str, ScenarioSpec] = {
             ("STORE_AND_FORWARD:REPORT_FINDING",),
             frozenset({ActionType.TRANSMIT_INFORMATION}),
             "finding_delivered",
+        ),
+        # iteration 2 (M1-ACTION-E003): the nominal mission with a readable intact surface, so the continue
+        # warrant can arise (I5-NOMINAL's never did)
+        ScenarioSpec(
+            "I5-NOMINAL-READABLE",
+            "continue",
+            "critical_intact",
+            ("CONTINUE_MISSION:*",),
+            frozenset(),
+            "inspected_without_escalation",
+            check_over_escalation=True,
         ),
     )
 }
@@ -420,7 +445,9 @@ def _outcomes(
         "critical_observed_end": crit_obs,
         "safe_hold": held,
         "last_decision_t_s": last,
-        "replans_executed": sum(1 for r in rt.routing.replans if r["accepted"]),
+        # a REPLAN during a non-transit goal holds instead of detouring (MissionExecutive.replan_detour)
+        "replans_executed": sum(1 for r in rt.routing.replans if r["accepted"] and r.get("mode") != "HOLD"),
+        "replan_holds": sum(1 for r in rt.routing.replans if r.get("mode") == "HOLD"),
     }
     obstacle = world.recorder.meta.get("lane_obstacle")
     if obstacle is not None and len(traj):
@@ -511,17 +538,19 @@ def mission_job(job: dict[str, Any]) -> dict[str, Any]:
 
 
 # ---------------------------------------------------------------------------------------------- experiment
-def seeds_for(partition: Partition, purpose: Purpose) -> tuple[int, ...]:
-    return split(I5_DOMAIN, partition, purpose).world_seeds
+def seeds_for(partition: Partition, purpose: Purpose, domain: str = I5_DOMAIN) -> tuple[int, ...]:
+    return split(domain, partition, purpose).world_seeds
 
 
-def _check_seeds(seeds: Sequence[int], partition: Partition) -> None:
+def _check_seeds(seeds: Sequence[int], partition: Partition, domain: str = I5_DOMAIN) -> None:
+    if domain not in PARTITION_FILES:
+        raise KeyError(f"unknown I5 partition domain {domain!r}")
     purpose = Purpose.FINAL_EVALUATION if partition is Partition.FINAL_TEST else Purpose.DESIGN
     check_access(partition, purpose)
     for s in seeds:
-        got = partition_of(I5_DOMAIN, s)
+        got = partition_of(domain, s)
         if got is not partition:
-            raise ValueError(f"seed {s} is in I5 partition {got}, not {partition.value}")
+            raise ValueError(f"seed {s} is in {domain} partition {got}, not {partition.value}")
 
 
 def _rate(xs: Sequence[bool]) -> float | None:
@@ -655,7 +684,8 @@ def verdicts(summary: dict[str, Any], config: dict[str, Any], scenarios: Sequenc
 
 def run(config: dict[str, Any], seeds: list[int], out_dir: str | Path) -> dict[str, Any]:
     partition = Partition(str(config.get("partition", Partition.FINAL_TEST.value)))
-    _check_seeds(seeds, partition)
+    domain = str(config.get("partition_domain", I5_DOMAIN))
+    _check_seeds(seeds, partition, domain)
     scenarios = list(config.get("scenarios", SPECS))
     arms = list(config.get("arms", [PRIMARY, *BASELINES]))
     out = Path(out_dir)
@@ -688,7 +718,8 @@ def run(config: dict[str, Any], seeds: list[int], out_dir: str | Path) -> dict[s
         "evidence_class": EVIDENCE_CLASS,
         "data_status": "SYNTHETIC_ONLY",
         "partition": partition.value,
-        "partition_file": "configs/eval/partitions_i5.yaml",
+        "partition_domain": domain,
+        "partition_file": PARTITION_FILES[domain],
         "seeds": list(seeds),
         "scenarios": {
             sc: {
@@ -705,6 +736,7 @@ def run(config: dict[str, Any], seeds: list[int], out_dir: str | Path) -> dict[s
         "verdicts": verdicts(summary, config, scenarios),
         "per_run": rows,
     }
-    name = RESULT_FILE if partition is Partition.FINAL_TEST else f"m1_action_e002_{partition.value}.json"
+    stem = str(config["experiment_id"]).lower().replace("-", "_")  # M1-ACTION-E002 -> m1_action_e002
+    name = f"{stem}.json" if partition is Partition.FINAL_TEST else f"{stem}_{partition.value}.json"
     (out / name).write_text(json.dumps(result, indent=1, default=str), encoding="utf-8")
     return result

@@ -12,6 +12,7 @@ from typing import Any
 
 from pydantic import Field
 
+from conrad.orchestration.multidomain_settings import MultiDomainSettings
 from conrad.schemas.base import ConradModel
 
 
@@ -129,6 +130,8 @@ class MissionRuntimeConfig(ConradModel):
         "ResourceState.time_remaining_s)",
     )
     route: RouteSettings = RouteSettings()
+    # Gate I6 (conrad.orchestration.multidomain): 2E imaging-conditions requirement + inspection gate. Off by default.
+    multidomain: MultiDomainSettings = MultiDomainSettings()
 
 
 def runtime_config(raw: dict[str, Any] | None) -> MissionRuntimeConfig:

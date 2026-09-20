@@ -1,0 +1,90 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.15, pytest-8.4.2, pluggy-1.6.0 -- C:\Users\Kerem\Kerem\conrad-v2\.venv\Scripts\python.exe
+hypothesis profile 'default'
+rootdir: C:\Users\Kerem\Kerem\conrad-v2
+configfile: pyproject.toml
+plugins: anyio-4.15.1, hypothesis-6.168.0, cov-6.3.0
+collecting ... collected 9 items
+
+tests/unity_live/test_i4_unity.py::test_closed_loop_mcbr_view_improves_hidden_target PASSED [ 11%]
+tests/unity_live/test_i4_unity.py::test_beats_fixed_views_on_hidden_state_reconstruction FAILED [ 22%]
+tests/unity_live/test_i4_unity.py::test_beats_random_views PASSED        [ 33%]
+tests/unity_live/test_i4_unity.py::test_beats_coverage_only PASSED       [ 44%]
+tests/unity_live/test_i4_unity.py::test_beats_simple_views_on_information_per_time_and_energy[A-B1_fixed_inspection] FAILED [ 55%]
+tests/unity_live/test_i4_unity.py::test_beats_simple_views_on_information_per_time_and_energy[A-B0_random] PASSED [ 66%]
+tests/unity_live/test_i4_unity.py::test_beats_simple_views_on_information_per_time_and_energy[A-B2_coverage] PASSED [ 77%]
+tests/unity_live/test_i4_unity.py::test_no_twin_truth_leakage_on_runtime_side PASSED [ 88%]
+tests/unity_live/test_i4_unity.py::test_bundle_replays_deterministically PASSED [100%]
+
+================================== FAILURES ===================================
+____________ test_beats_fixed_views_on_hidden_state_reconstruction ____________
+
+flights = {'dirs': {'7800002': {'A-B0_random': 'artifacts\\unity\\gate_runs\\I4\\I4-UNITY-s7800002-A-B0_random', 'A-B1_fixed_ins...12714634, 'critical_delivered': 1.0, ...}}, ...}, 'seeds': [7800002, 7800003, 7800004, 7800005, 7800006, 7800007, ...]}
+
+    def test_beats_fixed_views_on_hidden_state_reconstruction(flights):
+>       _criterion(flights, "beats fixed views", FIXED, {"hidden_state_error_improvement": "higher"})
+
+tests\unity_live\test_i4_unity.py:183: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+flights = {'dirs': {'7800002': {'A-B0_random': 'artifacts\\unity\\gate_runs\\I4\\I4-UNITY-s7800002-A-B0_random', 'A-B1_fixed_ins...12714634, 'critical_delivered': 1.0, ...}}, ...}, 'seeds': [7800002, 7800003, 7800004, 7800005, 7800006, 7800007, ...]}
+name = 'beats fixed views', base = 'A-B1_fixed_inspection'
+metrics = {'hidden_state_error_improvement': 'higher'}
+
+    def _criterion(flights: dict[str, Any], name: str, base: str, metrics: dict[str, str]) -> None:
+        pw = flights["per_world"]
+        rows = {m: _paired(pw, base, m, d) for m, d in metrics.items()}
+        means = {p: {m: float(np.mean([pw[w][p][m] for w in pw])) for m in metrics} for p in (PRODUCTION, base)}
+        measured(GATE, name, comparator=base, paired=rows, means=means)
+        failures = [f"{m}: {r['benefit_mean']:+.4f} CI95 {r['ci95']}" for m, r in rows.items() if not _beats(r)]
+>       assert not failures, f"PRODUCTION does not beat {base}: " + "; ".join(failures)
+E       AssertionError: PRODUCTION does not beat A-B1_fixed_inspection: hidden_state_error_improvement: +0.0655 CI95 [-0.042706763769972615, 0.2358042501156302]
+E       assert not ['hidden_state_error_improvement: +0.0655 CI95 [-0.042706763769972615, 0.2358042501156302]']
+
+tests\unity_live\test_i4_unity.py:158: AssertionError
+_ test_beats_simple_views_on_information_per_time_and_energy[A-B1_fixed_inspection] _
+
+flights = {'dirs': {'7800002': {'A-B0_random': 'artifacts\\unity\\gate_runs\\I4\\I4-UNITY-s7800002-A-B0_random', 'A-B1_fixed_ins...12714634, 'critical_delivered': 1.0, ...}}, ...}, 'seeds': [7800002, 7800003, 7800004, 7800005, 7800006, 7800007, ...]}
+base = 'A-B1_fixed_inspection'
+
+    @pytest.mark.parametrize("base", [FIXED, RANDOM, COVERAGE])
+    def test_beats_simple_views_on_information_per_time_and_energy(flights, base):
+>       _criterion(
+            flights,
+            f"information/time/energy vs {base}",
+            base,
+            {"info_per_time": "higher", "info_per_kj": "higher"},
+        )
+
+tests\unity_live\test_i4_unity.py:196: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+flights = {'dirs': {'7800002': {'A-B0_random': 'artifacts\\unity\\gate_runs\\I4\\I4-UNITY-s7800002-A-B0_random', 'A-B1_fixed_ins...12714634, 'critical_delivered': 1.0, ...}}, ...}, 'seeds': [7800002, 7800003, 7800004, 7800005, 7800006, 7800007, ...]}
+name = 'information/time/energy vs A-B1_fixed_inspection'
+base = 'A-B1_fixed_inspection'
+metrics = {'info_per_kj': 'higher', 'info_per_time': 'higher'}
+
+    def _criterion(flights: dict[str, Any], name: str, base: str, metrics: dict[str, str]) -> None:
+        pw = flights["per_world"]
+        rows = {m: _paired(pw, base, m, d) for m, d in metrics.items()}
+        means = {p: {m: float(np.mean([pw[w][p][m] for w in pw])) for m in metrics} for p in (PRODUCTION, base)}
+        measured(GATE, name, comparator=base, paired=rows, means=means)
+        failures = [f"{m}: {r['benefit_mean']:+.4f} CI95 {r['ci95']}" for m, r in rows.items() if not _beats(r)]
+>       assert not failures, f"PRODUCTION does not beat {base}: " + "; ".join(failures)
+E       AssertionError: PRODUCTION does not beat A-B1_fixed_inspection: info_per_time: +0.0007 CI95 [-0.00042706763769972603, 0.002358042501156302]; info_per_kj: +0.0137 CI95 [-0.013042234107559171, 0.05453226483598166]
+E       assert not ['info_per_time: +0.0007 CI95 [-0.00042706763769972603, 0.002358042501156302]', 'info_per_kj: +0.0137 CI95 [-0.013042234107559171, 0.05453226483598166]']
+
+tests\unity_live\test_i4_unity.py:158: AssertionError
+=================================== PASSES ====================================
+- generated xml file: C:\Users\Kerem\Kerem\conrad-v2\artifacts\gates\I4\unity_pytest.xml -
+=========================== short test summary info ===========================
+PASSED tests/unity_live/test_i4_unity.py::test_closed_loop_mcbr_view_improves_hidden_target
+PASSED tests/unity_live/test_i4_unity.py::test_beats_random_views
+PASSED tests/unity_live/test_i4_unity.py::test_beats_coverage_only
+PASSED tests/unity_live/test_i4_unity.py::test_beats_simple_views_on_information_per_time_and_energy[A-B0_random]
+PASSED tests/unity_live/test_i4_unity.py::test_beats_simple_views_on_information_per_time_and_energy[A-B2_coverage]
+PASSED tests/unity_live/test_i4_unity.py::test_no_twin_truth_leakage_on_runtime_side
+PASSED tests/unity_live/test_i4_unity.py::test_bundle_replays_deterministically
+FAILED tests/unity_live/test_i4_unity.py::test_beats_fixed_views_on_hidden_state_reconstruction
+FAILED tests/unity_live/test_i4_unity.py::test_beats_simple_views_on_information_per_time_and_energy[A-B1_fixed_inspection]
+================== 2 failed, 7 passed in 4096.85s (1:08:16) ===================

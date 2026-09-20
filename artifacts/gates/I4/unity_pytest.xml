@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="9" time="4096.856" timestamp="2026-09-19T22:26:12.254971+03:00" hostname="KeremTüzün"><testcase classname="tests.unity_live.test_i4_unity" name="test_closed_loop_mcbr_view_improves_hidden_target" time="4025.440" /><testcase classname="tests.unity_live.test_i4_unity" name="test_beats_fixed_views_on_hidden_state_reconstruction" time="0.016"><failure message="AssertionError: PRODUCTION does not beat A-B1_fixed_inspection: hidden_state_error_improvement: +0.0655 CI95 [-0.042706763769972615, 0.2358042501156302]&#10;assert not ['hidden_state_error_improvement: +0.0655 CI95 [-0.042706763769972615, 0.2358042501156302]']">flights = {'dirs': {'7800002': {'A-B0_random': 'artifacts\\unity\\gate_runs\\I4\\I4-UNITY-s7800002-A-B0_random', 'A-B1_fixed_ins...12714634, 'critical_delivered': 1.0, ...}}, ...}, 'seeds': [7800002, 7800003, 7800004, 7800005, 7800006, 7800007, ...]}
+
+    def test_beats_fixed_views_on_hidden_state_reconstruction(flights):
+&gt;       _criterion(flights, "beats fixed views", FIXED, {"hidden_state_error_improvement": "higher"})
+
+tests\unity_live\test_i4_unity.py:183: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+flights = {'dirs': {'7800002': {'A-B0_random': 'artifacts\\unity\\gate_runs\\I4\\I4-UNITY-s7800002-A-B0_random', 'A-B1_fixed_ins...12714634, 'critical_delivered': 1.0, ...}}, ...}, 'seeds': [7800002, 7800003, 7800004, 7800005, 7800006, 7800007, ...]}
+name = 'beats fixed views', base = 'A-B1_fixed_inspection'
+metrics = {'hidden_state_error_improvement': 'higher'}
+
+    def _criterion(flights: dict[str, Any], name: str, base: str, metrics: dict[str, str]) -&gt; None:
+        pw = flights["per_world"]
+        rows = {m: _paired(pw, base, m, d) for m, d in metrics.items()}
+        means = {p: {m: float(np.mean([pw[w][p][m] for w in pw])) for m in metrics} for p in (PRODUCTION, base)}
+        measured(GATE, name, comparator=base, paired=rows, means=means)
+        failures = [f"{m}: {r['benefit_mean']:+.4f} CI95 {r['ci95']}" for m, r in rows.items() if not _beats(r)]
+&gt;       assert not failures, f"PRODUCTION does not beat {base}: " + "; ".join(failures)
+E       AssertionError: PRODUCTION does not beat A-B1_fixed_inspection: hidden_state_error_improvement: +0.0655 CI95 [-0.042706763769972615, 0.2358042501156302]
+E       assert not ['hidden_state_error_improvement: +0.0655 CI95 [-0.042706763769972615, 0.2358042501156302]']
+
+tests\unity_live\test_i4_unity.py:158: AssertionError</failure></testcase><testcase classname="tests.unity_live.test_i4_unity" name="test_beats_random_views" time="0.017" /><testcase classname="tests.unity_live.test_i4_unity" name="test_beats_coverage_only" time="0.013" /><testcase classname="tests.unity_live.test_i4_unity" name="test_beats_simple_views_on_information_per_time_and_energy[A-B1_fixed_inspection]" time="0.017"><failure message="AssertionError: PRODUCTION does not beat A-B1_fixed_inspection: info_per_time: +0.0007 CI95 [-0.00042706763769972603, 0.002358042501156302]; info_per_kj: +0.0137 CI95 [-0.013042234107559171, 0.05453226483598166]&#10;assert not ['info_per_time: +0.0007 CI95 [-0.00042706763769972603, 0.002358042501156302]', 'info_per_kj: +0.0137 CI95 [-0.013042234107559171, 0.05453226483598166]']">flights = {'dirs': {'7800002': {'A-B0_random': 'artifacts\\unity\\gate_runs\\I4\\I4-UNITY-s7800002-A-B0_random', 'A-B1_fixed_ins...12714634, 'critical_delivered': 1.0, ...}}, ...}, 'seeds': [7800002, 7800003, 7800004, 7800005, 7800006, 7800007, ...]}
+base = 'A-B1_fixed_inspection'
+
+    @pytest.mark.parametrize("base", [FIXED, RANDOM, COVERAGE])
+    def test_beats_simple_views_on_information_per_time_and_energy(flights, base):
+&gt;       _criterion(
+            flights,
+            f"information/time/energy vs {base}",
+            base,
+            {"info_per_time": "higher", "info_per_kj": "higher"},
+        )
+
+tests\unity_live\test_i4_unity.py:196: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+flights = {'dirs': {'7800002': {'A-B0_random': 'artifacts\\unity\\gate_runs\\I4\\I4-UNITY-s7800002-A-B0_random', 'A-B1_fixed_ins...12714634, 'critical_delivered': 1.0, ...}}, ...}, 'seeds': [7800002, 7800003, 7800004, 7800005, 7800006, 7800007, ...]}
+name = 'information/time/energy vs A-B1_fixed_inspection'
+base = 'A-B1_fixed_inspection'
+metrics = {'info_per_kj': 'higher', 'info_per_time': 'higher'}
+
+    def _criterion(flights: dict[str, Any], name: str, base: str, metrics: dict[str, str]) -&gt; None:
+        pw = flights["per_world"]
+        rows = {m: _paired(pw, base, m, d) for m, d in metrics.items()}
+        means = {p: {m: float(np.mean([pw[w][p][m] for w in pw])) for m in metrics} for p in (PRODUCTION, base)}
+        measured(GATE, name, comparator=base, paired=rows, means=means)
+        failures = [f"{m}: {r['benefit_mean']:+.4f} CI95 {r['ci95']}" for m, r in rows.items() if not _beats(r)]
+&gt;       assert not failures, f"PRODUCTION does not beat {base}: " + "; ".join(failures)
+E       AssertionError: PRODUCTION does not beat A-B1_fixed_inspection: info_per_time: +0.0007 CI95 [-0.00042706763769972603, 0.002358042501156302]; info_per_kj: +0.0137 CI95 [-0.013042234107559171, 0.05453226483598166]
+E       assert not ['info_per_time: +0.0007 CI95 [-0.00042706763769972603, 0.002358042501156302]', 'info_per_kj: +0.0137 CI95 [-0.013042234107559171, 0.05453226483598166]']
+
+tests\unity_live\test_i4_unity.py:158: AssertionError</failure></testcase><testcase classname="tests.unity_live.test_i4_unity" name="test_beats_simple_views_on_information_per_time_and_energy[A-B0_random]" time="0.016" /><testcase classname="tests.unity_live.test_i4_unity" name="test_beats_simple_views_on_information_per_time_and_energy[A-B2_coverage]" time="0.016" /><testcase classname="tests.unity_live.test_i4_unity" name="test_no_twin_truth_leakage_on_runtime_side" time="5.094" /><testcase classname="tests.unity_live.test_i4_unity" name="test_bundle_replays_deterministically" time="41.323" /></testsuite></testsuites>

@@ -21,6 +21,8 @@ IMPLEMENTATION_METADATA = {
         "UNKNOWN cells block MCBR view prediction with a configured per-cell probability (ENGINEERING_ESTIMATE)",
         "structural association is ambiguous (NO_MATCH) when two design surfaces are within one measurement sigma",
         "BAAC offers are coalesced to the latest revision per belief with a minimum re-offer interval",
+        "gate I6 (multidomain, off by default): a critical inspection is deferred when the 2E upper credible "
+        "turbidity gives beam visibility below a configured minimum at the closest feasible range (ENGINEERING_ESTIMATE)",
     ],
     "baselines": ["A-B1_fixed_inspection planner (FLAGSHIP-I4-FIXEDVIEW)"],
     "acceptance_tests": ["tests/acceptance", "tests/integration", "tests/regression/test_adversarial.py"],

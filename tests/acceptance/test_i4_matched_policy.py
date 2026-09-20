@@ -75,3 +75,49 @@ def test_i4_integrated_surrogate_mission_final_partition():
     assert art["evidence_kind"] == "SURROGATE"
     part = _check_provenance(art)
     _assert_beats(part, ("hidden_state_error_improvement",), MIN_WORLDS)
+
+
+# ---------------------------------------------------------------------------------------------- ACTIVE-MCBR-E004
+# Re-test after the belief-side predictive model (docs/audits/MCBR_REEVALUATION.md, I4 repair). Criterion fixed
+# 2026-09-19 BEFORE the run: on the 12 I4 worlds declared in configs/eval/active_mcbr_e004.yaml (unity_gate
+# final_test 7800002-7800013), the paired 95 % CI lower bound of PRODUCTION's benefit on the target's
+# hidden_state_error_improvement is > 0 vs fixed, random and coverage views.
+E004_WORLDS = 12
+
+
+def _e004() -> dict:
+    import yaml
+
+    from conrad.evaluation.partitions import UNITY_GATES_PARTITIONS_SHA256
+
+    art = _artifact("ACTIVE-MCBR-E004", "active_mcbr_e004.json")
+    frozen = load_frozen()
+    assert art["evidence_kind"] == "SURROGATE"
+    assert art["frozen_planner"]["config_digest"] == frozen["config_digest"]
+    assert art["frozen_planner"].get("mission_predictive_digest") == frozen.get("mission_predictive_digest")
+    assert frozen.get("mission_predictive_digest"), (
+        "the frozen planner must carry the mission predictive model"
+    )
+    part = art["partitions"]["final_test"]
+    assert part["partition_digest"] == UNITY_GATES_PARTITIONS_SHA256
+    cfg = yaml.safe_load(
+        (REPO_ROOT / "configs" / "eval" / "active_mcbr_e004.yaml").read_text(encoding="utf-8")
+    )
+    assert part["world_seeds"] == cfg["i4_worlds"] and len(part["world_seeds"]) == E004_WORLDS
+    return part
+
+
+def test_i4_e004_artifact_is_the_frozen_planner_on_the_declared_worlds():
+    part = _e004()
+    for w in part["per_world"].values():
+        assert set(w) >= {"PRODUCTION", *COMPARATORS}
+
+
+@pytest.mark.xfail(
+    strict=True,
+    reason="GATE I4 = FAIL (docs/audits/MCBR_REEVALUATION.md, I4 repair): with the belief-side predictive model the "
+    "production planner still does not beat fixed, random or coverage views on the 12 declared I4 worlds (every "
+    "paired CI95 includes 0). Strict: if this starts passing, update the gate record.",
+)
+def test_i4_integrated_surrogate_e004_declared_worlds():
+    _assert_beats(_e004(), ("hidden_state_error_improvement",), E004_WORLDS)

@@ -1,0 +1,2969 @@
+{
+ "config": {
+  "baselines": [
+   "A-B1_fixed_inspection",
+   "A-B0_random",
+   "A-B2_coverage",
+   "A-B10_mcbr_full"
+  ],
+  "decision_rule": "Unit = one world (paired across planners). PRODUCTION beats a baseline on a metric iff the lower bound of the 95 % paired percentile-bootstrap CI (4000 resamples) of the benefit (PRODUCTION better = positive) is > 0. I4 criteria: 'beats fixed views on actual hidden-state reconstruction' = hidden_state_error_improvement vs A-B1_fixed_inspection; 'beats random views' = the same vs A-B0_random; 'beats coverage-only' = the same vs A-B2_coverage; 'beats simple views on information/time/energy' = info_per_time AND info_per_kj vs each of those three; the closed-loop criterion = PRODUCTION's mean hidden_state_error_improvement > 0 with at least one accepted MCBR inspection goal that produced new target evidence in >= half of the worlds that needed one.",
+  "direction": "higher",
+  "experiment_id": "ACTIVE-MCBR-E004",
+  "hypothesis": "with the belief-side predictive model, the frozen production planner beats fixed, random and coverage views on the target's actual hidden-state error in the integrated mission",
+  "i4_worlds": [
+   7800002,
+   7800003,
+   7800004,
+   7800005,
+   7800006,
+   7800007,
+   7800008,
+   7800009,
+   7800010,
+   7800011,
+   7800012,
+   7800013
+  ],
+  "planners": [
+   "PRODUCTION",
+   "A-B1_fixed_inspection",
+   "A-B0_random",
+   "A-B2_coverage",
+   "A-B10_mcbr_full"
+  ],
+  "primary_metric": "hidden_state_error_improvement",
+  "runtime": {
+   "control_period_s": 0.1,
+   "duration_s": 100.0,
+   "max_plans_per_need": 4
+  },
+  "seeds": [
+   7800002,
+   7800003,
+   7800004,
+   7800005,
+   7800006,
+   7800007,
+   7800008,
+   7800009,
+   7800010,
+   7800011,
+   7800012,
+   7800013
+  ],
+  "stage": "e004",
+  "workers": 6
+ },
+ "data_status": "SYNTHETIC_ONLY",
+ "decision_rule": "Unit = one world (paired across planners). PRODUCTION beats a baseline on a metric iff the lower bound of the 95 % paired percentile-bootstrap CI (4000 resamples) of the benefit (PRODUCTION better = positive) is > 0. I4 criteria: 'beats fixed views on actual hidden-state reconstruction' = hidden_state_error_improvement vs A-B1_fixed_inspection; 'beats random views' = the same vs A-B0_random; 'beats coverage-only' = the same vs A-B2_coverage; 'beats simple views on information/time/energy' = info_per_time AND info_per_kj vs each of those three; the closed-loop criterion = PRODUCTION's mean hidden_state_error_improvement > 0 with at least one accepted MCBR inspection goal that produced new target evidence in >= half of the worlds that needed one.",
+ "evidence_kind": "SURROGATE",
+ "evidence_note": "integrated surrogate mission on the python sim kernel (L1); NOT the formal Unity run",
+ "experiment_id": "ACTIVE-MCBR-E004",
+ "frozen_planner": {
+  "config_digest": "8eca16cc896e560b26cbe9814828fe9f75801d843e0e38bedb5442299805d903",
+  "frozen_on": "2026-09-19",
+  "git_commit": "0918f5547e9f9f75f159f9194428f121a436e4e8",
+  "git_commit_note": "not re-read (the agent does not run git); the frozen code is the uncommitted working tree",
+  "mission_note": "the integrated runtime now supplies the belief-side predictive model above to every planner's PlanningRequest; the production ranker (bayes_eig, ratio) ranks by its expected entropy reduction per unit cost",
+  "mission_predictive": {
+   "config": {
+    "enabled": true,
+    "footprint_axial_m": 1.0,
+    "footprint_discount": 0.0,
+    "footprint_half_angle_deg": 50.0,
+    "incidence_power": 1.0,
+    "nominal_reliability": 1.0,
+    "probe_offset_m": 0.15,
+    "read_channel": false,
+    "read_min_band_probability": 0.0,
+    "seen_surface_discount": 0.0,
+    "track_discount": 0.8,
+    "track_max_positions": 16
+   },
+   "model": "conrad.orchestration.mission_predictive.MissionPredictive -> conrad.active.surface_predictive.SurfaceCellPredictive",
+   "selected": "SURFACE_CELL_EIG[C_track_noread]",
+   "selection": {
+    "arms_dev_mean": {
+     "A-B1_fixed_inspection": 0.756,
+     "A-B2_coverage": 0.736,
+     "A_track_band05": 0.727,
+     "B_track_band0": 0.547,
+     "C_track_noread": 0.73,
+     "D_nopred (v1 fallback)": 0.636
+    },
+    "n_worlds": 26,
+    "note": "highest development mean among the predictive-model arms; it does NOT beat fixed or coverage on development (C - fixed = -0.026 [-0.064, +0.011], C - coverage = -0.006 [-0.151, +0.136])",
+    "partitions": [
+     "unity_gate development (8 worlds where MCBR planned: 7810006,7,9,10,11,14,15,17)",
+     "mission development (18 worlds where MCBR planned)"
+    ],
+    "primary_metric": "hidden_state_error_improvement",
+    "purpose": "design"
+   }
+  },
+  "mission_predictive_digest": "2fa5b75d6e9618c0a1274eff284d014a30df4c0ba17a8d83969c2c8609d41431",
+  "partitions_digest": "074ae11310252217315b2ac3324fd914d1964a3e34b76b57a65f0ca3a3acb904",
+  "planner": {
+   "ranker": {
+    "cost_mode": "ratio",
+    "cost_weight": 1.0,
+    "kind": "bayes_eig"
+   },
+   "selected": "V-bayes_eig_ratio"
+  },
+  "selection": {
+   "experiment_id": "ACTIVE-MCBR-SEL001",
+   "n_worlds": 40,
+   "note": "conventional Bayesian EIG per unit cost won on validation; per the brief it becomes the production planner behind the MCBR interface. Its lead over A-B6b and A-B11 is not significant (paired CI includes 0).",
+   "partition": "validation",
+   "primary_metric": "mission_error_reduction",
+   "runner_up": "A-B6b_bayes_eig",
+   "selection_config_digest": "4462c7f7f36fd911a37a0c52f7acaf4a807f08f8fa4f0db4a550cadb5890788a",
+   "validation_mean": 0.5052
+  },
+  "shared_candidate_generation": {
+   "abstract_world": {
+    "n_azimuth": 8
+   },
+   "mission": "MissionRuntimeConfig.mcbr (deployment config)",
+   "sensor_aware_visibility": true
+  },
+  "supersedes": "configs/active/mcbr_frozen.yaml (planner section unchanged; v2 adds the mission predictive model)",
+  "unity_gates_partitions_digest": "ad753291d5825dace90f5757790efd096a5f867d51abe51de6545dceff12f88c"
+ },
+ "i4_comparators": [
+  "A-B1_fixed_inspection",
+  "A-B0_random",
+  "A-B2_coverage"
+ ],
+ "mission_config": "configs/sim/mission_test_small.yaml",
+ "partitions": {
+  "final_test": {
+   "families": [
+    "straight_pipeline"
+   ],
+   "n_worlds": 12,
+   "paired_production_vs": {
+    "A-B0_random": {
+     "collisions": {
+      "baseline_mean": 0.16666666666666666,
+      "benefit_mean": 0.0,
+      "candidate_mean": 0.16666666666666666,
+      "ci95": [
+       0.0,
+       0.0
+      ],
+      "fraction_improved": 0.0,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "energy_j": {
+      "baseline_mean": 16902.71374456538,
+      "benefit_mean": 674.9753638461838,
+      "candidate_mean": 16227.738380719195,
+      "ci95": [
+       -682.0328964304872,
+       2418.5352004135225
+      ],
+      "fraction_improved": 0.25,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "hidden_state_error_final": {
+      "baseline_mean": 0.4084409046272181,
+      "benefit_mean": 0.11559007416638935,
+      "candidate_mean": 0.29285083046082866,
+      "ci95": [
+       -0.0667202813298378,
+       0.3421885068283106
+      ],
+      "fraction_improved": 0.3333333333333333,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "hidden_state_error_improvement": {
+      "baseline_mean": 0.591559095372782,
+      "benefit_mean": 0.11559007416638935,
+      "candidate_mean": 0.7071491695391714,
+      "ci95": [
+       -0.0667202813298378,
+       0.3421885068283106
+      ],
+      "fraction_improved": 0.3333333333333333,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "info_per_kj": {
+      "baseline_mean": 0.041507448967006984,
+      "benefit_mean": 0.007238585635276774,
+      "candidate_mean": 0.04874603460228375,
+      "ci95": [
+       -0.0026607693662428593,
+       0.01943366422389796
+      ],
+      "fraction_improved": 0.4166666666666667,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "info_per_time": {
+      "baseline_mean": 0.00591559095372782,
+      "benefit_mean": 0.0011559007416638938,
+      "candidate_mean": 0.007071491695391713,
+      "ci95": [
+       -0.000667202813298378,
+       0.003421885068283106
+      ],
+      "fraction_improved": 0.3333333333333333,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "mission_error_reduction": {
+      "baseline_mean": 0.591559095372782,
+      "benefit_mean": 0.11559007416638935,
+      "candidate_mean": 0.7071491695391714,
+      "ci95": [
+       -0.0667202813298378,
+       0.3421885068283106
+      ],
+      "fraction_improved": 0.3333333333333333,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "mission_success": {
+      "baseline_mean": 0.75,
+      "benefit_mean": 0.08333333333333333,
+      "candidate_mean": 0.8333333333333334,
+      "ci95": [
+       -0.16666666666666666,
+       0.3333333333333333
+      ],
+      "fraction_improved": 0.16666666666666666,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "observations": {
+      "baseline_mean": 1.25,
+      "benefit_mean": -0.08333333333333333,
+      "candidate_mean": 1.3333333333333333,
+      "ci95": [
+       -0.75,
+       0.5833333333333334
+      ],
+      "fraction_improved": 0.16666666666666666,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "redundant_observations": {
+      "baseline_mean": 0.8333333333333334,
+      "benefit_mean": 0.4166666666666667,
+      "candidate_mean": 0.4166666666666667,
+      "ci95": [
+       -0.25,
+       1.0833333333333333
+      ],
+      "fraction_improved": 0.3333333333333333,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "travel_m": {
+      "baseline_mean": 23.159172744500413,
+      "benefit_mean": 1.0314862253429862,
+      "candidate_mean": 22.12768651915742,
+      "ci95": [
+       -0.9478896835129121,
+       3.4711186988012837
+      ],
+      "fraction_improved": 0.3333333333333333,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     }
+    },
+    "A-B10_mcbr_full": {
+     "collisions": {
+      "baseline_mean": 0.16666666666666666,
+      "benefit_mean": 0.0,
+      "candidate_mean": 0.16666666666666666,
+      "ci95": [
+       0.0,
+       0.0
+      ],
+      "fraction_improved": 0.0,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "energy_j": {
+      "baseline_mean": 15394.117397928785,
+      "benefit_mean": -833.6209827904087,
+      "candidate_mean": 16227.738380719195,
+      "ci95": [
+       -2127.628342731639,
+       77.02216939627154
+      ],
+      "fraction_improved": 0.08333333333333333,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "hidden_state_error_final": {
+      "baseline_mean": 0.3696856505235418,
+      "benefit_mean": 0.07683482006271317,
+      "candidate_mean": 0.29285083046082866,
+      "ci95": [
+       -0.006827312148332494,
+       0.23653962917113583
+      ],
+      "fraction_improved": 0.16666666666666666,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "hidden_state_error_improvement": {
+      "baseline_mean": 0.6303143494764581,
+      "benefit_mean": 0.07683482006271317,
+      "candidate_mean": 0.7071491695391714,
+      "ci95": [
+       -0.006827312148332487,
+       0.23653962917113583
+      ],
+      "fraction_improved": 0.16666666666666666,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "info_per_kj": {
+      "baseline_mean": 0.044525875397394506,
+      "benefit_mean": 0.004220159204889248,
+      "candidate_mean": 0.04874603460228375,
+      "ci95": [
+       -8.853138944077699e-05,
+       0.012747145508159127
+      ],
+      "fraction_improved": 0.16666666666666666,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "info_per_time": {
+      "baseline_mean": 0.0063031434947645815,
+      "benefit_mean": 0.0007683482006271316,
+      "candidate_mean": 0.007071491695391713,
+      "ci95": [
+       -6.827312148332462e-05,
+       0.0023653962917113583
+      ],
+      "fraction_improved": 0.16666666666666666,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "mission_error_reduction": {
+      "baseline_mean": 0.6303143494764581,
+      "benefit_mean": 0.07683482006271317,
+      "candidate_mean": 0.7071491695391714,
+      "ci95": [
+       -0.006827312148332487,
+       0.23653962917113583
+      ],
+      "fraction_improved": 0.16666666666666666,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "mission_success": {
+      "baseline_mean": 0.75,
+      "benefit_mean": 0.08333333333333333,
+      "candidate_mean": 0.8333333333333334,
+      "ci95": [
+       0.0,
+       0.25
+      ],
+      "fraction_improved": 0.08333333333333333,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "observations": {
+      "baseline_mean": 0.5,
+      "benefit_mean": -0.8333333333333334,
+      "candidate_mean": 1.3333333333333333,
+      "ci95": [
+       -1.5833333333333333,
+       -0.25
+      ],
+      "fraction_improved": 0.0,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "redundant_observations": {
+      "baseline_mean": 0.0,
+      "benefit_mean": -0.4166666666666667,
+      "candidate_mean": 0.4166666666666667,
+      "ci95": [
+       -1.1666666666666667,
+       0.0
+      ],
+      "fraction_improved": 0.0,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "travel_m": {
+      "baseline_mean": 21.151597881050908,
+      "benefit_mean": -0.9760886381065147,
+      "candidate_mean": 22.12768651915742,
+      "ci95": [
+       -2.756876638566608,
+       0.3885032844036491
+      ],
+      "fraction_improved": 0.08333333333333333,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     }
+    },
+    "A-B1_fixed_inspection": {
+     "collisions": {
+      "baseline_mean": 0.16666666666666666,
+      "benefit_mean": 0.0,
+      "candidate_mean": 0.16666666666666666,
+      "ci95": [
+       0.0,
+       0.0
+      ],
+      "fraction_improved": 0.0,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "energy_j": {
+      "baseline_mean": 15847.267186741332,
+      "benefit_mean": -380.47119397786383,
+      "candidate_mean": 16227.738380719195,
+      "ci95": [
+       -1246.3101232096951,
+       466.3940812116526
+      ],
+      "fraction_improved": 0.16666666666666666,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "hidden_state_error_final": {
+      "baseline_mean": 0.1935695766160417,
+      "benefit_mean": -0.09928125384478698,
+      "candidate_mean": 0.29285083046082866,
+      "ci95": [
+       -0.2734773168569255,
+       0.01245617501577021
+      ],
+      "fraction_improved": 0.16666666666666666,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "hidden_state_error_improvement": {
+      "baseline_mean": 0.8064304233839583,
+      "benefit_mean": -0.09928125384478698,
+      "candidate_mean": 0.7071491695391714,
+      "ci95": [
+       -0.2734773168569255,
+       0.0124561750157702
+      ],
+      "fraction_improved": 0.16666666666666666,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "info_per_kj": {
+      "baseline_mean": 0.05462442079648571,
+      "benefit_mean": -0.0058783861942019525,
+      "candidate_mean": 0.04874603460228375,
+      "ci95": [
+       -0.013746218558486983,
+       -0.0002589441872494154
+      ],
+      "fraction_improved": 0.16666666666666666,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "info_per_time": {
+      "baseline_mean": 0.008064304233839583,
+      "benefit_mean": -0.0009928125384478699,
+      "candidate_mean": 0.007071491695391713,
+      "ci95": [
+       -0.0027347731685692543,
+       0.00012456175015770177
+      ],
+      "fraction_improved": 0.16666666666666666,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "mission_error_reduction": {
+      "baseline_mean": 0.8064304233839583,
+      "benefit_mean": -0.09928125384478698,
+      "candidate_mean": 0.7071491695391714,
+      "ci95": [
+       -0.2734773168569255,
+       0.0124561750157702
+      ],
+      "fraction_improved": 0.16666666666666666,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "mission_success": {
+      "baseline_mean": 1.0,
+      "benefit_mean": -0.16666666666666666,
+      "candidate_mean": 0.8333333333333334,
+      "ci95": [
+       -0.4166666666666667,
+       0.0
+      ],
+      "fraction_improved": 0.0,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "observations": {
+      "baseline_mean": 0.9166666666666666,
+      "benefit_mean": -0.4166666666666667,
+      "candidate_mean": 1.3333333333333333,
+      "ci95": [
+       -0.9166666666666666,
+       0.0
+      ],
+      "fraction_improved": 0.0,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "redundant_observations": {
+      "baseline_mean": 0.25,
+      "benefit_mean": -0.16666666666666666,
+      "candidate_mean": 0.4166666666666667,
+      "ci95": [
+       -0.4166666666666667,
+       0.0
+      ],
+      "fraction_improved": 0.0,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "travel_m": {
+      "baseline_mean": 21.736612504733824,
+      "benefit_mean": -0.39107401442360185,
+      "candidate_mean": 22.12768651915742,
+      "ci95": [
+       -1.627971779303819,
+       1.0009797069649575
+      ],
+      "fraction_improved": 0.16666666666666666,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     }
+    },
+    "A-B2_coverage": {
+     "collisions": {
+      "baseline_mean": 0.16666666666666666,
+      "benefit_mean": 0.0,
+      "candidate_mean": 0.16666666666666666,
+      "ci95": [
+       0.0,
+       0.0
+      ],
+      "fraction_improved": 0.0,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "energy_j": {
+      "baseline_mean": 16909.98117722744,
+      "benefit_mean": 682.2427965082437,
+      "candidate_mean": 16227.738380719195,
+      "ci95": [
+       137.49286142240075,
+       1289.1278162864098
+      ],
+      "fraction_improved": 0.4166666666666667,
+      "n_worlds": 12,
+      "repeatable_benefit": true
+     },
+     "hidden_state_error_final": {
+      "baseline_mean": 0.20987510069946066,
+      "benefit_mean": -0.08297572976136804,
+      "candidate_mean": 0.29285083046082866,
+      "ci95": [
+       -0.26090755286151496,
+       0.06709561621386696
+      ],
+      "fraction_improved": 0.08333333333333333,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "hidden_state_error_improvement": {
+      "baseline_mean": 0.7901248993005394,
+      "benefit_mean": -0.08297572976136805,
+      "candidate_mean": 0.7071491695391714,
+      "ci95": [
+       -0.260907552861515,
+       0.06709561621386696
+      ],
+      "fraction_improved": 0.08333333333333333,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "info_per_kj": {
+      "baseline_mean": 0.05176350516534847,
+      "benefit_mean": -0.0030174705630647016,
+      "candidate_mean": 0.04874603460228375,
+      "ci95": [
+       -0.011642738792997669,
+       0.004401579968450485
+      ],
+      "fraction_improved": 0.16666666666666666,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "info_per_time": {
+      "baseline_mean": 0.007901248993005393,
+      "benefit_mean": -0.0008297572976136806,
+      "candidate_mean": 0.007071491695391713,
+      "ci95": [
+       -0.0026090755286151497,
+       0.0006709561621386695
+      ],
+      "fraction_improved": 0.08333333333333333,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "mission_error_reduction": {
+      "baseline_mean": 0.7901248993005394,
+      "benefit_mean": -0.08297572976136805,
+      "candidate_mean": 0.7071491695391714,
+      "ci95": [
+       -0.260907552861515,
+       0.06709561621386696
+      ],
+      "fraction_improved": 0.08333333333333333,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "mission_success": {
+      "baseline_mean": 1.0,
+      "benefit_mean": -0.16666666666666666,
+      "candidate_mean": 0.8333333333333334,
+      "ci95": [
+       -0.4166666666666667,
+       0.0
+      ],
+      "fraction_improved": 0.0,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "observations": {
+      "baseline_mean": 0.8333333333333334,
+      "benefit_mean": -0.5,
+      "candidate_mean": 1.3333333333333333,
+      "ci95": [
+       -1.0,
+       -0.08333333333333333
+      ],
+      "fraction_improved": 0.0,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "redundant_observations": {
+      "baseline_mean": 0.08333333333333333,
+      "benefit_mean": -0.3333333333333333,
+      "candidate_mean": 0.4166666666666667,
+      "ci95": [
+       -0.9166666666666666,
+       0.0
+      ],
+      "fraction_improved": 0.0,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     },
+     "travel_m": {
+      "baseline_mean": 23.129058503768842,
+      "benefit_mean": 1.0013719846114133,
+      "candidate_mean": 22.12768651915742,
+      "ci95": [
+       -0.08485203455673702,
+       2.5114621462654383
+      ],
+      "fraction_improved": 0.3333333333333333,
+      "n_worlds": 12,
+      "repeatable_benefit": false
+     }
+    }
+   },
+   "partition": "final_test",
+   "partition_digest": "ad753291d5825dace90f5757790efd096a5f867d51abe51de6545dceff12f88c",
+   "partition_file": "configs/eval/partitions_unity_gates.yaml",
+   "per_world": {
+    "7800002": {
+     "A-B0_random": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0004305036392728461,
+      "crack_abs_error_m": 0.02588611044174443,
+      "critical_delivered": 1.0,
+      "energy_j": 9580.359894232537,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.20400556758038066,
+      "hidden_state_error_improvement": 0.7959944324196193,
+      "info_per_kj": 0.08308606787296323,
+      "info_per_time": 0.007959944324196193,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.7959944324196193,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.9166666666666666,
+      "planner": "A-B0_random",
+      "planner_config": "A-B0_random",
+      "planner_name_in_run": "A-B0_random",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800002,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.4401145116934,
+      "uir": 0.0
+     },
+     "A-B10_mcbr_full": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0004305036392728461,
+      "crack_abs_error_m": 0.02588611044174443,
+      "critical_delivered": 1.0,
+      "energy_j": 9580.359894232537,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.20400556758038066,
+      "hidden_state_error_improvement": 0.7959944324196193,
+      "info_per_kj": 0.08308606787296323,
+      "info_per_time": 0.007959944324196193,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.7959944324196193,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.9166666666666666,
+      "planner": "A-B10_mcbr_full",
+      "planner_config": "A-B10_mcbr_full",
+      "planner_name_in_run": "A-B10_mcbr_full",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800002,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.4401145116934,
+      "uir": 0.0
+     },
+     "A-B1_fixed_inspection": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0004305036392728461,
+      "crack_abs_error_m": 0.02588611044174443,
+      "critical_delivered": 1.0,
+      "energy_j": 9580.359894232537,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.20400556758038066,
+      "hidden_state_error_improvement": 0.7959944324196193,
+      "info_per_kj": 0.08308606787296323,
+      "info_per_time": 0.007959944324196193,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.7959944324196193,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.9166666666666666,
+      "planner": "A-B1_fixed_inspection",
+      "planner_config": "A-B1_fixed_inspection",
+      "planner_name_in_run": "A-B1_fixed_inspection",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800002,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.4401145116934,
+      "uir": 0.0
+     },
+     "A-B2_coverage": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0004305036392728461,
+      "crack_abs_error_m": 0.02588611044174443,
+      "critical_delivered": 1.0,
+      "energy_j": 9580.359894232537,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.20400556758038066,
+      "hidden_state_error_improvement": 0.7959944324196193,
+      "info_per_kj": 0.08308606787296323,
+      "info_per_time": 0.007959944324196193,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.7959944324196193,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.9166666666666666,
+      "planner": "A-B2_coverage",
+      "planner_config": "A-B2_coverage",
+      "planner_name_in_run": "A-B2_coverage",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800002,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.4401145116934,
+      "uir": 0.0
+     },
+     "PRODUCTION": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0004305036392728461,
+      "crack_abs_error_m": 0.02588611044174443,
+      "critical_delivered": 1.0,
+      "energy_j": 9580.359894232537,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.20400556758038066,
+      "hidden_state_error_improvement": 0.7959944324196193,
+      "info_per_kj": 0.08308606787296323,
+      "info_per_time": 0.007959944324196193,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.7959944324196193,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.9166666666666666,
+      "planner": "PRODUCTION",
+      "planner_config": "PRODUCTION",
+      "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800002,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.4401145116934,
+      "uir": 0.0
+     }
+    },
+    "7800003": {
+     "A-B0_random": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.00043230172768523364,
+      "crack_abs_error_m": 0.010739795337581848,
+      "critical_delivered": 1.0,
+      "energy_j": 11039.291105012757,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.10732078478140665,
+      "hidden_state_error_improvement": 0.8926792152185934,
+      "info_per_kj": 0.08086381695408347,
+      "info_per_time": 0.008926792152185933,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.8926792152185934,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.9375,
+      "planner": "A-B0_random",
+      "planner_config": "A-B0_random",
+      "planner_name_in_run": "A-B0_random",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800003,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.605312873309042,
+      "uir": 0.0
+     },
+     "A-B10_mcbr_full": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.00043230172768523364,
+      "crack_abs_error_m": 0.010739795337581848,
+      "critical_delivered": 1.0,
+      "energy_j": 11039.291105012757,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.10732078478140665,
+      "hidden_state_error_improvement": 0.8926792152185934,
+      "info_per_kj": 0.08086381695408347,
+      "info_per_time": 0.008926792152185933,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.8926792152185934,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.9375,
+      "planner": "A-B10_mcbr_full",
+      "planner_config": "A-B10_mcbr_full",
+      "planner_name_in_run": "A-B10_mcbr_full",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800003,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.605312873309042,
+      "uir": 0.0
+     },
+     "A-B1_fixed_inspection": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.00043230172768523364,
+      "crack_abs_error_m": 0.010739795337581848,
+      "critical_delivered": 1.0,
+      "energy_j": 11039.291105012757,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.10732078478140665,
+      "hidden_state_error_improvement": 0.8926792152185934,
+      "info_per_kj": 0.08086381695408347,
+      "info_per_time": 0.008926792152185933,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.8926792152185934,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.9375,
+      "planner": "A-B1_fixed_inspection",
+      "planner_config": "A-B1_fixed_inspection",
+      "planner_name_in_run": "A-B1_fixed_inspection",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800003,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.605312873309042,
+      "uir": 0.0
+     },
+     "A-B2_coverage": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.00043230172768523364,
+      "crack_abs_error_m": 0.010739795337581848,
+      "critical_delivered": 1.0,
+      "energy_j": 11039.291105012757,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.10732078478140665,
+      "hidden_state_error_improvement": 0.8926792152185934,
+      "info_per_kj": 0.08086381695408347,
+      "info_per_time": 0.008926792152185933,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.8926792152185934,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.9375,
+      "planner": "A-B2_coverage",
+      "planner_config": "A-B2_coverage",
+      "planner_name_in_run": "A-B2_coverage",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800003,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.605312873309042,
+      "uir": 0.0
+     },
+     "PRODUCTION": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.00043230172768523364,
+      "crack_abs_error_m": 0.010739795337581848,
+      "critical_delivered": 1.0,
+      "energy_j": 11039.291105012757,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.10732078478140665,
+      "hidden_state_error_improvement": 0.8926792152185934,
+      "info_per_kj": 0.08086381695408347,
+      "info_per_time": 0.008926792152185933,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.8926792152185934,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.9375,
+      "planner": "PRODUCTION",
+      "planner_config": "PRODUCTION",
+      "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800003,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.605312873309042,
+      "uir": 0.0
+     }
+    },
+    "7800004": {
+     "A-B0_random": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 2.722053558018491e-05,
+      "crack_abs_error_m": 0.007227007208450098,
+      "critical_delivered": 1.0,
+      "energy_j": 12845.58097838505,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.048504328131523,
+      "hidden_state_error_improvement": 0.951495671868477,
+      "info_per_kj": 0.0740718285509652,
+      "info_per_time": 0.009514956718684771,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.951495671868477,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.8863636363636364,
+      "planner": "A-B0_random",
+      "planner_config": "A-B0_random",
+      "planner_name_in_run": "A-B0_random",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800004,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.724931720900948,
+      "uir": 0.0
+     },
+     "A-B10_mcbr_full": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 2.722053558018491e-05,
+      "crack_abs_error_m": 0.007227007208450098,
+      "critical_delivered": 1.0,
+      "energy_j": 12845.58097838505,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.048504328131523,
+      "hidden_state_error_improvement": 0.951495671868477,
+      "info_per_kj": 0.0740718285509652,
+      "info_per_time": 0.009514956718684771,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.951495671868477,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.8863636363636364,
+      "planner": "A-B10_mcbr_full",
+      "planner_config": "A-B10_mcbr_full",
+      "planner_name_in_run": "A-B10_mcbr_full",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800004,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.724931720900948,
+      "uir": 0.0
+     },
+     "A-B1_fixed_inspection": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 2.722053558018491e-05,
+      "crack_abs_error_m": 0.007227007208450098,
+      "critical_delivered": 1.0,
+      "energy_j": 12845.58097838505,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.048504328131523,
+      "hidden_state_error_improvement": 0.951495671868477,
+      "info_per_kj": 0.0740718285509652,
+      "info_per_time": 0.009514956718684771,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.951495671868477,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.8863636363636364,
+      "planner": "A-B1_fixed_inspection",
+      "planner_config": "A-B1_fixed_inspection",
+      "planner_name_in_run": "A-B1_fixed_inspection",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800004,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.724931720900948,
+      "uir": 0.0
+     },
+     "A-B2_coverage": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 2.722053558018491e-05,
+      "crack_abs_error_m": 0.007227007208450098,
+      "critical_delivered": 1.0,
+      "energy_j": 12845.58097838505,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.048504328131523,
+      "hidden_state_error_improvement": 0.951495671868477,
+      "info_per_kj": 0.0740718285509652,
+      "info_per_time": 0.009514956718684771,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.951495671868477,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.8863636363636364,
+      "planner": "A-B2_coverage",
+      "planner_config": "A-B2_coverage",
+      "planner_name_in_run": "A-B2_coverage",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800004,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.724931720900948,
+      "uir": 0.0
+     },
+     "PRODUCTION": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 2.722053558018491e-05,
+      "crack_abs_error_m": 0.007227007208450098,
+      "critical_delivered": 1.0,
+      "energy_j": 12845.58097838505,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.048504328131523,
+      "hidden_state_error_improvement": 0.951495671868477,
+      "info_per_kj": 0.0740718285509652,
+      "info_per_time": 0.009514956718684771,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.951495671868477,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.8863636363636364,
+      "planner": "PRODUCTION",
+      "planner_config": "PRODUCTION",
+      "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800004,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.724931720900948,
+      "uir": 0.0
+     }
+    },
+    "7800005": {
+     "A-B0_random": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.005501371620519519,
+      "crack_abs_error_m": 0.078503284580316,
+      "critical_delivered": 0.0,
+      "energy_j": 25159.54061633594,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 1.0,
+      "hidden_state_error_improvement": 0.0,
+      "info_per_kj": 0.0,
+      "info_per_time": 0.0,
+      "inspection_goal_t_s": 38.0,
+      "mission_error_reduction": 0.0,
+      "mission_success": 0.0,
+      "observations": 3.0,
+      "patch_max_visible_fraction": 0.20833333333333334,
+      "planner": "A-B0_random",
+      "planner_config": "A-B0_random",
+      "planner_name_in_run": "A-B0_random",
+      "plans": [
+       "PLAN",
+       "PLAN",
+       "PLAN"
+      ],
+      "redundant_observations": 3.0,
+      "seed": 7800005,
+      "target_observed": 0.0,
+      "time_s": 100.0,
+      "travel_m": 33.980463851927965,
+      "uir": 0.0
+     },
+     "A-B10_mcbr_full": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.00034856547204432584,
+      "crack_abs_error_m": 0.008940886108441834,
+      "critical_delivered": 1.0,
+      "energy_j": 19774.231584632504,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.08862580612643456,
+      "hidden_state_error_improvement": 0.9113741938735654,
+      "info_per_kj": 0.046088981509746135,
+      "info_per_time": 0.009113741938735655,
+      "inspection_goal_t_s": 38.0,
+      "mission_error_reduction": 0.9113741938735654,
+      "mission_success": 1.0,
+      "observations": 1.0,
+      "patch_max_visible_fraction": 0.8958333333333334,
+      "planner": "A-B10_mcbr_full",
+      "planner_config": "A-B10_mcbr_full",
+      "planner_name_in_run": "A-B10_mcbr_full",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800005,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 26.35960787752407,
+      "uir": 0.0
+     },
+     "A-B1_fixed_inspection": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 2.934042000995573e-05,
+      "crack_abs_error_m": 0.0079403454222821,
+      "critical_delivered": 1.0,
+      "energy_j": 18637.681460302054,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.05323997835798631,
+      "hidden_state_error_improvement": 0.9467600216420137,
+      "info_per_kj": 0.05079816519337969,
+      "info_per_time": 0.009467600216420137,
+      "inspection_goal_t_s": 38.0,
+      "mission_error_reduction": 0.9467600216420137,
+      "mission_success": 1.0,
+      "observations": 1.0,
+      "patch_max_visible_fraction": 0.7708333333333334,
+      "planner": "A-B1_fixed_inspection",
+      "planner_config": "A-B1_fixed_inspection",
+      "planner_name_in_run": "A-B1_fixed_inspection",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800005,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 25.413583398135017,
+      "uir": 0.0
+     },
+     "A-B2_coverage": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.00034856547204432584,
+      "crack_abs_error_m": 0.008940886108441834,
+      "critical_delivered": 1.0,
+      "energy_j": 19774.231584632504,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.08862580612643456,
+      "hidden_state_error_improvement": 0.9113741938735654,
+      "info_per_kj": 0.046088981509746135,
+      "info_per_time": 0.009113741938735655,
+      "inspection_goal_t_s": 38.0,
+      "mission_error_reduction": 0.9113741938735654,
+      "mission_success": 1.0,
+      "observations": 1.0,
+      "patch_max_visible_fraction": 0.8958333333333334,
+      "planner": "A-B2_coverage",
+      "planner_config": "A-B2_coverage",
+      "planner_name_in_run": "A-B2_coverage",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800005,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 26.35960787752407,
+      "uir": 0.0
+     },
+     "PRODUCTION": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.00034856547204432584,
+      "crack_abs_error_m": 0.008940886108441834,
+      "critical_delivered": 1.0,
+      "energy_j": 19774.231584632504,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.08862580612643456,
+      "hidden_state_error_improvement": 0.9113741938735654,
+      "info_per_kj": 0.046088981509746135,
+      "info_per_time": 0.009113741938735655,
+      "inspection_goal_t_s": 38.0,
+      "mission_error_reduction": 0.9113741938735654,
+      "mission_success": 1.0,
+      "observations": 1.0,
+      "patch_max_visible_fraction": 0.8958333333333334,
+      "planner": "PRODUCTION",
+      "planner_config": "PRODUCTION",
+      "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800005,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 26.35960787752407,
+      "uir": 0.0
+     }
+    },
+    "7800006": {
+     "A-B0_random": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0004906249635079317,
+      "crack_abs_error_m": 0.0180273986335482,
+      "critical_delivered": 1.0,
+      "energy_j": 17443.381343031713,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.15941198610342922,
+      "hidden_state_error_improvement": 0.8405880138965708,
+      "info_per_kj": 0.048189510815938745,
+      "info_per_time": 0.008405880138965708,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.8405880138965708,
+      "mission_success": 1.0,
+      "observations": 1.0,
+      "patch_max_visible_fraction": 0.6458333333333334,
+      "planner": "A-B0_random",
+      "planner_config": "A-B0_random",
+      "planner_name_in_run": "A-B0_random",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800006,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 24.380838035806434,
+      "uir": 0.0
+     },
+     "A-B10_mcbr_full": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.005501112991063881,
+      "crack_abs_error_m": 0.07850372912978251,
+      "critical_delivered": 0.0,
+      "energy_j": 13169.238676665202,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 1.0,
+      "hidden_state_error_improvement": 0.0,
+      "info_per_kj": 0.0,
+      "info_per_time": 0.0,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.0,
+      "mission_success": 0.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.0,
+      "planner": "A-B10_mcbr_full",
+      "planner_config": "A-B10_mcbr_full",
+      "planner_name_in_run": "A-B10_mcbr_full",
+      "plans": [
+       "NOT_WORTH_COST",
+       "NOT_WORTH_COST",
+       "NOT_WORTH_COST",
+       "NOT_WORTH_COST"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800006,
+      "target_observed": 0.0,
+      "time_s": 100.0,
+      "travel_m": 16.37010652216188,
+      "uir": 0.0
+     },
+     "A-B1_fixed_inspection": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0004906249635079317,
+      "crack_abs_error_m": 0.0180273986335482,
+      "critical_delivered": 1.0,
+      "energy_j": 17443.381343031713,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.15941198610342922,
+      "hidden_state_error_improvement": 0.8405880138965708,
+      "info_per_kj": 0.048189510815938745,
+      "info_per_time": 0.008405880138965708,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.8405880138965708,
+      "mission_success": 1.0,
+      "observations": 1.0,
+      "patch_max_visible_fraction": 0.6458333333333334,
+      "planner": "A-B1_fixed_inspection",
+      "planner_config": "A-B1_fixed_inspection",
+      "planner_name_in_run": "A-B1_fixed_inspection",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800006,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 24.380838035806434,
+      "uir": 0.0
+     },
+     "A-B2_coverage": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.005316477355045179,
+      "crack_abs_error_m": 0.0056630152319406685,
+      "critical_delivered": 1.0,
+      "energy_j": 18355.964549553257,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.5192867854382208,
+      "hidden_state_error_improvement": 0.4807132145617792,
+      "info_per_kj": 0.026188393056875817,
+      "info_per_time": 0.004807132145617792,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.4807132145617792,
+      "mission_success": 1.0,
+      "observations": 1.0,
+      "patch_max_visible_fraction": 0.8958333333333334,
+      "planner": "A-B2_coverage",
+      "planner_config": "A-B2_coverage",
+      "planner_name_in_run": "A-B2_coverage",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800006,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 25.980958447993782,
+      "uir": 0.0
+     },
+     "PRODUCTION": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.00043379029669368165,
+      "crack_abs_error_m": 0.0027605919700594006,
+      "critical_delivered": 1.0,
+      "energy_j": 18496.843442142603,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.057010055976801324,
+      "hidden_state_error_improvement": 0.9429899440231987,
+      "info_per_kj": 0.05098112804883893,
+      "info_per_time": 0.009429899440231987,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.9429899440231987,
+      "mission_success": 1.0,
+      "observations": 1.0,
+      "patch_max_visible_fraction": 0.75,
+      "planner": "PRODUCTION",
+      "planner_config": "PRODUCTION",
+      "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800006,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 25.80670917034208,
+      "uir": 0.0
+     }
+    },
+    "7800007": {
+     "A-B0_random": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0005875850074258887,
+      "crack_abs_error_m": 0.037409278988297066,
+      "critical_delivered": 1.0,
+      "energy_j": 22679.78660315919,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.2916472348911155,
+      "hidden_state_error_improvement": 0.7083527651088846,
+      "info_per_kj": 0.031232779104289028,
+      "info_per_time": 0.007083527651088845,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.7083527651088846,
+      "mission_success": 1.0,
+      "observations": 3.0,
+      "patch_max_visible_fraction": 0.4444444444444444,
+      "planner": "A-B0_random",
+      "planner_config": "A-B0_random",
+      "planner_name_in_run": "A-B0_random",
+      "plans": [
+       "PLAN",
+       "PLAN",
+       "PLAN",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 1.0,
+      "seed": 7800007,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 26.925004257986725,
+      "uir": 0.0
+     },
+     "A-B10_mcbr_full": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0001992784645159229,
+      "crack_abs_error_m": 0.031889313495551116,
+      "critical_delivered": 1.0,
+      "energy_j": 21038.791277998702,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.22119605480795554,
+      "hidden_state_error_improvement": 0.7788039451920444,
+      "info_per_kj": 0.037017523245571525,
+      "info_per_time": 0.007788039451920445,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.7788039451920444,
+      "mission_success": 1.0,
+      "observations": 1.0,
+      "patch_max_visible_fraction": 0.8611111111111112,
+      "planner": "A-B10_mcbr_full",
+      "planner_config": "A-B10_mcbr_full",
+      "planner_name_in_run": "A-B10_mcbr_full",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "NOT_WORTH_COST",
+       "NOT_WORTH_COST"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800007,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 26.095457314839315,
+      "uir": 0.0
+     },
+     "A-B1_fixed_inspection": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0002552152150602739,
+      "crack_abs_error_m": 0.03552070298772693,
+      "critical_delivered": 1.0,
+      "energy_j": 20515.4607546012,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.24940669758536607,
+      "hidden_state_error_improvement": 0.750593302414634,
+      "info_per_kj": 0.03658671435133579,
+      "info_per_time": 0.00750593302414634,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.750593302414634,
+      "mission_success": 1.0,
+      "observations": 1.0,
+      "patch_max_visible_fraction": 0.4444444444444444,
+      "planner": "A-B1_fixed_inspection",
+      "planner_config": "A-B1_fixed_inspection",
+      "planner_name_in_run": "A-B1_fixed_inspection",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "NO_FEASIBLE_OBSERVATION",
+       "NO_FEASIBLE_OBSERVATION"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800007,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 24.553446731954047,
+      "uir": 0.0
+     },
+     "A-B2_coverage": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 7.41873711125043e-05,
+      "crack_abs_error_m": 0.02401127114186937,
+      "critical_delivered": 1.0,
+      "energy_j": 23929.374251514688,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.1596550598149741,
+      "hidden_state_error_improvement": 0.8403449401850259,
+      "info_per_kj": 0.03511771479489622,
+      "info_per_time": 0.00840344940185026,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.8403449401850259,
+      "mission_success": 1.0,
+      "observations": 2.0,
+      "patch_max_visible_fraction": 0.8611111111111112,
+      "planner": "A-B2_coverage",
+      "planner_config": "A-B2_coverage",
+      "planner_name_in_run": "A-B2_coverage",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "PLAN",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800007,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 30.150861900271124,
+      "uir": 0.0
+     },
+     "PRODUCTION": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0001992784645159229,
+      "crack_abs_error_m": 0.031889313495551116,
+      "critical_delivered": 1.0,
+      "energy_j": 21111.364797565377,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.22119605480795554,
+      "hidden_state_error_improvement": 0.7788039451920444,
+      "info_per_kj": 0.03689026989301319,
+      "info_per_time": 0.007788039451920445,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.7788039451920444,
+      "mission_success": 1.0,
+      "observations": 3.0,
+      "patch_max_visible_fraction": 0.8611111111111112,
+      "planner": "PRODUCTION",
+      "planner_config": "PRODUCTION",
+      "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "PLAN",
+       "PLAN"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800007,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 26.21134323702295,
+      "uir": 0.0
+     }
+    },
+    "7800008": {
+     "A-B0_random": {
+      "collisions": 2.0,
+      "corrosion_abs_error_m": 0.0009328280363236022,
+      "crack_abs_error_m": 0.0223069143461175,
+      "critical_delivered": 1.0,
+      "energy_j": 11070.454769070055,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.22678678856184153,
+      "hidden_state_error_improvement": 0.7732132114381585,
+      "info_per_kj": 0.06984475593527133,
+      "info_per_time": 0.007732132114381585,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.7732132114381585,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.8541666666666666,
+      "planner": "A-B0_random",
+      "planner_config": "A-B0_random",
+      "planner_name_in_run": "A-B0_random",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800008,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.499184890174543,
+      "uir": 0.0
+     },
+     "A-B10_mcbr_full": {
+      "collisions": 2.0,
+      "corrosion_abs_error_m": 0.0009328280363236022,
+      "crack_abs_error_m": 0.0223069143461175,
+      "critical_delivered": 1.0,
+      "energy_j": 11070.454769070055,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.22678678856184153,
+      "hidden_state_error_improvement": 0.7732132114381585,
+      "info_per_kj": 0.06984475593527133,
+      "info_per_time": 0.007732132114381585,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.7732132114381585,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.8541666666666666,
+      "planner": "A-B10_mcbr_full",
+      "planner_config": "A-B10_mcbr_full",
+      "planner_name_in_run": "A-B10_mcbr_full",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800008,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.499184890174543,
+      "uir": 0.0
+     },
+     "A-B1_fixed_inspection": {
+      "collisions": 2.0,
+      "corrosion_abs_error_m": 0.0009328280363236022,
+      "crack_abs_error_m": 0.0223069143461175,
+      "critical_delivered": 1.0,
+      "energy_j": 11070.454769070055,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.22678678856184153,
+      "hidden_state_error_improvement": 0.7732132114381585,
+      "info_per_kj": 0.06984475593527133,
+      "info_per_time": 0.007732132114381585,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.7732132114381585,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.8541666666666666,
+      "planner": "A-B1_fixed_inspection",
+      "planner_config": "A-B1_fixed_inspection",
+      "planner_name_in_run": "A-B1_fixed_inspection",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800008,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.499184890174543,
+      "uir": 0.0
+     },
+     "A-B2_coverage": {
+      "collisions": 2.0,
+      "corrosion_abs_error_m": 0.0009328280363236022,
+      "crack_abs_error_m": 0.0223069143461175,
+      "critical_delivered": 1.0,
+      "energy_j": 11070.454769070055,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.22678678856184153,
+      "hidden_state_error_improvement": 0.7732132114381585,
+      "info_per_kj": 0.06984475593527133,
+      "info_per_time": 0.007732132114381585,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.7732132114381585,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.8541666666666666,
+      "planner": "A-B2_coverage",
+      "planner_config": "A-B2_coverage",
+      "planner_name_in_run": "A-B2_coverage",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800008,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.499184890174543,
+      "uir": 0.0
+     },
+     "PRODUCTION": {
+      "collisions": 2.0,
+      "corrosion_abs_error_m": 0.0009328280363236022,
+      "crack_abs_error_m": 0.0223069143461175,
+      "critical_delivered": 1.0,
+      "energy_j": 11070.454769070055,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.22678678856184153,
+      "hidden_state_error_improvement": 0.7732132114381585,
+      "info_per_kj": 0.06984475593527133,
+      "info_per_time": 0.007732132114381585,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.7732132114381585,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.8541666666666666,
+      "planner": "PRODUCTION",
+      "planner_config": "PRODUCTION",
+      "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800008,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 16.499184890174543,
+      "uir": 0.0
+     }
+    },
+    "7800009": {
+     "A-B0_random": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.005500409963991003,
+      "crack_abs_error_m": 0.07850419983213118,
+      "critical_delivered": 0.0,
+      "energy_j": 18112.59651755511,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 1.0,
+      "hidden_state_error_improvement": 0.0,
+      "info_per_kj": 0.0,
+      "info_per_time": 0.0,
+      "inspection_goal_t_s": 38.0,
+      "mission_error_reduction": 0.0,
+      "mission_success": 0.0,
+      "observations": 2.0,
+      "patch_max_visible_fraction": 0.0,
+      "planner": "A-B0_random",
+      "planner_config": "A-B0_random",
+      "planner_name_in_run": "A-B0_random",
+      "plans": [
+       "PLAN",
+       "PLAN"
+      ],
+      "redundant_observations": 2.0,
+      "seed": 7800009,
+      "target_observed": 0.0,
+      "time_s": 100.0,
+      "travel_m": 24.885782762979588,
+      "uir": 0.0
+     },
+     "A-B10_mcbr_full": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.005500409963991003,
+      "crack_abs_error_m": 0.07850419983213118,
+      "critical_delivered": 0.0,
+      "energy_j": 14034.326076071136,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 1.0,
+      "hidden_state_error_improvement": 0.0,
+      "info_per_kj": 0.0,
+      "info_per_time": 0.0,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.0,
+      "mission_success": 0.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.0,
+      "planner": "A-B10_mcbr_full",
+      "planner_config": "A-B10_mcbr_full",
+      "planner_name_in_run": "A-B10_mcbr_full",
+      "plans": [
+       "NOT_WORTH_COST",
+       "NOT_WORTH_COST",
+       "NOT_WORTH_COST",
+       "NOT_WORTH_COST"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800009,
+      "target_observed": 0.0,
+      "time_s": 100.0,
+      "travel_m": 17.414801539568295,
+      "uir": 0.0
+     },
+     "A-B1_fixed_inspection": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0009650561713141987,
+      "crack_abs_error_m": 0.011529763214557481,
+      "critical_delivered": 1.0,
+      "energy_j": 22131.96320959008,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.1611598936817329,
+      "hidden_state_error_improvement": 0.8388401063182671,
+      "info_per_kj": 0.03790174863270992,
+      "info_per_time": 0.008388401063182671,
+      "inspection_goal_t_s": 38.0,
+      "mission_error_reduction": 0.8388401063182671,
+      "mission_success": 1.0,
+      "observations": 4.0,
+      "patch_max_visible_fraction": 0.7291666666666666,
+      "planner": "A-B1_fixed_inspection",
+      "planner_config": "A-B1_fixed_inspection",
+      "planner_name_in_run": "A-B1_fixed_inspection",
+      "plans": [
+       "PLAN",
+       "PLAN",
+       "PLAN",
+       "PLAN"
+      ],
+      "redundant_observations": 3.0,
+      "seed": 7800009,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 27.53600875659021,
+      "uir": 0.0
+     },
+     "A-B2_coverage": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0005878503564222303,
+      "crack_abs_error_m": 0.017006907120571804,
+      "critical_delivered": 1.0,
+      "energy_j": 21251.975989836294,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.16175541238543342,
+      "hidden_state_error_improvement": 0.8382445876145665,
+      "info_per_kj": 0.039443136394256,
+      "info_per_time": 0.008382445876145665,
+      "inspection_goal_t_s": 38.0,
+      "mission_error_reduction": 0.8382445876145665,
+      "mission_success": 1.0,
+      "observations": 2.0,
+      "patch_max_visible_fraction": 0.75,
+      "planner": "A-B2_coverage",
+      "planner_config": "A-B2_coverage",
+      "planner_name_in_run": "A-B2_coverage",
+      "plans": [
+       "PLAN",
+       "PLAN",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 1.0,
+      "seed": 7800009,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 29.595298648442483,
+      "uir": 0.0
+     },
+     "PRODUCTION": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.005500409963991003,
+      "crack_abs_error_m": 0.07850419983213118,
+      "critical_delivered": 0.0,
+      "energy_j": 19060.13489510603,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 1.0,
+      "hidden_state_error_improvement": 0.0,
+      "info_per_kj": 0.0,
+      "info_per_time": 0.0,
+      "inspection_goal_t_s": 38.0,
+      "mission_error_reduction": 0.0,
+      "mission_success": 0.0,
+      "observations": 4.0,
+      "patch_max_visible_fraction": 0.0,
+      "planner": "PRODUCTION",
+      "planner_config": "PRODUCTION",
+      "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+      "plans": [
+       "PLAN",
+       "PLAN",
+       "PLAN",
+       "PLAN"
+      ],
+      "redundant_observations": 4.0,
+      "seed": 7800009,
+      "target_observed": 0.0,
+      "time_s": 100.0,
+      "travel_m": 21.83660362250126,
+      "uir": 0.0
+     }
+    },
+    "7800010": {
+     "A-B0_random": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.00024137939316470295,
+      "crack_abs_error_m": 0.021617768268211615,
+      "critical_delivered": 1.0,
+      "energy_j": 15215.30656479588,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.15963337264028263,
+      "hidden_state_error_improvement": 0.8403666273597173,
+      "info_per_kj": 0.05523165923610763,
+      "info_per_time": 0.008403666273597173,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.8403666273597173,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.8333333333333334,
+      "planner": "A-B0_random",
+      "planner_config": "A-B0_random",
+      "planner_name_in_run": "A-B0_random",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800010,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 17.030636675186777,
+      "uir": 0.0
+     },
+     "A-B10_mcbr_full": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.00024137939316470295,
+      "crack_abs_error_m": 0.021617768268211615,
+      "critical_delivered": 1.0,
+      "energy_j": 15215.30656479588,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.15963337264028263,
+      "hidden_state_error_improvement": 0.8403666273597173,
+      "info_per_kj": 0.05523165923610763,
+      "info_per_time": 0.008403666273597173,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.8403666273597173,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.8333333333333334,
+      "planner": "A-B10_mcbr_full",
+      "planner_config": "A-B10_mcbr_full",
+      "planner_name_in_run": "A-B10_mcbr_full",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800010,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 17.030636675186777,
+      "uir": 0.0
+     },
+     "A-B1_fixed_inspection": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.00024137939316470295,
+      "crack_abs_error_m": 0.021617768268211615,
+      "critical_delivered": 1.0,
+      "energy_j": 15215.30656479588,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.15963337264028263,
+      "hidden_state_error_improvement": 0.8403666273597173,
+      "info_per_kj": 0.05523165923610763,
+      "info_per_time": 0.008403666273597173,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.8403666273597173,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.8333333333333334,
+      "planner": "A-B1_fixed_inspection",
+      "planner_config": "A-B1_fixed_inspection",
+      "planner_name_in_run": "A-B1_fixed_inspection",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800010,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 17.030636675186777,
+      "uir": 0.0
+     },
+     "A-B2_coverage": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.00024137939316470295,
+      "crack_abs_error_m": 0.021617768268211615,
+      "critical_delivered": 1.0,
+      "energy_j": 15215.30656479588,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.15963337264028263,
+      "hidden_state_error_improvement": 0.8403666273597173,
+      "info_per_kj": 0.05523165923610763,
+      "info_per_time": 0.008403666273597173,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.8403666273597173,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.8333333333333334,
+      "planner": "A-B2_coverage",
+      "planner_config": "A-B2_coverage",
+      "planner_name_in_run": "A-B2_coverage",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800010,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 17.030636675186777,
+      "uir": 0.0
+     },
+     "PRODUCTION": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.00024137939316470295,
+      "crack_abs_error_m": 0.021617768268211615,
+      "critical_delivered": 1.0,
+      "energy_j": 15215.30656479588,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.15963337264028263,
+      "hidden_state_error_improvement": 0.8403666273597173,
+      "info_per_kj": 0.05523165923610763,
+      "info_per_time": 0.008403666273597173,
+      "inspection_goal_t_s": null,
+      "mission_error_reduction": 0.8403666273597173,
+      "mission_success": 1.0,
+      "observations": 0.0,
+      "patch_max_visible_fraction": 0.8333333333333334,
+      "planner": "PRODUCTION",
+      "planner_config": "PRODUCTION",
+      "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+      "plans": [
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800010,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 17.030636675186777,
+      "uir": 0.0
+     }
+    },
+    "7800011": {
+     "A-B0_random": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.005500793900917426,
+      "crack_abs_error_m": 0.07850507590575637,
+      "critical_delivered": 0.0,
+      "energy_j": 14810.199501028128,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 1.0,
+      "hidden_state_error_improvement": 0.0,
+      "info_per_kj": 0.0,
+      "info_per_time": 0.0,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.0,
+      "mission_success": 0.0,
+      "observations": 1.0,
+      "patch_max_visible_fraction": 0.0,
+      "planner": "A-B0_random",
+      "planner_config": "A-B0_random",
+      "planner_name_in_run": "A-B0_random",
+      "plans": [
+       "PLAN",
+       "NO_FEASIBLE_OBSERVATION",
+       "NO_FEASIBLE_OBSERVATION",
+       "NO_FEASIBLE_OBSERVATION"
+      ],
+      "redundant_observations": 1.0,
+      "seed": 7800011,
+      "target_observed": 0.0,
+      "time_s": 100.0,
+      "travel_m": 23.174386125574095,
+      "uir": 0.0
+     },
+     "A-B10_mcbr_full": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.00012872706164160364,
+      "crack_abs_error_m": 0.03126273949352984,
+      "critical_delivered": 1.0,
+      "energy_j": 16678.185087782207,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.21081362557225305,
+      "hidden_state_error_improvement": 0.789186374427747,
+      "info_per_kj": 0.04731848041462703,
+      "info_per_time": 0.00789186374427747,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.789186374427747,
+      "mission_success": 1.0,
+      "observations": 1.0,
+      "patch_max_visible_fraction": 0.7291666666666666,
+      "planner": "A-B10_mcbr_full",
+      "planner_config": "A-B10_mcbr_full",
+      "planner_name_in_run": "A-B10_mcbr_full",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "NOT_WORTH_COST",
+       "NOT_WORTH_COST"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800011,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 26.30722228679843,
+      "uir": 0.0
+     },
+     "A-B1_fixed_inspection": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0001863645794986154,
+      "crack_abs_error_m": 0.026754493439219103,
+      "critical_delivered": 1.0,
+      "energy_j": 15395.235892425968,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.18733955729566845,
+      "hidden_state_error_improvement": 0.8126604427043316,
+      "info_per_kj": 0.05278648852039598,
+      "info_per_time": 0.008126604427043316,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.8126604427043316,
+      "mission_success": 1.0,
+      "observations": 1.0,
+      "patch_max_visible_fraction": 0.75,
+      "planner": "A-B1_fixed_inspection",
+      "planner_config": "A-B1_fixed_inspection",
+      "planner_name_in_run": "A-B1_fixed_inspection",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800011,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 24.619108333879595,
+      "uir": 0.0
+     },
+     "A-B2_coverage": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.00041614567877743414,
+      "crack_abs_error_m": 0.016582921246917653,
+      "critical_delivered": 1.0,
+      "energy_j": 16838.029436001285,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.14344283822476528,
+      "hidden_state_error_improvement": 0.8565571617752348,
+      "info_per_kj": 0.05087039222914264,
+      "info_per_time": 0.008565571617752349,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.8565571617752348,
+      "mission_success": 1.0,
+      "observations": 1.0,
+      "patch_max_visible_fraction": 0.8958333333333334,
+      "planner": "A-B2_coverage",
+      "planner_config": "A-B2_coverage",
+      "planner_name_in_run": "A-B2_coverage",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800011,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 25.81325658031908,
+      "uir": 0.0
+     },
+     "PRODUCTION": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0001287270616795507,
+      "crack_abs_error_m": 0.02977024526923769,
+      "critical_delivered": 1.0,
+      "energy_j": 16825.871784428633,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.20130790758821918,
+      "hidden_state_error_improvement": 0.7986920924117809,
+      "info_per_kj": 0.0474680957185781,
+      "info_per_time": 0.007986920924117808,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.7986920924117809,
+      "mission_success": 1.0,
+      "observations": 3.0,
+      "patch_max_visible_fraction": 0.7291666666666666,
+      "planner": "PRODUCTION",
+      "planner_config": "PRODUCTION",
+      "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "PLAN",
+       "PLAN"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800011,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 26.44940222595545,
+      "uir": 0.0
+     }
+    },
+    "7800012": {
+     "A-B0_random": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 7.226762424701171e-05,
+      "crack_abs_error_m": 0.01534657523845881,
+      "critical_delivered": 1.0,
+      "energy_j": 27040.314036650554,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.10427868467485628,
+      "hidden_state_error_improvement": 0.8957213153251438,
+      "info_per_kj": 0.033125403577454,
+      "info_per_time": 0.008957213153251438,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.8957213153251438,
+      "mission_success": 1.0,
+      "observations": 3.0,
+      "patch_max_visible_fraction": 0.75,
+      "planner": "A-B0_random",
+      "planner_config": "A-B0_random",
+      "planner_name_in_run": "A-B0_random",
+      "plans": [
+       "PLAN",
+       "PLAN",
+       "PLAN"
+      ],
+      "redundant_observations": 2.0,
+      "seed": 7800012,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 34.54374118033066,
+      "uir": 0.0
+     },
+     "A-B10_mcbr_full": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.00022467934457172378,
+      "crack_abs_error_m": 0.023389775830941296,
+      "critical_delivered": 1.0,
+      "energy_j": 20365.57133339431,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.1693414780804247,
+      "hidden_state_error_improvement": 0.8306585219195752,
+      "info_per_kj": 0.040787391049398575,
+      "info_per_time": 0.008306585219195752,
+      "inspection_goal_t_s": 62.0,
+      "mission_error_reduction": 0.8306585219195752,
+      "mission_success": 1.0,
+      "observations": 1.0,
+      "patch_max_visible_fraction": 0.8181818181818182,
+      "planner": "A-B10_mcbr_full",
+      "planner_config": "A-B10_mcbr_full",
+      "planner_name_in_run": "A-B10_mcbr_full",
+      "plans": [
+       "NOT_WORTH_COST",
+       "NOT_WORTH_COST",
+       "NOT_WORTH_COST",
+       "PLAN"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800012,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 27.235610266081416,
+      "uir": 0.0
+     },
+     "A-B1_fixed_inspection": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0009849121625410961,
+      "crack_abs_error_m": 0.01190948087337837,
+      "critical_delivered": 1.0,
+      "energy_j": 20202.4599083845,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.1653432367866725,
+      "hidden_state_error_improvement": 0.8346567632133275,
+      "info_per_kj": 0.0413146105473485,
+      "info_per_time": 0.008346567632133275,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.8346567632133275,
+      "mission_success": 1.0,
+      "observations": 1.0,
+      "patch_max_visible_fraction": 0.7045454545454546,
+      "planner": "A-B1_fixed_inspection",
+      "planner_config": "A-B1_fixed_inspection",
+      "planner_name_in_run": "A-B1_fixed_inspection",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800012,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 25.223920629050056,
+      "uir": 0.0
+     },
+     "A-B2_coverage": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0006203454344189622,
+      "crack_abs_error_m": 0.00015266324157930944,
+      "critical_delivered": 1.0,
+      "energy_j": 21594.83044075575,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.057353831803175416,
+      "hidden_state_error_improvement": 0.9426461681968246,
+      "info_per_kj": 0.043651473475697034,
+      "info_per_time": 0.009426461681968246,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.9426461681968246,
+      "mission_success": 1.0,
+      "observations": 1.0,
+      "patch_max_visible_fraction": 0.8863636363636364,
+      "planner": "A-B2_coverage",
+      "planner_config": "A-B2_coverage",
+      "planner_name_in_run": "A-B2_coverage",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800012,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 26.166083353383694,
+      "uir": 0.0
+     },
+     "PRODUCTION": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0007503980848378349,
+      "crack_abs_error_m": 0.020672041201024234,
+      "critical_delivered": 1.0,
+      "energy_j": 19793.80674917952,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.19981929933509932,
+      "hidden_state_error_improvement": 0.8001807006649007,
+      "info_per_kj": 0.04042581150783789,
+      "info_per_time": 0.008001807006649007,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.8001807006649007,
+      "mission_success": 1.0,
+      "observations": 1.0,
+      "patch_max_visible_fraction": 0.36363636363636365,
+      "planner": "PRODUCTION",
+      "planner_config": "PRODUCTION",
+      "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "NO_FEASIBLE_OBSERVATION",
+       "NO_FEASIBLE_OBSERVATION"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800012,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 24.829608812555286,
+      "uir": 0.0
+     }
+    },
+    "7800013": {
+     "A-B0_random": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.004877842493145787,
+      "crack_abs_error_m": 0.024559245149259896,
+      "critical_delivered": 1.0,
+      "energy_j": 17835.753005527637,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.5997021081617813,
+      "hidden_state_error_improvement": 0.40029789183821873,
+      "info_per_kj": 0.022443565557011182,
+      "info_per_time": 0.004002978918382187,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.40029789183821873,
+      "mission_success": 1.0,
+      "observations": 2.0,
+      "patch_max_visible_fraction": 0.8936170212765957,
+      "planner": "A-B0_random",
+      "planner_config": "A-B0_random",
+      "planner_name_in_run": "A-B0_random",
+      "plans": [
+       "PLAN",
+       "PLAN",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 1.0,
+      "seed": 7800013,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 26.71967604813475,
+      "uir": 0.0
+     },
+     "A-B10_mcbr_full": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0055010914070517825,
+      "crack_abs_error_m": 0.07853938999687292,
+      "critical_delivered": 1.0,
+      "energy_j": 19918.071427105104,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 1.0,
+      "hidden_state_error_improvement": 0.0,
+      "info_per_kj": 0.0,
+      "info_per_time": 0.0,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.0,
+      "mission_success": 0.0,
+      "observations": 2.0,
+      "patch_max_visible_fraction": 0.8085106382978723,
+      "planner": "A-B10_mcbr_full",
+      "planner_config": "A-B10_mcbr_full",
+      "planner_name_in_run": "A-B10_mcbr_full",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "PLAN",
+       "NOT_WORTH_COST"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800013,
+      "target_observed": 0.0,
+      "time_s": 100.0,
+      "travel_m": 30.736188094372803,
+      "uir": 0.0
+     },
+     "A-B1_fixed_inspection": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.004877842493133621,
+      "crack_abs_error_m": 0.02471327969938477,
+      "critical_delivered": 1.0,
+      "energy_j": 16090.030361064186,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.6006827278862108,
+      "hidden_state_error_improvement": 0.3993172721137892,
+      "info_per_kj": 0.024817682947329042,
+      "info_per_time": 0.003993172721137892,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.3993172721137892,
+      "mission_success": 1.0,
+      "observations": 2.0,
+      "patch_max_visible_fraction": 0.8936170212765957,
+      "planner": "A-B1_fixed_inspection",
+      "planner_config": "A-B1_fixed_inspection",
+      "planner_name_in_run": "A-B1_fixed_inspection",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "PLAN",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800013,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 25.812263500125805,
+      "uir": 0.0
+     },
+     "A-B2_coverage": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0043288159235454725,
+      "crack_abs_error_m": 0.03906234912428871,
+      "critical_delivered": 1.0,
+      "energy_j": 21424.374562939214,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 0.6421306329050898,
+      "hidden_state_error_improvement": 0.35786936709491024,
+      "info_per_kj": 0.01670384197417682,
+      "info_per_time": 0.0035786936709491022,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.35786936709491024,
+      "mission_success": 1.0,
+      "observations": 2.0,
+      "patch_max_visible_fraction": 0.8936170212765957,
+      "planner": "A-B2_coverage",
+      "planner_config": "A-B2_coverage",
+      "planner_name_in_run": "A-B2_coverage",
+      "plans": [
+       "PLAN",
+       "PLAN",
+       "NEED_SATISFIED"
+      ],
+      "redundant_observations": 0.0,
+      "seed": 7800013,
+      "target_observed": 1.0,
+      "time_s": 100.0,
+      "travel_m": 30.18245456602711,
+      "uir": 0.0
+     },
+     "PRODUCTION": {
+      "collisions": 0.0,
+      "corrosion_abs_error_m": 0.0055010914070517825,
+      "crack_abs_error_m": 0.07853938999687292,
+      "critical_delivered": 1.0,
+      "energy_j": 19919.6140040794,
+      "family": "straight_pipeline",
+      "hidden_state_error_final": 1.0,
+      "hidden_state_error_improvement": 0.0,
+      "info_per_kj": 0.0,
+      "info_per_time": 0.0,
+      "inspection_goal_t_s": 36.0,
+      "mission_error_reduction": 0.0,
+      "mission_success": 0.0,
+      "observations": 3.0,
+      "patch_max_visible_fraction": 0.8085106382978723,
+      "planner": "PRODUCTION",
+      "planner_config": "PRODUCTION",
+      "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+      "plans": [
+       "PLAN",
+       "NEED_SATISFIED",
+       "PLAN",
+       "PLAN"
+      ],
+      "redundant_observations": 1.0,
+      "seed": 7800013,
+      "target_observed": 0.0,
+      "time_s": 100.0,
+      "travel_m": 30.738782612723288,
+      "uir": 0.0
+     }
+    }
+   },
+   "summary": {
+    "A-B0_random": {
+     "collisions": {
+      "mean": 0.16666666666666666,
+      "n": 12,
+      "std": 0.5527707983925666
+     },
+     "critical_delivered": {
+      "mean": 0.75,
+      "n": 12,
+      "std": 0.4330127018922193
+     },
+     "energy_j": {
+      "mean": 16902.71374456538,
+      "n": 12,
+      "std": 5420.989465139113
+     },
+     "hidden_state_error_final": {
+      "mean": 0.4084409046272181,
+      "n": 12,
+      "std": 0.36645861932101315
+     },
+     "hidden_state_error_improvement": {
+      "mean": 0.591559095372782,
+      "n": 12,
+      "std": 0.3664586193210132
+     },
+     "info_per_kj": {
+      "mean": 0.041507448967006984,
+      "n": 12,
+      "std": 0.03038916345898439
+     },
+     "info_per_time": {
+      "mean": 0.00591559095372782,
+      "n": 12,
+      "std": 0.0036645861932101315
+     },
+     "mission_error_reduction": {
+      "mean": 0.591559095372782,
+      "n": 12,
+      "std": 0.3664586193210132
+     },
+     "mission_success": {
+      "mean": 0.75,
+      "n": 12,
+      "std": 0.4330127018922193
+     },
+     "observations": {
+      "mean": 1.25,
+      "n": 12,
+      "std": 1.2332207155790618
+     },
+     "redundant_observations": {
+      "mean": 0.8333333333333334,
+      "n": 12,
+      "std": 0.9860132971832694
+     },
+     "target_observed": {
+      "mean": 0.75,
+      "n": 12,
+      "std": 0.4330127018922193
+     },
+     "travel_m": {
+      "mean": 23.159172744500413,
+      "n": 12,
+      "std": 6.386535074026772
+     }
+    },
+    "A-B10_mcbr_full": {
+     "collisions": {
+      "mean": 0.16666666666666666,
+      "n": 12,
+      "std": 0.5527707983925666
+     },
+     "critical_delivered": {
+      "mean": 0.8333333333333334,
+      "n": 12,
+      "std": 0.3726779962499649
+     },
+     "energy_j": {
+      "mean": 15394.117397928785,
+      "n": 12,
+      "std": 3901.5228166293464
+     },
+     "hidden_state_error_final": {
+      "mean": 0.3696856505235418,
+      "n": 12,
+      "std": 0.36768364346807014
+     },
+     "hidden_state_error_improvement": {
+      "mean": 0.6303143494764581,
+      "n": 12,
+      "std": 0.36768364346807014
+     },
+     "info_per_kj": {
+      "mean": 0.044525875397394506,
+      "n": 12,
+      "std": 0.029529944700034876
+     },
+     "info_per_time": {
+      "mean": 0.0063031434947645815,
+      "n": 12,
+      "std": 0.0036768364346807018
+     },
+     "mission_error_reduction": {
+      "mean": 0.6303143494764581,
+      "n": 12,
+      "std": 0.36768364346807014
+     },
+     "mission_success": {
+      "mean": 0.75,
+      "n": 12,
+      "std": 0.4330127018922193
+     },
+     "observations": {
+      "mean": 0.5,
+      "n": 12,
+      "std": 0.6454972243679028
+     },
+     "redundant_observations": {
+      "mean": 0.0,
+      "n": 12,
+      "std": 0.0
+     },
+     "target_observed": {
+      "mean": 0.75,
+      "n": 12,
+      "std": 0.4330127018922193
+     },
+     "travel_m": {
+      "mean": 21.151597881050908,
+      "n": 12,
+      "std": 5.361443245616497
+     }
+    },
+    "A-B1_fixed_inspection": {
+     "collisions": {
+      "mean": 0.16666666666666666,
+      "n": 12,
+      "std": 0.5527707983925666
+     },
+     "critical_delivered": {
+      "mean": 1.0,
+      "n": 12,
+      "std": 0.0
+     },
+     "energy_j": {
+      "mean": 15847.267186741332,
+      "n": 12,
+      "std": 3931.4182089847354
+     },
+     "hidden_state_error_final": {
+      "mean": 0.1935695766160417,
+      "n": 12,
+      "std": 0.13615270395433346
+     },
+     "hidden_state_error_improvement": {
+      "mean": 0.8064304233839583,
+      "n": 12,
+      "std": 0.13615270395433346
+     },
+     "info_per_kj": {
+      "mean": 0.05462442079648571,
+      "n": 12,
+      "std": 0.017885808749010718
+     },
+     "info_per_time": {
+      "mean": 0.008064304233839583,
+      "n": 12,
+      "std": 0.0013615270395433345
+     },
+     "mission_error_reduction": {
+      "mean": 0.8064304233839583,
+      "n": 12,
+      "std": 0.13615270395433346
+     },
+     "mission_success": {
+      "mean": 1.0,
+      "n": 12,
+      "std": 0.0
+     },
+     "observations": {
+      "mean": 0.9166666666666666,
+      "n": 12,
+      "std": 1.114924013354971
+     },
+     "redundant_observations": {
+      "mean": 0.25,
+      "n": 12,
+      "std": 0.82915619758885
+     },
+     "target_observed": {
+      "mean": 1.0,
+      "n": 12,
+      "std": 0.0
+     },
+     "travel_m": {
+      "mean": 21.736612504733824,
+      "n": 12,
+      "std": 4.3611691327918365
+     }
+    },
+    "A-B2_coverage": {
+     "collisions": {
+      "mean": 0.16666666666666666,
+      "n": 12,
+      "std": 0.5527707983925666
+     },
+     "critical_delivered": {
+      "mean": 1.0,
+      "n": 12,
+      "std": 0.0
+     },
+     "energy_j": {
+      "mean": 16909.98117722744,
+      "n": 12,
+      "std": 4676.466111245326
+     },
+     "hidden_state_error_final": {
+      "mean": 0.20987510069946066,
+      "n": 12,
+      "std": 0.17540381240611155
+     },
+     "hidden_state_error_improvement": {
+      "mean": 0.7901248993005394,
+      "n": 12,
+      "std": 0.17540381240611158
+     },
+     "info_per_kj": {
+      "mean": 0.05176350516534847,
+      "n": 12,
+      "std": 0.02056594107749402
+     },
+     "info_per_time": {
+      "mean": 0.007901248993005393,
+      "n": 12,
+      "std": 0.0017540381240611158
+     },
+     "mission_error_reduction": {
+      "mean": 0.7901248993005394,
+      "n": 12,
+      "std": 0.17540381240611158
+     },
+     "mission_success": {
+      "mean": 1.0,
+      "n": 12,
+      "std": 0.0
+     },
+     "observations": {
+      "mean": 0.8333333333333334,
+      "n": 12,
+      "std": 0.7993052538854533
+     },
+     "redundant_observations": {
+      "mean": 0.08333333333333333,
+      "n": 12,
+      "std": 0.2763853991962833
+     },
+     "target_observed": {
+      "mean": 1.0,
+      "n": 12,
+      "std": 0.0
+     },
+     "travel_m": {
+      "mean": 23.129058503768842,
+      "n": 12,
+      "std": 5.666617479597408
+     }
+    },
+    "PRODUCTION": {
+     "collisions": {
+      "mean": 0.16666666666666666,
+      "n": 12,
+      "std": 0.5527707983925666
+     },
+     "critical_delivered": {
+      "mean": 0.9166666666666666,
+      "n": 12,
+      "std": 0.2763853991962833
+     },
+     "energy_j": {
+      "mean": 16227.738380719195,
+      "n": 12,
+      "std": 3942.0012749149205
+     },
+     "hidden_state_error_final": {
+      "mean": 0.29285083046082866,
+      "n": 12,
+      "std": 0.3219406580031327
+     },
+     "hidden_state_error_improvement": {
+      "mean": 0.7071491695391714,
+      "n": 12,
+      "std": 0.3219406580031327
+     },
+     "info_per_kj": {
+      "mean": 0.04874603460228375,
+      "n": 12,
+      "std": 0.026323675632810187
+     },
+     "info_per_time": {
+      "mean": 0.007071491695391713,
+      "n": 12,
+      "std": 0.0032194065800313274
+     },
+     "mission_error_reduction": {
+      "mean": 0.7071491695391714,
+      "n": 12,
+      "std": 0.3219406580031327
+     },
+     "mission_success": {
+      "mean": 0.8333333333333334,
+      "n": 12,
+      "std": 0.372677996249965
+     },
+     "observations": {
+      "mean": 1.3333333333333333,
+      "n": 12,
+      "std": 1.4337208778404378
+     },
+     "redundant_observations": {
+      "mean": 0.4166666666666667,
+      "n": 12,
+      "std": 1.114924013354971
+     },
+     "target_observed": {
+      "mean": 0.8333333333333334,
+      "n": 12,
+      "std": 0.372677996249965
+     },
+     "travel_m": {
+      "mean": 22.12768651915742,
+      "n": 12,
+      "std": 4.983545652861947
+     }
+    }
+   },
+   "world_seeds": [
+    7800002,
+    7800003,
+    7800004,
+    7800005,
+    7800006,
+    7800007,
+    7800008,
+    7800009,
+    7800010,
+    7800011,
+    7800012,
+    7800013
+   ]
+  }
+ },
+ "primary_metric": "hidden_state_error_improvement",
+ "scenario": "FLAGSHIP-I4"
+}

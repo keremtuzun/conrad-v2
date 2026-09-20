@@ -93,6 +93,30 @@ UNITY_SCENARIOS: dict[str, dict[str, Any]] = {
         "world": {"ecological_enabled": False},
         "runtime": {"model2e_enabled": False, "duration_s": 30.0, "control_period_s": 0.1},
     },
+    # Gate I4 (closed active inspection): the FLAGSHIP-I4 world and the ACTIVE-MCBR-E004 budgets. The planner under
+    # comparison is set per run through the stored runtime config (tests/unity_live/test_i4_unity.py).
+    "I4-UNITY": {
+        "base": "FLAGSHIP-I4",
+        "world": {"ecological_enabled": False},
+        "runtime": {
+            "model2e_enabled": False,
+            "duration_s": 100.0,
+            "control_period_s": 0.1,
+            "max_plans_per_need": 4,
+        },
+    },
+}
+# Gate I6 (multi-domain): the kernel I6 scenarios on Unity with Twin2E (optics grid + biofouling colours, Python-side
+# Twin2E payload channels). Same worlds, arms and runtime as the surrogate (configs/eval/i6_multidomain.yaml).
+UNITY_SCENARIOS["I6-UNITY-TURBID"] = {
+    "base": "I6-MULTIDOMAIN-TURBID",
+    "world": {"ecological_enabled": True},
+    "runtime": {"model2e_enabled": True, "control_period_s": 0.1},
+}
+UNITY_SCENARIOS["I6-UNITY-CLEAR"] = {
+    "base": "I6-MULTIDOMAIN-CLEAR",
+    "world": {"ecological_enabled": True},
+    "runtime": {"model2e_enabled": True, "control_period_s": 0.1},
 }
 NAV_UNITY_IDS = tuple(f"NAV-00{i}" for i in range(1, 7))
 UNITY_SCENARIO_IDS = (*UNITY_SCENARIOS, "I2-UNITY-NAV")
@@ -201,6 +225,8 @@ class UnitySession:
         world.recorder.series["unity_geometric_capture"] = list(world.hardware.capture_log)
         world.recorder.meta["unity_forwarded_frames"] = dict(world.hardware.forwarded_counts)
         world.recorder.meta["unity_validity_level"] = world.hardware.validity_level.value
+        if world.t2e is not None:  # gate I6: every Twin2E optics refresh sent to Unity (truth side)
+            world.recorder.series["unity_optics_updates"] = list(world.optics_updates)
         truth = world.truth_access()
         world.recorder.finish(truth, self.run_dir)
         if self.tape is not None:
@@ -220,6 +246,8 @@ class UnitySession:
             "scene_conversion": world.scene_report.model_dump(mode="json"),
             "forwarded_frames": dict(world.hardware.forwarded_counts),
             "out_of_order_packets": world.hardware.out_of_order_packets,
+            "eco_conversion": None if world.eco_report is None else world.eco_report.model_dump(mode="json"),
+            "optics_updates": len(world.optics_updates),
         }
         (self.run_dir / "reports").mkdir(exist_ok=True)
         (self.run_dir / "reports" / "metrics.json").write_text(
@@ -257,7 +285,7 @@ def unity_replay_inputs(s: UnitySession) -> dict[str, Any]:
         "twin_versions": {
             "twin2s": world.scenario.scenario_version,
             "twin2t": world.t2t.config.generator_version,
-            "twin2e": None,
+            "twin2e": None if world.t2e is None else world.scenario.scenario_version,
         },
         "model_versions": {
             "model2t": "model2t-analytic-0.1.0",

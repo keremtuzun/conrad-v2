@@ -1,0 +1,28 @@
+# ACTIVE-MCBR-E004: integrated SURROGATE mission for gate I4 (python sim kernel, FLAGSHIP-I4). SYNTHETIC_ONLY.
+# Declared 2026-09-19 BEFORE any run on these worlds. The I4 worlds are unity_gate final_test seeds
+# 7800002-7800013 (configs/eval/partitions_unity_gates.yaml, digest-pinned, not edited): 7800000 = I1 and
+# 7800001 = I3 are other gates' roles; the file comment reserves 7800002+ for the next formal Unity gates in
+# dependency order, and I4 is next. The SAME 12 worlds are used for this surrogate check and for the formal Unity
+# run (tests/unity_live/test_i4_unity.py). The mission final seeds 5300000-5300059 are SPENT; 2026201 is
+# contaminated. Nothing here was tuned on these worlds.
+experiment_id: ACTIVE-MCBR-E004
+stage: e004
+hypothesis: with the belief-side predictive model, the frozen production planner beats fixed, random and coverage views on the target's actual hidden-state error in the integrated mission
+primary_metric: hidden_state_error_improvement
+direction: higher
+baselines: [A-B1_fixed_inspection, A-B0_random, A-B2_coverage, A-B10_mcbr_full]
+planners: [PRODUCTION, A-B1_fixed_inspection, A-B0_random, A-B2_coverage, A-B10_mcbr_full]
+i4_worlds: [7800002, 7800003, 7800004, 7800005, 7800006, 7800007, 7800008, 7800009, 7800010, 7800011, 7800012, 7800013]
+seeds: [7800002, 7800003, 7800004, 7800005, 7800006, 7800007, 7800008, 7800009, 7800010, 7800011, 7800012, 7800013]
+# Matched budgets: same mission duration (time budget), same max plans per need (observation budget), same single
+# structural sensor, same candidate generator / feasibility filter / PlanningRequest; energy and travel measured.
+runtime: {duration_s: 100.0, control_period_s: 0.1, max_plans_per_need: 4}
+workers: 6
+decision_rule: >-
+  Unit = one world (paired across planners). PRODUCTION beats a baseline on a metric iff the lower bound of the
+  95 % paired percentile-bootstrap CI (4000 resamples) of the benefit (PRODUCTION better = positive) is > 0.
+  I4 criteria: 'beats fixed views on actual hidden-state reconstruction' = hidden_state_error_improvement vs
+  A-B1_fixed_inspection; 'beats random views' = the same vs A-B0_random; 'beats coverage-only' = the same vs
+  A-B2_coverage; 'beats simple views on information/time/energy' = info_per_time AND info_per_kj vs each of those
+  three; the closed-loop criterion = PRODUCTION's mean hidden_state_error_improvement > 0 with at least one
+  accepted MCBR inspection goal that produced new target evidence in >= half of the worlds that needed one.

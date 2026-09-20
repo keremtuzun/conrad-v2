@@ -1,39 +1,37 @@
 {
   "gate_id": "I4",
   "evidence_class": "SURROGATE",
-  "execution_path": "python L1 kernel integrated mission (ACTIVE-MCBR-E003) + abstract occlusion world (ACTIVE-MCBR-E002), final partitions",
-  "git_commit": "3a3dd314cabf8e0d942edc9e873fa74b17970324",
+  "execution_path": "python L1 kernel instead of Unity; pytest nodes + retained experiment artifacts (I4)",
+  "git_commit": "99537e719267de88d8e382a224597f6e6399b584",
   "criteria": [
     {
       "criterion": "critical structure partly hidden -> uncertain -> MCBR view -> navigation -> new evidence -> belief improves",
-      "status": "FAIL",
-      "measured": "ACTIVE-MCBR-E003 final: production planner improves the target less than fixed view (-0.039 [-0.082,-0.003])"
+      "status": "PASS",
+      "measured": "test_i4_e004_artifact_is_the_frozen_planner_on_the_declared_worlds=PASS; experiment: worlds 12, MCBR planned in 7, informative view in 6, mean hidden-state error improvement 0.707"
     },
     {
       "criterion": "beats fixed views on actual hidden-state reconstruction",
       "status": "FAIL",
-      "measured": "mission final: -0.039 [-0.082,-0.003]; abstract world final: +0.396 [0.374,0.417]"
+      "measured": "test_i4_e004_artifact_is_the_frozen_planner_on_the_declared_worlds=PASS; experiment: hidden_state_error_improvement vs A-B1_fixed_inspection: -0.099 [-0.273, +0.012] n=12"
     },
     {
       "criterion": "beats random views",
       "status": "FAIL",
-      "measured": "mission final: +0.030 [-0.028,+0.097] (CI includes 0); abstract +0.122 [0.102,0.144]"
+      "measured": "test_i4_e004_artifact_is_the_frozen_planner_on_the_declared_worlds=PASS; experiment: hidden_state_error_improvement vs A-B0_random: +0.116 [-0.067, +0.342] n=12"
     },
     {
       "criterion": "beats coverage-only",
       "status": "FAIL",
-      "measured": "mission final: -0.050 [-0.095,-0.014]; abstract +0.170 [0.150,0.188]"
+      "measured": "test_i4_e004_artifact_is_the_frozen_planner_on_the_declared_worlds=PASS; experiment: hidden_state_error_improvement vs A-B2_coverage: -0.083 [-0.261, +0.067] n=12"
     },
     {
       "criterion": "beats simple views on information/time/energy",
-      "status": "NOT_EVALUABLE",
-      "measured": "abstract world: best info/time and info/energy; mission not separately established"
+      "status": "FAIL",
+      "measured": "test_i4_e004_artifact_is_the_frozen_planner_on_the_declared_worlds=PASS; experiment: info_per_time vs A-B1_fixed_inspection: -0.001 [-0.003, +0.000] n=12; info_per_kj vs A-B1_fixed_inspection: -0.006 [-0.014, -0.000] n=12; info_per_time vs A-B0_random: +0.001 [-0.001, +0.003] n=12; info_per_kj vs A-B0_random: +0.007 [-0.003, +0.019] n=12; info_per_time vs A-B2_coverage: -0.001 [-0.003, +0.001] n=12; info_per_kj vs A-B2_coverage: -0.003 [-0.012, +0.004] n=12"
     }
   ],
   "artifacts": [
-    "artifacts/experiments/ACTIVE-MCBR-E002",
-    "artifacts/experiments/ACTIVE-MCBR-E003",
-    "docs/audits/MCBR_REEVALUATION.md"
+    "tests/acceptance/test_i4_matched_policy.py::test_i4_e004_artifact_is_the_frozen_planner_on_the_declared_worlds"
   ],
-  "notes": "production planner bayes_eig/ratio frozen digest 8eca16cc...; seed 2026201 marked DEVELOPMENT/CONTAMINATED"
+  "notes": ""
 }

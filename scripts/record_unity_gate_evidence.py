@@ -1,12 +1,12 @@
-"""Record FORMAL evidence for gates I1, I2, I3 from the live Unity tests (ADR-0008).
+"""Record FORMAL evidence for gates I1, I2, I3, I4 from the live Unity tests (ADR-0008).
 
-Runs ``tests/unity_live/test_i{1,2,3}_unity.py`` against the built player, maps every gate criterion (names exactly
+Runs ``tests/unity_live/test_i{1,2,3,4}_unity.py`` against the built player, maps every gate criterion (names exactly
 as in ``conrad.evaluation.gates``) to the pytest nodes that decide it, and writes
 ``artifacts/gates/<gate>/evidence_formal.json`` with the numbers the tests measured
 (``artifacts/gates/<gate>/unity_measured.json``). A criterion is PASS only if all its nodes passed; a skipped node
 (player binary absent) makes it NOT_RUN. The replay test of each gate is attached to every criterion.
 
-Usage: python -m uv run python scripts/record_unity_gate_evidence.py [I1 I2 I3] [--no-run]
+Usage: python -m uv run python scripts/record_unity_gate_evidence.py [I1 I2 I3 I4 I6] [--no-run]
 """
 
 from __future__ import annotations
@@ -37,10 +37,15 @@ I2_FAULT_CASES = tuple(fault_cases()["cases"])  # configs/sim/nav_fault_cases.ya
 T1 = "tests/unity_live/test_i1_unity.py::"
 T2 = "tests/unity_live/test_i2_unity.py::"
 T3 = "tests/unity_live/test_i3_unity.py::"
+T4 = "tests/unity_live/test_i4_unity.py::"
+T6 = "tests/unity_live/test_i6_unity.py::"
+I4_BASES = ("A-B1_fixed_inspection", "A-B0_random", "A-B2_coverage")
 MODULES = {
     "I1": "tests/unity_live/test_i1_unity.py",
     "I2": "tests/unity_live/test_i2_unity.py",
     "I3": "tests/unity_live/test_i3_unity.py",
+    "I4": "tests/unity_live/test_i4_unity.py",
+    "I6": "tests/unity_live/test_i6_unity.py",
 }
 REPLAY = {
     "I1": [T1 + "test_bundle_replays_deterministically"],
@@ -49,6 +54,12 @@ REPLAY = {
         T2 + "test_bundle_replays_deterministically[NAV-006]",
     ],
     "I3": [T3 + "test_bundle_replays_deterministically"],
+    "I4": [T4 + "test_bundle_replays_deterministically", T4 + "test_no_twin_truth_leakage_on_runtime_side"],
+    "I6": [
+        T6 + "test_bundle_replays_deterministically",
+        T6 + "test_no_twin_truth_leakage_on_runtime_side",
+        T6 + "test_twin2e_reaches_the_unity_camera",
+    ],
 }
 PLAN: dict[str, list[tuple[str, list[str], list[str]]]] = {
     # (criterion, deciding nodes, measured keys in unity_measured.json)
@@ -106,6 +117,46 @@ PLAN: dict[str, list[tuple[str, list[str], list[str]]]] = {
             "persistent technical belief",
             [T3 + "test_persistent_technical_belief"],
             ["persistent technical belief"],
+        ),
+    ],
+    # I4: 12 held-out worlds x {PRODUCTION, fixed, random, coverage}, sequential Unity flights (ACTIVE-MCBR-E004
+    # worlds and budgets); paired bootstrap over worlds, "beats" = CI95 lower bound > 0 (pre-declared).
+    "I4": [
+        (
+            "critical structure partly hidden -> uncertain -> MCBR view -> navigation -> new evidence -> belief improves",
+            [T4 + "test_closed_loop_mcbr_view_improves_hidden_target"],
+            ["closed loop"],
+        ),
+        (
+            "beats fixed views on actual hidden-state reconstruction",
+            [T4 + "test_beats_fixed_views_on_hidden_state_reconstruction"],
+            ["beats fixed views"],
+        ),
+        ("beats random views", [T4 + "test_beats_random_views"], ["beats random views"]),
+        ("beats coverage-only", [T4 + "test_beats_coverage_only"], ["beats coverage-only"]),
+        (
+            "beats simple views on information/time/energy",
+            [T4 + f"test_beats_simple_views_on_information_per_time_and_energy[{b}]" for b in I4_BASES],
+            [f"information/time/energy vs {b}" for b in I4_BASES],
+        ),
+    ],
+    # I6: worlds 7800014-7800016 x {TURBID, CLEAR}, declared in configs/eval/i6_multidomain.yaml before any run; a
+    # criterion passes iff it passes on all three worlds (decision rule in that config).
+    "I6": [
+        (
+            "one mission produces 2S, 2T and 2E beliefs",
+            [T6 + "test_one_mission_produces_2s_2t_2e_beliefs"],
+            ["one mission produces 2S, 2T and 2E beliefs"],
+        ),
+        (
+            "Model1 reasons across all three via the Belief Bus",
+            [T6 + "test_model1_reasons_across_all_three_via_the_belief_bus"],
+            ["Model1 reasons across all three via the Belief Bus", "twin2e -> unity"],
+        ),
+        (
+            "children remain authoritative within domains",
+            [T6 + "test_children_remain_authoritative_within_domains"],
+            ["children remain authoritative within domains"],
         ),
     ],
 }
@@ -187,6 +238,16 @@ def record(gate: str, rerun: bool = True) -> GateEvidence:
     )
     if gate == "I3":
         note += "; official I3 status also needs gate 2T (produced by another workstream)"
+    if gate == "I6":
+        note += (
+            "; worlds and arms declared before any run in configs/eval/i6_multidomain.yaml; per-run results in "
+            "artifacts/gates/I6/unity_i6_results.json"
+        )
+    if gate == "I4":
+        note += (
+            "; worlds declared before any run in configs/eval/active_mcbr_e004.yaml; per-world results in "
+            "artifacts/gates/I4/unity_i4_results.json"
+        )
     ev = GateEvidence(
         gate_id=gate,
         evidence_class=EvidenceClass.FORMAL,
@@ -198,6 +259,8 @@ def record(gate: str, rerun: bool = True) -> GateEvidence:
             f"artifacts/gates/{gate}/unity_measured.json",
             f"artifacts/gates/{gate}/unity_pytest.xml",
             f"artifacts/unity/gate_runs/{gate}",
+            *((f"artifacts/gates/{gate}/unity_i4_results.json",) if gate == "I4" else ()),
+            *((f"artifacts/gates/{gate}/unity_i6_results.json",) if gate == "I6" else ()),
         ),
         notes=note,
     )
@@ -215,7 +278,7 @@ if __name__ == "__main__":
         e = record(g, rerun)
         print(g, [f"{c.criterion}:{c.status.value}" for c in e.criteria])
     reports = evaluate_gates()
-    for g in ("U0", "2S-FIRST", "I1", "I2", "2T", "I3"):
+    for g in ("U0", "2S-FIRST", "I1", "I2", "2T", "I3", "I4"):
         r = reports[g]
         print(
             f"{g:<9} official={r.official_status.value} formal={r.formal_status.value} "

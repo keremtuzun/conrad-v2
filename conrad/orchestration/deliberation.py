@@ -11,7 +11,7 @@ implementation_status: EXPERIMENTAL_CANDIDATE
 from __future__ import annotations
 
 import math
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from typing import Any
 from uuid import UUID
@@ -20,6 +20,7 @@ import numpy as np
 
 from conrad.active import MCBRConfig, MCBRPlanner, PlanningRequest, SensorOption, make_planners
 from conrad.active.planner import PlanResult
+from conrad.active.predictive import PredictiveBelief
 from conrad.active.production import PRODUCTION, production_planner
 from conrad.decision.config import DecisionConfig
 from conrad.decision.context import DecisionContext, DecisionSummary, MissionRequirement
@@ -34,7 +35,7 @@ from conrad.orchestration.belief_bus import BeliefBus
 from conrad.orchestration.mission_config import MissionRuntimeConfig
 from conrad.orchestration.mission_context import MissionContext
 from conrad.orchestration.services import RuntimeServices
-from conrad.schemas.belief import BeliefMessage, BeliefQuery
+from conrad.schemas.belief import BeliefMessage, BeliefQuery, BeliefSnapshot
 from conrad.schemas.comms import LinkState
 from conrad.schemas.decision import (
     InformationNeed,
@@ -91,6 +92,9 @@ class Deliberation:
         self.decisions: list[DecisionOutcome] = []
         self.plans: list[AdoptedPlan] = []
         self.last_route: tuple[list[SpatialSupport], dict[str, list[str]]] = ([], {})
+        # Optional belief-side predictive model of MCBR (I4 repair): beliefs of the need -> PredictiveBelief.
+        # Set by MissionRuntime (conrad.orchestration.mission_predictive); None = no predictive model.
+        self.predictive_provider: Callable[[Sequence[BeliefMessage]], PredictiveBelief | None] | None = None
         self.sensor = ctx.sensor(ctx.structural_sensor_ids[0])
         # MCBR candidate poses are SENSOR-boresight poses (+X looks at the target); the belief map is queried
         # with the same convention, and ``view_pose`` converts to a vehicle pose through the real mount yaw.
@@ -190,6 +194,7 @@ class Deliberation:
                 action_type=None if chosen is None else chosen.action_type,
                 target_belief_ids=() if chosen is None else chosen.target_belief_ids,
                 abstained=rec.abstained,
+                target_revisions=_revisions(snapshot, () if chosen is None else chosen.target_belief_ids),
             )
         )
         self.decisions.append(out)
@@ -210,6 +215,15 @@ class Deliberation:
             },
         )
         return out
+
+    def mark_not_executed(self, decision_id: UUID) -> None:
+        """Routing did not carry this decision's action out (deferred or dropped). EGDC then does not count
+        it as an attempt (``DecisionContext.attempts_on``), so a deferred information request cannot use up
+        the attempt budget and tip the next decision into escalation."""
+        for i in range(len(self.history) - 1, -1, -1):
+            if self.history[i].decision_id == decision_id:
+                self.history[i] = self.history[i].model_copy(update={"executed": False})
+                return
 
     # ------------------------------------------------------------------ planned route
     def route_context(
@@ -281,6 +295,7 @@ class Deliberation:
             now=now,
             prior_views=tuple(prior_views),
             rng=np.random.default_rng(now.time_ns % (2**32)),
+            predictive=None if self.predictive_provider is None else self.predictive_provider(beliefs),
         )
         result: PlanResult = self.planner.plan(req)
         adoption = ProvenanceRecord(
@@ -402,6 +417,12 @@ class Deliberation:
         return ResourceCost(
             time_s=dist / self.cfg.cruise_speed_mps, energy_j=ENERGY_PER_M_J * dist, risk=risk, travel_m=dist
         )
+
+
+def _revisions(snapshot: BeliefSnapshot, belief_ids: Sequence[UUID]) -> tuple[int, ...]:
+    """Revision of each target belief as the decision saw it (-1 = not in the snapshot)."""
+    seen = {m.belief_id: m.revision for m in snapshot.messages}
+    return tuple(seen.get(b, -1) for b in belief_ids)
 
 
 def _yaw(q: tuple[float, float, float, float]) -> float:

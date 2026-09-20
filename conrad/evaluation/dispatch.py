@@ -39,6 +39,10 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
         "conrad.evaluation.decision_experiments.m1_action_integrated",
         "configs/eval/m1_action_e002.yaml",
     ),
+    "M1-ACTION-E003": (
+        "conrad.evaluation.decision_experiments.m1_action_integrated",
+        "configs/eval/m1_action_e003.yaml",
+    ),
     "ACTIVE-MCBR-E001": (
         "conrad.evaluation.decision_experiments.active_mcbr",
         "configs/eval/active_mcbr_e001.yaml",
@@ -54,6 +58,10 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
     "ACTIVE-MCBR-E003": (
         "conrad.evaluation.decision_experiments.active_mcbr_reeval",
         "configs/eval/active_mcbr_e003.yaml",
+    ),
+    "ACTIVE-MCBR-E004": (
+        "conrad.evaluation.decision_experiments.active_mcbr_e004",
+        "configs/eval/active_mcbr_e004.yaml",
     ),
     "COM-BAAC-E001": ("conrad.evaluation.decision_experiments.com_baac", "configs/eval/com_baac_e001.yaml"),
     "COM-I7-E001": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e001.yaml"),
@@ -100,6 +108,12 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
     "2E-E003-R3": ("conrad.evaluation.ecological_experiments.e003_coupling", "configs/eval/2e_e003_r3.yaml"),
     "NAV-CAL-E001": ("conrad.evaluation.nav_benchmarks.calibration", "configs/sim/nav_calibration.yaml"),
     "DATA-REAL-SMOKE-E001": ("conrad.data.real_smoke", "datasets/experiments/data_real_smoke_e001.yaml"),
+    "DATA-REAL-E002": ("conrad.data.real_e002", "datasets/experiments/data_real_e002.yaml"),
+    # SYNTHETIC_TOOLING_CHECK of the EXT-HW-04 identification protocol; never yields IDENTIFIED values.
+    "ID-REHEARSAL-E001": (
+        "conrad.evaluation.identification_rehearsal",
+        "configs/eval/id_rehearsal_e001.yaml",
+    ),
 }
 DEFAULT_SEEDS = [2026201, 2026202, 2026203]
 

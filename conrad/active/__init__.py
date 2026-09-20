@@ -27,11 +27,17 @@ from conrad.active.planner import (
 IMPLEMENTATION_METADATA = {
     "implementation_status": "EXPERIMENTAL_CANDIDATE",
     "source_sections": ["ch16 Active Intelligence", "ch18", "ch33 MCBR exact implementation"],
-    "configuration_keys": ["MCBRConfig.*", "MCBRRankerConfig.* (conrad.active.learned)"],
+    "configuration_keys": [
+        "MCBRConfig.*",
+        "MCBRRankerConfig.* (conrad.active.learned)",
+        "SurfacePredictiveConfig.* (conrad.active.surface_predictive; frozen in configs/active/mcbr_frozen_v2.yaml)",
+    ],
     "assumptions": [
         "per-cause analytic gain terms and sensor quality/discrimination numbers are ENGINEERING_ESTIMATE",
         "prior views come from the evidence archive supplied by the caller",
         "feasibility filter is shared by every baseline (safety rule, not an MCBR feature)",
+        "the mission surface-cell predictive model declares the sensor through Model2T SensorCharacteristics "
+        "(ENGINEERING_ESTIMATE) and treats a view of the defect cell as an erasure channel",
     ],
     "baselines": [
         "A-B0 random",
@@ -46,7 +52,13 @@ IMPLEMENTATION_METADATA = {
         "A-B10 full MCBR",
     ],
     "open": ["A-B8 RL active perception baseline not implemented"],
-    "acceptance_tests": ["tests/unit/active", "ACTIVE-MCBR-E001"],
+    "acceptance_tests": [
+        "tests/unit/active",
+        "ACTIVE-MCBR-E001",
+        "ACTIVE-MCBR-E002/E003/E004",
+        "tests/acceptance/test_i4_matched_policy.py",
+        "tests/unity_live/test_i4_unity.py (formal I4)",
+    ],
     "claim_status": "EVALUATED",
 }
 

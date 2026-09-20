@@ -8,6 +8,7 @@ implementation_status: EXPERIMENTAL_CANDIDATE
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import Any
 from uuid import UUID
 
@@ -56,6 +57,9 @@ class DecisionRouting:
         self.prior_views: list[PriorView] = []
         self.started_ns: int | None = None  # set by MissionRuntime.start (mission clock origin)
         self.replans: list[dict[str, Any]] = []
+        # Gate I6 hook (conrad.orchestration.multidomain.SensingConditionsGate.check): returns a deferral reason for
+        # an information request that must not go to MCBR now. None (default) = no gate.
+        self.sensing_gate: Callable[[InformationNeed, DecisionOutcome, TimeStamp], str | None] | None = None
 
     # ------------------------------------------------------------------ helpers
     def _critical_heads(self, now: TimeStamp) -> list[BeliefMessage]:
@@ -148,6 +152,11 @@ class DecisionRouting:
                     "reason": "DEFERRED_UNTIL_LANE_SURVEY_COMPLETE",
                 },
             )
+            self.d.mark_not_executed(out.record.decision_id)  # never carried out: not an attempt
+            return
+        if busy and routed.target in (RouteTarget.MCBR, RouteTarget.NAVIGATION):
+            # an inspection / revisit is already running (it is the attempt); this request is dropped
+            self.d.mark_not_executed(out.record.decision_id)
             return
         if routed.target is RouteTarget.MCBR and isinstance(payload, InformationNeed) and not busy:
             self._inspect(payload, out, now)
@@ -178,17 +187,23 @@ class DecisionRouting:
         blockers = {str(b) for b in payload.parameters.get("blocking_belief_ids", [])}
         legs, occupancy = self.d.last_route
         blocked = [leg for i, leg in enumerate(legs) if blockers & set(occupancy.get(str(i), []))]
+        # only a transit goal gets a detour; any other goal is held (replan_detour), which aborts it
+        transit = self.x.active is not None and self.x.active.purpose == "TRANSIT"
         accepted = self.x.replan_detour(blocked, now, out.provenance.record_id)
         row = {
             "t_s": now.time_ns / 1e9,
             "decision_id": str(out.record.decision_id),
             "blocked_legs": len(blocked),
             "accepted": accepted,
+            "mode": "DETOUR" if transit else "HOLD",
         }
         self.replans.append(row)
         self.s.emit(EventType.PLAN_PROPOSED, MODULE, out.record.trace_id, {"replan": "ROUTE_BLOCKED", **row})
 
     def _inspect(self, need: InformationNeed, out: DecisionOutcome, now: TimeStamp) -> None:
+        if self.sensing_gate is not None and self.sensing_gate(need, out, now) is not None:
+            self.d.mark_not_executed(out.record.decision_id)  # deferred, not carried out: not an attempt
+            return
         key = tuple(sorted(need.target_belief_ids, key=str))
         if self.plan_attempts.get(key, 0) >= self.cfg.max_plans_per_need:
             self.s.emit(

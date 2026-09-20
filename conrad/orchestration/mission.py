@@ -24,6 +24,8 @@ from conrad.orchestration.deliberation import Deliberation
 from conrad.orchestration.executive import MissionExecutive
 from conrad.orchestration.mission_config import MissionRuntimeConfig
 from conrad.orchestration.mission_context import MissionContext
+from conrad.orchestration.mission_predictive import mission_predictive_provider
+from conrad.orchestration.multidomain import SensingConditionsGate, sensing_requirements
 from conrad.orchestration.perception import Perception
 from conrad.orchestration.routing import DecisionRouting
 from conrad.orchestration.services import ModuleRunner, RuntimeServices
@@ -145,6 +147,15 @@ class MissionRuntime:
             clock,
         )
         self.deliberation = Deliberation(self.s, context, config, self.bus, self.m2s)
+        # MCBR belief-side predictive model (I4 repair; frozen with the production planner). Same request for
+        # every planner, so baselines see identical feasible sets.
+        self.deliberation.predictive_provider = mission_predictive_provider(
+            self.m2t,
+            self.m2s,
+            self.deliberation.boresight_sensor,
+            config.mcbr_unknown_block_probability,
+            track=lambda: self.estimated_track,
+        )
         self.shore = ShoreLink(self.s, config, seed, context.critical_component_ids)
         self.routing = DecisionRouting(
             self.s,
@@ -158,10 +169,32 @@ class MissionRuntime:
             hardware,
             self.runner,
         )
+        self.sensing_gate: SensingConditionsGate | None = None
+        if config.multidomain.enabled and self.m2e is not None:  # gate I6 (off by default)
+            self._enable_multidomain()
         self._next_decision_s = config.decision_period_s
         self._next_comms_s = 0.0
         self.estimated_track: list[list[float]] = []
         self.published = 0
+
+    def _enable_multidomain(self) -> None:
+        """Gate I6: 2E imaging-conditions requirements join EGDC; the sensing-conditions gate guards MCBR."""
+        m2e, md = self.m2e, self.cfg.multidomain
+        assert m2e is not None
+        belief = m2e.field_ids[md.turbidity_field]
+        extra = sensing_requirements(
+            self.deliberation.requirements,
+            self.ctx.critical_component_ids,
+            belief,
+            md,
+            self.s.ids.child("multidomain"),
+        )
+        self.deliberation.requirements = (*self.deliberation.requirements, *extra)
+        cc = m2e.cfg.coupling
+        self.sensing_gate = SensingConditionsGate(
+            self.s, self.bus, md, cc.beam_attenuation_clear_per_m, cc.beam_attenuation_per_m_per_ntu
+        )
+        self.routing.sensing_gate = self.sensing_gate.check
 
     def _technical_context(self, messages: Sequence[BeliefMessage]) -> None:
         """2T takes 2S coverage only for its own registry components (not every map block) plus 2E context."""

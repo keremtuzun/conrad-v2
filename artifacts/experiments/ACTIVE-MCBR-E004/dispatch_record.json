@@ -1,0 +1,22 @@
+{
+  "experiment_id": "ACTIVE-MCBR-E004",
+  "module": "conrad.evaluation.decision_experiments.active_mcbr_e004",
+  "config": "configs/eval/active_mcbr_e004.yaml",
+  "seeds": [
+    7800002,
+    7800003,
+    7800004,
+    7800005,
+    7800006,
+    7800007,
+    7800008,
+    7800009,
+    7800010,
+    7800011,
+    7800012,
+    7800013
+  ],
+  "wall_s": 1793.0,
+  "out_dir": "C:\\Users\\Kerem\\Kerem\\conrad-v2\\artifacts\\experiments\\ACTIVE-MCBR-E004",
+  "note": "run through the module's run() (dispatch not used: it shells out to git). The 60 (world, planner) jobs ran once (1793 s; an earlier attempt died of an out-of-memory error before writing any result). Two follow-up invocations (0.5 s, 0.4 s) only re-read checkpoint.jsonl and rewrote the same summary; no job was re-run."
+}

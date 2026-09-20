@@ -1,6 +1,6 @@
 """Frozen production planner behind the MCBR interface (selected on VALIDATION data, 2026-09-19).
 
-``configs/active/mcbr_frozen.yaml`` names the selected ranking rule and its parameters. The file carries the
+``configs/active/mcbr_frozen_v2.yaml`` (v2; v1 = ``mcbr_frozen.yaml``) names the selected ranking rule and its parameters. The file carries the
 SHA-256 of its canonical ``planner`` section; loading refuses a copy whose content no longer matches, so the
 production planner cannot drift silently after the final evaluation. The mission runtime uses it by default
 (``MissionRuntimeConfig.planner = "PRODUCTION"``).
@@ -25,7 +25,7 @@ from conrad.schemas.ids import IdFactory
 from conrad.settings import REPO_ROOT
 
 PRODUCTION = "PRODUCTION"
-FROZEN_PATH = REPO_ROOT / "configs" / "active" / "mcbr_frozen.yaml"
+FROZEN_PATH = REPO_ROOT / "configs" / "active" / "mcbr_frozen_v2.yaml"
 
 
 class FrozenConfigError(RuntimeError):
@@ -46,6 +46,14 @@ def load_frozen(path: Path = FROZEN_PATH) -> dict[str, Any]:
     digest = planner_digest(section)
     if digest != raw["config_digest"]:
         raise FrozenConfigError(f"{path}: planner section digest {digest} != recorded {raw['config_digest']}")
+    if (
+        "mission_predictive" in raw
+    ):  # v2+: the mission's belief-side predictive model is frozen with the planner
+        pd = planner_digest(raw["mission_predictive"])
+        if pd != raw.get("mission_predictive_digest"):
+            raise FrozenConfigError(
+                f"{path}: mission_predictive digest {pd} != recorded {raw.get('mission_predictive_digest')}"
+            )
     return dict(raw)
 
 

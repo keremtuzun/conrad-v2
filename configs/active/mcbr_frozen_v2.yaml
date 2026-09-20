@@ -1,0 +1,67 @@
+# FROZEN production planner v2 behind the MCBR interface. DO NOT EDIT: conrad.active.production verifies
+# config_digest = sha256(canonical JSON of `planner`) and mission_predictive_digest = sha256(canonical JSON of
+# `mission_predictive`). Ranker selected on VALIDATION (ACTIVE-MCBR-SEL001, unchanged from v1); mission
+# predictive model selected on DEVELOPMENT worlds only (I4 repair, docs/audits/MCBR_REEVALUATION.md).
+planner:
+  selected: V-bayes_eig_ratio
+  ranker:
+    kind: bayes_eig
+    cost_mode: ratio
+    cost_weight: 1.0
+config_digest: 8eca16cc896e560b26cbe9814828fe9f75801d843e0e38bedb5442299805d903
+mission_predictive:
+  selected: SURFACE_CELL_EIG[C_track_noread]
+  model: conrad.orchestration.mission_predictive.MissionPredictive -> conrad.active.surface_predictive.SurfaceCellPredictive
+  config:
+    enabled: true
+    footprint_discount: 0.0
+    track_discount: 0.8
+    track_max_positions: 16
+    footprint_half_angle_deg: 50.0
+    footprint_axial_m: 1.0
+    seen_surface_discount: 0.0
+    probe_offset_m: 0.15
+    nominal_reliability: 1.0
+    incidence_power: 1.0
+    read_min_band_probability: 0.0
+    read_channel: false
+  selection:
+    purpose: design
+    partitions:
+    - 'unity_gate development (8 worlds where MCBR planned: 7810006,7,9,10,11,14,15,17)'
+    - mission development (18 worlds where MCBR planned)
+    n_worlds: 26
+    primary_metric: hidden_state_error_improvement
+    arms_dev_mean:
+      C_track_noread: 0.73
+      A_track_band05: 0.727
+      B_track_band0: 0.547
+      D_nopred (v1 fallback): 0.636
+      A-B2_coverage: 0.736
+      A-B1_fixed_inspection: 0.756
+    note: highest development mean among the predictive-model arms; it does NOT beat fixed or coverage on development
+      (C - fixed = -0.026 [-0.064, +0.011], C - coverage = -0.006 [-0.151, +0.136])
+mission_predictive_digest: 2fa5b75d6e9618c0a1274eff284d014a30df4c0ba17a8d83969c2c8609d41431
+partitions_digest: 074ae11310252217315b2ac3324fd914d1964a3e34b76b57a65f0ca3a3acb904
+unity_gates_partitions_digest: ad753291d5825dace90f5757790efd096a5f867d51abe51de6545dceff12f88c
+supersedes: configs/active/mcbr_frozen.yaml (planner section unchanged; v2 adds the mission predictive model)
+git_commit: 0918f5547e9f9f75f159f9194428f121a436e4e8
+git_commit_note: not re-read (the agent does not run git); the frozen code is the uncommitted working tree
+frozen_on: '2026-09-19'
+selection:
+  experiment_id: ACTIVE-MCBR-SEL001
+  partition: validation
+  n_worlds: 40
+  primary_metric: mission_error_reduction
+  validation_mean: 0.5052
+  runner_up: A-B6b_bayes_eig
+  selection_config_digest: 4462c7f7f36fd911a37a0c52f7acaf4a807f08f8fa4f0db4a550cadb5890788a
+  note: conventional Bayesian EIG per unit cost won on validation; per the brief it becomes the production planner
+    behind the MCBR interface. Its lead over A-B6b and A-B11 is not significant (paired CI includes 0).
+shared_candidate_generation:
+  abstract_world:
+    n_azimuth: 8
+  mission: MissionRuntimeConfig.mcbr (deployment config)
+  sensor_aware_visibility: true
+mission_note: the integrated runtime now supplies the belief-side predictive model above to every planner's PlanningRequest;
+  the production ranker (bayes_eig, ratio) ranks by its expected entropy reduction per unit cost
