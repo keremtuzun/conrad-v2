@@ -1,6 +1,8 @@
-"""Gate I5, integrated-mission half (M1-ACTION-E002, python-kernel SURROGATE, FINAL seeds).
+"""Gate I5, integrated-mission half (python-kernel SURROGATE, FINAL seeds).
 
-Reads the stored final artifact (``conrad eval run M1-ACTION-E002``); a missing artifact fails. The claim tests
+Iteration 2: reads M1-ACTION-E003 (``conrad eval run --experiment M1-ACTION-E003``, fresh final seeds of
+``configs/eval/partitions_i5_v2.yaml``); a missing artifact fails. The spent iteration-1 record M1-ACTION-E002 is
+kept on disk and pinned by ``test_e002_iteration1_record_is_unchanged``. The claim tests
 at the bottom state what I5 needs. Where the stored final result does not support a claim, the test is a STRICT
 xfail whose reason quotes the measured failure, so a silent improvement or regression both show up.
 """
@@ -11,10 +13,11 @@ from collections import Counter
 import pytest
 
 from conrad.evaluation.decision_experiments.m1_action_integrated import BASELINES, PRIMARY, SPECS
-from conrad.evaluation.partitions import I5_DOMAIN, Partition, Purpose, split
+from conrad.evaluation.partitions import I5_V2_DOMAIN, Partition, Purpose, split
 from conrad.settings import REPO_ROOT
 
-ARTIFACT = REPO_ROOT / "artifacts" / "experiments" / "M1-ACTION-E002" / "m1_action_e002.json"
+ARTIFACT = REPO_ROOT / "artifacts" / "experiments" / "M1-ACTION-E003" / "m1_action_e003.json"
+E002 = REPO_ROOT / "artifacts" / "experiments" / "M1-ACTION-E002" / "m1_action_e002.json"
 
 
 @pytest.fixture(scope="module")
@@ -27,7 +30,8 @@ def test_artifact_is_final_split_surrogate(result):
     assert result["partition"] == "final_test"
     assert "SURROGATE" in result["evidence_class"]
     assert result["data_status"] == "SYNTHETIC_ONLY"
-    final = split(I5_DOMAIN, Partition.FINAL_TEST, Purpose.FINAL_EVALUATION).world_seeds
+    final = split(I5_V2_DOMAIN, Partition.FINAL_TEST, Purpose.FINAL_EVALUATION).world_seeds
+    assert result["partition_domain"] == I5_V2_DOMAIN
     assert result["seeds"] and set(result["seeds"]) <= set(final)
 
 
@@ -73,20 +77,35 @@ def test_no_hard_constraint_violation_in_any_egdc_mission(result):
 
 
 def test_nominal_over_escalation_is_measured(result):
-    """The measured nominal failure the xfail below refers to (keeps the number pinned to the artifact)."""
+    """The verdict counts over-escalations in every nominal scenario (I5-NOMINAL and I5-NOMINAL-READABLE)."""
     v = result["verdicts"]
-    assert v["nominal_over_escalations"] == result["closed_loop"][PRIMARY]["I5-NOMINAL"]["over_escalations"]
-    assert v["nominal_over_escalations"] > 0
+    nominal = [sc for sc in result["scenarios"] if SPECS[sc].check_over_escalation]
+    assert set(nominal) == {"I5-NOMINAL", "I5-NOMINAL-READABLE"}
+    assert v["nominal_over_escalations"] == sum(
+        result["closed_loop"][PRIMARY][sc]["over_escalations"] for sc in nominal
+    )
+
+
+def test_e002_iteration1_record_is_unchanged():
+    """The spent iteration-1 final result stays as measured (409 nominal ESCALATE decisions)."""
+    old = json.loads(E002.read_text(encoding="utf-8"))
+    assert old["partition"] == "final_test" and old["seeds"][0] == 7600000
+    assert old["verdicts"]["nominal_over_escalations"] == 409
+    assert not old["verdicts"]["actions_exercised_correctly"]
 
 
 # ------------------------------------------------------------------------------------------ gate claims
 @pytest.mark.xfail(
     strict=True,
     reason=(
-        "M1-ACTION-E002 FINAL (2026-09-19): EGDC over-escalates in the nominal mission, 409 ESCALATE_TO_OPERATOR "
-        "decisions in 10 missions (0 for rule_fsm); the nominal continue warrant (critical component OBSERVED "
-        "INTACT) never arose in any arm because the zero-size defect gives no OBSERVED condition. The other six "
-        "scenarios meet the 0.9 floor (critical finding 9/10, store-and-forward 9/10, the rest 10/10)."
+        "M1-ACTION-E003 FINAL (2026-09-19, I5 iteration 2): the nominal continue warrant (critical component "
+        "OBSERVED INTACT) still never arose, 0/10 in I5-NOMINAL and 0/10 in I5-NOMINAL-READABLE, because "
+        "Model2T needs 80 % surface coverage before a component-level condition is OBSERVED and the missions "
+        "reach 0.6-0.7. Over-escalation is much smaller but not gone: 74 ESCALATE decisions in 20 nominal "
+        "missions (E002: 409 in 10), all of them after the information attempts on an open critical item were "
+        "used up, and 13 of the 20 missions have none. The other six scenarios meet the 0.9 floor except "
+        "critical finding 8/10 and store-and-forward 8/10 (the finding was never observed on two seeds); "
+        "route blocked 9/10, uncertain belief, battery and time 10/10; 0 hard-constraint violations."
     ),
 )
 def test_actions_exercised_correctly_inside_integrated_missions(result):

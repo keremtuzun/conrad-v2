@@ -64,6 +64,9 @@ def test_supervisor_depth_limit_uses_the_surface():
 def test_quiet_prior_turns_into_the_full_prior_when_turning():
     ekf = _ekf(0.0, -5.0)
     full = np.asarray(ekf.config.velocity_prior_sigma_mps)
+    # blind (no accepted fix yet): the full prior, so the position sigma grows honestly (NAV-007)
+    assert np.allclose(ekf._prior_sigma(), full)
+    ekf._last_fix_ns = ekf._stamp.time_ns  # a fix just arrived
     assert np.allclose(ekf._prior_sigma(), ekf.config.velocity_prior_quiet_sigma_mps)
     ekf._w = np.array([0.0, 0.0, ekf.config.velocity_prior_turn_rate_ref_rps])
     assert np.allclose(ekf._prior_sigma(), full)

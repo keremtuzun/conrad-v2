@@ -56,10 +56,12 @@ from conrad.sim.mission.options import MissionWorldOptions
 from conrad.sim.mission.registry import RegistryMapping
 from conrad.sim.mission.sensing import MissionSensorSuite
 from conrad.sim.mission.truth import MissionTruthRecorder
-from conrad.sim.mission.world import ROBOT_CONFIG, MissionWorld
+from conrad.sim.mission.world import ROBOT_CONFIG, MissionWorld, _eco_event
+from conrad.sim.unity.eco_scene import EcoConversionReport, EcoSceneOptions, eco_scene, optics_update
 from conrad.sim.unity.player import UnityPlayerSession, scenario_document
 from conrad.sim.unity.truth import TruthVehicleState, UnityTruthClient
 from conrad.sim.unity.twin_scene import SceneConversionReport, TwinSceneOptions, twin_scene
+from conrad.twins.twin2e import Twin2E
 from conrad.twins.twin2s.twin import Twin2S
 from conrad.twins.twin2t import Twin2T
 
@@ -71,6 +73,9 @@ UNITY_PAYLOAD_SENSORS = (
     "rgb_camera",
     "usbl_position_fix",
 )
+# Declared only when the mission has an ecological twin (gate I6): Twin2E probe and survey, rendered on the Python side
+# at the Unity TRUE pose by the same MissionSensorSuite as on the kernel path.
+UNITY_ECO_SENSORS = ("environmental_probe", "ecological_survey")
 RANGE_SENSOR, SONAR_SENSOR, CAMERA_SENSOR = "range_imager", "sonar", "camera"
 CONVERTER_VERSION = "unity_to_model2s_v1"
 UNITY_ROBOT_DIR = "artifacts/unity/robot"
@@ -96,6 +101,7 @@ class UnityWorldOptions(ConradModel):
     graphics: bool = True
     player_path: str | None = None
     scene: TwinSceneOptions = TwinSceneOptions()
+    eco: EcoSceneOptions = EcoSceneOptions()
 
 
 # ------------------------------------------------------------------------------------ RobotConfig variant
@@ -302,6 +308,7 @@ class UnityMissionHardware(UnityRobotHardware):
         self._truth_history: dict[int, TruthVehicleState] = {}
         self.forwarded_counts: dict[str, int] = {}
         self.capture_log: list[dict[str, Any]] = []
+        self.ecological = False  # set by UnityMissionWorld.build when the mission has Twin2E
 
     def attach(
         self,
@@ -318,7 +325,8 @@ class UnityMissionHardware(UnityRobotHardware):
         self._estimated = provider
 
     def capabilities(self) -> RobotCapabilities:
-        return super().capabilities().model_copy(update={"environmental_sensors": UNITY_PAYLOAD_SENSORS})
+        declared = UNITY_PAYLOAD_SENSORS + (UNITY_ECO_SENSORS if self.ecological else ())
+        return super().capabilities().model_copy(update={"environmental_sensors": declared})
 
     def true_state(self) -> TruthVehicleState:
         """TRUTH: evaluation / payload rendering only; never handed to the runtime."""
@@ -425,11 +433,14 @@ class UnityMissionHardware(UnityRobotHardware):
 
 
 # ------------------------------------------------------------------------------------ world
-def _neutral_suite(suite: MissionSensorSuite) -> MissionSensorSuite:
-    """The kernel path's payload suite without its Twin2S geometric channel (Unity renders geometry)."""
+def _neutral_suite(suite: MissionSensorSuite, keep_t2e: bool = False) -> MissionSensorSuite:
+    """The kernel path's payload suite without its Twin2S geometric channel (Unity renders geometry).
+
+    With ``keep_t2e`` (gate I6) the Twin2E channels stay exactly as on the kernel: structural reading quality from
+    ``observability_modifiers`` and the environmental probe / ecological survey."""
     opts = suite.opts.model_copy(update={"geometric_period_s": 1e12})
     sensors = dataclasses.replace(suite.sensors, geometric=())
-    return dataclasses.replace(suite, opts=opts, sensors=sensors, t2e=None)
+    return dataclasses.replace(suite, opts=opts, sensors=sensors, t2e=suite.t2e if keep_t2e else None)
 
 
 @dataclass
@@ -443,7 +454,7 @@ class UnityMissionWorld:
     scenario: Scenario
     t2s: Twin2S
     t2t: Twin2T
-    t2e: None
+    t2e: Twin2E | None
     hardware: UnityMissionHardware
     context: MissionContext
     mapping: RegistryMapping
@@ -457,6 +468,10 @@ class UnityMissionWorld:
     robot_config_path: str
     scene_report: SceneConversionReport
     scene_digest: str
+    eco_report: EcoConversionReport | None = None
+    optics_updates: list[dict[str, Any]] = field(default_factory=list)
+    _pending_eco: list[Any] = field(default_factory=list)
+    _next_optics_s: float = 0.0
 
     @classmethod
     def build(
@@ -469,11 +484,10 @@ class UnityMissionWorld:
         uopts: UnityWorldOptions | None = None,
     ) -> UnityMissionWorld:
         u = uopts or UnityWorldOptions()
-        if options.faults or options.eco_events or options.ecological_enabled or any(options.current_mps):
-            raise ValueError(
-                "the Unity mission path supports no scheduled faults, ecological twin or currents yet "
-                "(set ecological_enabled=false and leave faults/eco_events/current_mps empty)"
-            )
+        if options.faults:
+            raise ValueError("the Unity mission path supports no scheduled faults yet (leave faults empty)")
+        if options.eco_events and not options.ecological_enabled:
+            raise ValueError("ecological events need the ecological twin (ecological_enabled=true)")
         base = MissionWorld.build(seed, scenario_id, options, run_id, run_dir / "objects")
         ctx = base.context
         geometric = tuple(s for s in ctx.sensors if s.modality in ("DEPTH_RANGE", "SONAR"))
@@ -482,6 +496,23 @@ class UnityMissionWorld:
         rel = write_robot_config(robot)
         scene, report = twin_scene(base.t2s.world, u.scene)
         scene_json = scene.to_json()
+        eco_report: EcoConversionReport | None = None
+        if (
+            base.t2e is not None
+        ):  # gate I6: Twin2E optics grid + biofouling colours (measured conversion error)
+            scene_json, _, eco_report = eco_scene(base.t2e, base.t2s.world, scene_json, u.eco)
+        environment: dict[str, Any] = {
+            "water_density_kgm3": u.water_density_kgm3 or neutral_density(robot),
+            "surface_z_m": surface,
+            "turbidity": 0.0,  # uniform camera proxy; the optics grid replaces it when Twin2E is present
+        }
+        if any(
+            options.current_mps
+        ):  # same constant current the kernel path gives SimKernel (Conrad WORLD, m/s)
+            environment["current"] = {
+                "kind": "constant",
+                "velocity_mps": [float(v) for v in options.current_mps],
+            }
         scene_digest = hashlib.sha256(json.dumps(scene_json, sort_keys=True).encode()).hexdigest()
         lane = ctx.transit_lane
         yaw = math.atan2(lane[1][1] - lane[0][1], lane[1][0] - lane[0][0])
@@ -491,11 +522,7 @@ class UnityMissionWorld:
             seed=seed,
             initial_position_m=lane[0],
             initial_orientation_wxyz=quat_from_euler(0.0, 0.0, yaw),
-            environment={
-                "water_density_kgm3": u.water_density_kgm3 or neutral_density(robot),
-                "surface_z_m": surface,
-                "turbidity": 0.0,
-            },
+            environment=environment,
             scenario_version=f"unity-mission:{base.scenario.scenario_version}",
         )
         player = UnityPlayerSession(
@@ -525,7 +552,14 @@ class UnityMissionWorld:
                 RANGE_SENSOR: next(s for s in geometric if s.modality == "DEPTH_RANGE"),
                 SONAR_SENSOR: next(s for s in geometric if s.modality == "SONAR"),
             }
-            hw.attach(_neutral_suite(suite), truth, specs, base.store, ids.child("unity_payload"))
+            hw.ecological = base.t2e is not None
+            hw.attach(
+                _neutral_suite(suite, keep_t2e=hw.ecological),
+                truth,
+                specs,
+                base.store,
+                ids.child("unity_payload"),
+            )
             tracker = UnityTruthTracker(base.t2s, 0.5 * max(robot.dimensions_m.value))  # type: ignore[arg-type]
             base.recorder.meta.update(
                 {
@@ -535,6 +569,9 @@ class UnityMissionWorld:
                     "unity_scene_conversion": report.model_dump(mode="json"),
                     "unity_robot_config": rel,
                     "unity_robot_config_digest": robot.content_digest(),
+                    "unity_eco_conversion": None
+                    if eco_report is None
+                    else eco_report.model_dump(mode="json"),
                 }
             )
         except BaseException:
@@ -548,7 +585,7 @@ class UnityMissionWorld:
             base.scenario,
             base.t2s,
             base.t2t,
-            None,
+            base.t2e,
             hw,
             ctx,
             base.mapping,
@@ -562,6 +599,9 @@ class UnityMissionWorld:
             rel,
             report,
             scene_digest,
+            eco_report,
+            _pending_eco=sorted(options.eco_events, key=lambda e: e.t_s),
+            _next_optics_s=u.eco.update_period_s,
         )
         world.tracker.update(hw.true_state())
         return world
@@ -572,7 +612,32 @@ class UnityMissionWorld:
         return self.hardware.now_ns() / 1e9
 
     def due_faults(self, inspection_started_s: float | None = None) -> list[dict[str, Any]]:
-        return []  # build() refuses scenarios with scheduled faults or ecological events
+        """Ecological events whose time has come (as ``MissionWorld.due_faults``); faults are refused at build."""
+        fired: list[dict[str, Any]] = []
+        while self._pending_eco and self._pending_eco[0].t_s <= self.t_s + 1e-9:
+            ev = self._pending_eco.pop(0)
+            if self.t2e is not None:
+                self.t2e.step(1e-3, [_eco_event(ev.event_type, ev.parameters, self.t_s)])
+                self._next_optics_s = self.t_s  # the field changed: refresh the Unity optics grid now
+            fired.append({"kind": "ECOLOGICAL_EVENT", "event_type": ev.event_type, "t_s": ev.t_s})
+        return fired
+
+    def _refresh_optics(self) -> None:
+        """Send the current Twin2E optics grid to Unity (incremental CONFIGURE_SCENE, replace=false)."""
+        assert self.t2e is not None
+        body, grid = optics_update(self.t2e, self.t2s.world, self.uopts.eco)
+        ack = self.hardware.configure_scene(body)
+        cells = grid.values()
+        self.optics_updates.append(
+            {
+                "t_s": round(self.t_s, 6),
+                "twin2e_t_s": round(self.t2e.t_s, 6),
+                "unity_scene_digest": ack.scene_digest,
+                "attenuation_min_per_m": float(cells.min()),
+                "attenuation_max_per_m": float(cells.max()),
+            }
+        )
+        self._next_optics_s = self.t_s + self.uopts.eco.update_period_s
 
     def advance(self, dt_s: float) -> None:
         step = self.uopts.physics_dt_ns
@@ -581,6 +646,12 @@ class UnityMissionWorld:
             raise ValueError(f"dt {dt_s} s is not a whole number of Unity physics steps ({step} ns)")
         self.hardware.step(n * step)
         self.t2t.step(dt_s)
+        if self.t2e is not None:
+            lag = self.t_s - self.t2e.t_s
+            if lag > 1e-6:
+                self.t2e.step(lag)
+            if self.t_s + 1e-9 >= self._next_optics_s:
+                self._refresh_optics()
         self.tracker.update(self.hardware.true_state())
 
     def truth_access(self) -> TruthAccess:

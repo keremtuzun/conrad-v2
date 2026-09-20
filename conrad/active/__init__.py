@@ -57,7 +57,7 @@ IMPLEMENTATION_METADATA = {
         "ACTIVE-MCBR-E001",
         "ACTIVE-MCBR-E002/E003/E004",
         "tests/acceptance/test_i4_matched_policy.py",
-        "tests/unity_live/test_i4_unity.py (formal I4)",
+        "tests/unity_live/test_i4_unity.py",
     ],
     "claim_status": "EVALUATED",
 }

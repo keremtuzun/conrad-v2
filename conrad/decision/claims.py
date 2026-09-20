@@ -255,7 +255,8 @@ class ClaimGraphBuilder:
             issues.append(ISSUE_CROSS_DOMAIN)
 
         raw = _max_uncertainty(uncertainties)
-        effective = None if raw is None else self._effective(raw, issues, req)
+        confirmed = ISSUE_UNCALIBRATED in issues and _confirmed_after_request(ctx, req, primary)
+        effective = None if raw is None else self._effective(raw, issues, req, confirmed)
         causes = () if effective is None else diagnose_causes(effective, self.config)
         # U_E over threshold only because of the uncalibrated-source floor: a calibration gap, not OOD evidence.
         # An independent confirming observation can close it, so it must not be read as "no autonomous path".
@@ -371,15 +372,47 @@ class ClaimGraphBuilder:
     ) -> bool:
         return cross_domain_disagreement(self._ids, self.config, ctx, req, primary, graph, primary_claim_ids)
 
-    def _effective(self, u: Uncertainty, issues: list[str], req: MissionRequirement) -> Uncertainty:
-        """Conservative reading of upstream output: uncalibrated critical beliefs get an epistemic floor."""
+    def _effective(
+        self, u: Uncertainty, issues: list[str], req: MissionRequirement, confirmed: bool = False
+    ) -> Uncertainty:
+        """Conservative reading of upstream output: uncalibrated critical beliefs get an epistemic floor.
+
+        The floor is a calibration gap, not OOD evidence, and an independent confirming look closes it
+        (``_confirmed_after_request``): after that the belief's own uncertainty is used."""
         epistemic = u.epistemic
-        if ISSUE_UNCALIBRATED in issues and req.consequence >= self.config.consequence_matters_above:
+        if (
+            ISSUE_UNCALIBRATED in issues
+            and not confirmed
+            and req.consequence >= self.config.consequence_matters_above
+        ):
             epistemic = max(epistemic, self.config.uncalibrated_epistemic_floor)
         contradiction = u.contradiction
         if ISSUE_EVIDENCE_CONFLICT in issues:
             contradiction = max(contradiction, self.config.thresholds.contradiction)
         return u.model_copy(update={"epistemic": epistemic, "contradiction": contradiction})
+
+
+def _confirmed_after_request(
+    ctx: DecisionContext, req: MissionRequirement, primary: list[BeliefMessage]
+) -> bool:
+    """An uncalibrated-source gap is closed by an independent confirming observation (ch16 L6825 design
+    reading, M1-ACTION-E001): a belief of this requirement has a NEWER REVISION than the one an information
+    request on it saw, the runtime carried that request out, and the new revision is DIRECT (every required
+    property OBSERVED, evidence present, no evidence conflict). Deferred / dropped requests
+    (``executed=False``) and history without recorded revisions never confirm anything."""
+    for m in primary:
+        if not m.evidence_support or m.evidence_conflicts:
+            continue
+        props = [_prop(m, n) for n in req.properties]
+        if not props or any(p is None or p.status is not KnowledgeStatus.OBSERVED for p in props):
+            continue
+        for d in ctx.previous_decisions:
+            if d.action_type is not ActionType.REQUEST_INFORMATION or d.executed is False:
+                continue
+            seen = dict(zip(d.target_belief_ids, d.target_revisions, strict=False))
+            if m.belief_id in seen and seen[m.belief_id] < m.revision:
+                return True
+    return False
 
 
 __all__ = [

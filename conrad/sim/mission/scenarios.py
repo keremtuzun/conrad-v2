@@ -122,7 +122,43 @@ SCENARIOS: dict[str, Override] = {
         "world": {"defect": {"side": "near"}},
         "runtime": {"duration_s": 120.0, "link": {"outages_s": [[6.0, 80.0]]}},
     },
+    # I5 iteration 2 (M1-ACTION-E003): the nominal mission with a READABLE intact surface. In I5-NOMINAL a view
+    # of the target yields one averaged reading, so Model2T's surface coverage (80 % of cells) can never be
+    # reached and the "continue" warrant (critical component OBSERVED INTACT) never arises. Here the target's
+    # non-defect surface is read per tile (8 axial x 8 around), so a view covers every tile it sees, and it
+    # starts without corrosion or crack (in I5-NOMINAL it is sampled from the priors, about 1 mm corrosion).
+    "I5-NOMINAL-READABLE": {
+        "world": {
+            "defect": {
+                "side": "near",
+                "corrosion_depth_m": 0.0,
+                "crack_length_m": 0.0,
+                "pristine_rest": True,
+            },
+            "structural": {"region_tiles": [8, 8]},
+        },
+        # Same runtime as I5-NOMINAL. A DEV trial with 240 s and 10 plans per need did not raise coverage to the
+        # 80 % Model2T needs and added dead-end escalations, so it was dropped (docs/audits/I5_ACTION_MATRIX.md).
+        "runtime": {"duration_s": 120.0},
+    },
 }
+
+# Gate I6 (docs/audits/I6_MULTI_DOMAIN.md, configs/eval/i6_multidomain.yaml): one world, one mission, 2S + 2T + 2E
+# beliefs; Model 1 cites all three. TURBID: a turbidity spike (Twin2E truth) during the lane survey, so the
+# critical inspection that EGDC requests after the survey faces low visibility. CLEAR: the same world without the
+# spike (paired control: the 2E belief, not the world geometry, changes the outcome). The gate settings are the
+# deployment's ENGINEERING_ESTIMATE values, fixed on development worlds before any final run.
+I6_RUNTIME: dict[str, Any] = {
+    "duration_s": 120.0,
+    "multidomain": {"enabled": True, "inspection_range_m": 1.0, "min_visibility": 0.5},
+}
+I6_SPIKE: dict[str, Any] = {
+    "t_s": 15.0,
+    "event_type": "TURBIDITY_SPIKE",
+    "parameters": {"delta_ntu": 25.0, "units": "NTU", "center_m": [0.0, 0.0, 1.0], "radius_m": 30.0},
+}
+SCENARIOS["I6-MULTIDOMAIN-TURBID"] = {"world": {"eco_events": [I6_SPIKE]}, "runtime": dict(I6_RUNTIME)}
+SCENARIOS["I6-MULTIDOMAIN-CLEAR"] = {"world": {}, "runtime": dict(I6_RUNTIME)}
 
 INT_DESCRIPTIONS = {
     "INT-001": "visible infrastructure (defect on the lane side)",

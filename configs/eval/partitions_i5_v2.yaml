@@ -1,0 +1,30 @@
+# Immutable I5 integrated-mission seed partition, version 2 (gate I5, M1-ACTION-E003). SYNTHETIC_ONLY.
+# Created 2026-09-19. DO NOT EDIT: conrad.evaluation.partitions pins the digest of this file's canonical content
+# (I5_V2_PARTITIONS_SHA256) and refuses to load a changed copy. A new split needs a new version.
+#
+# Why a new version: the final_test seeds of partitions_i5.yaml (7600000-7600009) are SPENT. M1-ACTION-E002 ran
+# on them and its per-mission results were inspected (the stray REPLAN of seed 7600004 was read from the stored
+# artifact). The I5 iteration-2 fixes were diagnosed on the v1 development seeds only, which this file keeps as
+# its development split (shared with v1 on purpose, never a final seed anywhere).
+#
+# final_test 7900000-7900009 was declared before any I5 mission (or any other run) used it. Before it was chosen,
+# configs/, conrad/, scripts/, tests/, docs/ and artifacts/experiments/ were searched for 79xxxxx and nothing used
+# it. Checked on load: disjoint from every seed of partitions.yaml, partitions_nav.yaml, partitions_i5.yaml and
+# partitions_unity_gates.yaml, and from the ranges under reserved_elsewhere; development may equal the v1
+# development split and nothing else.
+version: partitions-i5-missions-2026-09-19-v2
+scenarios: [I5-NOMINAL, I5-NOMINAL-READABLE, I5-CRITICAL-FINDING, I5-UNCERTAIN-BELIEF, I5-ROUTE-BLOCKED,
+            I5-BATTERY-RESERVE, I5-TIME-RESERVE, I5-COMMS-OUTAGE]
+world_seeds:
+  development: {explicit: [], range: [7500000, 7500010]}
+  final_test: {explicit: [], range: [7900000, 7900010]}
+reserved_elsewhere:
+  - {range: [5300000, 5300060], owner: partitions.yaml mission final_test (SPENT)}
+  - {range: [6300000, 6300012], owner: 2E-E00x-R2 final}
+  - {range: [6400000, 6400020], owner: 2E-E00x-R3 final}
+  - {range: [6500000, 6500060], owner: 2T-E00x-R3 final (FINAL-3)}
+  - {range: [7100000, 7100010], owner: M1-ACTION-E001 development}
+  - {range: [7300000, 7300010], owner: M1-ACTION-E001 final; former I2 NAV final}
+  - {range: [7400001, 7410021], owner: partitions_nav.yaml noise seeds}
+  - {range: [7600000, 7600010], owner: M1-ACTION-E002 final (partitions_i5.yaml v1, SPENT)}
+  - {range: [7800000, 7810020], owner: partitions_unity_gates.yaml (formal Unity gates)}

@@ -1,0 +1,32 @@
+# M1-ACTION-E003: gate I5 actions inside integrated missions, iteration 2 (python-kernel SURROGATE; SYNTHETIC_ONLY).
+# Same harness as M1-ACTION-E002 (conrad.evaluation.decision_experiments.m1_action_integrated) after the I5
+# iteration-2 fixes (docs/audits/I5_ACTION_MATRIX.md, "Iteration 2"). Frozen before the final run.
+# Seeds: configs/eval/partitions_i5_v2.yaml (digest-pinned, domain i5_mission_v2). The v1 final seeds
+# 7600000..7600009 are SPENT. Development 7500000..7500009 (shared with v1) were the only I5 seeds inspected while
+# building iteration 2; final_test 7900000..7900009 is run once.
+# Latency budget, success floor, UIR bound, contact clearance and baselines are unchanged from E002. They are
+# ENGINEERING_ESTIMATE values: ch25/ch26 leave the I5 bounds OPEN.
+experiment_id: M1-ACTION-E003
+hypothesis: >-
+  Inside full integrated missions EGDC issues the warranted action class (continue, request evidence, replan,
+  return, escalate / operator alert, store-and-forward) within the latency budget, with zero hard-constraint
+  violations, no over-escalation in the nominal missions (I5-NOMINAL and the readable-surface I5-NOMINAL-READABLE),
+  traceable decisions with UIR 0, and mission outcomes no worse than a rule/FSM baseline and the naive
+  act-on-claims baseline on the same seeds.
+partition: final_test
+partition_domain: i5_mission_v2
+seeds: [7900000, 7900001, 7900002, 7900003, 7900004, 7900005, 7900006, 7900007, 7900008, 7900009]
+scenarios: [I5-NOMINAL, I5-NOMINAL-READABLE, I5-CRITICAL-FINDING, I5-UNCERTAIN-BELIEF, I5-ROUTE-BLOCKED,
+            I5-BATTERY-RESERVE, I5-TIME-RESERVE, I5-COMMS-OUTAGE]
+arms: [egdc_structured, rule_fsm, naive_act_on_claims]
+baselines: [rule_fsm, naive_act_on_claims]
+# seconds from warrant onset to the first expected action; decisions run every 2 s, so 4 s = two cycles
+latency_budget_s: {default: 4.0}
+success_floor: 0.9
+uir_max: 0.0
+contact_clearance_m: 0.3
+primary_metric: verdicts.per_scenario_correct_rate
+direction: higher
+workers: 10  # 16+ ran the host out of memory on DEV probes (other workstreams share it)
+keep_bundles: false
+limitations: [synthetic data only, python L1 kernel (not Unity), SURROGATE evidence for gate I5]

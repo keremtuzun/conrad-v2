@@ -27,6 +27,11 @@ class DefectOptions(ConradModel):
     patch_axial_fraction: float = Field(default=0.3, gt=0, le=1)
     patch_samples: int = Field(default=48, gt=4)
     side: str = Field(default="far", pattern="^(far|near)$", description="far = +Y (hidden from the lane)")
+    pristine_rest: bool = Field(
+        default=False,
+        description="the target's non-defect surface starts with no corrosion and no crack (default: sampled "
+        "from the population priors); set only by I5-NOMINAL-READABLE",
+    )
 
 
 class StructuralSensorOptions(ConradModel):
@@ -43,6 +48,12 @@ class StructuralSensorOptions(ConradModel):
     surface_samples: int = Field(default=40, gt=4)
     degradation: dict[str, float] = Field(default_factory=dict, description="Twin2T quality keys")
     turbidity_ntu_full_scale: float = Field(default=20.0, gt=0)
+    region_tiles: tuple[int, int] | None = Field(
+        default=None,
+        description="(axial, circumferential) tiles of the target's non-defect surface, each read on its own, "
+        "so one view yields a reading per visible tile instead of one averaged point; None = one region "
+        "(default, every scenario before I5-NOMINAL-READABLE)",
+    )
 
 
 class ContradictionOptions(ConradModel):

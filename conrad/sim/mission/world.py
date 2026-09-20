@@ -155,6 +155,48 @@ def _rest_of_target(
     return SurfaceTarget(target, pts[rest], nrm[rest], twin_id=region)
 
 
+def _rest_tiles(
+    world: SpatialWorld,
+    target: UUID,
+    region: UUID,
+    axis: list[np.ndarray],
+    opts: MissionWorldOptions,
+    seed: int,
+    tiles: tuple[int, int],
+) -> list[SurfaceTarget]:
+    """``_rest_of_target`` split into (axial x circumferential) tiles, each its own SurfaceTarget.
+
+    Truth side only (``StructuralSensorOptions.region_tiles``): all tiles show the same Twin2T region
+    component, but a view yields one reading per visible tile at that tile's visible surface, instead of one
+    reading at the mean of everything visible. Used only by scenarios that set ``region_tiles``.
+    """
+    n_ax, n_sec = tiles
+    if n_ax < 1 or n_sec < 1:
+        raise ValueError(f"region_tiles must be positive, got {tiles}")
+    i, a, b = _ends(world, target)
+    pts, nrm = sample_surface(
+        world,
+        i,
+        max(opts.structural.surface_samples * 2, 12 * n_ax * n_sec),
+        np.random.default_rng([seed, 0x5F, 3]),
+    )
+    rest = ~_patch_mask(pts, nrm, a, b, axis, opts)
+    pts, nrm = pts[rest], nrm[rest]
+    d = (b - a) / float(np.linalg.norm(b - a))
+    u = np.cross(d, [0.0, 0.0, 1.0])
+    u = u / max(float(np.linalg.norm(u)), 1e-9)
+    v = np.cross(d, u)
+    t = np.clip(((pts - a) @ d) / float(np.linalg.norm(b - a)), 0.0, 1.0 - 1e-12)
+    ang = np.arctan2(nrm @ v, nrm @ u) % (2.0 * math.pi)
+    key = (t * n_ax).astype(int) * n_sec + np.minimum((ang / (2.0 * math.pi) * n_sec).astype(int), n_sec - 1)
+    out = []
+    for k in np.unique(key):
+        sel = key == k
+        if int(sel.sum()) >= 2:
+            out.append(SurfaceTarget(target, pts[sel], nrm[sel], twin_id=region))
+    return out
+
+
 def _seabed_height(world: SpatialWorld, floor: UUID, lane: list[np.ndarray]) -> float:
     i = world.index_of(floor)
     xy = np.concatenate([np.linspace(p, q, 8) for p, q in itertools.pairwise(lane)])
@@ -285,9 +327,13 @@ class MissionWorld:
         surf_rng = np.random.default_rng([seed, 0x5F])
         targets = [_patch(t2s.world, target, axis, opts, surf_rng)]
         region = rest_region_of(t2t_scenario, target) if REGION_READINGS else None
-        rest = None if region is None else _rest_of_target(t2s.world, target, region, axis, opts, seed)
-        if rest is not None:
-            targets.append(rest)
+        tiles = opts.structural.region_tiles
+        if region is not None and tiles is not None:
+            targets += _rest_tiles(t2s.world, target, region, axis, opts, seed, tiles)
+        else:
+            rest = None if region is None else _rest_of_target(t2s.world, target, region, axis, opts, seed)
+            if rest is not None:
+                targets.append(rest)
         for we in scenario.world_entities:
             if (
                 we.domain_ownership.technical

@@ -74,7 +74,14 @@ def structural_scenario(scenario: Scenario, target: UUID, opts: MissionWorldOpti
     struct[str(target)]["initial_corrosion_depth_m"] = opts.defect.corrosion_depth_m
     struct[str(target)]["initial_crack_length_m"] = opts.defect.crack_length_m
     sc = sc.model_copy(update={"structural_state": {**sc.structural_state, "entities": struct}})
-    return _with_rest_region(sc, target, seed)
+    sc = _with_rest_region(sc, target, seed)
+    if opts.defect.pristine_rest:  # I5-NOMINAL-READABLE only: a truly intact target surface
+        region = rest_region_of(sc, target)
+        if region is not None:
+            ents = {k: dict(v) for k, v in sc.structural_state["entities"].items()}
+            ents[str(region)].update(initial_corrosion_depth_m=0.0, initial_crack_length_m=0.0)
+            sc = sc.model_copy(update={"structural_state": {**sc.structural_state, "entities": ents}})
+    return sc
 
 
 REGION_OF = "surface_region_of"

@@ -72,6 +72,11 @@ IMPLEMENTATION_METADATA = {
         "an OBSERVED belief without evidence_support has no evidence path and is UNSUPPORTED",
         "uncalibrated beliefs on consequential requirements get a configured epistemic floor",
         "a U_E excess caused only by that floor is a calibration gap: confirm (any modality) before escalating",
+        "that calibration gap is closed by a newer DIRECT revision of the belief than the one an EXECUTED "
+        "information request on it saw (conrad.decision.claims._confirmed_after_request)",
+        "only actions the runtime carried out count as attempts (DecisionSummary.executed); the operator is "
+        "not a resort while every open item still has an untried autonomous path",
+        "cross-domain context is the requirement's own component beliefs, else context overlapping its region",
         "high U_A: repeat/improve the measurement first, change sensor mode once a repeat has been tried",
         "the planned route is mission context in MissionState.notes['planned_route'] (SpatialSupport dicts)",
         "time_remaining_s below ConstraintConfig.time_reserve_s is a hard reserve like battery (only when known)",
@@ -84,6 +89,7 @@ IMPLEMENTATION_METADATA = {
         "tests/property/decision",
         "M1-UIR-E001",
         "M1-ACTION-E001 (tests/acceptance/test_i5_action_matrix.py)",
+        "M1-ACTION-E002 / M1-ACTION-E003 (tests/acceptance/test_i5_integrated_missions.py)",
     ],
     "claim_status": "EVALUATED",
 }

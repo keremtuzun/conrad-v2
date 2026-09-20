@@ -1,0 +1,46 @@
+# I6-MULTIDOMAIN-E001: gate I6 (multi-domain intelligence). SYNTHETIC_ONLY. Declared 2026-09-19 BEFORE any run on
+# the final worlds below.
+#
+# Final worlds: unity_gate final_test seeds 7800014-7800016 (configs/eval/partitions_unity_gates.yaml, digest-pinned,
+# not edited). 7800000 = I1 and 7800001 = I3 are roles; 7800002-7800013 are the I4 worlds
+# (configs/eval/active_mcbr_e004.yaml); the partition file reserves the next seeds for the following formal Unity
+# gates in dependency order, and I6 is next. The SAME three worlds are used for the surrogate run (python kernel,
+# scripts/run_i6_multidomain.py) and for the formal Unity run (tests/unity_live/test_i6_unity.py).
+#
+# Development: design only on split("unity_gate", "development", "design") worlds (7810000-7810020). The gate's
+# upper-credible-turbidity rule (turbidity_sd_multiplier) was chosen on 7810000-7810003 after the mean-only rule gave
+# a PROCEED on 7810000 while the true visibility at the target was below the minimum. The authority check was
+# first written as 'bus head == child's latest revision'; on development worlds 7810000-7810005 the bus lagged the
+# 2T child by its unpublished CONTEXT revisions (5 heads per run), so the rule now forbids only a bus head that is
+# not a revision the owning child committed, and reports the lag. No final world was run before
+# this file existed; nothing is tuned on the final worlds.
+experiment_id: I6-MULTIDOMAIN-E001
+gate: I6
+final_worlds: [7800014, 7800015, 7800016]
+development_worlds: [7810000, 7810001, 7810002, 7810003, 7810004, 7810005]
+arms:
+  TURBID: I6-MULTIDOMAIN-TURBID   # Twin2E turbidity spike (+25 NTU, 30 m radius) at 15 s, during the lane survey
+  CLEAR: I6-MULTIDOMAIN-CLEAR     # the same world without the spike (paired control)
+unity_arms:
+  TURBID: I6-UNITY-TURBID
+  CLEAR: I6-UNITY-CLEAR
+mission_config: configs/sim/mission_test_small.yaml
+# Gate settings live in the scenario table (conrad/sim/mission/scenarios.py, I6_RUNTIME) and MultiDomainSettings:
+# inspection_range_m 1.0, min_visibility 0.5, turbidity_sd_multiplier 2.0 (ENGINEERING_ESTIMATE values).
+workers: 6
+decision_rule: >-
+  Unit = one final world with both arms. A criterion PASSES iff it passes on every final world (3 of 3).
+  'one mission produces 2S, 2T and 2E beliefs': in both arms every domain has DIRECT revisions, all with consumed
+  evidence, some belief revised in place (max revision > 0), and no revision of another run in the store.
+  'Model1 reasons across all three via the Belief Bus': in both arms at least one EGDC decision's claim graph cites
+  beliefs owned by SPATIAL, TECHNICAL and ECOLOGICAL (owner = bus head domain), no cited (belief, revision) is missing
+  from the committed revisions, the query engine used query_model2s/2t/2e, every sensing-gate record cites claims and
+  beliefs of all three domains, and the gate verdict agrees with the Twin2E truth verdict (true visibility at the true
+  target) on at least 80 % of the gate records; TURBID has at least one DEFERRED_LOW_VISIBILITY, CLEAR has none and at
+  least one PROCEED.
+  'children remain authoritative within domains': in both arms zero bus rejections, every bus head is a revision its own
+  child committed (the bus may lag the child, never lead or replace it), every revision's provenance root comes from its own domain package, no DIRECT revision
+  consumed evidence of another domain's sensors (and none unresolved), cross-domain deliveries exist and are all
+  CROSS_DOMAIN_CONTEXT, CONTEXT revisions consume no evidence, and a bus loaded with the mission's heads rejects every
+  foreign-domain write with its heads unchanged.
+truth_agreement_min: 0.8

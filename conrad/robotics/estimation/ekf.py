@@ -290,17 +290,25 @@ class EkfStateEstimator(StateEstimator):
         full = np.asarray(c.velocity_prior_sigma_mps)
         if c.velocity_prior_quiet_sigma_mps is None:
             return full
+        if self._blind():
+            # Without fixes the thrust/drag model is the only velocity information: trusting it tightly then
+            # makes the position sigma grow too slowly and delays LOCALIZATION_LOST (NAV-007 regression).
+            return full
         quiet = np.minimum(np.asarray(c.velocity_prior_quiet_sigma_mps), full)
         turning = min(1.0, float(np.linalg.norm(self._w)) / c.velocity_prior_turn_rate_ref_rps)
         return quiet + (full - quiet) * turning
+
+    def _blind(self) -> bool:
+        """No accepted position fix yet, or none for longer than ``blind_after_s``."""
+        if self._last_fix_ns is None:
+            return True
+        return (self._stamp.time_ns - self._last_fix_ns) / 1e9 > self.config.blind_after_s
 
     def _mismatch_walk(self) -> tuple[float, float, float]:
         """Blind: the configured envelope of unobserved change. Observed: the smaller rate (NIS-scaled)."""
         c = self.config
         observed = c.mismatch_walk_observed_mps_per_sqrt_s
-        if observed is None or self._last_fix_ns is None:
-            return c.mismatch_walk_mps_per_sqrt_s
-        if (self._stamp.time_ns - self._last_fix_ns) / 1e9 > c.blind_after_s:
+        if observed is None or self._blind():
             return c.mismatch_walk_mps_per_sqrt_s
         return observed
 

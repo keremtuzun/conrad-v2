@@ -90,10 +90,12 @@ class ConsequenceConfig(ConradModel):
     operator_value: float = Field(default=0.35, ge=0, le=1)
     operator_value_unreachable: float = Field(default=0.1, ge=0, le=1)
     operator_value_autonomous_factor: float = Field(
-        default=0.4,
+        default=0.0,
         ge=0,
         le=1,
-        description="operator value multiplier while every open item has an autonomous path",
+        description="operator value multiplier while every open item has an autonomous path. 0 (I5 iteration "
+        "2): the operator is not a resort until an item is a dead end (attempts exhausted or OOD without "
+        "alternate evidence); 0.4 let a repeat-decayed request rank below ESCALATE while attempts remained",
     )
     report_value: float = Field(
         default=1.0, ge=0, description="value of reporting a finding, x its consequence"
@@ -177,7 +179,10 @@ class ConsequenceEstimator:
                 tries = ctx.attempts_on(a.target_belief_ids, kind) + sum(
                     1
                     for d in ctx.previous_decisions
-                    if d.action_type is kind and not a.target_belief_ids and not d.target_belief_ids
+                    if d.action_type is kind
+                    and d.executed is not False
+                    and not a.target_belief_ids
+                    and not d.target_belief_ids
                 )
                 base = 0.5 if kind is ActionType.QUERY_BELIEF else 0.7
                 information = a.consequence * base * (self.cc.attempt_decay ** (2 * tries))

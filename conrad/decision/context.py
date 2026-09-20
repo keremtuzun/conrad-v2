@@ -51,6 +51,16 @@ class DecisionSummary(ConradModel):
     target_belief_ids: tuple[UUID, ...] = ()
     abstained: bool = False
     outcome_ok: bool | None = None
+    executed: bool | None = Field(
+        default=None,
+        description="False when the runtime did not carry the chosen action out (deferred or dropped by "
+        "routing); None = not reported, counted as carried out",
+    )
+    target_revisions: tuple[int, ...] = Field(
+        default=(),
+        description="revision of each target belief in the decision's snapshot (aligned with "
+        "target_belief_ids); empty = not recorded",
+    )
 
 
 class DecisionContext(ConradModel):
@@ -83,10 +93,16 @@ class DecisionContext(ConradModel):
         return self.snapshot.domain_availability.get(domain.value, Availability.UNAVAILABLE)
 
     def attempts_on(self, belief_ids: tuple[UUID, ...], action_type: ActionType) -> int:
-        """How often the recent history already tried ``action_type`` on these beliefs."""
+        """How often the recent history already tried ``action_type`` on these beliefs.
+
+        Only actions the runtime carried out count: a choice that routing deferred or dropped
+        (``executed=False``) was never an attempt, so it must not use up the attempt budget.
+        """
         wanted = set(belief_ids)
         return sum(
             1
             for d in self.previous_decisions
-            if d.action_type is action_type and wanted.intersection(d.target_belief_ids)
+            if d.action_type is action_type
+            and d.executed is not False
+            and wanted.intersection(d.target_belief_ids)
         )

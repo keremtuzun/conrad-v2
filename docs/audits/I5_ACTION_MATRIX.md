@@ -331,3 +331,205 @@ only on the threshold.
   harness. The expected sets follow the E001 table. The mission-level definitions are design readings.
 - Energy in the battery scenario is dominated by the LOW_POWER fault, which sets the energy used, so it is left out
   of the energy mean.
+
+## Iteration 2 (M1-ACTION-E003, 2026-09-19)
+
+E002 failed the criterion "actions exercised correctly inside integrated missions" on two counts: EGDC chose
+ESCALATE_TO_OPERATOR 409 times in 10 nominal missions, and the nominal continue warrant never arose. This
+iteration diagnosed both on the I5 DEVELOPMENT seeds (7500000-7500009 only), fixed what belongs to the decision
+plane, re-ran the action matrix, and ran the frozen design once on fresh final seeds as M1-ACTION-E003.
+
+### Causes
+
+1. **Deferred requests counted as attempts.** Routing defers every MCBR / navigation action while the lane
+   survey runs (`DEFERRED_UNTIL_LANE_SURVEY_COMPLETE`) and silently drops one while an inspection is already
+   running, but the decision history recorded those choices like any other. Each one decayed the information
+   value of the next request (`attempt_decay^tries`), so by the third cycle a request scored below ESCALATE.
+2. **The scalar utility ranked the operator above an untried autonomous path.** Even with executed-only
+   counting, after two executed requests the repeat-decayed request scored -0.020 against ESCALATE at -0.004
+   (the E001 fix discounted operator value by `operator_value_autonomous_factor` 0.4, which was not enough).
+   ch17 L7968-7979 lists the escalation triggers; none of them is "the next look is worth less than the last
+   one", and the E001 design reading was that the operator is not the first resort while an autonomous path
+   remains.
+3. **The uncalibrated-source gap could never close.** Model2T never marks its uncertainty calibrated, so every
+   critical technical requirement carried `UNCALIBRATED_SOURCE`, which raises effective U_E to the 0.45 floor,
+   which keeps the item open forever. `actions.py` already said "an independent confirming look (any modality)
+   closes it", but nothing implemented the closure, so EGDC confirmed, confirmed again, and then escalated as a
+   dead end. CONTINUE could not be chosen for a critical component in any mission, whatever the belief said.
+4. **Cross-domain disagreement was evaluated against every context belief in the snapshot.** A 2S block around
+   another component with coverage below 0.5 marked the critical requirement as contradicted, permanently.
+5. **The nominal continue warrant needs 80 % surface coverage.** With Model2T iteration 3 (coverage geometry,
+   region readings ON) a component-level condition is OBSERVED only once 0.8 of its cells have been read, or
+   once the read part already reaches the worst band. In I5-NOMINAL a view yields ONE averaged reading, so one
+   cell per second at best: 0.8 is unreachable, and with a zero-size defect the worst-band shortcut never
+   fires. That is why no arm ever saw OBSERVED INTACT.
+
+### Fixes (decision plane, all deterministic)
+
+1. **Executed attempts only** (`context.py`, `consequence.py`, `deliberation.py`, `routing.py`).
+   `DecisionSummary` gains `executed` (and `target_revisions`); `DecisionContext.attempts_on` skips entries with
+   `executed=False`. `Deliberation.mark_not_executed()` is called by `DecisionRouting._route` when it defers a
+   decision during the lane survey or drops one because an inspection is already running. Nothing else changed
+   in routing: proposal is still not permission.
+2. **The operator is not a resort while an autonomous path remains** (`consequence.py`):
+   `operator_value_autonomous_factor` default 0.4 to 0.0. ESCALATE still gets its full (and boosted) value once
+   an open high-consequence item is a dead end: information attempts exhausted, or OOD without an alternate
+   modality.
+3. **Calibration gap closure** (`claims.py`, `_confirmed_after_request`): the uncalibrated epistemic floor is
+   dropped for a requirement whose belief now has a NEWER REVISION than the one an executed information request
+   on it saw, with every required property OBSERVED, evidence present and no evidence conflict. Deferred
+   requests and history without recorded revisions never confirm anything, so
+   `test_uncalibrated_source_escalates_once_attempts_are_exhausted` is unchanged.
+4. **Requirement-local cross-domain context** (`cross_domain.py`): context beliefs associated with the
+   requirement's registry component are used when they exist, otherwise only context beliefs whose support
+   overlaps the requirement region.
+5. **A readable nominal scenario** (`scenarios.py` `I5-NOMINAL-READABLE`, appended; `options.py`, `world.py`,
+   `structure.py`): `StructuralSensorOptions.region_tiles` (default None) splits the target's non-defect surface
+   into 8 x 8 truth-side tiles, so one view yields a reading per visible tile instead of one averaged point, and
+   `DefectOptions.pristine_rest` (default False) starts that surface with no corrosion and no crack (in
+   I5-NOMINAL it is sampled from the population priors, about 1 mm). Both defaults are off, so every other
+   scenario builds exactly the world it built before.
+6. **Replan bookkeeping** (`routing.py`): a REPLAN(ROUTE_BLOCKED) during a non-transit goal is recorded as
+   `mode: HOLD`, and the harness counts it as `replan_holds` instead of an executed detour.
+
+No constraint was removed or relaxed. The ConstraintEngine is untouched.
+
+### The stray REPLAN(ROUTE_BLOCKED) of E002
+
+Reproduced on development seed 7500006 (I5-UNCERTAIN-BELIEF): at 38 s and 42 s, while an INSPECT goal was
+running, a planned leg held 3 OBSERVED occupied cells. The truth check says those cells sit 0.09-0.11 m from a
+**clutter debris entity** (unregistered, so neither the design nor the charted seabed explains it) and 0.86 m
+from the design. The REPLAN was therefore a correct detection of a real object on the route, not map noise:
+nothing to fix in the route logic. In 60 development missions of the six E002 scenarios it happened in 1.
+
+What the REPLAN then did is worth recording: `MissionExecutive.replan_detour` only detours a TRANSIT goal and
+holds anything else, so the inspection was abandoned, MCBR planned the same blocked view again, and the loop
+repeated. The E002 artifact counted those holds as "replans executed". They are now labelled `HOLD` and counted
+separately (fix 6). A detour for inspection approaches would need a two-leg goal (GO_TO then STATION_KEEP) in
+the executive, which is another workstream's file, and is left OPEN.
+
+### Development numbers (7500000-7500009, EGDC arm)
+
+- Nominal over-escalation, same scenario and seeds, before / after fixes 1-4: 43 to 0 on seed 7500003; over 8
+  development nominal missions the mean fell from about 41 per mission to 1.6.
+- E001 action matrix on its development split after every fix: 1400/1400 correct, UIR 0, 0 violations,
+  0/210 injected invalid proposals accepted (unchanged from iteration 1).
+- The six non-nominal scenarios on 3 development seeds: battery 3/3, time 3/3, uncertain belief 3/3, route
+  blocked 3/3, critical finding 2/3, store-and-forward 2/3 (the finding was never observed on seed 7500001).
+- I5-NOMINAL-READABLE on 8 development seeds: surface coverage reached 0.61-0.86 and 1 of 8 missions reached an
+  OBSERVED condition. A trial with 240 s and 10 plans per need did not raise coverage past 0.8 and added
+  dead-end escalations, so the scenario keeps the 120 s runtime of I5-NOMINAL.
+
+### Seeds
+
+`configs/eval/partitions_i5_v2.yaml` (version `partitions-i5-missions-2026-09-19-v2`, digest-pinned in
+`conrad.evaluation.partitions` as `I5_V2_PARTITIONS_SHA256`, domain `i5_mission_v2`). Development 7500000-7500009
+(the v1 development split, shared on purpose); final test **7900000-7900009**, declared before any run touched
+it. On load it checks disjointness from `partitions.yaml`, `partitions_nav.yaml`, `partitions_i5.yaml` (whose
+final seeds 7600000-7600009 are SPENT) and `partitions_unity_gates.yaml` (7800000-7810019), plus the reserved
+ranges 5300000-5300059, 6300000-6300011, 6400000-6400019, 6500000-6500059, 7100000-7100009, 7300000-7300009 and
+7400001-7410020. Nothing in `configs/`, `conrad/`, `scripts/`, `tests/`, `docs/` or `artifacts/experiments/` used
+79xxxxx before this file. The v1 file stays loadable and `partitions_i5.yaml` is unchanged.
+
+### Final results (M1-ACTION-E003, 7900000-7900009, 8 scenarios x 10 seeds x 3 arms, 240 missions, 3729 s)
+
+EGDC, closed loop:
+
+| scenario | class | warrant reached | expected action within 4 s | correct | latency mean / max (s) | forbidden after onset | violations | over-escalations | ESCALATE decisions |
+|---|---|---|---|---|---|---|---|---|---|
+| I5-NOMINAL | continue | 0/10 | 0/10 | 0/10 | - | 0 | 0 | 36 | 36 |
+| I5-NOMINAL-READABLE | continue | 0/10 | 0/10 | 0/10 | - | 0 | 0 | 38 | 38 |
+| I5-CRITICAL-FINDING | escalate | 8/10 | 8/10 | 8/10 | 0.0 / 0.0 | 0 | 0 | 0 | 24 |
+| I5-UNCERTAIN-BELIEF | request evidence | 10/10 | 10/10 | 10/10 | 0.0 / 0.0 | 0 | 0 | 0 | 0 |
+| I5-ROUTE-BLOCKED | replan | 10/10 | 9/10 | 9/10 | 2.2 / 20.0 | 0 | 0 | 0 | 19 |
+| I5-BATTERY-RESERVE | return | 10/10 | 10/10 | 10/10 | 0.0 / 0.0 | 0 | 0 | 0 | 0 |
+| I5-TIME-RESERVE | return | 10/10 | 10/10 | 10/10 | 0.0 / 0.0 | 0 | 0 | 0 | 0 |
+| I5-COMMS-OUTAGE | store-and-forward | 8/10 | 8/10 | 8/10 | 0.0 / 0.0 | 0 | 0 | 0 | 12 |
+| all | | 56/80 | 55/80 | 55/80 | 0.4 / 20.0 | 0 | 0 | 74 | 129 |
+
+Correct given warrant is 0.98 (55/56): the single miss is one route-blocked mission that replanned 20 s after
+onset, over the 4 s budget. The other 24 misses are missing warrants: all 20 nominal missions, plus 2
+critical-finding and 2 store-and-forward missions where the defect was never observed.
+
+Correct missions per arm:
+
+| arm | NOMINAL | NOMINAL-READABLE | CRITICAL | UNCERTAIN | ROUTE | BATTERY | TIME | COMMS | all |
+|---|---|---|---|---|---|---|---|---|---|
+| egdc_structured, closed loop | 0/10 | 0/10 | 8/10 | 10/10 | 9/10 | 10/10 | 10/10 | 8/10 | 55/80 |
+| rule_fsm, closed loop | 0/10 | 0/10 | 8/10 | 10/10 | 8/10 | 10/10 | 10/10 | 8/10 | 54/80 |
+| naive_act_on_claims, closed loop | 0/10 | 0/10 | 0/10 | 0/10 | 0/10 | 0/10 | 0/10 | 0/10 | 0/80 |
+| rule_fsm, shadow on EGDC contexts | 0/10 | 0/10 | 8/10 | 10/10 | 8/10 | 10/10 | 10/10 | 8/10 | 54/80 |
+| naive_act_on_claims, shadow | 0/10 | 0/10 | 0/10 | 0/10 | 0/10 | 0/10 | 0/10 | 0/10 | 0/80 |
+
+Traceability, UIR and hard constraints:
+
+| arm | decisions | traceable | UIR (relied unsupported / relied world claims) | hard-constraint violations |
+|---|---|---|---|---|
+| egdc_structured | 3910 | 3910 | 0.0 (0/109) | 0 |
+| rule_fsm | 3910 | 3910 | 0.0 (0/38) | 0 |
+| naive_act_on_claims | 4800 | 4800 | 0.483 (18310/37939) | 34169 |
+| naive_act_on_claims, shadow | 3910 | 3910 | 0.475 (18366/38703) | 30130 |
+
+Mission outcomes (closed loop, 80 missions per arm):
+
+| arm | task success | safety events | findings delivered | ESCALATE per mission | energy J (mean, without the battery scenario) | path m (mean) |
+|---|---|---|---|---|---|---|
+| egdc_structured | 55/80 | 12 | 50 | 1.61 | 16417 | 21.7 |
+| rule_fsm | 55/80 | 13 | 50 | 0.00 | 17345 | 22.6 |
+| naive_act_on_claims | 12/80 | 21 | 36 | 12.54 | 16297 | 20.5 |
+
+Task success per scenario, in the table order above: EGDC 0, 1, 8, 10, 8, 10, 10, 8; rule_fsm identical;
+naive 0, 0, 2, 8, 0, 0, 0, 2.
+
+### Over-escalation: what is left
+
+74 ESCALATE decisions in 20 nominal missions (E002: 409 in 10), a fall from about 41 to 3.7 per mission.
+13 of the 20 missions never escalate; 2 missions account for 40 of the 74. The earliest escalation in any
+nominal mission is at 44 s, after the lane survey and after executed inspections, never during the survey, so
+the deferred-request cause is gone. Every remaining escalation happens once the information attempts on an open
+critical item are used up (`max_information_attempts` 3, or `max_plans_per_need` 4 in the runtime), which is the
+ESCALATE trigger the design intends. It is still counted as over-escalation, because in a nominal mission the
+robot should be continuing instead, and it cannot continue while the critical condition stays UNKNOWN.
+
+### Gate status
+
+- FORMAL (`evidence_formal.json`): unchanged. The seven matrix criteria PASS; the three mission criteria are
+  NOT_RUN, because the formal path is integrated missions through Unity and none exists.
+- SURROGATE (`evidence_surrogate.json`, re-recorded against M1-ACTION-E003): the seven matrix criteria PASS.
+  "Actions exercised correctly inside integrated missions" FAILS. "Traceable decisions with low measured UIR"
+  PASSES (traceable 1.0, UIR 0.0). "Competitive mission outcomes vs decision baselines" PASSES (task success
+  55 vs 55 and 12, safety events 12 vs 13 and 21, 0 violations).
+- `conrad gates status`: I5 official BLOCKED_UPSTREAM (by I4), formal NOT_RUN, surrogate FAIL. **I5 is still not
+  passed.**
+- `tests/acceptance/test_i5_integrated_missions.py` keeps the claim as a strict xfail, now quoting the E003
+  numbers, and pins the spent E002 record in `test_e002_iteration1_record_is_unchanged`.
+
+### What still blocks the continue criterion (OPEN)
+
+The gap is no longer in Model 1. It is that no mission ever produced an OBSERVED INTACT critical component:
+
+1. **Coverage.** Model2T needs 0.8 of the component cells; the readable scenario reached 0.61-0.86 on
+   development seeds and only 1 mission in 8 crossed the line. The pipe rests about 0.17 m above the seabed, so
+   its downward-facing sectors are hard to read at all, and MCBR spends its four plans per need on a few views.
+   Raising coverage is Model2T / MCBR work, not decision work.
+2. **False DEGRADED on a pristine surface.** Where coverage did cross 0.8, Model2T read severity 0.061 against a
+   0.05 DEGRADED band on a surface with no corrosion and no crack, so the condition alternated INTACT and
+   DEGRADED. That is a Model2T measurement-noise question.
+3. **The report queue.** Every new reading raises the belief revision, so a critical component that has been
+   observed is "pending report" again at the next cycle, and the nominal onset (OBSERVED INTACT with nothing to
+   report) keeps being pushed away. A report should probably be pending only when the reported CONDITION
+   changed; that is `DecisionRouting._pending_reports`, shared runtime, left OPEN.
+
+### Limitations (iteration 2)
+
+- SURROGATE only: python L1 kernel, not Unity. It cannot promote I5. The formal Unity I5 mission run is still
+  owed, and another workstream owns the player.
+- Other workstreams were editing `conrad/orchestration/*`, `conrad/active/*` and `conrad/sim/mission/scenarios.py`
+  while E003 ran (I4 predictive MCBR hooks, the I6 multi-domain gate). E003 used the code on disk between 22:26
+  and 23:27 on 2026-09-19. The I6 sensing-conditions gate is off by default and was off in this run; when it
+  starts deferring inspections it must call `Deliberation.mark_not_executed`, or deferred requests will again
+  count as attempts.
+- `operator_value_autonomous_factor = 0`, the 0.9 floor, the 4 s budget, the 0.3 m contact clearance and the
+  8 x 8 tiling are ENGINEERING_ESTIMATE values, not measurements.
+- The readable scenario changes the truth-side reading model (one reading per visible tile). It makes the
+  surface readable in principle; it does not make the belief calibrated.

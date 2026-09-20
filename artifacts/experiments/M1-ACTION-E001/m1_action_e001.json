@@ -2227,8 +2227,8 @@
       {
         "abstained": true,
         "canonical": "hold",
-        "chosen": "ESCALATE_TO_OPERATOR",
-        "chosen_class": "escalate",
+        "chosen": "WAIT",
+        "chosen_class": "hold",
         "condition": "UNHEALTHY",
         "correct": true,
         "expected": [
@@ -4710,8 +4710,8 @@
       {
         "abstained": true,
         "canonical": "hold",
-        "chosen": "ESCALATE_TO_OPERATOR",
-        "chosen_class": "escalate",
+        "chosen": "WAIT",
+        "chosen_class": "hold",
         "condition": "UNHEALTHY",
         "correct": true,
         "expected": [
@@ -4822,8 +4822,8 @@
       {
         "abstained": true,
         "canonical": "hold",
-        "chosen": "ESCALATE_TO_OPERATOR",
-        "chosen_class": "escalate",
+        "chosen": "WAIT",
+        "chosen_class": "hold",
         "condition": "UNHEALTHY",
         "correct": true,
         "expected": [
@@ -7193,8 +7193,8 @@
       {
         "abstained": true,
         "canonical": "hold",
-        "chosen": "ESCALATE_TO_OPERATOR",
-        "chosen_class": "escalate",
+        "chosen": "WAIT",
+        "chosen_class": "hold",
         "condition": "UNHEALTHY",
         "correct": true,
         "expected": [
@@ -7305,8 +7305,8 @@
       {
         "abstained": true,
         "canonical": "hold",
-        "chosen": "ESCALATE_TO_OPERATOR",
-        "chosen_class": "escalate",
+        "chosen": "WAIT",
+        "chosen_class": "hold",
         "condition": "UNHEALTHY",
         "correct": true,
         "expected": [
@@ -12159,8 +12159,8 @@
       {
         "abstained": true,
         "canonical": "hold",
-        "chosen": "ESCALATE_TO_OPERATOR",
-        "chosen_class": "escalate",
+        "chosen": "WAIT",
+        "chosen_class": "hold",
         "condition": "UNHEALTHY",
         "correct": true,
         "expected": [
@@ -12215,8 +12215,8 @@
       {
         "abstained": true,
         "canonical": "hold",
-        "chosen": "ESCALATE_TO_OPERATOR",
-        "chosen_class": "escalate",
+        "chosen": "WAIT",
+        "chosen_class": "hold",
         "condition": "UNHEALTHY",
         "correct": true,
         "expected": [
@@ -12271,8 +12271,8 @@
       {
         "abstained": true,
         "canonical": "hold",
-        "chosen": "ESCALATE_TO_OPERATOR",
-        "chosen_class": "escalate",
+        "chosen": "WAIT",
+        "chosen_class": "hold",
         "condition": "UNHEALTHY",
         "correct": true,
         "expected": [
@@ -14698,8 +14698,8 @@
       {
         "abstained": true,
         "canonical": "hold",
-        "chosen": "ESCALATE_TO_OPERATOR",
-        "chosen_class": "escalate",
+        "chosen": "WAIT",
+        "chosen_class": "hold",
         "condition": "UNHEALTHY",
         "correct": true,
         "expected": [
@@ -14754,8 +14754,8 @@
       {
         "abstained": true,
         "canonical": "hold",
-        "chosen": "ESCALATE_TO_OPERATOR",
-        "chosen_class": "escalate",
+        "chosen": "WAIT",
+        "chosen_class": "hold",
         "condition": "UNHEALTHY",
         "correct": true,
         "expected": [
@@ -17181,8 +17181,8 @@
       {
         "abstained": true,
         "canonical": "hold",
-        "chosen": "ESCALATE_TO_OPERATOR",
-        "chosen_class": "escalate",
+        "chosen": "WAIT",
+        "chosen_class": "hold",
         "condition": "UNHEALTHY",
         "correct": true,
         "expected": [
@@ -17237,8 +17237,8 @@
       {
         "abstained": true,
         "canonical": "hold",
-        "chosen": "ESCALATE_TO_OPERATOR",
-        "chosen_class": "escalate",
+        "chosen": "WAIT",
+        "chosen_class": "hold",
         "condition": "UNHEALTHY",
         "correct": true,
         "expected": [
@@ -19664,8 +19664,8 @@
       {
         "abstained": true,
         "canonical": "hold",
-        "chosen": "ESCALATE_TO_OPERATOR",
-        "chosen_class": "escalate",
+        "chosen": "WAIT",
+        "chosen_class": "hold",
         "condition": "UNHEALTHY",
         "correct": true,
         "expected": [
@@ -22091,8 +22091,8 @@
       {
         "abstained": true,
         "canonical": "hold",
-        "chosen": "ESCALATE_TO_OPERATOR",
-        "chosen_class": "escalate",
+        "chosen": "WAIT",
+        "chosen_class": "hold",
         "condition": "UNHEALTHY",
         "correct": true,
         "expected": [
@@ -22147,8 +22147,8 @@
       {
         "abstained": true,
         "canonical": "hold",
-        "chosen": "ESCALATE_TO_OPERATOR",
-        "chosen_class": "escalate",
+        "chosen": "WAIT",
+        "chosen_class": "hold",
         "condition": "UNHEALTHY",
         "correct": true,
         "expected": [
@@ -24574,8 +24574,8 @@
       {
         "abstained": true,
         "canonical": "hold",
-        "chosen": "ESCALATE_TO_OPERATOR",
-        "chosen_class": "escalate",
+        "chosen": "WAIT",
+        "chosen_class": "hold",
         "condition": "UNHEALTHY",
         "correct": true,
         "expected": [
@@ -24630,8 +24630,8 @@
       {
         "abstained": true,
         "canonical": "hold",
-        "chosen": "ESCALATE_TO_OPERATOR",
-        "chosen_class": "escalate",
+        "chosen": "WAIT",
+        "chosen_class": "hold",
         "condition": "UNHEALTHY",
         "correct": true,
         "expected": [
@@ -24686,8 +24686,8 @@
       {
         "abstained": true,
         "canonical": "hold",
-        "chosen": "ESCALATE_TO_OPERATOR",
-        "chosen_class": "escalate",
+        "chosen": "WAIT",
+        "chosen_class": "hold",
         "condition": "UNHEALTHY",
         "correct": true,
         "expected": [
@@ -50378,8 +50378,8 @@
         "hold": {
           "change sensing": 0,
           "continue": 0,
-          "escalate": 18,
-          "hold": 12,
+          "escalate": 0,
+          "hold": 30,
           "none": 0,
           "replan": 0,
           "report": 0,
@@ -50489,10 +50489,10 @@
           "recall": 1.0
         },
         "ESCALATE_TO_OPERATOR": {
-          "n_chosen": 98,
+          "n_chosen": 80,
           "n_expected": 110,
           "precision": 1.0,
-          "recall": 0.8909090909090909
+          "recall": 0.7272727272727273
         },
         "QUERY_BELIEF": {
           "n_chosen": 300,
@@ -50537,10 +50537,10 @@
           "recall": null
         },
         "WAIT": {
-          "n_chosen": 12,
+          "n_chosen": 30,
           "n_expected": 30,
           "precision": 1.0,
-          "recall": 0.4
+          "recall": 1.0
         }
       },
       "per_class": {
@@ -50558,13 +50558,13 @@
         },
         "escalate": {
           "n_canonical": 80,
-          "n_chosen": 98,
+          "n_chosen": 80,
           "precision": 1.0,
           "recall": 1.0
         },
         "hold": {
           "n_canonical": 30,
-          "n_chosen": 12,
+          "n_chosen": 30,
           "precision": 1.0,
           "recall": 1.0
         },
@@ -50858,17 +50858,15 @@
             },
             "motion_not_permitted": {
               "chosen": {
-                "ESCALATE_TO_OPERATOR": 18,
-                "WAIT": 12
+                "WAIT": 30
               },
               "correct_rate": 1.0,
               "n": 30
             }
           },
           "chosen": {
-            "ESCALATE_TO_OPERATOR": 18,
             "RETURN_TO_SAFE_STATE": 70,
-            "WAIT": 12
+            "WAIT": 30
           },
           "correct_rate": 1.0,
           "n": 100
@@ -50893,9 +50891,9 @@
       "uir": {
         "relied_unsupported_claims": 0,
         "relied_world_claims": 632,
-        "unsupported_claim_fraction": 0.046242774566473986,
+        "unsupported_claim_fraction": 0.047337278106508875,
         "unsupported_inference_rate": 0.0,
-        "world_claims": 4325
+        "world_claims": 4225
       }
     },
     "naive_act_on_claims": {
@@ -51450,10 +51448,10 @@
       },
       "uir": {
         "relied_unsupported_claims": 200,
-        "relied_world_claims": 3436,
-        "unsupported_claim_fraction": 0.046242774566473986,
-        "unsupported_inference_rate": 0.05820721769499418,
-        "world_claims": 4325
+        "relied_world_claims": 3336,
+        "unsupported_claim_fraction": 0.047337278106508875,
+        "unsupported_inference_rate": 0.05995203836930456,
+        "world_claims": 4225
       }
     }
   }

@@ -14,6 +14,7 @@ from conrad.decision.context import DecisionContext, MissionRequirement
 from conrad.decision.graph import ClaimGraph
 from conrad.schemas.belief import BeliefMessage, KnowledgeStatus
 from conrad.schemas.decision import ClaimEdgeType, ClaimType, DecisionClaim, GroundingStatus
+from conrad.schemas.frames import SpatialSupport
 from conrad.schemas.ids import IdFactory
 
 
@@ -32,7 +33,7 @@ def cross_domain_disagreement(
     primary_confident = all(m.uncertainty.observational < config.thresholds.observational for m in primary)
     disagreement = False
     for domain in req.context_domains:
-        for m in ctx.beliefs(domain):
+        for m in _context_for(req, ctx.beliefs(domain)):
             if m.spatial is None:
                 continue
             unobserved = (
@@ -67,3 +68,28 @@ def cross_domain_disagreement(
                 for claim_id in primary_claim_ids:
                     graph.connect(node.claim_id, claim_id, ClaimEdgeType.CONTRADICTS)
     return disagreement
+
+
+def _overlaps(a: SpatialSupport, b: SpatialSupport) -> bool:
+    if a.frame_id != b.frame_id:
+        return True  # cannot compare frames here: keep it (conservative)
+    return all(
+        abs(ca - cb) <= ha + hb
+        for ca, cb, ha, hb in zip(a.center_m, b.center_m, a.half_extent_m, b.half_extent_m, strict=True)
+    )
+
+
+def _context_for(req: MissionRequirement, beliefs: tuple[BeliefMessage, ...]) -> list[BeliefMessage]:
+    """The context beliefs that speak about THIS requirement (I5 iteration 2).
+
+    A context belief associated with the requirement's registry component is the most specific statement about
+    it, so when one exists only those are used. Otherwise only context beliefs whose support overlaps the
+    requirement region count (a belief without a support, or a requirement without a region, is kept). Before
+    this, every context belief in the snapshot counted, so a poorly covered block around ANOTHER component
+    marked the critical requirement as contradicted for the whole mission."""
+    own = [m for m in beliefs if m.world_entity_id is not None and m.world_entity_id in req.target_entity_ids]
+    if own:
+        return own
+    if req.region is None:
+        return list(beliefs)
+    return [m for m in beliefs if m.spatial_support is None or _overlaps(m.spatial_support, req.region)]
