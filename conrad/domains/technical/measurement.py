@@ -131,13 +131,34 @@ def log_likelihood(r: Reading, grid: np.ndarray, sc: SensorCharacteristics) -> n
     if r.detected(sc):
         z = max(r.value, 1e-9)
         dens = np.exp(-0.5 * ((math.log(z) - np.log(med)) / s) ** 2) / (z * s * math.sqrt(2 * math.pi))
-        noise = 2.0 * math.exp(-0.5 * (z / floor) ** 2) / (floor * math.sqrt(2 * math.pi))
+        noise = false_indication_density(z, floor, scale, sc)
         lik = (pod * dens + (1.0 - pod) * noise) @ w
     else:
         below = _norm_cdf((math.log(call) - np.log(med)) / s)
-        noise_below = 2.0 * float(_norm_cdf(np.asarray(call / floor))) - 1.0
+        noise_below = false_indication_cdf(call, floor, scale, sc)
         lik = ((1.0 - pod) * noise_below + pod * below) @ w
     return np.log(np.maximum(lik, 1e-300))
+
+
+def false_indication_density(z: float, floor: float, scale: float, sc: SensorCharacteristics) -> float:
+    """Density of an indication of size ``z`` when there is no crack: a half-normal noise floor plus a
+    declared heavy tail of false indications (weld toes, scratches, growth, registration error)."""
+    w = min(max(sc.crack_false_call_weight, 0.0), 1.0)
+    core = 2.0 * math.exp(-0.5 * (z / floor) ** 2) / (floor * math.sqrt(2 * math.pi))
+    if w <= 0.0:
+        return core
+    tail_scale = max(sc.crack_false_call_scale_m * scale, 1e-9)
+    return (1.0 - w) * core + w * math.exp(-z / tail_scale) / tail_scale
+
+
+def false_indication_cdf(call: float, floor: float, scale: float, sc: SensorCharacteristics) -> float:
+    """P(a no-crack indication stays below the call threshold)."""
+    w = min(max(sc.crack_false_call_weight, 0.0), 1.0)
+    core = 2.0 * float(_norm_cdf(np.asarray(call / floor))) - 1.0
+    if w <= 0.0:
+        return core
+    tail_scale = max(sc.crack_false_call_scale_m * scale, 1e-9)
+    return (1.0 - w) * core + w * (1.0 - math.exp(-call / tail_scale))
 
 
 def _elsewhere_log_likelihood(r: Reading, grid: np.ndarray, sc: SensorCharacteristics) -> np.ndarray:

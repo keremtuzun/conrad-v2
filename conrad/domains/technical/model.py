@@ -84,6 +84,14 @@ class Model2T(Model2Child):
         if unknown:
             raise ValueError(f"design_geometry names non-registry components: {sorted(map(str, unknown))}")
         self._engine = StructuralBeliefEngine(registry, self.config, self.ids, now, self._mode, geometry)
+        occlusion = context.get("surface_occlusion")
+        if occlusion is not None:
+            # Belief-side occlusion test supplied by the deployment (Model2S map), never Twin truth: cells a
+            # reading's footprint reaches but the sensor could not have seen are not credited as covered.
+            if not callable(occlusion):
+                raise TypeError("context['surface_occlusion'] must be callable")
+            for belief in self._engine.beliefs.values():
+                belief.occlusion = occlusion
         if self.repository is not None:
             self.repository.put_provenance(self.run_id, [self._engine.registry_record])
         for rid in self._engine.beliefs:

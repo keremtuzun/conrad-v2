@@ -1,0 +1,25 @@
+# 2T-E002-R4-DEV (SYNTHETIC_ONLY; REALISTIC Twin2T sensor; docs/audits/MODEL2T_REPAIR.md iteration 4). DEVELOPMENT seeds: design only, never evidence.
+experiment: {id: 2T-E002-R4-DEV}
+partition: development
+purpose: design
+# Config-local 2T partitions (iteration 4; configs/eval/partitions.yaml is digest-pinned). Disjoint. The R2
+# FINAL seeds 5300000-5300059 and the R3 FINAL-3 seeds 6500000-6500059 were both inspected in their write-ups,
+# so both are SPENT and never read again. final_4 (6700000-6700059) was checked against every seed range in
+# configs/, conrad/, scripts/, tests/, docs/ and artifacts/ BEFORE it was declared, and before any R4 run
+# (docs/audits/MODEL2T_REPAIR.md iteration 4). 6300000-6700060 is the range partitions_i4_occluded.yaml
+# reserves for the 2E/2T repeat finals; 2E-R4 took 6600000-6600019.
+partitions:
+  development: {range: [5100000, 5100040]}
+  validation: {range: [5200000, 5200040]}
+  final_4: {range: [6700000, 6700060]}
+  spent_final: {range: [5300000, 5300060]}
+  spent_final_3: {range: [6500000, 6500060]}
+seeds: [5100000, 5100001, 5100002, 5100003, 5100004]
+scenario: {kind: tier, tier: 3}
+coverages: [0.5, 0.2, 0.05]
+episodes_per_seed: 2
+steps: 20
+dt_days: 45
+gru: {hidden: 16, epochs: 150, lr: 0.01, train_episodes: 6}
+# Declared before the run: Model2T arms scored on their internal estimate, only on items every arm estimates.
+scoring: paired_latent

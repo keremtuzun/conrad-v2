@@ -17,7 +17,7 @@ from uuid import UUID
 from conrad.domains.technical.config import YEAR_S, Model2TConfig
 from conrad.domains.technical.crack_filter import propagate
 from conrad.domains.technical.registry import CRACK_LENGTH
-from conrad.domains.technical.state import ComponentBelief, Estimate, sync_crack
+from conrad.domains.technical.state import ComponentBelief, Estimate, summarise, sync_crack
 from conrad.schemas.belief import KnowledgeStatus
 
 
@@ -49,12 +49,20 @@ def predict_belief(
         prior.updated_ns = now_ns
     if dt_s == 0.0:
         return False
-    for q, est in belief.estimates.items():
-        grid = belief.crack_grid if q == CRACK_LENGTH else None
-        if grid is None:
-            predict_estimate(est, q, dt_s, cfg)
-        elif propagate(grid, dt_s, cfg.crack_growth):
-            sync_crack(est, grid, cfg)
+    for region in belief.regions.values():
+        for q, est in region.estimates.items():
+            grid = region.crack_grid if q == CRACK_LENGTH else None
+            if grid is None:
+                predict_estimate(est, q, dt_s, cfg)
+            elif propagate(grid, dt_s, cfg.crack_growth):
+                sync_crack(est, grid, cfg)
+            est.updated_ns = now_ns
+            if est.known:
+                est.status = KnowledgeStatus.PREDICTED
+                est.provenance_id = provenance_id
+                changed = True
+    summarise(belief, cfg)
+    for est in belief.estimates.values():
         est.updated_ns = now_ns
         if est.known:
             est.status = KnowledgeStatus.PREDICTED

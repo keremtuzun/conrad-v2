@@ -51,7 +51,8 @@ IMPLEMENTATION_METADATA = {
         "epistemic_growth_per_yr}",
         "model2t.prior.{mean,sd,base_epistemic,unknown_material_epistemic}",
         "model2t.tcdp.{mode,mechanism_relations,correlation,min_source_support,min_gate,max_shift_sd,"
-        "generic_correlation,generic_iterations}",
+        "generic_correlation,generic_iterations,message_model,elevated_sd,elevated_prior,"
+        "base_rate_pseudo_n,correlation_pseudo_pairs,max_measured_correlation,severity_pseudo_weight}",
         "model2t.context.{biofouling_keys,turbidity_keys,visibility_keys,uo_gain,ua_gain,surface_variance_gain}",
         "model2t.condition.{nominal_wall_m,crack_critical_m,bands,change_sigma}",
         "model2t.crack_growth.{model,min_length_m,max_length_m,grid_points,stable_prob,runaway_rates_per_yr,"
@@ -70,7 +71,8 @@ IMPLEMENTATION_METADATA = {
         "a repeated independence group may move the mean but never shrinks the variance",
         "reliable conflicts: variance floored at the equal-weight two-hypothesis mixture; U_C += uc_gain",
         "TCDP message = Gaussian conditional under an assumed edge correlation rho, gated by source direct "
-        "support; only targets without direct lineage are written",
+        "support; only targets without direct lineage are written. The MEASURED_EXPOSURE message model "
+        "(edge correlation measured on doubly observed pairs) is a rejected ablation, not the default",
         "sensor health -> reliability table OK 0.9 / DEGRADED 0.5 / FAULT 0.05 (INVALID)",
         "cross-domain context changes U_O/U_A and surface measurement variance only",
         "a large innovation (> conflict_sigma) inflates the prior variance by innov^2 - S (adaptive process "

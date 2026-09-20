@@ -5,14 +5,18 @@ implementation_status: EXPERIMENTAL_CANDIDATE
 
 from __future__ import annotations
 
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from typing import Any
 from uuid import UUID
+
+import numpy as np
 
 from conrad.domains.ecological import EcologicalEncoder, Model2E
 from conrad.domains.ecological.config import Model2EConfig
 from conrad.domains.spatial.config import spatial_config
 from conrad.domains.spatial.model import Model2S
+from conrad.domains.spatial.queries import UnknownPolicy
 from conrad.domains.technical import Model2T, model2t_config_from_dict, production_propagation_mode
 from conrad.orchestration.mission_config import MissionRuntimeConfig
 from conrad.orchestration.mission_context import MissionContext
@@ -45,6 +49,20 @@ def eco_grid(ctx: MissionContext) -> dict[str, Any]:
     }
 
 
+def surface_occlusion(m2s: Model2S) -> Callable[[Sequence[tuple[float, float, float]]], list[bool]]:
+    """Model2T's ``surface_occlusion`` hook: True where the Model2S belief map says the water-side probe of a
+    surface cell is occupied, so the payload could not have looked at that cell. UNKNOWN space never blocks
+    (``UnknownPolicy.PERMISSIVE``): only what the map has actually observed removes coverage credit."""
+
+    def blocked(points: Sequence[tuple[float, float, float]]) -> list[bool]:
+        if not points:
+            return []
+        arr = np.asarray(points, dtype=np.float64).reshape(-1, 3)
+        return [not bool(f) for f in m2s.is_free(arr, UnknownPolicy.PERMISSIVE)]
+
+    return blocked
+
+
 def build_children(
     ctx: MissionContext,
     cfg: MissionRuntimeConfig,
@@ -68,6 +86,10 @@ def build_children(
             "asset_registry": ctx.asset_registry,
             # surveyed design surfaces (deployment-plane mission context): Model2T surface coverage
             "design_geometry": [c.model_dump(mode="json") for c in ctx.design],
+            # Belief-side occlusion test from the Model2S map (never truth): a surface cell whose water-side
+            # probe sits in space Model2S has OBSERVED as occupied could not have been seen, so a reading's
+            # footprint never credits it (docs/audits/MODEL2T_REPAIR.md iteration 4).
+            "surface_occlusion": surface_occlusion(m2s),
             "timestamp": TimeStamp(time_ns=now_ns, clock_domain=clock),
         }
     )

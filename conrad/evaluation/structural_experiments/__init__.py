@@ -44,4 +44,14 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
     "2T-E003-R3": (_M + "e003_r2", "configs/eval/2t_e003_r3.yaml"),
     "2T-E004-R3-DEV": (_M + "e004_temporal", "configs/eval/2t_e004_r3_dev.yaml"),
     "2T-E004-R3": (_M + "e004_temporal", "configs/eval/2t_e004_r3.yaml"),
+    # Iteration 4 (coverage credit per view, per-region sizing, intact-band calibration): FINAL-4 = 6700000-
+    # 6700059, declared in the R4 configs before any R4 run. FINAL-3 (6500000-6500059) is SPENT.
+    "2T-E001-R4-DEV": (_M + "e001_r2", "configs/eval/2t_e001_r4_dev.yaml"),
+    "2T-E001-R4": (_M + "e001_r2", "configs/eval/2t_e001_r4.yaml"),
+    "2T-E002-R4-DEV": (_M + "e002_persistent", "configs/eval/2t_e002_r4_dev.yaml"),
+    "2T-E002-R4": (_M + "e002_persistent", "configs/eval/2t_e002_r4.yaml"),
+    "2T-E003-R4-DEV": (_M + "e003_r2", "configs/eval/2t_e003_r4_dev.yaml"),
+    "2T-E003-R4": (_M + "e003_r2", "configs/eval/2t_e003_r4.yaml"),
+    "2T-E004-R4-DEV": (_M + "e004_temporal", "configs/eval/2t_e004_r4_dev.yaml"),
+    "2T-E004-R4": (_M + "e004_temporal", "configs/eval/2t_e004_r4.yaml"),
 }

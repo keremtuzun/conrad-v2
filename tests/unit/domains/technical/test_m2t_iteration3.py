@@ -112,7 +112,12 @@ def test_near_side_view_observes_only_the_read_surface(repo):
     assert claim(comp, "condition").status is KnowledgeStatus.UNKNOWN
     assert claim(comp, "corrosion_depth_m").value is None  # the component worst case is not observed
     cov = claim(comp, "surface_coverage").value
-    assert 0.0 < cov < 0.1 and comp.uncertainty.observational >= 1.0 - cov - 1e-12
+    # Iteration 4 credits the reading's DECLARED footprint, not one cell; the far side is never credited.
+    belief = m.beliefs[r["seg_a"]]
+    assert belief.geometry is not None
+    assert belief.geometry.cell_of((2.0, 0.25, 0.0)) not in belief.covered
+    assert 0.0 < cov < belief.coverage_complete
+    assert comp.uncertainty.observational >= 1.0 - cov - 1e-12
     surface = [x for x in out if x.world_entity_id is None]
     assert len(surface) == 1 and claim(surface[0], "corrosion_depth_m").status is KnowledgeStatus.OBSERVED
     revs = repo.all_revisions()

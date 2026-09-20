@@ -24,6 +24,8 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 from uuid import UUID
 
+import numpy as np
+
 from conrad.domains.technical import crack_filter
 from conrad.domains.technical.config import Model2TConfig
 from conrad.domains.technical.dynamics import predict_estimate
@@ -34,7 +36,16 @@ from conrad.domains.technical.measurement import (
     scatter_sigmas,
 )
 from conrad.domains.technical.registry import CORROSION_DEPTH, CRACK_LENGTH, QUANTITY_UNITS, SURFACE_ANOMALY
-from conrad.domains.technical.state import ComponentBelief, Estimate, sync_crack
+from conrad.domains.technical.state import (
+    WHOLE_COMPONENT,
+    ComponentBelief,
+    Estimate,
+    Region,
+    new_region,
+    reveal_probability,
+    summarise,
+    sync_crack,
+)
 from conrad.schemas.belief import KnowledgeStatus, Lifecycle
 from conrad.schemas.frames import WORLD
 from conrad.schemas.observation import Evidence, EvidenceValidity
@@ -99,8 +110,8 @@ def bias_group(ev: Evidence) -> str:
     return g.split("|", 1)[0] if "|" in g else UNATTRIBUTED
 
 
-def _elsewhere(belief: ComponentBelief, q: str, ev: Evidence, locality_m: float) -> bool:
-    known = belief.locus.get(q)
+def _elsewhere(region: Region, q: str, ev: Evidence, locality_m: float) -> bool:
+    known = region.locus.get(q)
     sup = ev.spatial_support
     if known is None or sup is None:
         return False
@@ -109,13 +120,59 @@ def _elsewhere(belief: ComponentBelief, q: str, ev: Evidence, locality_m: float)
     return d > locality_m + 2.0 * math.hypot(sigma, sup.position_sigma_m or 0.0)
 
 
+def region_of(belief: ComponentBelief, ev: Evidence, cfg: Model2TConfig) -> tuple[int, Region]:
+    """The surface region a reading speaks about: the cell its MEASURED point fell in when the component has
+    surveyed design geometry, otherwise the whole component."""
+    geo = belief.geometry
+    sup = ev.spatial_support
+    key = WHOLE_COMPONENT
+    if geo is not None and sup is not None and sup.frame_id == WORLD:
+        key = geo.cell_of(sup.center_m)
+    region = belief.regions.get(key)
+    if region is None:
+        region = new_region(belief, cfg)
+        belief.regions[key] = region
+    return key, region
+
+
+def credit_view(
+    belief: ComponentBelief, region: Region, ev: Evidence, provenance_id: UUID, cfg: Model2TConfig
+) -> None:
+    """Credit the surface cells this reading actually observed (iteration 4).
+
+    ``FOOTPRINT``: the declared footprint of the payload around the measured point, restricted to cells whose
+    outward design normal is within the declared half angle (so the far side is never credited) and, when the
+    deployment supplied one, dropping cells the Model2S belief map says were occluded. ``MEASURED_CELL`` keeps
+    the iteration-3 single cell. A reading without a measured surface point credits nothing."""
+    geo = belief.geometry
+    sup = ev.spatial_support
+    if geo is None or sup is None or sup.frame_id != WORLD:
+        return
+    if cfg.coverage.view_credit == "MEASURED_CELL":
+        cells = {geo.cell_of(sup.center_m)}
+    else:
+        c = cfg.coverage
+        anchor, mask = geo.cells_in_view(sup.center_m, c.footprint_half_angle_deg, c.footprint_axial_m)
+        if belief.occlusion is not None:
+            index = [int(i) for i in np.nonzero(mask)[0]]
+            blocked = list(belief.occlusion(geo.probe_points(mask, c.probe_offset_m)))
+            for i, is_blocked in zip(index, blocked, strict=False):
+                if is_blocked and i != anchor:
+                    mask[i] = False
+        cells = {int(i) for i in np.nonzero(mask)[0]}
+    belief.covered |= cells
+    region.cells |= cells
+    belief.coverage_provenance = provenance_id
+
+
 def _characterised(
-    belief: ComponentBelief,
+    region: Region,
     est: Estimate,
     q: str,
     members: Sequence[Evidence],
     z: float,
     cfg: Model2TConfig,
+    local: bool,
 ) -> tuple[bool, float, float, bool]:
     """Sensor-characterised update of est in place. Returns (surprise, innovation, reading var, detected).
 
@@ -128,9 +185,12 @@ def _characterised(
     ua = sum(m.aleatoric_uncertainty for m in members) / len(members)
     key = (bias_group(members[0]), q)
     ind, sys_ = scatter_sigmas(q, z, ua, sc)
-    reading = Reading(q, z, rel, ua, elsewhere=_elsewhere(belief, q, members[0], sc.defect_locality_m))
-    if q == CRACK_LENGTH and belief.crack_grid is not None:
-        return _crack_grid_update(belief, belief.crack_grid, est, reading, key, members[0], (ind, sys_), cfg)
+    # A region-local reading IS a view of its region, so a miss there is informative about it. Only a
+    # whole-component reading can be "elsewhere" (iteration 3 behaviour, kept for components without geometry).
+    away = False if local else _elsewhere(region, q, members[0], sc.defect_locality_m)
+    reading = Reading(q, z, rel, ua, elsewhere=away)
+    if q == CRACK_LENGTH and region.crack_grid is not None:
+        return _crack_grid_update(region, region.crack_grid, est, reading, key, members[0], (ind, sys_), cfg)
     mean, var = est.level, est.level_var
     first = not est.direct_lineage
     tail = (cfg.prior.tail_weight.get(q, 0.0), cfg.prior.tail_scale_m.get(q, 1.0)) if first else None
@@ -146,19 +206,19 @@ def _characterised(
         est.level_var = post.var
     else:
         est.level, est.level_var = post.mean, post.var
-    belief.bias_counts[key] = belief.bias_counts.get(key, 0.0) + 1.0
+    region.bias_counts[key] = region.bias_counts.get(key, 0.0) + 1.0
     sup = members[0].spatial_support
-    if sup is not None and reading.detected(sc) and z >= belief.locus.get(q, ((0.0, 0.0, 0.0), 0.0, -1.0))[2]:
-        belief.locus[q] = (sup.center_m, sup.position_sigma_m or 0.0, z)
+    if sup is not None and reading.detected(sc) and z >= region.locus.get(q, ((0.0, 0.0, 0.0), 0.0, -1.0))[2]:
+        region.locus[q] = (sup.center_m, sup.position_sigma_m or 0.0, z)
     if reading.detected(sc):
-        sensors = sum(1 for g, qq in belief.bias_counts if qq == q)
+        sensors = sum(1 for g, qq in region.bias_counts if qq == q)
         est.level_var = max(est.level_var, (sys_ * max(est.level, 0.0)) ** 2 / sensors)
     r_read = (math.hypot(ind, sys_) * max(abs(z), abs(mean))) ** 2
     return post.surprise, innov, r_read, reading.detected(sc)
 
 
 def _crack_grid_update(
-    belief: ComponentBelief,
+    region: Region,
     grid: crack_filter.CrackGrid,
     est: Estimate,
     reading: Reading,
@@ -171,14 +231,14 @@ def _crack_grid_update(
     sc = cfg.sensor
     mean = est.level
     res = crack_filter.update(grid, reading, sc, cfg.crack_growth)
-    belief.bias_counts[key] = belief.bias_counts.get(key, 0.0) + 1.0
+    region.bias_counts[key] = region.bias_counts.get(key, 0.0) + 1.0
     detected = reading.detected(sc)
     sup = first.spatial_support
     q = reading.quantity
-    if sup is not None and detected and reading.value >= belief.locus.get(q, ((0.0, 0.0, 0.0), 0.0, -1.0))[2]:
-        belief.locus[q] = (sup.center_m, sup.position_sigma_m or 0.0, reading.value)
+    if sup is not None and detected and reading.value >= region.locus.get(q, ((0.0, 0.0, 0.0), 0.0, -1.0))[2]:
+        region.locus[q] = (sup.center_m, sup.position_sigma_m or 0.0, reading.value)
     if detected:
-        sensors = sum(1 for _, qq in belief.bias_counts if qq == q)
+        sensors = sum(1 for _, qq in region.bias_counts if qq == q)
         crack_filter.floor_log_sd(grid, sigmas[1] / math.sqrt(sensors), cfg.crack_growth)
     sync_crack(est, grid, cfg)
     r_read = (math.hypot(*sigmas) * max(abs(reading.value), abs(mean))) ** 2
@@ -210,6 +270,9 @@ def apply_direct(
         seen_before = group in belief.groups
         t_ns = max(m.timestamp.time_ns for m in members)
         rel = sum(m.reliability for m in members) / len(members)
+        # The reading speaks about the surface it looked at, so it updates that REGION (iteration 4).
+        _, region = region_of(belief, members[0], cfg)
+        local = belief.geometry is not None
         per_q: dict[str, list[tuple[float, float]]] = {}
         for m in members:
             for q, z in measurements_of(m).items():
@@ -220,8 +283,8 @@ def apply_direct(
                 continue
             z = sum(v for v, _ in vals) / len(vals)
             r = sum(v for _, v in vals) / len(vals)
-            est = belief.estimates[q]
-            grid = belief.crack_grid if characterised and q == CRACK_LENGTH else None
+            est = region.estimates[q]
+            grid = region.crack_grid if characterised and q == CRACK_LENGTH else None
             if grid is not None:
                 # the grid IS the working crack state (population prior until the first reading)
                 crack_filter.propagate(
@@ -237,7 +300,7 @@ def apply_direct(
             reliable = rel >= cfg.direct.conflict_min_reliability
             detected = True
             if characterised and q in MODELLED:
-                surprise_flag, innov, r, detected = _characterised(belief, est, q, members, z, cfg)
+                surprise_flag, innov, r, detected = _characterised(region, est, q, members, z, cfg, local)
                 nis = innov / (before[0] + r) ** 0.5
                 surprise = cfg.direct.conflict_sigma + 1.0 if surprise_flag else 0.0
             else:
@@ -267,17 +330,13 @@ def apply_direct(
                 est.status, est.provenance_id = KnowledgeStatus.OBSERVED, provenance_id
             # else: a crack never detected stays UNKNOWN; the censored evidence lives in the latent estimate
             est.direct_lineage, est.updated_ns = True, max(t_ns, est.updated_ns)
-            belief.estimates[q] = est
+            region.estimates[q] = est
             out.changed = True
         if group_conflict:
             belief.uc = min(1.0, belief.uc + cfg.direct.uc_gain)
             out.conflicts.extend(m.evidence_id for m in members)
-        if belief.geometry is not None:
-            for m in members:
-                sup = m.spatial_support
-                if sup is not None and sup.frame_id == WORLD:
-                    belief.covered.add(belief.geometry.cell_of(sup.center_m))
-                    belief.coverage_provenance = provenance_id
+        for m in members:
+            credit_view(belief, region, m, provenance_id, cfg)
         if not seen_before:
             belief.direct_support = 1.0 - (1.0 - belief.direct_support) * (1.0 - rel)
         belief.groups.add(group)
@@ -294,6 +353,8 @@ def apply_direct(
         )
         ood = max((e.sensor_context.ood_score or 0.0) for e in fresh)
         belief.ue = min(1.0, max(base_ue, ood))
+        belief.reveal = reveal_probability(belief.valid, cfg, belief.ua)
+        summarise(belief, cfg)
         belief.consumed.update(out.accepted)
         belief.conflicts.extend(out.conflicts)
         belief.last_evidence = tuple(out.accepted)

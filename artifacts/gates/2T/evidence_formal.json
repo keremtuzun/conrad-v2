@@ -2,12 +2,12 @@
   "gate_id": "2T",
   "evidence_class": "FORMAL",
   "execution_path": "pytest nodes + retained experiment artifacts (2T)",
-  "git_commit": "9847234e0b2f2421c8e1aacb78acb2faf1f40279",
+  "git_commit": "a95eaf56d1481b3fbe1279da6a9d532ecddf431e",
   "criteria": [
     {
       "criterion": "direct inference works before TCDP gets credit",
       "status": "PASS",
-      "measured": "test_direct_update_is_observed_and_reduces_uo=PASS; test_contradiction_raises_uc_and_is_not_averaged_away=PASS; test_missed_detection_never_drags_a_large_crack_to_zero=PASS; test_same_sensor_bias_floor_is_not_averaged_away=PASS; experiment: {\"partition\": \"final_3\", \"coverage_band\": [0.9, 0.99], \"level_0.0.corrosion_depth_m\": {\"mae_gain_mm\": {\"mean\": 0.0746, \"ci_low\": 0.0731, \"ci_high\": 0.0761, \"n\": 60.0}, \"cov95\": 0.98, \"beats_latest\": true, \"calibrated\": true}, \"level_0.0.crack_length_m\": {\"mae_gain_mm\": {\"mean\": 5.8141, \"ci_low\": 4.9332, \"ci_high\": 6.7228, \"n\": 60.0}, \"cov95\": 0.95, \"beats_latest\": true, \"calibrated\": true}, \"level_0.4.corrosion_depth_m\": {\"mae_gain_mm\": {\"mean\": 0.3506, \"ci_low\": 0.3443, \"ci_high\": 0.3568, \"n\": 60.0}, \"cov95\": 0.949, \"beats_latest\": true, \"calibrated\": true}, \"level_0.4.crack_length_m\": {\"mae_gain_mm\": {\"mean\": 43.382, \"ci_low\": 39.3006, \"ci_high\": 47.7068, \"n\": 60.0}, \"cov95\": 0.936, \"beats_latest\": true, \"calibrated\": true}}"
+      "measured": "test_direct_update_is_observed_and_reduces_uo=PASS; test_contradiction_raises_uc_and_is_not_averaged_away=PASS; test_missed_detection_never_drags_a_large_crack_to_zero=PASS; test_same_sensor_bias_floor_is_not_averaged_away=PASS; experiment: {\"partition\": \"final_4\", \"coverage_band\": [0.9, 0.99], \"level_0.0.corrosion_depth_m\": {\"mae_gain_mm\": {\"mean\": 0.0741, \"ci_low\": 0.0717, \"ci_high\": 0.0764, \"n\": 30.0}, \"cov95\": 0.98, \"beats_latest\": true, \"calibrated\": true}, \"level_0.0.crack_length_m\": {\"mae_gain_mm\": {\"mean\": 6.0807, \"ci_low\": 4.7779, \"ci_high\": 7.4093, \"n\": 30.0}, \"cov95\": 0.947, \"beats_latest\": true, \"calibrated\": true}, \"level_0.4.corrosion_depth_m\": {\"mae_gain_mm\": {\"mean\": 0.3524, \"ci_low\": 0.3436, \"ci_high\": 0.3613, \"n\": 30.0}, \"cov95\": 0.95, \"beats_latest\": true, \"calibrated\": true}, \"level_0.4.crack_length_m\": {\"mae_gain_mm\": {\"mean\": 44.7694, \"ci_low\": 41.1103, \"ci_high\": 48.7957, \"n\": 30.0}, \"cov95\": 0.937, \"beats_latest\": true, \"calibrated\": true}}"
     }
   ],
   "artifacts": [

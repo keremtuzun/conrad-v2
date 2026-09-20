@@ -44,3 +44,23 @@ contamination as "not higher", declared before that run.
 
 ## Approval
 Kerem: PENDING REVIEW
+
+## Addendum 2026-09-20: one redesign attempt, still no benefit, decision unchanged
+
+The message model was redesigned once and measured on DEVELOPMENT seeds only (10 seeds, 5100000-5100009).
+`MessageModel.MEASURED_EXPOSURE` replaced the linear Gaussian conditional with a shared-exposure mixture
+whose edge correlation is measured on the pairs whose two ends both carry direct evidence. It lost on both
+halves of the criterion: corrosion RB -0.170 [-0.214, -0.127] mm against -0.113 [-0.126, -0.101] for the
+iteration-3 message, and relational contamination 0.429 against 0.307 (GENERIC 0.664). The reason is
+measurable: an episode has 0 to 4 edges with both ends directly observed, so the correlation is not
+identifiable and the shrunk value ends up lowest in the one episode kind where the correlation is real.
+
+No final split was read or spent. The production default stays `TCDPConfig.mode = NONE`, the recorded
+2T-TCDP FORMAL evidence stays FAIL, and `tests/contract/test_runtime_defaults.py` is unchanged.
+`message_model` defaults to `GAUSSIAN_CONDITIONAL`, so the experimental TCDP arm and the GENERIC baseline
+behave exactly as in iteration 3. Evidence: `docs/audits/MODEL2T_REPAIR.md`, iteration 4.
+
+The "revisit when" condition above is unchanged, with one addition: propagation from neighbour levels alone
+is not enough in these worlds. A retry needs exposure structure the belief plane can actually read (shared
+coating system, splash zone or flow regime in the asset registry or mission context), or worlds where enough
+doubly observed pairs exist for the edge correlation to be identifiable.

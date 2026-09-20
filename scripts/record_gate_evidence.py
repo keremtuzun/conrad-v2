@@ -459,12 +459,12 @@ PLAN["2E-CEFD"] = [
 ]
 
 # ---------------------------------------------------------------- 2T (functional) and 2T-TCDP (research)
-# FINAL-3 artifacts of the R3 structural experiments (docs/audits/MODEL2T_REPAIR.md, iteration 3). The R2 FINAL
-# seeds are spent; R3 runs on the config-local final_3 split 6500000-6500059 (partition name "final_3").
+# FINAL-4 artifacts of the R4 structural experiments (docs/audits/MODEL2T_REPAIR.md, iteration 4). The R2 and
+# R3 FINAL seeds are spent; R4 runs on the config-local final_4 split 6700000-6700059 (partition "final_4").
 TD = "tests/unit/domains/technical/"
-T2_E001 = "artifacts/experiments/2T-E001-R3/2T-E001-R3.json"
-T2_E003 = "artifacts/experiments/2T-E003-R3/2T-E003-R3.json"
-T2_FINAL_PARTITIONS = ("final_test", "final_3")
+T2_E001 = "artifacts/experiments/2T-E001-R4/2T-E001-R4.json"
+T2_E003 = "artifacts/experiments/2T-E003-R4/2T-E003-R4.json"
+T2_FINAL_PARTITIONS = ("final_test", "final_3", "final_4")
 
 
 def _t2_direct_check(d: dict) -> tuple[bool, str]:

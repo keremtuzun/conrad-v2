@@ -7,10 +7,18 @@ SURVEYED DESIGN surface (mission context, the same geometry association uses; ne
 * capsule (pipe segment): ``ceil(length / cell_m)`` bins along the axis x ``sectors`` around it;
 * sphere / box: the six faces of the dominant outward axis.
 
-A reading covers the cell that contains the closest design-surface point to its MEASURED surface point
-(``Evidence.spatial_support``, attached by association). The belief side does not know how large the viewed
-area was, so it never credits more than that cell. A reading without a measured point covers nothing on a
+A reading is located at the cell that contains the closest design-surface point to its MEASURED surface point
+(``Evidence.spatial_support``, attached by association). A reading without a measured point covers nothing on a
 component with geometry. Components without design geometry keep the whole-component-view behaviour.
+
+Iteration 4 (``CoverageConfig.view_credit = "FOOTPRINT"``, default): one reading credits every cell inside the
+DECLARED footprint of the payload around its measured point, not just the one cell it was located in. The
+footprint is a belief-side quantity: the measured surface point and its outward design normal, the declared
+half angle and axial reach of the reading (the same footprint the frozen MCBR predictive model declares), and
+an optional occlusion test supplied by the deployment from Model2S (``context['surface_occlusion']``). A cell
+is credited only if its outward normal is within the half angle of the measured point's normal, so the far
+side of a component is never credited from a near-side look. ``view_credit = "MEASURED_CELL"`` keeps the
+iteration-3 behaviour as an ablation.
 
 implementation_status: EXPERIMENTAL_CANDIDATE
 """
@@ -18,14 +26,19 @@ implementation_status: EXPERIMENTAL_CANDIDATE
 from __future__ import annotations
 
 import math
-from collections.abc import Iterable, Mapping
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass
+from functools import cached_property
 from typing import Any
 from uuid import UUID
 
 import numpy as np
 
 from conrad.domains.technical.config import CoverageConfig
+
+OcclusionTest = Callable[[Sequence[tuple[float, float, float]]], Sequence[bool]]
+"""Deployment-supplied belief-side test: for each water-side probe point, True if the sensor could NOT have
+seen the surface there (Model2S believes the space just off that cell is occupied). Never Twin truth."""
 
 
 class GeometryError(ValueError):
@@ -71,6 +84,53 @@ class SurfaceGeometry:
             rel = rel / np.maximum(np.asarray(self.half_extent_m), 1e-9)
         k = int(np.argmax(np.abs(rel)))
         return 2 * k + (0 if rel[k] >= 0.0 else 1)
+
+    @cached_property
+    def cell_frames(self) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """(cell centre, outward unit normal, coordinate along the axis) per cell, indexed as ``cell_of``."""
+        a = np.asarray(self.p0, dtype=np.float64)
+        if self.shape == "CAPSULE":
+            d, u, v, length = self._basis()
+            pts, nrm = [], []
+            for i in range(self.n_along):
+                for s in range(self.sectors):
+                    ang = (s + 0.5) * 2.0 * math.pi / self.sectors
+                    n = math.cos(ang) * u + math.sin(ang) * v
+                    pts.append(a + (i + 0.5) / self.n_along * length * d + self.radius_m * n)
+                    nrm.append(n)
+            centres, normals = np.asarray(pts), np.asarray(nrm)
+            return centres, normals, centres @ d
+        ext = np.asarray(self.half_extent_m) if self.shape == "BOX" else np.full(3, self.radius_m)
+        pts, nrm = [], []
+        for k in range(3):
+            for sign in (1.0, -1.0):
+                n = np.zeros(3)
+                n[k] = sign
+                pts.append(a + n * ext[k])
+                nrm.append(n)
+        centres, normals = np.asarray(pts), np.asarray(nrm)
+        return centres, normals, np.zeros(len(centres))
+
+    def cells_in_view(
+        self, point: Iterable[float], half_angle_deg: float, axial_m: float
+    ) -> tuple[int, np.ndarray]:
+        """(cell of the measured point, boolean mask of the cells its DECLARED footprint covers).
+
+        The footprint is anchored on the measured point's own cell: a cell belongs to it when its outward
+        design normal is within ``half_angle_deg`` of that cell's normal (so a near-side look never credits
+        the far side) and it lies within ``axial_m`` along the component axis."""
+        k = self.cell_of(point)
+        _, normals, along = self.cell_frames
+        cos_lim = math.cos(math.radians(max(0.0, half_angle_deg)))
+        mask = (normals @ normals[k] >= cos_lim - 1e-9) & (np.abs(along - along[k]) <= axial_m + 1e-9)
+        mask[k] = True
+        return k, mask
+
+    def probe_points(self, mask: np.ndarray, offset_m: float) -> list[tuple[float, float, float]]:
+        """Water-side probe point just off each selected cell (for the deployment's occlusion test)."""
+        centres, normals, _ = self.cell_frames
+        pts = centres[mask] + offset_m * normals[mask]
+        return [(float(p[0]), float(p[1]), float(p[2])) for p in pts]
 
 
 def _vec(v: Any) -> tuple[float, float, float]:

@@ -104,6 +104,31 @@ def population_prior(cfg: CrackGrowthConfig, prior: PriorConfig) -> CrackGrid:
     return CrackGrid(regime[:, None] * cell[None, :])
 
 
+def region_prior(cfg: CrackGrowthConfig, prior: PriorConfig, n_regions: int) -> CrackGrid:
+    """Population prior of ONE surface region (iteration 4).
+
+    ``population_prior`` states what Model2T believes about the worst crack on a WHOLE component. A component
+    split into ``n_regions`` regions must reproduce that belief as the maximum over its regions, so a region's
+    prior is a power of the component CDF (``crack_growth.region_prior_power``; the exact correction is the
+    n-th root). Without any correction, giving every region the component prior and reporting the worst region
+    inflates a pristine component to about the DEGRADED band (the band, 2.5 mm, is only 2.5 noise floors
+    wide), which is what made pristine surfaces read DEGRADED."""
+    grid = population_prior(cfg, prior)
+    power = min(1.0, max(cfg.region_prior_power, 1.0 / float(max(n_regions, 1))))
+    if n_regions <= 1 or power >= 1.0:
+        return grid
+    marginal = grid.p.sum(axis=0)
+    cdf = np.cumsum(marginal)
+    cdf = np.clip(cdf / max(float(cdf[-1]), 1e-300), 0.0, 1.0)
+    cell = np.diff(np.concatenate([[0.0], cdf**power]))
+    cell = np.maximum(cell, 0.0)
+    total = float(cell.sum())
+    if not total > 0.0:
+        return grid
+    regime = grid.p.sum(axis=1, keepdims=True)
+    return CrackGrid(regime * (cell / total)[None, :])
+
+
 def _shift(row: np.ndarray, cells: float) -> np.ndarray:
     """Move a row's mass up by ``cells`` (fractional) cells. Mass pushed past the top leaves the grid: a crack
     cannot outgrow the component-scale bound, so that growth hypothesis is refuted (the caller renormalises)."""

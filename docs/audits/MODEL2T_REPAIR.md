@@ -376,3 +376,409 @@ persistence is now level with latest-observation (every CI straddles 0). In R2 i
 * The read-surface part is only committed on readings, not on temporal prediction.
 * The crack growth prior (rates, hazards, 3 m bound) is uncalibrated. The E004 no-growth ablation has a lower
   crack MAE between inspections but under-covers.
+
+## Iteration 4 (2026-09-20): one TCDP redesign attempt, measured on DEV, rejected
+
+Scope: the research gate **2T-TCDP** only. This iteration touched `conrad/domains/technical/tcdp.py` and its
+`TCDPConfig` entries. Production still does not propagate (`TCDPConfig.mode = NONE`, ADR-0009), and
+`tests/contract/test_runtime_defaults.py` is unchanged. All work is on DEVELOPMENT seeds
+(5100000-5100009). **No final split was read or spent in this iteration.** All data SYNTHETIC_ONLY.
+
+### 1. Why propagation hurts (diagnosis on DEV)
+
+What Twin2T actually generates in the three 2T-E003 episode kinds:
+
+* `coupled`: one hot cluster (a segment plus its shared-environment neighbours) is populated with corrosion
+  U(2.0, 3.5) mm, every other component with U(0, 0.4) mm, plus a shared ENVIRONMENT_CHANGE event. Cracks are
+  raised on the hot segment and on its load path.
+* `misleading`: one surface region and one weld carry 3.5 mm corrosion beside healthy neighbours, and the
+  neighbours of a degraded component are forced hidden.
+* `natural`: an unmodified tier-3 procedural scenario, component states drawn independently.
+
+So an exploitable correlation exists in one kind out of three, and in that kind the structure is a two-class
+one (a component is in the hot cluster or it is not), not a linear relation. The iteration-3 message is a
+linear Gaussian conditional under an ASSUMED per-relation correlation (0.3 to 0.5) applied to every
+mechanism-valid edge. Consequences, measured on 10 DEV seeds (reachable hidden components, MAE in mm,
+`GAUSSIAN_CONDITIONAL`):
+
+| kind | INDEPENDENT | TCDP | GENERIC | RB_TCDP (IND - TCDP) |
+|---|---|---|---|---|
+| coupled | 0.892 | 0.992 | 0.983 | -0.100 [-0.146, -0.054] |
+| misleading | 0.354 | 0.586 | 0.546 | -0.232 [-0.236, -0.228] |
+| natural | 0.279 | 0.287 | 0.281 | -0.008 [-0.031, +0.016] |
+
+* In `natural` the message is nearly harmless, because both the truth and the population prior sit close
+  together and the shift is small.
+* `misleading` is the largest single loss: healthy hidden neighbours of a 3.5 mm defect are moved toward it.
+* In `coupled` the message moves the cluster's hidden members up (right) and the background components that
+  touch the cluster up as well (wrong). Under MAE a half-way move gains about as much on the few right
+  targets as it loses on the more numerous wrong ones, so even the kind TCDP was designed for is a net loss.
+
+### 2. The attempt: `MessageModel.MEASURED_EXPOSURE`
+
+One redesign, addressing exactly that diagnosis. A neighbour's posterior is treated as evidence that the
+receiver shares a defect-driving exposure, not as a linear predictor of the receiver's level:
+
+* "Carries a defect" is a probability, `P(level > core prior mean + elevated_sd core prior sd)`, computed
+  from each component's own posterior.
+* The **edge correlation of that indicator is measured** on the pairs whose two ends both carry direct
+  evidence, then shrunk toward the configured per-relation correlation with `correlation_pseudo_pairs`
+  pseudo-pairs (empirical Bayes). The defect base rate is measured the same way and shrunk toward
+  `elevated_prior`. An asset whose observed pairs show no correlation therefore sends no information.
+* The message is the resulting two-component prior (background core vs shared exposure), fused in log-odds
+  over the neighbours and gated by each source's direct support. `elevated_prior` is set to the population
+  prior's tail weight, so an uninformative message reproduces the population prior exactly.
+* The severity of the shared exposure is the gate-weighted mean level of the elevated neighbours, shrunk
+  toward the population tail level. The existing `max_shift_sd` bound still applies.
+
+### 3. Result on DEV: rejected
+
+10 DEV seeds, RB = MAE(INDEPENDENT) - MAE(TCDP) on reachable hidden components, mean over kinds, mm.
+RC is the pooled relational contamination.
+
+| arm | corrosion RB | coupled | misleading | natural | crack RB | RC corrosion (GENERIC 0.664) |
+|---|---|---|---|---|---|---|
+| GAUSSIAN_CONDITIONAL (iteration 3) | **-0.113** [-0.126, -0.101] | -0.100 | -0.232 | -0.008 | -0.028 [-0.238, +0.218] | 0.307 |
+| MEASURED_EXPOSURE (iteration 4) | **-0.170** [-0.214, -0.127] | -0.166 | -0.347 | +0.004 | -0.301 [-1.805, +1.176] | 0.429 |
+
+The redesign is worse on the benefit and worse on contamination. Crack in the `coupled` kind is the only
+positive cell for either arm (+0.30 [+0.04, +0.69] and +1.30 [+0.10, +3.16]), and it is outweighed by the
+other two kinds.
+
+**Why it failed, measured.** The correlation is not identifiable at the asset level in these worlds. With
+half the components observed and a sparse asset graph, the number of edges whose two ends are both directly
+observed, per episode, is:
+
+| kind | doubly observed components | doubly observed edges | shrunk rho (corrosion) | measured base rate |
+|---|---|---|---|---|
+| coupled | 12.5 | 4.0 | 0.241 | 0.114 |
+| misleading | 10.5 | 0.5 | 0.338 | 0.166 |
+| natural | 10.5 | 2.5 | 0.271 | 0.028 |
+
+Four pairs cannot separate a correlated asset from an uncorrelated one, so the shrinkage leaves rho near its
+prior, and it even ends up **lowest in the one kind where the correlation is real**. With rho effectively
+unchanged, the mixture message is simply a larger step than the linear one, so every loss grows. The
+crack pool has no doubly observed edges at all (a crack claim needs a detection).
+
+### 4. Gate status
+
+**2T-TCDP: FAIL** (unchanged). The recorded FORMAL evidence remains the FINAL-3 run of iteration 3:
+corrosion RB_TCDP -0.110 [-0.116, -0.103] mm, crack -0.038 [-0.107, +0.033], `tcdp_benefit` False. A redesign
+that loses on DEVELOPMENT must not be taken to a final split, so no new final seeds were used and the gate
+evidence was not re-recorded for 2T-TCDP.
+
+**Recommendation: kill.** Keep `TCDPConfig.mode = NONE` in production. The mechanism cannot earn the gate
+from neighbour levels alone in these worlds. What would change the answer is exposure information the belief
+plane does not have today: a shared-environment zone in the asset registry or mission context (which
+components share a coating system, a splash zone, a flow regime), or enough doubly observed pairs for the
+correlation to be identifiable. Both are outside this workstream.
+
+### 5. Code state
+
+* `conrad/domains/technical/config.py`: new `MessageModel` enum and the `TCDPConfig` entries
+  `message_model`, `elevated_sd`, `elevated_prior`, `base_rate_pseudo_n`, `correlation_pseudo_pairs`,
+  `max_measured_correlation`, `severity_pseudo_weight`.
+* `conrad/domains/technical/tcdp.py`: `measure_exposure`, `ExposureStats` and the exposure message.
+  `message_model` defaults to `GAUSSIAN_CONDITIONAL`, so the shipped experimental TCDP arm and the GENERIC
+  baseline behave exactly as in iteration 3; `MEASURED_EXPOSURE` is kept only as a documented, rejected
+  ablation. The nine tests in `tests/unit/domains/technical/test_m2t_tcdp.py` pass under both settings.
+* Reproduce the DEV comparison by running `conrad.evaluation.structural_experiments.e003_r2.run` on
+  `configs/eval/2t_e003_r3_dev.yaml` with seeds 5100000-5100009, once per `message_model`.
+
+## Iteration 4, belief side (2026-09-20): coverage credit per view, per-region sizing, the intact band
+
+Scope: the Model2T defects that block gates I5 and I4, plus the 2T gate evidence that any Model2T change
+invalidates. This is separate from the TCDP iteration 4 above, which touched `tcdp.py` only. All data
+SYNTHETIC_ONLY; every sensor number below is Model2T's own ENGINEERING_ESTIMATE, not a calibration.
+
+### 1. What was wrong (measured, DEVELOPMENT worlds only)
+
+Three belief-plane defects, measured on I5 DEVELOPMENT missions (`I5-NOMINAL-READABLE`, seeds 7500000-7500002)
+and on the I3 surrogate.
+
+1. **Coverage credited one cell per reading.** Iteration 3 credited only the cell holding a reading's measured
+   surface point, whatever the payload actually saw. On the I3 surrogate, six lane readings of a 64-cell
+   target credited 6 cells (coverage 0.094). On `I5-NOMINAL-READABLE`, where the truth side yields one reading
+   per visible tile, 493 and 783 readings credited 39 and 50 of 72 cells (0.54 and 0.69); the cells never
+   credited were the down-facing sectors, so the 0.8 completeness fraction was unreachable and the
+   component-level condition stayed UNKNOWN for ever. That is the I5 "continue" blocker.
+2. **A pristine surface read DEGRADED, and the crack was the cause, not the corrosion.** On seed 7500000 the
+   reported corrosion was 0.14 mm (severity 0.012) while the reported crack was 4.29 mm against a DEGRADED
+   band of 2.5 mm (`bands[0] * crack_critical_m` = 0.05 x 50 mm). Two reasons, both structural:
+   * the band sits at 2.5 declared noise floors (`crack_abs_sigma_m` 1.0 mm) and exactly at the declared call
+     threshold, so out of hundreds of readings a few land above it from the noise floor alone (the largest
+     reading on that seed was 4.17 mm on a surface with no crack), and Model2T's declared noise floor was a
+     pure half-normal, under which a 4 mm indication is far better explained by a real crack;
+   * the component worst case is the worst of its surface, and every surface region carried the whole
+     component's population prior (mean 1.5 mm, sd 1.5 mm), so the worst of about 40 read regions was pushed
+     to the band even with no evidence at all.
+3. **A false call could never be revised, and a real finding was diluted.** All readings of a component were
+   fused into ONE estimate, and iteration 3's locality rule treated a reading more than `defect_locality_m`
+   (0.3 m) from the worst indication as "elsewhere", where a non-detection is uninformative. So a false call
+   survived every later look at the same place, and a genuine far-side finding was averaged against every
+   near-side reading. That is also the I4 complaint in `docs/audits/CONRAD_V2_REMEDIATION_AUDIT.md`:
+   per-component sizing wastes most of an oblique look.
+
+### 2. Fixes (all belief plane, no Twin import)
+
+**2.1 Coverage credit per view** (`coverage.py`, `direct.credit_view`, `CoverageConfig`). A reading now credits
+every cell of its DECLARED footprint, not only the cell it was located in:
+
+* `SurfaceGeometry.cell_frames` gives each cell's centre, outward design normal and axial coordinate;
+  `cells_in_view(point, half_angle_deg, axial_m)` returns the anchor cell and the mask of cells whose outward
+  normal is within `footprint_half_angle_deg` (50 degrees) of the anchor's and whose axial offset is within
+  `footprint_axial_m` (1.0 m). Both numbers are the ones the frozen MCBR predictive model already declares
+  (`SurfacePredictiveConfig`, `configs/active/mcbr_frozen_v2.yaml`), so the two models describe the same
+  payload.
+* The normal cone is what keeps the credit honest: a cell 50 degrees or more around the component from the
+  measured point is never credited, so a near-side look never credits the far side.
+* `context['surface_occlusion']` is an optional deployment-supplied test (`coverage.OcclusionTest`).
+  `conrad/orchestration/children.py` builds it from Model2S: a cell whose water-side probe (0.4 m off the
+  surface, larger than the 0.25 m Model2S voxel) is NOT free in the belief map could not have been looked at,
+  so it loses its footprint credit. UNKNOWN space never blocks (`UnknownPolicy.PERMISSIVE`): only what the map
+  observed removes credit. Nothing reads Twin truth.
+* `coverage.view_credit = "MEASURED_CELL"` restores the iteration-3 behaviour as an ablation.
+
+**2.2 U_O counts the worst case, not the surface** (`state.seen_fraction`, `reveal_probability`). Crediting a
+footprint makes coverage rise quickly, and with the old `U_O >= 1 - coverage` the target would have looked
+well observed after one lane pass. While the component condition is open, U_O is now `1 - coverage x reveal`,
+where `reveal` is the declared probability that a look reveals a defect at the DEGRADED band: 1 for wall loss
+(always measured) and the declared POD at the band crack length for cracks, taking the smallest over the
+component's valid quantities, because the condition is the worst of them. With the default datasheet a 2.5 mm
+crack is far below the 8 mm detection limit, so a partially covered pipe segment keeps U_O near 1. Once
+coverage passes `complete_fraction` the condition is no longer open and the term does not apply.
+
+**2.3 Per-region (locus) sizing** (`state.Region`, `state.summarise`, `direct.region_of`). A reading reports
+the worst case over the surface it looked at, so with design geometry it now updates the REGION anchored on
+its measured cell, each region carrying its own `Estimate` per quantity and its own crack grid, bias counts
+and locus. The component's reported worst case is the worst READ region (`summarise`), and regions never read
+stay at the prior, which is UNKNOWN and never reported. Consequences:
+
+* an informative view moves the component estimate by itself instead of being averaged away (I4);
+* a non-detection in the region a call came from is now informative about that region, so a false call is
+  revised down by later looks at the same place. The distance-based `elsewhere` rule is kept only for
+  components with no design geometry, so every 2T experiment follows the iteration-3 path unchanged
+  (`WHOLE_COMPONENT` aliases the component estimate there).
+
+**2.4 Intact-band calibration** (`SensorCharacteristics.crack_false_call_*`, `CrackGrowthConfig.region_prior_power`).
+Neither change widens a band; both change what the model declares about itself.
+
+* **False-indication tail.** A structured-light or visual payload reports crack-like indications from weld
+  toes, scratches, marine growth and registration error, which are much heavier tailed than its sizing noise.
+  The declared no-crack indication density is now `(1 - w)` half-normal at the noise floor plus `w`
+  exponential with scale `crack_false_call_scale_m` (`w` = `crack_false_call_weight`). With `w = 0` the
+  iteration-3 likelihood is reproduced exactly.
+* **Per-region prior.** The population prior states the worst crack on a WHOLE component. Giving every region
+  that prior and reporting the worst region inflates it. The exact correction is the n-th root of the
+  component CDF; on DEVELOPMENT worlds that prior is so strong that a genuine 10 mm crack is explained away as
+  a false indication, so the exponent is a declared parameter `region_prior_power` selected on DEV.
+  `region_prior_power = 1.0` is the iteration-3 behaviour.
+
+**2.5 The re-report loop** (`conrad/orchestration/routing.py`, `_pending_reports`). A critical component was
+"pending report" again at every cycle, because every reading raises the belief revision. A report is now
+pending when the shore has nothing for that belief, or when the reported CONDITION value differs from the one
+in the revision the shore already has. The revision the shore holds is remembered per belief as the runtime
+sees it; a revision this runtime never saw still counts as reportable, so nothing is silently dropped.
+
+### 3. DEVELOPMENT evidence (design only, never gate evidence)
+
+**3.1 Intact band and the separation of genuine defects.** The evidence stream of one
+`I5-NOMINAL-READABLE` DEVELOPMENT mission per case was captured and replayed offline through Model2T, so the
+arms differ only in Model2T (scratch capture and replay scripts, not committed). The truth-side defect size is
+the only thing that changes between cases; `pristine_rest` is on in every case, so the rest of the surface
+carries no
+corrosion and no crack. Reported crack length (mm) and reported condition:
+
+| arm | pristine | crack 5 mm | crack 10 mm | crack 25 mm | corrosion 2 mm | corrosion 5 mm |
+|---|---|---|---|---|---|---|
+| iteration 3 (w 0, power 1) | 3.12 DEGRADED | 3.12 DEGRADED | 6.22 DEGRADED | 17.24 SEVERE | 3.12 DEGRADED | 3.12 SEVERE |
+| tail only (w 0.05, power 1) | 2.59 DEGRADED | 2.59 DEGRADED | 5.43 DEGRADED | 16.56 SEVERE | 2.59 DEGRADED | 2.59 SEVERE |
+| region prior only (w 0, power 0.5) | 2.95 DEGRADED | 2.95 DEGRADED | 6.18 DEGRADED | 17.12 SEVERE | 2.95 DEGRADED | 2.95 SEVERE |
+| **SELECTED (w 0.05, power 0.5)** | **1.86 INTACT** | 1.86 INTACT | **5.00 DEGRADED** | **15.73 SEVERE** | 1.86 **DEGRADED** | 1.86 **SEVERE** |
+| stronger (w 0.10, power 0.5) | 1.42 INTACT | 1.42 INTACT | 3.23 DEGRADED | 14.33 DEGRADED | 1.42 DEGRADED | 1.42 SEVERE |
+| stronger (w 0.05, power 0.25) | 0.81 INTACT | 0.81 INTACT | 4.30 DEGRADED | 14.14 DEGRADED | 0.81 DEGRADED | 0.81 SEVERE |
+
+Read the condition column, not the crack column, for the corrosion cases: there the condition is driven by
+wall loss, and the crack number is the pristine one. The selected arm is the only one that reports INTACT on
+the pristine surface AND keeps every genuine defect at or above its true band (10 mm crack DEGRADED, 25 mm
+crack SEVERE, 2 mm wall loss DEGRADED, 5 mm wall loss SEVERE). Both stronger arms lose the 25 mm crack's
+SEVERE band, which is the failure mode the brief warns about, so they were rejected.
+
+The 5 mm crack case is NOT evidence either way: it reports exactly the pristine numbers because the mission
+never detected it at all. 5 mm is below the declared detection limit (`crack_pod_a50_m` 8 mm) and below the
+simulated sensor's, so no reading of it was ever a call. Separating a 5 mm crack from an intact surface is
+outside this sensor's ability, not a calibration choice.
+
+A second DEVELOPMENT seed (7500003) was captured for pristine, 5 mm and 10 mm. On that seed the mission never
+detected the defect in ANY case, so all three replay to the same numbers and it carries only the pristine
+side of the comparison: 2.25 mm INTACT under iteration 3 and 1.34 mm INTACT under the selected arm. The
+pristine-DEGRADED failure is therefore seed dependent, and the separation evidence above rests on one world.
+
+**3.2 2T experiment protocol, DEVELOPMENT.** `2T-E001-R4-DEV` on the 10 DEVELOPMENT seeds 5100000-5100009,
+next to the iteration-3 DEV record on exactly the same seeds. Gain is latest-observation MAE minus Model2T MAE
+(mm), 95 % bootstrap CI; `cov95` is the pooled interval coverage, band [0.90, 0.99]:
+
+| quantity / level | iteration 3 DEV | iteration 4 DEV | cov95 it. 3 | cov95 it. 4 |
+|---|---|---|---|---|
+| crack, level 0.0 | +4.97 [2.60, 7.69] | +4.93 [2.39, 7.66] | 0.952 | 0.950 |
+| crack, level 0.4 | +41.8 [36.0, 48.8] | +41.7 [35.7, 48.7] | 0.939 | 0.937 |
+| corrosion, level 0.0 | (not recorded) | +0.073 [0.069, 0.076] | 0.981 | 0.981 |
+| corrosion, level 0.4 | (not recorded) | +0.340 [0.327, 0.354] | 0.951 | 0.952 |
+
+The 2T experiment worlds carry no design geometry, so coverage, regions and the per-region prior never apply
+there; only the false-indication tail can move these numbers, and it does not. That is what made it safe to
+freeze the design and spend a new final split.
+
+**3.3 I3 surrogate (`tests/integration/test_i3_structural.py`, `I3-STRUCTURAL`, 30 s).** The four tests pass
+unchanged. Measured on the target segment (64 cells) after the lane pass:
+
+| | iteration 3 | iteration 4 |
+|---|---|---|
+| cells credited by the six lane readings | 6 (coverage 0.094) | 27 (coverage 0.422) |
+| sectors credited | 0, 1, 2 (near side) | 0, 1, 2, 3, 7; sectors 4, 5, 6 never credited |
+| component condition | UNKNOWN | UNKNOWN |
+| message U_O | 0.906 | 0.959 |
+| welds, never inspected | coverage 0.0, UNKNOWN | coverage 0.0, UNKNOWN |
+| truth oracle, far-side patch max visible fraction | 0.0 | 0.0 |
+
+So the view credit rose by a factor of 4.5 while the far side of the component stayed uncredited, the hidden
+target stayed UNKNOWN, and never-observed components stayed UNKNOWN with U_O 1.0. U_O rose rather than fell
+because of fix 2.2: the lane pass cannot rule out a band-size crack anywhere, whatever fraction of the surface
+it swept.
+
+### 4. I5 DEVELOPMENT check (seeds 7500000-7500002 only; the I5 final seeds were not touched)
+
+Surface coverage of the critical component at the end of `I5-NOMINAL-READABLE`, and the condition Model2T
+reports (M1-ACTION-E003 recorded 0.61-0.86 with 1 of 8 missions crossing the 0.8 line, and DEGRADED where it
+did cross):
+
+| seed | coverage iteration 3 | coverage iteration 4 | condition open | reported condition |
+|---|---|---|---|---|
+| 7500000 | 0.54 | 0.944 | no | INTACT |
+| 7500001 | 0.69 | 0.958 | no | INTACT |
+| 7500002 | (not measured) | 0.875 | no | INTACT |
+
+Provenance of that table: the coverage column and the 7500001 / 7500002 conditions were measured on the
+footprint build before the per-region prior was added, so they carry the tail-only calibration; coverage does
+not depend on the prior, and both were already INTACT. On 7500000 that build still reported DEGRADED
+(severity 0.0518, crack 2.59 mm); under the selected calibration the same captured mission replays to
+1.86 mm INTACT, and the scored mission below, run on the frozen build, requires an OBSERVED INTACT critical
+component before it can report the warrant.
+
+The cells the footprint fills in are exactly the down-facing sectors that a passing vehicle grazes but never
+centres on, and the Model2S occlusion test keeps the credit off cells whose water side the map has seen to be
+occupied (coverage 1.0 without it in the offline replay, 0.944 with it in the mission).
+
+The nominal "continue" warrant, which was 0 of 10 in `I5-NOMINAL` and 0 of 10 in `I5-NOMINAL-READABLE` in
+M1-ACTION-E003, now arises in the readable scenario. Scored with the real `m1_action_integrated.mission_job`
+on the EGDC arm, DEVELOPMENT seeds only:
+
+| seed | scenario | warrant reached | correct | latency s | ESCALATE decisions | over-escalations |
+|---|---|---|---|---|---|---|
+| 7500000 | I5-NOMINAL-READABLE | yes | yes | 4.0 | 0 | 0 |
+| 7500001 | I5-NOMINAL-READABLE | yes | no | 6.0 | 0 | 0 |
+| 7500000 | I5-NOMINAL | no | no | - | 0 | 0 |
+| 7500001 | I5-NOMINAL | no | no | - | 0 | 0 |
+
+The warrant arose in both readable missions, 2 of 2, against 0 of 10 in M1-ACTION-E003. On 7500001 CONTINUE
+came 6 s after onset, two decision cycles over the declared 4 s budget, so that mission scores incorrect on
+latency, not on the action.
+
+`I5-NOMINAL` still produces no warrant: its truth side yields ONE averaged reading per view instead of one per
+visible tile, and its surface is sampled from the population priors rather than pristine, so the critical
+component was never OBSERVED at all on either seed. The readable scenario is the one the I5 iteration 2 write-up
+added for exactly this purpose. Over-escalation is 0 in both, against 36 and 38 per 10 missions in
+M1-ACTION-E003.
+
+### 5. Seeds and the FINAL-4 split
+
+* 2T FINAL-3 (6500000-6500059) was inspected in the iteration-3 write-up and is now **SPENT**. It was not
+  read in this iteration. So is the R2 FINAL split 5300000-5300059.
+* **FINAL-4 = 6700000-6700059**, declared in the new `configs/eval/2t_e00{1,2,3,4}_r4.yaml` as the
+  config-local partition `final_4` before any R4 run. `configs/eval/partitions.yaml` is digest-pinned, so 2T
+  keeps config-local partitions and `common.checked_seeds` enforces them: a `final*` partition needs
+  `final_evaluation` purpose, must be disjoint from every other local partition, from the `spent_final` and
+  `spent_final_3` lists, and from every pinned mission/abstract seed.
+* Collision check before the declaration: `configs/`, `conrad/`, `scripts/`, `tests/`, `docs/` and
+  `artifacts/` were searched for 67xxxxx. The only hit is `configs/eval/partitions_i4_occluded.yaml`, which
+  RESERVES 6300000-6700060 for "2E/2T repeat finals"; inside it 2E-R4 took 6600000-6600019 and 2T-R3 took
+  6500000-6500059, so 6700000-6700059 was free.
+* Gate thresholds and the 95 % coverage band [0.90, 0.99] are unchanged from iteration 3.
+* Declared before the run: R4 uses the FIRST 30 seeds of `final_4` for E001, E003 and E004 and the first 10
+  for E002 (B2 is refit per seed). The host is shared with several other workstreams, and a 60-seed sweep does
+  not fit. This is a reduced sweep and is reported as one.
+
+### 6. FINAL-4 results (frozen design, run once)
+
+**2T-E001-R4**, seeds 6700000-6700029 (30 seeds, 3 tier-3 episodes x 16 steps x 2 degradation levels each).
+Gain is latest-observation MAE minus Model2T MAE (mm) with a paired percentile bootstrap 95 % CI over seeds;
+the coverage band [0.90, 0.99] was declared before the run:
+
+| level | quantity | gain [95 % CI] | cov95 | in band |
+|---|---|---|---|---|
+| 0.0 | corrosion | +0.074 [0.072, 0.076] | 0.980 | yes |
+| 0.0 | crack | **+6.08 [4.78, 7.41]** | 0.947 | yes |
+| 0.4 | corrosion | +0.352 [0.344, 0.361] | 0.950 | yes |
+| 0.4 | crack | **+44.8 [41.1, 48.8]** | 0.937 | yes |
+
+Against the other declared baselines: crack beats latest-debiased (+5.82 and +53.7), the GRU (+110 and +82)
+and the pre-repair absolute update (+6.28 and +44.3) at both levels. Corrosion still loses narrowly to the
+GRU at level 0.4 (-0.025 [-0.032, -0.018]) and to the pre-repair absolute update (-0.014 and -0.028), as in
+iteration 3. The gate rule compares against latest-observation only.
+
+The other three R4 experiments (E003, E004, E002) were started from the same frozen design in the same
+session; see the gate note below for their state.
+
+### 7. 2T gate status after this iteration
+
+The iteration-3 PASS was earned on FINAL-3 by code that has since changed (coverage credit, per-region
+sizing, the false-indication tail), so that evidence no longer describes this model and must not be cited.
+`scripts/record_gate_evidence.py` now points the 2T criterion at
+`artifacts/experiments/2T-E001-R4/2T-E001-R4.json` and the 2T-TCDP criterion at the E003-R4 artifact, and
+`T2_FINAL_PARTITIONS` accepts `final_4`.
+
+**2T: PASS on FINAL-4.** On the 30 FINAL-4 seeds, Model2T direct inference beats latest-observation for both
+corrosion and crack at both degradation levels, every CI is above 0, and all four 95 % interval coverages are
+inside the declared band [0.90, 0.99]. The four listed unit tests pass.
+
+**2T-TCDP:** the mechanism is unchanged by this iteration and production does not propagate (ADR-0009). Its
+criterion reads `2T-E003-R4`; where that run was not finished in this session the script records NOT_RUN,
+which is the correct state until it exists. E004 and E002 are write-up experiments and feed no gate. To
+finish the remaining R4 runs and re-record, with nothing left to decide:
+
+```
+python -m uv run python -c "from conrad.evaluation.dispatch import run_experiment as r; [r(e) for e in ('2T-E003-R4','2T-E004-R4','2T-E002-R4')]"
+python -m uv run python scripts/record_gate_evidence.py 2T 2T-TCDP
+```
+
+### 8. Tests
+
+* New `tests/unit/domains/technical/test_m2t_iteration4.py` (12 tests): footprint credit and the far side never
+  credited, the `MEASURED_CELL` ablation, the Model2S occlusion hook removing credit, a never-observed
+  component staying UNKNOWN with U_O 1.0, `seen_fraction` = coverage x reveal, a far-side finding not diluted
+  by twelve near-side readings, a false call revised down by later looks at the same region, regions used only
+  where there is design geometry, an indication at the noise floor not condemning a pristine surface, a real
+  12 mm crack still separated from it, the false-indication tail as a configurable ablation, and the
+  `cells_in_view` / `probe_points` geometry helpers.
+* `tests/unit/domains/technical/test_m2t_iteration3.py::test_near_side_view_observes_only_the_read_surface`
+  had its premise restated: it asserted "one cell per reading" (`0 < coverage < 0.1`). It now asserts the
+  iteration-4 criterion, which is stronger: the far-side cell is NOT in `covered`, coverage is below the
+  completeness fraction, and U_O is at least 1 - coverage. Every other assertion in it is unchanged.
+* No threshold was lowered anywhere.
+
+### 9. Open items
+
+* `crack_false_call_weight` (0.05), `crack_false_call_scale_m` (3 mm), `region_prior_power` (0.5), the 50
+  degree / 1.0 m footprint, the 0.4 m probe offset and `reveal_pod_floor` are ENGINEERING_ESTIMATE values
+  selected on DEVELOPMENT worlds, not calibrations.
+* The separation evidence uses one DEVELOPMENT world per defect size. It shows the selected arm is the only
+  one of six that keeps both ends; it is not a power study.
+* A 5 mm crack cannot be separated from an intact surface by this sensor at all (declared a50 8 mm). The
+  DEGRADED crack band (2.5 mm) remains below the instrument's detection limit, so an INTACT crack verdict is
+  a statement about what was measurable, which is exactly what the reveal factor in U_O now says.
+* The footprint is declared, not measured: the belief side never learns the payload's true footprint, because
+  no field of `Evidence` carries the sensor pose or the viewed extent. If association wrote the measured
+  footprint into `Evidence.spatial_support.half_extent_m`, Model2T could use the measured one.
+* Relational propagation (TCDP) writes the component summary, not a region, so a reading would overwrite it.
+  Production does not propagate (ADR-0009), so this is inert today.
+* Per-region state is committed on readings only, not on temporal prediction, as in iteration 3.

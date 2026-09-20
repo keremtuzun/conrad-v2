@@ -1,0 +1,39 @@
+# 2T-E001-R4 (SYNTHETIC_ONLY; REALISTIC Twin2T sensor; docs/audits/MODEL2T_REPAIR.md iteration 4). FINAL-4 seeds: run ONCE after freezing the design.
+experiment: {id: 2T-E001-R4}
+partition: final_4
+purpose: final_evaluation
+# Config-local 2T partitions (iteration 4; configs/eval/partitions.yaml is digest-pinned). Disjoint. The R2
+# FINAL seeds 5300000-5300059 and the R3 FINAL-3 seeds 6500000-6500059 were both inspected in their write-ups,
+# so both are SPENT and never read again. final_4 (6700000-6700059) was checked against every seed range in
+# configs/, conrad/, scripts/, tests/, docs/ and artifacts/ BEFORE it was declared, and before any R4 run
+# (docs/audits/MODEL2T_REPAIR.md iteration 4). 6300000-6700060 is the range partitions_i4_occluded.yaml
+# reserves for the 2E/2T repeat finals; 2E-R4 took 6600000-6600019.
+partitions:
+  development: {range: [5100000, 5100040]}
+  validation: {range: [5200000, 5200040]}
+  final_4: {range: [6700000, 6700060]}
+  spent_final: {range: [5300000, 5300060]}
+  spent_final_3: {range: [6500000, 6500060]}
+seeds: [6700000, 6700001, 6700002, 6700003, 6700004, 6700005, 6700006, 6700007, 6700008, 6700009, 6700010, 6700011, 6700012, 6700013, 6700014, 6700015, 6700016, 6700017, 6700018, 6700019, 6700020, 6700021, 6700022, 6700023, 6700024, 6700025, 6700026, 6700027, 6700028, 6700029]
+# Declared BEFORE the run: R4 uses the FIRST 30 seeds of the final_4 split (6700000-6700029). The
+# split itself is 6700000-6700059; the run is halved because the host is shared with other workstreams
+# (docs/audits/MODEL2T_REPAIR.md iteration 4). Gate thresholds and the coverage band are unchanged.
+scenario: {kind: tier, tier: 3}
+episodes_per_seed: 3
+steps: 16
+dt_days: 60
+coverage: 0.8
+degradation_levels: [0.0, 0.4]
+gru: true
+gru_training:
+  train_seed: 5100039  # DEVELOPMENT seed, excluded from the DEV evaluation list
+  scenario: {kind: tier, tier: 3}
+  steps: 16
+  dt_days: 60
+  coverages: [0.8]
+  gru: {hidden: 16, epochs: 150, lr: 0.01, train_episodes: 6}
+# Declared BEFORE the final run: 95% interval coverage of Model2T must lie in this band.
+coverage_band: [0.90, 0.99]
+hypothesis: "Model2T direct inference (sensor-characterised) has lower MAE than latest-observation for corrosion and crack, with calibrated 95% intervals"
+primary_metric: "paired MAE gain (latest - model) per seed, bootstrap 95% CI"
+baselines: [LATEST_OBSERVATION, LATEST_OBSERVATION_DEBIASED, SINGLE_FRAME, GRU_TEMPORAL, MODEL2T_ABSOLUTE]

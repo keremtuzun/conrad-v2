@@ -15,6 +15,16 @@ from typing import Any
 YEAR_S = 365.25 * 86400.0
 
 
+class MessageModel(str, Enum):
+    """How a TCDP message turns a neighbour's posterior into a prior for the receiver."""
+
+    GAUSSIAN_CONDITIONAL = "GAUSSIAN_CONDITIONAL"
+    """Iteration-3 arm: linear Gaussian conditional under an ASSUMED per-relation correlation."""
+    MEASURED_EXPOSURE = "MEASURED_EXPOSURE"
+    """Iteration-4 candidate: shared-exposure mixture whose edge correlation is MEASURED on the pairs
+    whose two ends both carry direct evidence (empirical Bayes, shrunk toward the assumed correlation)."""
+
+
 class PropagationMode(str, Enum):
     NONE = "NONE"
     """Independent-component model: no relational inference at all."""
@@ -89,6 +99,14 @@ class SensorCharacteristics:
     crack_rel_sigma: float = 0.30
     crack_systematic_rel_sigma: float = 0.25
     crack_abs_sigma_m: float = 1.0e-3
+    crack_false_call_weight: float = 0.05
+    """Fraction of the crack noise floor that is NOT Gaussian (iteration 4). A structured-light / visual
+    payload reports crack-like indications from weld toes, scratches, marine growth and registration error,
+    and those are much heavier tailed than the sizing noise. Without this tail a single indication a few
+    sigma above the floor is read as a real crack, which is what made a PRISTINE surface report DEGRADED
+    (docs/audits/MODEL2T_REPAIR.md iteration 4). ENGINEERING_ESTIMATE, selected on DEVELOPMENT worlds."""
+    crack_false_call_scale_m: float = 3.0e-3
+    """Exponential scale of that false-indication tail (scaled by the sensor-health noise factor)."""
     noise_ua_gain: float = 5.0
     """Every scatter / noise-floor sigma is multiplied by 1 + noise_ua_gain * max(0, aleatoric -
     noise_ua_reference) (evidence aleatoric level from reported sensor health)."""
@@ -191,6 +209,14 @@ class CrackGrowthConfig:
     0.1 s does not need a grid convolution; the pending time is always applied before a reading)."""
     max_substep_s: float = 30 * 86400.0
     """A long elapsed time is applied in sub-steps of at most this (operator-splitting accuracy)."""
+    region_prior_power: float = 0.5
+    """Prior of ONE surface region, as a power of the component population prior CDF (iteration 4).
+
+    The component prior states the worst crack on a WHOLE component. Giving every surface region that same
+    prior and reporting the worst region inflates a pristine component towards the DEGRADED band. The exact
+    correction is the n-th root of the CDF (``power = 1 / n_cells``), but on DEVELOPMENT worlds that prior is
+    so strong that a genuine 10 mm crack is explained away as a false indication, so the power is a declared
+    ENGINEERING_ESTIMATE selected on DEVELOPMENT worlds. 1.0 = the iteration-3 component prior per region."""
     point_estimate: str = "MEDIAN"
     """Reported crack length: posterior ``MEDIAN`` (default; the skewed run-away tail pulls the mean up) or
     ``MEAN``. The variance is always the posterior's."""
@@ -200,6 +226,8 @@ class CrackGrowthConfig:
             raise ValueError(f"unknown crack_growth.model {self.model!r}")
         if self.point_estimate not in ("MEAN", "MEDIAN"):
             raise ValueError(f"unknown crack_growth.point_estimate {self.point_estimate!r}")
+        if not 0.0 < self.region_prior_power <= 1.0:
+            raise ValueError("crack_growth.region_prior_power must be in (0, 1]")
 
 
 @dataclass(frozen=True)
@@ -266,6 +294,24 @@ class TCDPConfig:
     """Bound on a message's mean shift in target-prior sd (0 disables; GENERIC always unbounded)."""
     generic_correlation: float = 0.6
     generic_iterations: int = 2
+    message_model: MessageModel = MessageModel.GAUSSIAN_CONDITIONAL
+    """TCDP message form (GENERIC always uses the Gaussian conditional, so baseline B9 is unchanged).
+    MEASURED_EXPOSURE was the iteration-4 redesign; it was measured on DEV, lost to GAUSSIAN_CONDITIONAL on
+    both benefit and contamination, and is kept only as an ablation (docs/audits/MODEL2T_REPAIR.md)."""
+    elevated_sd: float = 2.0
+    """A component "carries a defect" when its level is this many core-prior sd above the core-prior mean."""
+    elevated_prior: dict[str, float] = field(
+        default_factory=lambda: {"corrosion_depth_m": 0.1, "crack_length_m": 0.05}
+    )
+    """Prior rate of defect-carrying components. Model2T's own ENGINEERING_ESTIMATE; it matches
+    ``PriorConfig.tail_weight`` so that an uninformative message reproduces the population prior exactly."""
+    base_rate_pseudo_n: float = 4.0
+    """Pseudo-components shrinking the MEASURED defect rate toward ``elevated_prior``."""
+    correlation_pseudo_pairs: float = 4.0
+    """Pseudo-pairs shrinking the MEASURED edge correlation toward ``correlation`` (empirical Bayes)."""
+    max_measured_correlation: float = 0.9
+    severity_pseudo_weight: float = 1.0
+    """Pseudo-weight shrinking the measured shared-exposure severity toward the population tail level."""
 
 
 @dataclass(frozen=True)
@@ -301,7 +347,27 @@ class CoverageConfig:
     complete_fraction: float = 0.8
     """Component-level condition is OBSERVED only once this fraction of the cells has been read (or once the
     observed part alone already puts the component in the worst condition band). Below it the condition is
-    UNKNOWN, U_O >= 1 - coverage, and the observed part is reported as ``observed_region_condition``."""
+    UNKNOWN, U_O >= 1 - seen fraction, and the observed part is reported as ``observed_region_condition``."""
+    view_credit: str = "FOOTPRINT"
+    """``FOOTPRINT`` (default, iteration 4): a reading credits every cell in the DECLARED footprint of the
+    payload around its measured surface point. ``MEASURED_CELL``: the iteration-3 behaviour, one cell per
+    reading (kept as an ablation)."""
+    footprint_half_angle_deg: float = 50.0
+    """Half angle of the declared reading footprint, measured between outward design normals. A cell whose
+    normal is further than this from the measured point's normal is NOT credited, so a near-side look never
+    credits the far side. ENGINEERING_ESTIMATE; the same value the frozen MCBR predictive model declares
+    (``SurfacePredictiveConfig.footprint_half_angle_deg``, configs/active/mcbr_frozen_v2.yaml)."""
+    footprint_axial_m: float = 1.0
+    """Axial reach of the declared reading footprint (same source as the half angle)."""
+    probe_offset_m: float = 0.4
+    """Water-side stand-off of the probe point handed to the deployment's occlusion test. It must be larger
+    than the Model2S voxel (0.25 m), or the surface's own voxel would report every cell as occluded."""
+    reveal_pod_floor: float = 0.02
+    """Floor of the declared reveal probability (below it a look tells almost nothing about the worst case)."""
+
+    def __post_init__(self) -> None:
+        if self.view_credit not in ("FOOTPRINT", "MEASURED_CELL"):
+            raise ValueError(f"unknown coverage.view_credit {self.view_credit!r}")
 
 
 @dataclass(frozen=True)

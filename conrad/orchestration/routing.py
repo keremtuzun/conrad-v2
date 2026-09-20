@@ -33,6 +33,8 @@ from conrad.schemas.timebase import TimeStamp
 from conrad.schemas.world import Domain
 
 MODULE = "conrad.orchestration.routing"
+_UNSEEN_REVISION = object()
+"""Sentinel: the condition of a revision this runtime never saw (then a newer revision is still reportable)."""
 
 
 class DecisionRouting:
@@ -57,6 +59,8 @@ class DecisionRouting:
         self.prior_views: list[PriorView] = []
         self.started_ns: int | None = None  # set by MissionRuntime.start (mission clock origin)
         self.replans: list[dict[str, Any]] = []
+        # (belief id, revision) -> reported condition value, so a re-report needs a CHANGED condition.
+        self._condition_at: dict[tuple[UUID, int], str | None] = {}
         # Gate I6 hook (conrad.orchestration.multidomain.SensingConditionsGate.check): returns a deferral reason for
         # an information request that must not go to MCBR now. None (default) = no gate.
         self.sensing_gate: Callable[[InformationNeed, DecisionOutcome, TimeStamp], str | None] | None = None
@@ -72,6 +76,13 @@ class DecisionRouting:
         return [self.d.sensor.modality] if used else []
 
     def _pending_reports(self, now: TimeStamp) -> list[str]:
+        """Critical components whose OBSERVED condition the shore does not have yet.
+
+        A report is pending on a MEANINGFUL change, not on any new revision: every reading raises the belief
+        revision, so keying off the revision alone re-queued a report for an unchanged component at every
+        cycle and pushed the nominal "continue" warrant away for ever (docs/audits/I5_ACTION_MATRIX.md
+        iteration 2, open item 3). The reported condition is what the shore acts on, so the change that
+        matters is a change of that value."""
         out = []
         for m in self._critical_heads(now):
             if m.world_entity_id not in self.ctx.critical_component_ids:
@@ -79,8 +90,14 @@ class DecisionRouting:
             cond = next((c for c in m.state_summary if c.name == "condition"), None)
             if cond is None or cond.status is not KnowledgeStatus.OBSERVED:
                 continue
+            value = None if cond.value is None else str(cond.value)
+            self._condition_at[(m.belief_id, m.revision)] = value
             known = self.shore.reported_revision(m.belief_id)
-            if known is None or known < m.revision:
+            if known is None:
+                out.append(str(m.belief_id))
+                continue
+            delivered = self._condition_at.get((m.belief_id, known), _UNSEEN_REVISION)
+            if known < m.revision and (delivered is _UNSEEN_REVISION or delivered != value):
                 out.append(str(m.belief_id))
         return out
 
