@@ -1,0 +1,240 @@
+{
+ "criteria": {
+  "beats coverage-only": {
+   "decided_by": "run1 and run2 (replication)",
+   "status": "FAIL"
+  },
+  "beats fixed views on actual hidden-state reconstruction": {
+   "decided_by": "run1",
+   "status": "PASS"
+  },
+  "beats random views": {
+   "decided_by": "run1",
+   "status": "PASS"
+  },
+  "beats simple views on information/time/energy": {
+   "decided_by": "run1 (fixed and random halves PASS); coverage half FAIL in run1 and run2",
+   "status": "FAIL"
+  },
+  "closed loop": {
+   "decided_by": "run1",
+   "status": "PASS"
+  }
+ },
+ "data_status": "SYNTHETIC_ONLY",
+ "evidence_kind": "FORMAL",
+ "gate": "I4",
+ "note": "Both runs are reported. Neither is preferred over the other and nothing was re-run after an outcome was seen. Run 1's worlds 8000200-8000219 and run 2's worlds 8001000-8001059 are disjoint and both splits are spent.",
+ "runs": {
+  "run1": {
+   "arms": [
+    "PRODUCTION",
+    "A-B1_fixed_inspection",
+    "A-B0_random",
+    "A-B2_coverage"
+   ],
+   "config": "configs/eval/i4_occluded_unity.yaml",
+   "means": {
+    "A-B0_random": {
+     "collisions": 0.35,
+     "hidden_state_error_improvement": 0.1862648335685273,
+     "info_per_kj": 0.047321867231305687,
+     "info_per_time": 0.0018626483356852727,
+     "observations": 2.45,
+     "patch_max_visible_fraction": 0.32159130284130283,
+     "redundant_observations": 2.15,
+     "target_observed": 0.25
+    },
+    "A-B1_fixed_inspection": {
+     "collisions": 0.05,
+     "hidden_state_error_improvement": 0.16068170497187836,
+     "info_per_kj": 0.04016928275246427,
+     "info_per_time": 0.001606817049718784,
+     "observations": 2.35,
+     "patch_max_visible_fraction": 0.2218018018018018,
+     "redundant_observations": 2.05,
+     "target_observed": 0.25
+    },
+    "A-B2_coverage": {
+     "collisions": 0.0,
+     "hidden_state_error_improvement": 0.22873415370733508,
+     "info_per_kj": 0.056252631258326226,
+     "info_per_time": 0.002287341537073351,
+     "observations": 2.9,
+     "patch_max_visible_fraction": 0.2823674636174636,
+     "redundant_observations": 2.55,
+     "target_observed": 0.3
+    },
+    "PRODUCTION": {
+     "collisions": 0.0,
+     "hidden_state_error_improvement": 0.39222875544502306,
+     "info_per_kj": 0.09806448701940335,
+     "info_per_time": 0.0039222875544502305,
+     "observations": 1.95,
+     "patch_max_visible_fraction": 0.46731981981981985,
+     "redundant_observations": 1.45,
+     "target_observed": 0.5
+    }
+   },
+   "n_worlds": 20,
+   "paired_production_vs": {
+    "A-B0_random": {
+     "hidden_state_error_improvement": {
+      "benefit_mean": 0.2059639218764958,
+      "ci95": [
+       0.029987275228244507,
+       0.38209749712961866
+      ],
+      "n_worlds": 20
+     },
+     "info_per_kj": {
+      "benefit_mean": 0.050742619788097645,
+      "ci95": [
+       0.006893328022140259,
+       0.09451639074112651
+      ],
+      "n_worlds": 20
+     },
+     "info_per_time": {
+      "benefit_mean": 0.0020596392187649574,
+      "ci95": [
+       0.00029987275228244507,
+       0.003820974971296187
+      ],
+      "n_worlds": 20
+     }
+    },
+    "A-B1_fixed_inspection": {
+     "hidden_state_error_improvement": {
+      "benefit_mean": 0.23154705047314467,
+      "ci95": [
+       0.08100319846772686,
+       0.39898104320613875
+      ],
+      "n_worlds": 20
+     },
+     "info_per_kj": {
+      "benefit_mean": 0.05789520426693906,
+      "ci95": [
+       0.020078588733272857,
+       0.09986581112741057
+      ],
+      "n_worlds": 20
+     },
+     "info_per_time": {
+      "benefit_mean": 0.0023154705047314468,
+      "ci95": [
+       0.0008100319846772684,
+       0.003989810432061387
+      ],
+      "n_worlds": 20
+     }
+    },
+    "A-B2_coverage": {
+     "hidden_state_error_improvement": {
+      "benefit_mean": 0.16349460173768798,
+      "ci95": [
+       -0.04476929276659981,
+       0.3693231214694793
+      ],
+      "n_worlds": 20
+     },
+     "info_per_kj": {
+      "benefit_mean": 0.04181185576107711,
+      "ci95": [
+       -0.009223464972655557,
+       0.09222439167280518
+      ],
+      "n_worlds": 20
+     },
+     "info_per_time": {
+      "benefit_mean": 0.0016349460173768794,
+      "ci95": [
+       -0.0004476929276659983,
+       0.0036932312146947927
+      ],
+      "n_worlds": 20
+     }
+    }
+   },
+   "partition_digest": "d929beb67c051ea1116e33ebb8e51cd638f5894ef54989a0a3f2ec3a9221b557",
+   "results": "artifacts/gates/I4/unity_i4_occluded_results.json"
+  },
+  "run2_replication": {
+   "arms": [
+    "PRODUCTION",
+    "A-B2_coverage"
+   ],
+   "config": "configs/eval/i4_occluded_unity_rep2.yaml",
+   "decides": [
+    "beats coverage-only",
+    "beats simple views on information/time/energy (coverage half)"
+   ],
+   "means": {
+    "A-B2_coverage": {
+     "collisions": 0.06666666666666667,
+     "hidden_state_error_improvement": 0.3553245622614301,
+     "info_per_kj": 0.08405817597099006,
+     "info_per_time": 0.0035532456226143013,
+     "observations": 2.7666666666666666,
+     "patch_max_visible_fraction": 0.40873915317050874,
+     "redundant_observations": 2.3,
+     "target_observed": 0.45
+    },
+    "PRODUCTION": {
+     "collisions": 0.03333333333333333,
+     "hidden_state_error_improvement": 0.36475342648156406,
+     "info_per_kj": 0.08768188108644222,
+     "info_per_time": 0.003647534264815641,
+     "observations": 2.65,
+     "patch_max_visible_fraction": 0.4564043071750332,
+     "redundant_observations": 2.1666666666666665,
+     "target_observed": 0.43333333333333335
+    }
+   },
+   "n_worlds": 60,
+   "paired_production_vs": {
+    "A-B2_coverage": {
+     "hidden_state_error_improvement": {
+      "benefit_mean": 0.009428864220133937,
+      "ci95": [
+       -0.08279002135423728,
+       0.09785646541794935
+      ],
+      "coverage_mean": 0.3553245622614301,
+      "fraction_improved": 0.2833333333333333,
+      "n_worlds": 60,
+      "production_mean": 0.36475342648156406
+     },
+     "info_per_kj": {
+      "benefit_mean": 0.0036237051154521488,
+      "ci95": [
+       -0.0179271880180729,
+       0.024384535102992606
+      ],
+      "coverage_mean": 0.08405817597099006,
+      "fraction_improved": 0.3,
+      "n_worlds": 60,
+      "production_mean": 0.08768188108644222
+     },
+     "info_per_time": {
+      "benefit_mean": 9.428864220133935e-05,
+      "ci95": [
+       -0.0008279002135423728,
+       0.0009785646541794935
+      ],
+      "coverage_mean": 0.0035532456226143013,
+      "fraction_improved": 0.2833333333333333,
+      "n_worlds": 60,
+      "production_mean": 0.003647534264815641
+     }
+    }
+   },
+   "partition_digest": "ad4f97312ea19eaeef47995b2d80299c4b9cd49a59b448c365bb545c5f363fb6",
+   "results": "artifacts/gates/I4/unity_i4_occluded_rep2_results.json"
+  }
+ },
+ "verdict": "FAIL",
+ "verdict_reason": "PRODUCTION does not beat coverage-only. Run 1 left the interval unresolved; the pre-registered replication on 60 fresh worlds returns a TIE, not a larger effect. Per the stopping rule declared before run 2, the investigation stops here.",
+ "world_family": "ACTIVE_INSPECTION_OCCLUDED_V1"
+}

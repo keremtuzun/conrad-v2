@@ -1,0 +1,39 @@
+# Immutable seed partition for the PRE-REGISTERED REPLICATION of gate I4 on the world family
+# ACTIVE_INSPECTION_OCCLUDED_V1. SYNTHETIC_ONLY. Created 2026-09-20 BEFORE any flight on these worlds.
+#
+# Why: formal run 1 (configs/eval/i4_occluded_unity.yaml, final_test 8000200-8000219, 20 worlds) recorded
+# gate I4 = FAIL. It beat fixed views (+0.232 [0.081, 0.399]) and random views (+0.206 [0.030, 0.382]) but not
+# coverage-only (+0.163 [-0.045, 0.369]), and lost to coverage on information per time and per energy. The
+# power warning in docs/audits/I4_WORLD_FAMILY.md section 8.2 was made before run 1, not after it: the
+# per-world outcome is close to all-or-nothing, so 20 paired worlds cannot resolve an effect of that size.
+# The honest response to an underpowered interval is a pre-registered replication on fresh worlds, not a
+# reinterpretation of the same ones. Run 1's seeds are SPENT and are never re-used or re-run.
+#
+# NOTHING about the family, the planner, the budgets, the metric or the decision rule changes. Only the number
+# of worlds and the arm set change, both declared here and in configs/eval/i4_occluded_unity_rep2.yaml before
+# the first flight. DO NOT EDIT: conrad.evaluation.partitions pins the digest of this file's canonical content
+# (I4_OCCLUDED_V2_PARTITIONS_SHA256) and refuses a changed copy.
+version: partitions-i4-occluded-replication-2026-09-20-v1
+replicates: configs/eval/partitions_i4_occluded.yaml
+replicates_digest: d929beb67c051ea1116e33ebb8e51cd638f5894ef54989a0a3f2ec3a9221b557
+scenario: I4-OCCLUDED
+families: [pipeline_with_supports]
+# 60 worlds x 2 arms = 120 sequential Unity flights. Run 1 measured 82 s per flight over 80 flights, so this
+# is about 2.7 h. Sized before the run, to fit the host, not to reach an outcome.
+world_seeds:
+  final_test: {explicit: [], range: [8001000, 8001060]}
+reserved_elsewhere:
+  - {range: [2026201, 2026204], owner: partitions.yaml contaminated development seeds}
+  - {range: [3100000, 3400030], owner: partitions.yaml abstract domain}
+  - {range: [5100000, 5400040], owner: partitions.yaml mission domain}
+  - {range: [6300000, 6700060], owner: 2E/2T repeat finals}
+  - {range: [6900000, 7000000], owner: reserved for another agent}
+  - {range: [7100000, 7100010], owner: M1-ACTION-E001 development}
+  - {range: [7300000, 7410021], owner: M1-ACTION / NAV finals}
+  - {range: [7500000, 7600010], owner: I5 partitions}
+  - {range: [7800000, 7810020], owner: partitions_unity_gates.yaml (I1, I3, I4 v1 - SPENT)}
+  - {range: [7900000, 7900010], owner: I5 v2 final_test}
+  - {range: [8000000, 8000024], owner: i4_occluded development}
+  - {range: [8000100, 8000124], owner: i4_occluded validation}
+  - {range: [8000200, 8000220], owner: i4_occluded final_test (SPENT, formal run 1)}
+  - {range: [8000300, 8000312], owner: i4_occluded ood_test}

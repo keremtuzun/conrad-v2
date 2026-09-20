@@ -347,3 +347,154 @@ this selection round.
   record I4 as FAIL on the random-views criterion.
 * That is reported to the integrator as a property of the declared design. The split is digest-pinned and is
   not being enlarged after seeing these numbers, and no threshold is being moved.
+
+## 9. Formal run 1 (Unity, 2026-09-20): gate I4 = FAIL
+
+`configs/eval/i4_occluded_unity.yaml`, final split 8000200-8000219 (20 worlds), declared reduced arm set of
+four (PRODUCTION, fixed, random, coverage), 80 sequential flights at a measured 82 s each, Twin2E off as in
+the previous formal I4 run. Recorded in `artifacts/gates/I4/unity_i4_occluded_results.json` and
+`artifacts/gates/I4/evidence_formal.json`. Three of five criteria PASS:
+
+| criterion | result |
+|---|---|
+| closed loop: hidden -> uncertain -> MCBR view -> new evidence -> belief improves | PASS |
+| beats fixed views on actual hidden-state reconstruction | PASS, +0.232 [+0.081, +0.399] |
+| beats random views | PASS, +0.206 [+0.030, +0.382] |
+| beats coverage-only | FAIL, +0.163 [-0.045, +0.369] |
+| beats simple views on information/time/energy | FAIL (the coverage half) |
+
+Means over the 20 worlds:
+
+| arm | hidden-state err. impr. | obs | redundant | target OBSERVED | patch seen | collisions |
+|---|---|---|---|---|---|---|
+| PRODUCTION | 0.392 | 1.95 | 1.45 | 0.50 | 0.467 | 0.00 |
+| A-B2_coverage | 0.229 | 2.90 | 2.55 | 0.30 | 0.282 | 0.00 |
+| A-B0_random | 0.186 | 2.45 | 2.15 | 0.25 | 0.322 | 0.35 |
+| A-B1_fixed_inspection | 0.161 | 2.35 | 2.05 | 0.25 | 0.222 | 0.05 |
+
+### 9.1 Why coverage-only does so well here
+
+Both mechanisms the question offers are present, and the measurement separates them.
+
+**MCBR is not spending its budget.** The observation budget is `max_plans_per_need` 4. PRODUCTION averages
+1.95 accepted observations per world against coverage's 2.90, and takes 0 or 1 observation in 6 of the 20
+worlds. Counting planner calls rather than accepted plans: PRODUCTION is asked 2.6 times per world and returns
+39 PLAN / 2 NEED_SATISFIED / 11 NO_FEASIBLE_OBSERVATION; coverage is asked 3.8 times and returns 58 PLAN /
+6 NEED_SATISFIED / 12 NO_FEASIBLE_OBSERVATION. The gap is in how many planning cycles each arm fits inside the
+100 s mission, not in refusals: PRODUCTION picks the window, which is on the far side of the structure, so
+each of its views costs more mission time to reach and fewer cycles fit. The budget is matched on observation
+count and on mission time, but the binding constraint is mission time, and the two arms spend it differently.
+
+**Coverage is sweeping the window by volume, not by aim.** Per view, PRODUCTION is clearly better: mean patch
+visible fraction 0.467 against coverage's 0.282, and it ends with the target OBSERVED in 10 of 20 worlds
+against coverage's 6. Coverage does not aim at the window; it walks the candidate ring for novelty and crosses
+the window in some worlds because it takes more shots. The per-world split is the clearest statement of this:
+PRODUCTION observes the target and coverage does not in 6 worlds, coverage does and PRODUCTION does not in 2,
+both do in 4, neither does in 8.
+
+So the honest summary of run 1 is: MCBR chooses better views and takes fewer of them, and a systematic sweep
+closes most of that gap by volume inside the same mission time. That is a real finding about the mechanism and
+it does not depend on how the replication turns out. It also names the concrete follow-up, which is NOT part
+of this gate: the cost of reaching a chosen view is not reflected in how many planning cycles the runtime
+grants, so an arm that picks far, high-value views is charged twice.
+
+## 10. Pre-registered replication (run 2), declared before the first flight
+
+Run 1 recorded FAIL. The power warning in section 8.2 was written before run 1, not after it, so the response
+is more worlds under an identical design rather than a reinterpretation of the same ones.
+
+Declared in `configs/eval/i4_occluded_unity_rep2.yaml` and pinned in
+`configs/eval/partitions_i4_occluded_v2.yaml` (digest
+`ad4f97312ea19eaeef47995b2d80299c4b9cd49a59b448c365bb545c5f363fb6`, domain `i4_occluded_v2`) BEFORE any
+flight on it:
+
+* **Worlds**: fresh 8001000-8001059, 60 worlds, disjoint from run 1's spent 20 and from every other partition
+  file. Read exactly once. Sized from run 1's measured 82 s per flight so 120 flights fit in about 2.7 h.
+* **Arms**: PRODUCTION and coverage-only only. The fixed-views and random-views criteria PASSED in run 1 on
+  their own held-out worlds and are not re-decided. Re-running a criterion that already passed, on fresh
+  worlds, until it passes again is exactly the shopping this declaration exists to prevent. The reduction and
+  its reason are recorded the same way the four-arm reduction was, and the harness asserts it.
+* **Unchanged**: the frozen planner `configs/active/mcbr_frozen_v3.yaml` (config digest
+  `8eca16cc896e560b26cbe9814828fe9f75801d843e0e38bedb5442299805d903`), the family digest
+  `f77c5dbb7d665e3740e76cd4dfd97f37d0f0060bc2b336af6391ff0758877bdd`, the scenario, the candidate generator,
+  the feasibility filter, the budgets, the metric, and the bootstrap with its resample count and seed.
+* **Decides**: "beats coverage-only" on `hidden_state_error_improvement`, and the coverage half of "beats
+  simple views on information/time/energy" on `info_per_time` and `info_per_kj`.
+* **Rule**: unchanged. PRODUCTION beats coverage on a metric iff the lower bound of the 95 % paired
+  percentile-bootstrap CI over worlds is above 0.
+* **Stopping rule, declared now**: if the interval still includes 0, gate I4 stays FAIL and the investigation
+  stops. Two honest attempts are enough, and "MCBR does not beat a systematic coverage sweep in this family"
+  is a legitimate result. The split is not enlarged, no threshold is moved, no baseline is dropped and nothing
+  is re-run after the outcome is seen. A tie is reported as a tie. Both runs are reported side by side,
+  never the better one alone.
+
+### 10.1 Result of run 2: a tie, and gate I4 stays FAIL
+
+Run once, 60 worlds, 120 sequential flights, 2 h 20 m. Recorded in
+`artifacts/gates/I4/unity_i4_occluded_rep2_results.json`; both runs side by side in
+`artifacts/gates/I4/i4_replication_summary.json`.
+
+| metric | benefit of PRODUCTION over coverage-only | verdict |
+|---|---|---|
+| `hidden_state_error_improvement` | +0.0094 [-0.0828, +0.0979] | not beaten |
+| `info_per_time` | +0.00009 [-0.00083, +0.00098] | not beaten |
+| `info_per_kj` | +0.0036 [-0.0179, +0.0244] | not beaten |
+
+| arm | hidden-state err. impr. | obs | redundant | target OBSERVED | patch seen | collisions |
+|---|---|---|---|---|---|---|
+| PRODUCTION | 0.365 | 2.65 | 2.17 | 0.43 | 0.456 | 0.03 |
+| A-B2_coverage | 0.355 | 2.77 | 2.30 | 0.45 | 0.409 | 0.07 |
+
+Target OBSERVED, per world: both 21, PRODUCTION only 5, coverage only 6, neither 28. The benefit is positive
+in 28 % of worlds.
+
+**This is a tie, not an underpowered interval, and that distinction matters.** At n = 60 the interval on the
+primary metric is about +-0.09 and it is centred on +0.009. Run 1's point estimate of +0.163 was not
+reproduced; the replication did not find a smaller effect than expected, it found no effect. Under the
+stopping rule declared before the run, the investigation stops here.
+
+**Gate I4 = FAIL.** Three criteria PASS (closed loop, beats fixed views, beats random views, all decided on
+run 1's own held-out worlds); "beats coverage-only" and the coverage half of "beats simple views on
+information/time/energy" FAIL. The recorded verdict is unchanged from run 1; the replication removes the
+possibility that it was a sample-size artefact.
+
+The result worth stating plainly: **on a family where the nominal route genuinely cannot see the defect, the
+production MCBR planner clearly beats a fixed route and random views, and does not beat a systematic coverage
+sweep.** That is a legitimate scientific result, not a gap to be closed by another run.
+
+### 10.2 Correction to section 9.1: the run 1 diagnosis did not replicate
+
+Section 9.1 was written from run 1 (n = 20) and two of its three claims do not survive run 2 (n = 60). The
+correction is recorded rather than the original quietly revised.
+
+| quantity | run 1 (n = 20) | run 2 (n = 60) |
+|---|---|---|
+| PRODUCTION observations | 1.95 | 2.65 |
+| coverage observations | 2.90 | 2.77 |
+| PRODUCTION patch visible fraction | 0.467 | 0.456 |
+| coverage patch visible fraction | 0.282 | 0.409 |
+| PRODUCTION hidden-state err. impr. | 0.392 | 0.365 |
+| coverage hidden-state err. impr. | 0.229 | 0.355 |
+
+1. **"MCBR is not spending its budget" does NOT replicate.** The observation gap was 0.95 views per world in
+   run 1 and 0.12 in run 2. PRODUCTION now uses 2.65 of its 4 allowed observations against coverage's 2.77.
+   The run 1 gap was a small-sample artefact.
+2. **"Coverage sweeps the window by volume rather than by aim" is much weaker than it looked.** Coverage's
+   per-view patch visibility rose from 0.282 to 0.409, close to PRODUCTION's 0.456. Coverage is not merely
+   getting lucky with more shots; on 60 worlds its views are nearly as good.
+3. **PRODUCTION is the stable arm across both runs** (0.392 then 0.365; patch 0.467 then 0.456). Coverage is
+   what moved (0.229 then 0.355). Run 1's 20-world coverage sample was on the low side, which is what produced
+   run 1's +0.163 point estimate and the apparent near-miss.
+
+So the honest mechanism statement after both runs is narrower than section 9.1 claimed: MCBR's chosen views
+are slightly better per view, it takes about as many views as coverage does, and the two arms end up
+resolving the hidden defect about equally often. The follow-up named in section 9.1, that travel cost is not
+reflected in how many planning cycles the runtime grants, is no longer supported by the data and should not be
+pursued on the strength of this evidence.
+
+### 10.3 OOD split: not run
+
+The held-out OOD split 8000300-8000311 (`I4-OCCLUDED-OOD-UNITY`, bent pipeline geometry) was declared out of
+the pass decision from the start and is still unrun and unread. With the gate decided it adds no decision
+value, so it was left for the integrator to sequence. It is 48 flights, about 1.1 h, and the harness is in
+place.

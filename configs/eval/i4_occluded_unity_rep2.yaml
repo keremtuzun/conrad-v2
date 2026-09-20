@@ -1,0 +1,81 @@
+# PRE-REGISTERED REPLICATION (run 2) of the two gate I4 criteria that formal run 1 could not resolve.
+# SYNTHETIC_ONLY. Declared 2026-09-20 BEFORE any flight on these worlds.
+#
+# RUN 1 RESULT, recorded and kept: gate I4 = FAIL on final_test 8000200-8000219 (20 worlds, four arms,
+# configs/eval/i4_occluded_unity.yaml, artifacts/gates/I4/unity_i4_occluded_results.json).
+#   beats fixed views      +0.232 [+0.081, +0.399]   PASS
+#   beats random views     +0.206 [+0.030, +0.382]   PASS
+#   closed loop                                      PASS
+#   beats coverage-only    +0.163 [-0.045, +0.369]   FAIL (interval includes 0)
+#   information/time/energy vs coverage              FAIL
+# Both runs will be reported side by side, never the better one alone. Run 1's worlds are SPENT and are
+# neither re-run nor re-scored.
+#
+# WHY A REPLICATION AND NOT A REINTERPRETATION: docs/audits/I4_WORLD_FAMILY.md section 8.2 warned, before run
+# 1, that the per-world outcome is close to all-or-nothing and that 20 worlds would not resolve an effect of
+# this size. That warning was made in advance, so the honest response is more worlds under the identical
+# design, not a changed threshold, a changed family or a dropped baseline.
+experiment_id: I4-OCCLUDED-UNITY-REP2
+gate: I4
+replicates: configs/eval/i4_occluded_unity.yaml
+run1_results: artifacts/gates/I4/unity_i4_occluded_results.json
+run1_verdict: FAIL
+world_family: ACTIVE_INSPECTION_OCCLUDED_V1
+scenario: I4-OCCLUDED-UNITY
+partition_file: configs/eval/partitions_i4_occluded_v2.yaml
+partition_digest: ad4f97312ea19eaeef47995b2d80299c4b9cd49a59b448c365bb545c5f363fb6
+family_file: configs/eval/i4_occluded_family.yaml
+family_digest: f77c5dbb7d665e3740e76cd4dfd97f37d0f0060bc2b336af6391ff0758877bdd
+frozen_planner_file: configs/active/mcbr_frozen_v3.yaml
+
+# ---------------------------------------------------------------------------- worlds
+# Fresh, digest-pinned, read once. 60 worlds against run 1's 20, sized from run 1's MEASURED 82 s per flight
+# over 80 flights: 60 x 2 = 120 flights is about 2.7 h on this host. Sized to fit the host, before the run.
+final_worlds: {range: [8001000, 8001060]}
+
+# ---------------------------------------------------------------------------- declared arm set (REDUCED)
+# Two arms. The fixed-views and random-views criteria already PASSED in run 1 on their own held-out worlds and
+# are NOT re-litigated here: re-running a criterion that passed, on fresh worlds, until it passes again or
+# stops passing, is exactly the shopping this pre-registration exists to prevent. Run 2 decides only the two
+# criteria that run 1 left unresolved, both of which compare PRODUCTION against coverage-only.
+#
+#   "beats coverage-only"                           -> A-B2_coverage
+#   "beats simple views on information/time/energy" -> the coverage half of that criterion
+#
+# The fixed and random halves of the information criterion stay as run 1 recorded them (both PASS).
+arm_set:
+  name: replication_two_arm
+  reduced: true
+  reason: >-
+    only the two criteria that run 1 left unresolved are re-decided, and both compare PRODUCTION against
+    coverage-only. Flying fixed and random again would re-litigate criteria that already passed on their own
+    held-out worlds. 60 worlds x 2 arms is about 2.7 h at the 82 s per flight measured in run 1; 60 worlds x 4
+    arms would be about 5.5 h and would not inform any criterion.
+  arms: [PRODUCTION, A-B2_coverage]
+  dropped_arms: [A-B1_fixed_inspection, A-B0_random]
+  dropped_arms_reason: their criteria PASSED in run 1 and are not re-decided
+  dropped_arms_evidence: artifacts/gates/I4/unity_i4_occluded_results.json
+  decides_criteria:
+    - beats coverage-only
+    - beats simple views on information/time/energy (coverage half)
+  flights: {final: 120}
+
+# ---------------------------------------------------------------------------- unchanged from run 1
+# Identical frozen planner, family digest, candidate generator, feasibility filter, PlanningRequest, budgets
+# and metric. Twin2E OFF, as in run 1. Nothing here may differ from configs/eval/i4_occluded_unity.yaml.
+runtime: {duration_s: 100.0, control_period_s: 0.1, max_plans_per_need: 4, model2e_enabled: false}
+sequential: true
+primary_metric: hidden_state_error_improvement
+
+decision_rule: >-
+  Unit = one world, paired across arms. PRODUCTION beats coverage-only on a metric iff the lower bound of the
+  95 % paired percentile-bootstrap CI over worlds (4000 resamples) of the benefit (PRODUCTION better =
+  positive) is > 0. Identical to run 1's rule, with the identical resample count and seed. 'beats
+  coverage-only' = hidden_state_error_improvement; 'information/time/energy vs coverage' = info_per_time AND
+  info_per_kj. ch25 leaves every numeric margin OPEN: no margin is invented and every paired CI is reported
+  whatever its sign.
+run_once: >-
+  The replication split is read exactly once. If the interval still includes 0, gate I4 stays FAIL and the
+  investigation stops: two honest attempts are enough, and "MCBR does not beat a systematic coverage sweep in
+  this family" is a legitimate result. The split is not enlarged, no threshold is moved, no baseline is
+  dropped and nothing is re-run after the outcome is seen. A tie is reported as a tie.

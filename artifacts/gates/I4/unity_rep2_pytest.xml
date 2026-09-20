@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="4" time="8400.380" timestamp="2026-09-20T19:41:34.348769+03:00" hostname="KeremTüzün"><testcase classname="tests.unity_live.test_i4_occluded_unity_rep2" name="test_replication_is_declared_and_disjoint_from_run_1" time="8394.655" /><testcase classname="tests.unity_live.test_i4_occluded_unity_rep2" name="test_beats_coverage_only" time="0.006"><failure message="AssertionError: does not beat coverage-only: +0.0094 [-0.08279002135423728, 0.09785646541794935]&#10;assert (-0.08279002135423728 is not None and -0.08279002135423728 &gt; 0.0)">flights = {'cfg': {'arm_set': {'arms': ['PRODUCTION', 'A-B2_coverage'], 'decides_criteria': ['beats coverage-only', 'beats simpl...65426958, 'critical_delivered': 1.0, ...}}, ...}, 'seeds': [8001000, 8001001, 8001002, 8001003, 8001004, 8001005, ...]}
+
+    def test_beats_coverage_only(flights):
+        row = paired(flights["per_world"], "hidden_state_error_improvement")
+        low = row["ci95"][0]
+&gt;       assert low is not None and low &gt; 0.0, (
+            f"does not beat coverage-only: {row['benefit_mean']:+.4f} {row['ci95']}"
+        )
+E       AssertionError: does not beat coverage-only: +0.0094 [-0.08279002135423728, 0.09785646541794935]
+E       assert (-0.08279002135423728 is not None and -0.08279002135423728 &gt; 0.0)
+
+tests\unity_live\test_i4_occluded_unity_rep2.py:163: AssertionError</failure></testcase><testcase classname="tests.unity_live.test_i4_occluded_unity_rep2" name="test_beats_coverage_on_information_per_time_and_energy[info_per_time]" time="0.006"><failure message="AssertionError: info_per_time: +0.000094 [-0.0008279002135423728, 0.0009785646541794935]&#10;assert (-0.0008279002135423728 is not None and -0.0008279002135423728 &gt; 0.0)">flights = {'cfg': {'arm_set': {'arms': ['PRODUCTION', 'A-B2_coverage'], 'decides_criteria': ['beats coverage-only', 'beats simpl...65426958, 'critical_delivered': 1.0, ...}}, ...}, 'seeds': [8001000, 8001001, 8001002, 8001003, 8001004, 8001005, ...]}
+metric = 'info_per_time'
+
+    @pytest.mark.parametrize("metric", ["info_per_time", "info_per_kj"])
+    def test_beats_coverage_on_information_per_time_and_energy(flights, metric):
+        row = paired(flights["per_world"], metric)
+        low = row["ci95"][0]
+&gt;       assert low is not None and low &gt; 0.0, f"{metric}: {row['benefit_mean']:+.6f} {row['ci95']}"
+E       AssertionError: info_per_time: +0.000094 [-0.0008279002135423728, 0.0009785646541794935]
+E       assert (-0.0008279002135423728 is not None and -0.0008279002135423728 &gt; 0.0)
+
+tests\unity_live\test_i4_occluded_unity_rep2.py:172: AssertionError</failure></testcase><testcase classname="tests.unity_live.test_i4_occluded_unity_rep2" name="test_beats_coverage_on_information_per_time_and_energy[info_per_kj]" time="0.006"><failure message="AssertionError: info_per_kj: +0.003624 [-0.0179271880180729, 0.024384535102992606]&#10;assert (-0.0179271880180729 is not None and -0.0179271880180729 &gt; 0.0)">flights = {'cfg': {'arm_set': {'arms': ['PRODUCTION', 'A-B2_coverage'], 'decides_criteria': ['beats coverage-only', 'beats simpl...65426958, 'critical_delivered': 1.0, ...}}, ...}, 'seeds': [8001000, 8001001, 8001002, 8001003, 8001004, 8001005, ...]}
+metric = 'info_per_kj'
+
+    @pytest.mark.parametrize("metric", ["info_per_time", "info_per_kj"])
+    def test_beats_coverage_on_information_per_time_and_energy(flights, metric):
+        row = paired(flights["per_world"], metric)
+        low = row["ci95"][0]
+&gt;       assert low is not None and low &gt; 0.0, f"{metric}: {row['benefit_mean']:+.6f} {row['ci95']}"
+E       AssertionError: info_per_kj: +0.003624 [-0.0179271880180729, 0.024384535102992606]
+E       assert (-0.0179271880180729 is not None and -0.0179271880180729 &gt; 0.0)
+
+tests\unity_live\test_i4_occluded_unity_rep2.py:172: AssertionError</failure></testcase></testsuite></testsuites>
