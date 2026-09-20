@@ -1,0 +1,33 @@
+{
+  "experiment_id": "ACTIVE-MCBR-E005-DESIGN",
+  "module": "conrad.evaluation.decision_experiments.active_mcbr_i4_occluded",
+  "config": "configs\\eval\\active_mcbr_e005_design.yaml",
+  "seeds": [
+    8000000,
+    8000001,
+    8000002,
+    8000003,
+    8000004,
+    8000005,
+    8000006,
+    8000007,
+    8000008,
+    8000009,
+    8000010,
+    8000011,
+    8000012,
+    8000013,
+    8000014,
+    8000015,
+    8000016,
+    8000017,
+    8000018,
+    8000019,
+    8000020,
+    8000021,
+    8000022,
+    8000023
+  ],
+  "wall_s": 2457.7,
+  "out_dir": "C:\\Users\\Kerem\\Kerem\\conrad-v2\\artifacts\\experiments\\ACTIVE-MCBR-E005-DESIGN"
+}

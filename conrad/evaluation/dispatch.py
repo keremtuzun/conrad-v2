@@ -43,6 +43,10 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
         "conrad.evaluation.decision_experiments.m1_action_integrated",
         "configs/eval/m1_action_e003.yaml",
     ),
+    "M1-ACTION-E004": (
+        "conrad.evaluation.decision_experiments.m1_action_integrated",
+        "configs/eval/m1_action_e004.yaml",
+    ),
     "ACTIVE-MCBR-E001": (
         "conrad.evaluation.decision_experiments.active_mcbr",
         "configs/eval/active_mcbr_e001.yaml",
@@ -63,9 +67,28 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
         "conrad.evaluation.decision_experiments.active_mcbr_e004",
         "configs/eval/active_mcbr_e004.yaml",
     ),
+    "ACTIVE-MCBR-E005-DESIGN": (
+        "conrad.evaluation.decision_experiments.active_mcbr_i4_occluded",
+        "configs/eval/active_mcbr_e005_design.yaml",
+    ),
+    "ACTIVE-MCBR-E005-SEL": (
+        "conrad.evaluation.decision_experiments.active_mcbr_i4_occluded",
+        "configs/eval/active_mcbr_e005_selection.yaml",
+    ),
+    "ACTIVE-MCBR-E005": (
+        "conrad.evaluation.decision_experiments.active_mcbr_i4_occluded",
+        "configs/eval/active_mcbr_e005.yaml",
+    ),
+    "ACTIVE-MCBR-E005-OOD": (
+        "conrad.evaluation.decision_experiments.active_mcbr_i4_occluded",
+        "configs/eval/active_mcbr_e005_ood.yaml",
+    ),
     "COM-BAAC-E001": ("conrad.evaluation.decision_experiments.com_baac", "configs/eval/com_baac_e001.yaml"),
     "COM-I7-E001": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e001.yaml"),
     "COM-I7-E002": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e002.yaml"),
+    # Re-run of E001/E002 on the fresh partitions_i7_v2.yaml final seeds after the 2026-09-20 BAAC repair.
+    "COM-I7-E003": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e003.yaml"),
+    "COM-I7-E004": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e004.yaml"),
     "2S-E001": ("conrad.evaluation.spatial_experiments.e001_coverage", "configs/eval/2s_e001.yaml"),
     "2S-E002": ("conrad.evaluation.spatial_experiments.e002_counterfactual", "configs/eval/2s_e002.yaml"),
     "2S-E003": ("conrad.evaluation.spatial_experiments.e003_pose", "configs/eval/2s_e003.yaml"),

@@ -1,0 +1,2858 @@
+{
+ "candidates": [
+  "PRODUCTION",
+  "A-B4_geometric_nbv",
+  "A-B5_entropy_nbv",
+  "A-B5b_entropy_nbv_predictive",
+  "A-B7_uncertainty_nbv",
+  "A-B6b_bayes_eig",
+  "A-B10_mcbr_full"
+ ],
+ "decision": "no arm beat fixed, random and coverage with a positive paired CI; freeze nothing",
+ "eligible": [],
+ "pairwise": {
+  "A-B10_mcbr_full": {
+   "A-B0_random": {
+    "collisions": {
+     "baseline_mean": 0.16666666666666666,
+     "benefit_mean": 0.125,
+     "candidate_mean": 0.041666666666666664,
+     "ci95": [
+      0.0,
+      0.25
+     ],
+     "fraction_improved": 0.125,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 21762.589733562305,
+     "benefit_mean": 7190.321546621738,
+     "candidate_mean": 14572.26818694057,
+     "ci95": [
+      4755.112345348617,
+      9616.353179162032
+     ],
+     "fraction_improved": 0.875,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 0.7210087004199823,
+     "benefit_mean": 0.009382910286717136,
+     "candidate_mean": 0.7116257901332652,
+     "ci95": [
+      -0.1417379386481055,
+      0.16765151097180667
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.2789912995800176,
+     "benefit_mean": 0.009382910286717144,
+     "candidate_mean": 0.28837420986673473,
+     "ci95": [
+      -0.1417379386481055,
+      0.16765151097180667
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.014079850426964835,
+     "benefit_mean": 0.002196387970112615,
+     "candidate_mean": 0.01627623839707745,
+     "ci95": [
+      -0.006762148077387345,
+      0.011666855662297007
+     ],
+     "fraction_improved": 0.2916666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0027899129958001757,
+     "benefit_mean": 9.382910286717166e-05,
+     "candidate_mean": 0.002883742098667348,
+     "ci95": [
+      -0.0014173793864810545,
+      0.0016765151097180666
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.2789912995800176,
+     "benefit_mean": 0.009382910286717144,
+     "candidate_mean": 0.28837420986673473,
+     "ci95": [
+      -0.1417379386481055,
+      0.16765151097180667
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_success": {
+     "baseline_mean": 0.375,
+     "benefit_mean": -0.041666666666666664,
+     "candidate_mean": 0.3333333333333333,
+     "ci95": [
+      -0.20833333333333334,
+      0.125
+     ],
+     "fraction_improved": 0.08333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 3.2916666666666665,
+     "benefit_mean": 2.4583333333333335,
+     "candidate_mean": 0.8333333333333334,
+     "ci95": [
+      1.9583333333333333,
+      2.9166666666666665
+     ],
+     "fraction_improved": 0.9583333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "redundant_observations": {
+     "baseline_mean": 2.9166666666666665,
+     "benefit_mean": 2.4166666666666665,
+     "candidate_mean": 0.5,
+     "ci95": [
+      1.8333333333333333,
+      2.9583333333333335
+     ],
+     "fraction_improved": 0.9166666666666666,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "travel_m": {
+     "baseline_mean": 28.63856011598963,
+     "benefit_mean": 6.86723850825863,
+     "candidate_mean": 21.771321607731,
+     "ci95": [
+      4.572012304262571,
+      9.118038962293587
+     ],
+     "fraction_improved": 0.875,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    }
+   },
+   "A-B1_fixed_inspection": {
+    "collisions": {
+     "baseline_mean": 0.041666666666666664,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.041666666666666664,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 20287.53385492129,
+     "benefit_mean": 5715.26566798072,
+     "candidate_mean": 14572.26818694057,
+     "ci95": [
+      3331.963587996469,
+      8160.066484631069
+     ],
+     "fraction_improved": 0.7916666666666666,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 1.0,
+     "benefit_mean": 0.28837420986673473,
+     "candidate_mean": 0.7116257901332652,
+     "ci95": [
+      0.1381725924877016,
+      0.4623933848998779
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.28837420986673473,
+     "candidate_mean": 0.28837420986673473,
+     "ci95": [
+      0.1381725924877016,
+      0.4623933848998779
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.01627623839707745,
+     "candidate_mean": 0.01627623839707745,
+     "ci95": [
+      0.007665851271041346,
+      0.02614014707532057
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.002883742098667348,
+     "candidate_mean": 0.002883742098667348,
+     "ci95": [
+      0.0013817259248770162,
+      0.004623933848998779
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.28837420986673473,
+     "candidate_mean": 0.28837420986673473,
+     "ci95": [
+      0.1381725924877016,
+      0.4623933848998779
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "mission_success": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.3333333333333333,
+     "candidate_mean": 0.3333333333333333,
+     "ci95": [
+      0.16666666666666666,
+      0.5416666666666666
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "observations": {
+     "baseline_mean": 3.6666666666666665,
+     "benefit_mean": 2.8333333333333335,
+     "candidate_mean": 0.8333333333333334,
+     "ci95": [
+      2.4166666666666665,
+      3.25
+     ],
+     "fraction_improved": 0.9583333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "redundant_observations": {
+     "baseline_mean": 3.6666666666666665,
+     "benefit_mean": 3.1666666666666665,
+     "candidate_mean": 0.5,
+     "ci95": [
+      2.7916666666666665,
+      3.5416666666666665
+     ],
+     "fraction_improved": 1.0,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "travel_m": {
+     "baseline_mean": 26.503960064396594,
+     "benefit_mean": 4.732638456665595,
+     "candidate_mean": 21.771321607731,
+     "ci95": [
+      2.3391458943722387,
+      7.062603047393108
+     ],
+     "fraction_improved": 0.7916666666666666,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    }
+   },
+   "A-B2_coverage": {
+    "collisions": {
+     "baseline_mean": 0.25,
+     "benefit_mean": 0.20833333333333334,
+     "candidate_mean": 0.041666666666666664,
+     "ci95": [
+      0.0,
+      0.5833333333333334
+     ],
+     "fraction_improved": 0.08333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 20833.296691314477,
+     "benefit_mean": 6261.02850437391,
+     "candidate_mean": 14572.26818694057,
+     "ci95": [
+      4325.416640798309,
+      8020.792413802722
+     ],
+     "fraction_improved": 0.8333333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 0.7598473619448592,
+     "benefit_mean": 0.04822157181159411,
+     "candidate_mean": 0.7116257901332652,
+     "ci95": [
+      -0.12223809081946126,
+      0.22203408411699813
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.24015263805514064,
+     "benefit_mean": 0.048221571811594116,
+     "candidate_mean": 0.28837420986673473,
+     "ci95": [
+      -0.12223809081946126,
+      0.22203408411699813
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.012584374075856488,
+     "benefit_mean": 0.0036918643212209604,
+     "candidate_mean": 0.01627623839707745,
+     "ci95": [
+      -0.006005659085711406,
+      0.013502777785128017
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_time": {
+     "baseline_mean": 0.002401526380551407,
+     "benefit_mean": 0.00048221571811594115,
+     "candidate_mean": 0.002883742098667348,
+     "ci95": [
+      -0.0012223809081946125,
+      0.0022203408411699817
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.24015263805514064,
+     "benefit_mean": 0.048221571811594116,
+     "candidate_mean": 0.28837420986673473,
+     "ci95": [
+      -0.12223809081946126,
+      0.22203408411699813
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_success": {
+     "baseline_mean": 0.2916666666666667,
+     "benefit_mean": 0.041666666666666664,
+     "candidate_mean": 0.3333333333333333,
+     "ci95": [
+      -0.125,
+      0.20833333333333334
+     ],
+     "fraction_improved": 0.125,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 3.3333333333333335,
+     "benefit_mean": 2.5,
+     "candidate_mean": 0.8333333333333334,
+     "ci95": [
+      1.875,
+      3.0833333333333335
+     ],
+     "fraction_improved": 0.8333333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "redundant_observations": {
+     "baseline_mean": 3.0416666666666665,
+     "benefit_mean": 2.5416666666666665,
+     "candidate_mean": 0.5,
+     "ci95": [
+      1.8333333333333333,
+      3.1666666666666665
+     ],
+     "fraction_improved": 0.7916666666666666,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "travel_m": {
+     "baseline_mean": 29.167333927291907,
+     "benefit_mean": 7.3960123195609055,
+     "candidate_mean": 21.771321607731,
+     "ci95": [
+      4.826191635909919,
+      9.952058731012793
+     ],
+     "fraction_improved": 0.8333333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    }
+   }
+  },
+  "A-B4_geometric_nbv": {
+   "A-B0_random": {
+    "collisions": {
+     "baseline_mean": 0.16666666666666666,
+     "benefit_mean": 0.08333333333333333,
+     "candidate_mean": 0.08333333333333333,
+     "ci95": [
+      -0.08333333333333333,
+      0.25
+     ],
+     "fraction_improved": 0.125,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 21762.589733562305,
+     "benefit_mean": 2556.468849110839,
+     "candidate_mean": 19206.120884451466,
+     "ci95": [
+      803.5022485672622,
+      4531.090410676527
+     ],
+     "fraction_improved": 0.75,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 0.7210087004199823,
+     "benefit_mean": 0.07203953550675045,
+     "candidate_mean": 0.648969164913232,
+     "ci95": [
+      -0.10155950686265612,
+      0.2485832556723266
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.2789912995800176,
+     "benefit_mean": 0.07203953550675046,
+     "candidate_mean": 0.3510308350867681,
+     "ci95": [
+      -0.10155950686265612,
+      0.24858325567232661
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.014079850426964835,
+     "benefit_mean": 0.006346274547663972,
+     "candidate_mean": 0.02042612497462881,
+     "ci95": [
+      -0.0032902007927046294,
+      0.01646701657304032
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0027899129958001757,
+     "benefit_mean": 0.0007203953550675046,
+     "candidate_mean": 0.003510308350867681,
+     "ci95": [
+      -0.001015595068626561,
+      0.002485832556723266
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.2789912995800176,
+     "benefit_mean": 0.07203953550675046,
+     "candidate_mean": 0.3510308350867681,
+     "ci95": [
+      -0.10155950686265612,
+      0.24858325567232661
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_success": {
+     "baseline_mean": 0.375,
+     "benefit_mean": 0.041666666666666664,
+     "candidate_mean": 0.4166666666666667,
+     "ci95": [
+      -0.16666666666666666,
+      0.25
+     ],
+     "fraction_improved": 0.16666666666666666,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 3.2916666666666665,
+     "benefit_mean": 0.2916666666666667,
+     "candidate_mean": 3.0,
+     "ci95": [
+      -0.2916666666666667,
+      0.875
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "redundant_observations": {
+     "baseline_mean": 2.9166666666666665,
+     "benefit_mean": 0.3333333333333333,
+     "candidate_mean": 2.5833333333333335,
+     "ci95": [
+      -0.4166666666666667,
+      1.0833333333333333
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "travel_m": {
+     "baseline_mean": 28.63856011598963,
+     "benefit_mean": 0.7742867775399128,
+     "candidate_mean": 27.86427333844972,
+     "ci95": [
+      -0.6945803327487303,
+      2.2697932553996787
+     ],
+     "fraction_improved": 0.7083333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    }
+   },
+   "A-B1_fixed_inspection": {
+    "collisions": {
+     "baseline_mean": 0.041666666666666664,
+     "benefit_mean": -0.041666666666666664,
+     "candidate_mean": 0.08333333333333333,
+     "ci95": [
+      -0.125,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 20287.53385492129,
+     "benefit_mean": 1081.4129704698207,
+     "candidate_mean": 19206.120884451466,
+     "ci95": [
+      -991.1114689253386,
+      3181.6583814704795
+     ],
+     "fraction_improved": 0.5416666666666666,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 1.0,
+     "benefit_mean": 0.3510308350867681,
+     "candidate_mean": 0.648969164913232,
+     "ci95": [
+      0.18665677072698617,
+      0.5228525207252962
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.3510308350867681,
+     "candidate_mean": 0.3510308350867681,
+     "ci95": [
+      0.18665677072698617,
+      0.5228525207252962
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.02042612497462881,
+     "candidate_mean": 0.02042612497462881,
+     "ci95": [
+      0.010942789932352521,
+      0.030695925220743766
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.003510308350867681,
+     "candidate_mean": 0.003510308350867681,
+     "ci95": [
+      0.0018665677072698611,
+      0.005228525207252963
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.3510308350867681,
+     "candidate_mean": 0.3510308350867681,
+     "ci95": [
+      0.18665677072698617,
+      0.5228525207252962
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "mission_success": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.4166666666666667,
+     "candidate_mean": 0.4166666666666667,
+     "ci95": [
+      0.20833333333333334,
+      0.625
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "observations": {
+     "baseline_mean": 3.6666666666666665,
+     "benefit_mean": 0.6666666666666666,
+     "candidate_mean": 3.0,
+     "ci95": [
+      0.041666666666666664,
+      1.2916666666666667
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "redundant_observations": {
+     "baseline_mean": 3.6666666666666665,
+     "benefit_mean": 1.0833333333333333,
+     "candidate_mean": 2.5833333333333335,
+     "ci95": [
+      0.2916666666666667,
+      1.875
+     ],
+     "fraction_improved": 0.4583333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "travel_m": {
+     "baseline_mean": 26.503960064396594,
+     "benefit_mean": -1.360313274053123,
+     "candidate_mean": 27.86427333844972,
+     "ci95": [
+      -3.3510315668798323,
+      0.5859493303111355
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    }
+   },
+   "A-B2_coverage": {
+    "collisions": {
+     "baseline_mean": 0.25,
+     "benefit_mean": 0.16666666666666666,
+     "candidate_mean": 0.08333333333333333,
+     "ci95": [
+      0.0,
+      0.5
+     ],
+     "fraction_improved": 0.041666666666666664,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 20833.296691314477,
+     "benefit_mean": 1627.1758068630127,
+     "candidate_mean": 19206.120884451466,
+     "ci95": [
+      549.3922955990765,
+      2781.1374594142544
+     ],
+     "fraction_improved": 0.5833333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 0.7598473619448592,
+     "benefit_mean": 0.11087819703162742,
+     "candidate_mean": 0.648969164913232,
+     "ci95": [
+      0.010103294961506182,
+      0.23353107397417694
+     ],
+     "fraction_improved": 0.20833333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.24015263805514064,
+     "benefit_mean": 0.11087819703162742,
+     "candidate_mean": 0.3510308350867681,
+     "ci95": [
+      0.010103294961506182,
+      0.23353107397417694
+     ],
+     "fraction_improved": 0.20833333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.012584374075856488,
+     "benefit_mean": 0.007841750898772318,
+     "candidate_mean": 0.02042612497462881,
+     "ci95": [
+      0.00203853557985532,
+      0.014852729532817733
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_time": {
+     "baseline_mean": 0.002401526380551407,
+     "benefit_mean": 0.001108781970316274,
+     "candidate_mean": 0.003510308350867681,
+     "ci95": [
+      0.00010103294961506194,
+      0.0023353107397417697
+     ],
+     "fraction_improved": 0.20833333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.24015263805514064,
+     "benefit_mean": 0.11087819703162742,
+     "candidate_mean": 0.3510308350867681,
+     "ci95": [
+      0.010103294961506182,
+      0.23353107397417694
+     ],
+     "fraction_improved": 0.20833333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "mission_success": {
+     "baseline_mean": 0.2916666666666667,
+     "benefit_mean": 0.125,
+     "candidate_mean": 0.4166666666666667,
+     "ci95": [
+      0.0,
+      0.25
+     ],
+     "fraction_improved": 0.125,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 3.3333333333333335,
+     "benefit_mean": 0.3333333333333333,
+     "candidate_mean": 3.0,
+     "ci95": [
+      0.0,
+      0.75
+     ],
+     "fraction_improved": 0.16666666666666666,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "redundant_observations": {
+     "baseline_mean": 3.0416666666666665,
+     "benefit_mean": 0.4583333333333333,
+     "candidate_mean": 2.5833333333333335,
+     "ci95": [
+      0.041666666666666664,
+      1.0
+     ],
+     "fraction_improved": 0.20833333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "travel_m": {
+     "baseline_mean": 29.167333927291907,
+     "benefit_mean": 1.303060588842188,
+     "candidate_mean": 27.86427333844972,
+     "ci95": [
+      0.5004150960416587,
+      2.184071890737136
+     ],
+     "fraction_improved": 0.4583333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    }
+   }
+  },
+  "A-B5_entropy_nbv": {
+   "A-B0_random": {
+    "collisions": {
+     "baseline_mean": 0.16666666666666666,
+     "benefit_mean": -0.08333333333333333,
+     "candidate_mean": 0.25,
+     "ci95": [
+      -0.4166666666666667,
+      0.16666666666666666
+     ],
+     "fraction_improved": 0.08333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 21762.589733562305,
+     "benefit_mean": 929.2930422478265,
+     "candidate_mean": 20833.296691314477,
+     "ci95": [
+      -772.5762423551375,
+      2669.18216588521
+     ],
+     "fraction_improved": 0.5416666666666666,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 0.7210087004199823,
+     "benefit_mean": -0.038838661524876965,
+     "candidate_mean": 0.7598473619448592,
+     "ci95": [
+      -0.19870444709743876,
+      0.1203295084209672
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.2789912995800176,
+     "benefit_mean": -0.038838661524876965,
+     "candidate_mean": 0.24015263805514064,
+     "ci95": [
+      -0.19870444709743876,
+      0.1203295084209672
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.014079850426964835,
+     "benefit_mean": -0.0014954763511083452,
+     "candidate_mean": 0.012584374075856488,
+     "ci95": [
+      -0.009842260806776996,
+      0.0071547074579279505
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0027899129958001757,
+     "benefit_mean": -0.0003883866152487694,
+     "candidate_mean": 0.002401526380551407,
+     "ci95": [
+      -0.0019870444709743874,
+      0.001203295084209672
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.2789912995800176,
+     "benefit_mean": -0.038838661524876965,
+     "candidate_mean": 0.24015263805514064,
+     "ci95": [
+      -0.19870444709743876,
+      0.1203295084209672
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_success": {
+     "baseline_mean": 0.375,
+     "benefit_mean": -0.08333333333333333,
+     "candidate_mean": 0.2916666666666667,
+     "ci95": [
+      -0.2916666666666667,
+      0.125
+     ],
+     "fraction_improved": 0.08333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 3.2916666666666665,
+     "benefit_mean": -0.041666666666666664,
+     "candidate_mean": 3.3333333333333335,
+     "ci95": [
+      -0.5416666666666666,
+      0.4583333333333333
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "redundant_observations": {
+     "baseline_mean": 2.9166666666666665,
+     "benefit_mean": -0.125,
+     "candidate_mean": 3.0416666666666665,
+     "ci95": [
+      -0.7916666666666666,
+      0.5416666666666666
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "travel_m": {
+     "baseline_mean": 28.63856011598963,
+     "benefit_mean": -0.5287738113022753,
+     "candidate_mean": 29.167333927291907,
+     "ci95": [
+      -1.8685860315999767,
+      0.8860544540916473
+     ],
+     "fraction_improved": 0.4583333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    }
+   },
+   "A-B1_fixed_inspection": {
+    "collisions": {
+     "baseline_mean": 0.041666666666666664,
+     "benefit_mean": -0.20833333333333334,
+     "candidate_mean": 0.25,
+     "ci95": [
+      -0.5833333333333334,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 20287.53385492129,
+     "benefit_mean": -545.7628363931921,
+     "candidate_mean": 20833.296691314477,
+     "ci95": [
+      -2165.8114765147416,
+      1115.1278096598658
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 1.0,
+     "benefit_mean": 0.24015263805514064,
+     "candidate_mean": 0.7598473619448592,
+     "ci95": [
+      0.10060541577348538,
+      0.40024792925426517
+     ],
+     "fraction_improved": 0.2916666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.24015263805514064,
+     "candidate_mean": 0.24015263805514064,
+     "ci95": [
+      0.10060541577348538,
+      0.40024792925426517
+     ],
+     "fraction_improved": 0.2916666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.012584374075856488,
+     "candidate_mean": 0.012584374075856488,
+     "ci95": [
+      0.005212608545321615,
+      0.02114723879678579
+     ],
+     "fraction_improved": 0.2916666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.002401526380551407,
+     "candidate_mean": 0.002401526380551407,
+     "ci95": [
+      0.0010060541577348538,
+      0.004002479292542651
+     ],
+     "fraction_improved": 0.2916666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.24015263805514064,
+     "candidate_mean": 0.24015263805514064,
+     "ci95": [
+      0.10060541577348538,
+      0.40024792925426517
+     ],
+     "fraction_improved": 0.2916666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "mission_success": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.2916666666666667,
+     "candidate_mean": 0.2916666666666667,
+     "ci95": [
+      0.125,
+      0.45937500000000375
+     ],
+     "fraction_improved": 0.2916666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "observations": {
+     "baseline_mean": 3.6666666666666665,
+     "benefit_mean": 0.3333333333333333,
+     "candidate_mean": 3.3333333333333335,
+     "ci95": [
+      -0.16666666666666666,
+      0.875
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "redundant_observations": {
+     "baseline_mean": 3.6666666666666665,
+     "benefit_mean": 0.625,
+     "candidate_mean": 3.0416666666666665,
+     "ci95": [
+      -0.041666666666666664,
+      1.3333333333333333
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "travel_m": {
+     "baseline_mean": 26.503960064396594,
+     "benefit_mean": -2.663373862895311,
+     "candidate_mean": 29.167333927291907,
+     "ci95": [
+      -4.465132910066194,
+      -0.9658484673552531
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    }
+   },
+   "A-B2_coverage": {
+    "collisions": {
+     "baseline_mean": 0.25,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.25,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 20833.296691314477,
+     "benefit_mean": 0.0,
+     "candidate_mean": 20833.296691314477,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 0.7598473619448592,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.7598473619448592,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.24015263805514064,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.24015263805514064,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.012584374075856488,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.012584374075856488,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_time": {
+     "baseline_mean": 0.002401526380551407,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.002401526380551407,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.24015263805514064,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.24015263805514064,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_success": {
+     "baseline_mean": 0.2916666666666667,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.2916666666666667,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 3.3333333333333335,
+     "benefit_mean": 0.0,
+     "candidate_mean": 3.3333333333333335,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "redundant_observations": {
+     "baseline_mean": 3.0416666666666665,
+     "benefit_mean": 0.0,
+     "candidate_mean": 3.0416666666666665,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "travel_m": {
+     "baseline_mean": 29.167333927291907,
+     "benefit_mean": 0.0,
+     "candidate_mean": 29.167333927291907,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    }
+   }
+  },
+  "A-B5b_entropy_nbv_predictive": {
+   "A-B0_random": {
+    "collisions": {
+     "baseline_mean": 0.16666666666666666,
+     "benefit_mean": -0.041666666666666664,
+     "candidate_mean": 0.20833333333333334,
+     "ci95": [
+      -0.3333333333333333,
+      0.16666666666666666
+     ],
+     "fraction_improved": 0.08333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 21762.589733562305,
+     "benefit_mean": 1989.3158511113281,
+     "candidate_mean": 19773.27388245098,
+     "ci95": [
+      219.2983070692396,
+      3737.398958143823
+     ],
+     "fraction_improved": 0.625,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 0.7210087004199823,
+     "benefit_mean": 0.14536534005314122,
+     "candidate_mean": 0.5756433603668412,
+     "ci95": [
+      -0.051499904364620534,
+      0.345900881158923
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.2789912995800176,
+     "benefit_mean": 0.14536534005314122,
+     "candidate_mean": 0.42435663963315884,
+     "ci95": [
+      -0.051499904364620534,
+      0.345900881158923
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.014079850426964835,
+     "benefit_mean": 0.008973464782576742,
+     "candidate_mean": 0.02305331520954158,
+     "ci95": [
+      -0.001754001354082671,
+      0.01978885912439612
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0027899129958001757,
+     "benefit_mean": 0.0014536534005314121,
+     "candidate_mean": 0.004243566396331588,
+     "ci95": [
+      -0.0005149990436462054,
+      0.0034590088115892285
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.2789912995800176,
+     "benefit_mean": 0.14536534005314122,
+     "candidate_mean": 0.42435663963315884,
+     "ci95": [
+      -0.051499904364620534,
+      0.345900881158923
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_success": {
+     "baseline_mean": 0.375,
+     "benefit_mean": 0.125,
+     "candidate_mean": 0.5,
+     "ci95": [
+      -0.125,
+      0.375
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 3.2916666666666665,
+     "benefit_mean": 0.25,
+     "candidate_mean": 3.0416666666666665,
+     "ci95": [
+      -0.25,
+      0.7916666666666666
+     ],
+     "fraction_improved": 0.2916666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "redundant_observations": {
+     "baseline_mean": 2.9166666666666665,
+     "benefit_mean": 0.5,
+     "candidate_mean": 2.4166666666666665,
+     "ci95": [
+      -0.25,
+      1.25
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "travel_m": {
+     "baseline_mean": 28.63856011598963,
+     "benefit_mean": 0.9234901201608213,
+     "candidate_mean": 27.71506999582881,
+     "ci95": [
+      -0.4716807001583009,
+      2.6143877600982015
+     ],
+     "fraction_improved": 0.4583333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    }
+   },
+   "A-B1_fixed_inspection": {
+    "collisions": {
+     "baseline_mean": 0.041666666666666664,
+     "benefit_mean": -0.16666666666666666,
+     "candidate_mean": 0.20833333333333334,
+     "ci95": [
+      -0.4583333333333333,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 20287.53385492129,
+     "benefit_mean": 514.2599724703095,
+     "candidate_mean": 19773.27388245098,
+     "ci95": [
+      -1075.036001746486,
+      2122.9958941451223
+     ],
+     "fraction_improved": 0.4583333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 1.0,
+     "benefit_mean": 0.42435663963315884,
+     "candidate_mean": 0.5756433603668412,
+     "ci95": [
+      0.25238158842597685,
+      0.5904566371084564
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.42435663963315884,
+     "candidate_mean": 0.42435663963315884,
+     "ci95": [
+      0.25238158842597685,
+      0.5904566371084564
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.02305331520954158,
+     "candidate_mean": 0.02305331520954158,
+     "ci95": [
+      0.013711980332773512,
+      0.03235234164557224
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.004243566396331588,
+     "candidate_mean": 0.004243566396331588,
+     "ci95": [
+      0.0025238158842597687,
+      0.005904566371084565
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.42435663963315884,
+     "candidate_mean": 0.42435663963315884,
+     "ci95": [
+      0.25238158842597685,
+      0.5904566371084564
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "mission_success": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.5,
+     "candidate_mean": 0.5,
+     "ci95": [
+      0.2916666666666667,
+      0.7083333333333334
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "observations": {
+     "baseline_mean": 3.6666666666666665,
+     "benefit_mean": 0.625,
+     "candidate_mean": 3.0416666666666665,
+     "ci95": [
+      0.08333333333333333,
+      1.25
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "redundant_observations": {
+     "baseline_mean": 3.6666666666666665,
+     "benefit_mean": 1.25,
+     "candidate_mean": 2.4166666666666665,
+     "ci95": [
+      0.5416666666666666,
+      1.9583333333333333
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "travel_m": {
+     "baseline_mean": 26.503960064396594,
+     "benefit_mean": -1.2111099314322147,
+     "candidate_mean": 27.71506999582881,
+     "ci95": [
+      -2.7592857429815023,
+      0.3222327822109084
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    }
+   },
+   "A-B2_coverage": {
+    "collisions": {
+     "baseline_mean": 0.25,
+     "benefit_mean": 0.041666666666666664,
+     "candidate_mean": 0.20833333333333334,
+     "ci95": [
+      -0.25,
+      0.375
+     ],
+     "fraction_improved": 0.041666666666666664,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 20833.296691314477,
+     "benefit_mean": 1060.0228088635015,
+     "candidate_mean": 19773.27388245098,
+     "ci95": [
+      80.84606568150076,
+      2043.264499234178
+     ],
+     "fraction_improved": 0.625,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 0.7598473619448592,
+     "benefit_mean": 0.1842040015780182,
+     "candidate_mean": 0.5756433603668412,
+     "ci95": [
+      0.021729312480872186,
+      0.3512274280933816
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.24015263805514064,
+     "benefit_mean": 0.1842040015780182,
+     "candidate_mean": 0.42435663963315884,
+     "ci95": [
+      0.021729312480872186,
+      0.3512274280933816
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.012584374075856488,
+     "benefit_mean": 0.010468941133685088,
+     "candidate_mean": 0.02305331520954158,
+     "ci95": [
+      0.0018555016107785365,
+      0.01960097961267655
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_time": {
+     "baseline_mean": 0.002401526380551407,
+     "benefit_mean": 0.0018420400157801817,
+     "candidate_mean": 0.004243566396331588,
+     "ci95": [
+      0.0002172931248087216,
+      0.0035122742809338154
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.24015263805514064,
+     "benefit_mean": 0.1842040015780182,
+     "candidate_mean": 0.42435663963315884,
+     "ci95": [
+      0.021729312480872186,
+      0.3512274280933816
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "mission_success": {
+     "baseline_mean": 0.2916666666666667,
+     "benefit_mean": 0.20833333333333334,
+     "candidate_mean": 0.5,
+     "ci95": [
+      0.0,
+      0.4166666666666667
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 3.3333333333333335,
+     "benefit_mean": 0.2916666666666667,
+     "candidate_mean": 3.0416666666666665,
+     "ci95": [
+      -0.20833333333333334,
+      0.8333333333333334
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "redundant_observations": {
+     "baseline_mean": 3.0416666666666665,
+     "benefit_mean": 0.625,
+     "candidate_mean": 2.4166666666666665,
+     "ci95": [
+      -0.08333333333333333,
+      1.3333333333333333
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "travel_m": {
+     "baseline_mean": 29.167333927291907,
+     "benefit_mean": 1.4522639314630965,
+     "candidate_mean": 27.71506999582881,
+     "ci95": [
+      0.36021822028924394,
+      2.433631568414443
+     ],
+     "fraction_improved": 0.75,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    }
+   }
+  },
+  "A-B6b_bayes_eig": {
+   "A-B0_random": {
+    "collisions": {
+     "baseline_mean": 0.16666666666666666,
+     "benefit_mean": -0.08333333333333333,
+     "candidate_mean": 0.25,
+     "ci95": [
+      -0.4583333333333333,
+      0.16666666666666666
+     ],
+     "fraction_improved": 0.08333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 21762.589733562305,
+     "benefit_mean": 4015.8786850173906,
+     "candidate_mean": 17746.711048544916,
+     "ci95": [
+      2516.266763914825,
+      5688.116983083987
+     ],
+     "fraction_improved": 0.9166666666666666,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 0.7210087004199823,
+     "benefit_mean": 0.08240315105409708,
+     "candidate_mean": 0.6386055493658853,
+     "ci95": [
+      -0.13781597079399455,
+      0.2984024508303482
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.2789912995800176,
+     "benefit_mean": 0.08240315105409708,
+     "candidate_mean": 0.3613944506341147,
+     "ci95": [
+      -0.13781597079399455,
+      0.2984024508303482
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.014079850426964835,
+     "benefit_mean": 0.00550681101310168,
+     "candidate_mean": 0.019586661440066516,
+     "ci95": [
+      -0.006102567464615097,
+      0.016992933192348958
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0027899129958001757,
+     "benefit_mean": 0.0008240315105409704,
+     "candidate_mean": 0.0036139445063411465,
+     "ci95": [
+      -0.0013781597079399455,
+      0.0029840245083034827
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.2789912995800176,
+     "benefit_mean": 0.08240315105409708,
+     "candidate_mean": 0.3613944506341147,
+     "ci95": [
+      -0.13781597079399455,
+      0.2984024508303482
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_success": {
+     "baseline_mean": 0.375,
+     "benefit_mean": 0.041666666666666664,
+     "candidate_mean": 0.4166666666666667,
+     "ci95": [
+      -0.20833333333333334,
+      0.2916666666666667
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 3.2916666666666665,
+     "benefit_mean": 0.125,
+     "candidate_mean": 3.1666666666666665,
+     "ci95": [
+      -0.3333333333333333,
+      0.625
+     ],
+     "fraction_improved": 0.2916666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "redundant_observations": {
+     "baseline_mean": 2.9166666666666665,
+     "benefit_mean": 0.25,
+     "candidate_mean": 2.6666666666666665,
+     "ci95": [
+      -0.4583333333333333,
+      1.0
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "travel_m": {
+     "baseline_mean": 28.63856011598963,
+     "benefit_mean": 4.02265557217783,
+     "candidate_mean": 24.615904543811798,
+     "ci95": [
+      2.4313950441265324,
+      5.628656967011724
+     ],
+     "fraction_improved": 0.7916666666666666,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    }
+   },
+   "A-B1_fixed_inspection": {
+    "collisions": {
+     "baseline_mean": 0.041666666666666664,
+     "benefit_mean": -0.20833333333333334,
+     "candidate_mean": 0.25,
+     "ci95": [
+      -0.5833333333333334,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 20287.53385492129,
+     "benefit_mean": 2540.822806376372,
+     "candidate_mean": 17746.711048544916,
+     "ci95": [
+      865.1980234053008,
+      4312.352535971771
+     ],
+     "fraction_improved": 0.625,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 1.0,
+     "benefit_mean": 0.3613944506341147,
+     "candidate_mean": 0.6386055493658853,
+     "ci95": [
+      0.20588847857163703,
+      0.5392158298744175
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.3613944506341147,
+     "candidate_mean": 0.3613944506341147,
+     "ci95": [
+      0.20588847857163703,
+      0.5392158298744175
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.019586661440066516,
+     "candidate_mean": 0.019586661440066516,
+     "ci95": [
+      0.01079681727163194,
+      0.02908709086837938
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.0036139445063411465,
+     "candidate_mean": 0.0036139445063411465,
+     "ci95": [
+      0.0020588847857163704,
+      0.0053921582987441746
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.3613944506341147,
+     "candidate_mean": 0.3613944506341147,
+     "ci95": [
+      0.20588847857163703,
+      0.5392158298744175
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "mission_success": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.4166666666666667,
+     "candidate_mean": 0.4166666666666667,
+     "ci95": [
+      0.25,
+      0.625
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "observations": {
+     "baseline_mean": 3.6666666666666665,
+     "benefit_mean": 0.5,
+     "candidate_mean": 3.1666666666666665,
+     "ci95": [
+      -0.08333333333333333,
+      1.125
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "redundant_observations": {
+     "baseline_mean": 3.6666666666666665,
+     "benefit_mean": 1.0,
+     "candidate_mean": 2.6666666666666665,
+     "ci95": [
+      0.25,
+      1.8333333333333333
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "travel_m": {
+     "baseline_mean": 26.503960064396594,
+     "benefit_mean": 1.8880555205847944,
+     "candidate_mean": 24.615904543811798,
+     "ci95": [
+      -0.20752172376374356,
+      3.8977708397062565
+     ],
+     "fraction_improved": 0.5416666666666666,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    }
+   },
+   "A-B2_coverage": {
+    "collisions": {
+     "baseline_mean": 0.25,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.25,
+     "ci95": [
+      -0.375,
+      0.375
+     ],
+     "fraction_improved": 0.041666666666666664,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 20833.296691314477,
+     "benefit_mean": 3086.5856427695635,
+     "candidate_mean": 17746.711048544916,
+     "ci95": [
+      2063.7568515402154,
+      4128.431258464791
+     ],
+     "fraction_improved": 0.875,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 0.7598473619448592,
+     "benefit_mean": 0.12124181257897404,
+     "candidate_mean": 0.6386055493658853,
+     "ci95": [
+      -0.05899959671634818,
+      0.30149151714910283
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.24015263805514064,
+     "benefit_mean": 0.12124181257897404,
+     "candidate_mean": 0.3613944506341147,
+     "ci95": [
+      -0.05899959671634817,
+      0.30149151714910283
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.012584374075856488,
+     "benefit_mean": 0.007002287364210026,
+     "candidate_mean": 0.019586661440066516,
+     "ci95": [
+      -0.0020355236868618474,
+      0.016355544688960905
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_time": {
+     "baseline_mean": 0.002401526380551407,
+     "benefit_mean": 0.0012124181257897402,
+     "candidate_mean": 0.0036139445063411465,
+     "ci95": [
+      -0.000589995967163482,
+      0.0030149151714910284
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.24015263805514064,
+     "benefit_mean": 0.12124181257897404,
+     "candidate_mean": 0.3613944506341147,
+     "ci95": [
+      -0.05899959671634817,
+      0.30149151714910283
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_success": {
+     "baseline_mean": 0.2916666666666667,
+     "benefit_mean": 0.125,
+     "candidate_mean": 0.4166666666666667,
+     "ci95": [
+      -0.08333333333333333,
+      0.3333333333333333
+     ],
+     "fraction_improved": 0.20833333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 3.3333333333333335,
+     "benefit_mean": 0.16666666666666666,
+     "candidate_mean": 3.1666666666666665,
+     "ci95": [
+      -0.2916666666666667,
+      0.6666666666666666
+     ],
+     "fraction_improved": 0.20833333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "redundant_observations": {
+     "baseline_mean": 3.0416666666666665,
+     "benefit_mean": 0.375,
+     "candidate_mean": 2.6666666666666665,
+     "ci95": [
+      -0.2916666666666667,
+      1.0833333333333333
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "travel_m": {
+     "baseline_mean": 29.167333927291907,
+     "benefit_mean": 4.551429383480106,
+     "candidate_mean": 24.615904543811798,
+     "ci95": [
+      3.219767672678021,
+      5.941206110830045
+     ],
+     "fraction_improved": 0.875,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    }
+   }
+  },
+  "A-B7_uncertainty_nbv": {
+   "A-B0_random": {
+    "collisions": {
+     "baseline_mean": 0.16666666666666666,
+     "benefit_mean": 0.08333333333333333,
+     "candidate_mean": 0.08333333333333333,
+     "ci95": [
+      -0.08333333333333333,
+      0.25
+     ],
+     "fraction_improved": 0.125,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 21762.589733562305,
+     "benefit_mean": 4831.587914035975,
+     "candidate_mean": 16931.00181952633,
+     "ci95": [
+      3029.50586064816,
+      6736.458682901807
+     ],
+     "fraction_improved": 0.9166666666666666,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 0.7210087004199823,
+     "benefit_mean": 0.0007409849253694015,
+     "candidate_mean": 0.720267715494613,
+     "ci95": [
+      -0.14837465526584243,
+      0.1550703186358285
+     ],
+     "fraction_improved": 0.20833333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.2789912995800176,
+     "benefit_mean": 0.0007409849253694015,
+     "candidate_mean": 0.27973228450538706,
+     "ci95": [
+      -0.14837465526584243,
+      0.1550703186358285
+     ],
+     "fraction_improved": 0.20833333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.014079850426964835,
+     "benefit_mean": 0.001419146948459224,
+     "candidate_mean": 0.015498997375424059,
+     "ci95": [
+      -0.0072519019432148064,
+      0.01063982879772126
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0027899129958001757,
+     "benefit_mean": 7.409849253694094e-06,
+     "candidate_mean": 0.0027973228450538703,
+     "ci95": [
+      -0.0014837465526584244,
+      0.0015507031863582846
+     ],
+     "fraction_improved": 0.20833333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.2789912995800176,
+     "benefit_mean": 0.0007409849253694015,
+     "candidate_mean": 0.27973228450538706,
+     "ci95": [
+      -0.14837465526584243,
+      0.1550703186358285
+     ],
+     "fraction_improved": 0.20833333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_success": {
+     "baseline_mean": 0.375,
+     "benefit_mean": -0.041666666666666664,
+     "candidate_mean": 0.3333333333333333,
+     "ci95": [
+      -0.20833333333333334,
+      0.125
+     ],
+     "fraction_improved": 0.08333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 3.2916666666666665,
+     "benefit_mean": 0.625,
+     "candidate_mean": 2.6666666666666665,
+     "ci95": [
+      0.16666666666666666,
+      1.0833333333333333
+     ],
+     "fraction_improved": 0.4583333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "redundant_observations": {
+     "baseline_mean": 2.9166666666666665,
+     "benefit_mean": 0.625,
+     "candidate_mean": 2.2916666666666665,
+     "ci95": [
+      0.041666666666666664,
+      1.2083333333333333
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "travel_m": {
+     "baseline_mean": 28.63856011598963,
+     "benefit_mean": 3.2313159693654767,
+     "candidate_mean": 25.40724414662415,
+     "ci95": [
+      1.853514241137145,
+      4.5721181914470135
+     ],
+     "fraction_improved": 0.875,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    }
+   },
+   "A-B1_fixed_inspection": {
+    "collisions": {
+     "baseline_mean": 0.041666666666666664,
+     "benefit_mean": -0.041666666666666664,
+     "candidate_mean": 0.08333333333333333,
+     "ci95": [
+      -0.125,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 20287.53385492129,
+     "benefit_mean": 3356.532035394955,
+     "candidate_mean": 16931.00181952633,
+     "ci95": [
+      1389.4550703560676,
+      5503.543716630478
+     ],
+     "fraction_improved": 0.6666666666666666,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 1.0,
+     "benefit_mean": 0.27973228450538706,
+     "candidate_mean": 0.720267715494613,
+     "ci95": [
+      0.1346669073859016,
+      0.44959445011165566
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.27973228450538706,
+     "candidate_mean": 0.27973228450538706,
+     "ci95": [
+      0.1346669073859016,
+      0.44959445011165566
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.015498997375424059,
+     "candidate_mean": 0.015498997375424059,
+     "ci95": [
+      0.007307773673043994,
+      0.02480077531842771
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.0027973228450538703,
+     "candidate_mean": 0.0027973228450538703,
+     "ci95": [
+      0.0013466690738590161,
+      0.004495944501116557
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.27973228450538706,
+     "candidate_mean": 0.27973228450538706,
+     "ci95": [
+      0.1346669073859016,
+      0.44959445011165566
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "mission_success": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.3333333333333333,
+     "candidate_mean": 0.3333333333333333,
+     "ci95": [
+      0.16666666666666666,
+      0.5416666666666666
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "observations": {
+     "baseline_mean": 3.6666666666666665,
+     "benefit_mean": 1.0,
+     "candidate_mean": 2.6666666666666665,
+     "ci95": [
+      0.4166666666666667,
+      1.5833333333333333
+     ],
+     "fraction_improved": 0.6666666666666666,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "redundant_observations": {
+     "baseline_mean": 3.6666666666666665,
+     "benefit_mean": 1.375,
+     "candidate_mean": 2.2916666666666665,
+     "ci95": [
+      0.7083333333333334,
+      2.0416666666666665
+     ],
+     "fraction_improved": 0.7083333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "travel_m": {
+     "baseline_mean": 26.503960064396594,
+     "benefit_mean": 1.0967159177724404,
+     "candidate_mean": 25.40724414662415,
+     "ci95": [
+      -0.6734744688461738,
+      2.870739979533203
+     ],
+     "fraction_improved": 0.5833333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    }
+   },
+   "A-B2_coverage": {
+    "collisions": {
+     "baseline_mean": 0.25,
+     "benefit_mean": 0.16666666666666666,
+     "candidate_mean": 0.08333333333333333,
+     "ci95": [
+      0.0,
+      0.5
+     ],
+     "fraction_improved": 0.041666666666666664,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 20833.296691314477,
+     "benefit_mean": 3902.2948717881477,
+     "candidate_mean": 16931.00181952633,
+     "ci95": [
+      2500.62451019024,
+      5255.567873036106
+     ],
+     "fraction_improved": 0.8333333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 0.7598473619448592,
+     "benefit_mean": 0.03957964645024636,
+     "candidate_mean": 0.720267715494613,
+     "ci95": [
+      -0.12581845927429106,
+      0.20336090630767556
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.24015263805514064,
+     "benefit_mean": 0.03957964645024637,
+     "candidate_mean": 0.27973228450538706,
+     "ci95": [
+      -0.12581845927429106,
+      0.20336090630767562
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.012584374075856488,
+     "benefit_mean": 0.002914623299567569,
+     "candidate_mean": 0.015498997375424059,
+     "ci95": [
+      -0.0064733918669239235,
+      0.012261832988354681
+     ],
+     "fraction_improved": 0.2916666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_time": {
+     "baseline_mean": 0.002401526380551407,
+     "benefit_mean": 0.0003957964645024637,
+     "candidate_mean": 0.0027973228450538703,
+     "ci95": [
+      -0.0012581845927429104,
+      0.0020336090630767556
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.24015263805514064,
+     "benefit_mean": 0.03957964645024637,
+     "candidate_mean": 0.27973228450538706,
+     "ci95": [
+      -0.12581845927429106,
+      0.20336090630767562
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_success": {
+     "baseline_mean": 0.2916666666666667,
+     "benefit_mean": 0.041666666666666664,
+     "candidate_mean": 0.3333333333333333,
+     "ci95": [
+      -0.125,
+      0.20833333333333334
+     ],
+     "fraction_improved": 0.125,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 3.3333333333333335,
+     "benefit_mean": 0.6666666666666666,
+     "candidate_mean": 2.6666666666666665,
+     "ci95": [
+      0.0,
+      1.2916666666666667
+     ],
+     "fraction_improved": 0.5833333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "redundant_observations": {
+     "baseline_mean": 3.0416666666666665,
+     "benefit_mean": 0.75,
+     "candidate_mean": 2.2916666666666665,
+     "ci95": [
+      -0.08333333333333333,
+      1.5
+     ],
+     "fraction_improved": 0.625,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "travel_m": {
+     "baseline_mean": 29.167333927291907,
+     "benefit_mean": 3.7600897806677516,
+     "candidate_mean": 25.40724414662415,
+     "ci95": [
+      2.347140719183491,
+      5.09288701796646
+     ],
+     "fraction_improved": 0.8333333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    }
+   }
+  },
+  "PRODUCTION": {
+   "A-B0_random": {
+    "collisions": {
+     "baseline_mean": 0.16666666666666666,
+     "benefit_mean": -0.08333333333333333,
+     "candidate_mean": 0.25,
+     "ci95": [
+      -0.5833333333333334,
+      0.25
+     ],
+     "fraction_improved": 0.125,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 21762.589733562305,
+     "benefit_mean": 3783.7132140934373,
+     "candidate_mean": 17978.87651946887,
+     "ci95": [
+      1968.0591238342333,
+      5753.335391306465
+     ],
+     "fraction_improved": 0.7916666666666666,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 0.7210087004199823,
+     "benefit_mean": 0.12722543349346468,
+     "candidate_mean": 0.5937832669265176,
+     "ci95": [
+      -0.002351969608588079,
+      0.2705019532145428
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.2789912995800176,
+     "benefit_mean": 0.12722543349346468,
+     "candidate_mean": 0.40621673307348233,
+     "ci95": [
+      -0.0023519696085880747,
+      0.27050195321454285
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.014079850426964835,
+     "benefit_mean": 0.00919460268546053,
+     "candidate_mean": 0.023274453112425365,
+     "ci95": [
+      0.0017178711428444894,
+      0.017610600358771527
+     ],
+     "fraction_improved": 0.4583333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0027899129958001757,
+     "benefit_mean": 0.0012722543349346466,
+     "candidate_mean": 0.004062167330734823,
+     "ci95": [
+      -2.351969608588069e-05,
+      0.002705019532145428
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.2789912995800176,
+     "benefit_mean": 0.12722543349346468,
+     "candidate_mean": 0.40621673307348233,
+     "ci95": [
+      -0.0023519696085880747,
+      0.27050195321454285
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_success": {
+     "baseline_mean": 0.375,
+     "benefit_mean": 0.125,
+     "candidate_mean": 0.5,
+     "ci95": [
+      -0.041666666666666664,
+      0.2916666666666667
+     ],
+     "fraction_improved": 0.16666666666666666,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 3.2916666666666665,
+     "benefit_mean": 0.5416666666666666,
+     "candidate_mean": 2.75,
+     "ci95": [
+      0.08333333333333333,
+      1.0427083333333371
+     ],
+     "fraction_improved": 0.3333333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "redundant_observations": {
+     "baseline_mean": 2.9166666666666665,
+     "benefit_mean": 0.875,
+     "candidate_mean": 2.0416666666666665,
+     "ci95": [
+      0.25,
+      1.5416666666666667
+     ],
+     "fraction_improved": 0.4583333333333333,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "travel_m": {
+     "baseline_mean": 28.63856011598963,
+     "benefit_mean": 2.8021947763639123,
+     "candidate_mean": 25.83636533962572,
+     "ci95": [
+      1.0871627417868854,
+      4.523423898553802
+     ],
+     "fraction_improved": 0.7916666666666666,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    }
+   },
+   "A-B1_fixed_inspection": {
+    "collisions": {
+     "baseline_mean": 0.041666666666666664,
+     "benefit_mean": -0.20833333333333334,
+     "candidate_mean": 0.25,
+     "ci95": [
+      -0.625,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 20287.53385492129,
+     "benefit_mean": 2308.6573354524185,
+     "candidate_mean": 17978.87651946887,
+     "ci95": [
+      43.360549927671165,
+      4469.889146969047
+     ],
+     "fraction_improved": 0.6666666666666666,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 1.0,
+     "benefit_mean": 0.40621673307348233,
+     "candidate_mean": 0.5937832669265176,
+     "ci95": [
+      0.2422214137942109,
+      0.5781699945789323
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.40621673307348233,
+     "candidate_mean": 0.40621673307348233,
+     "ci95": [
+      0.2422214137942109,
+      0.5781699945789323
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.023274453112425365,
+     "candidate_mean": 0.023274453112425365,
+     "ci95": [
+      0.01391239579011842,
+      0.033062424287704256
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.004062167330734823,
+     "candidate_mean": 0.004062167330734823,
+     "ci95": [
+      0.0024222141379421085,
+      0.005781699945789323
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.40621673307348233,
+     "candidate_mean": 0.40621673307348233,
+     "ci95": [
+      0.2422214137942109,
+      0.5781699945789323
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "mission_success": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.5,
+     "candidate_mean": 0.5,
+     "ci95": [
+      0.2916666666666667,
+      0.7083333333333334
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "observations": {
+     "baseline_mean": 3.6666666666666665,
+     "benefit_mean": 0.9166666666666666,
+     "candidate_mean": 2.75,
+     "ci95": [
+      0.2916666666666667,
+      1.5833333333333333
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "redundant_observations": {
+     "baseline_mean": 3.6666666666666665,
+     "benefit_mean": 1.625,
+     "candidate_mean": 2.0416666666666665,
+     "ci95": [
+      0.875,
+      2.4166666666666665
+     ],
+     "fraction_improved": 0.5833333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "travel_m": {
+     "baseline_mean": 26.503960064396594,
+     "benefit_mean": 0.6675947247708766,
+     "candidate_mean": 25.83636533962572,
+     "ci95": [
+      -1.0254145729580697,
+      2.341598830525557
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    }
+   },
+   "A-B2_coverage": {
+    "collisions": {
+     "baseline_mean": 0.25,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.25,
+     "ci95": [
+      -0.5,
+      0.5
+     ],
+     "fraction_improved": 0.041666666666666664,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 20833.296691314477,
+     "benefit_mean": 2854.420171845611,
+     "candidate_mean": 17978.87651946887,
+     "ci95": [
+      1235.6102038271308,
+      4372.772102812339
+     ],
+     "fraction_improved": 0.8333333333333334,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 0.7598473619448592,
+     "benefit_mean": 0.16606409501834163,
+     "candidate_mean": 0.5937832669265176,
+     "ci95": [
+      -0.0010307924265092275,
+      0.342455081579566
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.24015263805514064,
+     "benefit_mean": 0.16606409501834163,
+     "candidate_mean": 0.40621673307348233,
+     "ci95": [
+      -0.0010307924265092134,
+      0.342455081579566
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.012584374075856488,
+     "benefit_mean": 0.010690079036568876,
+     "candidate_mean": 0.023274453112425365,
+     "ci95": [
+      0.0012049426001746587,
+      0.020675337554927977
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "info_per_time": {
+     "baseline_mean": 0.002401526380551407,
+     "benefit_mean": 0.0016606409501834167,
+     "candidate_mean": 0.004062167330734823,
+     "ci95": [
+      -1.030792426509211e-05,
+      0.0034245508157956604
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.24015263805514064,
+     "benefit_mean": 0.16606409501834163,
+     "candidate_mean": 0.40621673307348233,
+     "ci95": [
+      -0.0010307924265092134,
+      0.342455081579566
+     ],
+     "fraction_improved": 0.375,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "mission_success": {
+     "baseline_mean": 0.2916666666666667,
+     "benefit_mean": 0.20833333333333334,
+     "candidate_mean": 0.5,
+     "ci95": [
+      0.0,
+      0.4166666666666667
+     ],
+     "fraction_improved": 0.25,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 3.3333333333333335,
+     "benefit_mean": 0.5833333333333334,
+     "candidate_mean": 2.75,
+     "ci95": [
+      0.0,
+      1.1666666666666667
+     ],
+     "fraction_improved": 0.4166666666666667,
+     "n_worlds": 24,
+     "repeatable_benefit": false
+    },
+    "redundant_observations": {
+     "baseline_mean": 3.0416666666666665,
+     "benefit_mean": 1.0,
+     "candidate_mean": 2.0416666666666665,
+     "ci95": [
+      0.20833333333333334,
+      1.7510416666666704
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    },
+    "travel_m": {
+     "baseline_mean": 29.167333927291907,
+     "benefit_mean": 3.330968587666188,
+     "candidate_mean": 25.83636533962572,
+     "ci95": [
+      2.1346690201315996,
+      4.509705867921658
+     ],
+     "fraction_improved": 0.875,
+     "n_worlds": 24,
+     "repeatable_benefit": true
+    }
+   }
+  }
+ },
+ "primary_means": {
+  "A-B10_mcbr_full": 0.28837420986673473,
+  "A-B4_geometric_nbv": 0.3510308350867681,
+  "A-B5_entropy_nbv": 0.24015263805514064,
+  "A-B5b_entropy_nbv_predictive": 0.42435663963315884,
+  "A-B6b_bayes_eig": 0.3613944506341147,
+  "A-B7_uncertainty_nbv": 0.27973228450538706,
+  "PRODUCTION": 0.40621673307348233
+ },
+ "required_comparators": [
+  "A-B1_fixed_inspection",
+  "A-B0_random",
+  "A-B2_coverage"
+ ],
+ "winner": null
+}

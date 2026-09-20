@@ -5,6 +5,8 @@ rule, not an MCBR feature); they differ only in the ranking rule. Baselines neve
 (``value_gate=False``) because a stop condition is part of the MCBR hypothesis under test.
 A-B8 (RL active perception) is OPEN: no RL baseline is implemented.
 A-B6b / A-B11 / A-B12 are the belief-predictive rankers of ``conrad.active.rankers`` (2026-09-19).
+A-B5b (2026-09-20) is the entropy/uncertainty NBV that is actually independent of A-B2: A-B5's uncertainty
+term does not vary between candidates, so in the integrated mission A-B5 ranks exactly as A-B2 does.
 """
 
 from __future__ import annotations
@@ -14,7 +16,7 @@ import numpy as np
 from conrad.active.config import MCBRConfig
 from conrad.active.gap import KnowledgeGap
 from conrad.active.planner import MCBRPlanner, PlanningRequest, ScoredCandidate
-from conrad.active.rankers import DEFAULT_RANKERS, ranker_planner
+from conrad.active.rankers import DEFAULT_RANKERS, PredictiveRanker, RankerConfig, ranker_planner
 from conrad.schemas.ids import IdFactory
 
 
@@ -60,6 +62,19 @@ def make_planners(id_factory: IdFactory, config: MCBRConfig | None = None) -> di
     def entropy_nbv(gap: KnowledgeGap, c: ScoredCandidate, req: PlanningRequest) -> float:
         return c.action.predicted_visibility * sum(gap.uncertainty.as_tuple()) * _novelty(gap, c, cfg)
 
+    entropy_value = PredictiveRanker(RankerConfig(kind="bayes_eig"))
+
+    def entropy_nbv_predictive(gap: KnowledgeGap, c: ScoredCandidate, req: PlanningRequest) -> float:
+        """Uncertainty-driven NBV: the candidate's own predicted entropy reduction, weighted by novelty.
+
+        A-B5 multiplies a candidate-INDEPENDENT uncertainty level by visibility and novelty, so whenever the
+        gap's uncertainty is one number for the whole need (every integrated mission), A-B5 ranks exactly as
+        A-B2 coverage does and is not an independent baseline. This arm keeps the NBV shape (prefer views of
+        not-yet-seen space) but takes the uncertainty term from the candidate: the expected entropy reduction
+        of the belief under that view, falling back to the analytic mission value when no predictive belief
+        exists. It is distinct from A-B6b (value only, no novelty) and from A-B2 (novelty, no uncertainty)."""
+        return entropy_value.value(c, req) * _novelty(gap, c, cfg)
+
     def standard_eig(gap: KnowledgeGap, c: ScoredCandidate, req: PlanningRequest) -> float:
         return c.gain.total
 
@@ -76,6 +91,7 @@ def make_planners(id_factory: IdFactory, config: MCBRConfig | None = None) -> di
         "A-B3_frontier": frontier,
         "A-B4_geometric_nbv": geometric_nbv,
         "A-B5_entropy_nbv": entropy_nbv,
+        "A-B5b_entropy_nbv_predictive": entropy_nbv_predictive,
         "A-B6_standard_eig": standard_eig,
         "A-B7_uncertainty_nbv": uncertainty_nbv,
         "A-B9_mcbr_no_mission": mcbr_no_mission,

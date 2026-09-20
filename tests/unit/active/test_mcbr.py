@@ -170,7 +170,7 @@ def test_redundant_view_has_lower_coverage_gain():
 def test_all_baselines_share_interface():
     ids = IdFactory(8)
     planners = make_planners(ids, MCBRConfig(n_azimuth=6))
-    assert len(planners) == 13  # A-B0..A-B10 (no A-B8) + A-B6b, A-B11, A-B12
+    assert len(planners) == 14  # A-B0..A-B10 (no A-B8) + A-B5b, A-B6b, A-B11, A-B12
     for p in planners.values():
         r = p.plan(_request(ids, unc(uo=0.9), QuestionType.EXTEND_COVERAGE))
         assert r.plan.status in (PlanStatus.PLAN, PlanStatus.NOT_WORTH_COST)
@@ -216,3 +216,51 @@ def test_learned_ranker_forward_backward_and_training():
     assert any(p.grad is not None and p.grad.abs().sum() > 0 for p in model.parameters())
     losses = train_ranker(build_ranker(cfg), [batch], cfg, epochs=15)
     assert losses[-1] < losses[0]
+
+
+def _order(name, request, ids):
+    """Ranked candidate poses (action ids are minted per planner, so they are not comparable)."""
+    result = make_planners(ids)[name].plan(request)
+    return [tuple(round(x, 6) for x in row["position_m"]) for row in result.table if row["feasible"]]
+
+
+def test_a_b5_entropy_nbv_is_not_independent_of_coverage_when_uncertainty_is_per_need():
+    """A-B5 multiplies a candidate-INDEPENDENT uncertainty level, so it ranks exactly as A-B2 coverage."""
+    ids = IdFactory(31)
+    request = _request(ids, unc(uo=0.9), QuestionType.EXTEND_COVERAGE)
+    assert _order("A-B5_entropy_nbv", request, IdFactory(41)) == _order(
+        "A-B2_coverage", request, IdFactory(42)
+    )
+
+
+def test_a_b5b_entropy_nbv_uses_the_candidates_own_predicted_entropy_reduction():
+    """A-B5b keeps the NBV novelty shape but takes uncertainty from the candidate, so it is independent."""
+    from conrad.active.predictive import PredictedOutcome, ScalarBelief
+
+    ids = IdFactory(32)
+    # one view already taken, so the novelty term actually varies between candidates
+    request = _request(
+        ids,
+        unc(uo=0.9),
+        QuestionType.EXTEND_COVERAGE,
+        views=[PriorView(position_m=(4.0, 0.0, 0.0), modality="RGB")],
+    )
+
+    class _Predictive:
+        scalars = (ScalarBelief(key="q", mean=0.5, var=1.0),)
+        hypotheses = ()
+        epistemic = 0.0
+        used_modalities = frozenset()
+
+        def predict(self, pose, sensor):
+            # a candidate-dependent measurement quality: the closer to +X, the sharper the reading
+            std = 1.0 / (1.0 + max(0.0, float(pose.position_m[0])))
+            return PredictedOutcome(noise_std={"q": std})
+
+    request.predictive = _Predictive()
+    assert _order("A-B5b_entropy_nbv_predictive", request, IdFactory(43)) != _order(
+        "A-B2_coverage", request, IdFactory(44)
+    )
+    assert _order("A-B5b_entropy_nbv_predictive", request, IdFactory(45)) != _order(
+        "A-B6b_bayes_eig", request, IdFactory(46)
+    )

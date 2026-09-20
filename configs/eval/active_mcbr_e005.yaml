@@ -1,0 +1,39 @@
+# ACTIVE-MCBR-E005 FINAL stage for gate I4 on ACTIVE_INSPECTION_OCCLUDED_V1. SYNTHETIC_ONLY.
+# DO NOT RUN before the integrator sequences it: the final_test split of configs/eval/partitions_i4_occluded.yaml
+# may be read exactly once, and the formal evidence path for I4 is Unity, not this python kernel
+# (this stage produces SURROGATE evidence; scripts/record_gate_evidence.py I4 --surrogate).
+# Every choice below was declared in docs/audits/I4_WORLD_FAMILY.md before any world of this family ran.
+experiment_id: ACTIVE-MCBR-E005
+stage: e005
+seeds: [8000200, 8000201, 8000202, 8000203, 8000204, 8000205, 8000206, 8000207, 8000208, 8000209, 8000210, 8000211, 8000212, 8000213, 8000214, 8000215, 8000216, 8000217, 8000218, 8000219]
+hypothesis: on a family where the nominal route leaves the critical surface unresolved, the frozen production planner beats the fixed nominal route, random views and coverage-only on the target's actual hidden-state error and on information per time and per energy
+primary_metric: hidden_state_error_improvement
+direction: higher
+reference_arm: PRODUCTION
+out_name: active_mcbr_e005_final.json
+planners:
+  - PRODUCTION
+  - A-B1_fixed_inspection
+  - A-B0_random
+  - A-B2_coverage
+  - A-B4_geometric_nbv
+  - A-B5_entropy_nbv
+  - A-B5b_entropy_nbv_predictive
+  - A-B7_uncertainty_nbv
+  - A-B6b_bayes_eig
+  - A-B10_mcbr_full
+runtime:
+  duration_s: 100.0
+  control_period_s: 0.1
+  max_plans_per_need: 4
+  mcbr: {n_azimuth: 16, elevations_rad: [0.0, 0.35], min_visibility: 0.0}
+workers: 10
+decision_rule: >-
+  Unit = one world (paired across planners). PRODUCTION beats a baseline on a metric iff the lower bound of
+  the 95 % paired percentile-bootstrap CI (4000 resamples) of the benefit (PRODUCTION better = positive) is
+  > 0. I4 criteria: 'beats fixed views on actual hidden-state reconstruction' = hidden_state_error_improvement
+  vs A-B1_fixed_inspection; 'beats random views' = the same vs A-B0_random; 'beats coverage-only' = the same
+  vs A-B2_coverage; 'beats simple views on information/time/energy' = info_per_time AND info_per_kj vs each of
+  those three; the closed-loop criterion = PRODUCTION's mean hidden_state_error_improvement > 0 with at least
+  one accepted MCBR inspection goal that produced new target evidence in >= half of the worlds that needed
+  one. ch25 leaves the numeric margin OPEN; no margin is invented and every CI is reported whatever its sign.

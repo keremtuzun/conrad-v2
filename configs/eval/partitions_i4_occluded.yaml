@@ -1,0 +1,36 @@
+# Immutable seed partition for the gate I4 world family ACTIVE_INSPECTION_OCCLUDED_V1. SYNTHETIC_ONLY.
+# Created 2026-09-20, AFTER docs/audits/I4_WORLD_FAMILY.md sections 1-6 were written and BEFORE any world of
+# this family had ever been built. DO NOT EDIT: conrad.evaluation.partitions pins the SHA-256 of this file's
+# canonical content (I4_OCCLUDED_PARTITIONS_SHA256) and refuses to load a changed copy. A new split needs a
+# new version of the file.
+#
+# Why a new file and not an edit of partitions_unity_gates.yaml: that file is digest-pinned by the I1/I3/I4
+# artifacts, and its final_test seeds 7800002-7800013 are SPENT (ACTIVE-MCBR-E004 surrogate and the formal
+# I4-UNITY run both executed on them). The new family needs fresh worlds.
+#
+# Seeds come from the free 8 000 000 block. Checked on load: disjoint from every seed of partitions.yaml,
+# partitions_nav.yaml, partitions_i5.yaml, partitions_i5_v2.yaml, partitions_unity_gates.yaml and from every
+# range under reserved_elsewhere.
+version: partitions-i4-occluded-2026-09-20-v1
+scenario: I4-OCCLUDED
+# Geometry family of the in-distribution splits. The OOD split holds out a STRUCTURAL family (bent_pipeline
+# with a wider occluder standoff range), never a texture or a seed alone.
+families: [pipeline_with_supports]
+ood_families: [bent_pipeline]
+world_seeds:
+  development: {explicit: [], range: [8000000, 8000024]}
+  validation: {explicit: [], range: [8000100, 8000124]}
+  final_test: {explicit: [], range: [8000200, 8000220]}
+  ood_test: {explicit: [], range: [8000300, 8000312]}
+reserved_elsewhere:
+  - {range: [2026201, 2026204], owner: partitions.yaml contaminated development seeds}
+  - {range: [3100000, 3400030], owner: partitions.yaml abstract domain}
+  - {range: [5100000, 5400040], owner: partitions.yaml mission domain}
+  - {range: [5300000, 5300060], owner: partitions.yaml mission final_test (SPENT)}
+  - {range: [6300000, 6700060], owner: 2E/2T repeat finals (may be in use by another agent)}
+  - {range: [6900000, 7000000], owner: reserved for another agent}
+  - {range: [7100000, 7100010], owner: M1-ACTION-E001 development}
+  - {range: [7300000, 7410021], owner: M1-ACTION / NAV finals}
+  - {range: [7500000, 7600010], owner: I5 partitions}
+  - {range: [7800000, 7810020], owner: partitions_unity_gates.yaml (I1, I3, I4 v1 - SPENT)}
+  - {range: [7900000, 7900010], owner: I5 v2 final_test}

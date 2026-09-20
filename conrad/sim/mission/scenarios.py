@@ -206,6 +206,49 @@ SCENARIOS["FLAGSHIP-UNITY"] = {
     },
 }
 
+# Gate I4 world family ACTIVE_INSPECTION_OCCLUDED_V1 (docs/audits/I4_WORLD_FAMILY.md, declared 2026-09-20
+# before any world of the family was built). Same robot, payload, navigation stack, belief plane and planner
+# interface as FLAGSHIP-I4; only the truth-side world construction differs:
+#
+#  1. defect side OFF_LANE   the hidden defect sits on the side of the target the transit lane does NOT see,
+#     computed from the lane the mission actually flies. With the historical `far` the side is the WORLD +Y
+#     normal of the pipe heading, so for a share of the sampled headings the "hidden" defect is on the lane
+#     side and the nominal pass reads it (measured on development world 7810000: patch visible fraction 0.854
+#     with zero inspection goals). That is why the gate premise was barely exercised.
+#  2. per-world defect       severity, patch tilt, patch angular half-width and axial extent are sampled per
+#     world, instead of every world carrying the identical 6 mm / 80 mm defect.
+#  3. one occluding structure  an unregistered rack panel plus two posts alongside the target on the off-lane
+#     side. Its angle around the pipe, standoff, width and length are sampled per world, so the set of views
+#     that resolve the defect differs per world and some worlds leave a generic route's views clear.
+#
+# Every number is a SYNTHETIC_ONLY simulation setting. Ranges live in the options defaults and are frozen with
+# the family in configs/eval/i4_occluded_family.yaml.
+I4_OCCLUDED_WORLD: dict[str, Any] = {
+    "family": "pipeline_with_supports",
+    "defect": {"side": "off_lane"},
+    "defect_variation": {"enabled": True},
+    "occlusion": {
+        "enabled": True,
+        "azimuth_offset_deg": [-30.0, 30.0],
+        "window_half_deg": [24.0, 38.0],
+    },
+}
+SCENARIOS["I4-OCCLUDED"] = {"world": dict(I4_OCCLUDED_WORLD), "runtime": {}}
+SCENARIOS["I4-OCCLUDED-OOD"] = {
+    # Held-out STRUCTURAL family: bent pipeline geometry and a wider occluder standoff range.
+    "world": {
+        **I4_OCCLUDED_WORLD,
+        "family": "bent_pipeline",
+        "occlusion": {
+            "enabled": True,
+            "azimuth_offset_deg": [-30.0, 30.0],
+            "window_half_deg": [24.0, 38.0],
+            "standoff_m": [0.45, 1.25],
+        },
+    },
+    "runtime": {},
+}
+
 INT_DESCRIPTIONS = {
     "INT-001": "visible infrastructure (defect on the lane side)",
     "INT-002": "occluded critical region (defect on the far side)",

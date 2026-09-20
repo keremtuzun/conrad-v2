@@ -26,7 +26,14 @@ class DefectOptions(ConradModel):
     )
     patch_axial_fraction: float = Field(default=0.3, gt=0, le=1)
     patch_samples: int = Field(default=48, gt=4)
-    side: str = Field(default="far", pattern="^(far|near)$", description="far = +Y (hidden from the lane)")
+    side: str = Field(
+        default="far",
+        pattern="^(far|near|off_lane|lane)$",
+        description="far/near = the WORLD +Y normal of the pipe heading (historical; whether that is the "
+        "lane side depends on the sampled heading). off_lane/lane are defined against the transit lane the "
+        "mission actually flies: off_lane is genuinely hidden from the nominal route in every world "
+        "(ACTIVE_INSPECTION_OCCLUDED_V1, docs/audits/I4_WORLD_FAMILY.md)",
+    )
     pristine_rest: bool = Field(
         default=False,
         description="the target's non-defect surface starts with no corrosion and no crack (default: sampled "
@@ -102,6 +109,70 @@ class LaneObstacleOptions(ConradModel):
     material_id: str = "rock"
 
 
+class DefectVariationOptions(ConradModel):
+    """Per-world sampling of the hidden defect (ACTIVE_INSPECTION_OCCLUDED_V1). SYNTHETIC_ONLY.
+
+    Off by default: every existing scenario keeps the single fixed defect it has today. Ranges are declared
+    simulation settings, never measured values, and the draw uses its own seeded stream so enabling it does
+    not disturb any other random stream of the world.
+    """
+
+    enabled: bool = False
+    corrosion_depth_m: tuple[float, float] = (0.0035, 0.0095)
+    crack_length_m: tuple[float, float] = (0.030, 0.140)
+    patch_tilt_deg: tuple[float, float] = Field(
+        default=(0.0, 45.0),
+        description="patch axis above the horizontal. Not negative: the shared candidate generator samples "
+        "only non-negative elevations, so a patch on the underside is unreachable for every planner",
+    )
+    patch_half_angle_deg: tuple[float, float] = (35.0, 55.0)
+    patch_axial_fraction: tuple[float, float] = (0.22, 0.38)
+
+
+class ViewOcclusionOptions(ConradModel):
+    """One unregistered structure that hides part of the target's critical surface. SYNTHETIC_ONLY.
+
+    Twin2S geometry only: no registry entry, no Twin2T/Twin2E state, no Observation names it, so the
+    deployment can learn about it only through its own geometric sensors. Placement is sampled per world in
+    the frame of the target segment and of the defect patch (``conrad.sim.mission.occlusion``).
+    """
+
+    enabled: bool = False
+    azimuth_offset_deg: tuple[float, float] = Field(
+        default=(-40.0, 40.0),
+        description="angle of the WINDOW between the two panels, around the pipe axis, measured from the "
+        "patch direction",
+    )
+    window_half_deg: tuple[float, float] = Field(
+        default=(16.0, 34.0), description="angular half-width of the window left between the two panels"
+    )
+    standoff_m: tuple[float, float] = Field(
+        default=(0.30, 0.95), description="radial gap between the pipe surface and a panel's near face"
+    )
+    half_width_m: tuple[float, float] = Field(default=(0.30, 0.55), description="tangential half-width")
+    half_length_fraction: tuple[float, float] = Field(
+        default=(0.35, 0.75), description="axial half-length as a fraction of the target segment length"
+    )
+    axial_shift_fraction: tuple[float, float] = Field(
+        default=(-0.10, 0.10), description="axial offset of the panel centres, as a fraction of the length"
+    )
+    min_window_z: float = Field(
+        default=-0.05,
+        ge=-1,
+        le=1,
+        description="reachability guard: the window direction's z component may not fall below this, "
+        "otherwise the rotation sign is flipped. A window aimed into the seabed is unreachable for every "
+        "planner and would make the world measure nothing",
+    )
+    thickness_m: float = Field(default=0.06, gt=0)
+    posts: bool = Field(default=False, description="two vertical posts from the window ends to the seabed")
+    post_half_m: float = Field(default=0.07, gt=0)
+    post_inset_m: float = Field(default=0.10, ge=0)
+    semantic_class: str = "frame"
+    post_semantic_class: str = "support"
+    material_id: str = "steel_generic"
+
+
 class MissionWorldOptions(ConradModel):
     family: str = "straight_pipeline"
     target_segment_index: int = Field(default=1, ge=0)
@@ -125,6 +196,8 @@ class MissionWorldOptions(ConradModel):
     structural: StructuralSensorOptions = StructuralSensorOptions()
     contradiction: ContradictionOptions = ContradictionOptions()
     defect: DefectOptions = DefectOptions()
+    defect_variation: DefectVariationOptions = DefectVariationOptions()
+    occlusion: ViewOcclusionOptions = ViewOcclusionOptions()
     ecological_enabled: bool = True
     environmental_period_s: float = Field(default=5.0, gt=0)
     survey_period_s: float = Field(default=5.0, gt=0)

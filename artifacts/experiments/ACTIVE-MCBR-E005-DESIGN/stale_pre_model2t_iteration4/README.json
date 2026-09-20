@@ -1,0 +1,11 @@
+{
+ "status": "STALE_DEVELOPMENT_ONLY_NOT_EVIDENCE",
+ "why": "produced before Model2T iteration 4 (footprint crediting, per-region sizing, recalibrated intact band), which changes how much a chosen viewpoint pays off",
+ "partition": "development only (8000000-8000023); no validation, final or OOD seed was read",
+ "contents": {
+  "active_mcbr_e005_design.json": "full 9-arm development sweep on the pre-iteration-4 code",
+  "probes/ACTIVE-MCBR-E005-DESIGN-BUDGET-PROBE": "6-world development sensitivity probe with a LARGER observation budget than the declared one (about 6 observations per run instead of about 3); exploratory only",
+  "probes/ACTIVE-MCBR-E005-DESIGN-FILTER-PROBE": "6-world development probe at the declared budget; exploratory only"
+ },
+ "used_for": "nothing. The family, the splits, the planner set, the budgets and the decision rule were declared before any of these ran, and the reported development and validation results were produced afterwards on the current code."
+}

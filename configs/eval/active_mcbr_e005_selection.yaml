@@ -1,0 +1,41 @@
+# ACTIVE-MCBR-E005 SELECTION stage: picks the production planner on the VALIDATION split of the gate I4
+# family ACTIVE_INSPECTION_OCCLUDED_V1. SYNTHETIC_ONLY. Purpose selection: ONLY validation seeds are readable
+# on this path; the final and OOD splits raise PartitionAccessError.
+#
+# MCBR is a contract, not an obligation to keep one ranker (docs/development/WORKSTREAM_BRIEF.md, and the
+# re-evaluation brief). If a conventional EIG or NBV method wins here, that method becomes the production
+# MCBR implementation and is frozen with its digest.
+experiment_id: ACTIVE-MCBR-E005-SEL
+stage: selection
+seeds: [8000100, 8000101, 8000102, 8000103, 8000104, 8000105, 8000106, 8000107, 8000108, 8000109, 8000110, 8000111, 8000112, 8000113, 8000114, 8000115, 8000116, 8000117, 8000118, 8000119, 8000120, 8000121, 8000122, 8000123]
+hypothesis: one of the candidate planners beats the fixed nominal route, random views and coverage-only on the target's actual hidden-state error on this family
+primary_metric: hidden_state_error_improvement
+direction: higher
+reference_arm: PRODUCTION
+out_name: active_mcbr_e005_selection.json
+planners:
+  - PRODUCTION
+  - A-B1_fixed_inspection
+  - A-B0_random
+  - A-B2_coverage
+  - A-B4_geometric_nbv
+  - A-B5_entropy_nbv
+  - A-B5b_entropy_nbv_predictive
+  - A-B7_uncertainty_nbv
+  - A-B6b_bayes_eig
+  - A-B10_mcbr_full
+# Candidate production planner sections (conrad.active.production.build_planner). Each runs behind the SAME
+# MCBR interface and the SAME mission runtime hook as PRODUCTION, so the comparison is matched.
+variants: {}
+runtime:
+  duration_s: 100.0
+  control_period_s: 0.1
+  max_plans_per_need: 4
+  mcbr: {n_azimuth: 16, elevations_rad: [0.0, 0.35], min_visibility: 0.0}
+workers: 10
+decision_rule: >-
+  Unit = one world (paired across planners). An arm "beats" a baseline on a metric iff the lower bound of the
+  95 % paired percentile-bootstrap CI (4000 resamples) of the benefit is > 0. The arm selected as PRODUCTION
+  is the one with the highest mean hidden_state_error_improvement among arms that beat fixed, random and
+  coverage; if no arm beats all three, the highest mean is still reported and the honest conclusion is
+  recorded instead of a selection.

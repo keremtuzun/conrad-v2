@@ -28,6 +28,7 @@ from conrad.schemas.ids import IdFactory
 from conrad.schemas.world import Scenario, SensorSpec
 from conrad.sim.kernel import FaultType, SimKernelConfig
 from conrad.sim.mission.hardware import MissionHardware, build_mission_hardware
+from conrad.sim.mission.occlusion import add_view_occluders, patch_left, sample_defect, tilted
 from conrad.sim.mission.options import MissionWorldOptions
 from conrad.sim.mission.registry import RegistryMapping, build_mission_context, transit_lane
 from conrad.sim.mission.sensing import MissionSensorSuite, SuiteSensors, SurfaceTarget
@@ -94,18 +95,14 @@ def _patch_mask(
     nrm: np.ndarray,
     a: np.ndarray,
     b: np.ndarray,
-    axis: list[np.ndarray],
+    left: np.ndarray,
     opts: MissionWorldOptions,
 ) -> np.ndarray:
-    """True for surface samples inside the hidden defect patch of the target segment."""
-    d = (axis[-1] - axis[0]) / np.linalg.norm(axis[-1] - axis[0])
-    left = np.array([-d[1], d[0], 0.0])
-    if left[1] < 0:
-        left = -left
-    if opts.defect.side == "near":
-        left = -left
+    """True for surface samples inside the hidden defect patch of the target segment.
+
+    ``left`` is the UNTILTED unit direction from the pipe axis to the patch (``occlusion.patch_left``)."""
     tilt = math.radians(opts.defect.patch_tilt_deg)
-    left = math.cos(tilt) * left + math.sin(tilt) * np.array([0.0, 0.0, 1.0])
+    left = math.cos(tilt) * np.asarray(left, dtype=np.float64) + math.sin(tilt) * np.array([0.0, 0.0, 1.0])
     t = ((pts - a) @ (b - a)) / float((b - a) @ (b - a))
     half = opts.defect.patch_axial_fraction / 2.0
     return np.asarray(
@@ -123,13 +120,13 @@ def _ends(world: SpatialWorld, target: UUID) -> tuple[int, np.ndarray, np.ndarra
 def _patch(
     world: SpatialWorld,
     target: UUID,
-    axis: list[np.ndarray],
+    left: np.ndarray,
     opts: MissionWorldOptions,
     rng: np.random.Generator,
 ) -> SurfaceTarget:
     i, a, b = _ends(world, target)
     pts, nrm = sample_surface(world, i, opts.defect.patch_samples * 12, rng)
-    keep = _patch_mask(pts, nrm, a, b, axis, opts)
+    keep = _patch_mask(pts, nrm, a, b, left, opts)
     idx = np.nonzero(keep)[0][: opts.defect.patch_samples]
     if len(idx) < 4:
         raise RuntimeError("defect patch has too few surface samples; increase patch size")
@@ -140,7 +137,7 @@ def _rest_of_target(
     world: SpatialWorld,
     target: UUID,
     region: UUID,
-    axis: list[np.ndarray],
+    left: np.ndarray,
     opts: MissionWorldOptions,
     seed: int,
 ) -> SurfaceTarget | None:
@@ -149,7 +146,7 @@ def _rest_of_target(
     pts, nrm = sample_surface(
         world, i, opts.structural.surface_samples * 2, np.random.default_rng([seed, 0x5F, 2])
     )
-    rest = ~_patch_mask(pts, nrm, a, b, axis, opts)
+    rest = ~_patch_mask(pts, nrm, a, b, left, opts)
     if int(rest.sum()) < 4:
         return None
     return SurfaceTarget(target, pts[rest], nrm[rest], twin_id=region)
@@ -159,7 +156,7 @@ def _rest_tiles(
     world: SpatialWorld,
     target: UUID,
     region: UUID,
-    axis: list[np.ndarray],
+    left: np.ndarray,
     opts: MissionWorldOptions,
     seed: int,
     tiles: tuple[int, int],
@@ -180,7 +177,7 @@ def _rest_tiles(
         max(opts.structural.surface_samples * 2, 12 * n_ax * n_sec),
         np.random.default_rng([seed, 0x5F, 3]),
     )
-    rest = ~_patch_mask(pts, nrm, a, b, axis, opts)
+    rest = ~_patch_mask(pts, nrm, a, b, left, opts)
     pts, nrm = pts[rest], nrm[rest]
     d = (b - a) / float(np.linalg.norm(b - a))
     u = np.cross(d, [0.0, 0.0, 1.0])
@@ -229,6 +226,8 @@ class MissionWorld:
     ) -> MissionWorld:
         root = IdFactory(seed)
         opts = options
+        if opts.defect_variation.enabled:  # ACTIVE_INSPECTION_OCCLUDED_V1: per-world hidden defect
+            opts = opts.model_copy(update={"defect": sample_defect(opts, seed)})
         store = ObjectStore(store_root)
         scenario = build_pipeline_inspection_scenario(
             seed, root.child("scenario"), family=opts.family, sensor_overrides=opts.sensor_overrides
@@ -311,6 +310,7 @@ class MissionWorld:
             sensors.survey,
         )
         floor = UUID(groups["seafloor"][0])
+        seabed_z = _seabed_height(t2s.world, floor, lane)
         ctx, mapping = build_mission_context(
             scenario,
             t2t_scenario,
@@ -320,20 +320,31 @@ class MissionWorld:
             root.child("registry"),
             rng,
             lane,
-            _seabed_height(t2s.world, floor, lane),
+            seabed_z,
             opts.survey_sigma_m,
             opts.launch_sigma_m,
         )
+        left = patch_left(axis, opts, lane)
         surf_rng = np.random.default_rng([seed, 0x5F])
-        targets = [_patch(t2s.world, target, axis, opts, surf_rng)]
+        targets = [_patch(t2s.world, target, left, opts, surf_rng)]
         region = rest_region_of(t2t_scenario, target) if REGION_READINGS else None
         tiles = opts.structural.region_tiles
         if region is not None and tiles is not None:
-            targets += _rest_tiles(t2s.world, target, region, axis, opts, seed, tiles)
+            targets += _rest_tiles(t2s.world, target, region, left, opts, seed, tiles)
         else:
-            rest = None if region is None else _rest_of_target(t2s.world, target, region, axis, opts, seed)
+            rest = None if region is None else _rest_of_target(t2s.world, target, region, left, opts, seed)
             if rest is not None:
                 targets.append(rest)
+        occlusion: dict[str, Any] | None = None
+        if opts.occlusion.enabled:  # unregistered structure; appended before the Unity scene is converted
+            occlusion = add_view_occluders(
+                t2s.world,
+                target,
+                tilted(left, opts.defect.patch_tilt_deg),
+                opts.occlusion,
+                seed,
+                seabed_z,
+            )
         for we in scenario.world_entities:
             if (
                 we.domain_ownership.technical
@@ -371,6 +382,8 @@ class MissionWorld:
                 "world_entity_ids": sorted(str(e.id) for e in scenario.world_entities),
                 "defect": opts.defect.model_dump(mode="json"),
                 "patch_centre_m": [float(v) for v in targets[0].points.mean(axis=0)],
+                "patch_direction": [float(v) for v in tilted(left, opts.defect.patch_tilt_deg)],
+                "view_occlusion": occlusion,
             },
         )
         suite = MissionSensorSuite(

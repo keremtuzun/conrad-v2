@@ -52,6 +52,7 @@ from conrad.schemas.timebase import TimeStamp
 from conrad.schemas.world import Scenario, SensorSpec
 from conrad.settings import REPO_ROOT
 from conrad.sim.kernel import TruthAccess
+from conrad.sim.mission.obstacles import add_lane_obstacle
 from conrad.sim.mission.options import MissionWorldOptions
 from conrad.sim.mission.registry import RegistryMapping
 from conrad.sim.mission.sensing import MissionSensorSuite
@@ -500,6 +501,11 @@ class UnityMissionWorld:
         if options.eco_events and not options.ecological_enabled:
             raise ValueError("ecological events need the ecological twin (ecological_enabled=true)")
         base = MissionWorld.build(seed, scenario_id, options, run_id, run_dir / "objects")
+        if options.lane_obstacle is not None:
+            # Gate I5 blocked-route scenario: one unregistered box on the transit lane, appended to the Twin2S
+            # world BEFORE the Unity scene is converted, so the player renders it and the geometric sensors see
+            # it exactly as on the kernel path (conrad.sim.mission.run.prepare does the same call).
+            add_lane_obstacle(base, options.lane_obstacle)
         ctx = base.context
         geometric = tuple(s for s in ctx.sensors if s.modality in ("DEPTH_RANGE", "SONAR"))
         surface = float(base.scenario.environment["water_surface_z_m"])

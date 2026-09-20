@@ -338,6 +338,72 @@ information/time/energy", both because the fixed inspection route is not beaten 
   hangs on it. A view-quality aware likelihood (in-view fraction from the planner's own geometry) is the
   candidate, and it needs its own development/validation round.
 - A scenario family where a fixed route cannot see the defect (the current family rewards it), so that view
-  selection is what the metric measures.
+  selection is what the metric measures. **Taken up in section 9.**
 - The predictive model ranks one component's surface. Multi-component needs, and the read-surface refinement
   channel, stay open.
+
+## 9. The I4 world family (2026-09-20): ACTIVE_INSPECTION_OCCLUDED_V1
+
+Section 8.7 and the remediation audit both named the first honest route: a world family where the defect is
+genuinely not visible from the nominal route. It is declared in `docs/audits/I4_WORLD_FAMILY.md` (design and
+justification written before the split file existed, and therefore before any final or OOD seed was drawn),
+frozen in `configs/eval/i4_occluded_family.yaml` (digest
+`f77c5dbb7d665e3740e76cd4dfd97f37d0f0060bc2b336af6391ff0758877bdd`), and split in
+`configs/eval/partitions_i4_occluded.yaml` (digest
+`d929beb67c051ea1116e33ebb8e51cd638f5894ef54989a0a3f2ec3a9221b557`, domain `i4_occluded`).
+
+Reading the generator while building it produced the mechanism behind "5 of 12 worlds tied outright", which
+was not previously written down: `_patch_mask` puts the `far` defect on the WORLD +Y normal of the pipe
+heading, while `transit_lane` puts the lane on the right-hand normal of that heading after a possible axis
+reversal. The two rules agree only for some headings, so for a share of the sampled worlds the "hidden"
+defect is on the lane side. Measured on development world 7810000: patch visible fraction 0.854 during the
+lane pass with zero accepted inspection goals. The new family replaces that rule with `defect.side: off_lane`,
+computed from the lane the mission actually flies, and adds an unregistered two-panel occluder that leaves one
+angular window whose direction is sampled per world.
+
+The old `straight_pipeline` results in sections 5 and 8 are NOT replaced. They stay as the record of what MCBR
+does on a family whose nominal route already sees the defect. The new family is reported next to them.
+
+`ACTIVE-MCBR-E005` (`conrad/evaluation/decision_experiments/active_mcbr_i4_occluded.py`) runs the family in
+four stages: `design` (development), `selection` (validation), `e005` (final test) and `e005_ood` (held-out
+structural family). The comparison is complete: random, the fixed nominal route, coverage-only, geometric NBV,
+entropy NBV, uncertainty NBV, a conventional Bayesian EIG, the old A-B10 and PRODUCTION, all on the identical
+`PlanningRequest` under matched budgets.
+
+### 9.1 Development and validation
+
+Full tables in `docs/audits/I4_WORLD_FAMILY.md` sections 7 and 8. Both were run once, on the code that
+includes Model2T iteration 4. The final and OOD splits are untouched. Mean hidden-state error improvement:
+
+| planner | development (24) | validation (24) |
+|---|---|---|
+| `A-B5b_entropy_nbv_predictive` | 0.350 | 0.424 |
+| `PRODUCTION` (V-bayes_eig_ratio) | 0.365 | 0.406 |
+| `A-B6b_bayes_eig` | 0.394 | 0.361 |
+| `A-B4_geometric_nbv` | 0.183 | 0.351 |
+| `A-B10_mcbr_full` | 0.144 | 0.288 |
+| `A-B7_uncertainty_nbv` | 0.215 | 0.280 |
+| `A-B0_random` | 0.225 | 0.279 |
+| `A-B2_coverage` = `A-B5_entropy_nbv` | 0.265 | 0.240 |
+| `A-B1_fixed_inspection` | 0.064 | 0.000 |
+
+The comparison against fixed views, which is what section 8.6 could not win on `straight_pipeline`, is now
+decisive: PRODUCTION beats the fixed nominal route by +0.301 [+0.123, +0.470] on development and
++0.406 [+0.242, +0.578] on validation, and also on information per time and per kJ. It beats coverage-only on
+the point estimate on both splits (+0.100 and +0.166). It does NOT beat random views with a CI above 0 on
+either split (+0.140 [-0.051, +0.325] and +0.127 [-0.002, +0.271]), and neither does any other arm.
+
+Under the predeclared selection rule no arm is eligible, so nothing is swapped in: the production planner
+stays `V-bayes_eig_ratio` plus the frozen mission predictive model, recorded in
+`configs/active/mcbr_frozen_v3.yaml` with an unchanged `config_digest`
+`8eca16cc896e560b26cbe9814828fe9f75801d843e0e38bedb5442299805d903`. `A-B5b` does not beat it on either split
+and the sign of the difference flips between them.
+
+Two findings worth carrying forward:
+
+- `A-B5_entropy_nbv` multiplies a candidate-independent uncertainty level, so in every integrated mission it
+  ranks identically to `A-B2_coverage` (identical means on every metric on both splits). It was never an
+  independent entropy baseline. `A-B5b_entropy_nbv_predictive` was added as the one that is.
+- The binding constraint on this family is statistical power, not the size of the effect: the per-world
+  outcome is close to all-or-nothing, so 24 paired worlds give a CI half width of about 0.20 against random.
+  The declared final split has 20 worlds.

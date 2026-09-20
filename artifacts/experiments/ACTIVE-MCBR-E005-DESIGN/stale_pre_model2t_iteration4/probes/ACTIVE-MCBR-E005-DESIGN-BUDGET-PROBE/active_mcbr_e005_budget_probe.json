@@ -1,0 +1,2592 @@
+{
+ "config": {
+  "decision_rule": "Unit = one world (paired across planners). The reference arm \"beats\" a baseline on a metric iff the lower bound of the 95 % paired percentile-bootstrap CI (4000 resamples) of the benefit (reference better = positive) is > 0. Development results select nothing on their own; selection happens on the validation split (stage selection) and the final and OOD splits stay untouched until the integrator sequences them.",
+  "direction": "higher",
+  "experiment_id": "ACTIVE-MCBR-E005-DESIGN",
+  "hypothesis": "on a family where the nominal route leaves the critical surface unresolved and only some candidate views resolve it, an information-seeking planner beats the fixed nominal route, random views and coverage-only on the target's actual hidden-state error",
+  "out_name": "active_mcbr_e005_budget_probe.json",
+  "planners": [
+   "PRODUCTION",
+   "A-B1_fixed_inspection",
+   "A-B0_random",
+   "A-B2_coverage",
+   "A-B4_geometric_nbv",
+   "A-B6b_bayes_eig"
+  ],
+  "primary_metric": "hidden_state_error_improvement",
+  "reference_arm": "PRODUCTION",
+  "runtime": {
+   "control_period_s": 0.1,
+   "duration_s": 180.0,
+   "max_plans_per_need": 8
+  },
+  "seeds": [
+   8000000,
+   8000001,
+   8000002,
+   8000003,
+   8000004,
+   8000005,
+   8000006,
+   8000007,
+   8000008,
+   8000009,
+   8000010,
+   8000011,
+   8000012,
+   8000013,
+   8000014,
+   8000015,
+   8000016,
+   8000017,
+   8000018,
+   8000019,
+   8000020,
+   8000021,
+   8000022,
+   8000023
+  ],
+  "stage": "design",
+  "workers": 12
+ },
+ "data_status": "SYNTHETIC_ONLY",
+ "decision_rule": "Unit = one world (paired across planners). The reference arm \"beats\" a baseline on a metric iff the lower bound of the 95 % paired percentile-bootstrap CI (4000 resamples) of the benefit (reference better = positive) is > 0. Development results select nothing on their own; selection happens on the validation split (stage selection) and the final and OOD splits stay untouched until the integrator sequences them.",
+ "evidence_kind": "SURROGATE",
+ "evidence_note": "integrated mission on the python sim kernel (L1); the formal path is Unity",
+ "experiment_id": "ACTIVE-MCBR-E005-DESIGN",
+ "families": [
+  "pipeline_with_supports"
+ ],
+ "frozen_planner": {
+  "config_digest": "8eca16cc896e560b26cbe9814828fe9f75801d843e0e38bedb5442299805d903",
+  "frozen_on": "2026-09-19",
+  "git_commit": "0918f5547e9f9f75f159f9194428f121a436e4e8",
+  "git_commit_note": "not re-read (the agent does not run git); the frozen code is the uncommitted working tree",
+  "mission_note": "the integrated runtime now supplies the belief-side predictive model above to every planner's PlanningRequest; the production ranker (bayes_eig, ratio) ranks by its expected entropy reduction per unit cost",
+  "mission_predictive": {
+   "config": {
+    "enabled": true,
+    "footprint_axial_m": 1.0,
+    "footprint_discount": 0.0,
+    "footprint_half_angle_deg": 50.0,
+    "incidence_power": 1.0,
+    "nominal_reliability": 1.0,
+    "probe_offset_m": 0.15,
+    "read_channel": false,
+    "read_min_band_probability": 0.0,
+    "seen_surface_discount": 0.0,
+    "track_discount": 0.8,
+    "track_max_positions": 16
+   },
+   "model": "conrad.orchestration.mission_predictive.MissionPredictive -> conrad.active.surface_predictive.SurfaceCellPredictive",
+   "selected": "SURFACE_CELL_EIG[C_track_noread]",
+   "selection": {
+    "arms_dev_mean": {
+     "A-B1_fixed_inspection": 0.756,
+     "A-B2_coverage": 0.736,
+     "A_track_band05": 0.727,
+     "B_track_band0": 0.547,
+     "C_track_noread": 0.73,
+     "D_nopred (v1 fallback)": 0.636
+    },
+    "n_worlds": 26,
+    "note": "highest development mean among the predictive-model arms; it does NOT beat fixed or coverage on development (C - fixed = -0.026 [-0.064, +0.011], C - coverage = -0.006 [-0.151, +0.136])",
+    "partitions": [
+     "unity_gate development (8 worlds where MCBR planned: 7810006,7,9,10,11,14,15,17)",
+     "mission development (18 worlds where MCBR planned)"
+    ],
+    "primary_metric": "hidden_state_error_improvement",
+    "purpose": "design"
+   }
+  },
+  "mission_predictive_digest": "2fa5b75d6e9618c0a1274eff284d014a30df4c0ba17a8d83969c2c8609d41431",
+  "partitions_digest": "074ae11310252217315b2ac3324fd914d1964a3e34b76b57a65f0ca3a3acb904",
+  "planner": {
+   "ranker": {
+    "cost_mode": "ratio",
+    "cost_weight": 1.0,
+    "kind": "bayes_eig"
+   },
+   "selected": "V-bayes_eig_ratio"
+  },
+  "selection": {
+   "experiment_id": "ACTIVE-MCBR-SEL001",
+   "n_worlds": 40,
+   "note": "conventional Bayesian EIG per unit cost won on validation; per the brief it becomes the production planner behind the MCBR interface. Its lead over A-B6b and A-B11 is not significant (paired CI includes 0).",
+   "partition": "validation",
+   "primary_metric": "mission_error_reduction",
+   "runner_up": "A-B6b_bayes_eig",
+   "selection_config_digest": "4462c7f7f36fd911a37a0c52f7acaf4a807f08f8fa4f0db4a550cadb5890788a",
+   "validation_mean": 0.5052
+  },
+  "shared_candidate_generation": {
+   "abstract_world": {
+    "n_azimuth": 8
+   },
+   "mission": "MissionRuntimeConfig.mcbr (deployment config)",
+   "sensor_aware_visibility": true
+  },
+  "supersedes": "configs/active/mcbr_frozen.yaml (planner section unchanged; v2 adds the mission predictive model)",
+  "unity_gates_partitions_digest": "ad753291d5825dace90f5757790efd096a5f867d51abe51de6545dceff12f88c"
+ },
+ "i4_comparators": [
+  "A-B1_fixed_inspection",
+  "A-B0_random",
+  "A-B2_coverage"
+ ],
+ "mission_config": "configs/sim/mission_test_small.yaml",
+ "n_worlds": 6,
+ "paired_reference_vs": {
+  "A-B0_random": {
+   "collisions": {
+    "baseline_mean": 0.0,
+    "benefit_mean": 0.0,
+    "candidate_mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "energy_j": {
+    "baseline_mean": 29338.504215795532,
+    "benefit_mean": 2902.4920575535652,
+    "candidate_mean": 26436.012158241967,
+    "ci95": [
+     -4823.820851632723,
+     10350.814508444442
+    ],
+    "fraction_improved": 0.8333333333333334,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_final": {
+    "baseline_mean": 0.6467740492061868,
+    "benefit_mean": -0.0791611876630345,
+    "candidate_mean": 0.7259352368692212,
+    "ci95": [
+     -0.3747166547689242,
+     0.11264320765445196
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_improvement": {
+    "baseline_mean": 0.3532259507938132,
+    "benefit_mean": -0.0791611876630345,
+    "candidate_mean": 0.2740647631307787,
+    "ci95": [
+     -0.3747166547689242,
+     0.11264320765445196
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "info_per_kj": {
+    "baseline_mean": 0.013767497951631342,
+    "benefit_mean": -0.0014639290725811938,
+    "candidate_mean": 0.012303568879050148,
+    "ci95": [
+     -0.01392481449232901,
+     0.008178273831876939
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "info_per_time": {
+    "baseline_mean": 0.0019623663932989625,
+    "benefit_mean": -0.0004397843759057472,
+    "candidate_mean": 0.001522582017393215,
+    "ci95": [
+     -0.00208175919316069,
+     0.0006257955980802888
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "mission_error_reduction": {
+    "baseline_mean": 0.3532259507938132,
+    "benefit_mean": -0.0791611876630345,
+    "candidate_mean": 0.2740647631307787,
+    "ci95": [
+     -0.3747166547689242,
+     0.11264320765445196
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "mission_success": {
+    "baseline_mean": 0.5,
+    "benefit_mean": -0.16666666666666666,
+    "candidate_mean": 0.3333333333333333,
+    "ci95": [
+     -0.5,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "observations": {
+    "baseline_mean": 6.333333333333333,
+    "benefit_mean": -0.16666666666666666,
+    "candidate_mean": 6.5,
+    "ci95": [
+     -2.3333333333333335,
+     1.6666666666666667
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "redundant_observations": {
+    "baseline_mean": 5.833333333333333,
+    "benefit_mean": 0.3333333333333333,
+    "candidate_mean": 5.5,
+    "ci95": [
+     -2.6666666666666665,
+     3.1666666666666665
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "travel_m": {
+    "baseline_mean": 37.05842792904695,
+    "benefit_mean": 3.8991838118461626,
+    "candidate_mean": 33.15924411720079,
+    "ci95": [
+     -1.1915274083842728,
+     10.296601938626727
+    ],
+    "fraction_improved": 0.6666666666666666,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   }
+  },
+  "A-B1_fixed_inspection": {
+   "collisions": {
+    "baseline_mean": 0.0,
+    "benefit_mean": 0.0,
+    "candidate_mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "energy_j": {
+    "baseline_mean": 26670.02644187104,
+    "benefit_mean": 234.0142836290676,
+    "candidate_mean": 26436.012158241967,
+    "ci95": [
+     -3547.3699283882943,
+     3599.2056005591166
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_final": {
+    "baseline_mean": 0.5742862037537507,
+    "benefit_mean": -0.15164903311547046,
+    "candidate_mean": 0.7259352368692212,
+    "ci95": [
+     -0.4372131546804761,
+     0.0031579144019610685
+    ],
+    "fraction_improved": 0.16666666666666666,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_improvement": {
+    "baseline_mean": 0.4257137962462492,
+    "benefit_mean": -0.15164903311547048,
+    "candidate_mean": 0.2740647631307787,
+    "ci95": [
+     -0.4372131546804762,
+     0.003157914401961078
+    ],
+    "fraction_improved": 0.16666666666666666,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "info_per_kj": {
+    "baseline_mean": 0.01539516498654648,
+    "benefit_mean": -0.0030915961074963303,
+    "candidate_mean": 0.012303568879050148,
+    "ci95": [
+     -0.013010363369108163,
+     0.003207318393792558
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "info_per_time": {
+    "baseline_mean": 0.0023650766458124957,
+    "benefit_mean": -0.0008424946284192805,
+    "candidate_mean": 0.001522582017393215,
+    "ci95": [
+     -0.0024289619704470898,
+     1.754396889978368e-05
+    ],
+    "fraction_improved": 0.16666666666666666,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "mission_error_reduction": {
+    "baseline_mean": 0.4257137962462492,
+    "benefit_mean": -0.15164903311547048,
+    "candidate_mean": 0.2740647631307787,
+    "ci95": [
+     -0.4372131546804762,
+     0.003157914401961078
+    ],
+    "fraction_improved": 0.16666666666666666,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "mission_success": {
+    "baseline_mean": 0.5,
+    "benefit_mean": -0.16666666666666666,
+    "candidate_mean": 0.3333333333333333,
+    "ci95": [
+     -0.5,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "observations": {
+    "baseline_mean": 6.0,
+    "benefit_mean": -0.5,
+    "candidate_mean": 6.5,
+    "ci95": [
+     -2.5,
+     1.3333333333333333
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "redundant_observations": {
+    "baseline_mean": 5.5,
+    "benefit_mean": 0.0,
+    "candidate_mean": 5.5,
+    "ci95": [
+     -2.8333333333333335,
+     2.6666666666666665
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "travel_m": {
+    "baseline_mean": 33.14855716258767,
+    "benefit_mean": -0.010686954613126668,
+    "candidate_mean": 33.15924411720079,
+    "ci95": [
+     -2.514921049822112,
+     2.0241867341136537
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   }
+  },
+  "A-B2_coverage": {
+   "collisions": {
+    "baseline_mean": 0.0,
+    "benefit_mean": 0.0,
+    "candidate_mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "energy_j": {
+    "baseline_mean": 29870.542290313548,
+    "benefit_mean": 3434.530132071585,
+    "candidate_mean": 26436.012158241967,
+    "ci95": [
+     -4779.990288119528,
+     11021.987344607618
+    ],
+    "fraction_improved": 0.8333333333333334,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_final": {
+    "baseline_mean": 0.7191211904109882,
+    "benefit_mean": -0.006814046458233062,
+    "candidate_mean": 0.7259352368692212,
+    "ci95": [
+     -0.44401911953134815,
+     0.3777186744105789
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_improvement": {
+    "baseline_mean": 0.2808788095890118,
+    "benefit_mean": -0.006814046458233062,
+    "candidate_mean": 0.2740647631307787,
+    "ci95": [
+     -0.44401911953134815,
+     0.3777186744105789
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "info_per_kj": {
+    "baseline_mean": 0.012114655354020579,
+    "benefit_mean": 0.00018891352502956962,
+    "candidate_mean": 0.012303568879050148,
+    "ci95": [
+     -0.01837328457547977,
+     0.016539137913888096
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "info_per_time": {
+    "baseline_mean": 0.0015604378310500658,
+    "benefit_mean": -3.7855813656850354e-05,
+    "candidate_mean": 0.001522582017393215,
+    "ci95": [
+     -0.002466772886285267,
+     0.002098437080058771
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "mission_error_reduction": {
+    "baseline_mean": 0.2808788095890118,
+    "benefit_mean": -0.006814046458233062,
+    "candidate_mean": 0.2740647631307787,
+    "ci95": [
+     -0.44401911953134815,
+     0.3777186744105789
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "mission_success": {
+    "baseline_mean": 0.3333333333333333,
+    "benefit_mean": 0.0,
+    "candidate_mean": 0.3333333333333333,
+    "ci95": [
+     -0.5,
+     0.5
+    ],
+    "fraction_improved": 0.16666666666666666,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "observations": {
+    "baseline_mean": 5.833333333333333,
+    "benefit_mean": -0.6666666666666666,
+    "candidate_mean": 6.5,
+    "ci95": [
+     -3.6666666666666665,
+     2.0
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "redundant_observations": {
+    "baseline_mean": 5.166666666666667,
+    "benefit_mean": -0.3333333333333333,
+    "candidate_mean": 5.5,
+    "ci95": [
+     -3.6666666666666665,
+     2.5
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "travel_m": {
+    "baseline_mean": 36.10073214700517,
+    "benefit_mean": 2.941488029804374,
+    "candidate_mean": 33.15924411720079,
+    "ci95": [
+     -2.4658166611547485,
+     9.068202701904168
+    ],
+    "fraction_improved": 0.6666666666666666,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   }
+  },
+  "A-B4_geometric_nbv": {
+   "collisions": {
+    "baseline_mean": 0.0,
+    "benefit_mean": 0.0,
+    "candidate_mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "energy_j": {
+    "baseline_mean": 28519.018223097723,
+    "benefit_mean": 2083.0060648557524,
+    "candidate_mean": 26436.012158241967,
+    "ci95": [
+     -5857.583800216121,
+     8813.925925238704
+    ],
+    "fraction_improved": 0.8333333333333334,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_final": {
+    "baseline_mean": 0.7191211904109882,
+    "benefit_mean": -0.006814046458233062,
+    "candidate_mean": 0.7259352368692212,
+    "ci95": [
+     -0.44401911953134815,
+     0.3777186744105789
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_improvement": {
+    "baseline_mean": 0.2808788095890118,
+    "benefit_mean": -0.006814046458233062,
+    "candidate_mean": 0.2740647631307787,
+    "ci95": [
+     -0.44401911953134815,
+     0.3777186744105789
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "info_per_kj": {
+    "baseline_mean": 0.012114655354020579,
+    "benefit_mean": 0.00018891352502956962,
+    "candidate_mean": 0.012303568879050148,
+    "ci95": [
+     -0.01837328457547977,
+     0.016539137913888096
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "info_per_time": {
+    "baseline_mean": 0.0015604378310500658,
+    "benefit_mean": -3.7855813656850354e-05,
+    "candidate_mean": 0.001522582017393215,
+    "ci95": [
+     -0.002466772886285267,
+     0.002098437080058771
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "mission_error_reduction": {
+    "baseline_mean": 0.2808788095890118,
+    "benefit_mean": -0.006814046458233062,
+    "candidate_mean": 0.2740647631307787,
+    "ci95": [
+     -0.44401911953134815,
+     0.3777186744105789
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "mission_success": {
+    "baseline_mean": 0.3333333333333333,
+    "benefit_mean": 0.0,
+    "candidate_mean": 0.3333333333333333,
+    "ci95": [
+     -0.5,
+     0.5
+    ],
+    "fraction_improved": 0.16666666666666666,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "observations": {
+    "baseline_mean": 5.833333333333333,
+    "benefit_mean": -0.6666666666666666,
+    "candidate_mean": 6.5,
+    "ci95": [
+     -3.6666666666666665,
+     2.0
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "redundant_observations": {
+    "baseline_mean": 5.166666666666667,
+    "benefit_mean": -0.3333333333333333,
+    "candidate_mean": 5.5,
+    "ci95": [
+     -3.6666666666666665,
+     2.5
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "travel_m": {
+    "baseline_mean": 36.10731147185427,
+    "benefit_mean": 2.948067354653477,
+    "candidate_mean": 33.15924411720079,
+    "ci95": [
+     -2.4526580114565433,
+     9.068202701904168
+    ],
+    "fraction_improved": 0.6666666666666666,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   }
+  },
+  "A-B6b_bayes_eig": {
+   "collisions": {
+    "baseline_mean": 0.0,
+    "benefit_mean": 0.0,
+    "candidate_mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "energy_j": {
+    "baseline_mean": 24622.093936007226,
+    "benefit_mean": -1813.9182222347397,
+    "candidate_mean": 26436.012158241967,
+    "ci95": [
+     -7705.487293417827,
+     1979.7706134506043
+    ],
+    "fraction_improved": 0.3333333333333333,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_final": {
+    "baseline_mean": 0.5642144510610752,
+    "benefit_mean": -0.1617207858081461,
+    "candidate_mean": 0.7259352368692212,
+    "ci95": [
+     -0.4730196340777349,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_improvement": {
+    "baseline_mean": 0.4357855489389249,
+    "benefit_mean": -0.1617207858081461,
+    "candidate_mean": 0.2740647631307787,
+    "ci95": [
+     -0.4730196340777349,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "info_per_kj": {
+    "baseline_mean": 0.018840787468102697,
+    "benefit_mean": -0.006537218589052551,
+    "candidate_mean": 0.012303568879050148,
+    "ci95": [
+     -0.019586370718265862,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "info_per_time": {
+    "baseline_mean": 0.0024210308274384717,
+    "benefit_mean": -0.0008984488100452562,
+    "candidate_mean": 0.001522582017393215,
+    "ci95": [
+     -0.0026278868559874158,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "mission_error_reduction": {
+    "baseline_mean": 0.4357855489389249,
+    "benefit_mean": -0.1617207858081461,
+    "candidate_mean": 0.2740647631307787,
+    "ci95": [
+     -0.4730196340777349,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "mission_success": {
+    "baseline_mean": 0.5,
+    "benefit_mean": -0.16666666666666666,
+    "candidate_mean": 0.3333333333333333,
+    "ci95": [
+     -0.5,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "observations": {
+    "baseline_mean": 5.166666666666667,
+    "benefit_mean": -1.3333333333333333,
+    "candidate_mean": 6.5,
+    "ci95": [
+     -3.6666666666666665,
+     0.3333333333333333
+    ],
+    "fraction_improved": 0.16666666666666666,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "redundant_observations": {
+    "baseline_mean": 4.166666666666667,
+    "benefit_mean": -1.3333333333333333,
+    "candidate_mean": 5.5,
+    "ci95": [
+     -4.0,
+     0.3333333333333333
+    ],
+    "fraction_improved": 0.16666666666666666,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   },
+   "travel_m": {
+    "baseline_mean": 32.17567524400052,
+    "benefit_mean": -0.9835688732002676,
+    "candidate_mean": 33.15924411720079,
+    "ci95": [
+     -3.992642991848628,
+     1.252345584939203
+    ],
+    "fraction_improved": 0.16666666666666666,
+    "n_worlds": 6,
+    "repeatable_benefit": false
+   }
+  }
+ },
+ "partition": "development",
+ "partition_digest": "d929beb67c051ea1116e33ebb8e51cd638f5894ef54989a0a3f2ec3a9221b557",
+ "partition_file": "configs/eval/partitions_i4_occluded.yaml",
+ "per_world": {
+  "8000000": {
+   "A-B0_random": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.007146567848918015,
+    "crack_abs_error_m": 0.030090575480940254,
+    "critical_delivered": 0.0,
+    "energy_j": 26116.38202831714,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 34.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 8.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B0_random",
+    "planner_config": "A-B0_random",
+    "planner_name_in_run": "A-B0_random",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 8.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000000,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 37.85847814738171,
+    "uir": 0.0
+   },
+   "A-B1_fixed_inspection": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.007146567848918015,
+    "crack_abs_error_m": 0.030090575480940254,
+    "critical_delivered": 0.0,
+    "energy_j": 22429.815385337366,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 34.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 5.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B1_fixed_inspection",
+    "planner_config": "A-B1_fixed_inspection",
+    "planner_name_in_run": "A-B1_fixed_inspection",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 5.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000000,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 31.01376747106536,
+    "uir": 0.0
+   },
+   "A-B2_coverage": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.007146567848918015,
+    "crack_abs_error_m": 0.030090575480940254,
+    "critical_delivered": 0.0,
+    "energy_j": 26273.941762945014,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 34.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 7.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B2_coverage",
+    "planner_config": "A-B2_coverage",
+    "planner_name_in_run": "A-B2_coverage",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 7.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000000,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 36.91907463963102,
+    "uir": 0.0
+   },
+   "A-B4_geometric_nbv": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.007146567848918015,
+    "crack_abs_error_m": 0.030090575480940254,
+    "critical_delivered": 0.0,
+    "energy_j": 26273.941762945014,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 34.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 7.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B4_geometric_nbv",
+    "planner_config": "A-B4_geometric_nbv",
+    "planner_name_in_run": "A-B4_geometric_nbv",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 7.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000000,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 36.91907463963102,
+    "uir": 0.0
+   },
+   "A-B6b_bayes_eig": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.007146567848918015,
+    "crack_abs_error_m": 0.030090575480940254,
+    "critical_delivered": 0.0,
+    "energy_j": 26721.169497375235,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 34.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 6.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B6b_bayes_eig",
+    "planner_config": "A-B6b_bayes_eig",
+    "planner_name_in_run": "A-B6b_bayes_eig",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 6.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000000,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 35.47053365938504,
+    "uir": 0.0
+   },
+   "PRODUCTION": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.007146567848918015,
+    "crack_abs_error_m": 0.030090575480940254,
+    "critical_delivered": 0.0,
+    "energy_j": 22761.628270474026,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 34.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 5.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "PRODUCTION",
+    "planner_config": "PRODUCTION",
+    "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 5.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000000,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 32.124205638741124,
+    "uir": 0.0
+   }
+  },
+  "8000001": {
+   "A-B0_random": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.003220937713288307,
+    "crack_abs_error_m": 0.03619658915968499,
+    "critical_delivered": 1.0,
+    "energy_j": 27214.334622690523,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 0.3363351853453891,
+    "hidden_state_error_improvement": 0.6636648146546109,
+    "info_per_kj": 0.02438658978277082,
+    "info_per_time": 0.0036870267480811716,
+    "inspection_goal_t_s": 36.0,
+    "mission_error_reduction": 0.6636648146546109,
+    "mission_success": 1.0,
+    "observations": 8.0,
+    "patch_max_visible_fraction": 0.9130434782608695,
+    "planner": "A-B0_random",
+    "planner_config": "A-B0_random",
+    "planner_name_in_run": "A-B0_random",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 7.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000001,
+    "target_observed": 1.0,
+    "time_s": 180.0,
+    "travel_m": 34.86899099617097,
+    "uir": 0.0
+   },
+   "A-B1_fixed_inspection": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.0012128522314622768,
+    "crack_abs_error_m": 0.012002618085719258,
+    "critical_delivered": 1.0,
+    "energy_j": 23406.79478630199,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 0.12052251324236837,
+    "hidden_state_error_improvement": 0.8794774867576316,
+    "info_per_kj": 0.03757359752956501,
+    "info_per_time": 0.004885986037542398,
+    "inspection_goal_t_s": 36.0,
+    "mission_error_reduction": 0.8794774867576316,
+    "mission_success": 1.0,
+    "observations": 7.0,
+    "patch_max_visible_fraction": 0.9782608695652174,
+    "planner": "A-B1_fixed_inspection",
+    "planner_config": "A-B1_fixed_inspection",
+    "planner_name_in_run": "A-B1_fixed_inspection",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "NEED_SATISFIED"
+    ],
+    "redundant_observations": 6.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000001,
+    "target_observed": 1.0,
+    "time_s": 180.0,
+    "travel_m": 31.82460167575033,
+    "uir": 0.0
+   },
+   "A-B2_coverage": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.001523684126020334,
+    "crack_abs_error_m": 0.04090500583315086,
+    "critical_delivered": 1.0,
+    "energy_j": 22402.076781158994,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 0.24862368727469553,
+    "hidden_state_error_improvement": 0.7513763127253045,
+    "info_per_kj": 0.03354047573648354,
+    "info_per_time": 0.004174312848473914,
+    "inspection_goal_t_s": 36.0,
+    "mission_error_reduction": 0.7513763127253045,
+    "mission_success": 1.0,
+    "observations": 3.0,
+    "patch_max_visible_fraction": 1.0,
+    "planner": "A-B2_coverage",
+    "planner_config": "A-B2_coverage",
+    "planner_name_in_run": "A-B2_coverage",
+    "plans": [
+     "PLAN",
+     "NEED_SATISFIED",
+     "PLAN",
+     "PLAN",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED"
+    ],
+    "redundant_observations": 0.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000001,
+    "target_observed": 1.0,
+    "time_s": 180.0,
+    "travel_m": 32.40378895839172,
+    "uir": 0.0
+   },
+   "A-B4_geometric_nbv": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.001523684126020334,
+    "crack_abs_error_m": 0.04090500583315086,
+    "critical_delivered": 1.0,
+    "energy_j": 22402.076781158994,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 0.24862368727469553,
+    "hidden_state_error_improvement": 0.7513763127253045,
+    "info_per_kj": 0.03354047573648354,
+    "info_per_time": 0.004174312848473914,
+    "inspection_goal_t_s": 36.0,
+    "mission_error_reduction": 0.7513763127253045,
+    "mission_success": 1.0,
+    "observations": 3.0,
+    "patch_max_visible_fraction": 1.0,
+    "planner": "A-B4_geometric_nbv",
+    "planner_config": "A-B4_geometric_nbv",
+    "planner_name_in_run": "A-B4_geometric_nbv",
+    "plans": [
+     "PLAN",
+     "NEED_SATISFIED",
+     "PLAN",
+     "PLAN",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED"
+    ],
+    "redundant_observations": 0.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000001,
+    "target_observed": 1.0,
+    "time_s": 180.0,
+    "travel_m": 32.40378895839172,
+    "uir": 0.0
+   },
+   "A-B6b_bayes_eig": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.0010408013967708272,
+    "crack_abs_error_m": 0.0026474464217313143,
+    "critical_delivered": 1.0,
+    "energy_j": 22670.31450839337,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 0.07462059999637484,
+    "hidden_state_error_improvement": 0.9253794000036252,
+    "info_per_kj": 0.04081899259320007,
+    "info_per_time": 0.0051409966666868066,
+    "inspection_goal_t_s": 36.0,
+    "mission_error_reduction": 0.9253794000036252,
+    "mission_success": 1.0,
+    "observations": 4.0,
+    "patch_max_visible_fraction": 1.0,
+    "planner": "A-B6b_bayes_eig",
+    "planner_config": "A-B6b_bayes_eig",
+    "planner_name_in_run": "A-B6b_bayes_eig",
+    "plans": [
+     "PLAN",
+     "NEED_SATISFIED",
+     "PLAN",
+     "NEED_SATISFIED",
+     "PLAN",
+     "NEED_SATISFIED",
+     "PLAN"
+    ],
+    "redundant_observations": 0.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000001,
+    "target_observed": 1.0,
+    "time_s": 180.0,
+    "travel_m": 31.6591397809077,
+    "uir": 0.0
+   },
+   "PRODUCTION": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.000978901501756108,
+    "crack_abs_error_m": 0.0133467394251717,
+    "critical_delivered": 1.0,
+    "energy_j": 21818.42846860436,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 0.11104877003648517,
+    "hidden_state_error_improvement": 0.8889512299635148,
+    "info_per_kj": 0.0407431374465247,
+    "info_per_time": 0.004938617944241749,
+    "inspection_goal_t_s": 36.0,
+    "mission_error_reduction": 0.8889512299635148,
+    "mission_success": 1.0,
+    "observations": 6.0,
+    "patch_max_visible_fraction": 1.0,
+    "planner": "PRODUCTION",
+    "planner_config": "PRODUCTION",
+    "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "NEED_SATISFIED",
+     "PLAN"
+    ],
+    "redundant_observations": 1.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000001,
+    "target_observed": 1.0,
+    "time_s": 180.0,
+    "travel_m": 32.92159505705597,
+    "uir": 0.0
+   }
+  },
+  "8000002": {
+   "A-B0_random": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.001395542883303051,
+    "crack_abs_error_m": 0.01873686072728331,
+    "critical_delivered": 1.0,
+    "energy_j": 26503.665865500523,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 0.22597680633678296,
+    "hidden_state_error_improvement": 0.774023193663217,
+    "info_per_kj": 0.029204382427366508,
+    "info_per_time": 0.004300128853684539,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.774023193663217,
+    "mission_success": 1.0,
+    "observations": 3.0,
+    "patch_max_visible_fraction": 0.8125,
+    "planner": "A-B0_random",
+    "planner_config": "A-B0_random",
+    "planner_name_in_run": "A-B0_random",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED"
+    ],
+    "redundant_observations": 2.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000002,
+    "target_observed": 1.0,
+    "time_s": 180.0,
+    "travel_m": 33.17990936205788,
+    "uir": 0.0
+   },
+   "A-B1_fixed_inspection": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 9.715147457816601e-05,
+    "crack_abs_error_m": 0.020495660874006838,
+    "critical_delivered": 1.0,
+    "energy_j": 31463.897048287356,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 0.1480445069079245,
+    "hidden_state_error_improvement": 0.8519554930920755,
+    "info_per_kj": 0.027077240043869556,
+    "info_per_time": 0.004733086072733753,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.8519554930920755,
+    "mission_success": 1.0,
+    "observations": 3.0,
+    "patch_max_visible_fraction": 0.625,
+    "planner": "A-B1_fixed_inspection",
+    "planner_config": "A-B1_fixed_inspection",
+    "planner_name_in_run": "A-B1_fixed_inspection",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED"
+    ],
+    "redundant_observations": 2.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000002,
+    "target_observed": 1.0,
+    "time_s": 180.0,
+    "travel_m": 33.55982276421238,
+    "uir": 0.0
+   },
+   "A-B2_coverage": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.0009440074407597527,
+    "crack_abs_error_m": 9.076751980384434e-05,
+    "critical_delivered": 1.0,
+    "energy_j": 23855.867813256613,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 0.06610345519123359,
+    "hidden_state_error_improvement": 0.9338965448087664,
+    "info_per_kj": 0.03914745638763993,
+    "info_per_time": 0.00518831413782648,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.9338965448087664,
+    "mission_success": 1.0,
+    "observations": 1.0,
+    "patch_max_visible_fraction": 0.9791666666666666,
+    "planner": "A-B2_coverage",
+    "planner_config": "A-B2_coverage",
+    "planner_name_in_run": "A-B2_coverage",
+    "plans": [
+     "PLAN",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED"
+    ],
+    "redundant_observations": 0.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000002,
+    "target_observed": 1.0,
+    "time_s": 180.0,
+    "travel_m": 30.80130119534613,
+    "uir": 0.0
+   },
+   "A-B4_geometric_nbv": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.0009440074407597527,
+    "crack_abs_error_m": 9.076751980384434e-05,
+    "critical_delivered": 1.0,
+    "energy_j": 23855.867813256613,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 0.06610345519123359,
+    "hidden_state_error_improvement": 0.9338965448087664,
+    "info_per_kj": 0.03914745638763993,
+    "info_per_time": 0.00518831413782648,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.9338965448087664,
+    "mission_success": 1.0,
+    "observations": 1.0,
+    "patch_max_visible_fraction": 0.9791666666666666,
+    "planner": "A-B4_geometric_nbv",
+    "planner_config": "A-B4_geometric_nbv",
+    "planner_name_in_run": "A-B4_geometric_nbv",
+    "plans": [
+     "PLAN",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED"
+    ],
+    "redundant_observations": 0.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000002,
+    "target_observed": 1.0,
+    "time_s": 180.0,
+    "travel_m": 30.80130119534613,
+    "uir": 0.0
+   },
+   "A-B6b_bayes_eig": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.0009440074407597527,
+    "crack_abs_error_m": 9.076751980384434e-05,
+    "critical_delivered": 1.0,
+    "energy_j": 23855.867813256613,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 0.06610345519123359,
+    "hidden_state_error_improvement": 0.9338965448087664,
+    "info_per_kj": 0.03914745638763993,
+    "info_per_time": 0.00518831413782648,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.9338965448087664,
+    "mission_success": 1.0,
+    "observations": 1.0,
+    "patch_max_visible_fraction": 0.9791666666666666,
+    "planner": "A-B6b_bayes_eig",
+    "planner_config": "A-B6b_bayes_eig",
+    "planner_name_in_run": "A-B6b_bayes_eig",
+    "plans": [
+     "PLAN",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED"
+    ],
+    "redundant_observations": 0.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000002,
+    "target_observed": 1.0,
+    "time_s": 180.0,
+    "travel_m": 30.80130119534613,
+    "uir": 0.0
+   },
+   "PRODUCTION": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.007208621790958238,
+    "crack_abs_error_m": 0.07252228749033719,
+    "critical_delivered": 0.0,
+    "energy_j": 39550.80441335527,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 8.0,
+    "patch_max_visible_fraction": 0.3333333333333333,
+    "planner": "PRODUCTION",
+    "planner_config": "PRODUCTION",
+    "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 8.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000002,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 38.78658717904339,
+    "uir": 0.0
+   }
+  },
+  "8000003": {
+   "A-B0_random": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.0007282594370003727,
+    "crack_abs_error_m": 0.05248425412970267,
+    "critical_delivered": 1.0,
+    "energy_j": 23494.42794132572,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 0.31833230355494846,
+    "hidden_state_error_improvement": 0.6816676964450515,
+    "info_per_kj": 0.029014015499650724,
+    "info_per_time": 0.003787042758028064,
+    "inspection_goal_t_s": 34.0,
+    "mission_error_reduction": 0.6816676964450515,
+    "mission_success": 1.0,
+    "observations": 5.0,
+    "patch_max_visible_fraction": 0.7708333333333334,
+    "planner": "A-B0_random",
+    "planner_config": "A-B0_random",
+    "planner_name_in_run": "A-B0_random",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED"
+    ],
+    "redundant_observations": 4.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000003,
+    "target_observed": 1.0,
+    "time_s": 180.0,
+    "travel_m": 32.0838724017985,
+    "uir": 0.0
+   },
+   "A-B1_fixed_inspection": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.0014922979218514112,
+    "crack_abs_error_m": 0.012191990711869202,
+    "critical_delivered": 1.0,
+    "energy_j": 29684.172993051627,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 0.17715020237221185,
+    "hidden_state_error_improvement": 0.8228497976277882,
+    "info_per_kj": 0.027720152345844306,
+    "info_per_time": 0.004571387764598823,
+    "inspection_goal_t_s": 34.0,
+    "mission_error_reduction": 0.8228497976277882,
+    "mission_success": 1.0,
+    "observations": 7.0,
+    "patch_max_visible_fraction": 0.7916666666666666,
+    "planner": "A-B1_fixed_inspection",
+    "planner_config": "A-B1_fixed_inspection",
+    "planner_name_in_run": "A-B1_fixed_inspection",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "NEED_SATISFIED"
+    ],
+    "redundant_observations": 6.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000003,
+    "target_observed": 1.0,
+    "time_s": 180.0,
+    "travel_m": 34.698087653272594,
+    "uir": 0.0
+   },
+   "A-B2_coverage": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.0064103495632307946,
+    "crack_abs_error_m": 0.10034121572961358,
+    "critical_delivered": 0.0,
+    "energy_j": 38790.35916321523,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 34.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 8.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B2_coverage",
+    "planner_config": "A-B2_coverage",
+    "planner_name_in_run": "A-B2_coverage",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 8.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000003,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 35.68588078040668,
+    "uir": 0.0
+   },
+   "A-B4_geometric_nbv": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.0064103495632307946,
+    "crack_abs_error_m": 0.10034121572961358,
+    "critical_delivered": 0.0,
+    "energy_j": 30681.214759920236,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 34.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 8.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B4_geometric_nbv",
+    "planner_config": "A-B4_geometric_nbv",
+    "planner_name_in_run": "A-B4_geometric_nbv",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 8.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000003,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 35.72535672950129,
+    "uir": 0.0
+   },
+   "A-B6b_bayes_eig": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.000891620515105108,
+    "crack_abs_error_m": 0.03512288961019794,
+    "critical_delivered": 1.0,
+    "energy_j": 22837.86956594662,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 0.2445626511788423,
+    "hidden_state_error_improvement": 0.7554373488211577,
+    "info_per_kj": 0.03307827582777619,
+    "info_per_time": 0.004196874160117542,
+    "inspection_goal_t_s": 34.0,
+    "mission_error_reduction": 0.7554373488211577,
+    "mission_success": 1.0,
+    "observations": 4.0,
+    "patch_max_visible_fraction": 0.8333333333333334,
+    "planner": "A-B6b_bayes_eig",
+    "planner_config": "A-B6b_bayes_eig",
+    "planner_name_in_run": "A-B6b_bayes_eig",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED"
+    ],
+    "redundant_observations": 3.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000003,
+    "target_observed": 1.0,
+    "time_s": 180.0,
+    "travel_m": 32.15399698309462,
+    "uir": 0.0
+   },
+   "PRODUCTION": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.000891620515105108,
+    "crack_abs_error_m": 0.03512288961019794,
+    "critical_delivered": 1.0,
+    "energy_j": 22837.86956594662,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 0.2445626511788423,
+    "hidden_state_error_improvement": 0.7554373488211577,
+    "info_per_kj": 0.03307827582777619,
+    "info_per_time": 0.004196874160117542,
+    "inspection_goal_t_s": 34.0,
+    "mission_error_reduction": 0.7554373488211577,
+    "mission_success": 1.0,
+    "observations": 4.0,
+    "patch_max_visible_fraction": 0.8333333333333334,
+    "planner": "PRODUCTION",
+    "planner_config": "PRODUCTION",
+    "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED"
+    ],
+    "redundant_observations": 3.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000003,
+    "target_observed": 1.0,
+    "time_s": 180.0,
+    "travel_m": 32.15399698309462,
+    "uir": 0.0
+   }
+  },
+  "8000004": {
+   "A-B0_random": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.003193188508842983,
+    "crack_abs_error_m": 0.11130623325681704,
+    "critical_delivered": 0.0,
+    "energy_j": 43282.16216340305,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 6.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B0_random",
+    "planner_config": "A-B0_random",
+    "planner_name_in_run": "A-B0_random",
+    "plans": [
+     "PLAN",
+     "NO_FEASIBLE_OBSERVATION",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 6.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000004,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 48.61062042369835,
+    "uir": 0.0
+   },
+   "A-B1_fixed_inspection": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.003193188508842983,
+    "crack_abs_error_m": 0.11130623325681704,
+    "critical_delivered": 0.0,
+    "energy_j": 24466.966572299345,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 6.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B1_fixed_inspection",
+    "planner_config": "A-B1_fixed_inspection",
+    "planner_name_in_run": "A-B1_fixed_inspection",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 6.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000004,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 33.241444960445556,
+    "uir": 0.0
+   },
+   "A-B2_coverage": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.003193188508842983,
+    "crack_abs_error_m": 0.11130623325681704,
+    "critical_delivered": 0.0,
+    "energy_j": 40101.208404095334,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 8.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B2_coverage",
+    "planner_config": "A-B2_coverage",
+    "planner_name_in_run": "A-B2_coverage",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 8.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000004,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 46.95518174884839,
+    "uir": 0.0
+   },
+   "A-B4_geometric_nbv": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.003193188508842983,
+    "crack_abs_error_m": 0.11130623325681704,
+    "critical_delivered": 0.0,
+    "energy_j": 40101.208404095334,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 8.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B4_geometric_nbv",
+    "planner_config": "A-B4_geometric_nbv",
+    "planner_name_in_run": "A-B4_geometric_nbv",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 8.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000004,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 46.95518174884839,
+    "uir": 0.0
+   },
+   "A-B6b_bayes_eig": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.003193188508842983,
+    "crack_abs_error_m": 0.11130623325681704,
+    "critical_delivered": 0.0,
+    "energy_j": 25716.27257561696,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 8.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B6b_bayes_eig",
+    "planner_config": "A-B6b_bayes_eig",
+    "planner_name_in_run": "A-B6b_bayes_eig",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 8.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000004,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 31.227104675401762,
+    "uir": 0.0
+   },
+   "PRODUCTION": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.003193188508842983,
+    "crack_abs_error_m": 0.11130623325681704,
+    "critical_delivered": 0.0,
+    "energy_j": 25716.27257561696,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 8.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "PRODUCTION",
+    "planner_config": "PRODUCTION",
+    "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 8.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000004,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 31.227104675401762,
+    "uir": 0.0
+   }
+  },
+  "8000005": {
+   "A-B0_random": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.008919269429441531,
+    "crack_abs_error_m": 0.10664323132959387,
+    "critical_delivered": 0.0,
+    "energy_j": 29420.052673536233,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 8.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B0_random",
+    "planner_config": "A-B0_random",
+    "planner_name_in_run": "A-B0_random",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 8.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000005,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 35.74869624317432,
+    "uir": 0.0
+   },
+   "A-B1_fixed_inspection": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.008919269429441531,
+    "crack_abs_error_m": 0.10664323132959387,
+    "critical_delivered": 0.0,
+    "energy_j": 28568.511865948523,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 8.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B1_fixed_inspection",
+    "planner_config": "A-B1_fixed_inspection",
+    "planner_name_in_run": "A-B1_fixed_inspection",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 8.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000005,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 34.55361845077978,
+    "uir": 0.0
+   },
+   "A-B2_coverage": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.008919269429441531,
+    "crack_abs_error_m": 0.10664323132959387,
+    "critical_delivered": 0.0,
+    "energy_j": 27799.799817210125,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 8.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B2_coverage",
+    "planner_config": "A-B2_coverage",
+    "planner_name_in_run": "A-B2_coverage",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 8.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000005,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 33.839165559407064,
+    "uir": 0.0
+   },
+   "A-B4_geometric_nbv": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.008919269429441531,
+    "crack_abs_error_m": 0.10664323132959387,
+    "critical_delivered": 0.0,
+    "energy_j": 27799.799817210125,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 8.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B4_geometric_nbv",
+    "planner_config": "A-B4_geometric_nbv",
+    "planner_name_in_run": "A-B4_geometric_nbv",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 8.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000005,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 33.839165559407064,
+    "uir": 0.0
+   },
+   "A-B6b_bayes_eig": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.008919269429441531,
+    "crack_abs_error_m": 0.10664323132959387,
+    "critical_delivered": 0.0,
+    "energy_j": 25931.069655454565,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 8.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B6b_bayes_eig",
+    "planner_config": "A-B6b_bayes_eig",
+    "planner_name_in_run": "A-B6b_bayes_eig",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 8.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000005,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 31.741975169867896,
+    "uir": 0.0
+   },
+   "PRODUCTION": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.008919269429441531,
+    "crack_abs_error_m": 0.10664323132959387,
+    "critical_delivered": 0.0,
+    "energy_j": 25931.069655454565,
+    "family": "I4-OCCLUDED",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 8.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "PRODUCTION",
+    "planner_config": "PRODUCTION",
+    "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 8.0,
+    "scenario": "I4-OCCLUDED",
+    "seed": 8000005,
+    "target_observed": 0.0,
+    "time_s": 180.0,
+    "travel_m": 31.741975169867896,
+    "uir": 0.0
+   }
+  }
+ },
+ "primary_metric": "hidden_state_error_improvement",
+ "reference_arm": "PRODUCTION",
+ "scenario": "I4-OCCLUDED",
+ "stage": "design",
+ "summary": {
+  "A-B0_random": {
+   "collisions": {
+    "mean": 0.0,
+    "n": 6,
+    "std": 0.0
+   },
+   "critical_delivered": {
+    "mean": 0.5,
+    "n": 6,
+    "std": 0.5
+   },
+   "energy_j": {
+    "mean": 29338.504215795532,
+    "n": 6,
+    "std": 6474.51350728731
+   },
+   "hidden_state_error_final": {
+    "mean": 0.6467740492061868,
+    "n": 6,
+    "std": 0.35487610632225997
+   },
+   "hidden_state_error_improvement": {
+    "mean": 0.3532259507938132,
+    "n": 6,
+    "std": 0.35487610632225997
+   },
+   "info_per_kj": {
+    "mean": 0.013767497951631342,
+    "n": 6,
+    "std": 0.01385731341519674
+   },
+   "info_per_time": {
+    "mean": 0.0019623663932989625,
+    "n": 6,
+    "std": 0.0019715339240125554
+   },
+   "mission_error_reduction": {
+    "mean": 0.3532259507938132,
+    "n": 6,
+    "std": 0.35487610632225997
+   },
+   "mission_success": {
+    "mean": 0.5,
+    "n": 6,
+    "std": 0.5
+   },
+   "observations": {
+    "mean": 6.333333333333333,
+    "n": 6,
+    "std": 1.8856180831641267
+   },
+   "patch_max_visible_fraction": {
+    "mean": 0.41606280193236717,
+    "n": 6,
+    "std": 0.41819834609540874
+   },
+   "redundant_observations": {
+    "mean": 5.833333333333333,
+    "n": 6,
+    "std": 2.1921577396609844
+   },
+   "target_observed": {
+    "mean": 0.5,
+    "n": 6,
+    "std": 0.5
+   },
+   "travel_m": {
+    "mean": 37.05842792904695,
+    "n": 6,
+    "std": 5.483176876068514
+   }
+  },
+  "A-B1_fixed_inspection": {
+   "collisions": {
+    "mean": 0.0,
+    "n": 6,
+    "std": 0.0
+   },
+   "critical_delivered": {
+    "mean": 0.5,
+    "n": 6,
+    "std": 0.5
+   },
+   "energy_j": {
+    "mean": 26670.02644187104,
+    "n": 6,
+    "std": 3394.8997324237816
+   },
+   "hidden_state_error_final": {
+    "mean": 0.5742862037537507,
+    "n": 6,
+    "std": 0.42602761715899273
+   },
+   "hidden_state_error_improvement": {
+    "mean": 0.4257137962462492,
+    "n": 6,
+    "std": 0.42602761715899273
+   },
+   "info_per_kj": {
+    "mean": 0.01539516498654648,
+    "n": 6,
+    "std": 0.01576542829530259
+   },
+   "info_per_time": {
+    "mean": 0.0023650766458124957,
+    "n": 6,
+    "std": 0.002366820095327737
+   },
+   "mission_error_reduction": {
+    "mean": 0.4257137962462492,
+    "n": 6,
+    "std": 0.42602761715899273
+   },
+   "mission_success": {
+    "mean": 0.5,
+    "n": 6,
+    "std": 0.5
+   },
+   "observations": {
+    "mean": 6.0,
+    "n": 6,
+    "std": 1.632993161855452
+   },
+   "patch_max_visible_fraction": {
+    "mean": 0.3991545893719806,
+    "n": 6,
+    "std": 0.4119889000797067
+   },
+   "redundant_observations": {
+    "mean": 5.5,
+    "n": 6,
+    "std": 1.8027756377319946
+   },
+   "target_observed": {
+    "mean": 0.5,
+    "n": 6,
+    "std": 0.5
+   },
+   "travel_m": {
+    "mean": 33.14855716258767,
+    "n": 6,
+    "std": 1.3455602712479764
+   }
+  },
+  "A-B2_coverage": {
+   "collisions": {
+    "mean": 0.0,
+    "n": 6,
+    "std": 0.0
+   },
+   "critical_delivered": {
+    "mean": 0.3333333333333333,
+    "n": 6,
+    "std": 0.4714045207910317
+   },
+   "energy_j": {
+    "mean": 29870.542290313548,
+    "n": 6,
+    "std": 6992.942371271646
+   },
+   "hidden_state_error_final": {
+    "mean": 0.7191211904109882,
+    "n": 6,
+    "std": 0.40070181882824557
+   },
+   "hidden_state_error_improvement": {
+    "mean": 0.2808788095890118,
+    "n": 6,
+    "std": 0.40070181882824557
+   },
+   "info_per_kj": {
+    "mean": 0.012114655354020579,
+    "n": 6,
+    "std": 0.017208997686150574
+   },
+   "info_per_time": {
+    "mean": 0.0015604378310500658,
+    "n": 6,
+    "std": 0.002226121215712475
+   },
+   "mission_error_reduction": {
+    "mean": 0.2808788095890118,
+    "n": 6,
+    "std": 0.40070181882824557
+   },
+   "mission_success": {
+    "mean": 0.3333333333333333,
+    "n": 6,
+    "std": 0.4714045207910317
+   },
+   "observations": {
+    "mean": 5.833333333333333,
+    "n": 6,
+    "std": 2.7938424357067015
+   },
+   "patch_max_visible_fraction": {
+    "mean": 0.3298611111111111,
+    "n": 6,
+    "std": 0.46653282224126
+   },
+   "redundant_observations": {
+    "mean": 5.166666666666667,
+    "n": 6,
+    "std": 3.6704525909242065
+   },
+   "target_observed": {
+    "mean": 0.3333333333333333,
+    "n": 6,
+    "std": 0.4714045207910317
+   },
+   "travel_m": {
+    "mean": 36.10073214700517,
+    "n": 6,
+    "std": 5.252410605806593
+   }
+  },
+  "A-B4_geometric_nbv": {
+   "collisions": {
+    "mean": 0.0,
+    "n": 6,
+    "std": 0.0
+   },
+   "critical_delivered": {
+    "mean": 0.3333333333333333,
+    "n": 6,
+    "std": 0.4714045207910317
+   },
+   "energy_j": {
+    "mean": 28519.018223097723,
+    "n": 6,
+    "std": 5824.399983815971
+   },
+   "hidden_state_error_final": {
+    "mean": 0.7191211904109882,
+    "n": 6,
+    "std": 0.40070181882824557
+   },
+   "hidden_state_error_improvement": {
+    "mean": 0.2808788095890118,
+    "n": 6,
+    "std": 0.40070181882824557
+   },
+   "info_per_kj": {
+    "mean": 0.012114655354020579,
+    "n": 6,
+    "std": 0.017208997686150574
+   },
+   "info_per_time": {
+    "mean": 0.0015604378310500658,
+    "n": 6,
+    "std": 0.002226121215712475
+   },
+   "mission_error_reduction": {
+    "mean": 0.2808788095890118,
+    "n": 6,
+    "std": 0.40070181882824557
+   },
+   "mission_success": {
+    "mean": 0.3333333333333333,
+    "n": 6,
+    "std": 0.4714045207910317
+   },
+   "observations": {
+    "mean": 5.833333333333333,
+    "n": 6,
+    "std": 2.7938424357067015
+   },
+   "patch_max_visible_fraction": {
+    "mean": 0.3298611111111111,
+    "n": 6,
+    "std": 0.46653282224126
+   },
+   "redundant_observations": {
+    "mean": 5.166666666666667,
+    "n": 6,
+    "std": 3.6704525909242065
+   },
+   "target_observed": {
+    "mean": 0.3333333333333333,
+    "n": 6,
+    "std": 0.4714045207910317
+   },
+   "travel_m": {
+    "mean": 36.10731147185427,
+    "n": 6,
+    "std": 5.251911530648345
+   }
+  },
+  "A-B6b_bayes_eig": {
+   "collisions": {
+    "mean": 0.0,
+    "n": 6,
+    "std": 0.0
+   },
+   "critical_delivered": {
+    "mean": 0.5,
+    "n": 6,
+    "std": 0.5
+   },
+   "energy_j": {
+    "mean": 24622.093936007226,
+    "n": 6,
+    "std": 1575.6884500525252
+   },
+   "hidden_state_error_final": {
+    "mean": 0.5642144510610752,
+    "n": 6,
+    "std": 0.4396440056770857
+   },
+   "hidden_state_error_improvement": {
+    "mean": 0.4357855489389249,
+    "n": 6,
+    "std": 0.4396440056770857
+   },
+   "info_per_kj": {
+    "mean": 0.018840787468102697,
+    "n": 6,
+    "std": 0.018986987628263736
+   },
+   "info_per_time": {
+    "mean": 0.0024210308274384717,
+    "n": 6,
+    "std": 0.002442466698206032
+   },
+   "mission_error_reduction": {
+    "mean": 0.4357855489389249,
+    "n": 6,
+    "std": 0.4396440056770857
+   },
+   "mission_success": {
+    "mean": 0.5,
+    "n": 6,
+    "std": 0.5
+   },
+   "observations": {
+    "mean": 5.166666666666667,
+    "n": 6,
+    "std": 2.4776781245530843
+   },
+   "patch_max_visible_fraction": {
+    "mean": 0.46875,
+    "n": 6,
+    "std": 0.471672985332627
+   },
+   "redundant_observations": {
+    "mean": 4.166666666666667,
+    "n": 6,
+    "std": 3.387066905483596
+   },
+   "target_observed": {
+    "mean": 0.5,
+    "n": 6,
+    "std": 0.5
+   },
+   "travel_m": {
+    "mean": 32.17567524400052,
+    "n": 6,
+    "std": 1.5329794906536138
+   }
+  },
+  "PRODUCTION": {
+   "collisions": {
+    "mean": 0.0,
+    "n": 6,
+    "std": 0.0
+   },
+   "critical_delivered": {
+    "mean": 0.3333333333333333,
+    "n": 6,
+    "std": 0.4714045207910317
+   },
+   "energy_j": {
+    "mean": 26436.012158241967,
+    "n": 6,
+    "std": 6062.735549962629
+   },
+   "hidden_state_error_final": {
+    "mean": 0.7259352368692212,
+    "n": 6,
+    "std": 0.3894977344623899
+   },
+   "hidden_state_error_improvement": {
+    "mean": 0.2740647631307787,
+    "n": 6,
+    "std": 0.3894977344623898
+   },
+   "info_per_kj": {
+    "mean": 0.012303568879050148,
+    "n": 6,
+    "std": 0.017539995903437654
+   },
+   "info_per_time": {
+    "mean": 0.001522582017393215,
+    "n": 6,
+    "std": 0.0021638763025688327
+   },
+   "mission_error_reduction": {
+    "mean": 0.2740647631307787,
+    "n": 6,
+    "std": 0.3894977344623898
+   },
+   "mission_success": {
+    "mean": 0.3333333333333333,
+    "n": 6,
+    "std": 0.4714045207910317
+   },
+   "observations": {
+    "mean": 6.5,
+    "n": 6,
+    "std": 1.6072751268321592
+   },
+   "patch_max_visible_fraction": {
+    "mean": 0.3611111111111111,
+    "n": 6,
+    "std": 0.4129463540921807
+   },
+   "redundant_observations": {
+    "mean": 5.5,
+    "n": 6,
+    "std": 2.753785273643051
+   },
+   "target_observed": {
+    "mean": 0.3333333333333333,
+    "n": 6,
+    "std": 0.4714045207910317
+   },
+   "travel_m": {
+    "mean": 33.15924411720079,
+    "n": 6,
+    "std": 2.5673302461119034
+   }
+  }
+ },
+ "world_family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+ "world_seeds": [
+  8000000,
+  8000001,
+  8000002,
+  8000003,
+  8000004,
+  8000005
+ ]
+}
