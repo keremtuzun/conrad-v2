@@ -36,4 +36,4 @@ PASSED tests/unity_live/test_i2_unity.py::test_fault_reaches_defined_safe_state[
 PASSED tests/unity_live/test_i2_unity.py::test_fault_reaches_defined_safe_state[STALE_STATE]
 PASSED tests/unity_live/test_i2_unity.py::test_fault_reaches_defined_safe_state[LOW_BATTERY]
 PASSED tests/unity_live/test_i2_unity.py::test_fault_reaches_defined_safe_state[LEAK]
-======================= 13 passed in 3909.64s (1:05:09) =======================
+======================= 13 passed in 493.83s (0:08:13) ========================

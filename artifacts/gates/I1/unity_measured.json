@@ -94,8 +94,8 @@
   },
   "replay": {
    "events": {
-    "original": 2508,
-    "replayed": 2508,
+    "original": 2522,
+    "replayed": 2522,
     "equal": true,
     "first_difference": null
    },

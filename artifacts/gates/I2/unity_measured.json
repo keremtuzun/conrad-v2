@@ -238,7 +238,7 @@
     "NAV-006": 0.1264
    },
    "fix_bias_y_m": 0.5,
-   "true_final_y_shift_m": -0.509074,
+   "true_final_y_shift_m": -0.50779,
    "tolerance_m": 0.15,
    "stack_inputs": "UnityRobotHardware readings + synthetic USBL-like fix; no truth client in the stack"
   },
@@ -292,7 +292,7 @@
     "no_collision": true
    },
    "worst_state_before_fault": "NORMAL",
-   "time_to_safe_state_s": 28.64,
+   "time_to_safe_state_s": 22.1,
    "final_state": "HOLD",
    "final_reasons": [
     "LOCALIZATION_LOST",
@@ -300,10 +300,10 @@
     "ALTITUDE_UNMONITORED",
     "SAFE_HOLD_ACTION:STATION_KEEP"
    ],
-   "authorized_after": 573,
-   "executed_after": 573,
-   "true_speed_last_10s_mean_mps": 0.020521,
-   "estimated_drift_from_hold_point_max_m": 0.018548
+   "authorized_after": 900,
+   "executed_after": 900,
+   "true_speed_last_10s_mean_mps": 0.020914,
+   "estimated_drift_from_hold_point_max_m": 0.019461
   },
   "fault THRUSTER_FAULT": {
    "seed": 7400002,
