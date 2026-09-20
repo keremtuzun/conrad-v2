@@ -1,0 +1,600 @@
+{
+ "abstentions": 0,
+ "beliefs_published": 2030,
+ "commands_accepted": 2400,
+ "commands_refused_by_safety_supervisor": 0,
+ "commands_rejected": 0,
+ "communication": {
+  "bits_sent": 29439,
+  "critical_alert_latency_min_s": 1.0,
+  "critical_alert_latency_s": [
+   1.0
+  ],
+  "critical_delivered": 1,
+  "critical_offers": 1,
+  "delivered": 8,
+  "dropped": 0,
+  "energy_j": 2.9439,
+  "offers": 182,
+  "policy": "C-B10_baac",
+  "queue_bits": 20274072,
+  "receiver_alerts": 1,
+  "receiver_beliefs": 3,
+  "shadow_arms": [
+   "fifo",
+   "fixed_priority",
+   "raw",
+   "value_per_bit"
+  ],
+  "transmissions": 30
+ },
+ "decision_actions": [
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "QUERY_BELIEF",
+  "REVISIT_REGION",
+  "TRANSMIT_INFORMATION",
+  "REQUEST_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "QUERY_BELIEF",
+  "REVISIT_REGION",
+  "TRANSMIT_INFORMATION",
+  "REQUEST_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "QUERY_BELIEF",
+  "REVISIT_REGION",
+  "TRANSMIT_INFORMATION",
+  "REQUEST_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "REQUEST_INFORMATION",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "REVISIT_REGION",
+  "QUERY_BELIEF",
+  "REQUEST_INFORMATION",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "REQUEST_INFORMATION",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "REVISIT_REGION",
+  "QUERY_BELIEF",
+  "REQUEST_INFORMATION",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "REQUEST_INFORMATION",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "REVISIT_REGION",
+  "QUERY_BELIEF",
+  "REQUEST_INFORMATION",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "REQUEST_INFORMATION",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "REVISIT_REGION",
+  "QUERY_BELIEF",
+  "REQUEST_INFORMATION",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "REQUEST_INFORMATION",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "REVISIT_REGION",
+  "QUERY_BELIEF",
+  "REQUEST_INFORMATION",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "REQUEST_INFORMATION",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "REVISIT_REGION",
+  "QUERY_BELIEF",
+  "REQUEST_INFORMATION",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF",
+  "QUERY_BELIEF"
+ ],
+ "decisions": 120,
+ "failed_modules": [],
+ "gateway_rejection_reasons": {},
+ "module_health": {
+  "baac": "AVAILABLE",
+  "egdc": "AVAILABLE",
+  "mcbr": "AVAILABLE",
+  "model2e": "AVAILABLE",
+  "model2s": "AVAILABLE",
+  "model2t": "AVAILABLE",
+  "navigation": "AVAILABLE",
+  "sensing": "AVAILABLE"
+ },
+ "perception": {
+  "by_kind": {
+   "DEPTH_RANGE": 80,
+   "POINT_CLOUD": 80,
+   "POSITION_FIX": 240,
+   "SONAR": 80,
+   "STRUCTURED": 29,
+   "ecological_survey": 30,
+   "field_sample": 192
+  },
+  "corrupt": 0,
+  "duplicates": 0,
+  "fixes_accepted": 240,
+  "fixes_rejected": 0,
+  "late": 0,
+  "received": 731,
+  "structural_matched": 24,
+  "structural_no_match": 5
+ },
+ "plans": [
+  {
+   "plan_id": "018bcfe5-6802-7750-88cd-066c17f51b09",
+   "planner": "PRODUCTION[V-bayes_eig_ratio]",
+   "rejected": 0,
+   "status": "NEED_SATISFIED"
+  },
+  {
+   "plan_id": "018bcfe5-6804-7a21-bf66-80876c1d942f",
+   "planner": "PRODUCTION[V-bayes_eig_ratio]",
+   "rejected": 0,
+   "status": "NEED_SATISFIED"
+  },
+  {
+   "plan_id": "018bcfe5-6806-7a78-b5bb-9922fde1d3a6",
+   "planner": "PRODUCTION[V-bayes_eig_ratio]",
+   "rejected": 0,
+   "status": "NEED_SATISFIED"
+  },
+  {
+   "plan_id": "018bcfe5-6808-72e1-a700-fdb9e967739e",
+   "planner": "PRODUCTION[V-bayes_eig_ratio]",
+   "rejected": 0,
+   "status": "NEED_SATISFIED"
+  }
+ ],
+ "runtime_state_history": [
+  [
+   "BOOT",
+   "boot"
+  ],
+  [
+   "SELF_TEST",
+   "self-test started"
+  ],
+  [
+   "CONFIGURED",
+   "self-test passed"
+  ],
+  [
+   "CONNECTING",
+   "connecting adapters"
+  ],
+  [
+   "READY",
+   "adapters connected"
+  ],
+  [
+   "RUNNING",
+   "simulation run"
+  ],
+  [
+   "SAFE_HOLD",
+   "mission duration reached"
+  ],
+  [
+   "STOPPING",
+   "mission duration reached"
+  ],
+  [
+   "STOPPED",
+   "mission duration reached"
+  ]
+ ],
+ "safety_events": [
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 0.1,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 1.8,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "DEGRADED_DWELL",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 2.2,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 3.1,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 3.4,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 5.2,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 5.4,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 6.7,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 6.8,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 8.0,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 8.3,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 9.6,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 9.9,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 11.1,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 11.4,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 12.8,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 13.0,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 14.2,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 14.5,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 16.0,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 16.2,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 17.5,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 17.8,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 19.1,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 19.4,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 20.8,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 20.9,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 22.0,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 22.2,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 23.4,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 23.6,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 25.0,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 25.3,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 26.5,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 26.7,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 28.0,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 28.3,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 29.7,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 30.0,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 31.0,
+   "to": "NORMAL"
+  }
+ ],
+ "uir": 0.0,
+ "uir_report": {
+  "relied_unsupported_claims": 0,
+  "relied_world_claims": 0,
+  "unsupported_claim_fraction": 0.40852130325814534,
+  "unsupported_inference_rate": 0.0,
+  "unsupported_world_claims": 489,
+  "world_claims": 1197
+ }
+}

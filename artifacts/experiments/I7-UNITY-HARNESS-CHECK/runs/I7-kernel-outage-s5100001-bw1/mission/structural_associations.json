@@ -1,0 +1,2450 @@
+[
+ {
+  "evidence_id": "018bcfe5-6802-7fb5-9f49-87b6d4198807",
+  "measurements": {
+   "apparent_wall_loss": 0.00020262039556784455,
+   "crack_indication_length": 0.0,
+   "surface_anomaly_score": 0.2581033138923506
+  },
+  "observation_id": "018bcfe5-6801-767c-b5f7-0f318b16fe19",
+  "registry_id": "018bcfe5-6805-77de-8b4d-71ce87deeabe",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 7.3
+ },
+ {
+  "evidence_id": "018bcfe5-6804-75cc-9122-a48f6177b92a",
+  "measurements": {
+   "apparent_wall_loss": 0.000802730521890137,
+   "crack_indication_length": 0.0,
+   "surface_anomaly_score": 0.027474356470651724
+  },
+  "observation_id": "018bcfe5-6802-715c-a209-11ebdf21340a",
+  "registry_id": "018bcfe5-6805-77de-8b4d-71ce87deeabe",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 8.3
+ },
+ {
+  "evidence_id": "018bcfe5-6806-70e2-a755-909c6cce0797",
+  "measurements": {
+   "apparent_wall_loss": 0.0009873095176611397,
+   "crack_indication_length": 0.0004610511340912406,
+   "surface_anomaly_score": 0.0
+  },
+  "observation_id": "018bcfe5-6803-77c2-aa39-c7ef3a0aa247",
+  "registry_id": "018bcfe5-6805-77de-8b4d-71ce87deeabe",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 9.3
+ },
+ {
+  "evidence_id": "018bcfe5-6808-72bf-a544-17e83c00e524",
+  "measurements": {
+   "apparent_wall_loss": 0.0005229027090212653,
+   "crack_indication_length": 0.0,
+   "surface_anomaly_score": 0.06383921605990638
+  },
+  "observation_id": "018bcfe5-6804-7ba6-b7ca-af38de9f7059",
+  "registry_id": "018bcfe5-6805-77de-8b4d-71ce87deeabe",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 10.3
+ },
+ {
+  "evidence_id": "018bcfe5-680a-7de1-81ce-fc0c012caafc",
+  "measurements": {
+   "apparent_wall_loss": 0.0008484295804014276,
+   "crack_indication_length": 0.00017827210412900833,
+   "surface_anomaly_score": 0.0
+  },
+  "observation_id": "018bcfe5-6805-7163-b588-43e32e9b4201",
+  "registry_id": "018bcfe5-6805-77de-8b4d-71ce87deeabe",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 11.3
+ },
+ {
+  "evidence_id": "018bcfe5-680c-74af-ab3a-b56d3ef76c16",
+  "measurements": {
+   "apparent_wall_loss": 0.00028398716231106376,
+   "crack_indication_length": 0.0004965122379569274,
+   "surface_anomaly_score": 0.0991725172163153
+  },
+  "observation_id": "018bcfe5-6806-7cd8-ae5a-8fa08c40e00c",
+  "registry_id": "018bcfe5-6805-77de-8b4d-71ce87deeabe",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 12.3
+ },
+ {
+  "evidence_id": "018bcfe5-680e-73c0-80fb-d34458af30bd",
+  "measurements": {
+   "apparent_wall_loss": 0.0004576717924960882,
+   "crack_indication_length": 0.0003024317677894177,
+   "surface_anomaly_score": 0.6629098172042888
+  },
+  "observation_id": "018bcfe5-6807-7857-ace3-d2c6d0a451e3",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 15.3
+ },
+ {
+  "evidence_id": "018bcfe5-6810-7d84-b3cb-12ef8c911b65",
+  "measurements": {
+   "apparent_wall_loss": 0.0006114149100529786,
+   "crack_indication_length": 0.0,
+   "surface_anomaly_score": 0.7960551231047863
+  },
+  "observation_id": "018bcfe5-6808-7682-b564-ffff0943743a",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 16.3
+ },
+ {
+  "evidence_id": "018bcfe5-6812-7d49-8ff2-084916910ffe",
+  "measurements": {
+   "apparent_wall_loss": 0.001013333759450206,
+   "crack_indication_length": 0.0,
+   "surface_anomaly_score": 0.7914594506156517
+  },
+  "observation_id": "018bcfe5-6809-7c62-b817-1947d11470d5",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 17.3
+ },
+ {
+  "evidence_id": "018bcfe5-6814-7634-be05-fc45861abd80",
+  "measurements": {
+   "apparent_wall_loss": 0.0001924666807487696,
+   "crack_indication_length": 0.0,
+   "surface_anomaly_score": 0.7664358736236252
+  },
+  "observation_id": "018bcfe5-680a-7392-86de-dbbdd21a380f",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 18.3
+ },
+ {
+  "evidence_id": "018bcfe5-6816-736c-ac2f-e7d466459971",
+  "measurements": {
+   "apparent_wall_loss": 0.0012156572008309053,
+   "crack_indication_length": 0.0035741525386249313,
+   "surface_anomaly_score": 0.7038976201123504
+  },
+  "observation_id": "018bcfe5-680b-75ef-9387-45ad5f4628d7",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 19.3
+ },
+ {
+  "evidence_id": "018bcfe5-6818-72d3-99af-4200142fab8a",
+  "measurements": {
+   "apparent_wall_loss": 0.0006712328852116485,
+   "crack_indication_length": 0.0,
+   "surface_anomaly_score": 0.7324902545171996
+  },
+  "observation_id": "018bcfe5-680c-7cf6-800f-669b182c3d8e",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 20.3
+ },
+ {
+  "evidence_id": "018bcfe5-681a-791c-93bc-5995eb35a861",
+  "measurements": {
+   "apparent_wall_loss": 0.0008570335561267393,
+   "crack_indication_length": 0.0,
+   "surface_anomaly_score": 0.763295825070625
+  },
+  "observation_id": "018bcfe5-680d-7bbd-bb04-99f2ebb3f49b",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 21.3
+ },
+ {
+  "evidence_id": "018bcfe5-681c-7776-859d-c8768601124a",
+  "measurements": {
+   "apparent_wall_loss": 0.0005762986932939869,
+   "crack_indication_length": 0.0,
+   "surface_anomaly_score": 0.7266240052699303
+  },
+  "observation_id": "018bcfe5-680e-76a3-85f9-74fd0331a248",
+  "registry_id": "018bcfe5-6802-7c25-8b59-0d964fa1181c",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 27.3
+ },
+ {
+  "evidence_id": "018bcfe5-681e-741f-8b08-05af8f1232b5",
+  "measurements": {
+   "apparent_wall_loss": 0.0009056541428713494,
+   "crack_indication_length": 0.0,
+   "surface_anomaly_score": 0.492340081951139
+  },
+  "observation_id": "018bcfe5-680f-7362-a996-e36d1169d399",
+  "registry_id": "018bcfe5-6802-7c25-8b59-0d964fa1181c",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 28.3
+ },
+ {
+  "evidence_id": "018bcfe5-6820-7ef2-8f4a-5ae579572577",
+  "measurements": {
+   "apparent_wall_loss": 0.00047045466890370785,
+   "crack_indication_length": 0.0,
+   "surface_anomaly_score": 0.5728770159646733
+  },
+  "observation_id": "018bcfe5-6810-7129-a452-3ea9e51eacc3",
+  "registry_id": "018bcfe5-6802-7c25-8b59-0d964fa1181c",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 29.3
+ },
+ {
+  "evidence_id": "018bcfe5-6822-7f46-aaaa-f8c21115a1dd",
+  "measurements": {
+   "apparent_wall_loss": -1.1654215086655565e-06,
+   "crack_indication_length": 0.001059757094583657,
+   "surface_anomaly_score": 0.616923423008754
+  },
+  "observation_id": "018bcfe5-6811-7097-9f8f-ed07b865518b",
+  "registry_id": "018bcfe5-6802-7c25-8b59-0d964fa1181c",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 30.3
+ },
+ {
+  "evidence_id": "018bcfe5-6824-790b-8f46-962723354ce8",
+  "measurements": {
+   "apparent_wall_loss": -3.919107460817993e-05,
+   "crack_indication_length": 0.000910205647817802,
+   "surface_anomaly_score": 0.36179188214438907
+  },
+  "observation_id": "018bcfe5-6812-7562-b4ce-ee6d45e883ac",
+  "registry_id": "018bcfe5-6802-7c25-8b59-0d964fa1181c",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 31.3
+ },
+ {
+  "evidence_id": "018bcfe5-6826-7cfe-9991-15c80a07094e",
+  "measurements": {
+   "apparent_wall_loss": 0.0005208057158960203,
+   "crack_indication_length": 0.0,
+   "surface_anomaly_score": 0.698322450194423
+  },
+  "observation_id": "018bcfe5-6813-7fab-b7a5-0efae4276566",
+  "registry_id": "018bcfe5-6802-7c25-8b59-0d964fa1181c",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 32.3
+ },
+ {
+  "evidence_id": "018bcfe5-6828-7c9b-8e07-107285484881",
+  "measurements": {
+   "apparent_wall_loss": 0.006484306720967575,
+   "crack_indication_length": 0.037979842102281704,
+   "surface_anomaly_score": 0.671869409444316
+  },
+  "observation_id": "018bcfe5-6814-73d8-a279-6ef7c036916e",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 55.3
+ },
+ {
+  "evidence_id": "018bcfe5-682a-73f3-9fd6-f98d19166fc8",
+  "measurements": {
+   "apparent_wall_loss": 0.006181996649555391,
+   "crack_indication_length": 0.06291166864913889,
+   "surface_anomaly_score": 0.760752074652184
+  },
+  "observation_id": "018bcfe5-6815-71aa-ba69-e4283c33f511",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 56.3
+ },
+ {
+  "evidence_id": "018bcfe5-682c-7b10-9dc5-6fc568d5418c",
+  "measurements": {
+   "apparent_wall_loss": 0.005278891205082558,
+   "crack_indication_length": 0.0,
+   "surface_anomaly_score": 0.7955714353508134
+  },
+  "observation_id": "018bcfe5-6816-7bf7-85ad-5ffd9d82aa83",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 57.3
+ },
+ {
+  "evidence_id": "018bcfe5-682e-77cb-84e2-9970d2aeabc5",
+  "measurements": {
+   "apparent_wall_loss": 0.005146354544057352,
+   "crack_indication_length": 9.37774456690648e-06,
+   "surface_anomaly_score": 0.6593814083906449
+  },
+  "observation_id": "018bcfe5-6817-789b-b841-ef3bf155feb2",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 58.3
+ },
+ {
+  "evidence_id": "018bcfe5-6830-7a38-b83f-8b19506d0530",
+  "measurements": {
+   "apparent_wall_loss": 0.004844111010051351,
+   "crack_indication_length": 0.061920290710240286,
+   "surface_anomaly_score": 0.7162460503804864
+  },
+  "observation_id": "018bcfe5-6818-7bbd-833c-5d17bc48a1ca",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 59.3
+ },
+ {
+  "evidence_id": "018bcfe5-6832-7cc3-a109-0ada50441515",
+  "measurements": {
+   "apparent_wall_loss": 0.005547885844631748,
+   "crack_indication_length": 0.042244781453815654,
+   "surface_anomaly_score": 0.6818648879344604
+  },
+  "observation_id": "018bcfe5-6819-79a4-80bb-c94907b1b811",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 60.3
+ },
+ {
+  "evidence_id": "018bcfe5-6834-7e64-8a53-b434641d4196",
+  "measurements": {
+   "apparent_wall_loss": 0.006090887444831327,
+   "crack_indication_length": 0.07351402885443856,
+   "surface_anomaly_score": 0.8773194682844845
+  },
+  "observation_id": "018bcfe5-681a-7992-8580-e9d784035401",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 61.3
+ },
+ {
+  "evidence_id": "018bcfe5-6836-727b-b574-f514e359aa96",
+  "measurements": {
+   "apparent_wall_loss": 0.005339875423622728,
+   "crack_indication_length": 0.06419639106762073,
+   "surface_anomaly_score": 0.7521852067372577
+  },
+  "observation_id": "018bcfe5-681b-7906-9c30-9c94b98a372e",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 62.3
+ },
+ {
+  "evidence_id": "018bcfe5-6838-7887-a86c-d8a8c24f256c",
+  "measurements": {
+   "apparent_wall_loss": 0.005826675388044377,
+   "crack_indication_length": 0.0,
+   "surface_anomaly_score": 0.7270087288681868
+  },
+  "observation_id": "018bcfe5-681c-7b31-aef9-3f576a18bb4d",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 63.3
+ },
+ {
+  "evidence_id": "018bcfe5-683a-73fb-b5a9-9a534c4a5d6f",
+  "measurements": {
+   "apparent_wall_loss": 0.005360232483813872,
+   "crack_indication_length": 0.0457107965614042,
+   "surface_anomaly_score": 0.7240433734161514
+  },
+  "observation_id": "018bcfe5-681d-79c2-9691-5f768b62a457",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 64.3
+ },
+ {
+  "evidence_id": "018bcfe5-683c-7ca5-bf28-26df079a4d2f",
+  "measurements": {
+   "apparent_wall_loss": 0.004822217465300839,
+   "crack_indication_length": 0.04935908458980521,
+   "surface_anomaly_score": 0.8124722713567238
+  },
+  "observation_id": "018bcfe5-681e-76db-a246-c06b24737ce7",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 65.3
+ },
+ {
+  "evidence_id": "018bcfe5-683e-7336-a2bc-111bd51e158a",
+  "measurements": {
+   "apparent_wall_loss": 0.005601818579059799,
+   "crack_indication_length": 0.04962613220256015,
+   "surface_anomaly_score": 0.7489559261533423
+  },
+  "observation_id": "018bcfe5-681f-71cd-aad0-e171ef63ef4c",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 66.3
+ },
+ {
+  "evidence_id": "018bcfe5-6840-7ce0-bd91-e65833373fca",
+  "measurements": {
+   "apparent_wall_loss": 0.006310856415947464,
+   "crack_indication_length": 0.05642514908600815,
+   "surface_anomaly_score": 0.68610092639302
+  },
+  "observation_id": "018bcfe5-6820-7ca7-b23c-3f93d54ee373",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 67.3
+ },
+ {
+  "evidence_id": "018bcfe5-6842-7022-860a-6b6acee6ae8a",
+  "measurements": {
+   "apparent_wall_loss": 0.004422243003087744,
+   "crack_indication_length": 0.048913290104277134,
+   "surface_anomaly_score": 0.8454261887837701
+  },
+  "observation_id": "018bcfe5-6821-7362-a79d-33423f1cf0bb",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 68.3
+ },
+ {
+  "evidence_id": "018bcfe5-6844-75b8-b28f-4ac6fbb817f6",
+  "measurements": {
+   "apparent_wall_loss": 0.006382930623317765,
+   "crack_indication_length": 0.04512059016578789,
+   "surface_anomaly_score": 0.751059274817006
+  },
+  "observation_id": "018bcfe5-6822-79ab-aeb7-d69b915e3bc0",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 69.3
+ },
+ {
+  "evidence_id": "018bcfe5-6846-71ab-b52a-4a29402b764c",
+  "measurements": {
+   "apparent_wall_loss": 0.0058188085286381,
+   "crack_indication_length": 0.12026931825968357,
+   "surface_anomaly_score": 0.7376398298267988
+  },
+  "observation_id": "018bcfe5-6823-783f-952b-3972eac1deaa",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 70.3
+ },
+ {
+  "evidence_id": "018bcfe5-6848-7b08-9e8f-e9707614cd5f",
+  "measurements": {
+   "apparent_wall_loss": 0.0053956083340001735,
+   "crack_indication_length": 0.03643900518138411,
+   "surface_anomaly_score": 0.6713028066915266
+  },
+  "observation_id": "018bcfe5-6824-749d-bc80-1146771c5fee",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 71.3
+ },
+ {
+  "evidence_id": "018bcfe5-684a-740e-a9dd-082ecc8ec01b",
+  "measurements": {
+   "apparent_wall_loss": 0.00603385088629072,
+   "crack_indication_length": 0.055389029637355716,
+   "surface_anomaly_score": 0.715808861204481
+  },
+  "observation_id": "018bcfe5-6825-7ec1-accd-66ec5fad5292",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 72.3
+ },
+ {
+  "evidence_id": "018bcfe5-684c-7648-828f-49fb443e0805",
+  "measurements": {
+   "apparent_wall_loss": 0.005201147636809467,
+   "crack_indication_length": 0.0664375807636896,
+   "surface_anomaly_score": 0.7135467426969394
+  },
+  "observation_id": "018bcfe5-6826-783a-bfce-4c6c6ce5ba88",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 73.3
+ },
+ {
+  "evidence_id": "018bcfe5-684e-7933-b3be-855df057ce66",
+  "measurements": {
+   "apparent_wall_loss": 0.004349184008999812,
+   "crack_indication_length": 0.08902197193072671,
+   "surface_anomaly_score": 0.8007869552168628
+  },
+  "observation_id": "018bcfe5-6827-7841-822f-a92c26bfe5a0",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 74.3
+ },
+ {
+  "evidence_id": "018bcfe5-6850-7300-b0bf-26b74c522a44",
+  "measurements": {
+   "apparent_wall_loss": 0.005351490660710338,
+   "crack_indication_length": 0.05389080522489781,
+   "surface_anomaly_score": 0.6864812516338451
+  },
+  "observation_id": "018bcfe5-6828-7300-a861-7ae5f018f1b2",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 75.3
+ },
+ {
+  "evidence_id": "018bcfe5-6852-709d-a942-2bcba881fbf2",
+  "measurements": {
+   "apparent_wall_loss": 0.004868615181724983,
+   "crack_indication_length": 0.10221693589568263,
+   "surface_anomaly_score": 0.735779158331709
+  },
+  "observation_id": "018bcfe5-6829-74ef-bac3-7cd61b181a9d",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 76.3
+ },
+ {
+  "evidence_id": "018bcfe5-6854-7e62-9474-c52d3d9a5f43",
+  "measurements": {
+   "apparent_wall_loss": 0.005372789618422066,
+   "crack_indication_length": 0.049762459872181704,
+   "surface_anomaly_score": 0.8133389034411991
+  },
+  "observation_id": "018bcfe5-682a-7974-8ea1-b3d7d482b330",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 77.3
+ },
+ {
+  "evidence_id": "018bcfe5-6856-7adb-9b0c-50e5daf2653e",
+  "measurements": {
+   "apparent_wall_loss": 0.005513953309750265,
+   "crack_indication_length": 0.04207202999233706,
+   "surface_anomaly_score": 0.7232133027126216
+  },
+  "observation_id": "018bcfe5-682b-7b1d-bad5-bd741eaf1438",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 78.3
+ },
+ {
+  "evidence_id": "018bcfe5-6858-78f0-983d-25259d9fd489",
+  "measurements": {
+   "apparent_wall_loss": 0.006642484220370383,
+   "crack_indication_length": 0.08660888442677044,
+   "surface_anomaly_score": 0.7438183909680006
+  },
+  "observation_id": "018bcfe5-682c-71b7-b925-81908c8ce3bd",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 79.3
+ },
+ {
+  "evidence_id": "018bcfe5-685a-7bda-ae69-cd21de8ad1b4",
+  "measurements": {
+   "apparent_wall_loss": 0.005571555259008335,
+   "crack_indication_length": 0.09284955401358214,
+   "surface_anomaly_score": 0.8354239079032556
+  },
+  "observation_id": "018bcfe5-682d-7600-8a5f-c08955b2d15c",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 80.3
+ },
+ {
+  "evidence_id": "018bcfe5-685c-7068-8391-16012975cf61",
+  "measurements": {
+   "apparent_wall_loss": 0.0051932986641967695,
+   "crack_indication_length": 0.05402131994540059,
+   "surface_anomaly_score": 0.610038252797166
+  },
+  "observation_id": "018bcfe5-682e-77fe-98db-4f43f0c74db3",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 81.3
+ },
+ {
+  "evidence_id": "018bcfe5-685e-75c7-be99-3117bb838008",
+  "measurements": {
+   "apparent_wall_loss": 0.005183153138172035,
+   "crack_indication_length": 0.04826810780575616,
+   "surface_anomaly_score": 0.7567296749158989
+  },
+  "observation_id": "018bcfe5-682f-7588-bf58-c4ed0d40f833",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 82.3
+ },
+ {
+  "evidence_id": "018bcfe5-6860-76f6-a857-b4c53184e0fe",
+  "measurements": {
+   "apparent_wall_loss": 0.005704077351348156,
+   "crack_indication_length": 0.09273924873080983,
+   "surface_anomaly_score": 0.7669594926381283
+  },
+  "observation_id": "018bcfe5-6830-7a37-a04a-3c042f0ec873",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 83.3
+ },
+ {
+  "evidence_id": "018bcfe5-6862-733e-b3e3-b69f8559a395",
+  "measurements": {
+   "apparent_wall_loss": 0.0065624047889138734,
+   "crack_indication_length": 0.0746985684111399,
+   "surface_anomaly_score": 0.5797730857777907
+  },
+  "observation_id": "018bcfe5-6831-7269-adee-9d9fbdd8ccbf",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 84.3
+ },
+ {
+  "evidence_id": "018bcfe5-6864-738f-b0a3-dd39a268a493",
+  "measurements": {
+   "apparent_wall_loss": 0.004980303711005509,
+   "crack_indication_length": 0.13364857086955562,
+   "surface_anomaly_score": 0.6636854592962544
+  },
+  "observation_id": "018bcfe5-6832-73fd-8d07-a25d20038ac3",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 85.3
+ },
+ {
+  "evidence_id": "018bcfe5-6866-7222-b4ae-ba1c2853ca6b",
+  "measurements": {
+   "apparent_wall_loss": 0.0043456545282247044,
+   "crack_indication_length": 0.06074159601717484,
+   "surface_anomaly_score": 0.6301205857461114
+  },
+  "observation_id": "018bcfe5-6833-7040-8d11-56f3b35e72a9",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 86.3
+ },
+ {
+  "evidence_id": "018bcfe5-6868-7975-a7d3-c139490ae28c",
+  "measurements": {
+   "apparent_wall_loss": 0.0061150303225327995,
+   "crack_indication_length": 0.08219244137299342,
+   "surface_anomaly_score": 0.7695671238360267
+  },
+  "observation_id": "018bcfe5-6834-785c-8d13-e49c72349e36",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 87.3
+ },
+ {
+  "evidence_id": "018bcfe5-686a-734c-b54e-f74f024fd951",
+  "measurements": {
+   "apparent_wall_loss": 0.0071433245793783694,
+   "crack_indication_length": 0.07017609427431297,
+   "surface_anomaly_score": 0.7091965010074821
+  },
+  "observation_id": "018bcfe5-6835-7e62-b87f-9a0d97b6dcce",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 88.3
+ },
+ {
+  "evidence_id": "018bcfe5-686c-7c9a-9104-f1c55a7b362d",
+  "measurements": {
+   "apparent_wall_loss": 0.005725756701532301,
+   "crack_indication_length": 0.06858404307239208,
+   "surface_anomaly_score": 0.7135585520427977
+  },
+  "observation_id": "018bcfe5-6836-7879-aea8-3c535b59f5aa",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 89.3
+ },
+ {
+  "evidence_id": "018bcfe5-686e-793d-bb18-bf595084440a",
+  "measurements": {
+   "apparent_wall_loss": 0.00706219367847284,
+   "crack_indication_length": 0.06325322761631538,
+   "surface_anomaly_score": 0.7079210461696298
+  },
+  "observation_id": "018bcfe5-6837-751b-a10b-41a6c1ab1599",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 90.3
+ },
+ {
+  "evidence_id": "018bcfe5-6870-7338-939b-c60967ada42d",
+  "measurements": {
+   "apparent_wall_loss": 0.005284719428574619,
+   "crack_indication_length": 0.07054460637208065,
+   "surface_anomaly_score": 0.6841702590540625
+  },
+  "observation_id": "018bcfe5-6838-7f83-860a-eb5414f82823",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 91.3
+ },
+ {
+  "evidence_id": "018bcfe5-6872-7c75-89c0-a6723e34bdde",
+  "measurements": {
+   "apparent_wall_loss": 0.0049465971514679186,
+   "crack_indication_length": 0.054488116137781546,
+   "surface_anomaly_score": 0.8054301551916214
+  },
+  "observation_id": "018bcfe5-6839-7e6f-a8a0-eb0a2044e6e9",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 92.3
+ },
+ {
+  "evidence_id": "018bcfe5-6874-7bdc-bb17-2f983587eada",
+  "measurements": {
+   "apparent_wall_loss": 0.00703232263744358,
+   "crack_indication_length": 0.06889199091233403,
+   "surface_anomaly_score": 0.8180793067345329
+  },
+  "observation_id": "018bcfe5-683a-7115-8d16-b81bbb59df0d",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 93.3
+ },
+ {
+  "evidence_id": "018bcfe5-6876-7401-a829-9a509138e413",
+  "measurements": {
+   "apparent_wall_loss": 0.006796870337536881,
+   "crack_indication_length": 0.07601811589782446,
+   "surface_anomaly_score": 0.6252944021112394
+  },
+  "observation_id": "018bcfe5-683b-72b1-88b1-76126c9090f1",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 94.3
+ },
+ {
+  "evidence_id": "018bcfe5-6878-7c94-ae5c-4342a49c6dcc",
+  "measurements": {
+   "apparent_wall_loss": 0.005480903300014106,
+   "crack_indication_length": 0.057979692699676365,
+   "surface_anomaly_score": 0.7698709893915899
+  },
+  "observation_id": "018bcfe5-683c-74b7-9334-4e1693cdd076",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 95.3
+ },
+ {
+  "evidence_id": "018bcfe5-687a-746d-93e9-17798d32d7e3",
+  "measurements": {
+   "apparent_wall_loss": 0.005672870313696967,
+   "crack_indication_length": 0.04333746127871631,
+   "surface_anomaly_score": 0.7907963607779221
+  },
+  "observation_id": "018bcfe5-683d-79eb-bbf1-5d388764d9f7",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 96.3
+ },
+ {
+  "evidence_id": "018bcfe5-687c-7c9c-97b7-906b55e9634e",
+  "measurements": {
+   "apparent_wall_loss": 0.005426985804021773,
+   "crack_indication_length": 0.0942781502178683,
+   "surface_anomaly_score": 0.696858755302285
+  },
+  "observation_id": "018bcfe5-683e-71a8-a1a8-30d0651cc7c6",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 97.3
+ },
+ {
+  "evidence_id": "018bcfe5-687e-7b5e-983c-58e1bf501aaf",
+  "measurements": {
+   "apparent_wall_loss": 0.004465093943834294,
+   "crack_indication_length": 0.0610892734369253,
+   "surface_anomaly_score": 0.7091317299454603
+  },
+  "observation_id": "018bcfe5-683f-71f2-a082-4ed86c625b0a",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 98.3
+ },
+ {
+  "evidence_id": "018bcfe5-6880-7246-817c-fc55caced85d",
+  "measurements": {
+   "apparent_wall_loss": 0.00661238018762729,
+   "crack_indication_length": 0.0876075782335074,
+   "surface_anomaly_score": 0.7741725625744463
+  },
+  "observation_id": "018bcfe5-6840-7162-a3d5-03eb97b3ca0d",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 99.3
+ },
+ {
+  "evidence_id": "018bcfe5-6882-7780-bd45-155a3b5f4018",
+  "measurements": {
+   "apparent_wall_loss": 0.005675463018387703,
+   "crack_indication_length": 0.05429042218442893,
+   "surface_anomaly_score": 0.7026564044420751
+  },
+  "observation_id": "018bcfe5-6841-7f98-92a3-e80781bf825b",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 100.3
+ },
+ {
+  "evidence_id": "018bcfe5-6884-723d-b79c-263430103a1c",
+  "measurements": {
+   "apparent_wall_loss": 0.005712724075772306,
+   "crack_indication_length": 0.06171912073163108,
+   "surface_anomaly_score": 0.7421614121328959
+  },
+  "observation_id": "018bcfe5-6842-760a-b6df-78bb4b440a2d",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 101.3
+ },
+ {
+  "evidence_id": "018bcfe5-6886-7c84-af88-16e5f713437e",
+  "measurements": {
+   "apparent_wall_loss": 0.007263302862044205,
+   "crack_indication_length": 0.06996672055524805,
+   "surface_anomaly_score": 0.6808171683681677
+  },
+  "observation_id": "018bcfe5-6843-7f06-8b31-48ab88fbc7c3",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 102.3
+ },
+ {
+  "evidence_id": "018bcfe5-6888-781e-a123-140682ea3602",
+  "measurements": {
+   "apparent_wall_loss": 0.0054718789664100894,
+   "crack_indication_length": 0.049854618242425416,
+   "surface_anomaly_score": 0.6970163085310089
+  },
+  "observation_id": "018bcfe5-6844-79b3-94d6-917ba6b5e659",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 103.3
+ },
+ {
+  "evidence_id": "018bcfe5-688a-7b4a-854d-9236b63601df",
+  "measurements": {
+   "apparent_wall_loss": 0.0063444337757579275,
+   "crack_indication_length": 0.06271628884069262,
+   "surface_anomaly_score": 0.7576790857971492
+  },
+  "observation_id": "018bcfe5-6845-74df-a0a1-d74d0201ff20",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 104.3
+ },
+ {
+  "evidence_id": "018bcfe5-688c-7a74-9e66-458c46325590",
+  "measurements": {
+   "apparent_wall_loss": 0.006096274111326809,
+   "crack_indication_length": 0.061489593411811365,
+   "surface_anomaly_score": 0.767164680715004
+  },
+  "observation_id": "018bcfe5-6846-7721-8120-9dfa50fefdee",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 105.3
+ },
+ {
+  "evidence_id": "018bcfe5-688e-78ce-a34b-d1191025db24",
+  "measurements": {
+   "apparent_wall_loss": 0.00558229509844528,
+   "crack_indication_length": 0.0703536395528918,
+   "surface_anomaly_score": 0.8154603014740128
+  },
+  "observation_id": "018bcfe5-6847-7eda-9074-059390ee194d",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 106.3
+ },
+ {
+  "evidence_id": "018bcfe5-6890-7312-a04a-f1530e848cf1",
+  "measurements": {
+   "apparent_wall_loss": 0.0061463144308892045,
+   "crack_indication_length": 0.04455220053039944,
+   "surface_anomaly_score": 0.6918123969642694
+  },
+  "observation_id": "018bcfe5-6848-711d-973c-aa29f5f4f97f",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 107.3
+ },
+ {
+  "evidence_id": "018bcfe5-6892-7301-b9a3-72f564759ba8",
+  "measurements": {
+   "apparent_wall_loss": 0.004549705614953263,
+   "crack_indication_length": 0.06987095446032954,
+   "surface_anomaly_score": 0.6043232938993771
+  },
+  "observation_id": "018bcfe5-6849-7f85-8aa1-88afed6bb277",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 108.3
+ },
+ {
+  "evidence_id": "018bcfe5-6894-7e63-a9f0-fe8079ad6009",
+  "measurements": {
+   "apparent_wall_loss": 0.0042843641427281025,
+   "crack_indication_length": 0.06690075031346394,
+   "surface_anomaly_score": 0.7560708933978403
+  },
+  "observation_id": "018bcfe5-684a-79e1-b6b2-6e502171cd6f",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 109.3
+ },
+ {
+  "evidence_id": "018bcfe5-6896-7aeb-a07a-828359e594ef",
+  "measurements": {
+   "apparent_wall_loss": 0.005641865973062287,
+   "crack_indication_length": 0.04291553777574864,
+   "surface_anomaly_score": 0.737992342549705
+  },
+  "observation_id": "018bcfe5-684b-7e17-911e-b95894641447",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 110.3
+ },
+ {
+  "evidence_id": "018bcfe5-6898-7222-8b50-5d15936ff11d",
+  "measurements": {
+   "apparent_wall_loss": 0.00516644651664213,
+   "crack_indication_length": 0.05949923632495675,
+   "surface_anomaly_score": 0.8962484398831755
+  },
+  "observation_id": "018bcfe5-684c-7dc0-96d8-125219f3caab",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 111.3
+ },
+ {
+  "evidence_id": "018bcfe5-689a-778f-b2ab-1780ab2be4fb",
+  "measurements": {
+   "apparent_wall_loss": 0.00496359522036477,
+   "crack_indication_length": 0.0489818036194748,
+   "surface_anomaly_score": 0.7024979028079588
+  },
+  "observation_id": "018bcfe5-684d-7db3-944e-30f742ccd1fc",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 112.3
+ },
+ {
+  "evidence_id": "018bcfe5-689c-7ab3-bb42-7aa492b6bea8",
+  "measurements": {
+   "apparent_wall_loss": 0.004835721003355658,
+   "crack_indication_length": 0.05207907058907347,
+   "surface_anomaly_score": 0.7935676690380193
+  },
+  "observation_id": "018bcfe5-684e-7a06-abf8-8cdca3ab2259",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 113.3
+ },
+ {
+  "evidence_id": "018bcfe5-689e-76ca-a613-daad9106e959",
+  "measurements": {
+   "apparent_wall_loss": 0.005431322959374838,
+   "crack_indication_length": 0.0904391079194882,
+   "surface_anomaly_score": 0.8706034670931856
+  },
+  "observation_id": "018bcfe5-684f-7ed6-82cc-1b65d28e8df5",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 114.3
+ },
+ {
+  "evidence_id": "018bcfe5-68a0-7b35-9a85-49766cb6fd59",
+  "measurements": {
+   "apparent_wall_loss": 0.005726708136816307,
+   "crack_indication_length": 0.0624511272765019,
+   "surface_anomaly_score": 0.6490178405603327
+  },
+  "observation_id": "018bcfe5-6850-7d11-a6e3-b060e18ba196",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 115.3
+ },
+ {
+  "evidence_id": "018bcfe5-68a2-74ee-912f-7cf894389611",
+  "measurements": {
+   "apparent_wall_loss": 0.005051420805001584,
+   "crack_indication_length": 0.05410945174494105,
+   "surface_anomaly_score": 0.7981745679628022
+  },
+  "observation_id": "018bcfe5-6851-7b0a-9b9a-0681c85ff88a",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 116.3
+ },
+ {
+  "evidence_id": "018bcfe5-68a4-7259-95c1-4ae30b8d4cb6",
+  "measurements": {
+   "apparent_wall_loss": 0.0049873961861835615,
+   "crack_indication_length": 0.056307138496144604,
+   "surface_anomaly_score": 0.7634505932124257
+  },
+  "observation_id": "018bcfe5-6852-7801-8d94-068311ab4d6a",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 117.3
+ },
+ {
+  "evidence_id": "018bcfe5-68a6-77fb-bdc9-4b67fbaab8ff",
+  "measurements": {
+   "apparent_wall_loss": 0.006452610721545129,
+   "crack_indication_length": 0.07136643012975176,
+   "surface_anomaly_score": 0.720989005287452
+  },
+  "observation_id": "018bcfe5-6853-7004-9a47-0792b309a18b",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 118.3
+ },
+ {
+  "evidence_id": "018bcfe5-68a8-7da4-acb5-6351061669b6",
+  "measurements": {
+   "apparent_wall_loss": 0.00496324871896799,
+   "crack_indication_length": 0.08318540134424535,
+   "surface_anomaly_score": 0.6727374696101235
+  },
+  "observation_id": "018bcfe5-6854-70af-95f5-f0ac9d58623f",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 119.3
+ },
+ {
+  "evidence_id": "018bcfe5-68aa-70ff-9b87-7cfa5d284c20",
+  "measurements": {
+   "apparent_wall_loss": 0.0059547792925630045,
+   "crack_indication_length": 0.04270508873194471,
+   "surface_anomaly_score": 0.6120061428469448
+  },
+  "observation_id": "018bcfe5-6855-7194-a7c6-1bf6290634f5",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 120.3
+ },
+ {
+  "evidence_id": "018bcfe5-68ac-7899-a048-1aab20cf6978",
+  "measurements": {
+   "apparent_wall_loss": 0.005629395839920183,
+   "crack_indication_length": 0.10781710804536139,
+   "surface_anomaly_score": 0.7062257171542436
+  },
+  "observation_id": "018bcfe5-6856-7079-8ef5-51e8f5f868fd",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 121.3
+ },
+ {
+  "evidence_id": "018bcfe5-68ae-75d7-a53d-5bb4da72a71d",
+  "measurements": {
+   "apparent_wall_loss": 0.0057416890499201656,
+   "crack_indication_length": 0.07143823165489967,
+   "surface_anomaly_score": 0.7854150815515503
+  },
+  "observation_id": "018bcfe5-6857-7345-b817-0843783073fc",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 122.3
+ },
+ {
+  "evidence_id": "018bcfe5-68b0-74d3-adba-0115ead302ff",
+  "measurements": {
+   "apparent_wall_loss": 0.005865267042009439,
+   "crack_indication_length": 0.03381885470371005,
+   "surface_anomaly_score": 0.7679163848968239
+  },
+  "observation_id": "018bcfe5-6858-7de0-be2a-115ad983d754",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 123.3
+ },
+ {
+  "evidence_id": "018bcfe5-68b2-77e4-aa38-2998ea2f7061",
+  "measurements": {
+   "apparent_wall_loss": 0.006054947874849404,
+   "crack_indication_length": 0.08700904099362339,
+   "surface_anomaly_score": 0.8260376877244289
+  },
+  "observation_id": "018bcfe5-6859-7a0f-ab24-dca4c7f4a9f1",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 124.3
+ },
+ {
+  "evidence_id": "018bcfe5-68b4-7eb1-842c-3f41da703f58",
+  "measurements": {
+   "apparent_wall_loss": 0.005666947612921423,
+   "crack_indication_length": 0.07595230645655905,
+   "surface_anomaly_score": 0.708166768922683
+  },
+  "observation_id": "018bcfe5-685a-750d-95c3-7a8a54d6f88e",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 125.3
+ },
+ {
+  "evidence_id": "018bcfe5-68b6-7593-a5c3-437914861ee2",
+  "measurements": {
+   "apparent_wall_loss": 0.004889567329044985,
+   "crack_indication_length": 0.06981983771526505,
+   "surface_anomaly_score": 0.7097217822680468
+  },
+  "observation_id": "018bcfe5-685b-7cc8-b4af-21518cd537db",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 126.3
+ },
+ {
+  "evidence_id": "018bcfe5-68b8-726d-b295-01804a198cf2",
+  "measurements": {
+   "apparent_wall_loss": 0.006279944768864064,
+   "crack_indication_length": 0.06352807331300668,
+   "surface_anomaly_score": 0.6259836588475265
+  },
+  "observation_id": "018bcfe5-685c-7c65-b379-9f0ba1e739a6",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 127.3
+ },
+ {
+  "evidence_id": "018bcfe5-68ba-7b9e-b0ee-c0b0c91ee202",
+  "measurements": {
+   "apparent_wall_loss": 0.005297302247336403,
+   "crack_indication_length": 0.04187301740913217,
+   "surface_anomaly_score": 0.7278132917726157
+  },
+  "observation_id": "018bcfe5-685d-7a7f-926b-8aabe08d23f2",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 128.3
+ },
+ {
+  "evidence_id": "018bcfe5-68bc-7aa0-b62a-d24c94487bb2",
+  "measurements": {
+   "apparent_wall_loss": 0.006354187377994941,
+   "crack_indication_length": 0.08775812129698198,
+   "surface_anomaly_score": 0.6846503032605011
+  },
+  "observation_id": "018bcfe5-685e-72c4-8982-1cd67df5be4a",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 129.3
+ },
+ {
+  "evidence_id": "018bcfe5-68be-7ed2-9bc8-8b8f7de7d5ad",
+  "measurements": {
+   "apparent_wall_loss": 0.005650706681067131,
+   "crack_indication_length": 0.06734262087129324,
+   "surface_anomaly_score": 0.7439921707379472
+  },
+  "observation_id": "018bcfe5-685f-7eb3-b442-cbd3d417845d",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 130.3
+ },
+ {
+  "evidence_id": "018bcfe5-68c0-7ada-b69d-5ba4b22499a0",
+  "measurements": {
+   "apparent_wall_loss": 0.004699886243368612,
+   "crack_indication_length": 0.09797844848374367,
+   "surface_anomaly_score": 0.718193320111185
+  },
+  "observation_id": "018bcfe5-6860-7f99-8807-ef8003cb1b35",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 131.3
+ },
+ {
+  "evidence_id": "018bcfe5-68c2-7b21-8d03-8cc97ec1f06f",
+  "measurements": {
+   "apparent_wall_loss": 0.005947265667588392,
+   "crack_indication_length": 0.0344777722214655,
+   "surface_anomaly_score": 0.7847541785252494
+  },
+  "observation_id": "018bcfe5-6861-7a06-8ca9-bf59172f9876",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 132.3
+ },
+ {
+  "evidence_id": "018bcfe5-68c4-7bfd-b447-aa9e5c086071",
+  "measurements": {
+   "apparent_wall_loss": 0.005968769511593775,
+   "crack_indication_length": 0.0717772306169562,
+   "surface_anomaly_score": 0.7467855692341282
+  },
+  "observation_id": "018bcfe5-6862-7745-9cb3-0c08d478d668",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 133.3
+ },
+ {
+  "evidence_id": "018bcfe5-68c6-7e83-87b0-b4dc5dfe7a92",
+  "measurements": {
+   "apparent_wall_loss": 0.006567378773832151,
+   "crack_indication_length": 0.053943137460587175,
+   "surface_anomaly_score": 0.763865036625016
+  },
+  "observation_id": "018bcfe5-6863-7973-879d-25f040e7d4b6",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 134.3
+ },
+ {
+  "evidence_id": "018bcfe5-68c8-7058-a202-d3f7a2e51bd5",
+  "measurements": {
+   "apparent_wall_loss": 0.007618767199569821,
+   "crack_indication_length": 0.045741066387269484,
+   "surface_anomaly_score": 0.719776937845362
+  },
+  "observation_id": "018bcfe5-6864-7101-9b93-b1649c9c9e46",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 135.3
+ },
+ {
+  "evidence_id": "018bcfe5-68ca-7e8b-8402-cce9d8d9412e",
+  "measurements": {
+   "apparent_wall_loss": 0.005572533734801293,
+   "crack_indication_length": 0.05330514974601431,
+   "surface_anomaly_score": 0.7310013436637244
+  },
+  "observation_id": "018bcfe5-6865-7f9f-a28a-7d15612f3ab1",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 136.3
+ },
+ {
+  "evidence_id": "018bcfe5-68cc-7858-b9ac-5ec2fab87de9",
+  "measurements": {
+   "apparent_wall_loss": 0.005158792452547099,
+   "crack_indication_length": 0.054055618415822675,
+   "surface_anomaly_score": 0.8453077103037724
+  },
+  "observation_id": "018bcfe5-6866-74b0-82de-32c636105d17",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 137.3
+ },
+ {
+  "evidence_id": "018bcfe5-68ce-7628-9fb4-809eedc40755",
+  "measurements": {
+   "apparent_wall_loss": 0.005003935500437393,
+   "crack_indication_length": 0.056214808479055044,
+   "surface_anomaly_score": 0.737642795469222
+  },
+  "observation_id": "018bcfe5-6867-7386-9616-b6fee5a33bfd",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 138.3
+ },
+ {
+  "evidence_id": "018bcfe5-68d0-7e60-84b7-a92d443991ad",
+  "measurements": {
+   "apparent_wall_loss": 0.005907127302465525,
+   "crack_indication_length": 0.035928279765287924,
+   "surface_anomaly_score": 0.7607723308084462
+  },
+  "observation_id": "018bcfe5-6868-754c-a7f2-b1b414237404",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 139.3
+ },
+ {
+  "evidence_id": "018bcfe5-68d2-7702-bd20-2ce233173c50",
+  "measurements": {
+   "apparent_wall_loss": 0.00569346843090939,
+   "crack_indication_length": 0.07877764305917813,
+   "surface_anomaly_score": 0.7616546690819676
+  },
+  "observation_id": "018bcfe5-6869-7967-9022-3b97b3cef8da",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 140.3
+ },
+ {
+  "evidence_id": "018bcfe5-68d4-783a-90e5-76a87de39fc4",
+  "measurements": {
+   "apparent_wall_loss": 0.0057346470677411086,
+   "crack_indication_length": 0.04730775706799746,
+   "surface_anomaly_score": 0.8506270887390892
+  },
+  "observation_id": "018bcfe5-686a-7048-8efc-a13c3e1a455b",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 141.3
+ },
+ {
+  "evidence_id": "018bcfe5-68d6-7bc7-9342-0f864a93f1ea",
+  "measurements": {
+   "apparent_wall_loss": 0.006154687116711511,
+   "crack_indication_length": 0.05359117311554909,
+   "surface_anomaly_score": 0.7173718182606974
+  },
+  "observation_id": "018bcfe5-686b-7432-b98a-f638a9c4fdcb",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 142.3
+ },
+ {
+  "evidence_id": "018bcfe5-68d8-77d9-addc-970df67a313b",
+  "measurements": {
+   "apparent_wall_loss": 0.005272388569592546,
+   "crack_indication_length": 0.03272557379325595,
+   "surface_anomaly_score": 0.6907510030711473
+  },
+  "observation_id": "018bcfe5-686c-74d5-a775-1137d64beafc",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 143.3
+ },
+ {
+  "evidence_id": "018bcfe5-68da-7746-956c-28572f67c9cb",
+  "measurements": {
+   "apparent_wall_loss": 0.0052293123561420645,
+   "crack_indication_length": 0.05116872942520991,
+   "surface_anomaly_score": 0.7333802169865976
+  },
+  "observation_id": "018bcfe5-686d-7ef7-ad5e-fbd53df535c9",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 144.3
+ },
+ {
+  "evidence_id": "018bcfe5-68dc-7d19-ac02-22aeb54a435a",
+  "measurements": {
+   "apparent_wall_loss": 0.005631265287745067,
+   "crack_indication_length": 0.09314354551994292,
+   "surface_anomaly_score": 0.7863940843186551
+  },
+  "observation_id": "018bcfe5-686e-7f16-be96-0a4d1a547756",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 145.3
+ },
+ {
+  "evidence_id": "018bcfe5-68de-76f4-8ddc-35a41ec00b73",
+  "measurements": {
+   "apparent_wall_loss": 0.005402338266575104,
+   "crack_indication_length": 0.048744289167369344,
+   "surface_anomaly_score": 0.7108326354423004
+  },
+  "observation_id": "018bcfe5-686f-74d4-a813-bda385083f93",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 146.3
+ },
+ {
+  "evidence_id": "018bcfe5-68e0-778f-80cb-4b0b9052f69d",
+  "measurements": {
+   "apparent_wall_loss": 0.004732045504800725,
+   "crack_indication_length": 0.06233437788567582,
+   "surface_anomaly_score": 0.7207439107033503
+  },
+  "observation_id": "018bcfe5-6870-72c4-a638-847a5e21b1b1",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 147.3
+ },
+ {
+  "evidence_id": "018bcfe5-68e2-7667-a0ad-5af21b692e07",
+  "measurements": {
+   "apparent_wall_loss": 0.005257411115026492,
+   "crack_indication_length": 0.054054623189315754,
+   "surface_anomaly_score": 0.7561935241424733
+  },
+  "observation_id": "018bcfe5-6871-7cf1-bd58-d5289675bdb9",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 148.3
+ },
+ {
+  "evidence_id": "018bcfe5-68e4-76b1-807b-e00b27e4f534",
+  "measurements": {
+   "apparent_wall_loss": 0.006819106827684793,
+   "crack_indication_length": 0.12092673685744326,
+   "surface_anomaly_score": 0.7096145001410155
+  },
+  "observation_id": "018bcfe5-6872-788c-bcca-e8754181036e",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 149.3
+ },
+ {
+  "evidence_id": "018bcfe5-68e6-7531-8439-7053f61ed511",
+  "measurements": {
+   "apparent_wall_loss": 0.00573682824095257,
+   "crack_indication_length": 0.09143738648763251,
+   "surface_anomaly_score": 0.6860694849821655
+  },
+  "observation_id": "018bcfe5-6873-72b3-95d6-39e7926ea09c",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 150.3
+ },
+ {
+  "evidence_id": "018bcfe5-68e8-77cb-acf5-bba0ec7e2b5a",
+  "measurements": {
+   "apparent_wall_loss": 0.006218552761998935,
+   "crack_indication_length": 0.07558471530579897,
+   "surface_anomaly_score": 0.6700225240549382
+  },
+  "observation_id": "018bcfe5-6874-7680-a3c0-e6af92d2c5c7",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 151.3
+ },
+ {
+  "evidence_id": "018bcfe5-68ea-70a1-94a3-56b48a1facd6",
+  "measurements": {
+   "apparent_wall_loss": 0.005781336559018333,
+   "crack_indication_length": 0.049564145185509785,
+   "surface_anomaly_score": 0.7653248102935556
+  },
+  "observation_id": "018bcfe5-6875-7dbc-ab60-7b179cd446f1",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 152.3
+ },
+ {
+  "evidence_id": "018bcfe5-68ec-7225-a1fe-f03e8e304aba",
+  "measurements": {
+   "apparent_wall_loss": 0.005558979560944458,
+   "crack_indication_length": 0.052040230058265406,
+   "surface_anomaly_score": 0.698445963534701
+  },
+  "observation_id": "018bcfe5-6876-703d-a904-4fb6386eda3d",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 153.3
+ },
+ {
+  "evidence_id": "018bcfe5-68ee-747b-a554-43c425da88e3",
+  "measurements": {
+   "apparent_wall_loss": 0.005181326644370265,
+   "crack_indication_length": 0.04598205626707531,
+   "surface_anomaly_score": 0.7109902676882085
+  },
+  "observation_id": "018bcfe5-6877-7e55-a658-a6ac450a07fc",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 154.3
+ },
+ {
+  "evidence_id": "018bcfe5-68f0-78fe-808c-2d240ce49ad9",
+  "measurements": {
+   "apparent_wall_loss": 0.005208238994926419,
+   "crack_indication_length": 0.042348306769136354,
+   "surface_anomaly_score": 0.7188775030525578
+  },
+  "observation_id": "018bcfe5-6878-7e15-ae42-395b1b0e51ad",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 155.3
+ },
+ {
+  "evidence_id": "018bcfe5-68f2-7b3a-8f62-1c857d7d76d2",
+  "measurements": {
+   "apparent_wall_loss": 0.006206367788075746,
+   "crack_indication_length": 0.04628188365776636,
+   "surface_anomaly_score": 0.6482937696594983
+  },
+  "observation_id": "018bcfe5-6879-7988-915d-3dee051c9f6f",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 156.3
+ },
+ {
+  "evidence_id": "018bcfe5-68f4-73a1-92be-c5aac7ecefa7",
+  "measurements": {
+   "apparent_wall_loss": 0.005058600059802272,
+   "crack_indication_length": 0.03839289165807187,
+   "surface_anomaly_score": 0.7174812887017494
+  },
+  "observation_id": "018bcfe5-687a-7824-a057-55ced6de8578",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 157.3
+ },
+ {
+  "evidence_id": "018bcfe5-68f6-71b5-b213-d0084d01d035",
+  "measurements": {
+   "apparent_wall_loss": 0.0051558136723103545,
+   "crack_indication_length": 0.057146318105622464,
+   "surface_anomaly_score": 0.7902744650717846
+  },
+  "observation_id": "018bcfe5-687b-7a38-8026-12208bcd8b0a",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 158.3
+ },
+ {
+  "evidence_id": "018bcfe5-68f8-7131-8011-e61a48cafbba",
+  "measurements": {
+   "apparent_wall_loss": 0.008439200032028688,
+   "crack_indication_length": 0.08103143354148977,
+   "surface_anomaly_score": 0.7462566265961019
+  },
+  "observation_id": "018bcfe5-687c-7e8b-abda-54950031de5f",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 159.3
+ },
+ {
+  "evidence_id": "018bcfe5-68fa-705d-858c-942162050257",
+  "measurements": {
+   "apparent_wall_loss": 0.005746980313408307,
+   "crack_indication_length": 0.07432730237444936,
+   "surface_anomaly_score": 0.6542143514127222
+  },
+  "observation_id": "018bcfe5-687d-7dc4-88a1-11d07dbcac0e",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 160.3
+ },
+ {
+  "evidence_id": "018bcfe5-68fc-7ed8-bdf4-11da5a26facf",
+  "measurements": {
+   "apparent_wall_loss": 0.004762755791443231,
+   "crack_indication_length": 0.07183800418680442,
+   "surface_anomaly_score": 0.6625697198112
+  },
+  "observation_id": "018bcfe5-687e-75b9-a864-2969900895e4",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 161.3
+ },
+ {
+  "evidence_id": "018bcfe5-68fe-7120-be69-2fcc9dbdd3a4",
+  "measurements": {
+   "apparent_wall_loss": 0.006501389757980004,
+   "crack_indication_length": 0.06884048578463256,
+   "surface_anomaly_score": 0.7830569765413941
+  },
+  "observation_id": "018bcfe5-687f-7701-8d1c-c09a465ee3ed",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 162.3
+ },
+ {
+  "evidence_id": "018bcfe5-6900-7c41-b857-1ed47e53d8d3",
+  "measurements": {
+   "apparent_wall_loss": 0.004835462226436227,
+   "crack_indication_length": 0.050790807076524884,
+   "surface_anomaly_score": 0.6772543169165777
+  },
+  "observation_id": "018bcfe5-6880-7bc2-b755-6abd14b55e71",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 163.3
+ },
+ {
+  "evidence_id": "018bcfe5-6902-7773-b21f-1e15df452204",
+  "measurements": {
+   "apparent_wall_loss": 0.00516984297358754,
+   "crack_indication_length": 0.07113436218364955,
+   "surface_anomaly_score": 0.710067309197037
+  },
+  "observation_id": "018bcfe5-6881-742b-b6ff-70816ce2685b",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 164.3
+ },
+ {
+  "evidence_id": "018bcfe5-6904-7c0b-84be-42410e215a9c",
+  "measurements": {
+   "apparent_wall_loss": 0.005570140406594711,
+   "crack_indication_length": 0.04017284342301056,
+   "surface_anomaly_score": 0.6812652629642431
+  },
+  "observation_id": "018bcfe5-6882-7f99-83fd-c7f0672e3c55",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 165.3
+ },
+ {
+  "evidence_id": "018bcfe5-6906-79a0-965a-76d57d7441a9",
+  "measurements": {
+   "apparent_wall_loss": 0.005514013325843087,
+   "crack_indication_length": 0.08186841117474825,
+   "surface_anomaly_score": 0.8061345961584473
+  },
+  "observation_id": "018bcfe5-6883-7466-a9af-50eb44d44c82",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 166.3
+ },
+ {
+  "evidence_id": "018bcfe5-6908-7271-9b8f-34448091cbdb",
+  "measurements": {
+   "apparent_wall_loss": 0.004711869826692287,
+   "crack_indication_length": 0.04117178735017152,
+   "surface_anomaly_score": 0.6274904545923137
+  },
+  "observation_id": "018bcfe5-6884-7168-b4e8-05964943e13c",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 167.3
+ },
+ {
+  "evidence_id": "018bcfe5-690a-76bd-bf72-2af308d220b3",
+  "measurements": {
+   "apparent_wall_loss": 0.005388065526322319,
+   "crack_indication_length": 0.061100111135333104,
+   "surface_anomaly_score": 0.8493094909695159
+  },
+  "observation_id": "018bcfe5-6885-76d6-b281-feb1b2b355b9",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 168.3
+ },
+ {
+  "evidence_id": "018bcfe5-690c-7c5c-9aa0-fb0ee6482634",
+  "measurements": {
+   "apparent_wall_loss": 0.004675179140048178,
+   "crack_indication_length": 0.12281482531793192,
+   "surface_anomaly_score": 0.7394499308126419
+  },
+  "observation_id": "018bcfe5-6886-7d81-8fdb-33ece90f1997",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 169.3
+ },
+ {
+  "evidence_id": "018bcfe5-690e-746e-84db-1447ddddfb31",
+  "measurements": {
+   "apparent_wall_loss": 0.005624615262028797,
+   "crack_indication_length": 0.04903316568534114,
+   "surface_anomaly_score": 0.7708342987509526
+  },
+  "observation_id": "018bcfe5-6887-7ddd-81e2-3b8f2b07544c",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 170.3
+ },
+ {
+  "evidence_id": "018bcfe5-6910-710d-951c-f2546fe16b3c",
+  "measurements": {
+   "apparent_wall_loss": 0.0061039386575606315,
+   "crack_indication_length": 0.041016095740465344,
+   "surface_anomaly_score": 0.8041512142314698
+  },
+  "observation_id": "018bcfe5-6888-7919-affa-531826252a84",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 171.3
+ },
+ {
+  "evidence_id": "018bcfe5-6912-732e-bacc-c19a914bb84b",
+  "measurements": {
+   "apparent_wall_loss": 0.006057427573750919,
+   "crack_indication_length": 0.09228329223158092,
+   "surface_anomaly_score": 0.7161097060363569
+  },
+  "observation_id": "018bcfe5-6889-72dd-aca3-9c4506324b48",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 172.3
+ },
+ {
+  "evidence_id": "018bcfe5-6914-7c9a-9f69-2904db6ab24e",
+  "measurements": {
+   "apparent_wall_loss": 0.005855849643431209,
+   "crack_indication_length": 0.06050389988560134,
+   "surface_anomaly_score": 0.906081226067454
+  },
+  "observation_id": "018bcfe5-688a-7587-ad97-f0534abe1dc6",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 173.3
+ },
+ {
+  "evidence_id": "018bcfe5-6916-72a1-87e1-24fab0e30150",
+  "measurements": {
+   "apparent_wall_loss": 0.006907678322126683,
+   "crack_indication_length": 0.07294619565431945,
+   "surface_anomaly_score": 0.8355726171803483
+  },
+  "observation_id": "018bcfe5-688b-712a-98e8-fafc9352593f",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 174.3
+ },
+ {
+  "evidence_id": "018bcfe5-6918-7f36-affa-45fbc4922a6e",
+  "measurements": {
+   "apparent_wall_loss": 0.005224926263362234,
+   "crack_indication_length": 0.03205465568357807,
+   "surface_anomaly_score": 0.7059118572919831
+  },
+  "observation_id": "018bcfe5-688c-7046-94ca-1312bb365336",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 175.3
+ },
+ {
+  "evidence_id": "018bcfe5-691a-7733-bdbe-034eedec8e0f",
+  "measurements": {
+   "apparent_wall_loss": 0.005629341319577453,
+   "crack_indication_length": 0.0719828150820009,
+   "surface_anomaly_score": 0.6624424928238197
+  },
+  "observation_id": "018bcfe5-688d-7430-b0ad-3ef1ff370f6b",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 176.3
+ },
+ {
+  "evidence_id": "018bcfe5-691c-7797-9499-f96532c86600",
+  "measurements": {
+   "apparent_wall_loss": 0.004782566333421265,
+   "crack_indication_length": 0.08512515960456371,
+   "surface_anomaly_score": 0.7173872553402313
+  },
+  "observation_id": "018bcfe5-688e-71d5-bf5a-ba202a649cb1",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 177.3
+ },
+ {
+  "evidence_id": "018bcfe5-691e-788d-baa6-1e58aaca7274",
+  "measurements": {
+   "apparent_wall_loss": 0.006210342524334598,
+   "crack_indication_length": 0.06417532943018141,
+   "surface_anomaly_score": 0.7620512640130889
+  },
+  "observation_id": "018bcfe5-688f-7036-8811-c62ef7cb7573",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 178.3
+ },
+ {
+  "evidence_id": "018bcfe5-6920-7ee4-928e-94354c4e616f",
+  "measurements": {
+   "apparent_wall_loss": 0.005998617444998052,
+   "crack_indication_length": 0.03959641994660672,
+   "surface_anomaly_score": 0.7046864104120087
+  },
+  "observation_id": "018bcfe5-6890-7268-ad79-8ff5c1e91eba",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 179.3
+ },
+ {
+  "evidence_id": "018bcfe5-6922-78c0-a884-e690ac2aa96c",
+  "measurements": {
+   "apparent_wall_loss": 0.004913745097131429,
+   "crack_indication_length": 0.05326818945963203,
+   "surface_anomaly_score": 0.764312387856414
+  },
+  "observation_id": "018bcfe5-6891-710e-ab40-9004015af0c7",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 180.3
+ },
+ {
+  "evidence_id": "018bcfe5-6924-740a-a1b3-8393176bc4d0",
+  "measurements": {
+   "apparent_wall_loss": 0.005970906103306075,
+   "crack_indication_length": 0.06302162873655959,
+   "surface_anomaly_score": 0.8097625095809875
+  },
+  "observation_id": "018bcfe5-6892-7400-9e55-ca3b77c6ee6e",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 181.3
+ },
+ {
+  "evidence_id": "018bcfe5-6926-734f-b8c4-3f399d49eea5",
+  "measurements": {
+   "apparent_wall_loss": 0.0048935366356591126,
+   "crack_indication_length": 0.06315554523674215,
+   "surface_anomaly_score": 0.7469569052813143
+  },
+  "observation_id": "018bcfe5-6893-755d-a589-f0c8f5a222d6",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 182.3
+ },
+ {
+  "evidence_id": "018bcfe5-6928-723d-adea-3852f9f723da",
+  "measurements": {
+   "apparent_wall_loss": 0.006131130675627168,
+   "crack_indication_length": 0.06403629438033316,
+   "surface_anomaly_score": 0.6321981257791487
+  },
+  "observation_id": "018bcfe5-6894-754e-9556-f1dffa0cb026",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 183.3
+ },
+ {
+  "evidence_id": "018bcfe5-692a-76d7-beb4-66ad761072bf",
+  "measurements": {
+   "apparent_wall_loss": 0.005834812072711706,
+   "crack_indication_length": 0.054790720282923915,
+   "surface_anomaly_score": 0.7622275389577629
+  },
+  "observation_id": "018bcfe5-6895-7d50-a472-956e6fadc76e",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 184.3
+ },
+ {
+  "evidence_id": "018bcfe5-692c-71a4-9e31-ce158eb792c9",
+  "measurements": {
+   "apparent_wall_loss": 0.005673747694171081,
+   "crack_indication_length": 0.05575201550027563,
+   "surface_anomaly_score": 0.7013438896587116
+  },
+  "observation_id": "018bcfe5-6896-770e-bccf-4287612e4588",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 185.3
+ },
+ {
+  "evidence_id": "018bcfe5-692e-7d43-9629-8034eddc1cb1",
+  "measurements": {
+   "apparent_wall_loss": 0.007352828647129286,
+   "crack_indication_length": 0.04144972458813127,
+   "surface_anomaly_score": 0.7629645068092519
+  },
+  "observation_id": "018bcfe5-6897-73a2-86a1-aa2283e945fa",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 186.3
+ },
+ {
+  "evidence_id": "018bcfe5-6930-7cae-a3e0-efb64f3d4bb0",
+  "measurements": {
+   "apparent_wall_loss": 0.006150737670458413,
+   "crack_indication_length": 0.00037813941179010917,
+   "surface_anomaly_score": 0.8075425567898457
+  },
+  "observation_id": "018bcfe5-6898-726f-9bc6-b397e539e51f",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 187.3
+ },
+ {
+  "evidence_id": "018bcfe5-6932-7406-a0da-de0b606a392a",
+  "measurements": {
+   "apparent_wall_loss": 0.006220567551009277,
+   "crack_indication_length": 0.09479798222629064,
+   "surface_anomaly_score": 0.7565296321358138
+  },
+  "observation_id": "018bcfe5-6899-720a-9aec-e4ae6dfa7b2d",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 188.3
+ },
+ {
+  "evidence_id": "018bcfe5-6934-751e-bcb9-8632738f98bd",
+  "measurements": {
+   "apparent_wall_loss": 0.005707845946758141,
+   "crack_indication_length": 0.08578078440396368,
+   "surface_anomaly_score": 0.7273270568655977
+  },
+  "observation_id": "018bcfe5-689a-7126-9173-46f3f8e701ea",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 189.3
+ },
+ {
+  "evidence_id": "018bcfe5-6936-7d7d-9634-f780cfd0d3e2",
+  "measurements": {
+   "apparent_wall_loss": 0.0050307453178765685,
+   "crack_indication_length": 0.07400365851036124,
+   "surface_anomaly_score": 0.6951472545826046
+  },
+  "observation_id": "018bcfe5-689b-7725-b127-d149aaaa31ba",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 190.3
+ },
+ {
+  "evidence_id": "018bcfe5-6938-751e-abf0-294e338911bc",
+  "measurements": {
+   "apparent_wall_loss": 0.006089712674633439,
+   "crack_indication_length": 0.05180075566086132,
+   "surface_anomaly_score": 0.8119654950352209
+  },
+  "observation_id": "018bcfe5-689c-7ab9-b239-09b802f1faf0",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 191.3
+ },
+ {
+  "evidence_id": "018bcfe5-693a-7e6a-abc3-c42b6862f824",
+  "measurements": {
+   "apparent_wall_loss": 0.005362011932745851,
+   "crack_indication_length": 0.07328680053807958,
+   "surface_anomaly_score": 0.8385686934613237
+  },
+  "observation_id": "018bcfe5-689d-74d7-b022-fc80b6d1dae0",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 192.3
+ },
+ {
+  "evidence_id": "018bcfe5-693c-791a-8ffe-6cb074854636",
+  "measurements": {
+   "apparent_wall_loss": 0.0056324985382726405,
+   "crack_indication_length": 0.07896813156402366,
+   "surface_anomaly_score": 0.724037320271247
+  },
+  "observation_id": "018bcfe5-689e-70a4-8ed8-4192e9f346cc",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 193.3
+ },
+ {
+  "evidence_id": "018bcfe5-693e-7bfe-b757-bbe078dbc8b5",
+  "measurements": {
+   "apparent_wall_loss": 0.00441404535620428,
+   "crack_indication_length": 0.07596166422181032,
+   "surface_anomaly_score": 0.681045653494559
+  },
+  "observation_id": "018bcfe5-689f-716e-bbfd-5f8811b8fab5",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 194.3
+ },
+ {
+  "evidence_id": "018bcfe5-6940-7006-af1d-44d630e435ba",
+  "measurements": {
+   "apparent_wall_loss": 0.005067593109439087,
+   "crack_indication_length": 0.04694049622311934,
+   "surface_anomaly_score": 0.6380504051606766
+  },
+  "observation_id": "018bcfe5-68a0-708e-ac05-3853cec8abd3",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 195.3
+ },
+ {
+  "evidence_id": "018bcfe5-6942-76df-a12c-552a62e1d784",
+  "measurements": {
+   "apparent_wall_loss": 0.004552358317514619,
+   "crack_indication_length": 0.05125199294499851,
+   "surface_anomaly_score": 0.7165336701249505
+  },
+  "observation_id": "018bcfe5-68a1-7ec3-9941-d3f496a9da01",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 196.3
+ },
+ {
+  "evidence_id": "018bcfe5-6944-77ad-adff-568df79b6fee",
+  "measurements": {
+   "apparent_wall_loss": 0.006499669234381908,
+   "crack_indication_length": 0.08014590211680143,
+   "surface_anomaly_score": 0.7777214817708447
+  },
+  "observation_id": "018bcfe5-68a2-7700-8336-0e9bec99dc02",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 197.3
+ },
+ {
+  "evidence_id": "018bcfe5-6946-7092-afbb-a487fcf91280",
+  "measurements": {
+   "apparent_wall_loss": 0.005238013536899676,
+   "crack_indication_length": 0.06776577847408306,
+   "surface_anomaly_score": 0.7754251968171612
+  },
+  "observation_id": "018bcfe5-68a3-7b63-8285-efa35e9fd291",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 198.3
+ },
+ {
+  "evidence_id": "018bcfe5-6948-7841-88da-317ea7f24283",
+  "measurements": {
+   "apparent_wall_loss": 0.004997968749727205,
+   "crack_indication_length": 0.059791842185226526,
+   "surface_anomaly_score": 0.6687366533841198
+  },
+  "observation_id": "018bcfe5-68a4-7428-91b6-38280cd2c489",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 199.3
+ },
+ {
+  "evidence_id": "018bcfe5-694a-716f-872f-9703b5ba5ffb",
+  "measurements": {
+   "apparent_wall_loss": 0.005338198749758829,
+   "crack_indication_length": 0.04269470171300785,
+   "surface_anomaly_score": 0.6285661465477277
+  },
+  "observation_id": "018bcfe5-68a5-7087-982b-8dae69d3dcfc",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 200.3
+ },
+ {
+  "evidence_id": "018bcfe5-694c-7a22-871d-5648b23095ce",
+  "measurements": {
+   "apparent_wall_loss": 0.005681200000229828,
+   "crack_indication_length": 0.055984400865124614,
+   "surface_anomaly_score": 0.7555836338750674
+  },
+  "observation_id": "018bcfe5-68a6-773c-85cf-f3131c4dcb34",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 201.3
+ },
+ {
+  "evidence_id": "018bcfe5-694e-7b3b-a3be-b93e867a9aca",
+  "measurements": {
+   "apparent_wall_loss": 0.005301038474247309,
+   "crack_indication_length": 0.05170015045412091,
+   "surface_anomaly_score": 0.7345932187028736
+  },
+  "observation_id": "018bcfe5-68a7-702d-9ff3-2907d766807a",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 202.3
+ },
+ {
+  "evidence_id": "018bcfe5-6950-7041-a694-aca6d9e0eb15",
+  "measurements": {
+   "apparent_wall_loss": 0.005516755192289398,
+   "crack_indication_length": 0.06197324996550937,
+   "surface_anomaly_score": 0.7188394836417406
+  },
+  "observation_id": "018bcfe5-68a8-74e0-a19f-eb0cc8926d21",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 203.3
+ },
+ {
+  "evidence_id": "018bcfe5-6952-73f2-96ca-15f9422f355b",
+  "measurements": {
+   "apparent_wall_loss": 0.006235483377415354,
+   "crack_indication_length": 0.07033179640441935,
+   "surface_anomaly_score": 0.6923701660536263
+  },
+  "observation_id": "018bcfe5-68a9-7a7d-bac6-456f5d53621b",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 204.3
+ },
+ {
+  "evidence_id": "018bcfe5-6954-7519-a260-0d12b16fe0e1",
+  "measurements": {
+   "apparent_wall_loss": 0.005828985673631359,
+   "crack_indication_length": 0.05562793211424574,
+   "surface_anomaly_score": 0.6633294655342779
+  },
+  "observation_id": "018bcfe5-68aa-75a1-b532-b524980b7d35",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 205.3
+ },
+ {
+  "evidence_id": "018bcfe5-6956-7f9b-9495-b19dc14a6eeb",
+  "measurements": {
+   "apparent_wall_loss": 0.005892681023709052,
+   "crack_indication_length": 0.001815769721126071,
+   "surface_anomaly_score": 0.7841573376851946
+  },
+  "observation_id": "018bcfe5-68ab-7858-beae-cd4f8fcd4c81",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 206.3
+ },
+ {
+  "evidence_id": "018bcfe5-6958-7228-aabd-cc70ea1e4d09",
+  "measurements": {
+   "apparent_wall_loss": 0.005558794890813825,
+   "crack_indication_length": 0.07035137515270853,
+   "surface_anomaly_score": 0.6914702181490251
+  },
+  "observation_id": "018bcfe5-68ac-7c9e-9972-55d1fd94e8a4",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 207.3
+ },
+ {
+  "evidence_id": "018bcfe5-695a-7fe9-81a9-a86241dff371",
+  "measurements": {
+   "apparent_wall_loss": 0.005016219743137342,
+   "crack_indication_length": 0.0664545352981414,
+   "surface_anomaly_score": 0.7562751202267175
+  },
+  "observation_id": "018bcfe5-68ad-7f3a-a209-1c19c2169fb3",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 208.3
+ },
+ {
+  "evidence_id": "018bcfe5-695c-71b6-a483-964a5b678e77",
+  "measurements": {
+   "apparent_wall_loss": 0.005342458390724397,
+   "crack_indication_length": 0.07394468620592926,
+   "surface_anomaly_score": 0.795889900750371
+  },
+  "observation_id": "018bcfe5-68ae-7830-9a3b-27df1218770f",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 209.3
+ },
+ {
+  "evidence_id": "018bcfe5-695e-7e87-a75c-4eaeabb219d7",
+  "measurements": {
+   "apparent_wall_loss": 0.005816087289437465,
+   "crack_indication_length": 0.03839336030696752,
+   "surface_anomaly_score": 0.7282378499359909
+  },
+  "observation_id": "018bcfe5-68af-72a8-a029-b279a2409460",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 210.3
+ },
+ {
+  "evidence_id": "018bcfe5-6960-70c9-ba17-5e08394ff322",
+  "measurements": {
+   "apparent_wall_loss": 0.0052920533876017846,
+   "crack_indication_length": 0.07744229104072908,
+   "surface_anomaly_score": 0.7746319885606682
+  },
+  "observation_id": "018bcfe5-68b0-79de-a14f-759fbbc11f63",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 211.3
+ },
+ {
+  "evidence_id": "018bcfe5-6962-7bd4-a47b-a233c330b575",
+  "measurements": {
+   "apparent_wall_loss": 0.006788167364893667,
+   "crack_indication_length": 0.041791135096815,
+   "surface_anomaly_score": 0.8200902740910085
+  },
+  "observation_id": "018bcfe5-68b1-76f7-9a71-be54bd503f20",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 212.3
+ },
+ {
+  "evidence_id": "018bcfe5-6964-7908-8186-637c6c4b4374",
+  "measurements": {
+   "apparent_wall_loss": 0.005212916656220517,
+   "crack_indication_length": 0.10147958361088386,
+   "surface_anomaly_score": 0.6158252964332404
+  },
+  "observation_id": "018bcfe5-68b2-7514-94c5-8046b8dfeacf",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 213.3
+ },
+ {
+  "evidence_id": "018bcfe5-6966-7464-b8aa-3756e5ca014d",
+  "measurements": {
+   "apparent_wall_loss": 0.004756053172874644,
+   "crack_indication_length": 0.08788757223928632,
+   "surface_anomaly_score": 0.6169965675362603
+  },
+  "observation_id": "018bcfe5-68b3-72c8-85ae-977a84dda82b",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 214.3
+ },
+ {
+  "evidence_id": "018bcfe5-6968-746b-b7cb-408d9553dfd2",
+  "measurements": {
+   "apparent_wall_loss": 0.004803909346564027,
+   "crack_indication_length": 0.050357401047322316,
+   "surface_anomaly_score": 0.7343881233751423
+  },
+  "observation_id": "018bcfe5-68b4-7067-a6a4-956bee1619bb",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 215.3
+ },
+ {
+  "evidence_id": "018bcfe5-696a-728f-9526-cf587c63b783",
+  "measurements": {
+   "apparent_wall_loss": 0.005713061988954585,
+   "crack_indication_length": 0.07091890959590572,
+   "surface_anomaly_score": 0.8279089584367642
+  },
+  "observation_id": "018bcfe5-68b5-7ec7-a1d4-dcc2df4c298d",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 216.3
+ },
+ {
+  "evidence_id": "018bcfe5-696c-783a-a628-660d12e2faca",
+  "measurements": {
+   "apparent_wall_loss": 0.005037893941972804,
+   "crack_indication_length": 0.06177411363166746,
+   "surface_anomaly_score": 0.7404440079963243
+  },
+  "observation_id": "018bcfe5-68b6-797b-adfb-e5cc5cb937e8",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 217.3
+ },
+ {
+  "evidence_id": "018bcfe5-696e-7298-8592-f89a3e8f1276",
+  "measurements": {
+   "apparent_wall_loss": 0.006091877367702335,
+   "crack_indication_length": 0.07149925595537454,
+   "surface_anomaly_score": 0.7020622272926066
+  },
+  "observation_id": "018bcfe5-68b7-77f2-840a-3d2bd5c17cf8",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 218.3
+ },
+ {
+  "evidence_id": "018bcfe5-6970-7f48-869d-cc4c12dbc1a4",
+  "measurements": {
+   "apparent_wall_loss": 0.004433805185543672,
+   "crack_indication_length": 0.06592123952477603,
+   "surface_anomaly_score": 0.610760430958721
+  },
+  "observation_id": "018bcfe5-68b8-786b-9396-8fd310cbf20f",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 219.3
+ },
+ {
+  "evidence_id": "018bcfe5-6972-782b-9c9b-87c1bd90fee8",
+  "measurements": {
+   "apparent_wall_loss": 0.006005225581705408,
+   "crack_indication_length": 0.07711627744942001,
+   "surface_anomaly_score": 0.7647255868812083
+  },
+  "observation_id": "018bcfe5-68b9-737f-84d5-767db07bae9a",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 220.3
+ },
+ {
+  "evidence_id": "018bcfe5-6974-7603-ad04-6c1c5f717599",
+  "measurements": {
+   "apparent_wall_loss": 0.004899730597740875,
+   "crack_indication_length": 0.059147642933840935,
+   "surface_anomaly_score": 0.7153875930625013
+  },
+  "observation_id": "018bcfe5-68ba-71bf-bd44-6d13b0053954",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 221.3
+ },
+ {
+  "evidence_id": "018bcfe5-6976-7f5e-984c-07efcc4e0a3a",
+  "measurements": {
+   "apparent_wall_loss": 0.006634168705743907,
+   "crack_indication_length": 0.08282475445823965,
+   "surface_anomaly_score": 0.6327026119041541
+  },
+  "observation_id": "018bcfe5-68bb-788f-86d3-0d84c524f4d7",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 222.3
+ },
+ {
+  "evidence_id": "018bcfe5-6978-7d17-853a-d7a8c0b9bab2",
+  "measurements": {
+   "apparent_wall_loss": 0.006041495707991785,
+   "crack_indication_length": 0.049660413331631695,
+   "surface_anomaly_score": 0.7064877477309972
+  },
+  "observation_id": "018bcfe5-68bc-79e0-936d-6420baeef4b0",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 223.3
+ },
+ {
+  "evidence_id": "018bcfe5-697a-7478-807d-66a43a83d52c",
+  "measurements": {
+   "apparent_wall_loss": 0.005469145216237893,
+   "crack_indication_length": 0.05325334718124899,
+   "surface_anomaly_score": 0.694438768314653
+  },
+  "observation_id": "018bcfe5-68bd-75c0-9d59-0c919d16bc5b",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 224.3
+ },
+ {
+  "evidence_id": "018bcfe5-697c-7f99-9e9e-7f41007081d7",
+  "measurements": {
+   "apparent_wall_loss": 0.006106278663947475,
+   "crack_indication_length": 0.06488437907610121,
+   "surface_anomaly_score": 0.7299536487847211
+  },
+  "observation_id": "018bcfe5-68be-70c2-96e0-cb5e9be6cf46",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 225.3
+ },
+ {
+  "evidence_id": "018bcfe5-697e-7d54-8e53-654d88e573f0",
+  "measurements": {
+   "apparent_wall_loss": 0.004354459512565094,
+   "crack_indication_length": 0.05311697273875415,
+   "surface_anomaly_score": 0.8322019034160595
+  },
+  "observation_id": "018bcfe5-68bf-7fcb-bb08-43aa3bcdbd5b",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 226.3
+ },
+ {
+  "evidence_id": "018bcfe5-6980-7aaa-9e9c-386289f14b3b",
+  "measurements": {
+   "apparent_wall_loss": 0.005727177307445098,
+   "crack_indication_length": 0.06141914390140078,
+   "surface_anomaly_score": 0.8186374081610565
+  },
+  "observation_id": "018bcfe5-68c0-79f2-a6d6-7c708797d719",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 227.3
+ },
+ {
+  "evidence_id": "018bcfe5-6982-7b72-8245-5ae52c4a6483",
+  "measurements": {
+   "apparent_wall_loss": 0.006301752545064021,
+   "crack_indication_length": 0.04755829882366222,
+   "surface_anomaly_score": 0.7423506610798968
+  },
+  "observation_id": "018bcfe5-68c1-77a8-9f34-76f2261efa7f",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 228.3
+ },
+ {
+  "evidence_id": "018bcfe5-6984-7c91-833a-f1929bf2bc63",
+  "measurements": {
+   "apparent_wall_loss": 0.005569931446061651,
+   "crack_indication_length": 0.046045641297024466,
+   "surface_anomaly_score": 0.7456440592315655
+  },
+  "observation_id": "018bcfe5-68c2-759c-9f08-326acf9eb9c8",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 229.3
+ },
+ {
+  "evidence_id": "018bcfe5-6986-7625-b32b-e818161576b1",
+  "measurements": {
+   "apparent_wall_loss": 0.006411078133004555,
+   "crack_indication_length": 0.06671948550693953,
+   "surface_anomaly_score": 0.6655616965237034
+  },
+  "observation_id": "018bcfe5-68c3-7572-a9b1-facbd1dabf24",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 230.3
+ },
+ {
+  "evidence_id": "018bcfe5-6988-7663-8326-370229617d24",
+  "measurements": {
+   "apparent_wall_loss": 0.006525668949660944,
+   "crack_indication_length": 0.04483479603688438,
+   "surface_anomaly_score": 0.7162376136829169
+  },
+  "observation_id": "018bcfe5-68c4-7332-b6b1-fe3b63d342e2",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 231.3
+ },
+ {
+  "evidence_id": "018bcfe5-698a-7bb6-bd0f-edf9cdcd8e39",
+  "measurements": {
+   "apparent_wall_loss": 0.005696081134142732,
+   "crack_indication_length": 0.0803923944939968,
+   "surface_anomaly_score": 0.7722111335466026
+  },
+  "observation_id": "018bcfe5-68c5-744f-8267-42472a355ba1",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 232.3
+ },
+ {
+  "evidence_id": "018bcfe5-698c-7177-a216-d99b14291789",
+  "measurements": {
+   "apparent_wall_loss": 0.006034604302950822,
+   "crack_indication_length": 0.08624738791052501,
+   "surface_anomaly_score": 0.7617600673126592
+  },
+  "observation_id": "018bcfe5-68c6-76e1-ab32-90e77dd99a3c",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 233.3
+ },
+ {
+  "evidence_id": "018bcfe5-698e-7fc0-8da9-2072c58d035d",
+  "measurements": {
+   "apparent_wall_loss": 0.006258656029700383,
+   "crack_indication_length": 0.06825434347899255,
+   "surface_anomaly_score": 0.7467279401058318
+  },
+  "observation_id": "018bcfe5-68c7-74f7-9ce4-072f65afd078",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 234.3
+ },
+ {
+  "evidence_id": "018bcfe5-6990-7382-80ec-032f67533611",
+  "measurements": {
+   "apparent_wall_loss": 0.0071495737969231865,
+   "crack_indication_length": 0.11194615830331367,
+   "surface_anomaly_score": 0.73796898231176
+  },
+  "observation_id": "018bcfe5-68c8-7fe1-93a0-8ebc251a4ee7",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 235.3
+ },
+ {
+  "evidence_id": "018bcfe5-6992-735c-9922-2bbd6a3291f9",
+  "measurements": {
+   "apparent_wall_loss": 0.005396915245057481,
+   "crack_indication_length": 0.04508869326452675,
+   "surface_anomaly_score": 0.7136399341656346
+  },
+  "observation_id": "018bcfe5-68c9-7d06-a864-f4a824fd3d41",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 236.3
+ },
+ {
+  "evidence_id": "018bcfe5-6994-7832-b106-97f1ce509ceb",
+  "measurements": {
+   "apparent_wall_loss": 0.007067288591720869,
+   "crack_indication_length": 0.08404498526300644,
+   "surface_anomaly_score": 0.7526861060559535
+  },
+  "observation_id": "018bcfe5-68ca-7db5-b5de-e1807896bbc7",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 237.3
+ },
+ {
+  "evidence_id": "018bcfe5-6996-76ef-acd4-c187c95f3317",
+  "measurements": {
+   "apparent_wall_loss": 0.005009881539147881,
+   "crack_indication_length": 0.07242837586825333,
+   "surface_anomaly_score": 0.7427107508859224
+  },
+  "observation_id": "018bcfe5-68cb-7a8e-9e4f-41afba69618f",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 238.3
+ },
+ {
+  "evidence_id": "018bcfe5-6998-76dd-bb1d-1b33061869df",
+  "measurements": {
+   "apparent_wall_loss": 0.005328120280292569,
+   "crack_indication_length": 0.06291241734986827,
+   "surface_anomaly_score": 0.7560154261272128
+  },
+  "observation_id": "018bcfe5-68cc-7453-89c1-adc3935b27ea",
+  "registry_id": "018bcfe5-6803-71f7-8e35-8051e3262645",
+  "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+  "t_s": 239.3
+ }
+]

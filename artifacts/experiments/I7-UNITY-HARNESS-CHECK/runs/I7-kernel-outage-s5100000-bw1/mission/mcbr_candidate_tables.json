@@ -1,0 +1,106 @@
+[
+ {
+  "adoption_provenance_id": "018bcfe5-6817-7000-b23d-8bf66ddc106d",
+  "candidate_table": [],
+  "decision_id": "018bcfe5-69cb-7258-bb80-1ca7367a5532",
+  "plan": {
+   "alternatives": [],
+   "confidence": 0.0,
+   "expected_cost": null,
+   "expected_information_gain": 0.0,
+   "expected_mission_gain": 0.0,
+   "need_id": "018bcfe5-69c9-7d6d-bf9a-e198eeb07d77",
+   "plan_id": "018bcfe5-6802-7750-88cd-066c17f51b09",
+   "primary_action": null,
+   "provenance": "018bcfe5-6801-7297-ad58-85641c47345e",
+   "rejected": [],
+   "schema_version": "1.0.0",
+   "status": "NEED_SATISFIED",
+   "target_beliefs": [
+    "018bcfe5-6804-7adb-8aad-e3bbbfeeaf66"
+   ],
+   "targeted_uncertainty": [
+    "EPISTEMIC"
+   ],
+   "trace_id": "018bcfe5-6816-7bd8-823a-f90857fd6367"
+  }
+ },
+ {
+  "adoption_provenance_id": "018bcfe5-6823-7298-8c4a-a7a3eb94002e",
+  "candidate_table": [],
+  "decision_id": "018bcfe5-6afc-75be-9454-cecd57c43c85",
+  "plan": {
+   "alternatives": [],
+   "confidence": 0.0,
+   "expected_cost": null,
+   "expected_information_gain": 0.0,
+   "expected_mission_gain": 0.0,
+   "need_id": "018bcfe5-6afa-7c44-8558-c3a140bac247",
+   "plan_id": "018bcfe5-6804-7a21-bf66-80876c1d942f",
+   "primary_action": null,
+   "provenance": "018bcfe5-6803-7521-824c-3b14481398d5",
+   "rejected": [],
+   "schema_version": "1.0.0",
+   "status": "NEED_SATISFIED",
+   "target_beliefs": [
+    "018bcfe5-6804-7adb-8aad-e3bbbfeeaf66"
+   ],
+   "targeted_uncertainty": [
+    "EPISTEMIC"
+   ],
+   "trace_id": "018bcfe5-6822-74d7-b1ee-a07b03eb301a"
+  }
+ },
+ {
+  "adoption_provenance_id": "018bcfe5-682a-7cdc-b862-c5c69e3c5f44",
+  "candidate_table": [],
+  "decision_id": "018bcfe5-6ba9-7407-be85-9ad1e04aae23",
+  "plan": {
+   "alternatives": [],
+   "confidence": 0.0,
+   "expected_cost": null,
+   "expected_information_gain": 0.0,
+   "expected_mission_gain": 0.0,
+   "need_id": "018bcfe5-6ba7-7252-ac54-93fd1e01564f",
+   "plan_id": "018bcfe5-6806-7a78-b5bb-9922fde1d3a6",
+   "primary_action": null,
+   "provenance": "018bcfe5-6805-7292-b76c-008f9c414aca",
+   "rejected": [],
+   "schema_version": "1.0.0",
+   "status": "NEED_SATISFIED",
+   "target_beliefs": [
+    "018bcfe5-6804-7adb-8aad-e3bbbfeeaf66"
+   ],
+   "targeted_uncertainty": [
+    "EPISTEMIC"
+   ],
+   "trace_id": "018bcfe5-6829-7daa-aa77-d48b751be9bc"
+  }
+ },
+ {
+  "adoption_provenance_id": "018bcfe5-6830-7d74-85f4-a03b65cb767d",
+  "candidate_table": [],
+  "decision_id": "018bcfe5-6c35-7481-8a1b-c0d39b5e8a59",
+  "plan": {
+   "alternatives": [],
+   "confidence": 0.0,
+   "expected_cost": null,
+   "expected_information_gain": 0.0,
+   "expected_mission_gain": 0.0,
+   "need_id": "018bcfe5-6c33-7e90-8a6d-cbb947376909",
+   "plan_id": "018bcfe5-6808-72e1-a700-fdb9e967739e",
+   "primary_action": null,
+   "provenance": "018bcfe5-6807-722b-a705-a7a6282acc15",
+   "rejected": [],
+   "schema_version": "1.0.0",
+   "status": "NEED_SATISFIED",
+   "target_beliefs": [
+    "018bcfe5-6804-7adb-8aad-e3bbbfeeaf66"
+   ],
+   "targeted_uncertainty": [
+    "EPISTEMIC"
+   ],
+   "trace_id": "018bcfe5-682f-7cb0-9a92-8af07061de33"
+  }
+ }
+]

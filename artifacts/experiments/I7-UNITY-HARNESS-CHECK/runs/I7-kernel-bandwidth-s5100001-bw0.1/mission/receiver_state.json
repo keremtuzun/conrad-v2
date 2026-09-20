@@ -1,0 +1,21 @@
+{
+ "alerts": {
+  "018bcfe5-6804-75ef-ba40-0448a1c7d238": {
+   "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+   "delta_types": [
+    "STATE_CHANGED",
+    "UNCERTAINTY_CHANGED",
+    "EVIDENCE_ADDED"
+   ],
+   "domain": "TECHNICAL",
+   "kind": "alert",
+   "revision": 328
+  }
+ },
+ "resync_requests": 0,
+ "stale_ignored": 0,
+ "views": {
+  "018bcfe5-6804-75ef-ba40-0448a1c7d238": 245,
+  "018bcfe5-6808-724f-a7c2-5bcd6ca38b1f": 0
+ }
+}

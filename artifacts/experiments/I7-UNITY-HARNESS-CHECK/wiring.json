@@ -1,0 +1,425 @@
+{
+ "sweep": "full",
+ "reduced": false,
+ "worlds": [
+  7800018,
+  7800019
+ ],
+ "flights": 24,
+ "unity_scenarios_registered": [
+  "I7-UNITY-BANDWIDTH",
+  "I7-UNITY-OUTAGE"
+ ],
+ "unity_scenarios_missing": [],
+ "criteria_match_gates_py": true,
+ "player": {
+  "player": "ConradSim.exe",
+  "player_exe_sha256": "36c5c9f13481406382a8e9ef8fc0ea7cdf055c43bb12fc8fd545b07c199cd277",
+  "build_info": {
+   "unity_version": "6000.5.9f1",
+   "result": "Succeeded",
+   "output": "Builds/Win64/ConradSim.exe",
+   "total_size_bytes": 93422872,
+   "total_errors": 0,
+   "total_warnings": 0,
+   "build_started_utc": "2026-09-20T03:51:10.1367628Z",
+   "build_seconds": 21.1982802
+  }
+ },
+ "resolved": [
+  {
+   "run_id": "I7-unity-bandwidth-s7800018-bw1",
+   "scenario": "I7-UNITY-BANDWIDTH",
+   "bandwidth_bps": 1200.0,
+   "outages_s": [],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B10_baac",
+   "shadow_arms": [
+    "raw",
+    "fifo",
+    "fixed_priority",
+    "value_per_bit"
+   ]
+  },
+  {
+   "run_id": "I7-unity-bandwidth-s7800018-bw0.5",
+   "scenario": "I7-UNITY-BANDWIDTH",
+   "bandwidth_bps": 600.0,
+   "outages_s": [],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B10_baac",
+   "shadow_arms": [
+    "raw",
+    "fifo",
+    "fixed_priority",
+    "value_per_bit"
+   ]
+  },
+  {
+   "run_id": "I7-unity-bandwidth-s7800018-bw0.1",
+   "scenario": "I7-UNITY-BANDWIDTH",
+   "bandwidth_bps": 120.0,
+   "outages_s": [],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B10_baac",
+   "shadow_arms": [
+    "raw",
+    "fifo",
+    "fixed_priority",
+    "value_per_bit"
+   ]
+  },
+  {
+   "run_id": "I7-unity-bandwidth-s7800018-bw0.01",
+   "scenario": "I7-UNITY-BANDWIDTH",
+   "bandwidth_bps": 12.0,
+   "outages_s": [],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B10_baac",
+   "shadow_arms": [
+    "raw",
+    "fifo",
+    "fixed_priority",
+    "value_per_bit"
+   ]
+  },
+  {
+   "run_id": "I7-unity-bandwidth-s7800018-bw0.001",
+   "scenario": "I7-UNITY-BANDWIDTH",
+   "bandwidth_bps": 1.2,
+   "outages_s": [],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B10_baac",
+   "shadow_arms": [
+    "raw",
+    "fifo",
+    "fixed_priority",
+    "value_per_bit"
+   ]
+  },
+  {
+   "run_id": "I7-unity-bandwidth-s7800018-bw0",
+   "scenario": "I7-UNITY-BANDWIDTH",
+   "bandwidth_bps": 0.0,
+   "outages_s": [],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B10_baac",
+   "shadow_arms": [
+    "raw",
+    "fifo",
+    "fixed_priority",
+    "value_per_bit"
+   ]
+  },
+  {
+   "run_id": "I7-unity-outage-s7800018-bw1",
+   "scenario": "I7-UNITY-OUTAGE",
+   "bandwidth_bps": 1200.0,
+   "outages_s": [
+    [
+     6.0,
+     60.0
+    ]
+   ],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B10_baac",
+   "shadow_arms": [
+    "raw",
+    "fifo",
+    "fixed_priority",
+    "value_per_bit"
+   ]
+  },
+  {
+   "run_id": "I7-unity-outage-s7800018-bw0.1",
+   "scenario": "I7-UNITY-OUTAGE",
+   "bandwidth_bps": 120.0,
+   "outages_s": [
+    [
+     6.0,
+     60.0
+    ]
+   ],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B10_baac",
+   "shadow_arms": [
+    "raw",
+    "fifo",
+    "fixed_priority",
+    "value_per_bit"
+   ]
+  },
+  {
+   "run_id": "I7-unity-closed-raw-s7800018-bw1",
+   "scenario": "I7-UNITY-OUTAGE",
+   "bandwidth_bps": 1200.0,
+   "outages_s": [
+    [
+     6.0,
+     60.0
+    ]
+   ],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B0_send_all",
+   "shadow_arms": []
+  },
+  {
+   "run_id": "I7-unity-closed-fifo-s7800018-bw1",
+   "scenario": "I7-UNITY-OUTAGE",
+   "bandwidth_bps": 1200.0,
+   "outages_s": [
+    [
+     6.0,
+     60.0
+    ]
+   ],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B1_fifo",
+   "shadow_arms": []
+  },
+  {
+   "run_id": "I7-unity-closed-fixed_priority-s7800018-bw1",
+   "scenario": "I7-UNITY-OUTAGE",
+   "bandwidth_bps": 1200.0,
+   "outages_s": [
+    [
+     6.0,
+     60.0
+    ]
+   ],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B2_fixed_priority",
+   "shadow_arms": []
+  },
+  {
+   "run_id": "I7-unity-closed-value_per_bit-s7800018-bw1",
+   "scenario": "I7-UNITY-OUTAGE",
+   "bandwidth_bps": 1200.0,
+   "outages_s": [
+    [
+     6.0,
+     60.0
+    ]
+   ],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B4_value_per_bit",
+   "shadow_arms": []
+  },
+  {
+   "run_id": "I7-unity-bandwidth-s7800019-bw1",
+   "scenario": "I7-UNITY-BANDWIDTH",
+   "bandwidth_bps": 1200.0,
+   "outages_s": [],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B10_baac",
+   "shadow_arms": [
+    "raw",
+    "fifo",
+    "fixed_priority",
+    "value_per_bit"
+   ]
+  },
+  {
+   "run_id": "I7-unity-bandwidth-s7800019-bw0.5",
+   "scenario": "I7-UNITY-BANDWIDTH",
+   "bandwidth_bps": 600.0,
+   "outages_s": [],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B10_baac",
+   "shadow_arms": [
+    "raw",
+    "fifo",
+    "fixed_priority",
+    "value_per_bit"
+   ]
+  },
+  {
+   "run_id": "I7-unity-bandwidth-s7800019-bw0.1",
+   "scenario": "I7-UNITY-BANDWIDTH",
+   "bandwidth_bps": 120.0,
+   "outages_s": [],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B10_baac",
+   "shadow_arms": [
+    "raw",
+    "fifo",
+    "fixed_priority",
+    "value_per_bit"
+   ]
+  },
+  {
+   "run_id": "I7-unity-bandwidth-s7800019-bw0.01",
+   "scenario": "I7-UNITY-BANDWIDTH",
+   "bandwidth_bps": 12.0,
+   "outages_s": [],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B10_baac",
+   "shadow_arms": [
+    "raw",
+    "fifo",
+    "fixed_priority",
+    "value_per_bit"
+   ]
+  },
+  {
+   "run_id": "I7-unity-bandwidth-s7800019-bw0.001",
+   "scenario": "I7-UNITY-BANDWIDTH",
+   "bandwidth_bps": 1.2,
+   "outages_s": [],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B10_baac",
+   "shadow_arms": [
+    "raw",
+    "fifo",
+    "fixed_priority",
+    "value_per_bit"
+   ]
+  },
+  {
+   "run_id": "I7-unity-bandwidth-s7800019-bw0",
+   "scenario": "I7-UNITY-BANDWIDTH",
+   "bandwidth_bps": 0.0,
+   "outages_s": [],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B10_baac",
+   "shadow_arms": [
+    "raw",
+    "fifo",
+    "fixed_priority",
+    "value_per_bit"
+   ]
+  },
+  {
+   "run_id": "I7-unity-outage-s7800019-bw1",
+   "scenario": "I7-UNITY-OUTAGE",
+   "bandwidth_bps": 1200.0,
+   "outages_s": [
+    [
+     6.0,
+     60.0
+    ]
+   ],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B10_baac",
+   "shadow_arms": [
+    "raw",
+    "fifo",
+    "fixed_priority",
+    "value_per_bit"
+   ]
+  },
+  {
+   "run_id": "I7-unity-outage-s7800019-bw0.1",
+   "scenario": "I7-UNITY-OUTAGE",
+   "bandwidth_bps": 120.0,
+   "outages_s": [
+    [
+     6.0,
+     60.0
+    ]
+   ],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B10_baac",
+   "shadow_arms": [
+    "raw",
+    "fifo",
+    "fixed_priority",
+    "value_per_bit"
+   ]
+  },
+  {
+   "run_id": "I7-unity-closed-raw-s7800019-bw1",
+   "scenario": "I7-UNITY-OUTAGE",
+   "bandwidth_bps": 1200.0,
+   "outages_s": [
+    [
+     6.0,
+     60.0
+    ]
+   ],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B0_send_all",
+   "shadow_arms": []
+  },
+  {
+   "run_id": "I7-unity-closed-fifo-s7800019-bw1",
+   "scenario": "I7-UNITY-OUTAGE",
+   "bandwidth_bps": 1200.0,
+   "outages_s": [
+    [
+     6.0,
+     60.0
+    ]
+   ],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B1_fifo",
+   "shadow_arms": []
+  },
+  {
+   "run_id": "I7-unity-closed-fixed_priority-s7800019-bw1",
+   "scenario": "I7-UNITY-OUTAGE",
+   "bandwidth_bps": 1200.0,
+   "outages_s": [
+    [
+     6.0,
+     60.0
+    ]
+   ],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B2_fixed_priority",
+   "shadow_arms": []
+  },
+  {
+   "run_id": "I7-unity-closed-value_per_bit-s7800019-bw1",
+   "scenario": "I7-UNITY-OUTAGE",
+   "bandwidth_bps": 1200.0,
+   "outages_s": [
+    [
+     6.0,
+     60.0
+    ]
+   ],
+   "duration_s": 240.0,
+   "control_period_s": 0.1,
+   "policy": "C-B4_value_per_bit",
+   "shadow_arms": []
+  }
+ ],
+ "recorder_plan": [
+  "full mission under constrained bandwidth",
+  "full mission under outages",
+  "BAAC retains more mission-relevant information than raw/FIFO/fixed-priority",
+  "critical latency and sync error compared against baselines"
+ ],
+ "recorder_plan_matches_gates_py": true,
+ "gates_py_criteria": [
+  "full mission under constrained bandwidth",
+  "full mission under outages",
+  "BAAC retains more mission-relevant information than raw/FIFO/fixed-priority",
+  "critical latency and sync error compared against baselines"
+ ],
+ "ok": true
+}

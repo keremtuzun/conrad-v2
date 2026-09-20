@@ -118,6 +118,39 @@ UNITY_SCENARIOS["I6-UNITY-CLEAR"] = {
     "world": {"ecological_enabled": True},
     "runtime": {"model2e_enabled": True, "control_period_s": 0.1},
 }
+# Gate I7 (constrained communications): the kernel I7 scenarios on Unity. The world, the mission length and the
+# declared link are the surrogate's (conrad/sim/mission/scenarios.py); only the Unity control period is set here.
+# Bandwidth level, scheduler policy and shadow arms are per run through the stored runtime config
+# (configs/eval/i7_unity.yaml, conrad/evaluation/decision_experiments/com_i7_unity.py). Twin2E stays ON, as in
+# the surrogate and the flagship, so this is the full 2S + 2T + 2E stack.
+UNITY_SCENARIOS["I7-UNITY-BANDWIDTH"] = {
+    "base": "I7-BANDWIDTH",
+    "world": {},
+    "runtime": {"control_period_s": 0.1},
+}
+UNITY_SCENARIOS["I7-UNITY-OUTAGE"] = {
+    "base": "I7-OUTAGE-CRITICAL",
+    "world": {},
+    "runtime": {"control_period_s": 0.1},
+}
+# Gate I5 (decision autonomy inside integrated missions): the kernel I5 scenarios on Unity. World, mission
+# length, link model and the readable-surface tiling are the surrogate's (conrad/sim/mission/scenarios.py);
+# only the Unity control period is set here. The arm under comparison is set per run by the harness
+# (tests/unity_live/test_i5_unity.py), exactly as the surrogate does.
+# I5-BATTERY-RESERVE is DELIBERATELY ABSENT: it needs a LOW_POWER fault, and the Unity mission path realises
+# only FIX_OUTAGE faults (UnityMissionWorld.build refuses the rest; Unity-side faults go through
+# run_unity_nav's bridge injection). The "return" action class is exercised on Unity by I5-TIME-RESERVE, which
+# needs no fault. See configs/eval/i5_unity.yaml.
+for _i5 in (
+    "I5-NOMINAL",
+    "I5-NOMINAL-READABLE",
+    "I5-CRITICAL-FINDING",
+    "I5-UNCERTAIN-BELIEF",
+    "I5-ROUTE-BLOCKED",
+    "I5-TIME-RESERVE",
+    "I5-COMMS-OUTAGE",
+):
+    UNITY_SCENARIOS[_i5] = {"base": _i5, "world": {}, "runtime": {"control_period_s": 0.1}}
 # Flagship integrated Unity mission (docs/audits/FLAGSHIP_UNITY.md). The kernel scenario carries the three
 # declared stressors; here only the Unity control period is set. Twin2E stays ON (production default
 # model2e_enabled), so this is the full 2S + 2T + 2E stack with the frozen production planner.

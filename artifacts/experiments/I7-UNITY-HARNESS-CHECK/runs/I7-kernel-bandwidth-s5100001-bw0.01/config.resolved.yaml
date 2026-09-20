@@ -1,0 +1,54 @@
+data:
+  manifest_ids: []
+  split_hash: null
+device: cpu
+eval: {}
+model: {}
+paths:
+  artifacts_dir: artifacts
+  database: artifacts/conrad.sqlite
+  object_store: artifacts/objects
+  runs_dir: artifacts/runs
+run:
+  architecture_id: conrad_v2_impl_freeze_v0_2
+  lane: simulation
+  mode: sim
+  parent_run_id: null
+  require_clean_git: false
+  seed: 5100001
+  stack_id: conrad_v2_stack_freeze_v0_2
+runtime:
+  allowed_peers:
+  - 127.0.0.1
+  bind_address: 127.0.0.1
+  command_mode: simulated
+  hardware_enable: false
+  hil_evidence_ref: null
+  late_evidence_policy: EXPLICIT_LATE
+  min_free_disk_bytes: 268435456
+  persistence_mode: sqlite_wal_single_writer
+  required_adapters:
+  - sim_kernel
+  required_secrets: <redacted>
+  robot_config: configs/robot/sim_reference.yaml
+sim:
+  mission:
+    runtime:
+      baac:
+        scheduler_policy: C-B10_baac
+        shadow_arms:
+        - name: raw
+          policy: C-B0_send_all
+        - name: fifo
+          policy: C-B1_fifo
+        - name: fixed_priority
+          policy: C-B2_fixed_priority
+        - name: value_per_bit
+          policy: C-B4_value_per_bit
+      control_period_s: 0.1
+      decision_period_s: 2.0
+      duration_s: 100.0
+      link:
+        bandwidth_bps: 12.0
+    world: {}
+train: {}

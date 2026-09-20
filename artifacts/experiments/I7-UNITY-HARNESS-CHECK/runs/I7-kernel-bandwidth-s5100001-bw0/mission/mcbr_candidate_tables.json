@@ -1,0 +1,3262 @@
+[
+ {
+  "adoption_provenance_id": "018bcfe5-6819-744d-951f-2308225ecf29",
+  "candidate_table": [
+   {
+    "action_id": "018bcfe5-680f-7f1f-87fc-bf628ed9145c",
+    "cost": 0.23815325881734334,
+    "feasible": true,
+    "gain": {
+     "aleatoric": 0.12455882170329982,
+     "contradiction": 0.0,
+     "discrimination": 0.0,
+     "epistemic": 0.03692465151178242,
+     "observational": 0.5895121803542043,
+     "redundancy": 0.0
+    },
+    "mission_value": 0.45351579503374195,
+    "modality": "STRUCTURED",
+    "position_m": [
+     0.0013832097265928382,
+     -1.8085287339954612,
+     1.3283102428364248
+    ],
+    "reason_codes": [],
+    "score": 0.769329348754858,
+    "visibility": 0.615410858529707
+   },
+   {
+    "action_id": "018bcfe5-681f-7230-bf37-a58161162f2c",
+    "cost": 0.24554077274303918,
+    "feasible": true,
+    "gain": {
+     "aleatoric": 0.0947373762416487,
+     "contradiction": 0.0,
+     "discrimination": 0.0,
+     "epistemic": 0.032764991250977954,
+     "observational": 0.5231020643617187,
+     "redundancy": 0.0
+    },
+    "mission_value": 0.39958391248911035,
+    "modality": "STRUCTURED",
+    "position_m": [
+     0.0013832097265927088,
+     -2.5130582686309957,
+     1.5854835984280131
+    ],
+    "reason_codes": [],
+    "score": 0.7545739629006206,
+    "visibility": 0.5460831875162993
+   },
+   {
+    "action_id": "018bcfe5-680e-7c73-9733-6bc6eb3544cb",
+    "cost": 0.2037635342911798,
+    "feasible": true,
+    "gain": {
+     "aleatoric": 0.08088341638761748,
+     "contradiction": 0.0,
+     "discrimination": 0.0,
+     "epistemic": 0.023977362039512975,
+     "observational": 0.3828051558061436,
+     "redundancy": 0.0
+    },
+    "mission_value": 0.2944946522973069,
+    "modality": "STRUCTURED",
+    "position_m": [
+     -1.4929759135031335,
+     -1.189544918097741,
+     1.3283102428364248
+    ],
+    "reason_codes": [],
+    "score": 0.5767080777035698,
+    "visibility": 0.3996227006585496
+   },
+   {
+    "action_id": "018bcfe5-681e-762c-a165-518ec86fdc4d",
+    "cost": 0.20026158178331915,
+    "feasible": true,
+    "gain": {
+     "aleatoric": 0.06361388525925502,
+     "contradiction": 0.0,
+     "discrimination": 0.0,
+     "epistemic": 0.022000909003894255,
+     "observational": 0.3512505414579625,
+     "redundancy": 0.0
+    },
+    "mission_value": 0.2683110528170999,
+    "modality": "STRUCTURED",
+    "position_m": [
+     -1.9911535249901227,
+     -1.6877225295847302,
+     1.5854835984280131
+    ],
+    "reason_codes": [],
+    "score": 0.5125522587981355,
+    "visibility": 0.3666818167315709
+   },
+   {
+    "action_id": "018bcfe5-682f-7c77-bdf2-298eefc9cd4d",
+    "cost": 0.2558267270284925,
+    "feasible": true,
+    "gain": {
+     "aleatoric": 0.06546512998639152,
+     "contradiction": 0.0,
+     "discrimination": 0.0,
+     "epistemic": 0.028301454192918615,
+     "observational": 0.4518404720255333,
+     "redundancy": 0.0
+    },
+    "mission_value": 0.3422031250106598,
+    "modality": "STRUCTURED",
+    "position_m": [
+     0.0013832097265925535,
+     -3.358493710193637,
+     1.8940916251379196
+    ],
+    "reason_codes": [],
+    "score": 0.49127038052820965,
+    "visibility": 0.47169090321531026
+   },
+   {
+    "action_id": "018bcfe5-6810-77e1-adbf-db596fc502a2",
+    "cost": 0.26247116704151396,
+    "feasible": true,
+    "gain": {
+     "aleatoric": 0.049381519980541765,
+     "contradiction": 0.0,
+     "discrimination": 0.0,
+     "epistemic": 0.014638830003923516,
+     "observational": 0.23371293269196577,
+     "redundancy": 0.0
+    },
+    "mission_value": 0.17979697453541912,
+    "modality": "STRUCTURED",
+    "position_m": [
+     1.4957423329563193,
+     -1.1895449180977415,
+     1.3283102428364248
+    ],
+    "reason_codes": [],
+    "score": 0.4893624685879893,
+    "visibility": 0.24398050006539193
+   },
+   {
+    "action_id": "018bcfe5-6820-7bb2-8428-b429a1ea53cf",
+    "cost": 0.2761912758225279,
+    "feasible": true,
+    "gain": {
+     "aleatoric": 0.035187726491578614,
+     "contradiction": 0.0,
+     "discrimination": 0.0,
+     "epistemic": 0.012169701087114614,
+     "observational": 0.19429261288585567,
+     "redundancy": 0.0
+    },
+    "mission_value": 0.1484150182419809,
+    "modality": "STRUCTURED",
+    "position_m": [
+     1.993919944443308,
+     -1.6877225295847307,
+     1.5854835984280131
+    ],
+    "reason_codes": [],
+    "score": 0.43940591264514955,
+    "visibility": 0.20282835145191025
+   },
+   {
+    "action_id": "018bcfe5-682e-798f-9b20-51a01f60c78b",
+    "cost": 0.19854743407259118,
+    "feasible": true,
+    "gain": {
+     "aleatoric": 0.042428601274507594,
+     "contradiction": 0.0,
+     "discrimination": 0.0,
+     "epistemic": 0.018342453695420723,
+     "observational": 0.29284229988150623,
+     "redundancy": 0.0
+    },
+    "mission_value": 0.22178524580927161,
+    "modality": "STRUCTURED",
+    "position_m": [
+     -2.5889666587745097,
+     -2.285535663369117,
+     1.8940916251379196
+    ],
+    "reason_codes": [],
+    "score": 0.35779539878866035,
+    "visibility": 0.30570756159034534
+   },
+   {
+    "action_id": "018bcfe5-6801-7a7d-9459-2cb57ec67209",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     2.2511216896975395,
+     0.304814205131985,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP",
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-6802-76f5-9ae2-06d1873d1c5e",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     1.5921885448103654,
+     1.895619540215757,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP",
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-6803-7406-ab4c-246a276daf3e",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     0.001383209726593364,
+     2.5545526851029314,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP",
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-6804-7ad1-a1a5-77062d9930fc",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     -1.5894221253571787,
+     1.895619540215757,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP",
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-6805-746b-bd61-5541d113e239",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     -2.248355270244353,
+     0.30481420513198526,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP",
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-6806-7343-89c9-8d0b446556b4",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     -1.5894221253571792,
+     -1.2859911299517868,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP"
+    ],
+    "visibility": 0.5065135529571907
+   },
+   {
+    "action_id": "018bcfe5-6807-79a7-a841-5467c79bab19",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     0.001383209726592813,
+     -1.9449242748389612,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP"
+    ],
+    "visibility": 0.7079908802656291
+   },
+   {
+    "action_id": "018bcfe5-6808-72e2-bb1f-2eaf47be212c",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     1.592188544810365,
+     -1.2859911299517872,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP"
+    ],
+    "visibility": 0.21891276105454902
+   },
+   {
+    "action_id": "018bcfe5-6809-7449-a608-3a215503d725",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     2.1147261488540394,
+     0.304814205131985,
+     1.3283102428364248
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP",
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.03645647392812168
+   },
+   {
+    "action_id": "018bcfe5-680a-76d5-8261-f7e88613fa2e",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     1.4957423329563198,
+     1.7991733283617113,
+     1.3283102428364248
+    ],
+    "reason_codes": [
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-680b-7eac-8b0a-d126df107dca",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     0.0013832097265933558,
+     2.4181571442594314,
+     1.3283102428364248
+    ],
+    "reason_codes": [
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-680c-72de-8810-b4655136c4a6",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     -1.492975913503133,
+     1.7991733283617113,
+     1.3283102428364248
+    ],
+    "reason_codes": [
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-680d-7ccf-bc58-f309745182bb",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     -2.111959729400853,
+     0.30481420513198526,
+     1.3283102428364248
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP",
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-6811-7aca-b685-8dd8ca878a81",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     3.0011216896975395,
+     0.304814205131985,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP",
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 3.772782612023168e-05
+   },
+   {
+    "action_id": "018bcfe5-6812-7c50-bff3-060a875e3214",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     2.122518630700276,
+     2.425949626105668,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP",
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-6813-7339-822b-9ff421f48c3b",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     0.00138320972659341,
+     3.3045526851029314,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP",
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-6814-77d9-b85f-d99fb5c58fab",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     -2.1197522112470892,
+     2.425949626105668,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP",
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-6815-7470-a337-3a3499a7f7ad",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     -2.998355270244353,
+     0.30481420513198537,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP",
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-6816-7ed9-8e2b-128078e7d5ea",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     -2.11975221124709,
+     -1.8163212158416973,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP"
+    ],
+    "visibility": 0.45754879201912074
+   },
+   {
+    "action_id": "018bcfe5-6817-7d54-876e-057dfe30fd95",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     0.0013832097265926754,
+     -2.6949242748389612,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP"
+    ],
+    "visibility": 0.6697520972916365
+   },
+   {
+    "action_id": "018bcfe5-6818-7b83-bacf-c5b0f92fde59",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     2.122518630700275,
+     -1.8163212158416981,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP"
+    ],
+    "visibility": 0.19956118966057737
+   },
+   {
+    "action_id": "018bcfe5-6819-7988-9b9f-546b272df76d",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     2.819255683489574,
+     0.304814205131985,
+     1.5854835984280131
+    ],
+    "reason_codes": [
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.03679799978102788
+   },
+   {
+    "action_id": "018bcfe5-681a-734d-8ef4-fc1553cd1620",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     1.993919944443309,
+     2.2973509398487004,
+     1.5854835984280131
+    ],
+    "reason_codes": [
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-681b-7d7d-9cd1-8177ce51424d",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     0.001383209726593399,
+     3.122686678894966,
+     1.5854835984280131
+    ],
+    "reason_codes": [
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-681c-7d2a-9516-50020ceaf18f",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     -1.9911535249901222,
+     2.2973509398487004,
+     1.5854835984280131
+    ],
+    "reason_codes": [
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-681d-7bc5-a257-393fbac4d942",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     -2.8164892640363877,
+     0.3048142051319853,
+     1.5854835984280131
+    ],
+    "reason_codes": [
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0010085139149884185
+   },
+   {
+    "action_id": "018bcfe5-6821-706c-a9cb-f7932cfb43df",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     3.90112168969754,
+     0.304814205131985,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP",
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0004747281086848508
+   },
+   {
+    "action_id": "018bcfe5-6822-7a37-bde6-75c0236d2fd6",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     2.7589147337681688,
+     3.0623457291735607,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP",
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-6823-7b6f-a725-daf03166a1a8",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     0.0013832097265934651,
+     4.204552685102931,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP",
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-6824-7c5d-b5ba-00c2eac48380",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     -2.756148314314982,
+     3.0623457291735607,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP",
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-6825-7480-9719-56bbe5526e06",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     -3.8983552702443536,
+     0.3048142051319855,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP",
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-6826-76a8-95cd-29acc9548892",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     -2.756148314314983,
+     -2.45271731890959,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP"
+    ],
+    "visibility": 0.41654164822817386
+   },
+   {
+    "action_id": "018bcfe5-6827-78d5-8fb6-8c64ec7a2697",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     0.00138320972659251,
+     -3.5949242748389616,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP"
+    ],
+    "visibility": 0.5990477912501488
+   },
+   {
+    "action_id": "018bcfe5-6828-74ee-937b-6843bc199891",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     2.758914733768168,
+     -2.452717318909591,
+     0.5568798507062274
+    ],
+    "reason_codes": [
+     "POSE_NOT_FREE",
+     "UNREACHABLE_IN_BELIEF_MAP"
+    ],
+    "visibility": 0.17598110681863802
+   },
+   {
+    "action_id": "018bcfe5-6829-7c7e-bc4b-c557cbb7c487",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     3.664691125052215,
+     0.304814205131985,
+     1.8940916251379196
+    ],
+    "reason_codes": [
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.03297064781062205
+   },
+   {
+    "action_id": "018bcfe5-682a-71bb-af86-a3dc64b43212",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     2.5917330782276955,
+     2.8951640736330875,
+     1.8940916251379196
+    ],
+    "reason_codes": [
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-682b-7f07-9aee-2f8a92881867",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     0.0013832097265934506,
+     3.968122120457607,
+     1.8940916251379196
+    ],
+    "reason_codes": [
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-682c-7c2a-a281-ac7fd6cb446f",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     -2.588966658774509,
+     2.8951640736330875,
+     1.8940916251379196
+    ],
+    "reason_codes": [
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.0
+   },
+   {
+    "action_id": "018bcfe5-682d-7481-89a1-ebc3687d96cd",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     -3.661924705599029,
+     0.3048142051319854,
+     1.8940916251379196
+    ],
+    "reason_codes": [
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.003479556549599248
+   },
+   {
+    "action_id": "018bcfe5-6830-7483-a9a4-f17f69fffa6f",
+    "feasible": false,
+    "modality": "STRUCTURED",
+    "position_m": [
+     2.5917330782276946,
+     -2.2855356633691177,
+     1.8940916251379196
+    ],
+    "reason_codes": [
+     "VISIBILITY_BELOW_MIN"
+    ],
+    "visibility": 0.12622795325897593
+   }
+  ],
+  "decision_id": "018bcfe5-69fe-7349-b93b-7729bb70547b",
+  "plan": {
+   "alternatives": [
+    {
+     "action_id": "018bcfe5-681f-7230-bf37-a58161162f2c",
+     "duration_s": 6.0,
+     "expected_cost": {
+      "energy_j": 362.8889488931984,
+      "risk": 0.05,
+      "schema_version": "1.0.0",
+      "time_s": 19.870372870549936,
+      "travel_m": 8.32222372232996
+     },
+     "expected_information_gain": 0.6506044318543454,
+     "hypothesis_discrimination": 0.0,
+     "pose": {
+      "covariance_6x6": null,
+      "frame_id": "WORLD",
+      "orientation_wxyz": [
+       0.6963068132740372,
+       -0.12311304475219215,
+       0.12311304475219219,
+       0.696306813274037
+      ],
+      "position_m": [
+       0.0013832097265927088,
+       -2.5130582686309957,
+       1.5854835984280131
+      ]
+     },
+     "predicted_visibility": 0.5460831875162993,
+     "schema_version": "1.0.0",
+     "sensor_configuration": {
+      "modality": "STRUCTURED",
+      "standoff_m": 2.5
+     },
+     "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+     "target_region": {
+      "center_m": [
+       0.0013832097265932264,
+       0.304814205131985,
+       0.5568798507062274
+      ],
+      "frame_id": "WORLD",
+      "half_extent_m": [
+       0.49973847997094634,
+       0.44198611870025517,
+       0.43716909990747266
+      ],
+      "position_sigma_m": 0.05
+     }
+    },
+    {
+     "action_id": "018bcfe5-680e-7c73-9733-6bc6eb3544cb",
+     "duration_s": 6.0,
+     "expected_cost": {
+      "energy_j": 284.5566267959622,
+      "risk": 0.05,
+      "schema_version": "1.0.0",
+      "time_s": 16.606526116498422,
+      "travel_m": 6.363915669899054
+     },
+     "expected_information_gain": 0.4876659342332741,
+     "hypothesis_discrimination": 0.0,
+     "pose": {
+      "covariance_6x6": null,
+      "frame_id": "WORLD",
+      "orientation_wxyz": [
+       0.9097686944149473,
+       -0.06662829969701063,
+       0.16085494476638226,
+       0.376838531849135
+      ],
+      "position_m": [
+       -1.4929759135031335,
+       -1.189544918097741,
+       1.3283102428364248
+      ]
+     },
+     "predicted_visibility": 0.3996227006585496,
+     "schema_version": "1.0.0",
+     "sensor_configuration": {
+      "modality": "STRUCTURED",
+      "standoff_m": 1.75
+     },
+     "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+     "target_region": {
+      "center_m": [
+       0.0013832097265932264,
+       0.304814205131985,
+       0.5568798507062274
+      ],
+      "frame_id": "WORLD",
+      "half_extent_m": [
+       0.49973847997094634,
+       0.44198611870025517,
+       0.43716909990747266
+      ],
+      "position_sigma_m": 0.05
+     }
+    },
+    {
+     "action_id": "018bcfe5-681e-762c-a165-518ec86fdc4d",
+     "duration_s": 6.0,
+     "expected_cost": {
+      "energy_j": 277.99046584372337,
+      "risk": 0.05,
+      "schema_version": "1.0.0",
+      "time_s": 16.33293607682181,
+      "travel_m": 6.199761646093084
+     },
+     "expected_information_gain": 0.43686533572111175,
+     "hypothesis_discrimination": 0.0,
+     "pose": {
+      "covariance_6x6": null,
+      "frame_id": "WORLD",
+      "orientation_wxyz": [
+       0.9097686944149473,
+       -0.0666282996970106,
+       0.1608549447663822,
+       0.376838531849135
+      ],
+      "position_m": [
+       -1.9911535249901227,
+       -1.6877225295847302,
+       1.5854835984280131
+      ]
+     },
+     "predicted_visibility": 0.3666818167315709,
+     "schema_version": "1.0.0",
+     "sensor_configuration": {
+      "modality": "STRUCTURED",
+      "standoff_m": 2.5
+     },
+     "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+     "target_region": {
+      "center_m": [
+       0.0013832097265932264,
+       0.304814205131985,
+       0.5568798507062274
+      ],
+      "frame_id": "WORLD",
+      "half_extent_m": [
+       0.49973847997094634,
+       0.44198611870025517,
+       0.43716909990747266
+      ],
+      "position_sigma_m": 0.05
+     }
+    }
+   ],
+   "confidence": 0.3195087133692569,
+   "expected_cost": {
+    "energy_j": 349.03736028251876,
+    "risk": 0.05,
+    "schema_version": "1.0.0",
+    "time_s": 19.29322334510495,
+    "travel_m": 7.975934007062969
+   },
+   "expected_information_gain": 0.7509956535692865,
+   "expected_mission_gain": 0.45351579503374195,
+   "need_id": "018bcfe5-69fc-7fcb-b370-cd26ac6f8dc1",
+   "plan_id": "018bcfe5-6832-7a79-8f2b-80b3a23910f7",
+   "primary_action": {
+    "action_id": "018bcfe5-680f-7f1f-87fc-bf628ed9145c",
+    "duration_s": 6.0,
+    "expected_cost": {
+     "energy_j": 349.03736028251876,
+     "risk": 0.05,
+     "schema_version": "1.0.0",
+     "time_s": 19.29322334510495,
+     "travel_m": 7.975934007062969
+    },
+    "expected_information_gain": 0.7509956535692865,
+    "hypothesis_discrimination": 0.0,
+    "pose": {
+     "covariance_6x6": null,
+     "frame_id": "WORLD",
+     "orientation_wxyz": [
+      0.6963068132740372,
+      -0.12311304475219219,
+      0.12311304475219223,
+      0.696306813274037
+     ],
+     "position_m": [
+      0.0013832097265928382,
+      -1.8085287339954612,
+      1.3283102428364248
+     ]
+    },
+    "predicted_visibility": 0.615410858529707,
+    "schema_version": "1.0.0",
+    "sensor_configuration": {
+     "modality": "STRUCTURED",
+     "standoff_m": 1.75
+    },
+    "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+    "target_region": {
+     "center_m": [
+      0.0013832097265932264,
+      0.304814205131985,
+      0.5568798507062274
+     ],
+     "frame_id": "WORLD",
+     "half_extent_m": [
+      0.49973847997094634,
+      0.44198611870025517,
+      0.43716909990747266
+     ],
+     "position_sigma_m": 0.05
+    }
+   },
+   "provenance": "018bcfe5-6831-7966-a93e-44b3b76bdc75",
+   "rejected": [
+    {
+     "action": {
+      "action_id": "018bcfe5-6801-7a7d-9459-2cb57ec67209",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        6.123233995736766e-17,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "position_m": [
+        2.2511216896975395,
+        0.304814205131985,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 1.75
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP",
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6802-76f5-9ae2-06d1873d1c5e",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.3826834323650896,
+        0.0,
+        -0.0,
+        -0.9238795325112868
+       ],
+       "position_m": [
+        1.5921885448103654,
+        1.895619540215757,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 1.75
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP",
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6803-7406-ab4c-246a276daf3e",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.7071067811865475,
+        0.0,
+        -0.0,
+        -0.7071067811865476
+       ],
+       "position_m": [
+        0.001383209726593364,
+        2.5545526851029314,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 1.75
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP",
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6804-7ad1-a1a5-77062d9930fc",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.9238795325112867,
+        0.0,
+        -0.0,
+        -0.3826834323650898
+       ],
+       "position_m": [
+        -1.5894221253571787,
+        1.895619540215757,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 1.75
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP",
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6805-746b-bd61-5541d113e239",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        1.0,
+        0.0,
+        -0.0,
+        -6.16862267830956e-17
+       ],
+       "position_m": [
+        -2.248355270244353,
+        0.30481420513198526,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 1.75
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP",
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6806-7343-89c9-8d0b446556b4",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.6181065404883894,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.9238795325112867,
+        0.0,
+        0.0,
+        0.3826834323650897
+       ],
+       "position_m": [
+        -1.5894221253571792,
+        -1.2859911299517868,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.5065135529571907,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 1.75
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6807-79a7-a841-5467c79bab19",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.8639725257959754,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.7071067811865477,
+        0.0,
+        0.0,
+        0.7071067811865475
+       ],
+       "position_m": [
+        0.001383209726592813,
+        -1.9449242748389612,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.7079908802656291,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 1.75
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6808-72e2-bb1f-2eaf47be212c",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.2671427222710957,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.38268343236508984,
+        0.0,
+        0.0,
+        0.9238795325112867
+       ],
+       "position_m": [
+        1.592188544810365,
+        -1.2859911299517872,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.21891276105454902,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 1.75
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6809-7449-a608-3a215503d725",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.04448841466641067,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        6.029711019526891e-17,
+        -0.174108137593596,
+        1.0661048670475215e-17,
+        0.9847265389049334
+       ],
+       "position_m": [
+        2.1147261488540394,
+        0.304814205131985,
+        1.3283102428364248
+       ]
+      },
+      "predicted_visibility": 0.03645647392812168,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 1.75
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP",
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-680a-76d5-8261-f7e88613fa2e",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 374.85299828209713,
+       "risk": 0.05,
+       "schema_version": "1.0.0",
+       "time_s": 20.368874928420716,
+       "travel_m": 8.621324957052428
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.3768385318491349,
+        0.1608549447663823,
+        0.06662829969701062,
+        -0.9097686944149475
+       ],
+       "position_m": [
+        1.4957423329563198,
+        1.7991733283617113,
+        1.3283102428364248
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 1.75
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-680b-7eac-8b0a-d126df107dca",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 316.24784612963134,
+       "risk": 0.05,
+       "schema_version": "1.0.0",
+       "time_s": 17.92699358873464,
+       "travel_m": 7.156196153240784
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.6963068132740371,
+        0.12311304475219222,
+        0.1231130447521922,
+        -0.6963068132740372
+       ],
+       "position_m": [
+        0.0013832097265933558,
+        2.4181571442594314,
+        1.3283102428364248
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 1.75
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-680c-72de-8810-b4655136c4a6",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 255.31116797501952,
+       "risk": 0.05,
+       "schema_version": "1.0.0",
+       "time_s": 15.387965332292481,
+       "travel_m": 5.632779199375488
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.9097686944149473,
+        0.06662829969701065,
+        0.1608549447663823,
+        -0.37683853184913507
+       ],
+       "position_m": [
+        -1.492975913503133,
+        1.7991733283617113,
+        1.3283102428364248
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 1.75
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-680d-7ccf-bc58-f309745182bb",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.9847265389049334,
+        1.1433240409790282e-17,
+        0.174108137593596,
+        -6.466449766685069e-17
+       ],
+       "position_m": [
+        -2.111959729400853,
+        0.30481420513198526,
+        1.3283102428364248
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 1.75
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP",
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6811-7aca-b685-8dd8ca878a81",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 4.494899575592634e-05,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        6.123233995736766e-17,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "position_m": [
+        3.0011216896975395,
+        0.304814205131985,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 3.772782612023168e-05,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 2.5
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP",
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6812-7c50-bff3-060a875e3214",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.38268343236508984,
+        0.0,
+        -0.0,
+        -0.9238795325112867
+       ],
+       "position_m": [
+        2.122518630700276,
+        2.425949626105668,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 2.5
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP",
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6813-7339-822b-9ff421f48c3b",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.7071067811865475,
+        0.0,
+        -0.0,
+        -0.7071067811865476
+       ],
+       "position_m": [
+        0.00138320972659341,
+        3.3045526851029314,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 2.5
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP",
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6814-77d9-b85f-d99fb5c58fab",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.9238795325112867,
+        0.0,
+        -0.0,
+        -0.38268343236508984
+       ],
+       "position_m": [
+        -2.1197522112470892,
+        2.425949626105668,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 2.5
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP",
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6815-7470-a337-3a3499a7f7ad",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        1.0,
+        0.0,
+        -0.0,
+        -6.476865587005577e-17
+       ],
+       "position_m": [
+        -2.998355270244353,
+        0.30481420513198537,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 2.5
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP",
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6816-7ed9-8e2b-128078e7d5ea",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.5451244035385303,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.9238795325112868,
+        0.0,
+        0.0,
+        0.38268343236508967
+       ],
+       "position_m": [
+        -2.11975221124709,
+        -1.8163212158416973,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.45754879201912074,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 2.5
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6817-7d54-876e-057dfe30fd95",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.7979437798177508,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.7071067811865477,
+        0.0,
+        0.0,
+        0.7071067811865475
+       ],
+       "position_m": [
+        0.0013832097265926754,
+        -2.6949242748389612,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.6697520972916365,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 2.5
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6818-7b83-bacf-c5b0f92fde59",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.2377575383886396,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.38268343236509006,
+        0.0,
+        0.0,
+        0.9238795325112867
+       ],
+       "position_m": [
+        2.122518630700275,
+        -1.8163212158416981,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.19956118966057737,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 2.5
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6819-7988-9b9f-546b272df76d",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 432.30040591341714,
+       "risk": 0.05,
+       "schema_version": "1.0.0",
+       "time_s": 22.76251691305905,
+       "travel_m": 10.057510147835428
+      },
+      "expected_information_gain": 0.04384119908507051,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        6.029711019526893e-17,
+        -0.17410813759359597,
+        1.0661048670475214e-17,
+        0.9847265389049336
+       ],
+       "position_m": [
+        2.819255683489574,
+        0.304814205131985,
+        1.5854835984280131
+       ]
+      },
+      "predicted_visibility": 0.03679799978102788,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 2.5
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-681a-734d-8ef4-fc1553cd1620",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 395.6055077294031,
+       "risk": 0.05,
+       "schema_version": "1.0.0",
+       "time_s": 21.233562822058463,
+       "travel_m": 9.140137693235078
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.3768385318491351,
+        0.1608549447663822,
+        0.06662829969701063,
+        -0.9097686944149473
+       ],
+       "position_m": [
+        1.993919944443309,
+        2.2973509398487004,
+        1.5854835984280131
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 2.5
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-681b-7d7d-9cd1-8177ce51424d",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 320.43347970962833,
+       "risk": 0.05,
+       "schema_version": "1.0.0",
+       "time_s": 18.10139498790118,
+       "travel_m": 7.260836992740709
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.6963068132740371,
+        0.12311304475219217,
+        0.12311304475219216,
+        -0.6963068132740372
+       ],
+       "position_m": [
+        0.001383209726593399,
+        3.122686678894966,
+        1.5854835984280131
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 2.5
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-681c-7d2a-9516-50020ceaf18f",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 236.84967710105414,
+       "risk": 0.05,
+       "schema_version": "1.0.0",
+       "time_s": 14.618736545877256,
+       "travel_m": 5.171241927526354
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.9097686944149473,
+        0.06662829969701062,
+        0.1608549447663822,
+        -0.37683853184913507
+       ],
+       "position_m": [
+        -1.9911535249901222,
+        2.2973509398487004,
+        1.5854835984280131
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 2.5
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-681d-7bc5-a257-393fbac4d942",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 212.5405210723399,
+       "risk": 0.05,
+       "schema_version": "1.0.0",
+       "time_s": 13.60585504468083,
+       "travel_m": 4.563513026808498
+      },
+      "expected_information_gain": 0.0012015451815363888,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.9847265389049336,
+        1.0289617340607549e-17,
+        0.17410813759359597,
+        -5.819635664660255e-17
+       ],
+       "position_m": [
+        -2.8164892640363877,
+        0.3048142051319853,
+        1.5854835984280131
+       ]
+      },
+      "predicted_visibility": 0.0010085139149884185,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 2.5
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6821-706c-a9cb-f7932cfb43df",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.0005491202058628703,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        6.123233995736766e-17,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "position_m": [
+        3.90112168969754,
+        0.304814205131985,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.0004747281086848508,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 3.4000000000000004
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP",
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6822-7a37-bde6-75c0236d2fd6",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.38268343236508984,
+        0.0,
+        -0.0,
+        -0.9238795325112867
+       ],
+       "position_m": [
+        2.7589147337681688,
+        3.0623457291735607,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 3.4000000000000004
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP",
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6823-7b6f-a725-daf03166a1a8",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.7071067811865475,
+        0.0,
+        -0.0,
+        -0.7071067811865476
+       ],
+       "position_m": [
+        0.0013832097265934651,
+        4.204552685102931,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 3.4000000000000004
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP",
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6824-7c5d-b5ba-00c2eac48380",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.9238795325112867,
+        0.0,
+        -0.0,
+        -0.38268343236508984
+       ],
+       "position_m": [
+        -2.756148314314982,
+        3.0623457291735607,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 3.4000000000000004
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP",
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6825-7480-9719-56bbe5526e06",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        1.0,
+        0.0,
+        -0.0,
+        -6.405562368441723e-17
+       ],
+       "position_m": [
+        -3.8983552702443536,
+        0.3048142051319855,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 3.4000000000000004
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP",
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6826-76a8-95cd-29acc9548892",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.4818156570909054,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.9238795325112867,
+        0.0,
+        0.0,
+        0.3826834323650897
+       ],
+       "position_m": [
+        -2.756148314314983,
+        -2.45271731890959,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.41654164822817386,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 3.4000000000000004
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6827-78d5-8fb6-8c64ec7a2697",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.6929213594793754,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.7071067811865477,
+        0.0,
+        0.0,
+        0.7071067811865475
+       ],
+       "position_m": [
+        0.00138320972659251,
+        -3.5949242748389616,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.5990477912501488,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 3.4000000000000004
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6828-74ee-937b-6843bc199891",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 30.0,
+       "risk": 1.0,
+       "schema_version": "1.0.0",
+       "time_s": 6.0,
+       "travel_m": 0.0
+      },
+      "expected_information_gain": 0.20355816273853183,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.38268343236508984,
+        0.0,
+        0.0,
+        0.9238795325112867
+       ],
+       "position_m": [
+        2.758914733768168,
+        -2.452717318909591,
+        0.5568798507062274
+       ]
+      },
+      "predicted_visibility": 0.17598110681863802,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 3.4000000000000004
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "POSE_NOT_FREE",
+      "UNREACHABLE_IN_BELIEF_MAP"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6829-7c7e-bc4b-c557cbb7c487",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 466.31224897290593,
+       "risk": 0.05,
+       "schema_version": "1.0.0",
+       "time_s": 24.179677040537747,
+       "travel_m": 10.907806224322648
+      },
+      "expected_information_gain": 0.038137301293064814,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        6.029711019526893e-17,
+        -0.174108137593596,
+        1.0661048670475215e-17,
+        0.9847265389049336
+       ],
+       "position_m": [
+        3.664691125052215,
+        0.304814205131985,
+        1.8940916251379196
+       ]
+      },
+      "predicted_visibility": 0.03297064781062205,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 3.4000000000000004
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-682a-71bb-af86-a3dc64b43212",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 422.09175394489193,
+       "risk": 0.05,
+       "schema_version": "1.0.0",
+       "time_s": 22.337156414370497,
+       "travel_m": 9.802293848622298
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.3768385318491351,
+        0.1608549447663822,
+        0.06662829969701063,
+        -0.9097686944149473
+       ],
+       "position_m": [
+        2.5917330782276955,
+        2.8951640736330875,
+        1.8940916251379196
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 3.4000000000000004
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-682b-7f07-9aee-2f8a92881867",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 329.37290826511185,
+       "risk": 0.05,
+       "schema_version": "1.0.0",
+       "time_s": 18.473871177712994,
+       "travel_m": 7.484322706627796
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.6963068132740371,
+        0.1231130447521922,
+        0.12311304475219217,
+        -0.6963068132740372
+       ],
+       "position_m": [
+        0.0013832097265934506,
+        3.968122120457607,
+        1.8940916251379196
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 3.4000000000000004
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-682c-7c2a-a281-ac7fd6cb446f",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 218.6499104687354,
+       "risk": 0.05,
+       "schema_version": "1.0.0",
+       "time_s": 13.86041293619731,
+       "travel_m": 4.716247761718385
+      },
+      "expected_information_gain": 0.0,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.9097686944149473,
+        0.06662829969701065,
+        0.16085494476638224,
+        -0.3768385318491351
+       ],
+       "position_m": [
+        -2.588966658774509,
+        2.8951640736330875,
+        1.8940916251379196
+       ]
+      },
+      "predicted_visibility": 0.0,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 3.4000000000000004
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-682d-7481-89a1-ebc3687d96cd",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 182.58790889697468,
+       "risk": 0.05,
+       "schema_version": "1.0.0",
+       "time_s": 12.357829537373945,
+       "travel_m": 3.814697722424367
+      },
+      "expected_information_gain": 0.004024819204661538,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.9847265389049336,
+        1.0553241365397658e-17,
+        0.174108137593596,
+        -5.968737008854576e-17
+       ],
+       "position_m": [
+        -3.661924705599029,
+        0.3048142051319854,
+        1.8940916251379196
+       ]
+      },
+      "predicted_visibility": 0.003479556549599248,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 3.4000000000000004
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    },
+    {
+     "action": {
+      "action_id": "018bcfe5-6830-7483-a9a4-f17f69fffa6f",
+      "duration_s": 6.0,
+      "expected_cost": {
+       "energy_j": 451.9747146755177,
+       "risk": 0.05,
+       "schema_version": "1.0.0",
+       "time_s": 23.58227977814657,
+       "travel_m": 10.549367866887943
+      },
+      "expected_information_gain": 0.14600845918148928,
+      "hypothesis_discrimination": 0.0,
+      "pose": {
+       "covariance_6x6": null,
+       "frame_id": "WORLD",
+       "orientation_wxyz": [
+        0.3768385318491351,
+        -0.16085494476638224,
+        0.06662829969701065,
+        0.9097686944149473
+       ],
+       "position_m": [
+        2.5917330782276946,
+        -2.2855356633691177,
+        1.8940916251379196
+       ]
+      },
+      "predicted_visibility": 0.12622795325897593,
+      "schema_version": "1.0.0",
+      "sensor_configuration": {
+       "modality": "STRUCTURED",
+       "standoff_m": 3.4000000000000004
+      },
+      "sensor_id": "018bcfe5-6801-79dc-a121-24b71e4afa56",
+      "target_region": {
+       "center_m": [
+        0.0013832097265932264,
+        0.304814205131985,
+        0.5568798507062274
+       ],
+       "frame_id": "WORLD",
+       "half_extent_m": [
+        0.49973847997094634,
+        0.44198611870025517,
+        0.43716909990747266
+       ],
+       "position_sigma_m": 0.05
+      }
+     },
+     "reason_codes": [
+      "VISIBILITY_BELOW_MIN"
+     ],
+     "schema_version": "1.0.0"
+    }
+   ],
+   "schema_version": "1.0.0",
+   "status": "PLAN",
+   "target_beliefs": [
+    "018bcfe5-6804-75ef-ba40-0448a1c7d238"
+   ],
+   "targeted_uncertainty": [
+    "OBSERVATIONAL"
+   ],
+   "trace_id": "018bcfe5-6818-7040-bb54-9b412a6d5716"
+  }
+ }
+]

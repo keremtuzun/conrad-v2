@@ -1,0 +1,110 @@
+# I7-UNITY-E001: gate I7 (constrained communications) on the FORMAL Unity path. SYNTHETIC_ONLY.
+# Declared 2026-09-20 BEFORE any run on the final worlds below. Nothing here is tuned on a final world:
+# the whole BAAC design was frozen on mission development seed 5100000 during the surrogate pass
+# (docs/audits/I7_COMMUNICATIONS.md), and this file only maps that frozen harness onto the Unity player.
+#
+# Final worlds: unity_gate final_test seeds 7800018 and 7800019 (configs/eval/partitions_unity_gates.yaml,
+# digest-pinned, not edited). They are the LAST TWO unspent seeds of that split: 7800000 = I1, 7800001 = I3,
+# 7800002-7800013 = I4, 7800014-7800016 = I6, 7800017 = flagship. If another workstream claims them before I7
+# runs, I7 must declare a NEW digest-pinned partition file rather than reuse a spent seed.
+#
+# Development worlds (harness verification only, never reported as gate evidence): unity_gate development
+# seeds, and mission development seed 5100000 for the python-kernel backend check.
+experiment_id: I7-UNITY-E001
+gate: I7
+mission_config: configs/sim/mission_test_small.yaml
+final_worlds: [7800018, 7800019]
+development_worlds: [7810000, 7810001]
+kernel_check_seeds: [5100000, 5100001]
+
+# ---------------------------------------------------------------------------------- arms and scenarios
+# The primary arm drives the mission; the other four are shadow arms of the SAME ShoreLink, so they see the
+# identical offer stream at identical times over a link with the identical profile and channel seed and never
+# feed back (conrad/orchestration/comms.py). No baseline is ever dropped from a flight: one flight measures
+# all five policies. ch25's comparison set is raw / FIFO / fixed priority; value-per-bit is reported as well.
+primary: baac
+arms:
+  baac: C-B10_baac
+  raw: C-B0_send_all
+  fifo: C-B1_fifo
+  fixed_priority: C-B2_fixed_priority
+  value_per_bit: C-B4_value_per_bit
+spec_comparison: [raw, fifo, fixed_priority]
+unity_scenarios:
+  bandwidth: I7-UNITY-BANDWIDTH        # I7-BANDWIDTH world, Unity control period 0.1 s, 240 s mission
+  outage: I7-UNITY-OUTAGE              # I7-OUTAGE-CRITICAL: link down [6 s, 60 s)
+
+# ---------------------------------------------------------------------------------- the two sweeps
+# Reference link (unchanged declared mission link): 1200 bps, 1 s latency, 5 % packet loss, BER 1e-6,
+# 1024-bit packets. A level is a FRACTION of it. 240 s is the surrogate's mission length: at 0.1 %
+# (1.2 bps) a 120 s mission carries 144 bits, less than one 184-bit F0 alert.
+sweeps:
+  full:
+    reduced: false
+    bandwidth_levels: [1.0, 0.5, 0.1, 0.01, 0.001, 0.0]
+    outage_levels: [1.0, 0.1]
+    closed_loop_levels: [1.0]          # each baseline also run as the mission primary
+    worlds: final
+  reduced:
+    reduced: true
+    # Reason for the reduction, declared BEFORE any final run: a Unity mission is far slower than a kernel
+    # mission (a Unity flight is the same python mission plus a lock-step player round trip per control step),
+    # so the full sweep costs about 4x the reduced one. The reduced sweep keeps every ARM and every
+    # QUALITATIVE regime and drops only levels that the surrogate showed to be bracketed by a kept level:
+    #   50 %  lies between the kept 100 % and 10 %, and no policy changes rank there (surrogate table);
+    #   0.1 % reproduces the 1 % regime (BAAC delivers only the 184-bit F0 alert; retained 0.060 at both),
+    #         differing only in alert latency, which the kept levels already measure.
+    # It also drops the closed-loop check (each baseline as the mission primary), which is a robustness
+    # check of the shadow-arm design, not a gate criterion; the surrogate already ran it.
+    bandwidth_levels: [1.0, 0.1, 0.01, 0.0]
+    outage_levels: [1.0]
+    closed_loop_levels: []
+    worlds: final
+    dropped_bandwidth_levels: [0.5, 0.001]
+    dropped_closed_loop_levels: [1.0]
+default_sweep: full
+
+# ---------------------------------------------------------------------------------- measurement settings
+# Deadlines are in seconds of AVAILABLE link after the offer (ENGINEERING_ESTIMATE, not from the spec),
+# identical to the surrogate's configs/eval/com_i7_e00{1,2}.yaml.
+deadline_linkup_s: {critical: 30.0, routine: 120.0}
+queue_trace_every_s: 5
+keep_bundles: true                     # the replay criterion needs one stored bundle
+
+# ---------------------------------------------------------------------------------- decision rule
+# Criterion names are exactly the four of conrad.evaluation.gates GateDefinition("I7"); the recorder checks
+# this. A criterion passes iff it passes on EVERY final world. "non-zero level" excludes the 0 % floor case.
+#
+# Rule history (all on DEVELOPMENT seeds, before any final world was built; see the audit):
+#   2026-09-20 criterion 1 first read "BAAC retained more than zero"; the kernel verification on mission
+#     development seeds 5100000/5100001 showed that at 1 % BAAC's F0 alert arrives and then scores zero
+#     because the belief is revised again, which is a property of the world and of comm_oracle.belief_score,
+#     not of the mission running under the constraint. It now checks DELIVERY.
+#   2026-09-20 criterion 2 first required exact end-of-mission revision equality for the critical belief; on
+#     development seed 5100001 that belief is revised 383 times and BAAC ends at 355 against a sender latest
+#     of 383, while every baseline holds 0 or nothing. It now requires the receiver to hold at least the
+#     revision that was FOUND during the outage, and the end-of-mission sync error is compared under
+#     criterion 4. Criterion 3, the spec's actual claim, was NOT changed.
+decision_rule: >-
+  Unit = one final world. A criterion PASSES iff it passes on every final world.
+  'full mission under constrained bandwidth': at every declared bandwidth level the Unity mission ran a FULL
+  mission (the world clock reached the declared duration AND no deployment module ended in a failed state),
+  every arm produced a full measurement row, at every non-zero level at least one increment reached BAAC's
+  receiver, the 0 % floor case delivered zero bits and nothing at all in every arm, and no arm recorded a
+  duplicate belief contribution at the receiver at any level. This criterion is about the mission running and
+  delivering under the constraint; superiority is the third criterion and is not checked here.
+  'full mission under outages': the outage flight ran a full mission, the mission-critical structural finding was created
+  while the link was down, at least one critical unit was held in the store-and-forward queue for the whole
+  remaining outage, BAAC delivered that belief's F0 alert and F1 delta after reconnection ahead of every
+  routine delta, at mission end the receiver holds AT LEAST the critical revision that was found during the
+  outage, BAAC coalesced at least one superseded re-offer, and duplicate contributions and resync requests are
+  both zero. End-of-mission equality with the sender's newest revision is reported under the fourth criterion,
+  not required here: a belief revised hundreds of times can have a last offer younger than the link latency.
+  'BAAC retains more mission-relevant information than raw/FIFO/fixed-priority': at every non-zero bandwidth
+  level and in the outage scenario, BAAC's mission_information_retained is strictly greater than raw, FIFO and
+  fixed priority on EVERY world. Value-per-bit is reported, never required (it is outside the ch25 set).
+  'critical latency and sync error compared against baselines': at every non-zero level and in the outage
+  scenario every arm has a critical alert latency, a critical delta latency, a receiver sync error over the
+  beliefs Model 1 asked to report and a critical-belief sync flag, all measured on the same offer stream; the
+  criterion is the COMPARISON being complete (ch26 Phase 11), and every case where BAAC is worse than a
+  baseline is listed in the evidence rather than hidden.

@@ -1,0 +1,16 @@
+{
+ "alerts": {
+  "018bcfe5-6804-7adb-8aad-e3bbbfeeaf66": {
+   "belief_id": "018bcfe5-6804-7adb-8aad-e3bbbfeeaf66",
+   "delta_types": [
+    "NEW_BELIEF"
+   ],
+   "domain": "TECHNICAL",
+   "kind": "alert",
+   "revision": 24
+  }
+ },
+ "resync_requests": 0,
+ "stale_ignored": 0,
+ "views": {}
+}

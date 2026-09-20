@@ -1,0 +1,514 @@
+{
+ "abstentions": 0,
+ "beliefs_published": 2448,
+ "commands_accepted": 2400,
+ "commands_refused_by_safety_supervisor": 0,
+ "commands_rejected": 0,
+ "communication": {
+  "bits_sent": 2760,
+  "critical_alert_latency_min_s": 1.0,
+  "critical_alert_latency_s": [
+   1.0
+  ],
+  "critical_delivered": 1,
+  "critical_offers": 1,
+  "delivered": 13,
+  "dropped": 0,
+  "energy_j": 0.276,
+  "offers": 187,
+  "policy": "C-B10_baac",
+  "queue_bits": 28688624,
+  "receiver_alerts": 1,
+  "receiver_beliefs": 0,
+  "shadow_arms": [
+   "fifo",
+   "fixed_priority",
+   "raw",
+   "value_per_bit"
+  ],
+  "transmissions": 13
+ },
+ "decision_actions": [
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "QUERY_BELIEF",
+  "REVISIT_REGION",
+  "REQUEST_INFORMATION",
+  "REQUEST_INFORMATION",
+  "TRANSMIT_INFORMATION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "TRANSMIT_INFORMATION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "TRANSMIT_INFORMATION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "TRANSMIT_INFORMATION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "TRANSMIT_INFORMATION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "TRANSMIT_INFORMATION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "TRANSMIT_INFORMATION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "TRANSMIT_INFORMATION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION",
+  "TRANSMIT_INFORMATION",
+  "CONTINUE_MISSION",
+  "CONTINUE_MISSION"
+ ],
+ "decisions": 120,
+ "failed_modules": [],
+ "gateway_rejection_reasons": {},
+ "module_health": {
+  "baac": "AVAILABLE",
+  "egdc": "AVAILABLE",
+  "mcbr": "AVAILABLE",
+  "model2e": "AVAILABLE",
+  "model2s": "AVAILABLE",
+  "model2t": "AVAILABLE",
+  "navigation": "AVAILABLE",
+  "sensing": "AVAILABLE"
+ },
+ "perception": {
+  "by_kind": {
+   "DEPTH_RANGE": 80,
+   "POINT_CLOUD": 80,
+   "POSITION_FIX": 240,
+   "SONAR": 80,
+   "STRUCTURED": 204,
+   "ecological_survey": 17,
+   "field_sample": 192
+  },
+  "corrupt": 0,
+  "duplicates": 0,
+  "fixes_accepted": 240,
+  "fixes_rejected": 0,
+  "late": 0,
+  "received": 893,
+  "structural_matched": 204,
+  "structural_no_match": 0
+ },
+ "plans": [
+  {
+   "plan_id": "018bcfe5-6832-7a79-8f2b-80b3a23910f7",
+   "planner": "PRODUCTION[V-bayes_eig_ratio]",
+   "rejected": 40,
+   "status": "PLAN"
+  }
+ ],
+ "runtime_state_history": [
+  [
+   "BOOT",
+   "boot"
+  ],
+  [
+   "SELF_TEST",
+   "self-test started"
+  ],
+  [
+   "CONFIGURED",
+   "self-test passed"
+  ],
+  [
+   "CONNECTING",
+   "connecting adapters"
+  ],
+  [
+   "READY",
+   "adapters connected"
+  ],
+  [
+   "RUNNING",
+   "simulation run"
+  ],
+  [
+   "SAFE_HOLD",
+   "mission duration reached"
+  ],
+  [
+   "STOPPING",
+   "mission duration reached"
+  ],
+  [
+   "STOPPED",
+   "mission duration reached"
+  ]
+ ],
+ "safety_events": [
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 0.1,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 1.3,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "DEGRADED_DWELL",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 1.7,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 2.6,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 2.7,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 10.2,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 10.4,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 14.2,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 14.4,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 17.1,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 17.4,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 20.1,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 20.3,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 23.1,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 23.4,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 31.1,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 31.3,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 34.1,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 34.6,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 35.8,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 39.4,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 40.6,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 40.8,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 43.2,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 43.4,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 46.1,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 46.4,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 53.2,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 53.4,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 55.2,
+   "to": "NORMAL"
+  },
+  {
+   "from": "NORMAL",
+   "reasons": [
+    "COLLISION_MARGIN_REDUCED",
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 55.4,
+   "to": "DEGRADED"
+  },
+  {
+   "from": "DEGRADED",
+   "reasons": [
+    "ALTITUDE_UNMONITORED"
+   ],
+   "t_s": 56.8,
+   "to": "NORMAL"
+  }
+ ],
+ "uir": 0.0,
+ "uir_report": {
+  "relied_unsupported_claims": 0,
+  "relied_world_claims": 82,
+  "unsupported_claim_fraction": 0.4269005847953216,
+  "unsupported_inference_rate": 0.0,
+  "unsupported_world_claims": 511,
+  "world_claims": 1197
+ }
+}
