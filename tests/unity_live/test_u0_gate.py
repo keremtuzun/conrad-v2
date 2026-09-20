@@ -13,6 +13,7 @@ import json
 import math
 from collections.abc import Iterator
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pytest
@@ -55,18 +56,18 @@ from conrad.sim.unity.player import EXIT_REFUSED_INPUTS, UnityPlayerError, Unity
 from conrad.sim.unity.robot_export import robot_config_to_unity
 from conrad.sim.unity.scene import BoxPrimitive, CapsulePrimitive, HeightfieldPrimitive, SceneGeometry
 
-M = float(BASE.mass_kg.value)  # type: ignore[arg-type]
-LIN = [float(v) for v in BASE.linear_drag.value]  # type: ignore[union-attr]
-QUAD = [float(v) for v in BASE.quadratic_drag.value]  # type: ignore[union-attr]
-ADDED = [float(v) for v in BASE.added_mass_diag.value]  # type: ignore[union-attr]
-INERTIA = [float(v) for v in BASE.inertia_diag_kgm2.value]  # type: ignore[union-attr]
+M = float(BASE.mass_kg.value)
+LIN = [float(v) for v in BASE.linear_drag.value]
+QUAD = [float(v) for v in BASE.quadratic_drag.value]
+ADDED = [float(v) for v in BASE.added_mass_diag.value]
+INERTIA = [float(v) for v in BASE.inertia_diag_kgm2.value]
 THR = BASE.thrusters[0]
-LAG = (float(THR.latency_s.value), float(THR.time_constant_s.value))  # type: ignore[arg-type]
+LAG = (float(THR.latency_s.value), float(THR.time_constant_s.value))
 SUBSTEPS = STEP_NS // PHYSICS_DT_NS
 
 
 def _start(name: str, live_dir: Path, **kw: object) -> Iterator[UnityPlayerSession]:
-    with session(VARIANTS[name], live_dir / name, **kw) as s:  # type: ignore[arg-type]
+    with session(VARIANTS[name], live_dir / name, **kw) as s:
         yield s
 
 
@@ -171,8 +172,8 @@ def test_buoyancy_variants_rise_and_sink_as_the_analytic_heave_model(
     name: str, live_dir: Path, u0_record
 ) -> None:
     robot = VARIANTS[name]
-    m = float(robot.mass_kg.value)  # type: ignore[arg-type]
-    vol = float(robot.displaced_volume_m3.value)  # type: ignore[arg-type]
+    m = float(robot.mass_kg.value)
+    vol = float(robot.displaced_volume_m3.value)
     force = (RHO_NEUTRAL * vol - m) * G
     seconds = 20.0
     with session(robot, live_dir / name) as s:
@@ -234,7 +235,7 @@ def test_inertia_from_robot_config_sets_the_yaw_response(
     results = {}
     for name in ("neutral", "inertia_x2"):
         robot = VARIANTS[name]
-        iz = float(robot.inertia_diag_kgm2.value[2])  # type: ignore[index]
+        iz = float(robot.inertia_diag_kgm2.value[2])
         if name == "neutral":
             d = Driver(neutral, seed=21)
             d.reset(seed=9)
@@ -333,9 +334,9 @@ def test_imu_depth_camera_frames_and_monotonic_timestamps(driver: Driver, u0_rec
     for st in driver.states:
         for p in st.sensors:
             packets.setdefault(p.sensor_name, []).append(p)
-    report = {}
-    periods = {s.sensor_name: round(1e9 / float(s.rate_hz.value)) for s in BASE.sensors}  # type: ignore[arg-type]
-    latencies = {s.sensor_name: round(float(s.latency_s.value) * 1e9) for s in BASE.sensors}  # type: ignore[arg-type]
+    report: dict[str, Any] = {}
+    periods = {s.sensor_name: round(1e9 / float(s.rate_hz.value)) for s in BASE.sensors}
+    latencies = {s.sensor_name: round(float(s.latency_s.value) * 1e9) for s in BASE.sensors}
     for name, pkts in packets.items():
         acq = [p.acquisition_time_ns for p in pkts]
         seq = [p.sequence_index for p in pkts]
@@ -362,7 +363,7 @@ def test_imu_depth_camera_frames_and_monotonic_timestamps(driver: Driver, u0_rec
 
     acc = np.array([imu_from_packet(p, DEFAULT_MAPPER).linear_acceleration_mps2 for p in imu_rest])
     mean_acc = acc.mean(axis=0)
-    sigma = float(BASE.sensors[0].noise_std.value)  # type: ignore[arg-type]
+    sigma = float(BASE.sensors[0].noise_std.value)
     tol = 5 * sigma / math.sqrt(len(acc))
     imu_now = driver.hw.get_imu()
     assert (
@@ -601,7 +602,7 @@ def test_heightfield_collider_supports_a_sinking_vehicle(live_dir: Path, u0_reco
         )
     )
     robot = VARIANTS["negative"]
-    half_height = float(robot.dimensions_m.value[2]) / 2  # type: ignore[index]
+    half_height = float(robot.dimensions_m.value[2]) / 2
     with session(robot, live_dir / "heightfield") as s:
         d = Driver(s)
         d.hw.configure_scene(scene.to_json())
@@ -670,6 +671,7 @@ def test_full_robot_hardware_interface_through_the_real_command_gateway(driver: 
     assert power is not None and power.remaining_fraction < 1.0
     assert health.overall is HealthLevel.OK
     assert imu is not None and depth is not None and cam is not None and sonar is not None
+    assert isinstance(hw, UnityRobotHardware)  # engine metrics are an adapter-level service
     assert json.dumps(hw.get_metrics().metrics)  # metrics are served
 
 

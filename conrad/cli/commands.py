@@ -259,10 +259,14 @@ replay_app.registered_commands = [c for c in replay_app.registered_commands if c
 
 @sim_app.command("run")
 def sim_run_backend(
-    scenario: str = typer.Option(..., "--scenario", help="GOLDEN-SMOKE, FLAGSHIP-I4, I1-UNITY, I2-UNITY-NAV ..."),
+    scenario: str = typer.Option(
+        ..., "--scenario", help="GOLDEN-SMOKE, FLAGSHIP-I4, I1-UNITY, I2-UNITY-NAV ..."
+    ),
     config: str = typer.Option(DEFAULT_SIM_CONFIG, "--config"),
     run_id: str = typer.Option(None, "--run-id"),
-    backend: str = typer.Option("python", "--backend", help="python (L1 kernel, SURROGATE) or unity (FORMAL)"),
+    backend: str = typer.Option(
+        "python", "--backend", help="python (L1 kernel, SURROGATE) or unity (FORMAL)"
+    ),
     seed: int = typer.Option(None, "--seed", help="override run.seed (unity backend)"),
 ) -> None:
     """Run an integrated scenario on the Python kernel or on the built Unity player and write its bundle."""
@@ -282,7 +286,9 @@ def sim_run_backend(
         if scenario == "I2-UNITY-NAV"
         else {"target_after": rep.get("target_after"), "unity": rep.get("unity", {}).get("forwarded_frames")}
     )
-    typer.echo(json.dumps({"run_id": out["run_id"], "run_dir": out["run_dir"], **summary}, indent=2, default=str))
+    typer.echo(
+        json.dumps({"run_id": out["run_id"], "run_dir": out["run_dir"], **summary}, indent=2, default=str)
+    )
 
 
 @replay_app.command("run")

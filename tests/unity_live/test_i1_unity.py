@@ -153,7 +153,7 @@ def test_observed_inferred_unknown_and_hidden_is_unknown(run):
     rng = np.random.default_rng(11)
     lo, hi = np.asarray(world.bounds_min), np.asarray(world.bounds_max)
     xy = rng.uniform(lo[:2], hi[:2], (500, 2))
-    floor = world.entities[0].primitive.height(xy)  # type: ignore[attr-defined]
+    floor = world.entities[0].primitive.height(xy)
     buried = np.c_[xy, floor - 0.8]  # below the seabed: never observable by any sensor
     st = [x.value for x in s.runtime.m2s.occupancy_status(buried)]
     hidden = {k: st.count(k) for k in set(st)}

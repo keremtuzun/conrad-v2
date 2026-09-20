@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 import uuid
+from typing import Any, cast
 
 import numpy as np
 import pytest
@@ -18,8 +19,11 @@ from conrad.active.surface_predictive import (
 )
 from conrad.domains.technical.config import CoverageConfig, SensorCharacteristics
 from conrad.domains.technical.coverage import geometry_from_context
+from conrad.domains.technical.model import Model2T
+from conrad.domains.technical.state import ComponentBelief
 from conrad.orchestration.mission_predictive import capsule_cells, detection_probability, look_rel_sd
 from conrad.schemas.frames import WORLD, Pose
+from conrad.schemas.world import SensorSpec
 
 SENSOR = SensorOption(sensor_id=uuid.UUID(int=7), modality="STRUCTURAL", min_range_m=0.5, max_range_m=4.0)
 RID = uuid.UUID(int=11)
@@ -57,23 +61,24 @@ def test_capsule_cells_are_indexed_like_model2t_coverage():
 
 
 def _model(prior: np.ndarray, weights: np.ndarray, read: bool = False) -> SurfaceCellPredictive:
+    read_terms: dict[str, Any] = (
+        {
+            "read_mean": 0.05,
+            "read_var": 4e-4,
+            "look_std_read": 0.01,
+            "read_var_floor": 1e-5,
+            "locus_cell": 0,
+        }
+        if read
+        else {}
+    )
     ch = QuantityChannel(
         quantity="crack_length_m",
         unread_mean=2e-3,
         unread_var=1e-5,
         look_std_unread=2e-3,
         detection_probability=0.5,
-        **(
-            {
-                "read_mean": 0.05,
-                "read_var": 4e-4,
-                "look_std_read": 0.01,
-                "read_var_floor": 1e-5,
-                "locus_cell": 0,
-            }
-            if read
-            else {}
-        ),
+        **read_terms,
     )
     return SurfaceCellPredictive(cell_prior=prior, channels=(ch,), cell_weights=lambda pose, s: weights)
 
@@ -121,7 +126,12 @@ def test_worst_band_probability_follows_the_model2t_condition_rule():
     from conrad.domains.technical.config import ConditionConfig
     from conrad.orchestration.mission_predictive import worst_band_probability
 
-    b = SimpleNamespace(condition_cfg=ConditionConfig(), spec=SimpleNamespace(wall_thickness_m=None))
+    # worst_band_probability reads only ``condition_cfg`` and ``spec.wall_thickness_m``; the namespace
+    # is a deliberate minimal stand-in for that structural slice of ComponentBelief.
+    b = cast(
+        ComponentBelief,
+        SimpleNamespace(condition_cfg=ConditionConfig(), spec=SimpleNamespace(wall_thickness_m=None)),
+    )
     band = ConditionConfig().bands[2] * ConditionConfig().crack_critical_m
     assert worst_band_probability("crack_length_m", band, 1e-6, b) == pytest.approx(0.5)
     assert worst_band_probability("crack_length_m", 3e-3, 1e-6, b) < 1e-6
@@ -135,11 +145,14 @@ def test_track_views_credit_only_cells_facing_past_positions():
 
     g = _geometry()
     pts, nrm = capsule_cells(g)
-    sensor = SimpleNamespace(
-        sensor_id=uuid.UUID(int=3), modality="STRUCTURAL", parameters={"max_range_m": 4.0}
+    # ``_track_views`` touches only the sensor's range parameter and never the Model2T, so both are
+    # deliberate stand-ins cast to the declared types.
+    sensor = cast(
+        SensorSpec,
+        SimpleNamespace(sensor_id=uuid.UUID(int=3), modality="STRUCTURAL", parameters={"max_range_m": 4.0}),
     )
     mp = MissionPredictive(
-        m2t=None,
+        m2t=cast(Model2T, None),
         m2s=None,
         boresight_sensor=sensor,
         unknown_block_probability=0.5,
@@ -150,6 +163,6 @@ def test_track_views_credit_only_cells_facing_past_positions():
     facing = nrm[:, 1] < -0.1
     assert (w[facing] > 0).all() and (w[nrm[:, 1] > 0.1] == 0).all()
     empty = MissionPredictive(
-        None, None, sensor, 0.5, SurfacePredictiveConfig(), track=lambda: [[0, 50, 50, 0]]
+        cast(Model2T, None), None, sensor, 0.5, SurfacePredictiveConfig(), track=lambda: [[0, 50, 50, 0]]
     )
     assert not empty._track_views(pts, nrm, pts).any()

@@ -38,7 +38,9 @@ def test_kernel_reports_true_depth_below_its_surface():
     hw = build_sim_hardware(CFG, 3, SimKernelConfig(water_surface_z_m=SURFACE))
     hw.kernel.reset(np.array([0.0, 0.0, 2.0]))
     hw.advance(0.5)
-    assert hw.get_depth().depth_m == pytest.approx(SURFACE - 2.0, abs=0.1)
+    depth = hw.get_depth()
+    assert depth is not None
+    assert depth.depth_m == pytest.approx(SURFACE - 2.0, abs=0.1)
 
 
 def test_stack_config_needs_one_surface():
@@ -67,7 +69,9 @@ def test_quiet_prior_turns_into_the_full_prior_when_turning():
     # blind (no accepted fix yet): the full prior, so the position sigma grows honestly (NAV-007)
     assert np.allclose(ekf._prior_sigma(), full)
     ekf._last_fix_ns = ekf._stamp.time_ns  # a fix just arrived
-    assert np.allclose(ekf._prior_sigma(), ekf.config.velocity_prior_quiet_sigma_mps)
+    quiet = ekf.config.velocity_prior_quiet_sigma_mps
+    assert quiet is not None
+    assert np.allclose(ekf._prior_sigma(), quiet)
     ekf._w = np.array([0.0, 0.0, ekf.config.velocity_prior_turn_rate_ref_rps])
     assert np.allclose(ekf._prior_sigma(), full)
     legacy = EkfStateEstimator(

@@ -53,9 +53,13 @@ def _outage_run(legacy, fix_s, outage_s, seed, imu_noise):
             hw.kernel.t_s, {"H1": 0.25, "H2": 0.25, "V1": 0.1, "V2": 0.1, "V3": 0.1, "V4": 0.1}
         )
         hw.advance(dt)
-        ekf.predict(hw.get_imu(), hw.get_thruster_state(), dt)
+        imu = hw.get_imu()
+        assert imu is not None
+        ekf.predict(imu, hw.get_thruster_state(), dt)
         if i % 3 == 0:
-            ekf.update_depth(hw.get_depth())
+            depth = hw.get_depth()
+            assert depth is not None
+            ekf.update_depth(depth)
         truth = hw.truth_access().true_state().position_world_m  # test-only synthetic USBL-like fix
         if t < fix_s and i % 50 == 0:
             ekf.update_map_constraint(MapConstraint(truth + 0.1 * rng.standard_normal(3), 0.1))
@@ -159,10 +163,12 @@ def test_growing_sigma_slows_then_holds_with_configured_policy(action):
             risk_limit=0.1,
         )
     )
-    seen, hold_refs = [], []
+    seen: list[SafetyState] = []
+    hold_refs: list[np.ndarray] = []
     for _ in range(round(30.0 / 0.02)):
         res = stack.step()
         a, sigma = res.assessment, res.state.pose.position_sigma_m()
+        assert sigma is not None  # the stack always carries a covariance
         if not seen or seen[-1] is not a.state:
             seen.append(a.state)
         if a.state is SafetyState.DEGRADED and Reason.POSE_SIGMA_ELEVATED in a.reason_codes:

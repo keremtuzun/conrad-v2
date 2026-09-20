@@ -137,7 +137,7 @@ def test_a_miss_on_another_region_says_nothing_about_the_defect():
         sup = SpatialSupport(frame_id="WORLD", center_m=(x, 0.0, 0.0), position_sigma_m=0.05)
         return e.model_copy(update={"spatial_support": sup})
 
-    def final(far_x: float) -> float:
+    def final(far_x: float) -> tuple[float, float]:
         m, r, ev = model(mode=PropagationMode.NONE)
         for i in range(4):
             e = evidence(ev, r["seg_a"], 10.0 + i, crack=0.06, wall=6e-3, group=f"sensor:S|obs:{i}")

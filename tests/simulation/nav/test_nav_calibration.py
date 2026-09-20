@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 from conrad.evaluation import dispatch
 from conrad.evaluation.nav_benchmarks import calibration, run_benchmark
@@ -28,7 +29,7 @@ def test_nav007_loss_is_declared_before_the_error_outgrows_the_envelope():
 
 def test_calibration_case_metrics_and_registration(tmp_path):
     assert dispatch.EXPERIMENTS["NAV-CAL-E001"][0] == "conrad.evaluation.nav_benchmarks.calibration"
-    cfg = {
+    cfg: dict[str, Any] = {
         "dev_seeds": [1],
         "seeds": [2],
         "variants": ["after_fix"],

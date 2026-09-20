@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import ast
 from pathlib import Path
+from typing import Any, cast
+from uuid import UUID
 
 import pytest
 
@@ -12,10 +14,15 @@ from conrad.robotics.hardware.identification.runner import (
     HardwareControlRefusedError,
     IdentificationSafetyEnvelope,
     ManoeuvreRunner,
+    ReferenceSource,
     RunnerConfig,
+    StateSource,
     check_hardware_permission,
 )
-from conrad.robotics.hardware.interface import PhysicalRobotHardware
+from conrad.robotics.hardware.interface import PhysicalRobotHardware, RobotHardwareInterface
+from conrad.runtime.command_gateway import CommandGateway
+from conrad.schemas.ids import IdFactory
+from conrad.schemas.robot import RobotConfig
 
 RUNNER = (
     Path(__file__).resolve().parents[4] / "conrad" / "robotics" / "hardware" / "identification" / "runner.py"
@@ -52,18 +59,24 @@ ENVELOPE = IdentificationSafetyEnvelope(
 )
 
 
-def _make(hw, config, reference=None):
+def _make(hw: RobotHardwareInterface, config: RunnerConfig, reference: Any = None) -> ManoeuvreRunner:
+    """Build a runner from deliberate stand-ins.
+
+    Every test here asserts the runner refuses *before* it touches the collaborators, so the
+    gateway/config/ids/state/ids arguments are never dereferenced; they are cast to the declared
+    types to keep the refusal the only thing under test.
+    """
     return ManoeuvreRunner(
         hw,
-        None,
-        None,
-        None,
+        cast(CommandGateway, None),
+        cast(RobotConfig, None),
+        cast(IdFactory, None),
         lambda s: None,
-        reference or _Ref(),
-        None,
-        None,
-        None,
-        config,  # type: ignore[arg-type]
+        cast(ReferenceSource, reference or _Ref()),
+        cast(StateSource, None),
+        cast(UUID, None),
+        cast(UUID, None),
+        config,
     )
 
 

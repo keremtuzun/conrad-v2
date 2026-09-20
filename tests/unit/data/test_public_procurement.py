@@ -57,7 +57,7 @@ def test_files_on_an_unapproved_public_manifest_are_rejected():
 
 
 def _write_video(path, n_frames: int, fps: float = 10.0) -> None:
-    writer = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*"MJPG"), fps, (64, 48))
+    writer = cv2.VideoWriter(str(path), cv2.VideoWriter.fourcc(*"MJPG"), fps, (64, 48))
     assert writer.isOpened()
     rng = np.random.default_rng(0)
     for _ in range(n_frames):

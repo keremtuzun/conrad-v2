@@ -1,12 +1,14 @@
 """MCBR re-evaluation: immutable partitions, purpose guard, predictive rankers, frozen production planner."""
 
 import math
+from collections.abc import Sequence
 
 import numpy as np
 import pytest
 import yaml
 
 from conrad.active import MCBRConfig, PriorView
+from conrad.active.candidates import SensorOption
 from conrad.active.predictive import (
     HypothesisBelief,
     PredictedOutcome,
@@ -23,6 +25,7 @@ from conrad.evaluation.decision_experiments.active_mcbr_reeval import Budget, ch
 from conrad.evaluation.decision_experiments.fixtures import unc
 from conrad.orchestration.mission_config import MissionRuntimeConfig
 from conrad.schemas.decision import PlanStatus, QuestionType
+from conrad.schemas.frames import Pose
 from conrad.schemas.ids import IdFactory
 from tests.unit.active.test_mcbr import _request
 
@@ -102,17 +105,19 @@ def test_preposterior_quantities():
 
 
 class _Model:
-    def __init__(self, sees):
-        self.scalars = (
+    """A minimal but complete implementation of the ``PredictiveBelief`` protocol."""
+
+    def __init__(self, sees: Sequence[str]) -> None:
+        self.scalars: tuple[ScalarBelief, ...] = (
             ScalarBelief("a", 0.5, 0.3, 0.5, weight=1.0),
             ScalarBelief("b", 0.5, 0.3, 0.5, weight=0.0),
         )
-        self.hypotheses = (HypothesisBelief("H", 0.5),)
+        self.hypotheses: tuple[HypothesisBelief, ...] = (HypothesisBelief("H", 0.5),)
         self.epistemic = 0.1
-        self.used_modalities = frozenset()
+        self.used_modalities: frozenset[str] = frozenset()
         self._sees = sees
 
-    def predict(self, pose, sensor):
+    def predict(self, pose: Pose, sensor: SensorOption) -> PredictedOutcome:
         return PredictedOutcome(noise_std=dict.fromkeys(self._sees, 0.1))
 
 

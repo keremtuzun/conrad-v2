@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import copy
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pytest
@@ -57,7 +58,9 @@ def build(root: Path, reps: int = 4, mutate_cols=None) -> Path:
         (ExperimentKind.SURGE_ACCELERATION, Variant.STANDARD, None),
         (ExperimentKind.STATION_KEEPING, Variant.STANDARD, None),
     ]
-    segments, ident, val = [], [], []
+    segments: list[dict[str, Any]] = []
+    ident: list[str] = []
+    val: list[str] = []
     for kind, variant, thr in groups:
         for r in range(reps):
             rid = f"{kind.value}-{thr or 'x'}-r{r + 1}"

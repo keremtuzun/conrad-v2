@@ -5,6 +5,8 @@ SYNTHETIC_TOOLING_CHECK only. The "true" values are the Python kernel's SYNTHETI
 
 from __future__ import annotations
 
+from typing import Any
+
 import pytest
 import yaml
 
@@ -22,7 +24,7 @@ from conrad.robotics.hardware.identification.report import (
 )
 from conrad.settings import REPO_ROOT
 
-TINY = {
+TINY: dict[str, Any] = {
     "robot_config": "configs/robot/sim_reference.yaml",
     "kernel": {"physics_dt_s": 0.01},
     "start_position_world_m": [0.0, 0.0, -20.0],

@@ -56,7 +56,9 @@ def _experiment_has_artifact(exp_id: str) -> bool:
     if not EXPERIMENTS_DIR.exists():
         return False
     for path in EXPERIMENTS_DIR.rglob("*.json"):
-        if path.stem.startswith(exp_id) or any(part.startswith(exp_id) for part in path.relative_to(EXPERIMENTS_DIR).parts[:-1]):
+        if path.stem.startswith(exp_id) or any(
+            part.startswith(exp_id) for part in path.relative_to(EXPERIMENTS_DIR).parts[:-1]
+        ):
             return True
     return False
 
@@ -76,7 +78,9 @@ def parse() -> list[dict[str, object]]:
             continue
         cells = [c.strip() for c in raw.split("|")]
         cells += [""] * (12 - len(cells))
-        rid, section, authority, owner, summary, impl, tests, exps, keys, ext, override, gate_cell = cells[:12]
+        rid, section, authority, owner, summary, impl, tests, exps, keys, ext, override, gate_cell = cells[
+            :12
+        ]
         gate_id = gate_cell.removeprefix("gate:").strip() or None
         impl_paths, test_paths = _split(impl), _split(tests)
         present = [p for p in impl_paths if _exists(p)]

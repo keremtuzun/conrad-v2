@@ -1,5 +1,7 @@
 """I5 action semantics added for M1-ACTION-E001: replan, change sensing, time reserve, report, calibration gap."""
 
+from typing import Any
+
 import pytest
 
 from conrad.decision import EGDC, ClaimGraphBuilder, ConstraintEngine, DecisionConfig, DecisionSummary
@@ -118,7 +120,7 @@ def test_critical_finding_on_down_link_is_stored_once_then_mission_continues():
     ids = IdFactory(36)
     b = make_belief(ids, properties={"condition": "DAMAGED"})
     req = make_requirement(ids, belief_ids=[b.belief_id])
-    kw = {
+    kw: dict[str, Any] = {
         "link_status": LinkStatus.DOWN,
         "operator_reachable": False,
         "notes": {"pending_report_belief_ids": [str(b.belief_id)]},
