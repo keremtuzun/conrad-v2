@@ -1263,7 +1263,7 @@
       "requirement_summary": "Model2E separate entity/field beliefs and CEFD coupling with provenance",
       "authority": "EXPERIMENTAL_CANDIDATE",
       "owner": "software",
-      "implementation_status": "EVALUATED",
+      "implementation_status": "INTEGRATED",
       "implementation_paths": [
         "conrad/domains/ecological"
       ],
@@ -1277,7 +1277,7 @@
       ],
       "missing_experiment_artifacts": [],
       "gate_id": "2E",
-      "gate_official_status": "FAIL",
+      "gate_official_status": "PASS",
       "configuration_keys": [
         "model.ecological"
       ],
@@ -1734,7 +1734,7 @@
       "requirement_summary": "Structural inspection with partial observations and persistent uncertain 2T state",
       "authority": "FROZEN_CONTRACT",
       "owner": "software",
-      "implementation_status": "TESTED",
+      "implementation_status": "INTEGRATED",
       "implementation_paths": [
         "conrad/orchestration/mission.py"
       ],
@@ -1750,7 +1750,7 @@
         "SYS-I3"
       ],
       "gate_id": "I3",
-      "gate_official_status": "FAIL",
+      "gate_official_status": "PASS",
       "configuration_keys": [],
       "assumptions": [],
       "external_dependencies": [],
@@ -1780,7 +1780,7 @@
         "SYS-I4"
       ],
       "gate_id": "I4",
-      "gate_official_status": "BLOCKED_UPSTREAM",
+      "gate_official_status": "FAIL",
       "configuration_keys": [],
       "assumptions": [],
       "external_dependencies": [],
@@ -1909,19 +1909,23 @@
     {
       "requirement_id": "REQ-HW-013",
       "source_section": "ch22; ch25 Phase 13",
-      "requirement_summary": "Parameter identification tooling; identification data separated from validation data",
+      "requirement_summary": "Parameter identification tooling; identification data separated from validation data; log collection protocol, intake checker and gateway-only manoeuvre runner (hardware control off by default)",
       "authority": "EXPERIMENTAL_CANDIDATE",
       "owner": "software",
-      "implementation_status": "TESTED",
+      "implementation_status": "EVALUATED",
       "implementation_paths": [
-        "conrad/robotics/hardware/identification"
+        "conrad/robotics/hardware/identification",
+        "docs/IDENTIFICATION_LOG_PROTOCOL.md"
       ],
       "missing_paths": [],
       "test_ids": [
-        "tests/unit/identification"
+        "tests/unit/identification",
+        "tests/unit/robotics/identification"
       ],
       "missing_tests": [],
-      "experiment_ids": [],
+      "experiment_ids": [
+        "ID-REHEARSAL-E001"
+      ],
       "missing_experiment_artifacts": [],
       "gate_id": null,
       "gate_official_status": null,
@@ -2006,7 +2010,8 @@
         "conrad/data/adapters",
         "conrad/data/adapters/uvvid.py",
         "datasets/public",
-        "docs/audits/PUBLIC_DATA_PROCUREMENT.md"
+        "docs/audits/PUBLIC_DATA_PROCUREMENT.md",
+        "conrad/data/adapters/subpipe.py"
       ],
       "missing_paths": [],
       "test_ids": [
@@ -2014,7 +2019,8 @@
       ],
       "missing_tests": [],
       "experiment_ids": [
-        "DATA-REAL-SMOKE-E001"
+        "DATA-REAL-SMOKE-E001",
+        "DATA-REAL-E002"
       ],
       "missing_experiment_artifacts": [],
       "gate_id": null,
@@ -2079,7 +2085,7 @@
       "configuration_keys": [],
       "assumptions": [],
       "external_dependencies": [
-        "Conrad-owned real captures (EXT-DATA-CONRAD-CAPTURE); public data only via approved manifests, audit 2026-09-19: uvvid=APPROVED_WITH_RESTRICTIONS(sample downloaded, unlabelled); subpipe,seaclear,underwater_caves_sonar=APPROVED_WITH_RESTRICTIONS(not downloaded, size); aqualoc,benthicnet,fathomnet,seaview,suim=NEEDS_HUMAN_RIGHTS_REVIEW; uw_slam=UNAVAILABLE"
+        "Conrad-owned real captures (EXT-DATA-CONRAD-CAPTURE); public data only via approved manifests, audit 2026-09-19: uvvid=APPROVED_WITH_RESTRICTIONS(sample downloaded, unlabelled); subpipe=APPROVED(SubPipeMini2 downloaded); seaclear,underwater_caves_sonar=APPROVED_WITH_RESTRICTIONS(not downloaded); aqualoc,benthicnet,fathomnet,seaview,suim=NEEDS_HUMAN_RIGHTS_REVIEW; uw_slam=UNAVAILABLE"
       ],
       "evidence_artifacts": [],
       "maturity_level": null,
@@ -2298,7 +2304,7 @@
       "configuration_keys": [],
       "assumptions": [],
       "external_dependencies": [
-        "Labelled real task data, audit 2026-09-19: uvvid APPROVED_WITH_RESTRICTIONS but has no labels/pose so cannot score RealOnly vs Twin+Real; subpipe APPROVED_WITH_RESTRICTIONS (CC-BY-4.0, segmentation+VI) blocked on a 4.9 GB download budget decision; seaclear APPROVED_WITH_RESTRICTIONS (1.7 GB) object labels only; aqualoc,benthicnet,fathomnet,seaview,suim NEEDS_HUMAN_RIGHTS_REVIEW; uw_slam UNAVAILABLE"
+        "Twin+Real vs RealOnly comparison on a shared labelled task, audit 2026-09-19: subpipe APPROVED (SubPipeMini2 downloaded; real labels are side-scan pipeline presence from one mission, no RGB masks, no nav truth; no Twin2S side-scan counterpart yet); uvvid APPROVED_WITH_RESTRICTIONS unlabelled; seaclear APPROVED_WITH_RESTRICTIONS not downloaded (1.7 GB); aqualoc,benthicnet,fathomnet,seaview,suim NEEDS_HUMAN_RIGHTS_REVIEW; uw_slam UNAVAILABLE"
       ],
       "evidence_artifacts": [],
       "maturity_level": null,

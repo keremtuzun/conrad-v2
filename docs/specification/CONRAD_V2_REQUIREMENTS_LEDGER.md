@@ -74,7 +74,7 @@ Statuses are derived from the files present in the repository; do not edit this 
 | REQ-INT-I1 | ch25 Phase 5; gate I1 | FROZEN_CONTRACT | INTEGRATED | I1: PASS | Twin2S -> sim -> sensors -> ECMER -> Model2S persistent spatial belief, no leakage |  |
 | REQ-INT-I2 | ch25 Phase 6; gate I2 | FROZEN_CONTRACT | INTEGRATED | I2: PASS | Autonomous movement on estimated state; nav benchmarks |  |
 | REQ-INT-I3 | ch25 Phase 7; gate I3 | FROZEN_CONTRACT | INTEGRATED | I3: PASS | Structural inspection with partial observations and persistent uncertain 2T state |  |
-| REQ-INT-I4 | ch25 Phase 8; ch35 P1; gate I4 | FROZEN_CONTRACT | TESTED | I4: NOT_RUN | Flagship closed active inspection, quantified and replayable |  |
+| REQ-INT-I4 | ch25 Phase 8; ch35 P1; gate I4 | FROZEN_CONTRACT | TESTED | I4: FAIL | Flagship closed active inspection, quantified and replayable |  |
 | REQ-INT-I5 | ch25 Phase 9; gate I5 | FROZEN_CONTRACT | TESTED | I5: BLOCKED_UPSTREAM | Model1 decision autonomy integrated; hard constraints deterministic |  |
 | REQ-INT-I6 | ch25 Phase 10; gate I6 | FROZEN_CONTRACT | TESTED | I6: BLOCKED_UPSTREAM | 2E integrated into multi-domain belief through the bus |  |
 | REQ-INT-I7 | ch25 Phase 11; gate I7 | FROZEN_CONTRACT | TESTED | I7: BLOCKED_UPSTREAM | Constrained BAAC communication in missions: low bandwidth, loss, outage, reconnection |  |
