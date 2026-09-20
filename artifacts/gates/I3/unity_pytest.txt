@@ -20,4 +20,4 @@ PASSED tests/unity_live/test_i3_unity.py::test_robot_sees_only_partial_infrastru
 PASSED tests/unity_live/test_i3_unity.py::test_persistent_technical_belief
 PASSED tests/unity_live/test_i3_unity.py::test_no_twin_truth_leakage_on_runtime_side
 PASSED tests/unity_live/test_i3_unity.py::test_bundle_replays_deterministically
-============================= 5 passed in 37.92s ==============================
+======================== 5 passed in 92.32s (0:01:32) =========================

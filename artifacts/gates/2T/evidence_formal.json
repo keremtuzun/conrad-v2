@@ -2,7 +2,7 @@
   "gate_id": "2T",
   "evidence_class": "FORMAL",
   "execution_path": "pytest nodes + retained experiment artifacts (2T)",
-  "git_commit": "a95eaf56d1481b3fbe1279da6a9d532ecddf431e",
+  "git_commit": "0a7179bc93030a68de78db2912cb1236fa214191",
   "criteria": [
     {
       "criterion": "direct inference works before TCDP gets credit",

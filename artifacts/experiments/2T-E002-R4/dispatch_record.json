@@ -1,0 +1,19 @@
+{
+  "experiment_id": "2T-E002-R4",
+  "module": "conrad.evaluation.structural_experiments.e002_persistent",
+  "config": "configs\\eval\\2t_e002_r4.yaml",
+  "seeds": [
+    6700000,
+    6700001,
+    6700002,
+    6700003,
+    6700004,
+    6700005,
+    6700006,
+    6700007,
+    6700008,
+    6700009
+  ],
+  "wall_s": 196.1,
+  "out_dir": "C:\\Users\\Kerem\\Kerem\\conrad-v2\\artifacts\\experiments\\2T-E002-R4"
+}

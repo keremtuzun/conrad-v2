@@ -48,7 +48,7 @@
     ]
    ],
    "target_condition": "UNKNOWN",
-   "target_U_O": 0.90625,
+   "target_U_O": 0.932465,
    "target_near_side_readings": 9
   },
   "leakage": {
@@ -57,8 +57,8 @@
   },
   "replay": {
    "events": {
-    "original": 1409,
-    "replayed": 1409,
+    "original": 1408,
+    "replayed": 1408,
     "equal": true,
     "first_difference": null
    },
