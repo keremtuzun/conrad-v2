@@ -4,31 +4,33 @@ hypothesis profile 'default'
 rootdir: C:\Users\Kerem\Kerem\conrad-v2
 configfile: pyproject.toml
 plugins: anyio-4.15.1, hypothesis-6.168.0, cov-6.3.0
-collecting ... collected 9 items
+collecting ... collected 11 items
 
-tests/unity_live/test_i4_unity.py::test_closed_loop_mcbr_view_improves_hidden_target PASSED [ 11%]
-tests/unity_live/test_i4_unity.py::test_beats_fixed_views_on_hidden_state_reconstruction FAILED [ 22%]
-tests/unity_live/test_i4_unity.py::test_beats_random_views PASSED        [ 33%]
-tests/unity_live/test_i4_unity.py::test_beats_coverage_only PASSED       [ 44%]
-tests/unity_live/test_i4_unity.py::test_beats_simple_views_on_information_per_time_and_energy[A-B1_fixed_inspection] FAILED [ 55%]
-tests/unity_live/test_i4_unity.py::test_beats_simple_views_on_information_per_time_and_energy[A-B0_random] PASSED [ 66%]
-tests/unity_live/test_i4_unity.py::test_beats_simple_views_on_information_per_time_and_energy[A-B2_coverage] PASSED [ 77%]
-tests/unity_live/test_i4_unity.py::test_no_twin_truth_leakage_on_runtime_side PASSED [ 88%]
-tests/unity_live/test_i4_unity.py::test_bundle_replays_deterministically PASSED [100%]
+tests/unity_live/test_i4_occluded_unity.py::test_declared_arm_set_is_recorded PASSED [  9%]
+tests/unity_live/test_i4_occluded_unity.py::test_results_file_is_written PASSED [ 18%]
+tests/unity_live/test_i4_occluded_unity.py::test_closed_loop_mcbr_view_improves_hidden_target PASSED [ 27%]
+tests/unity_live/test_i4_occluded_unity.py::test_beats_fixed_views_on_hidden_state_reconstruction PASSED [ 36%]
+tests/unity_live/test_i4_occluded_unity.py::test_beats_random_views PASSED [ 45%]
+tests/unity_live/test_i4_occluded_unity.py::test_beats_coverage_only FAILED [ 54%]
+tests/unity_live/test_i4_occluded_unity.py::test_beats_simple_views_on_information_per_time_and_energy[A-B1_fixed_inspection] PASSED [ 63%]
+tests/unity_live/test_i4_occluded_unity.py::test_beats_simple_views_on_information_per_time_and_energy[A-B0_random] PASSED [ 72%]
+tests/unity_live/test_i4_occluded_unity.py::test_beats_simple_views_on_information_per_time_and_energy[A-B2_coverage] FAILED [ 81%]
+tests/unity_live/test_i4_occluded_unity.py::test_no_twin_truth_leakage_on_runtime_side PASSED [ 90%]
+tests/unity_live/test_i4_occluded_unity.py::test_bundle_replays_deterministically PASSED [100%]
 
 ================================== FAILURES ===================================
-____________ test_beats_fixed_views_on_hidden_state_reconstruction ____________
+__________________________ test_beats_coverage_only ___________________________
 
-flights = {'dirs': {'7800002': {'A-B0_random': 'artifacts\\unity\\gate_runs\\I4\\I4-UNITY-s7800002-A-B0_random', 'A-B1_fixed_ins...12714634, 'critical_delivered': 1.0, ...}}, ...}, 'seeds': [7800002, 7800003, 7800004, 7800005, 7800006, 7800007, ...]}
+flights = {'arms': ('PRODUCTION', 'A-B1_fixed_inspection', 'A-B0_random', 'A-B2_coverage'), 'cfg': {'arm_set': {'arms': ['PRODUC...ror_m': 0.0006287055355694488, 'crack_abs_error_m': 0.0013888102960637055, 'critical_delivered': 1.0, ...}}, ...}, ...}
 
-    def test_beats_fixed_views_on_hidden_state_reconstruction(flights):
->       _criterion(flights, "beats fixed views", FIXED, {"hidden_state_error_improvement": "higher"})
+    def test_beats_coverage_only(flights):
+>       _criterion(flights, "beats coverage-only", COVERAGE, {"hidden_state_error_improvement": "higher"})
 
-tests\unity_live\test_i4_unity.py:183: 
+tests\unity_live\test_i4_occluded_unity.py:277: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-flights = {'dirs': {'7800002': {'A-B0_random': 'artifacts\\unity\\gate_runs\\I4\\I4-UNITY-s7800002-A-B0_random', 'A-B1_fixed_ins...12714634, 'critical_delivered': 1.0, ...}}, ...}, 'seeds': [7800002, 7800003, 7800004, 7800005, 7800006, 7800007, ...]}
-name = 'beats fixed views', base = 'A-B1_fixed_inspection'
+flights = {'arms': ('PRODUCTION', 'A-B1_fixed_inspection', 'A-B0_random', 'A-B2_coverage'), 'cfg': {'arm_set': {'arms': ['PRODUC...ror_m': 0.0006287055355694488, 'crack_abs_error_m': 0.0013888102960637055, 'critical_delivered': 1.0, ...}}, ...}, ...}
+name = 'beats coverage-only', base = 'A-B2_coverage'
 metrics = {'hidden_state_error_improvement': 'higher'}
 
     def _criterion(flights: dict[str, Any], name: str, base: str, metrics: dict[str, str]) -> None:
@@ -38,14 +40,14 @@ metrics = {'hidden_state_error_improvement': 'higher'}
         measured(GATE, name, comparator=base, paired=rows, means=means)
         failures = [f"{m}: {r['benefit_mean']:+.4f} CI95 {r['ci95']}" for m, r in rows.items() if not _beats(r)]
 >       assert not failures, f"PRODUCTION does not beat {base}: " + "; ".join(failures)
-E       AssertionError: PRODUCTION does not beat A-B1_fixed_inspection: hidden_state_error_improvement: +0.0655 CI95 [-0.042706763769972615, 0.2358042501156302]
-E       assert not ['hidden_state_error_improvement: +0.0655 CI95 [-0.042706763769972615, 0.2358042501156302]']
+E       AssertionError: PRODUCTION does not beat A-B2_coverage: hidden_state_error_improvement: +0.1635 CI95 [-0.04476929276659981, 0.3693231214694793]
+E       assert not ['hidden_state_error_improvement: +0.1635 CI95 [-0.04476929276659981, 0.3693231214694793]']
 
-tests\unity_live\test_i4_unity.py:158: AssertionError
-_ test_beats_simple_views_on_information_per_time_and_energy[A-B1_fixed_inspection] _
+tests\unity_live\test_i4_occluded_unity.py:201: AssertionError
+__ test_beats_simple_views_on_information_per_time_and_energy[A-B2_coverage] __
 
-flights = {'dirs': {'7800002': {'A-B0_random': 'artifacts\\unity\\gate_runs\\I4\\I4-UNITY-s7800002-A-B0_random', 'A-B1_fixed_ins...12714634, 'critical_delivered': 1.0, ...}}, ...}, 'seeds': [7800002, 7800003, 7800004, 7800005, 7800006, 7800007, ...]}
-base = 'A-B1_fixed_inspection'
+flights = {'arms': ('PRODUCTION', 'A-B1_fixed_inspection', 'A-B0_random', 'A-B2_coverage'), 'cfg': {'arm_set': {'arms': ['PRODUC...ror_m': 0.0006287055355694488, 'crack_abs_error_m': 0.0013888102960637055, 'critical_delivered': 1.0, ...}}, ...}, ...}
+base = 'A-B2_coverage'
 
     @pytest.mark.parametrize("base", [FIXED, RANDOM, COVERAGE])
     def test_beats_simple_views_on_information_per_time_and_energy(flights, base):
@@ -56,12 +58,11 @@ base = 'A-B1_fixed_inspection'
             {"info_per_time": "higher", "info_per_kj": "higher"},
         )
 
-tests\unity_live\test_i4_unity.py:196: 
+tests\unity_live\test_i4_occluded_unity.py:282: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-flights = {'dirs': {'7800002': {'A-B0_random': 'artifacts\\unity\\gate_runs\\I4\\I4-UNITY-s7800002-A-B0_random', 'A-B1_fixed_ins...12714634, 'critical_delivered': 1.0, ...}}, ...}, 'seeds': [7800002, 7800003, 7800004, 7800005, 7800006, 7800007, ...]}
-name = 'information/time/energy vs A-B1_fixed_inspection'
-base = 'A-B1_fixed_inspection'
+flights = {'arms': ('PRODUCTION', 'A-B1_fixed_inspection', 'A-B0_random', 'A-B2_coverage'), 'cfg': {'arm_set': {'arms': ['PRODUC...ror_m': 0.0006287055355694488, 'crack_abs_error_m': 0.0013888102960637055, 'critical_delivered': 1.0, ...}}, ...}, ...}
+name = 'information/time/energy vs A-B2_coverage', base = 'A-B2_coverage'
 metrics = {'info_per_kj': 'higher', 'info_per_time': 'higher'}
 
     def _criterion(flights: dict[str, Any], name: str, base: str, metrics: dict[str, str]) -> None:
@@ -71,20 +72,22 @@ metrics = {'info_per_kj': 'higher', 'info_per_time': 'higher'}
         measured(GATE, name, comparator=base, paired=rows, means=means)
         failures = [f"{m}: {r['benefit_mean']:+.4f} CI95 {r['ci95']}" for m, r in rows.items() if not _beats(r)]
 >       assert not failures, f"PRODUCTION does not beat {base}: " + "; ".join(failures)
-E       AssertionError: PRODUCTION does not beat A-B1_fixed_inspection: info_per_time: +0.0007 CI95 [-0.00042706763769972603, 0.002358042501156302]; info_per_kj: +0.0137 CI95 [-0.013042234107559171, 0.05453226483598166]
-E       assert not ['info_per_time: +0.0007 CI95 [-0.00042706763769972603, 0.002358042501156302]', 'info_per_kj: +0.0137 CI95 [-0.013042234107559171, 0.05453226483598166]']
+E       AssertionError: PRODUCTION does not beat A-B2_coverage: info_per_time: +0.0016 CI95 [-0.0004476929276659983, 0.0036932312146947927]; info_per_kj: +0.0418 CI95 [-0.009223464972655557, 0.09222439167280518]
+E       assert not ['info_per_time: +0.0016 CI95 [-0.0004476929276659983, 0.0036932312146947927]', 'info_per_kj: +0.0418 CI95 [-0.009223464972655557, 0.09222439167280518]']
 
-tests\unity_live\test_i4_unity.py:158: AssertionError
+tests\unity_live\test_i4_occluded_unity.py:201: AssertionError
 =================================== PASSES ====================================
 - generated xml file: C:\Users\Kerem\Kerem\conrad-v2\artifacts\gates\I4\unity_pytest.xml -
 =========================== short test summary info ===========================
-PASSED tests/unity_live/test_i4_unity.py::test_closed_loop_mcbr_view_improves_hidden_target
-PASSED tests/unity_live/test_i4_unity.py::test_beats_random_views
-PASSED tests/unity_live/test_i4_unity.py::test_beats_coverage_only
-PASSED tests/unity_live/test_i4_unity.py::test_beats_simple_views_on_information_per_time_and_energy[A-B0_random]
-PASSED tests/unity_live/test_i4_unity.py::test_beats_simple_views_on_information_per_time_and_energy[A-B2_coverage]
-PASSED tests/unity_live/test_i4_unity.py::test_no_twin_truth_leakage_on_runtime_side
-PASSED tests/unity_live/test_i4_unity.py::test_bundle_replays_deterministically
-FAILED tests/unity_live/test_i4_unity.py::test_beats_fixed_views_on_hidden_state_reconstruction
-FAILED tests/unity_live/test_i4_unity.py::test_beats_simple_views_on_information_per_time_and_energy[A-B1_fixed_inspection]
-================== 2 failed, 7 passed in 4096.85s (1:08:16) ===================
+PASSED tests/unity_live/test_i4_occluded_unity.py::test_declared_arm_set_is_recorded
+PASSED tests/unity_live/test_i4_occluded_unity.py::test_results_file_is_written
+PASSED tests/unity_live/test_i4_occluded_unity.py::test_closed_loop_mcbr_view_improves_hidden_target
+PASSED tests/unity_live/test_i4_occluded_unity.py::test_beats_fixed_views_on_hidden_state_reconstruction
+PASSED tests/unity_live/test_i4_occluded_unity.py::test_beats_random_views
+PASSED tests/unity_live/test_i4_occluded_unity.py::test_beats_simple_views_on_information_per_time_and_energy[A-B1_fixed_inspection]
+PASSED tests/unity_live/test_i4_occluded_unity.py::test_beats_simple_views_on_information_per_time_and_energy[A-B0_random]
+PASSED tests/unity_live/test_i4_occluded_unity.py::test_no_twin_truth_leakage_on_runtime_side
+PASSED tests/unity_live/test_i4_occluded_unity.py::test_bundle_replays_deterministically
+FAILED tests/unity_live/test_i4_occluded_unity.py::test_beats_coverage_only
+FAILED tests/unity_live/test_i4_occluded_unity.py::test_beats_simple_views_on_information_per_time_and_energy[A-B2_coverage]
+================== 2 failed, 9 passed in 6705.52s (1:51:45) ===================

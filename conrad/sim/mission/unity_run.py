@@ -159,6 +159,32 @@ UNITY_SCENARIOS["FLAGSHIP-UNITY"] = {
     "world": {},
     "runtime": {"control_period_s": 0.1},
 }
+# Gate I4 on the world family ACTIVE_INSPECTION_OCCLUDED_V1 (docs/audits/I4_WORLD_FAMILY.md,
+# configs/eval/i4_occluded_unity.yaml). Same runtime and budgets as I4-UNITY, so the two formal I4 runs differ
+# only in the world family: Twin2E OFF (as in the previous formal I4 run), 100 s mission, control period 0.1 s,
+# max_plans_per_need 4. The planner under comparison is set per run through the stored runtime config.
+# NOTE for the read-across: the python-kernel surrogate ACTIVE-MCBR-E005 ran with Twin2E ON (the mission
+# default), so surrogate and formal levels are not directly comparable; only the ordering is.
+UNITY_SCENARIOS["I4-OCCLUDED-UNITY"] = {
+    "base": "I4-OCCLUDED",
+    "world": {"ecological_enabled": False},
+    "runtime": {
+        "model2e_enabled": False,
+        "duration_s": 100.0,
+        "control_period_s": 0.1,
+        "max_plans_per_need": 4,
+    },
+}
+UNITY_SCENARIOS["I4-OCCLUDED-OOD-UNITY"] = {
+    "base": "I4-OCCLUDED-OOD",
+    "world": {"ecological_enabled": False},
+    "runtime": {
+        "model2e_enabled": False,
+        "duration_s": 100.0,
+        "control_period_s": 0.1,
+        "max_plans_per_need": 4,
+    },
+}
 NAV_UNITY_IDS = tuple(f"NAV-00{i}" for i in range(1, 7))
 UNITY_SCENARIO_IDS = (*UNITY_SCENARIOS, "I2-UNITY-NAV")
 

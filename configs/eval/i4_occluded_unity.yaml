@@ -1,0 +1,81 @@
+# FORMAL Unity run of gate I4 on the world family ACTIVE_INSPECTION_OCCLUDED_V1. SYNTHETIC_ONLY.
+# Declared 2026-09-20 BEFORE any flight on these worlds. docs/audits/I4_WORLD_FAMILY.md declares the family,
+# the splits, the metrics and the decision rule; this file declares what the formal run executes.
+#
+# Why a new family: the previous formal I4 run (2026-09-19/20, docs/audits/MCBR_REEVALUATION.md section 8.6)
+# ran on `straight_pipeline`, where the nominal transit route already sees the defect in a share of the worlds,
+# so "beats fixed views" was not a real test. Its 12 worlds (unity_gate final_test 7800002-7800013) are SPENT.
+experiment_id: I4-OCCLUDED-UNITY
+gate: I4
+world_family: ACTIVE_INSPECTION_OCCLUDED_V1
+scenario: I4-OCCLUDED-UNITY
+ood_scenario: I4-OCCLUDED-OOD-UNITY
+partition_file: configs/eval/partitions_i4_occluded.yaml
+partition_digest: d929beb67c051ea1116e33ebb8e51cd638f5894ef54989a0a3f2ec3a9221b557
+family_file: configs/eval/i4_occluded_family.yaml
+family_digest: f77c5dbb7d665e3740e76cd4dfd97f37d0f0060bc2b336af6391ff0758877bdd
+frozen_planner_file: configs/active/mcbr_frozen_v3.yaml
+
+# ---------------------------------------------------------------------------- worlds
+# final_test: the whole declared split, read once. ood_test: the held-out STRUCTURAL family (bent_pipeline
+# geometry, wider occluder standoff). OOD is reported SEPARATELY and is NOT part of the pass decision: no ch25
+# I4 criterion names an out-of-distribution family.
+final_worlds: {range: [8000200, 8000220]}
+ood_worlds: {range: [8000300, 8000312]}
+
+# ---------------------------------------------------------------------------- declared arm set (REDUCED)
+# The full comparison of ACTIVE-MCBR-E005 has ten arms. At about 83 s per sequential Unity flight, ten arms on
+# twenty worlds is 200 flights and about 4.6 h, which is not affordable on this host. The formal run therefore
+# executes the REDUCED arm set below: exactly the arms the ch25 I4 criteria name, and nothing else.
+#
+#   "beats fixed views on actual hidden-state reconstruction" -> A-B1_fixed_inspection
+#   "beats random views"                                      -> A-B0_random
+#   "beats coverage-only"                                     -> A-B2_coverage
+#   "beats simple views on information/time/energy"           -> the same three
+#   the closed-loop criterion                                 -> PRODUCTION alone
+#
+# Nothing is dropped that any criterion depends on. The six arms not flown (A-B4 geometric NBV, A-B5 entropy
+# NBV, A-B5b predictive entropy NBV, A-B6b Bayesian EIG, A-B7 uncertainty NBV, A-B10 the old MCBR) are
+# SELECTION evidence, not gate comparators; they stay reported from the validation split
+# (artifacts/experiments/ACTIVE-MCBR-E005-SEL). A reduced sweep is evidence only when it is recorded as
+# reduced with the arms it drops named, exactly as the I7 harness records its reduced bandwidth sweep; the
+# harness asserts that and the recorded evidence carries it.
+arm_set:
+  name: reduced
+  reduced: true
+  reason: >-
+    about 83 s per sequential Unity flight; ten arms x twenty worlds is 200 flights (about 4.6 h) against 80
+    flights (about 1.8 h) for the four arms the criteria name. No criterion depends on a dropped arm.
+  arms: [PRODUCTION, A-B1_fixed_inspection, A-B0_random, A-B2_coverage]
+  dropped_arms:
+    - A-B4_geometric_nbv
+    - A-B5_entropy_nbv
+    - A-B5b_entropy_nbv_predictive
+    - A-B6b_bayes_eig
+    - A-B7_uncertainty_nbv
+    - A-B10_mcbr_full
+  dropped_arms_evidence: artifacts/experiments/ACTIVE-MCBR-E005-SEL/active_mcbr_e005_selection.json
+  flights: {final: 80, ood: 48}
+
+# ---------------------------------------------------------------------------- matched budgets
+# Identical for every arm: mission duration (time budget), max_plans_per_need (observation budget), one
+# structural sensor and its capability, the same candidate generator, feasibility filter and PlanningRequest
+# (predictive model included). Travel allowance, energy and travel are MEASURED, not capped, and reported.
+# Twin2E is OFF, as in the previous formal I4 run; it is a world setting, identical for every arm.
+runtime: {duration_s: 100.0, control_period_s: 0.1, max_plans_per_need: 4, model2e_enabled: false}
+sequential: true
+
+# ---------------------------------------------------------------------------- decision rule
+decision_rule: >-
+  Unit = one world, paired across arms. PRODUCTION beats a baseline on a metric iff the lower bound of the
+  95 % paired percentile-bootstrap CI over worlds (4000 resamples) of the benefit (PRODUCTION better =
+  positive) is > 0. ch25 criteria: 'beats fixed views on actual hidden-state reconstruction' =
+  hidden_state_error_improvement vs A-B1_fixed_inspection; 'beats random views' = the same vs A-B0_random;
+  'beats coverage-only' = the same vs A-B2_coverage; 'beats simple views on information/time/energy' =
+  info_per_time AND info_per_kj vs each of those three; the closed-loop criterion = MCBR planned in at least
+  one world, at least half of the worlds where it planned produced an informative view, and PRODUCTION's mean
+  hidden_state_error_improvement is above 0. ch25 leaves every numeric margin OPEN: no margin is invented, the
+  directional criterion above is applied, and every paired CI is reported whatever its sign.
+run_once: >-
+  The final split is read exactly once. The split is not enlarged, no threshold is moved, no baseline is
+  dropped and nothing is re-run after the outcome is seen. A tie is reported as a tie.

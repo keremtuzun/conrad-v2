@@ -39,7 +39,9 @@ I2_FAULT_CASES = tuple(fault_cases()["cases"])  # configs/sim/nav_fault_cases.ya
 T1 = "tests/unity_live/test_i1_unity.py::"
 T2 = "tests/unity_live/test_i2_unity.py::"
 T3 = "tests/unity_live/test_i3_unity.py::"
-T4 = "tests/unity_live/test_i4_unity.py::"
+# I4 moved to the ACTIVE_INSPECTION_OCCLUDED_V1 family on 2026-09-20 (configs/eval/i4_occluded_unity.yaml).
+# tests/unity_live/test_i4_unity.py stays as the record of the straight_pipeline run whose 12 worlds are SPENT.
+T4 = "tests/unity_live/test_i4_occluded_unity.py::"
 T5 = "tests/unity_live/test_i5_unity.py::"
 T6 = "tests/unity_live/test_i6_unity.py::"
 T7 = "tests/unity_live/test_i7_unity.py::"
@@ -51,7 +53,7 @@ MODULES = {
     "I1": "tests/unity_live/test_i1_unity.py",
     "I2": "tests/unity_live/test_i2_unity.py",
     "I3": "tests/unity_live/test_i3_unity.py",
-    "I4": "tests/unity_live/test_i4_unity.py",
+    "I4": "tests/unity_live/test_i4_occluded_unity.py",
     "I5": "tests/unity_live/test_i5_unity.py",
     "I6": "tests/unity_live/test_i6_unity.py",
     "I7": "tests/unity_live/test_i7_unity.py",
@@ -63,7 +65,14 @@ REPLAY = {
         T2 + "test_bundle_replays_deterministically[NAV-006]",
     ],
     "I3": [T3 + "test_bundle_replays_deterministically"],
-    "I4": [T4 + "test_bundle_replays_deterministically", T4 + "test_no_twin_truth_leakage_on_runtime_side"],
+    # I4: every criterion also needs the replay, the leakage scan, the arm-set declaration (a reduced arm set
+    # is evidence only when it is recorded as reduced, with the arms it drops named) and the results file.
+    "I4": [
+        T4 + "test_bundle_replays_deterministically",
+        T4 + "test_no_twin_truth_leakage_on_runtime_side",
+        T4 + "test_declared_arm_set_is_recorded",
+        T4 + "test_results_file_is_written",
+    ],
     # I5: empty ON PURPOSE. The replay, the leakage scan and the grid check belong to the Unity missions and
     # are listed on the three mission criteria below; attaching them to every criterion would make the six
     # action-matrix criteria, which are world-independent belief fixtures, depend on the player.
@@ -140,8 +149,11 @@ PLAN: dict[str, list[tuple[str, list[str], list[str]]]] = {
             ["persistent technical belief"],
         ),
     ],
-    # I4: 12 held-out worlds x {PRODUCTION, fixed, random, coverage}, sequential Unity flights (ACTIVE-MCBR-E004
-    # worlds and budgets); paired bootstrap over worlds, "beats" = CI95 lower bound > 0 (pre-declared).
+    # I4: the 20 held-out worlds of configs/eval/partitions_i4_occluded.yaml final_test x the DECLARED REDUCED
+    # arm set {PRODUCTION, fixed, random, coverage}, sequential Unity flights on the world family
+    # ACTIVE_INSPECTION_OCCLUDED_V1; paired bootstrap over worlds, "beats" = CI95 lower bound > 0. Worlds,
+    # arms, budgets, the reduction and the decision rule are declared in configs/eval/i4_occluded_unity.yaml
+    # before any flight. The OOD split is flown separately and is NOT part of the pass decision.
     "I4": [
         (
             "critical structure partly hidden -> uncertain -> MCBR view -> navigation -> new evidence -> belief improves",
@@ -330,9 +342,18 @@ def record(gate: str, rerun: bool = True) -> GateEvidence:
             "artifacts/gates/I6/unity_i6_results.json"
         )
     if gate == "I4":
+        arms = data["criteria"].get("arm set", {})
         note += (
-            "; worlds declared before any run in configs/eval/active_mcbr_e004.yaml; per-world results in "
-            "artifacts/gates/I4/unity_i4_results.json"
+            "; world family ACTIVE_INSPECTION_OCCLUDED_V1 (docs/audits/I4_WORLD_FAMILY.md), declared with its "
+            "splits, metrics and decision rule before any world of the family was built; worlds, arms, budgets "
+            "and the reduction declared before any flight in configs/eval/i4_occluded_unity.yaml; per-world "
+            "results in artifacts/gates/I4/unity_i4_occluded_results.json; "
+            f"arm_set={json.dumps({k: arms.get(k) for k in ('name', 'reduced', 'arms', 'dropped_arms', 'flights')}, sort_keys=True)}"
+            "; the dropped arms are SELECTION evidence from the validation split "
+            "(artifacts/experiments/ACTIVE-MCBR-E005-SEL), never gate comparators; the OOD split 8000300-8000311 "
+            "is flown separately and is NOT part of this pass decision; this run SUPERSEDES the straight_pipeline "
+            "formal I4 run of 2026-09-19/20, whose family did not exercise the ch25 premise and whose 12 worlds "
+            "are spent"
         )
     if gate == "I5":
         note += (
@@ -363,7 +384,15 @@ def record(gate: str, rerun: bool = True) -> GateEvidence:
             f"artifacts/gates/{gate}/unity_measured.json",
             f"artifacts/gates/{gate}/unity_pytest.xml",
             f"artifacts/unity/gate_runs/{gate}",
-            *((f"artifacts/gates/{gate}/unity_i4_results.json",) if gate == "I4" else ()),
+            *(
+                (
+                    "artifacts/gates/I4/unity_i4_occluded_results.json",
+                    "configs/eval/i4_occluded_unity.yaml",
+                    "docs/audits/I4_WORLD_FAMILY.md",
+                )
+                if gate == "I4"
+                else ()
+            ),
             *(
                 ("artifacts/gates/I5/unity_i5_results.json", "configs/eval/i5_unity.yaml")
                 if gate == "I5"
