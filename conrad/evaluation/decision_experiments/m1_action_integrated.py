@@ -31,9 +31,14 @@ Arms:
   shadow arms (same basis as E001).
 - Closed loop: each baseline also drives its own mission on the same seed, for the mission-outcome comparison.
 
-Seeds come from ``configs/eval/partitions_i5.yaml`` (domain ``i5_mission``, M1-ACTION-E002) or, from iteration 2
-on, ``configs/eval/partitions_i5_v2.yaml`` (domain ``i5_mission_v2``, M1-ACTION-E003; the v1 final seeds are SPENT).
-The config key ``partition_domain`` selects the file (default ``i5_mission``).
+Seeds come from ``configs/eval/partitions_i5.yaml`` (domain ``i5_mission``, M1-ACTION-E002), from
+``configs/eval/partitions_i5_v2.yaml`` (domain ``i5_mission_v2``, M1-ACTION-E003) or, from iteration 3 on, from
+``configs/eval/partitions_i5_v3.yaml`` (domain ``i5_mission_v3``, M1-ACTION-E004). The v1 and v2 final seeds are
+SPENT. The config key ``partition_domain`` selects the file (default ``i5_mission``).
+
+A scenario may declare ``warrant_by_construction=False``: its warrant cannot arise however the decision plane
+behaves, so it cannot exercise its action class and is reported NOT APPLICABLE to the "actions exercised
+correctly" criterion instead of scored 0. Everything else about it is still scored.
 
 implementation_status: EXPERIMENTAL_CANDIDATE (evaluation harness). data_status: SYNTHETIC_ONLY.
 Evidence class: SURROGATE (python L1 kernel, not Unity). It never promotes the formal gate.
@@ -61,6 +66,7 @@ from conrad.evaluation.decision_experiments.action_matrix import ALWAYS_OK, RETR
 from conrad.evaluation.partitions import (
     I5_DOMAIN,
     I5_V2_DOMAIN,
+    I5_V3_DOMAIN,
     Partition,
     Purpose,
     check_access,
@@ -78,7 +84,7 @@ from conrad.schemas.decision import (
 from conrad.schemas.ids import IdFactory
 from conrad.schemas.world import Domain
 from conrad.settings import REPO_ROOT, ConradSettings, load_settings
-from conrad.sim.mission.run import MissionSession, prepare
+from conrad.sim.mission.run import prepare
 from conrad.twins.twin2s.sdf import Box
 
 EXPERIMENT_ID = "M1-ACTION-E002"
@@ -86,6 +92,7 @@ RESULT_FILE = "m1_action_e002.json"
 PARTITION_FILES = {
     I5_DOMAIN: "configs/eval/partitions_i5.yaml",
     I5_V2_DOMAIN: "configs/eval/partitions_i5_v2.yaml",
+    I5_V3_DOMAIN: "configs/eval/partitions_i5_v3.yaml",
 }
 DEFAULT_CONFIG = "configs/sim/mission_default.yaml"
 EVIDENCE_CLASS = "SURROGATE (python L1 kernel mission, not Unity)"
@@ -106,6 +113,11 @@ class ScenarioSpec:
     forbidden_after_onset: frozenset[ActionType]
     success: str
     check_over_escalation: bool = False
+    # A scenario whose warrant CANNOT arise by construction cannot test its action class. It still runs, and
+    # its violations, over-escalations, traceability, UIR and mission outcome still count; only its
+    # "expected action within budget" rate is reported as NOT APPLICABLE instead of as a zero (I5 iteration 3).
+    warrant_by_construction: bool = True
+    not_applicable_reason: str = ""
 
 
 SPECS: dict[str, ScenarioSpec] = {
@@ -119,6 +131,20 @@ SPECS: dict[str, ScenarioSpec] = {
             frozenset(),
             "inspected_without_escalation",
             check_over_escalation=True,
+            warrant_by_construction=False,
+            not_applicable_reason=(
+                "the continue warrant cannot arise in this scenario, whatever Model 1 does. Measured on I5 "
+                "development seeds 7500000-7500002 on the repaired Model2T: this world yields ONE averaged "
+                "reading per view, so a view can anchor only one surface cell and credit its declared "
+                "footprint around it, and the Model2T surface coverage of the critical component saturates "
+                "at 45/72, 57/72 and 42/72 cells (0.63, 0.79, 0.58), below the 0.8 completeness fraction a "
+                "component-level condition needs. Running the same missions for 300 s instead of 120 s adds "
+                "about 150 further readings and exactly zero new cells, so the condition never closes and "
+                "the OBSERVED INTACT onset never occurs. I5-NOMINAL-READABLE, whose surface is read per "
+                "tile, is the scenario that exercises continue (see docs/audits/I5_ACTION_MATRIX.md, "
+                "Iteration 3). This scenario still scores over-escalation, hard constraints, traceability, "
+                "UIR and its mission outcome."
+            ),
         ),
         ScenarioSpec(
             "I5-CRITICAL-FINDING",
@@ -375,6 +401,7 @@ def score_arm(
     outs: list[DecisionOutcome | None],
     cfg: DecisionConfig,
     budget_s: float,
+    executed: Sequence[bool | None] | None = None,
 ) -> dict[str, Any]:
     labels = [label(r.chosen) for r in records]
     onset_i = next((i for i, s in enumerate(states) if s["onsets"][spec.onset]), None)
@@ -399,6 +426,16 @@ def score_arm(
         "latency_s": latency,
         "latency_budget_s": budget_s,
         "issued_within_budget": within,
+        # How much of the latency Model 1 could influence: routing refuses to carry out an MCBR / navigation
+        # action while the lane survey runs, and a decision it deferred is not a Model 1 delay (the same
+        # reading as "executed attempts only", I5 iteration 2). Reported, never scored.
+        "decisions_after_onset": len(window),
+        "executed_decisions_after_onset": None
+        if executed is None
+        else sum(1 for i in window if executed[i] is not False),
+        "deferred_decisions_after_onset": None
+        if executed is None
+        else sum(1 for i in window if executed[i] is False),
         "chosen_at_onset": None if onset_i is None else labels[onset_i],
         "forbidden_after_onset": forbidden,
         "violations": dict(audit),
@@ -414,11 +451,30 @@ def score_arm(
     }
 
 
+def _trajectory(world: Any) -> list[list[float]]:
+    """Truth trajectory rows [t, x, y, z, ...]. The kernel recorder fills them as the mission runs; the Unity
+    world keeps them on its truth tracker until ``finish()`` copies them over, so both are accepted."""
+    rows = list(world.recorder.trajectory)
+    if rows:
+        return rows
+    tracker = getattr(world, "tracker", None)
+    return list(getattr(tracker, "trajectory", ()) or ())
+
+
+def _energy_j(world: Any) -> float:
+    """Energy used (J). The kernel keeps it on the sim kernel, the Unity world on its truth tracker."""
+    kernel = getattr(world.hardware, "kernel", None)
+    if kernel is not None and getattr(kernel, "energy_used_j", None) is not None:
+        return float(kernel.energy_used_j)
+    tracker = getattr(world, "tracker", None)
+    return float(getattr(tracker, "energy_used_j", 0.0) or 0.0)
+
+
 def _outcomes(
-    session: MissionSession, spec: ScenarioSpec, driving: dict[str, Any], crit_obs: bool, contact_m: float
+    session: Any, spec: ScenarioSpec, driving: dict[str, Any], crit_obs: bool, contact_m: float
 ) -> dict[str, Any]:
     rt, world = session.runtime, session.world
-    traj = np.asarray([row[1:4] for row in world.recorder.trajectory], dtype=np.float64).reshape(-1, 3)
+    traj = np.asarray([row[1:4] for row in _trajectory(world)], dtype=np.float64).reshape(-1, 3)
     distance = float(np.linalg.norm(np.diff(traj, axis=0), axis=1).sum()) if len(traj) > 1 else 0.0
     harness = rt.shore.harness_report()
     recv = harness["arms"]["primary"]["receiver_revisions"]
@@ -434,7 +490,7 @@ def _outcomes(
     held = rt.routing.phase == "HOLDING" or rt.supervisor.state.value in ("SAFE_HOLD", "STOPPED")
     last = driving["timeline"][-1][0] if driving["timeline"] else None
     out: dict[str, Any] = {
-        "energy_j": float(world.hardware.kernel.energy_used_j),
+        "energy_j": _energy_j(world),
         "distance_m": distance,
         "safety_events": len(safety),
         "degraded_episodes": sum(1 for x in entered if x == "DEGRADED"),
@@ -484,14 +540,14 @@ def _settings(seed: int) -> ConradSettings:
     return settings
 
 
-def mission_job(job: dict[str, Any]) -> dict[str, Any]:
-    """Run one integrated mission driven by ``job['arm']`` (shadow arms on the EGDC-driven one)."""
-    seed, scenario, arm = int(job["seed"]), str(job["scenario"]), str(job["arm"])
+def drive_and_score(session: Any, seed: int, scenario: str, arm: str, cfg: dict[str, Any]) -> dict[str, Any]:
+    """Run one PREPARED integrated mission driven by ``arm`` and score it.
+
+    Works on any prepared mission session that exposes ``runtime``, ``world`` and ``run()``: the python kernel
+    (``conrad.sim.mission.run.prepare``) and Unity (``conrad.sim.mission.unity_run.prepare_unity``). The caller
+    owns ``session.finish()`` and the bundle, because the formal Unity path keeps its bundles and replays them.
+    """
     spec = SPECS[scenario]
-    # capture=False: no replay tape (bundles are scored in-process and deleted unless keep_bundles)
-    session = prepare(
-        scenario, _settings(seed), run_id=job["run_id"], runs_root=Path(job["runs_root"]), capture=False
-    )
     rt = session.runtime
     base_cfg = rt.deliberation.egdc.config
     driver = make_arm(arm, rt.deliberation.egdc._ids, base_cfg) if arm != PRIMARY else rt.deliberation.egdc
@@ -501,31 +557,36 @@ def mission_job(job: dict[str, Any]) -> dict[str, Any]:
         else {}
     )
     recorder = RecordingEGDC(driver, shadows)
-    rt.deliberation.egdc = recorder  # type: ignore[assignment]
+    rt.deliberation.egdc = recorder
     session.run()
     critical = {str(c) for c in rt.ctx.critical_component_ids}
     audit_cfg = DecisionConfig()
     steps = recorder.steps
     states = [decision_state(s.ctx, critical, audit_cfg) for s in steps]
     ctxs = [s.ctx for s in steps]
-    budget = float(job["cfg"]["latency_budget_s"].get(scenario, job["cfg"]["latency_budget_s"]["default"]))
+    budget = float(cfg["latency_budget_s"].get(scenario, cfg["latency_budget_s"]["default"]))
+    # Routing reports back which decisions it actually carried out (Deliberation.mark_not_executed).
+    carried = {h.decision_id: h.executed for h in rt.deliberation.history}
+    executed = [carried.get(s.outcome.record.decision_id) for s in steps]
     driving = score_arm(
-        spec, states, [s.outcome.record for s in steps], ctxs, [s.outcome for s in steps], audit_cfg, budget
+        spec,
+        states,
+        [s.outcome.record for s in steps],
+        ctxs,
+        [s.outcome for s in steps],
+        audit_cfg,
+        budget,
+        executed,
     )
     crit_obs = any(s["critical_observed"] for s in states[-3:])
-    outcome = _outcomes(session, spec, driving, crit_obs, float(job["cfg"]["contact_clearance_m"]))
+    outcome = _outcomes(session, spec, driving, crit_obs, float(cfg["contact_clearance_m"]))
     shadow_scores = {
         name: score_arm(
             spec, states, [s.shadows[name] for s in steps], ctxs, [None] * len(steps), audit_cfg, budget
         )
         for name in shadows
     }
-    session.finish()
-    if not job.get("keep_bundle", False):
-        shutil.rmtree(session.run_dir, ignore_errors=True)
-    print(f"finished {job['run_id']}", flush=True)
     return {
-        "run_id": job["run_id"],
         "seed": seed,
         "scenario": scenario,
         "arm": arm,
@@ -535,6 +596,21 @@ def mission_job(job: dict[str, Any]) -> dict[str, Any]:
         "shadow": shadow_scores,
         "decision_states": [{k: v for k, v in s.items() if k != "onsets"} for s in states],
     }
+
+
+def mission_job(job: dict[str, Any]) -> dict[str, Any]:
+    """Run one python-kernel integrated mission driven by ``job['arm']`` (shadow arms on the EGDC-driven one)."""
+    seed, scenario, arm = int(job["seed"]), str(job["scenario"]), str(job["arm"])
+    # capture=False: no replay tape (bundles are scored in-process and deleted unless keep_bundles)
+    session = prepare(
+        scenario, _settings(seed), run_id=job["run_id"], runs_root=Path(job["runs_root"]), capture=False
+    )
+    row = drive_and_score(session, seed, scenario, arm, job["cfg"])
+    session.finish()
+    if not job.get("keep_bundle", False):
+        shutil.rmtree(session.run_dir, ignore_errors=True)
+    print(f"finished {job['run_id']}", flush=True)
+    return {"run_id": job["run_id"], **row}
 
 
 # ---------------------------------------------------------------------------------------------- experiment
@@ -583,6 +659,9 @@ def _action_summary(scores: Sequence[dict[str, Any]]) -> dict[str, Any]:
         "correct_given_warrant": _rate([s["correct"] for s in scores if s["warrant_reached"]]),
         "latency_s_mean": _mean(lat),
         "latency_s_max": max(lat) if lat else None,
+        "decisions_after_onset": sum(s["decisions_after_onset"] for s in scores),
+        "deferred_decisions_after_onset": sum(s["deferred_decisions_after_onset"] or 0 for s in scores),
+        "executed_decisions_after_onset": sum(s["executed_decisions_after_onset"] or 0 for s in scores),
         "forbidden_after_onset": sum(len(s["forbidden_after_onset"]) for s in scores),
         "violations_total": sum(s["violations_total"] for s in scores),
         "violations_by_rule": dict(sum((Counter(s["violations"]) for s in scores), Counter())),
@@ -642,7 +721,18 @@ def verdicts(summary: dict[str, Any], config: dict[str, Any], scenarios: Sequenc
     uir_max = float(config["uir_max"])
     e = summary["closed_loop"][PRIMARY]
     per_scenario = {sc: e[sc]["correct_rate"] for sc in scenarios}
-    actions_ok = all((r or 0.0) >= floor for r in per_scenario.values()) and e["ALL"]["violations_total"] == 0
+    # A scenario whose warrant cannot arise by construction cannot exercise its action class: it is reported
+    # as NOT APPLICABLE to this criterion (with its measured reason) rather than scored 0. Its
+    # violations, over-escalations, traceability, UIR and mission outcome are still scored below.
+    not_applicable = {
+        sc: SPECS[sc].not_applicable_reason for sc in scenarios if not SPECS[sc].warrant_by_construction
+    }
+    scored = [sc for sc in scenarios if sc not in not_applicable]
+    actions_ok = (
+        bool(scored)
+        and all((per_scenario[sc] or 0.0) >= floor for sc in scored)
+        and e["ALL"]["violations_total"] == 0
+    )
     nominal_over = sum(e[sc]["over_escalations"] for sc in scenarios if SPECS[sc].check_over_escalation)
     actions_ok = actions_ok and nominal_over == 0
     trace_rate = e["ALL"]["traceable_decisions"] / e["ALL"]["decisions"] if e["ALL"]["decisions"] else 0.0
@@ -668,6 +758,8 @@ def verdicts(summary: dict[str, Any], config: dict[str, Any], scenarios: Sequenc
         "success_floor": floor,
         "floor_status": "ENGINEERING_ESTIMATE (ch25 leaves the I5 bound OPEN)",
         "per_scenario_correct_rate": per_scenario,
+        "scenarios_scored_for_actions": scored,
+        "scenarios_not_applicable": not_applicable,
         "nominal_over_escalations": nominal_over,
         "violations_total": e["ALL"]["violations_total"],
         "actions_exercised_correctly": bool(actions_ok),
@@ -727,6 +819,8 @@ def run(config: dict[str, Any], seeds: list[int], out_dir: str | Path) -> dict[s
                 "onset": SPECS[sc].onset,
                 "expected": list(SPECS[sc].expected),
                 "success": SPECS[sc].success,
+                "warrant_by_construction": SPECS[sc].warrant_by_construction,
+                "not_applicable_reason": SPECS[sc].not_applicable_reason,
             }
             for sc in scenarios
         },

@@ -399,19 +399,20 @@ def _confirmed_after_request(
     reading, M1-ACTION-E001): a belief of this requirement has a NEWER REVISION than the one an information
     request on it saw, the runtime carried that request out, and the new revision is DIRECT (every required
     property OBSERVED, evidence present, no evidence conflict). Deferred / dropped requests
-    (``executed=False``) and history without recorded revisions never confirm anything."""
+    (``executed=False``) and history without recorded revisions never confirm anything.
+
+    The closure does not expire with the decision-history window: ``DecisionContext.request_answered`` also
+    reads the runtime's window-independent ledger. The belief-side conditions above ARE re-checked every
+    cycle, so a later conflict, a lost observation or a stale property reopens the gap (I5 iteration 3).
+    """
     for m in primary:
         if not m.evidence_support or m.evidence_conflicts:
             continue
         props = [_prop(m, n) for n in req.properties]
         if not props or any(p is None or p.status is not KnowledgeStatus.OBSERVED for p in props):
             continue
-        for d in ctx.previous_decisions:
-            if d.action_type is not ActionType.REQUEST_INFORMATION or d.executed is False:
-                continue
-            seen = dict(zip(d.target_belief_ids, d.target_revisions, strict=False))
-            if m.belief_id in seen and seen[m.belief_id] < m.revision:
-                return True
+        if ctx.request_answered(m.belief_id, m.revision):
+            return True
     return False
 
 

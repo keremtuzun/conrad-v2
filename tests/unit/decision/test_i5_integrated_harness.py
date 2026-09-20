@@ -1,19 +1,26 @@
 """M1-ACTION-E002 harness pieces that do not need a mission: seed partition, labels, rule/FSM baseline."""
 
+from typing import Any
+from unittest import mock
+
 import pytest
 
 from conrad.decision import EGDC, DecisionConfig
 from conrad.evaluation.decision_experiments.fixtures import make_belief, make_context, make_requirement, unc
 from conrad.evaluation.decision_experiments.m1_action_integrated import (
+    BASELINES,
+    PRIMARY,
     SPECS,
     RuleFSMPolicy,
     make_arm,
     matches,
     seeds_for,
+    verdicts,
 )
 from conrad.evaluation.partitions import (
     I5_DOMAIN,
     I5_V2_DOMAIN,
+    I5_V3_DOMAIN,
     Partition,
     PartitionAccessError,
     PartitionIntegrityError,
@@ -21,6 +28,7 @@ from conrad.evaluation.partitions import (
     load,
     load_i5,
     load_i5_v2,
+    load_i5_v3,
     load_nav,
     load_unity_gates,
     partition_of,
@@ -28,6 +36,7 @@ from conrad.evaluation.partitions import (
     split,
     validate_i5,
     validate_i5_v2,
+    validate_i5_v3,
 )
 from conrad.schemas.decision import ActionType
 from conrad.schemas.ids import IdFactory
@@ -67,6 +76,83 @@ def test_i5_v2_final_is_fresh_and_guarded():
         bad = {**raw, "world_seeds": {**raw["world_seeds"], "final_test": {"explicit": [bad_seed]}}}
         with pytest.raises(PartitionIntegrityError, match=r"collide|overlap"):
             validate_i5_v2(bad, *args)
+
+
+def test_i5_v3_final_is_fresh_and_guarded():
+    """M1-ACTION-E004 (I5 iteration 3): a third final split, disjoint from both spent ones."""
+    raw = load_i5_v3()["raw"]
+    final = set(split(I5_V3_DOMAIN, Partition.FINAL_TEST, Purpose.FINAL_EVALUATION).world_seeds)
+    spent = set(split(I5_DOMAIN, Partition.FINAL_TEST, Purpose.FINAL_EVALUATION).world_seeds) | set(
+        split(I5_V2_DOMAIN, Partition.FINAL_TEST, Purpose.FINAL_EVALUATION).world_seeds
+    )
+    assert final and not final & spent
+    assert partition_of(I5_V3_DOMAIN, 7900000) is None and partition_of(I5_V3_DOMAIN, 7600000) is None
+    assert set(load_i5_v3()["raw"]["scenarios"]) == set(SPECS)
+    with pytest.raises(PartitionAccessError):
+        split(I5_V3_DOMAIN, Partition.FINAL_TEST, Purpose.DESIGN)
+    args = (
+        load()["raw"],
+        load_nav()["raw"],
+        load_i5()["raw"],
+        load_i5_v2()["raw"],
+        load_unity_gates()["raw"],
+    )
+    # spent v1 final, spent v2 final, Unity gates, E001 final, I4 occluded family, shared development
+    for bad_seed in (7600003, 7900004, 7800005, 7300002, 8000201, 7500001):
+        bad = {**raw, "world_seeds": {**raw["world_seeds"], "final_test": {"explicit": [bad_seed]}}}
+        with pytest.raises(PartitionIntegrityError, match=r"collide|overlap"):
+            validate_i5_v3(bad, *args)
+
+
+def test_a_scenario_whose_warrant_cannot_arise_is_not_applicable_not_zero():
+    """I5 iteration 3: ``warrant_by_construction=False`` reports NOT APPLICABLE, it does not score 0."""
+    summary: dict[str, Any] = {
+        "closed_loop": {
+            PRIMARY: {
+                "SCORED": {"correct_rate": 1.0, "over_escalations": 0},
+                "UNREACHABLE": {"correct_rate": 0.0, "over_escalations": 0},
+                "ALL": {
+                    "violations_total": 0,
+                    "traceable_decisions": 10,
+                    "decisions": 10,
+                    "uir": {"unsupported_inference_rate": 0.0},
+                },
+            },
+            **{b: {"ALL": {"violations_total": 0}} for b in BASELINES},
+        },
+        "mission_outcomes": {
+            arm: {
+                "ALL": {"task_success": 1, "safety_events_total": 0},
+                "SCORED": {"task_success": 1},
+                "UNREACHABLE": {"task_success": 0},
+            }
+            for arm in (PRIMARY, *BASELINES)
+        },
+    }
+    specs = {
+        "SCORED": SPECS["I5-UNCERTAIN-BELIEF"],
+        "UNREACHABLE": SPECS["I5-UNCERTAIN-BELIEF"].__class__(
+            "UNREACHABLE",
+            "continue",
+            "critical_intact",
+            ("CONTINUE_MISSION:*",),
+            frozenset(),
+            "inspected_without_escalation",
+            warrant_by_construction=False,
+            not_applicable_reason="measured: the onset never occurs",
+        ),
+    }
+    config = {"success_floor": 0.9, "uir_max": 0.0}
+    with mock.patch.dict(SPECS, specs, clear=False):
+        v = verdicts(summary, config, list(specs))
+    assert v["scenarios_not_applicable"] == {"UNREACHABLE": "measured: the onset never occurs"}
+    assert v["scenarios_scored_for_actions"] == ["SCORED"]
+    assert v["per_scenario_correct_rate"]["UNREACHABLE"] == 0.0  # still reported
+    assert v["actions_exercised_correctly"] is True
+    # and a scored scenario below the floor still fails
+    summary["closed_loop"][PRIMARY]["SCORED"]["correct_rate"] = 0.5
+    with mock.patch.dict(SPECS, specs, clear=False):
+        assert verdicts(summary, config, list(specs))["actions_exercised_correctly"] is False
 
 
 def test_expected_label_matching():

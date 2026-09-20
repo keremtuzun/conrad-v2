@@ -1,10 +1,11 @@
 """Gate I5, integrated-mission half (python-kernel SURROGATE, FINAL seeds).
 
-Iteration 2: reads M1-ACTION-E003 (``conrad eval run --experiment M1-ACTION-E003``, fresh final seeds of
-``configs/eval/partitions_i5_v2.yaml``); a missing artifact fails. The spent iteration-1 record M1-ACTION-E002 is
-kept on disk and pinned by ``test_e002_iteration1_record_is_unchanged``. The claim tests
-at the bottom state what I5 needs. Where the stored final result does not support a claim, the test is a STRICT
-xfail whose reason quotes the measured failure, so a silent improvement or regression both show up.
+Iteration 3: reads M1-ACTION-E004 (``conrad eval run --experiment M1-ACTION-E004``, fresh final seeds of
+``configs/eval/partitions_i5_v3.yaml``); a missing artifact fails. The spent iteration-1 and iteration-2 records
+M1-ACTION-E002 and M1-ACTION-E003 are kept on disk and pinned by ``test_spent_iteration_records_are_unchanged``.
+The claim tests at the bottom state what I5 needs. Where the stored final result does not support a claim, the
+test is a STRICT xfail whose reason quotes the measured failure, so a silent improvement or regression both
+show up.
 """
 
 import json
@@ -13,16 +14,17 @@ from collections import Counter
 import pytest
 
 from conrad.evaluation.decision_experiments.m1_action_integrated import BASELINES, PRIMARY, SPECS
-from conrad.evaluation.partitions import I5_V2_DOMAIN, Partition, Purpose, split
+from conrad.evaluation.partitions import I5_V3_DOMAIN, Partition, Purpose, split
 from conrad.settings import REPO_ROOT
 
-ARTIFACT = REPO_ROOT / "artifacts" / "experiments" / "M1-ACTION-E003" / "m1_action_e003.json"
+ARTIFACT = REPO_ROOT / "artifacts" / "experiments" / "M1-ACTION-E004" / "m1_action_e004.json"
 E002 = REPO_ROOT / "artifacts" / "experiments" / "M1-ACTION-E002" / "m1_action_e002.json"
+E003 = REPO_ROOT / "artifacts" / "experiments" / "M1-ACTION-E003" / "m1_action_e003.json"
 
 
 @pytest.fixture(scope="module")
 def result():
-    assert ARTIFACT.exists(), f"missing {ARTIFACT}; run `conrad eval run M1-ACTION-E002`"
+    assert ARTIFACT.exists(), f"missing {ARTIFACT}; run `conrad eval run M1-ACTION-E004`"
     return json.loads(ARTIFACT.read_text(encoding="utf-8"))
 
 
@@ -30,8 +32,8 @@ def test_artifact_is_final_split_surrogate(result):
     assert result["partition"] == "final_test"
     assert "SURROGATE" in result["evidence_class"]
     assert result["data_status"] == "SYNTHETIC_ONLY"
-    final = split(I5_V2_DOMAIN, Partition.FINAL_TEST, Purpose.FINAL_EVALUATION).world_seeds
-    assert result["partition_domain"] == I5_V2_DOMAIN
+    final = split(I5_V3_DOMAIN, Partition.FINAL_TEST, Purpose.FINAL_EVALUATION).world_seeds
+    assert result["partition_domain"] == I5_V3_DOMAIN
     assert result["seeds"] and set(result["seeds"]) <= set(final)
 
 
@@ -86,26 +88,49 @@ def test_nominal_over_escalation_is_measured(result):
     )
 
 
-def test_e002_iteration1_record_is_unchanged():
-    """The spent iteration-1 final result stays as measured (409 nominal ESCALATE decisions)."""
+def test_spent_iteration_records_are_unchanged():
+    """The spent final results stay as measured: 409 nominal ESCALATE decisions in E002, 74 in E003."""
     old = json.loads(E002.read_text(encoding="utf-8"))
     assert old["partition"] == "final_test" and old["seeds"][0] == 7600000
     assert old["verdicts"]["nominal_over_escalations"] == 409
     assert not old["verdicts"]["actions_exercised_correctly"]
+    prev = json.loads(E003.read_text(encoding="utf-8"))
+    assert prev["partition"] == "final_test" and prev["seeds"][0] == 7900000
+    assert prev["verdicts"]["nominal_over_escalations"] == 74
+    assert not prev["verdicts"]["actions_exercised_correctly"]
+    # the nominal continue warrant never arose under Model2T iteration 3, in either nominal scenario
+    e = prev["closed_loop"][PRIMARY]
+    assert e["I5-NOMINAL"]["warrant_reached"] == 0 and e["I5-NOMINAL-READABLE"]["warrant_reached"] == 0
+
+
+def test_the_not_applicable_scenario_is_declared_with_its_reason(result):
+    """I5-NOMINAL is reported NOT APPLICABLE to the continue criterion, never scored as a silent zero."""
+    na = result["verdicts"]["scenarios_not_applicable"]
+    assert set(na) == {"I5-NOMINAL"}
+    assert len(na["I5-NOMINAL"]) > 200  # the measured reason, not a label
+    assert result["scenarios"]["I5-NOMINAL"]["warrant_by_construction"] is False
+    assert result["scenarios"]["I5-NOMINAL-READABLE"]["warrant_by_construction"] is True
+    # the scenario still runs and is still scored for everything else
+    e = result["closed_loop"][PRIMARY]["I5-NOMINAL"]
+    assert e["n"] == len(result["seeds"]) and e["decisions"] > 0
 
 
 # ------------------------------------------------------------------------------------------ gate claims
 @pytest.mark.xfail(
     strict=True,
     reason=(
-        "M1-ACTION-E003 FINAL (2026-09-19, I5 iteration 2): the nominal continue warrant (critical component "
-        "OBSERVED INTACT) still never arose, 0/10 in I5-NOMINAL and 0/10 in I5-NOMINAL-READABLE, because "
-        "Model2T needs 80 % surface coverage before a component-level condition is OBSERVED and the missions "
-        "reach 0.6-0.7. Over-escalation is much smaller but not gone: 74 ESCALATE decisions in 20 nominal "
-        "missions (E002: 409 in 10), all of them after the information attempts on an open critical item were "
-        "used up, and 13 of the 20 missions have none. The other six scenarios meet the 0.9 floor except "
-        "critical finding 8/10 and store-and-forward 8/10 (the finding was never observed on two seeds); "
-        "route blocked 9/10, uncertain belief, battery and time 10/10; 0 hard-constraint violations."
+        "M1-ACTION-E004 FINAL (2026-09-20, I5 iteration 3, seeds 7700000-7700009): the continue warrant is "
+        "reachable at last (9/10 in I5-NOMINAL-READABLE, 9/10 correct) and correct-given-warrant is 65/66, "
+        "but two things still fail the declared rule. (1) I5-ROUTE-BLOCKED scores 8/10, under the 0.9 floor: "
+        "on seed 7700005 Model2S never showed OBSERVED occupied cells on a planned leg, so the replan warrant "
+        "never arose, and on seed 7700004 REPLAN came 18 s after onset because a pending finding was "
+        "transmitted first. (2) Over-escalation in the nominal missions is 43, not 0: 35 in I5-NOMINAL, whose "
+        "critical condition cannot close by construction so the information attempts always run out, and 8 in "
+        "one I5-NOMINAL-READABLE mission whose warrant never arose. Everything else meets the floor: "
+        "uncertain belief, battery and time 10/10, critical finding, store-and-forward and readable nominal "
+        "9/10; 0 hard-constraint violations, 3910/3910 traceable decisions, UIR 0 over 655 relied world "
+        "claims. I5-NOMINAL is scored NOT APPLICABLE to the action class itself (measured: its warrant cannot "
+        "arise) and still counts for over-escalation, constraints, traceability, UIR and mission outcome."
     ),
 )
 def test_actions_exercised_correctly_inside_integrated_missions(result):

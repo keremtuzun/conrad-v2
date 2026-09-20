@@ -40,6 +40,11 @@ def pytest_configure(config: pytest.Config) -> None:
     config.addinivalue_line(
         "markers", "u0(criterion): the gate U0 criterion a live test provides evidence for"
     )
+    config.addinivalue_line(
+        "markers",
+        "no_unity_player: a criterion of a Unity-recorded gate that is decided WITHOUT the player (gate I5's "
+        "action-matrix half is belief-level fixtures), so it still runs when the player is absent",
+    )
 
 
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
@@ -47,7 +52,7 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     for item in items:
         if "unity_live" in str(item.fspath):
             item.add_marker(pytest.mark.unity_live)
-            if player is None:
+            if player is None and item.get_closest_marker("no_unity_player") is None:
                 item.add_marker(
                     pytest.mark.skip(
                         reason="Unity player binary absent: build unity/ConradUnityV2/Builds/Win64/ConradSim.exe "

@@ -1,0 +1,18 @@
+{
+ "meta": {},
+ "criteria": {
+  "hard constraints inviolable": {
+   "chosen_action_audit": 0,
+   "injected_invalid_proposals": 210,
+   "injected_invalid_accepted": 0,
+   "total": 0,
+   "uir": {
+    "relied_unsupported_claims": 0,
+    "relied_world_claims": 632,
+    "unsupported_claim_fraction": 0.047337,
+    "unsupported_inference_rate": 0.0,
+    "world_claims": 4225
+   }
+  }
+ }
+}

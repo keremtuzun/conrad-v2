@@ -158,6 +158,55 @@ def test_uncalibrated_source_escalates_once_attempts_are_exhausted():
     assert chosen is not None and chosen.action_type is ActionType.ESCALATE_TO_OPERATOR
 
 
+def test_an_answered_request_still_confirms_after_it_leaves_the_history_window():
+    """I5 iteration 3: the calibration gap does not reopen when the confirming request ages out of H_t.
+
+    The runtime reports the answered request in ``answered_information_requests``; the decision-history window
+    is short, and a fact about the mission must not expire with it.
+    """
+    ids = IdFactory(40)
+    b = make_belief(ids, uncertainty=unc(calibrated=False), revision=9)
+    req = make_requirement(ids, belief_ids=[b.belief_id], consequence=0.9)
+    kw: dict[str, Any] = {"modalities": ("SONAR",), "notes": {"modalities_used": ["SONAR"]}}
+    # the request is still in the window and was answered (it saw revision 4, the belief is at 9)
+    in_window = [
+        DecisionSummary(
+            decision_id=ids.new(),
+            time_ns=0,
+            action_type=ActionType.REQUEST_INFORMATION,
+            target_belief_ids=(b.belief_id,),
+            target_revisions=(4,),
+        )
+    ]
+    ctx = make_context(ids, [b], [req], previous=in_window, **kw)
+    chosen = EGDC(ids).decide(ctx).record.chosen
+    assert chosen is not None and chosen.action_type is ActionType.CONTINUE_MISSION
+    # the window has rolled past it: without the ledger the gap reopens and EGDC asks again
+    rolled = ctx.model_copy(update={"previous_decisions": ()})
+    again = EGDC(ids).decide(rolled).record.chosen
+    assert action_label(again) == "REQUEST_INFORMATION:CONFIRM_CONDITION"
+    # with the ledger the closure holds
+    with_ledger = rolled.model_copy(update={"answered_information_requests": {b.belief_id: 4}})
+    assert with_ledger.request_answered(b.belief_id, 9) and not with_ledger.request_answered(b.belief_id, 4)
+    held = EGDC(ids).decide(with_ledger).record.chosen
+    assert held is not None and held.action_type is ActionType.CONTINUE_MISSION
+    # a ledger entry that the belief has NOT moved past is not an answer, and the gap stays open
+    unanswered = rolled.model_copy(update={"answered_information_requests": {b.belief_id: 9}})
+    assert action_label(EGDC(ids).decide(unanswered).record.chosen) == "REQUEST_INFORMATION:CONFIRM_CONDITION"
+    # and a belief with an evidence conflict is never confirmed by the ledger
+    conflicted = make_belief(
+        ids,
+        belief_id=b.belief_id,
+        uncertainty=unc(calibrated=False),
+        revision=9,
+        n_conflicts=1,
+    )
+    ctx2 = make_context(ids, [conflicted], [req], **kw).model_copy(
+        update={"answered_information_requests": {b.belief_id: 4}}
+    )
+    assert action_label(EGDC(ids).decide(ctx2).record.chosen) != "CONTINUE_MISSION:"
+
+
 def test_true_ood_without_alternate_still_escalates():
     ids = IdFactory(39)
     b = make_belief(ids, uncertainty=unc(ue=0.8, calibrated=False))

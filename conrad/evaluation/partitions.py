@@ -68,6 +68,12 @@ I5_UNITY_DOMAIN = "i5_unity"
 I4_OCCLUDED_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_i4_occluded.yaml"
 I4_OCCLUDED_PARTITIONS_SHA256 = "d929beb67c051ea1116e33ebb8e51cd638f5894ef54989a0a3f2ec3a9221b557"
 I4_OCCLUDED_DOMAIN = "i4_occluded"
+# Pre-registered REPLICATION of the two I4 criteria that formal run 1 could not resolve (coverage-only and
+# information per time/energy). Fresh final worlds; run 1's seeds 8000200-8000219 are SPENT. Pinned on
+# 2026-09-20 before any flight on it. Same family, planner, budgets, metric and decision rule as run 1.
+I4_OCCLUDED_V2_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_i4_occluded_v2.yaml"
+I4_OCCLUDED_V2_PARTITIONS_SHA256 = "ad4f97312ea19eaeef47995b2d80299c4b9cd49a59b448c365bb545c5f363fb6"
+I4_OCCLUDED_V2_DOMAIN = "i4_occluded_v2"
 # Gate I7 surrogate missions, version 2 (COM-I7-E003/E004): the v1 final seeds 5300000-5300004, and the whole
 # mission final_test range they come from, are SPENT by COM-I7-E001/E002, and the 2026-09-20 BAAC scheduler
 # repair made that evidence stale. Pinned on 2026-09-20 before any run on its final_test seeds.
@@ -444,7 +450,9 @@ def validate_i5_v3(
     if final & (taken | older_dev | older_final):
         raise PartitionIntegrityError("i5_v3 final_test seeds collide with seeds used by another partition")
     if dev & (taken | older_final) or not dev <= older_dev:
-        raise PartitionIntegrityError("i5_v3 development seeds must be v1/v2 development seeds and nothing else")
+        raise PartitionIntegrityError(
+            "i5_v3 development seeds must be v1/v2 development seeds and nothing else"
+        )
 
 
 def _i5_v3_split(part: Partition) -> Split:
@@ -660,6 +668,51 @@ def _i7_v2_split(part: Partition) -> Split:
     )
 
 
+def load_i4_occluded_v2(
+    path: Path = I4_OCCLUDED_V2_PARTITIONS_PATH, *, verify_digest: bool = True
+) -> dict[str, Any]:
+    """The I4 replication partition; disjoint from every other partition file and reserved range."""
+    digest = canonical_digest(path)
+    if verify_digest and digest != I4_OCCLUDED_V2_PARTITIONS_SHA256:
+        raise PartitionIntegrityError(
+            f"{path} changed after freezing: digest {digest} != pinned {I4_OCCLUDED_V2_PARTITIONS_SHA256}"
+        )
+    raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+    validate_i4_occluded_v2(raw, load_i4_occluded()["raw"])
+    return {"raw": raw, "digest": digest}
+
+
+def validate_i4_occluded_v2(raw: dict[str, Any], v1: dict[str, Any]) -> None:
+    """Replication seeds are fresh: disjoint from every v1 split and from every reserved range."""
+    if raw.get("replicates_digest") != I4_OCCLUDED_PARTITIONS_SHA256:
+        raise PartitionIntegrityError("i4_occluded_v2 must name the v1 partition digest it replicates")
+    mine = set(_seeds(raw["world_seeds"]["final_test"]))
+    if not mine:
+        raise PartitionIntegrityError("i4_occluded_v2 has no final_test seeds")
+    taken = {s for spec in v1["world_seeds"].values() for s in _seeds(spec)}
+    for r in raw.get("reserved_elsewhere", []):
+        taken |= set(_seeds(r))
+    if mine & taken:
+        raise PartitionIntegrityError(
+            "i4_occluded_v2 seeds collide with seeds used by another partition or experiment"
+        )
+
+
+def _i4_occluded_v2_split(part: Partition) -> Split:
+    loaded = load_i4_occluded_v2()
+    raw = loaded["raw"]
+    if part.value not in raw["world_seeds"]:
+        raise KeyError(f"i4_occluded_v2 partition has no {part.value!r} split")
+    return Split(
+        domain=I4_OCCLUDED_V2_DOMAIN,
+        partition=part,
+        world_seeds=_seeds(raw["world_seeds"][part.value]),
+        families=tuple(raw["families"]),
+        replicates_per_world=1,
+        digest=loaded["digest"],
+    )
+
+
 def split(domain: str, partition: str | Partition, purpose: str | Purpose) -> Split:
     """The only sanctioned way to obtain evaluation seeds. Raises on a forbidden (purpose, partition)."""
     part = Partition(partition)
@@ -678,6 +731,8 @@ def split(domain: str, partition: str | Partition, purpose: str | Purpose) -> Sp
         return _i5_unity_split(part)
     if domain == I4_OCCLUDED_DOMAIN:
         return _i4_occluded_split(part)
+    if domain == I4_OCCLUDED_V2_DOMAIN:
+        return _i4_occluded_v2_split(part)
     if domain == I7_V2_DOMAIN:
         return _i7_v2_split(part)
     loaded = load()

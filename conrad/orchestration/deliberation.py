@@ -38,6 +38,7 @@ from conrad.orchestration.services import RuntimeServices
 from conrad.schemas.belief import BeliefMessage, BeliefQuery, BeliefSnapshot
 from conrad.schemas.comms import LinkState
 from conrad.schemas.decision import (
+    ActionType,
     InformationNeed,
     MissionPhase,
     MissionState,
@@ -179,6 +180,7 @@ class Deliberation:
             previous_decisions=tuple(
                 h for h in self.history if (now.time_ns - h.time_ns) / 1e9 <= self.cfg.decision_history_s
             ),
+            answered_information_requests=self._answered_requests(),
             available_modalities=(self.sensor.modality,),
             motion_permitted=motion_permitted,
             operator_reachable=link is not None and link.status.value != "DOWN",
@@ -214,6 +216,23 @@ class Deliberation:
                 "rationale": rec.rationale[:200],
             },
         )
+        return out
+
+    def _answered_requests(self) -> dict[UUID, int]:
+        """Per belief, the newest revision an information request the runtime CARRIED OUT saw.
+
+        The decision-history window H_t (``decision_history_s``) is the right horizon for counting recent
+        attempts, but not for the fact that an independent look was taken: that does not expire. EGDC reads
+        this ledger through ``DecisionContext.request_answered``, and still re-checks the belief itself
+        (properties OBSERVED, evidence present, no conflict) on every cycle.
+        """
+        out: dict[UUID, int] = {}
+        for h in self.history:
+            if h.action_type is not ActionType.REQUEST_INFORMATION or h.executed is False:
+                continue
+            for belief_id, revision in zip(h.target_belief_ids, h.target_revisions, strict=False):
+                if revision > out.get(belief_id, -1):
+                    out[belief_id] = revision
         return out
 
     def mark_not_executed(self, decision_id: UUID) -> None:

@@ -75,6 +75,14 @@ class DecisionContext(ConradModel):
     link_state: LinkState | None = None
     system_health: SystemHealth | None = None
     previous_decisions: tuple[DecisionSummary, ...] = ()
+    answered_information_requests: dict[UUID, int] = Field(
+        default_factory=dict,
+        description="per belief, the NEWEST revision that an information request the runtime actually "
+        "carried out saw, over the whole mission. previous_decisions is the short history window H_t and is "
+        "the right basis for counting RECENT attempts; that an independent look was requested and taken is a "
+        "fact about the mission which does not expire with the window, so it is reported separately. Empty = "
+        "not reported (then only the window is available).",
+    )
     active_information_needs: tuple[InformationNeed, ...] = ()
     available_modalities: tuple[str, ...] = Field(
         default=(), description="sensing modalities currently usable (from capabilities/health)"
@@ -106,3 +114,21 @@ class DecisionContext(ConradModel):
             and d.executed is not False
             and wanted.intersection(d.target_belief_ids)
         )
+
+    def request_answered(self, belief_id: UUID, revision: int) -> bool:
+        """Has an executed information request on this belief been answered by a newer revision?
+
+        True when some carried-out ``REQUEST_INFORMATION`` in the history window saw an older revision of the
+        belief, or when the runtime's window-independent ledger
+        (``answered_information_requests``) records one. The ledger keeps the NEWEST such revision, so a
+        request that has not been answered yet does not report as answered, and an answer already given does
+        not expire when the request scrolls out of H_t.
+        """
+        for d in self.previous_decisions:
+            if d.action_type is not ActionType.REQUEST_INFORMATION or d.executed is False:
+                continue
+            seen = dict(zip(d.target_belief_ids, d.target_revisions, strict=False))
+            if belief_id in seen and seen[belief_id] < revision:
+                return True
+        ledger = self.answered_information_requests.get(belief_id)
+        return ledger is not None and ledger < revision

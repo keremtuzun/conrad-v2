@@ -2,7 +2,7 @@
   "gate_id": "I5",
   "evidence_class": "SURROGATE",
   "execution_path": "python L1 kernel instead of Unity; pytest nodes + retained experiment artifacts (I5)",
-  "git_commit": "99537e719267de88d8e382a224597f6e6399b584",
+  "git_commit": "e0b44237a0f7e5d71c297e6675ea041b2314a2af",
   "criteria": [
     {
       "criterion": "continue",
@@ -42,17 +42,17 @@
     {
       "criterion": "actions exercised correctly inside integrated missions",
       "status": "FAIL",
-      "measured": "test_artifact_is_final_split_surrogate=PASS; test_every_scenario_and_arm_ran_on_every_final_seed=PASS; experiment: I5-NOMINAL: correct 0/10 latency_max=None forbidden=0; I5-NOMINAL-READABLE: correct 0/10 latency_max=None forbidden=0; I5-CRITICAL-FINDING: correct 8/10 latency_max=0.0 forbidden=0; I5-UNCERTAIN-BELIEF: correct 10/10 latency_max=0.0 forbidden=0; I5-ROUTE-BLOCKED: correct 9/10 latency_max=20.0 forbidden=0; I5-BATTERY-RESERVE: correct 10/10 latency_max=0.0 forbidden=0; I5-TIME-RESERVE: correct 10/10 latency_max=0.0 forbidden=0; I5-COMMS-OUTAGE: correct 8/10 latency_max=0.0 forbidden=0; violations=0; nominal over-escalations=74; floor=0.9 (ENGINEERING_ESTIMATE)"
+      "measured": "test_artifact_is_final_split_surrogate=PASS; test_every_scenario_and_arm_ran_on_every_final_seed=PASS; experiment: I5-NOMINAL: correct 0/10 latency_max=None forbidden=0 [NOT APPLICABLE]; I5-NOMINAL-READABLE: correct 9/10 latency_max=14.0 forbidden=0; I5-CRITICAL-FINDING: correct 9/10 latency_max=0.0 forbidden=0; I5-UNCERTAIN-BELIEF: correct 10/10 latency_max=0.0 forbidden=0; I5-ROUTE-BLOCKED: correct 8/10 latency_max=18.0 forbidden=0; I5-BATTERY-RESERVE: correct 10/10 latency_max=0.0 forbidden=0; I5-TIME-RESERVE: correct 10/10 latency_max=0.0 forbidden=0; I5-COMMS-OUTAGE: correct 9/10 latency_max=0.0 forbidden=0; violations=0; nominal over-escalations=43; floor=0.9 (ENGINEERING_ESTIMATE); not applicable to this criterion (the warrant cannot arise by construction): ['I5-NOMINAL']"
     },
     {
       "criterion": "traceable decisions with low measured UIR",
       "status": "PASS",
-      "measured": "test_artifact_is_final_split_surrogate=PASS; test_uir_is_measured_on_the_e001_basis=PASS; experiment: traceable_fraction=1.0; UIR=0.0 (0/109 relied world claims) max=0.0"
+      "measured": "test_artifact_is_final_split_surrogate=PASS; test_uir_is_measured_on_the_e001_basis=PASS; experiment: traceable_fraction=1.0; UIR=0.0 (0/655 relied world claims) max=0.0"
     },
     {
       "criterion": "competitive mission outcomes vs decision baselines",
       "status": "PASS",
-      "measured": "test_artifact_is_final_split_surrogate=PASS; test_baselines_ran_closed_loop_on_the_same_seeds=PASS; experiment: vs rule_fsm: task success 55 vs 55, safety events 12 vs 13; vs naive_act_on_claims: task success 55 vs 12, safety events 12 vs 21"
+      "measured": "test_artifact_is_final_split_surrogate=PASS; test_baselines_ran_closed_loop_on_the_same_seeds=PASS; experiment: vs rule_fsm: task success 63 vs 63, safety events 13 vs 14; vs naive_act_on_claims: task success 63 vs 15, safety events 13 vs 23"
     }
   ],
   "artifacts": [

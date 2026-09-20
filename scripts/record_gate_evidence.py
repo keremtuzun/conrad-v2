@@ -95,6 +95,9 @@ I5_E002 = "artifacts/experiments/M1-ACTION-E002/m1_action_e002.json"
 # I5 iteration 2: the surrogate mission criteria now point at M1-ACTION-E003 (fresh final seeds of
 # configs/eval/partitions_i5_v2.yaml); E002 stays on disk as the spent iteration-1 record.
 I5_E003 = "artifacts/experiments/M1-ACTION-E003/m1_action_e003.json"
+# I5 iteration 3: they now point at M1-ACTION-E004 (fresh final seeds of configs/eval/partitions_i5_v3.yaml,
+# the repaired Model2T and the durable calibration-gap closure); E002 and E003 stay on disk as spent records.
+I5_E004 = "artifacts/experiments/M1-ACTION-E004/m1_action_e004.json"
 I5_MISSION_CRITERIA = (
     "actions exercised correctly inside integrated missions",
     "traceable decisions with low measured UIR",
@@ -129,14 +132,16 @@ def _i5_actions_check(d: dict) -> tuple[bool, str]:
         return False, bad
     v = d["verdicts"]
     e = d["closed_loop"]["egdc_structured"]
+    na = v.get("scenarios_not_applicable", {})
     rows = "; ".join(
         f"{sc}: correct {e[sc]['correct']}/{e[sc]['n']} latency_max={e[sc]['latency_s_max']} "
-        f"forbidden={e[sc]['forbidden_after_onset']}"
+        f"forbidden={e[sc]['forbidden_after_onset']}" + (" [NOT APPLICABLE]" if sc in na else "")
         for sc in d["scenarios"]
     )
     return bool(v["actions_exercised_correctly"]), (
         f"{rows}; violations={v['violations_total']}; nominal over-escalations={v['nominal_over_escalations']}; "
-        f"floor={v['success_floor']} (ENGINEERING_ESTIMATE)"
+        f"floor={v['success_floor']} (ENGINEERING_ESTIMATE); not applicable to this criterion (the warrant "
+        f"cannot arise by construction): {sorted(na)}"
     )
 
 
@@ -540,8 +545,11 @@ PLAN["2T-TCDP"] = [
 
 
 I7A = "tests/acceptance/test_i7_constrained_comms.py::"
-I7_E001 = "artifacts/experiments/COM-I7-E001/com_i7_e001.json"
-I7_E002 = "artifacts/experiments/COM-I7-E002/com_i7_e002.json"
+# The I7 surrogate criteria now read COM-I7-E003/E004 (fresh final seeds of configs/eval/partitions_i7_v2.yaml).
+# COM-I7-E001/E002 stay on disk as the spent pre-repair record: their seeds 5300000-5300004 are SPENT and the
+# 2026-09-20 BAAC scheduler repair made their BAAC numbers stale.
+I7_E001 = "artifacts/experiments/COM-I7-E003/com_i7_e003.json"
+I7_E002 = "artifacts/experiments/COM-I7-E004/com_i7_e004.json"
 
 
 def _i7_bandwidth_check(d: dict) -> tuple[bool, str]:
@@ -660,7 +668,9 @@ SURROGATE_PLAN: dict[str, list[tuple[str, list[str], Callable[[], tuple[Criterio
             None,
         ),
     ],
-    # I7: COM-I7-E001 (bandwidth sweep) / COM-I7-E002 (critical finding during an outage), FINAL seeds.
+    # I7: COM-I7-E003 (bandwidth sweep) / COM-I7-E004 (critical finding during an outage), FINAL seeds of
+    # configs/eval/partitions_i7_v2.yaml. They replaced E001/E002 after the 2026-09-20 BAAC scheduler repair;
+    # E001/E002 stay on disk as the spent pre-repair record on the now SPENT seeds 5300000-5300004.
     "I7": [
         (
             "full mission under constrained bandwidth",
@@ -696,7 +706,8 @@ SURROGATE_PLAN: dict[str, list[tuple[str, list[str], Callable[[], tuple[Criterio
         ),
     ],
     # I5: the action-matrix criteria (belief-level fixtures, identical to the formal record) plus the integrated
-    # missions of M1-ACTION-E003 (python kernel, FINAL seeds of configs/eval/partitions_i5_v2.yaml; I5 iteration 2).
+    # missions of M1-ACTION-E004 (python kernel, FINAL seeds of configs/eval/partitions_i5_v3.yaml; I5
+    # iteration 3). The E002 and E003 artifacts stay on disk as the spent iteration-1 and iteration-2 records.
     "I5": [
         *[c for c in PLAN["I5"] if c[0] not in I5_MISSION_CRITERIA],
         (
@@ -705,12 +716,12 @@ SURROGATE_PLAN: dict[str, list[tuple[str, list[str], Callable[[], tuple[Criterio
                 I5M + "test_artifact_is_final_split_surrogate",
                 I5M + "test_every_scenario_and_arm_ran_on_every_final_seed",
             ],
-            _exp(I5_E003, _i5_actions_check),
+            _exp(I5_E004, _i5_actions_check),
         ),
         (
             I5_MISSION_CRITERIA[1],
             [I5M + "test_artifact_is_final_split_surrogate", I5M + "test_uir_is_measured_on_the_e001_basis"],
-            _exp(I5_E003, _i5_trace_check),
+            _exp(I5_E004, _i5_trace_check),
         ),
         (
             I5_MISSION_CRITERIA[2],
@@ -718,7 +729,7 @@ SURROGATE_PLAN: dict[str, list[tuple[str, list[str], Callable[[], tuple[Criterio
                 I5M + "test_artifact_is_final_split_surrogate",
                 I5M + "test_baselines_ran_closed_loop_on_the_same_seeds",
             ],
-            _exp(I5_E003, _i5_competitive_check),
+            _exp(I5_E004, _i5_competitive_check),
         ),
     ],
     # I4: ACTIVE-MCBR-E004, integrated python-kernel mission on the 12 pre-declared I4 worlds (unity_gate
@@ -843,8 +854,14 @@ def run_nodes(nodes: list[str]) -> dict[str, str]:
             file = case.get("classname", "").replace(".", "/") + ".py"
             name = case.get("name", "")
             bad = case.find("failure") is not None or case.find("error") is not None
-            skipped = case.find("skipped") is not None
-            results[f"{file}::{name}"] = "FAIL" if bad else ("SKIP" if skipped else "PASS")
+            skip = case.find("skipped")
+            # A strict xfail is an EVALUATED failure, not an unrun test: pytest reports it as
+            # <skipped type="pytest.xfail">. Reading it as NOT_RUN would hide a failing gate criterion
+            # behind "no evidence" (HANDOFF section 1, rule 3).
+            if skip is not None and str(skip.get("type", "")) == "pytest.xfail":
+                bad = True
+                skip = None
+            results[f"{file}::{name}"] = "FAIL" if bad else ("SKIP" if skip is not None else "PASS")
         return results
 
 
@@ -865,9 +882,13 @@ def record(gate: str, surrogate: bool = False) -> GateEvidence:
             status = CriterionStatus.NOT_RUN
         else:
             status = CriterionStatus.PASS
-        if check is not None and status is CriterionStatus.PASS:
-            status, extra = check()
+        if check is not None:
+            # The artifact check never upgrades a failed or unrun test node; it can only add its measured
+            # numbers, or fail a criterion whose tests passed.
+            checked, extra = check()
             measured += f"; experiment: {extra}"
+            if status is CriterionStatus.PASS:
+                status = checked
         criteria.append(CriterionResult(criterion=name, status=status, measured=measured))
     ev = GateEvidence(
         gate_id=gate,

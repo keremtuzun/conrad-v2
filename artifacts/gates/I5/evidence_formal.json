@@ -2,7 +2,7 @@
   "gate_id": "I5",
   "evidence_class": "FORMAL",
   "execution_path": "pytest nodes + retained experiment artifacts (I5)",
-  "git_commit": "9847234e0b2f2421c8e1aacb78acb2faf1f40279",
+  "git_commit": "e0b44237a0f7e5d71c297e6675ea041b2314a2af",
   "criteria": [
     {
       "criterion": "continue",
