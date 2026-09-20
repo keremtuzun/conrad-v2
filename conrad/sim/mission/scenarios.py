@@ -160,6 +160,52 @@ I6_SPIKE: dict[str, Any] = {
 SCENARIOS["I6-MULTIDOMAIN-TURBID"] = {"world": {"eco_events": [I6_SPIKE]}, "runtime": dict(I6_RUNTIME)}
 SCENARIOS["I6-MULTIDOMAIN-CLEAR"] = {"world": {}, "runtime": dict(I6_RUNTIME)}
 
+# Flagship integrated Unity mission (docs/audits/FLAGSHIP_UNITY.md, configs/eval/flagship_unity.yaml).
+# ONE mission on ONE held-out world carrying all three declared stressors at declared times. It is a
+# demonstration run, not a gate: no criterion is derived from it. Every time below is a SYNTHETIC_ONLY
+# simulation setting, fixed on development worlds (unity_gate development split) before the final world ran.
+#
+#  1. communication outage  link down [6 s, 70 s); the defect is on the LANE side (as in I7-OUTAGE-CRITICAL),
+#     so the critical structural finding is made by the lane pass itself while the link is down and can only
+#     be delivered after reconnection.
+#  2. contradiction         the second structural payload starts at 16 s, in the middle of the lane view of the
+#     target, so the first readings are single-sensor and every later view yields TWO readings of the same
+#     component that disagree. Unlike INT-003 the second payload is NOT corrupted (corruption 0), so Model2T
+#     rates it reliable and the disagreement is credible: it carries a persistent +10 mm wall-loss calibration
+#     offset and a -0.8 surface-appearance offset. A credible disagreement must raise U_C rather than be
+#     averaged away (spec ch33 uncertainty rule 5).
+#  3. localization          the synthetic USBL-like position fix stops at 90 s and never returns, driving the
+#     estimator to DEGRADED and then LOCALIZATION_LOST with the declared safe state.
+FLAGSHIP_UNITY_DURATION_S = 150.0
+FLAGSHIP_UNITY_LINK_OUTAGE_S = (6.0, 70.0)
+FLAGSHIP_UNITY_CONTRADICTION_S = 16.0
+FLAGSHIP_UNITY_CONTRADICTION_BIAS_M = 0.010
+FLAGSHIP_UNITY_FIX_OUTAGE_S = 90.0
+FLAGSHIP_UNITY_FIX_OUTAGE_DURATION_S = 90.0  # past the end of the mission: the fix never returns
+SCENARIOS["FLAGSHIP-UNITY"] = {
+    "world": {
+        "defect": {"side": "near"},
+        "contradiction": {
+            "enabled": True,
+            "start_s": FLAGSHIP_UNITY_CONTRADICTION_S,
+            "sensor_bias_m": FLAGSHIP_UNITY_CONTRADICTION_BIAS_M,
+            "corruption": 0.0,
+            "contradiction": -0.8,
+        },
+        "faults": [
+            {
+                "t_s": FLAGSHIP_UNITY_FIX_OUTAGE_S,
+                "type": "FIX_OUTAGE",
+                "duration_s": FLAGSHIP_UNITY_FIX_OUTAGE_DURATION_S,
+            }
+        ],
+    },
+    "runtime": {
+        "duration_s": FLAGSHIP_UNITY_DURATION_S,
+        "link": {"outages_s": [list(FLAGSHIP_UNITY_LINK_OUTAGE_S)]},
+    },
+}
+
 INT_DESCRIPTIONS = {
     "INT-001": "visible infrastructure (defect on the lane side)",
     "INT-002": "occluded critical region (defect on the far side)",

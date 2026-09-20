@@ -1,0 +1,3151 @@
+{
+ "backend": "unity",
+ "communications": {
+  "alert_latency_from_finding_s": 56.953333333,
+  "critical_alert_arrival_t_s": 71.253333333,
+  "critical_belief_id": "018bcfe5-6804-7c2f-a087-1f29354ee22f",
+  "critical_delta_arrival_t_s": 76.970833333,
+  "critical_finding_revision": 14,
+  "critical_finding_t_s": 14.3,
+  "critical_first_offer_t_s": 15.1,
+  "delta_latency_from_finding_s": 62.670833333000004,
+  "duplicate_contributions": 0,
+  "finding_made_during_outage": true,
+  "first_routine_delta_after_reconnection_t_s": 80.6575,
+  "link_down_s": 6.0,
+  "link_up_s": 70.0,
+  "metrics": {
+   "bits_sent": 105795,
+   "critical_alert_latency_min_s": 56.153333333,
+   "critical_alert_latency_s": [
+    56.153333333
+   ],
+   "critical_delivered": 1,
+   "critical_offers": 1,
+   "delivered": 24,
+   "dropped": 0,
+   "energy_j": 10.5795,
+   "offers": 83,
+   "policy": "C-B10_baac",
+   "queue_bits": 23580904,
+   "receiver_alerts": 1,
+   "receiver_beliefs": 12,
+   "shadow_arms": [],
+   "transmissions": 90
+  },
+  "policy": "C-B10_baac",
+  "queue_max_units": 18,
+  "receiver_revision_at_end": 25,
+  "resync_requests": 0,
+  "sender_revision_at_end": 25
+ },
+ "execution": {
+  "abstentions": 14,
+  "beliefs_published": 932,
+  "collisions": 0,
+  "commands_accepted": 1500,
+  "commands_refused_by_safety_supervisor": 0,
+  "commands_rejected": 0,
+  "decisions": 75,
+  "failed_modules": [],
+  "gateway_rejection_reasons": {},
+  "min_clearance_m": 0.058327818672046866,
+  "module_health": {
+   "baac": "AVAILABLE",
+   "egdc": "AVAILABLE",
+   "mcbr": "AVAILABLE",
+   "model2e": "AVAILABLE",
+   "model2s": "AVAILABLE",
+   "model2t": "AVAILABLE",
+   "navigation": "AVAILABLE",
+   "sensing": "AVAILABLE"
+  },
+  "uir": 0.0,
+  "uir_report": {
+   "relied_unsupported_claims": 0,
+   "relied_world_claims": 0,
+   "unsupported_claim_fraction": 0.4214765100671141,
+   "unsupported_inference_rate": 0.0,
+   "unsupported_world_claims": 314,
+   "world_claims": 745
+  },
+  "unity": {
+   "eco_conversion": {
+    "fouling": {
+     "cover_max_abs": 0.0,
+     "cover_mean_abs": 0.0,
+     "entities": 10,
+     "fouled_entities": 1
+    },
+    "grid_shape": [
+     29,
+     21,
+     16
+    ],
+    "notes": [
+     "optics: Twin2E turbidity -> beam attenuation with Twin2E ObservationConfig constants; camera only",
+     "fouling: one cover per structure (visual colour); colliders unchanged",
+     "range imager and sonar are not attenuated (kernel parity)"
+    ],
+    "optics": {
+     "attenuation_max_abs_per_m": 2.7755575615628914e-17,
+     "attenuation_rms_per_m": 1.1857187100668869e-17,
+     "points": 400,
+     "ray_length_m": 4.0,
+     "rays": 100,
+     "t_s": 0.0,
+     "transmission_max_abs": 0.0,
+     "transmission_rms": 0.0
+    },
+    "spacing_m": 1.0
+   },
+   "forwarded_frames": {
+    "camera": 149,
+    "range_imager": 49,
+    "sonar": 49
+   },
+   "optics_updates": 150,
+   "out_of_order_packets": 0,
+   "player_exit_code": 1,
+   "scene_conversion": {
+    "heightfield_vertical_max_error_m": 0.001485,
+    "heightfield_vertices": 16385,
+    "kinds": {
+     "blob": {
+      "entities": 1,
+      "rms_m": 0.00022,
+      "twin_to_unity_max_m": 0.000497,
+      "unity_primitives": 6,
+      "unity_to_twin_max_m": 0.000497
+     },
+     "box": {
+      "entities": 1,
+      "rms_m": 0.0,
+      "twin_to_unity_max_m": 0.0,
+      "unity_primitives": 1,
+      "unity_to_twin_max_m": 0.0
+     },
+     "capsule": {
+      "entities": 3,
+      "rms_m": 0.0,
+      "twin_to_unity_max_m": 0.0,
+      "unity_primitives": 3,
+      "unity_to_twin_max_m": 0.0
+     },
+     "ellipsoid": {
+      "entities": 3,
+      "rms_m": 0.049471,
+      "twin_to_unity_max_m": 0.159161,
+      "unity_primitives": 3,
+      "unity_to_twin_max_m": 0.132102
+     },
+     "torus": {
+      "entities": 2,
+      "rms_m": 0.000768,
+      "twin_to_unity_max_m": 0.001547,
+      "unity_primitives": 48,
+      "unity_to_twin_max_m": 0.001549
+     }
+    },
+    "notes": [
+     "ellipsoids are approximated by one capsule; see ellipsoid error"
+    ],
+    "primitives": 62
+   },
+   "scene_digest": "2b163298e764ea65e8aea4c108bc3ee712c057002e863614ff407ac255252a94"
+  }
+ },
+ "experiment_id": "FLAGSHIP-UNITY",
+ "falsification": {
+  "report": {
+   "bundle": "artifacts/runs_capture/flagship_unity/FLAGSHIP-UNITY-s7800017",
+   "checks": {
+    "identical_without_truth": true,
+    "no_truth_path_opened_no_truth_module_imported": true,
+    "observation_change_is_detected": true,
+    "same_code_as_recording": true,
+    "truth_corruption_has_no_effect": true,
+    "unsealed_edit_refused": true
+   },
+   "control_observation_altered": {
+    "depth_sample_altered": {
+     "command_mismatches": 0,
+     "edit": {
+      "after": 29.31178610775662,
+      "before": 28.81178610775662,
+      "field": "get_depth.depth_m",
+      "tape_record": 37906
+     },
+     "events": {
+      "bytes_equal": false,
+      "first_difference": 3497,
+      "original": 6609,
+      "replayed": 3498,
+      "signature_equal": false
+     },
+     "mission_files_changed": [
+      "baac_transmissions.jsonl",
+      "decisions.jsonl",
+      "mcbr_candidate_tables.json",
+      "receiver_state.json",
+      "requirements.json",
+      "runtime_metrics.json",
+      "structural_associations.json",
+      "trajectories.json"
+     ],
+     "output_changed": true,
+     "sqlite_tables_changed": [
+      "belief_revisions",
+      "beliefs",
+      "commands",
+      "evidence",
+      "evidence_contributions",
+      "observations",
+      "provenance_edges",
+      "provenance_nodes"
+     ],
+     "tape_divergence": "tape record 37914: runtime called now_ns, tape has clock_domain"
+    },
+    "payload_observation_dropped": {
+     "command_mismatches": 0,
+     "edit": {
+      "dropped_observation_id": "018bcfe5-6802-7225-a347-154aaa2d1d8f",
+      "modality": "STRUCTURED",
+      "remaining_in_call": 0,
+      "tape_record": 35
+     },
+     "events": {
+      "bytes_equal": false,
+      "first_difference": 9,
+      "original": 6609,
+      "replayed": 11,
+      "signature_equal": false
+     },
+     "mission_files_changed": [
+      "baac_transmissions.jsonl",
+      "decisions.jsonl",
+      "mcbr_candidate_tables.json",
+      "receiver_state.json",
+      "requirements.json",
+      "runtime_metrics.json",
+      "structural_associations.json",
+      "trajectories.json"
+     ],
+     "output_changed": true,
+     "sqlite_tables_changed": [
+      "belief_revisions",
+      "beliefs",
+      "commands",
+      "evidence",
+      "evidence_contributions",
+      "observations",
+      "provenance_edges",
+      "provenance_nodes",
+      "relationships"
+     ],
+     "tape_divergence": "tape record 45: runtime called now_ns, tape has get_imu"
+    }
+   },
+   "control_truth_corrupted": {
+    "files_corrupted": [
+     "truth/truth_record.json",
+     "reports/metrics.json",
+     "unity/experiment.json",
+     "unity/player.log",
+     "unity/robot_config.json",
+     "unity/scenario.json"
+    ],
+    "output_identical_to_truth_removed_replay": true,
+    "playback": {
+     "absent_manifest_files": 0,
+     "code_digest_now": "68bfade5aaaaad7e2ba5fd1d84f94e25b65b0bcb1977d300c9afc82cd415a9a2",
+     "code_digest_recorded": "68bfade5aaaaad7e2ba5fd1d84f94e25b65b0bcb1977d300c9afc82cd415a9a2",
+     "command_mismatches": 0,
+     "commands_checked": 1500,
+     "ran": true,
+     "same_code": true,
+     "tape_divergence": null,
+     "tape_records": 75134,
+     "ticks": 1500,
+     "verified_files": 322
+    },
+    "truth_paths_opened": []
+   },
+   "control_unsealed_tape_refused": [
+    "required file corrupt: capture/rhi_tape.jsonl.gz"
+   ],
+   "has_observation_capture": true,
+   "headline_after_truth_restored": {
+    "all_equal": true,
+    "available": true,
+    "corrosion_depth_estimate_m": {
+     "original": 0.013586580542136515,
+     "replayed": 0.013586580542136515
+    },
+    "crack_length_abs_error_m": {
+     "original": 0.009396568055364637,
+     "replayed": 0.009396568055364637
+    },
+    "crack_length_estimate_m": {
+     "original": 0.0706060741557748,
+     "replayed": 0.0706060741557748
+    },
+    "differing_keys": [],
+    "keys_compared": 17
+   },
+   "legacy_cc10_replay": {
+    "note": "replay_run / replay_unity_run then re-simulate the Twin world (MissionWorld / UnityMissionWorld)",
+    "problems": [],
+    "truth_files_opened_by_verify_bundle": [
+     "reports/metrics.json",
+     "truth/truth_record.json",
+     "unity/experiment.json",
+     "unity/player.log",
+     "unity/robot_config.json",
+     "unity/scenario.json"
+    ],
+    "verify_bundle_ok": true
+   },
+   "provenance": {
+    "backend": "unity",
+    "config_digest": "e4a3c1c3f1397584da2c7be83654079763d08cfb17ce7e649c77e8e1ece7fc1a",
+    "git_commit": "757f352a1cfa235d38ff4483c9e6d8f6d3f23842",
+    "manifest_files": 338,
+    "scenario_id": "FLAGSHIP-UNITY",
+    "seed": 7800017
+   },
+   "removed_entries": [
+    "truth",
+    "reports",
+    "unity"
+   ],
+   "truth_layout": {
+    "reports": [
+     "reports/metrics.json"
+    ],
+    "truth": [
+     "truth/truth_record.json"
+    ],
+    "unity": [
+     "unity/experiment.json",
+     "unity/player.log",
+     "unity/robot_config.json",
+     "unity/scenario.json"
+    ]
+   },
+   "truth_removed_replay": {
+    "comparison_with_original": {
+     "commands": {
+      "equal": true,
+      "original": 1500,
+      "replayed": 1500
+     },
+     "equal": true,
+     "events": {
+      "bytes_equal": true,
+      "first_difference": null,
+      "original": 6609,
+      "replayed": 6609,
+      "signature_equal": true
+     },
+     "mission_files": {
+      "baac_transmissions.jsonl": true,
+      "decisions.jsonl": true,
+      "mcbr_candidate_tables.json": true,
+      "receiver_state.json": true,
+      "requirements.json": true,
+      "runtime_metrics.json": true,
+      "structural_associations.json": true,
+      "trajectories.json": true
+     },
+     "sqlite_tables": {
+      "alembic_version": true,
+      "artifact_refs": true,
+      "belief_lineage": true,
+      "belief_revisions": true,
+      "beliefs": true,
+      "commands": true,
+      "dataset_manifests": true,
+      "events": true,
+      "evidence": true,
+      "evidence_contributions": true,
+      "experiments": true,
+      "migration_history": true,
+      "observations": true,
+      "provenance_edges": true,
+      "provenance_nodes": true,
+      "relationships": true,
+      "runs": true,
+      "scenarios": true
+     }
+    },
+    "forbidden_modules_imported": [],
+    "opened": {
+     "bundle": {
+      "by_entry": {
+       "bundle_manifest.json": 1,
+       "capture": 4,
+       "config.resolved.yaml": 1,
+       "objects/sha256/*": 317
+      },
+      "distinct": 323
+     },
+     "bundle_files_except_objects": [
+      "bundle_manifest.json",
+      "capture/capture_meta.json",
+      "capture/mission_context.json",
+      "capture/rhi_tape.jsonl.gz",
+      "capture/robot_config.json",
+      "config.resolved.yaml"
+     ],
+     "distinct_paths": 2885,
+     "outside_repo_non_code": [
+      "\\\\.\\nul"
+     ],
+     "playback_output": {
+      "by_entry": {
+       "events.jsonl": 1,
+       "mission": 8,
+       "objects/sha256/*": 317,
+       "robot_config.captured.json": 1
+      },
+      "distinct": 327
+     },
+     "python_code_and_libraries": 2233,
+     "repo_non_code": [
+      "configs/active/mcbr_frozen_v2.yaml"
+     ],
+     "truth_paths_opened": []
+    },
+    "playback": {
+     "absent_manifest_files": 6,
+     "code_digest_now": "68bfade5aaaaad7e2ba5fd1d84f94e25b65b0bcb1977d300c9afc82cd415a9a2",
+     "code_digest_recorded": "68bfade5aaaaad7e2ba5fd1d84f94e25b65b0bcb1977d300c9afc82cd415a9a2",
+     "command_mismatches": 0,
+     "commands_checked": 1500,
+     "ran": true,
+     "same_code": true,
+     "tape_divergence": null,
+     "tape_records": 75134,
+     "ticks": 1500,
+     "verified_files": 322
+    }
+   },
+   "verdict": "PASS"
+  },
+  "report_path": "C:\\Users\\Kerem\\Kerem\\conrad-v2\\artifacts\\falsification\\flagship_unity__FLAGSHIP-UNITY-s7800017\\report.json",
+  "returncode": 0,
+  "verdict": "PASS"
+ },
+ "identities": {
+  "architecture_id": "conrad_v2_impl_freeze_v0_2",
+  "config_digest": "e4a3c1c3f1397584da2c7be83654079763d08cfb17ce7e649c77e8e1ece7fc1a",
+  "git_commit": "757f352a1cfa235d38ff4483c9e6d8f6d3f23842",
+  "manifest_files": 338,
+  "manifest_objects": 233,
+  "model_versions": {
+   "model2t": "model2t-analytic-0.1.0",
+   "planner": "PRODUCTION",
+   "producer": "conrad-mission-unity-0.1"
+  },
+  "robot_config_digest": "2028d46fe2ac345ccc626365c74907b7786630acfc50c1b92e7bcc6a530ba87a",
+  "scenario_id": "FLAGSHIP-UNITY",
+  "scenario_uuid": "018bcfe5-680d-7145-8f1d-02aded2438d0",
+  "scenario_version": "twin2s-ocpwe-0.1.0",
+  "seed": 7800017,
+  "sensor_configuration_digest": "2f8c7f8b6308b4b99d807458b8bec05d13bd09c5def67af0cf40afede6086edf",
+  "stack_id": "conrad_v2_stack_freeze_v0_2",
+  "twin_versions": {
+   "twin2e": "twin2s-ocpwe-0.1.0",
+   "twin2s": "twin2s-ocpwe-0.1.0",
+   "twin2t": "twin2t-mcde-0.1.0"
+  },
+  "unity": {
+   "build_info": {
+    "build_seconds": 21.1982802,
+    "build_started_utc": "2026-09-20T03:51:10.1367628Z",
+    "output": "Builds/Win64/ConradSim.exe",
+    "result": "Succeeded",
+    "total_errors": 0,
+    "total_size_bytes": 93422872,
+    "total_warnings": 0,
+    "unity_version": "6000.5.9f1"
+   },
+   "player": "ConradSim.exe",
+   "player_exe_sha256": "36c5c9f13481406382a8e9ef8fc0ea7cdf055c43bb12fc8fd545b07c199cd277",
+   "robot_config_path": "artifacts/unity/robot/sim_reference_unity_mission-2028d46fe2ac.yaml",
+   "scene_digest": "2b163298e764ea65e8aea4c108bc3ee712c057002e863614ff407ac255252a94",
+   "validity_level": "L1_APPROXIMATE_PHYSICS"
+  },
+  "world_family": "straight_pipeline"
+ },
+ "kind": "DEMONSTRATION",
+ "localization": {
+  "boundary": {
+   "boundary_max_m": [
+    10.0,
+    6.0,
+    5.0
+   ],
+   "boundary_min_m": [
+    -10.0,
+    -6.0,
+    -1.5
+   ],
+   "estimated_steps_outside": 274,
+   "true_first_outside_t_s": 122.6,
+   "true_steps_outside": 276
+  },
+  "error_at_end_m": 0.5346448557089631,
+  "error_before_outage_max_m": 0.2680100297477452,
+  "error_during_outage_max_m": 0.5407728388537298,
+  "expect": {
+   "deadline_s": 40.0,
+   "hold_radius_m": 0.5,
+   "motion": "hold",
+   "reason": "LOCALIZATION_LOST",
+   "state": "HOLD"
+  },
+  "first_localization_lost_t_s": 113.6,
+  "first_pose_sigma_elevated_t_s": 102.1,
+  "first_safety_state_after_outage": {
+   "DEGRADED": 102.0,
+   "HOLD": 113.5
+  },
+  "fix_outage_duration_s": 90.0,
+  "fix_outage_start_s": 90.0,
+  "max_error_over_sigma": 1.6877083316878534,
+  "runtime_state_history": [
+   [
+    "BOOT",
+    "boot"
+   ],
+   [
+    "SELF_TEST",
+    "self-test started"
+   ],
+   [
+    "CONFIGURED",
+    "self-test passed"
+   ],
+   [
+    "CONNECTING",
+    "connecting adapters"
+   ],
+   [
+    "READY",
+    "adapters connected"
+   ],
+   [
+    "RUNNING",
+    "simulation run"
+   ],
+   [
+    "SAFE_HOLD",
+    "mission duration reached"
+   ],
+   [
+    "STOPPING",
+    "mission duration reached"
+   ],
+   [
+    "STOPPED",
+    "mission duration reached"
+   ]
+  ],
+  "safe_state_check": {
+   "authorized_after": 0,
+   "checks": {
+    "held_to_end": true,
+    "motion_rule": false,
+    "no_collision": true,
+    "nominal_before_fault": true,
+    "reached_in_time": true
+   },
+   "estimated_drift_from_hold_point_max_m": 4.741774890779652,
+   "executed_after": 0,
+   "final_reasons": [
+    "LOCALIZATION_LOST",
+    "POSE_SIGMA_HIGH",
+    "MISSION_BOUNDARY_VIOLATION",
+    "COLLISION_ENVELOPE",
+    "ALTITUDE_UNMONITORED",
+    "SAFE_HOLD_ACTION:STATION_KEEP"
+   ],
+   "final_state": "HOLD",
+   "passed": false,
+   "time_to_safe_state_s": 23.599999999999994,
+   "true_speed_last_10s_mean_mps": 0.20680785919058775,
+   "worst_state_before_fault": "DEGRADED"
+  },
+  "safety_events": [
+   {
+    "from": "NORMAL",
+    "reasons": [
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 0.1,
+    "to": "NORMAL"
+   },
+   {
+    "from": "NORMAL",
+    "reasons": [
+     "COLLISION_MARGIN_REDUCED",
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 1.3,
+    "to": "DEGRADED"
+   },
+   {
+    "from": "DEGRADED",
+    "reasons": [
+     "DEGRADED_DWELL",
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 1.6,
+    "to": "DEGRADED"
+   },
+   {
+    "from": "DEGRADED",
+    "reasons": [
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 2.5,
+    "to": "NORMAL"
+   },
+   {
+    "from": "NORMAL",
+    "reasons": [
+     "COLLISION_MARGIN_REDUCED",
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 2.7,
+    "to": "DEGRADED"
+   },
+   {
+    "from": "DEGRADED",
+    "reasons": [
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 5.2,
+    "to": "NORMAL"
+   },
+   {
+    "from": "NORMAL",
+    "reasons": [
+     "COLLISION_MARGIN_REDUCED",
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 5.4,
+    "to": "DEGRADED"
+   },
+   {
+    "from": "DEGRADED",
+    "reasons": [
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 10.9,
+    "to": "NORMAL"
+   },
+   {
+    "from": "NORMAL",
+    "reasons": [
+     "COLLISION_MARGIN_REDUCED",
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 11.2,
+    "to": "DEGRADED"
+   },
+   {
+    "from": "DEGRADED",
+    "reasons": [
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 18.0,
+    "to": "NORMAL"
+   },
+   {
+    "from": "NORMAL",
+    "reasons": [
+     "COLLISION_MARGIN_REDUCED",
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 18.2,
+    "to": "DEGRADED"
+   },
+   {
+    "from": "DEGRADED",
+    "reasons": [
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 22.1,
+    "to": "NORMAL"
+   },
+   {
+    "from": "NORMAL",
+    "reasons": [
+     "COLLISION_MARGIN_REDUCED",
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 22.3,
+    "to": "DEGRADED"
+   },
+   {
+    "from": "DEGRADED",
+    "reasons": [
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 28.2,
+    "to": "NORMAL"
+   },
+   {
+    "from": "NORMAL",
+    "reasons": [
+     "COLLISION_MARGIN_REDUCED",
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 28.4,
+    "to": "DEGRADED"
+   },
+   {
+    "from": "DEGRADED",
+    "reasons": [
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 34.1,
+    "to": "NORMAL"
+   },
+   {
+    "from": "NORMAL",
+    "reasons": [
+     "COLLISION_MARGIN_REDUCED",
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 34.7,
+    "to": "DEGRADED"
+   },
+   {
+    "from": "DEGRADED",
+    "reasons": [
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 35.8,
+    "to": "NORMAL"
+   },
+   {
+    "from": "NORMAL",
+    "reasons": [
+     "POSE_SIGMA_ELEVATED",
+     "ESTIMATOR_DEGRADED",
+     "ALTITUDE_UNMONITORED"
+    ],
+    "t_s": 102.0,
+    "to": "DEGRADED"
+   },
+   {
+    "from": "DEGRADED",
+    "reasons": [
+     "LOCALIZATION_LOST",
+     "POSE_SIGMA_HIGH",
+     "ALTITUDE_UNMONITORED",
+     "SAFE_HOLD_ACTION:STATION_KEEP"
+    ],
+    "t_s": 113.5,
+    "to": "HOLD"
+   },
+   {
+    "from": "HOLD",
+    "reasons": [
+     "LOCALIZATION_LOST",
+     "POSE_SIGMA_HIGH",
+     "MISSION_BOUNDARY_VIOLATION",
+     "COLLISION_MARGIN_REDUCED",
+     "ALTITUDE_UNMONITORED",
+     "SAFE_HOLD_ACTION:STATION_KEEP"
+    ],
+    "t_s": 122.7,
+    "to": "HOLD"
+   },
+   {
+    "from": "HOLD",
+    "reasons": [
+     "LOCALIZATION_LOST",
+     "POSE_SIGMA_HIGH",
+     "MISSION_BOUNDARY_VIOLATION",
+     "COLLISION_ENVELOPE",
+     "ALTITUDE_UNMONITORED",
+     "SAFE_HOLD_ACTION:STATION_KEEP"
+    ],
+    "t_s": 138.4,
+    "to": "HOLD"
+   }
+  ],
+  "sigma_at_end_m": 4.641002232471634,
+  "sigma_before_outage_max_m": 0.13078338488965274,
+  "time_to_localization_lost_s": 23.599999999999994,
+  "trace": [
+   {
+    "err_m": 0.0763,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0625,
+    "t_s": 0.2
+   },
+   {
+    "err_m": 0.0664,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0609,
+    "t_s": 1.2
+   },
+   {
+    "err_m": 0.1289,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0716,
+    "t_s": 2.2
+   },
+   {
+    "err_m": 0.0868,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0739,
+    "t_s": 3.2
+   },
+   {
+    "err_m": 0.0815,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.075,
+    "t_s": 4.2
+   },
+   {
+    "err_m": 0.1756,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0741,
+    "t_s": 5.2
+   },
+   {
+    "err_m": 0.0448,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0741,
+    "t_s": 6.2
+   },
+   {
+    "err_m": 0.1319,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0749,
+    "t_s": 7.2
+   },
+   {
+    "err_m": 0.1417,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.074,
+    "t_s": 8.2
+   },
+   {
+    "err_m": 0.0429,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0711,
+    "t_s": 9.2
+   },
+   {
+    "err_m": 0.1282,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.072,
+    "t_s": 10.2
+   },
+   {
+    "err_m": 0.1142,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0705,
+    "t_s": 11.2
+   },
+   {
+    "err_m": 0.101,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0707,
+    "t_s": 12.2
+   },
+   {
+    "err_m": 0.0421,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0729,
+    "t_s": 13.2
+   },
+   {
+    "err_m": 0.1379,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0735,
+    "t_s": 14.2
+   },
+   {
+    "err_m": 0.0453,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0706,
+    "t_s": 15.2
+   },
+   {
+    "err_m": 0.0704,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0728,
+    "t_s": 16.2
+   },
+   {
+    "err_m": 0.0693,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0733,
+    "t_s": 17.2
+   },
+   {
+    "err_m": 0.069,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0724,
+    "t_s": 18.2
+   },
+   {
+    "err_m": 0.0252,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.072,
+    "t_s": 19.2
+   },
+   {
+    "err_m": 0.1243,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0729,
+    "t_s": 20.2
+   },
+   {
+    "err_m": 0.0886,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0725,
+    "t_s": 21.2
+   },
+   {
+    "err_m": 0.0628,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0722,
+    "t_s": 22.2
+   },
+   {
+    "err_m": 0.1069,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.072,
+    "t_s": 23.2
+   },
+   {
+    "err_m": 0.1083,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.072,
+    "t_s": 24.2
+   },
+   {
+    "err_m": 0.0095,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0713,
+    "t_s": 25.2
+   },
+   {
+    "err_m": 0.0815,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0713,
+    "t_s": 26.2
+   },
+   {
+    "err_m": 0.1307,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0709,
+    "t_s": 27.2
+   },
+   {
+    "err_m": 0.1092,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0703,
+    "t_s": 28.2
+   },
+   {
+    "err_m": 0.0777,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0699,
+    "t_s": 29.2
+   },
+   {
+    "err_m": 0.1291,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0718,
+    "t_s": 30.2
+   },
+   {
+    "err_m": 0.0228,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0721,
+    "t_s": 31.2
+   },
+   {
+    "err_m": 0.1381,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.072,
+    "t_s": 32.2
+   },
+   {
+    "err_m": 0.0569,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0722,
+    "t_s": 33.2
+   },
+   {
+    "err_m": 0.0794,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0728,
+    "t_s": 34.2
+   },
+   {
+    "err_m": 0.141,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.0727,
+    "t_s": 35.2
+   },
+   {
+    "err_m": 0.0809,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0715,
+    "t_s": 36.2
+   },
+   {
+    "err_m": 0.0269,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0687,
+    "t_s": 37.2
+   },
+   {
+    "err_m": 0.0471,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0669,
+    "t_s": 38.2
+   },
+   {
+    "err_m": 0.0455,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0649,
+    "t_s": 39.2
+   },
+   {
+    "err_m": 0.1302,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0629,
+    "t_s": 40.2
+   },
+   {
+    "err_m": 0.1335,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0627,
+    "t_s": 41.2
+   },
+   {
+    "err_m": 0.069,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0631,
+    "t_s": 42.2
+   },
+   {
+    "err_m": 0.1247,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0638,
+    "t_s": 43.2
+   },
+   {
+    "err_m": 0.0731,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0652,
+    "t_s": 44.2
+   },
+   {
+    "err_m": 0.1055,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0653,
+    "t_s": 45.2
+   },
+   {
+    "err_m": 0.1055,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0629,
+    "t_s": 46.2
+   },
+   {
+    "err_m": 0.0775,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.061,
+    "t_s": 47.2
+   },
+   {
+    "err_m": 0.0892,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0599,
+    "t_s": 48.2
+   },
+   {
+    "err_m": 0.1038,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0595,
+    "t_s": 49.2
+   },
+   {
+    "err_m": 0.0883,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0591,
+    "t_s": 50.2
+   },
+   {
+    "err_m": 0.0888,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0586,
+    "t_s": 51.2
+   },
+   {
+    "err_m": 0.09,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0585,
+    "t_s": 52.2
+   },
+   {
+    "err_m": 0.1104,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0597,
+    "t_s": 53.2
+   },
+   {
+    "err_m": 0.1037,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0601,
+    "t_s": 54.2
+   },
+   {
+    "err_m": 0.0881,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0594,
+    "t_s": 55.2
+   },
+   {
+    "err_m": 0.1017,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0583,
+    "t_s": 56.2
+   },
+   {
+    "err_m": 0.0261,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0575,
+    "t_s": 57.2
+   },
+   {
+    "err_m": 0.0603,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0568,
+    "t_s": 58.2
+   },
+   {
+    "err_m": 0.0936,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0566,
+    "t_s": 59.2
+   },
+   {
+    "err_m": 0.077,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0565,
+    "t_s": 60.2
+   },
+   {
+    "err_m": 0.1374,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0563,
+    "t_s": 61.2
+   },
+   {
+    "err_m": 0.0296,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0562,
+    "t_s": 62.2
+   },
+   {
+    "err_m": 0.0256,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0561,
+    "t_s": 63.2
+   },
+   {
+    "err_m": 0.0449,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0562,
+    "t_s": 64.2
+   },
+   {
+    "err_m": 0.0827,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0562,
+    "t_s": 65.2
+   },
+   {
+    "err_m": 0.1013,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0562,
+    "t_s": 66.2
+   },
+   {
+    "err_m": 0.1084,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0559,
+    "t_s": 67.2
+   },
+   {
+    "err_m": 0.0675,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0558,
+    "t_s": 68.2
+   },
+   {
+    "err_m": 0.0102,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "DOWN",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0557,
+    "t_s": 69.2
+   },
+   {
+    "err_m": 0.0412,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0556,
+    "t_s": 70.2
+   },
+   {
+    "err_m": 0.089,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0556,
+    "t_s": 71.2
+   },
+   {
+    "err_m": 0.0795,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0558,
+    "t_s": 72.2
+   },
+   {
+    "err_m": 0.0708,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0557,
+    "t_s": 73.2
+   },
+   {
+    "err_m": 0.0976,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0555,
+    "t_s": 74.2
+   },
+   {
+    "err_m": 0.1136,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0554,
+    "t_s": 75.2
+   },
+   {
+    "err_m": 0.1065,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0557,
+    "t_s": 76.2
+   },
+   {
+    "err_m": 0.1317,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.056,
+    "t_s": 77.2
+   },
+   {
+    "err_m": 0.0443,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0559,
+    "t_s": 78.2
+   },
+   {
+    "err_m": 0.1415,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0558,
+    "t_s": 79.2
+   },
+   {
+    "err_m": 0.075,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0557,
+    "t_s": 80.2
+   },
+   {
+    "err_m": 0.0305,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0558,
+    "t_s": 81.2
+   },
+   {
+    "err_m": 0.0631,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0557,
+    "t_s": 82.2
+   },
+   {
+    "err_m": 0.0465,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.056,
+    "t_s": 83.2
+   },
+   {
+    "err_m": 0.0116,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0559,
+    "t_s": 84.2
+   },
+   {
+    "err_m": 0.0597,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0555,
+    "t_s": 85.2
+   },
+   {
+    "err_m": 0.1035,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0553,
+    "t_s": 86.2
+   },
+   {
+    "err_m": 0.107,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0553,
+    "t_s": 87.2
+   },
+   {
+    "err_m": 0.0801,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0556,
+    "t_s": 88.2
+   },
+   {
+    "err_m": 0.1081,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0555,
+    "t_s": 89.2
+   },
+   {
+    "err_m": 0.1156,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0685,
+    "t_s": 90.0
+   },
+   {
+    "err_m": 0.1211,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0769,
+    "t_s": 90.5
+   },
+   {
+    "err_m": 0.1234,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0849,
+    "t_s": 91.0
+   },
+   {
+    "err_m": 0.1271,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.0929,
+    "t_s": 91.5
+   },
+   {
+    "err_m": 0.1318,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.1008,
+    "t_s": 92.0
+   },
+   {
+    "err_m": 0.1359,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.1124,
+    "t_s": 92.5
+   },
+   {
+    "err_m": 0.1403,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.1287,
+    "t_s": 93.0
+   },
+   {
+    "err_m": 0.1437,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.1495,
+    "t_s": 93.5
+   },
+   {
+    "err_m": 0.1459,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.1747,
+    "t_s": 94.0
+   },
+   {
+    "err_m": 0.1468,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.2037,
+    "t_s": 94.5
+   },
+   {
+    "err_m": 0.1468,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.2356,
+    "t_s": 95.0
+   },
+   {
+    "err_m": 0.1476,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.2699,
+    "t_s": 95.5
+   },
+   {
+    "err_m": 0.1486,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.3057,
+    "t_s": 96.0
+   },
+   {
+    "err_m": 0.1489,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.3426,
+    "t_s": 96.5
+   },
+   {
+    "err_m": 0.1487,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.3801,
+    "t_s": 97.0
+   },
+   {
+    "err_m": 0.1515,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.4179,
+    "t_s": 97.5
+   },
+   {
+    "err_m": 0.1536,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.4556,
+    "t_s": 98.0
+   },
+   {
+    "err_m": 0.1571,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.4931,
+    "t_s": 98.5
+   },
+   {
+    "err_m": 0.1587,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.5302,
+    "t_s": 99.0
+   },
+   {
+    "err_m": 0.1625,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.5669,
+    "t_s": 99.5
+   },
+   {
+    "err_m": 0.1654,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.6031,
+    "t_s": 100.0
+   },
+   {
+    "err_m": 0.1692,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.6389,
+    "t_s": 100.5
+   },
+   {
+    "err_m": 0.1687,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.6741,
+    "t_s": 101.0
+   },
+   {
+    "err_m": 0.1708,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.7089,
+    "t_s": 101.5
+   },
+   {
+    "err_m": 0.175,
+    "estimator_health": "OK",
+    "estimator_reasons": [],
+    "link_status": "UP",
+    "safety_state": "NORMAL",
+    "sigma_m": 0.7433,
+    "t_s": 102.0
+   },
+   {
+    "err_m": 0.1784,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.7772,
+    "t_s": 102.5
+   },
+   {
+    "err_m": 0.1818,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.8109,
+    "t_s": 103.0
+   },
+   {
+    "err_m": 0.1852,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.8442,
+    "t_s": 103.5
+   },
+   {
+    "err_m": 0.1878,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.8772,
+    "t_s": 104.0
+   },
+   {
+    "err_m": 0.1907,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.9101,
+    "t_s": 104.5
+   },
+   {
+    "err_m": 0.1952,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.9427,
+    "t_s": 105.0
+   },
+   {
+    "err_m": 0.2011,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 0.9753,
+    "t_s": 105.5
+   },
+   {
+    "err_m": 0.2044,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 1.0077,
+    "t_s": 106.0
+   },
+   {
+    "err_m": 0.2081,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 1.04,
+    "t_s": 106.5
+   },
+   {
+    "err_m": 0.2088,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 1.0723,
+    "t_s": 107.0
+   },
+   {
+    "err_m": 0.2117,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 1.1045,
+    "t_s": 107.5
+   },
+   {
+    "err_m": 0.2155,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 1.1368,
+    "t_s": 108.0
+   },
+   {
+    "err_m": 0.2198,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 1.1691,
+    "t_s": 108.5
+   },
+   {
+    "err_m": 0.2244,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 1.2015,
+    "t_s": 109.0
+   },
+   {
+    "err_m": 0.2284,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 1.2339,
+    "t_s": 109.5
+   },
+   {
+    "err_m": 0.2329,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 1.2665,
+    "t_s": 110.0
+   },
+   {
+    "err_m": 0.2355,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 1.2991,
+    "t_s": 110.5
+   },
+   {
+    "err_m": 0.2384,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 1.3319,
+    "t_s": 111.0
+   },
+   {
+    "err_m": 0.242,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 1.3648,
+    "t_s": 111.5
+   },
+   {
+    "err_m": 0.2463,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 1.3979,
+    "t_s": 112.0
+   },
+   {
+    "err_m": 0.2515,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 1.4311,
+    "t_s": 112.5
+   },
+   {
+    "err_m": 0.2544,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 1.4645,
+    "t_s": 113.0
+   },
+   {
+    "err_m": 0.2574,
+    "estimator_health": "DEGRADED",
+    "estimator_reasons": [
+     "POSE_SIGMA_ELEVATED"
+    ],
+    "link_status": "UP",
+    "safety_state": "DEGRADED",
+    "sigma_m": 1.4981,
+    "t_s": 113.5
+   },
+   {
+    "err_m": 0.261,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 1.5319,
+    "t_s": 114.0
+   },
+   {
+    "err_m": 0.2645,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 1.5659,
+    "t_s": 114.5
+   },
+   {
+    "err_m": 0.2684,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 1.6001,
+    "t_s": 115.0
+   },
+   {
+    "err_m": 0.2727,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 1.6345,
+    "t_s": 115.5
+   },
+   {
+    "err_m": 0.2769,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 1.6691,
+    "t_s": 116.0
+   },
+   {
+    "err_m": 0.2808,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 1.704,
+    "t_s": 116.5
+   },
+   {
+    "err_m": 0.2847,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 1.7391,
+    "t_s": 117.0
+   },
+   {
+    "err_m": 0.2887,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 1.7744,
+    "t_s": 117.5
+   },
+   {
+    "err_m": 0.293,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 1.81,
+    "t_s": 118.0
+   },
+   {
+    "err_m": 0.2979,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 1.8458,
+    "t_s": 118.5
+   },
+   {
+    "err_m": 0.3018,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 1.8819,
+    "t_s": 119.0
+   },
+   {
+    "err_m": 0.3053,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 1.9182,
+    "t_s": 119.5
+   },
+   {
+    "err_m": 0.3153,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 1.9548,
+    "t_s": 120.0
+   },
+   {
+    "err_m": 0.3169,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 1.9916,
+    "t_s": 120.5
+   },
+   {
+    "err_m": 0.3195,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.0287,
+    "t_s": 121.0
+   },
+   {
+    "err_m": 0.3277,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.0661,
+    "t_s": 121.5
+   },
+   {
+    "err_m": 0.3305,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.1037,
+    "t_s": 122.0
+   },
+   {
+    "err_m": 0.3311,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.1416,
+    "t_s": 122.5
+   },
+   {
+    "err_m": 0.3381,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.1797,
+    "t_s": 123.0
+   },
+   {
+    "err_m": 0.3382,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.2181,
+    "t_s": 123.5
+   },
+   {
+    "err_m": 0.337,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.2568,
+    "t_s": 124.0
+   },
+   {
+    "err_m": 0.3444,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.2957,
+    "t_s": 124.5
+   },
+   {
+    "err_m": 0.3426,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.3349,
+    "t_s": 125.0
+   },
+   {
+    "err_m": 0.34,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.3744,
+    "t_s": 125.5
+   },
+   {
+    "err_m": 0.3478,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.4142,
+    "t_s": 126.0
+   },
+   {
+    "err_m": 0.3409,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.4542,
+    "t_s": 126.5
+   },
+   {
+    "err_m": 0.3489,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.4945,
+    "t_s": 127.0
+   },
+   {
+    "err_m": 0.3623,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.535,
+    "t_s": 127.5
+   },
+   {
+    "err_m": 0.3667,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.5758,
+    "t_s": 128.0
+   },
+   {
+    "err_m": 0.3851,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.6169,
+    "t_s": 128.5
+   },
+   {
+    "err_m": 0.4024,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.6583,
+    "t_s": 129.0
+   },
+   {
+    "err_m": 0.3932,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.6999,
+    "t_s": 129.5
+   },
+   {
+    "err_m": 0.4117,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.7418,
+    "t_s": 130.0
+   },
+   {
+    "err_m": 0.42,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.784,
+    "t_s": 130.5
+   },
+   {
+    "err_m": 0.4087,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.8264,
+    "t_s": 131.0
+   },
+   {
+    "err_m": 0.4293,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.8691,
+    "t_s": 131.5
+   },
+   {
+    "err_m": 0.4314,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.9121,
+    "t_s": 132.0
+   },
+   {
+    "err_m": 0.4203,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.9554,
+    "t_s": 132.5
+   },
+   {
+    "err_m": 0.4399,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 2.9989,
+    "t_s": 133.0
+   },
+   {
+    "err_m": 0.4398,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.0426,
+    "t_s": 133.5
+   },
+   {
+    "err_m": 0.431,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.0866,
+    "t_s": 134.0
+   },
+   {
+    "err_m": 0.4523,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.1309,
+    "t_s": 134.5
+   },
+   {
+    "err_m": 0.4463,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.1755,
+    "t_s": 135.0
+   },
+   {
+    "err_m": 0.4413,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.2203,
+    "t_s": 135.5
+   },
+   {
+    "err_m": 0.4622,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.2654,
+    "t_s": 136.0
+   },
+   {
+    "err_m": 0.4494,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.3107,
+    "t_s": 136.5
+   },
+   {
+    "err_m": 0.4465,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.3563,
+    "t_s": 137.0
+   },
+   {
+    "err_m": 0.4667,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.4022,
+    "t_s": 137.5
+   },
+   {
+    "err_m": 0.4573,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.4483,
+    "t_s": 138.0
+   },
+   {
+    "err_m": 0.4595,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.4947,
+    "t_s": 138.5
+   },
+   {
+    "err_m": 0.4802,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.5413,
+    "t_s": 139.0
+   },
+   {
+    "err_m": 0.4661,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.5882,
+    "t_s": 139.5
+   },
+   {
+    "err_m": 0.4738,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.6354,
+    "t_s": 140.0
+   },
+   {
+    "err_m": 0.4909,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.6828,
+    "t_s": 140.5
+   },
+   {
+    "err_m": 0.4744,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.7304,
+    "t_s": 141.0
+   },
+   {
+    "err_m": 0.485,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.7783,
+    "t_s": 141.5
+   },
+   {
+    "err_m": 0.4991,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.8265,
+    "t_s": 142.0
+   },
+   {
+    "err_m": 0.4824,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.8749,
+    "t_s": 142.5
+   },
+   {
+    "err_m": 0.4957,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.9236,
+    "t_s": 143.0
+   },
+   {
+    "err_m": 0.5043,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 3.9725,
+    "t_s": 143.5
+   },
+   {
+    "err_m": 0.4892,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 4.0216,
+    "t_s": 144.0
+   },
+   {
+    "err_m": 0.5053,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 4.071,
+    "t_s": 144.5
+   },
+   {
+    "err_m": 0.5125,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 4.1207,
+    "t_s": 145.0
+   },
+   {
+    "err_m": 0.5018,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 4.1706,
+    "t_s": 145.5
+   },
+   {
+    "err_m": 0.5238,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 4.2207,
+    "t_s": 146.0
+   },
+   {
+    "err_m": 0.5195,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 4.2711,
+    "t_s": 146.5
+   },
+   {
+    "err_m": 0.5132,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 4.3217,
+    "t_s": 147.0
+   },
+   {
+    "err_m": 0.5327,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 4.3726,
+    "t_s": 147.5
+   },
+   {
+    "err_m": 0.5233,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 4.4237,
+    "t_s": 148.0
+   },
+   {
+    "err_m": 0.5196,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 4.4751,
+    "t_s": 148.5
+   },
+   {
+    "err_m": 0.5393,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 4.5267,
+    "t_s": 149.0
+   },
+   {
+    "err_m": 0.5279,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 4.5785,
+    "t_s": 149.5
+   },
+   {
+    "err_m": 0.5294,
+    "estimator_health": "FAULT",
+    "estimator_reasons": [
+     "LOCALIZATION_LOST"
+    ],
+    "link_status": "UP",
+    "safety_state": "HOLD",
+    "sigma_m": 4.6306,
+    "t_s": 150.0
+   }
+  ],
+  "true_speed_after_lost_mps": 0.18792433776631004
+ },
+ "player": {
+  "build_info": {
+   "build_seconds": 21.1982802,
+   "build_started_utc": "2026-09-20T03:51:10.1367628Z",
+   "output": "Builds/Win64/ConradSim.exe",
+   "result": "Succeeded",
+   "total_errors": 0,
+   "total_size_bytes": 93422872,
+   "total_warnings": 0,
+   "unity_version": "6000.5.9f1"
+  },
+  "player": "ConradSim.exe",
+  "player_exe_sha256": "36c5c9f13481406382a8e9ef8fc0ea7cdf055c43bb12fc8fd545b07c199cd277"
+ },
+ "run_dir": "C:\\Users\\Kerem\\Kerem\\conrad-v2\\artifacts\\runs_capture\\flagship_unity\\FLAGSHIP-UNITY-s7800017",
+ "run_id": "FLAGSHIP-UNITY-s7800017",
+ "runtime": {
+  "control_period_s": 0.1,
+  "duration_s": 150.0,
+  "model2e_ecological_coupling": false,
+  "model2e_enabled": true,
+  "model2e_model_version": "model2e-uncoupled-obsctx-analytic-0.5.0",
+  "model2e_observability_context": true,
+  "model2s_model_version": "uahsm-v1-analytic",
+  "model2s_refinement_enabled": false,
+  "model2t_mode": "NONE",
+  "multidomain_enabled": false,
+  "planner": "PRODUCTION"
+ },
+ "scenario": "FLAGSHIP-UNITY",
+ "seed": 7800017,
+ "structural": {
+  "aux_readings": 14,
+  "contradiction": {
+   "U_C_after_max": 1.0,
+   "U_C_before_max": 0.35,
+   "U_C_final": 0.48999999999999994,
+   "direct_after": [
+    {
+     "U_A": 0.2890245635832385,
+     "U_C": 0.595,
+     "U_E": 0.2,
+     "U_O": 0.28822434537485775,
+     "condition": {
+      "U_A": 0.2890245635832385,
+      "U_O": 0.28822434537485775,
+      "status": "OBSERVED",
+      "value": "FAILED"
+     },
+     "corrosion_depth_m": {
+      "U_A": 0.2890245635832385,
+      "U_O": 0.28822434537485775,
+      "status": "OBSERVED",
+      "value": 0.018450305068641152
+     },
+     "crack_length_m": {
+      "U_A": 0.2890245635832385,
+      "U_O": 0.28822434537485775,
+      "status": "OBSERVED",
+      "value": 0.04359867905784147
+     },
+     "evidence": 4,
+     "revision": 18,
+     "t_s": 16.3,
+     "update_kind": "DIRECT"
+    },
+    {
+     "U_A": 0.29058706358323855,
+     "U_C": 0.945,
+     "U_E": 0.2,
+     "U_O": 0.28822434537485775,
+     "condition": {
+      "U_A": 0.29058706358323855,
+      "U_O": 0.28822434537485775,
+      "status": "OBSERVED",
+      "value": "FAILED"
+     },
+     "corrosion_depth_m": {
+      "U_A": 0.29058706358323855,
+      "U_O": 0.28822434537485775,
+      "status": "OBSERVED",
+      "value": 0.011260522010477883
+     },
+     "crack_length_m": {
+      "U_A": 0.29058706358323855,
+      "U_O": 0.28822434537485775,
+      "status": "OBSERVED",
+      "value": 0.053149045781721006
+     },
+     "evidence": 4,
+     "revision": 19,
+     "t_s": 17.3,
+     "update_kind": "DIRECT"
+    },
+    {
+     "U_A": 0.23205262392075138,
+     "U_C": 1.0,
+     "U_E": 0.2,
+     "U_O": 0.1992508108811271,
+     "condition": {
+      "U_A": 0.23205262392075138,
+      "U_O": 0.1992508108811271,
+      "status": "OBSERVED",
+      "value": "FAILED"
+     },
+     "corrosion_depth_m": {
+      "U_A": 0.23205262392075138,
+      "U_O": 0.1992508108811271,
+      "status": "OBSERVED",
+      "value": 0.011049512874098746
+     },
+     "crack_length_m": {
+      "U_A": 0.23205262392075138,
+      "U_O": 0.1992508108811271,
+      "status": "OBSERVED",
+      "value": 0.058338321441278096
+     },
+     "evidence": 4,
+     "revision": 22,
+     "t_s": 18.3,
+     "update_kind": "DIRECT"
+    },
+    {
+     "U_A": 0.23244324892075138,
+     "U_C": 0.7,
+     "U_E": 0.2,
+     "U_O": 0.1992508108811271,
+     "condition": {
+      "U_A": 0.23244324892075138,
+      "U_O": 0.1992508108811271,
+      "status": "OBSERVED",
+      "value": "FAILED"
+     },
+     "corrosion_depth_m": {
+      "U_A": 0.23244324892075138,
+      "U_O": 0.1992508108811271,
+      "status": "OBSERVED",
+      "value": 0.013229549554216959
+     },
+     "crack_length_m": {
+      "U_A": 0.23244324892075138,
+      "U_O": 0.1992508108811271,
+      "status": "OBSERVED",
+      "value": 0.0659149938162669
+     },
+     "evidence": 2,
+     "revision": 23,
+     "t_s": 19.3,
+     "update_kind": "DIRECT"
+    },
+    {
+     "U_A": 0.29195434567301426,
+     "U_C": 0.48999999999999994,
+     "U_E": 0.2,
+     "U_O": 0.2882244872595214,
+     "condition": {
+      "U_A": 0.29195434567301426,
+      "U_O": 0.2882244872595214,
+      "status": "OBSERVED",
+      "value": "FAILED"
+     },
+     "corrosion_depth_m": {
+      "U_A": 0.29195434567301426,
+      "U_O": 0.2882244872595214,
+      "status": "OBSERVED",
+      "value": 0.013586580542136515
+     },
+     "crack_length_m": {
+      "U_A": 0.29195434567301426,
+      "U_O": 0.2882244872595214,
+      "status": "OBSERVED",
+      "value": 0.0706060741557748
+     },
+     "evidence": 2,
+     "revision": 25,
+     "t_s": 20.3,
+     "update_kind": "DIRECT"
+    }
+   ],
+   "direct_before": [
+    {
+     "U_A": 0.27661106018082066,
+     "U_C": 0.35,
+     "U_E": 0.2,
+     "U_O": 0.2836665902712309,
+     "condition": {
+      "U_A": 0.27661106018082066,
+      "U_O": 0.2836665902712309,
+      "status": "OBSERVED",
+      "value": "FAILED"
+     },
+     "corrosion_depth_m": {
+      "U_A": 0.27661106018082066,
+      "U_O": 0.2836665902712309,
+      "status": "OBSERVED",
+      "value": 0.04967790465260849
+     },
+     "crack_length_m": {
+      "U_A": 0.27661106018082066,
+      "U_O": 0.2836665902712309,
+      "status": "OBSERVED",
+      "value": 0.01885177429182504
+     },
+     "evidence": 2,
+     "revision": 14,
+     "t_s": 14.3,
+     "update_kind": "DIRECT"
+    }
+   ],
+   "second_sensor_start_s": 16.0
+  },
+  "direct_revisions": 6,
+  "errors": {
+   "corrosion_depth_m": {
+    "abs_error_m": 0.007583845007760987,
+    "estimate": 0.013586580542136515,
+    "truth": 0.0060027355343755286
+   },
+   "crack_length_m": {
+    "abs_error_m": 0.009396568055364637,
+    "estimate": 0.0706060741557748,
+    "truth": 0.08000264221113944
+   }
+  },
+  "final_belief": {
+   "U_A": 0.2919453350606247,
+   "U_C": 0.48999999999999994,
+   "U_E": 0.2,
+   "U_O": 0.28821097134093704,
+   "condition": {
+    "U_A": 0.2919453350606247,
+    "U_O": 0.28821097134093704,
+    "status": "OBSERVED",
+    "value": "FAILED"
+   },
+   "corrosion_depth_m": {
+    "U_A": 0.2919453350606247,
+    "U_O": 0.28821097134093704,
+    "status": "OBSERVED",
+    "value": 0.013586580542136515
+   },
+   "crack_length_m": {
+    "U_A": 0.2919453350606247,
+    "U_O": 0.28821097134093704,
+    "status": "OBSERVED",
+    "value": 0.0706060741557748
+   },
+   "evidence": 0,
+   "revision": 82,
+   "t_s": 150.0,
+   "update_kind": "CONTEXT"
+  },
+  "revision_count": 83,
+  "sensor_model": "Twin2T REALISTIC (docs/audits/STRUCTURAL_LINEAGE_AUDIT.md), not the old optimistic model",
+  "target_registry_id": "018bcfe5-6803-71d6-9332-e216e8a434ea",
+  "target_structural_readings": 12,
+  "truth_target_end": {
+   "coating_breakdown_fraction": 1.0,
+   "corrosion_area_fraction": 0.0661944293010714,
+   "corrosion_depth_m": 0.0060027355343755286,
+   "crack_depth_m": 0.011709257640284697,
+   "crack_length_m": 0.08000264221113944,
+   "t_s": 150.1
+  }
+ },
+ "world": {
+  "partition": "final_test",
+  "partition_digest": "ad753291d5825dace90f5757790efd096a5f867d51abe51de6545dceff12f88c",
+  "seed": 7800017
+ }
+}

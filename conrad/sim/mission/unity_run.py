@@ -118,6 +118,14 @@ UNITY_SCENARIOS["I6-UNITY-CLEAR"] = {
     "world": {"ecological_enabled": True},
     "runtime": {"model2e_enabled": True, "control_period_s": 0.1},
 }
+# Flagship integrated Unity mission (docs/audits/FLAGSHIP_UNITY.md). The kernel scenario carries the three
+# declared stressors; here only the Unity control period is set. Twin2E stays ON (production default
+# model2e_enabled), so this is the full 2S + 2T + 2E stack with the frozen production planner.
+UNITY_SCENARIOS["FLAGSHIP-UNITY"] = {
+    "base": "FLAGSHIP-UNITY",
+    "world": {},
+    "runtime": {"control_period_s": 0.1},
+}
 NAV_UNITY_IDS = tuple(f"NAV-00{i}" for i in range(1, 7))
 UNITY_SCENARIO_IDS = (*UNITY_SCENARIOS, "I2-UNITY-NAV")
 

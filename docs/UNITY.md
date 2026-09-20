@@ -121,12 +121,19 @@ Connecting from Python:
 ```python
 from conrad.sim.unity import UnityPlayerSession, scenario_document, SceneGeometry, BoxPrimitive
 
-scenario = scenario_document(ids, robot_config, seed=7, initial_position_m=(0.0, 0.0, -10.0),
-                             environment={"water_density_kgm3": 1022.2, "surface_z_m": 0.0})
+scenario = scenario_document(
+    ids,
+    robot_config,
+    seed=7,
+    initial_position_m=(0.0, 0.0, -10.0),
+    environment={"water_density_kgm3": 1022.2, "surface_z_m": 0.0},
+)
 with UnityPlayerSession(robot_config, "artifacts/unity/run", scenario) as player:
     hw = player.hardware(ids, mission_id, run_id, payload_store=object_store)
     hw.connect()
-    hw.configure_scene(SceneGeometry(primitives=(BoxPrimitive(id="b", center_m=(5, 0, -10), size_m=(1, 1, 1)),)).to_json())
+    hw.configure_scene(
+        SceneGeometry(primitives=(BoxPrimitive(id="b", center_m=(5, 0, -10), size_m=(1, 1, 1)),)).to_json()
+    )
     hw.reset(seed=7)
     state = hw.step(hw.physics_dt_ns * 20)  # the experiment runner owns time in lock-step mode
 ```

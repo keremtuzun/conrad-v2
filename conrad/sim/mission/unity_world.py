@@ -77,6 +77,8 @@ UNITY_PAYLOAD_SENSORS = (
 # at the Unity TRUE pose by the same MissionSensorSuite as on the kernel path.
 UNITY_ECO_SENSORS = ("environmental_probe", "ecological_survey")
 RANGE_SENSOR, SONAR_SENSOR, CAMERA_SENSOR = "range_imager", "sonar", "camera"
+FIX_OUTAGE = "FIX_OUTAGE"
+"""The only ``FaultSpec.type`` the Unity mission path realises (an outage of the synthetic USBL-like fix)."""
 CONVERTER_VERSION = "unity_to_model2s_v1"
 UNITY_ROBOT_DIR = "artifacts/unity/robot"
 
@@ -468,9 +470,11 @@ class UnityMissionWorld:
     robot_config_path: str
     scene_report: SceneConversionReport
     scene_digest: str
+    suite: MissionSensorSuite
     eco_report: EcoConversionReport | None = None
     optics_updates: list[dict[str, Any]] = field(default_factory=list)
     _pending_eco: list[Any] = field(default_factory=list)
+    _pending_faults: list[Any] = field(default_factory=list)
     _next_optics_s: float = 0.0
 
     @classmethod
@@ -484,8 +488,15 @@ class UnityMissionWorld:
         uopts: UnityWorldOptions | None = None,
     ) -> UnityMissionWorld:
         u = uopts or UnityWorldOptions()
-        if options.faults:
-            raise ValueError("the Unity mission path supports no scheduled faults yet (leave faults empty)")
+        # FIX_OUTAGE is realised on this path (the synthetic USBL-like fix is rendered in Python, exactly as on
+        # the kernel). Unity-side faults (thruster, sensor, power, leak) would have to go through the bridge
+        # INJECT_FAULT and are still refused here; on the NAV path they are supported by ``run_unity_nav``.
+        unsupported = sorted({f.type for f in options.faults if f.type != FIX_OUTAGE})
+        if unsupported:
+            raise ValueError(
+                f"the Unity mission path realises only {FIX_OUTAGE} faults, not {unsupported}; Unity-side "
+                "faults go through run_unity_nav's bridge injection"
+            )
         if options.eco_events and not options.ecological_enabled:
             raise ValueError("ecological events need the ecological twin (ecological_enabled=true)")
         base = MissionWorld.build(seed, scenario_id, options, run_id, run_dir / "objects")
@@ -553,13 +564,8 @@ class UnityMissionWorld:
                 SONAR_SENSOR: next(s for s in geometric if s.modality == "SONAR"),
             }
             hw.ecological = base.t2e is not None
-            hw.attach(
-                _neutral_suite(suite, keep_t2e=hw.ecological),
-                truth,
-                specs,
-                base.store,
-                ids.child("unity_payload"),
-            )
+            neutral = _neutral_suite(suite, keep_t2e=hw.ecological)
+            hw.attach(neutral, truth, specs, base.store, ids.child("unity_payload"))
             tracker = UnityTruthTracker(base.t2s, 0.5 * max(robot.dimensions_m.value))  # type: ignore[arg-type]
             base.recorder.meta.update(
                 {
@@ -599,8 +605,10 @@ class UnityMissionWorld:
             rel,
             report,
             scene_digest,
+            neutral,
             eco_report,
             _pending_eco=sorted(options.eco_events, key=lambda e: e.t_s),
+            _pending_faults=sorted(options.faults, key=lambda f: f.t_s),
             _next_optics_s=u.eco.update_period_s,
         )
         world.tracker.update(hw.true_state())
@@ -612,8 +620,19 @@ class UnityMissionWorld:
         return self.hardware.now_ns() / 1e9
 
     def due_faults(self, inspection_started_s: float | None = None) -> list[dict[str, Any]]:
-        """Ecological events whose time has come (as ``MissionWorld.due_faults``); faults are refused at build."""
+        """Scheduled FIX_OUTAGE faults and ecological events whose time has come (as ``MissionWorld.due_faults``).
+
+        Only ``FIX_OUTAGE`` is realised here; every other fault type is refused in ``build``."""
         fired: list[dict[str, Any]] = []
+        keep = []
+        for f in self._pending_faults:
+            base = 0.0 if f.trigger == "TIME" else inspection_started_s
+            if base is None or base + f.t_s > self.t_s + 1e-9:
+                keep.append(f)
+                continue
+            self.suite.dynamic_fix_outages.append((self.t_s, self.t_s + (f.duration_s or 30.0)))
+            fired.append({"kind": "FAULT", "fired_at_s": round(self.t_s, 3), **f.model_dump(mode="json")})
+        self._pending_faults = keep
         while self._pending_eco and self._pending_eco[0].t_s <= self.t_s + 1e-9:
             ev = self._pending_eco.pop(0)
             if self.t2e is not None:

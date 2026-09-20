@@ -1,0 +1,130 @@
+{
+ "all_items_equal": true,
+ "decisions": {
+  "equal": true,
+  "first_difference": null,
+  "original": 75,
+  "replayed": 75
+ },
+ "equal": true,
+ "events": {
+  "equal": true,
+  "first_difference": null,
+  "original": 6609,
+  "replayed": 6609
+ },
+ "items": [
+  {
+   "equal": true,
+   "first_difference": null,
+   "item": "event signature",
+   "original": 6609,
+   "replayed": 6609
+  },
+  {
+   "equal": true,
+   "first_difference": null,
+   "item": "observation identities",
+   "original": 505,
+   "replayed": 505
+  },
+  {
+   "equal": true,
+   "first_difference": null,
+   "item": "evidence digests",
+   "original": 266,
+   "replayed": 266
+  },
+  {
+   "equal": true,
+   "first_difference": null,
+   "item": "belief revision order",
+   "original": 1346,
+   "replayed": 1346
+  },
+  {
+   "equal": true,
+   "first_difference": null,
+   "item": "Model1 claims and decisions",
+   "original": 75,
+   "replayed": 75
+  },
+  {
+   "equal": true,
+   "first_difference": null,
+   "item": "information needs",
+   "original": 5,
+   "replayed": 5
+  },
+  {
+   "equal": true,
+   "first_difference": null,
+   "item": "MCBR candidate ranking and selected plan",
+   "original": 4,
+   "replayed": 4
+  },
+  {
+   "equal": true,
+   "first_difference": null,
+   "item": "navigation goals",
+   "original": 6,
+   "replayed": 6
+  },
+  {
+   "equal": true,
+   "first_difference": null,
+   "item": "command sequence",
+   "original": 1500,
+   "replayed": 1500
+  },
+  {
+   "equal": true,
+   "first_difference": null,
+   "item": "BAAC deltas",
+   "original": 90,
+   "replayed": 90
+  },
+  {
+   "equal": true,
+   "first_difference": null,
+   "item": "receiver state",
+   "original": 1,
+   "replayed": 1
+  },
+  {
+   "equal": true,
+   "first_difference": null,
+   "item": "terminal mission status",
+   "original": 9,
+   "replayed": 9
+  },
+  {
+   "equal": true,
+   "first_difference": null,
+   "item": "uncertainty (UA, UE, UC, UO) per revision",
+   "max_abs_difference": 0.0,
+   "original": 1346,
+   "replayed": 1346,
+   "tolerance": 0.0
+  }
+ ],
+ "replay_dir": "C:\\Users\\Kerem\\AppData\\Local\\Temp\\claude\\C--Users-Kerem-OneDrive-Desktop-Publications-27\\366dae15-93e7-4341-9095-28559db1900e\\scratchpad\\replay\\FLAGSHIP-UNITY-s7800017",
+ "revisions": {
+  "equal": true,
+  "first_difference": null,
+  "original": 1346,
+  "replayed": 1346
+ },
+ "same_player_binary": true,
+ "trajectory": {
+  "equal": true,
+  "max_abs_difference": 0.0,
+  "samples": [
+   151,
+   151
+  ],
+  "tolerance": 1e-09
+ },
+ "verified_files": 338,
+ "verified_objects": 233
+}

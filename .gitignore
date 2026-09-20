@@ -21,6 +21,9 @@ artifacts/*
 !artifacts/registry/
 # truth-removal falsification reports (small JSON, scripts/falsify_truth_removal.py)
 !artifacts/falsification/
+# flagship demonstration run (small JSON, scripts/run_flagship_unity.py); the per-step trace stays out
+!artifacts/flagship/
+artifacts/flagship/trace_*.json
 !artifacts/README.md
 mlruns/
 # secrets and machine-local overrides

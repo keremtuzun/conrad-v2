@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using Conrad.UnityV2.Core;
+using Conrad.UnityV2.EnvironmentInteraction;
 using Conrad.UnityV2.VehicleDynamics;
 using UnityEngine;
 
@@ -18,11 +19,17 @@ namespace Conrad.UnityV2.SensorSimulation
         private readonly int _width, _height;
         private readonly Func<double> _turbidity;
         private readonly double[] _waterRgb;
+        private readonly Func<OpticsField> _optics;
+        private readonly double _opticsMaxPathM;
 
         public override string Modality => "RGB";
 
-        public CameraSensor(SensorParameters p, ulong seed, Camera camera, Func<double> turbidity) : base(p, seed, 8)
+        /// <param name="optics">Twin 2E water optics (EcologyScene.cs); null or returning null = the uniform turbidity proxy.</param>
+        public CameraSensor(SensorParameters p, ulong seed, Camera camera, Func<double> turbidity, Func<OpticsField> optics = null)
+            : base(p, seed, 8)
         {
+            _optics = optics;
+            _opticsMaxPathM = p.Extra.TryGetValue("optics_max_path_m", out object mp) ? J.Num(mp, "optics_max_path_m") : 30.0;
             _camera = camera != null ? camera : throw new ArgumentNullException(nameof(camera));
             if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null)
                 throw new InvalidOperationException("camera sensor " + p.Name + " needs a graphics device; do not start the player with -nographics");
@@ -58,32 +65,73 @@ namespace Conrad.UnityV2.SensorSimulation
             RenderTexture.active = previous;
             byte[] raw = _readback.GetRawTextureData(); // bottom row first
             var hwc = new byte[_width * _height * 3];
-            double k = Math.Max(0, Math.Min(1, _turbidity())) * 0.8 + Fault.Fouling * 0.6;
-            k = Math.Min(k, 0.95);
+            OpticsField optics = _optics?.Invoke();
+            double[] trans = optics == null ? null : Transmission(optics);
+            double[] water = optics == null ? _waterRgb : optics.WaterRgb;
+            double kUniform = optics == null ? Math.Max(0, Math.Min(1, _turbidity())) * 0.8 : 0.0;
             double sigma = P.NoiseStd * Fault.NoiseScale;
             int row = _width * 3;
+            double kSum = 0;
             for (int y = 0; y < _height; y++)
             {
                 int src = (_height - 1 - y) * row, dst = y * row;
                 for (int x = 0; x < row; x++)
                 {
+                    // water attenuation/backscatter (uniform proxy, or per-pixel Twin 2E transmission) + lens fouling
+                    double kw = trans == null ? kUniform : 1.0 - trans[y * _width + x / 3];
+                    double k = Math.Min(kw + Fault.Fouling * 0.6, 0.95);
+                    kSum += k;
                     double v = raw[src + x] / 255.0;
-                    v = (1 - k) * v + k * _waterRgb[x % 3] + P.Bias + Rng.Gaussian(sigma);
+                    v = (1 - k) * v + k * water[x % 3] + P.Bias + Rng.Gaussian(sigma);
                     hwc[dst + x] = (byte)Math.Max(0, Math.Min(255, Math.Round(v * 255.0)));
                 }
             }
             double fy = 0.5 * _height / Math.Tan(0.5 * _camera.fieldOfView * Math.PI / 180.0);
+            var context = new Dictionary<string, object>
+            {
+                ["fx"] = fy, ["fy"] = fy, ["cx"] = 0.5 * _width, ["cy"] = 0.5 * _height,
+                // uniform proxy: the same value as before the optics grid existed (byte-identical replays)
+                ["turbidity_applied"] = trans == null ? Math.Min(kUniform + Fault.Fouling * 0.6, 0.95) : kSum / Math.Max(1, _width * _height * 3),
+                ["renderer"] = "unity_camera",
+                ["graphics_device"] = SystemInfo.graphicsDeviceType.ToString(),
+            };
+            if (trans != null)
+            {
+                context["optics_grid"] = optics.Id;
+                context["centre_transmission"] = trans[(_height / 2) * _width + _width / 2];
+                context["mean_transmission"] = Mean(trans);
+            }
             return new SensorPacketData
             {
                 Layout = "rgb8_hwc_v1", Encoding = PayloadEncoding.u8, Units = "dn",
-                Shape = new[] { _height, _width, 3 }, Payload = hwc,
-                Context = new Dictionary<string, object>
-                {
-                    ["fx"] = fy, ["fy"] = fy, ["cx"] = 0.5 * _width, ["cy"] = 0.5 * _height,
-                    ["turbidity_applied"] = k, ["renderer"] = "unity_camera",
-                    ["graphics_device"] = SystemInfo.graphicsDeviceType.ToString(),
-                },
+                Shape = new[] { _height, _width, 3 }, Payload = hwc, Context = context,
             };
+        }
+
+        private static double Mean(double[] a)
+        {
+            double s = 0;
+            foreach (double v in a) s += v;
+            return a.Length == 0 ? 0 : s / a.Length;
+        }
+
+        /// <summary>Per-pixel water transmission exp(-optical depth) along the pixel ray (top row first, row-major).
+        /// The path ends at the first collider hit, or at optics_max_path_m when nothing is hit.</summary>
+        private double[] Transmission(OpticsField optics)
+        {
+            var t = new double[_width * _height];
+            Vec3d origin = ConradFrames.PointToConrad(ConradFrames.FromEngine(_camera.transform.position));
+            for (int y = 0; y < _height; y++)
+                for (int x = 0; x < _width; x++)
+                {
+                    Ray ray = _camera.ViewportPointToRay(new Vector3((x + 0.5f) / _width, 1f - (y + 0.5f) / _height, 0f));
+                    double length = _opticsMaxPathM;
+                    if (Physics.Raycast(ray, out RaycastHit hit, (float)_opticsMaxPathM, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                        length = hit.distance;
+                    Vec3d dir = ConradFrames.PointToConrad(ConradFrames.FromEngine(ray.direction.normalized));
+                    t[y * _width + x] = Math.Exp(-optics.OpticalDepth(origin, dir, length));
+                }
+            return t;
         }
     }
 

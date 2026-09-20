@@ -158,7 +158,8 @@ namespace Conrad.UnityV2.MissionExperimentRuntime
                     case "IMU": Sensors.Add(new ImuSensor(sp, seed)); break;
                     case "PRESSURE_DEPTH": Sensors.Add(new DepthSensor(sp, seed, Environment.DepthBelowSurface)); break;
                     case "RGB":
-                        Sensors.Add(new CameraSensor(sp, seed, MountFor(sp, true).GetComponent<Camera>(), () => Environment.Turbidity));
+                        Sensors.Add(new CameraSensor(sp, seed, MountFor(sp, true).GetComponent<Camera>(), () => Environment.Turbidity,
+                            () => OpticsField.Current));
                         break;
                     case "SONAR":
                         Sensors.Add(new SonarSensor(sp, seed, MountFor(sp, false)));

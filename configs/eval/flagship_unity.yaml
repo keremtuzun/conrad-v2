@@ -1,0 +1,81 @@
+# FLAGSHIP-UNITY: the flagship integrated mission on the formal Unity path. SYNTHETIC_ONLY.
+#
+# This is a DEMONSTRATION run, not a gate. No criterion in conrad/evaluation/gates.py reads it and it promotes
+# nothing. It exists to show one mission that carries all three stressors at once, end to end, through the built
+# Unity player, and to show that the mission replays from its captured observations with every truth file removed.
+#
+# Declared on 2026-09-20, BEFORE any run on the final world below.
+#
+# World: unity_gate final_test seed 7800017 (configs/eval/partitions_unity_gates.yaml, digest-pinned, not edited).
+# 7800000 = I1 and 7800001 = I3 are roles; 7800002-7800013 are the I4 worlds (configs/eval/active_mcbr_e004.yaml);
+# 7800014-7800016 are the I6 worlds (configs/eval/i6_multidomain.yaml). 7800017 is the next free seed and had never
+# been run before this file existed.
+#
+# Development: timeline design only on split("unity_gate", "development", "design") worlds. The three stressor
+# times below were fixed on kernel dry runs of worlds 7810007-7810013 (see docs/audits/FLAGSHIP_UNITY.md,
+# "How the times were chosen"). No final world was run before this file existed.
+experiment_id: FLAGSHIP-UNITY
+kind: DEMONSTRATION          # never gate evidence
+scenario: FLAGSHIP-UNITY     # conrad/sim/mission/scenarios.py + conrad/sim/mission/unity_run.py
+backend: unity
+final_world: 7800017
+development_worlds: [7810007, 7810008, 7810009, 7810010, 7810011, 7810012, 7810013]
+mission_config: configs/sim/mission_test_small.yaml
+partition_file: configs/eval/partitions_unity_gates.yaml
+
+# The production runtime defaults, asserted by the runner before the mission starts (it refuses to run if any of
+# these differ from what the resolved MissionRuntimeConfig holds).
+runtime_expectations:
+  planner: PRODUCTION            # frozen validation-selected planner, configs/active/mcbr_frozen*.yaml
+  model2t_mode: NONE             # ADR-0009: TCDP (relational propagation) off
+  model2s_refinement_enabled: false  # RBP off
+  model2e_enabled: true          # Model2E uncoupled, observability_context on
+  model2e_observability_context: true   # switches.observability_context
+  model2e_ecological_coupling: false     # switches.ecological_coupling
+  model2e_model_version: model2e-uncoupled-obsctx-analytic-0.5.0
+  model2s_model_version: uahsm-v1-analytic
+  multidomain_enabled: false     # the I6 sensing-conditions gate is not a production default
+  duration_s: 150.0
+  control_period_s: 0.1
+
+# The three declared stressors. Times are mission seconds; all are SYNTHETIC_ONLY simulation settings and live in
+# conrad/sim/mission/scenarios.py (FLAGSHIP_UNITY_*). They are repeated here so the declaration is one file.
+stressors:
+  communication_outage:
+    link_down_s: 6.0
+    link_up_s: 70.0
+    link: mission default (1200 bps, 1 s latency, 5 % packet loss, BER 1e-6, 1024-bit packets)
+    why: >-
+      the defect is on the LANE side, so the lane pass itself makes the critical structural finding (condition
+      not INTACT on a mission-critical component) at about 14-16 s, while the link is down. It can only be
+      delivered after reconnection at 70 s.
+  contradiction:
+    second_sensor_start_s: 16.0
+    sensor_bias_m: 0.010        # persistent wall-loss calibration offset of the second payload
+    corruption: 0.0             # NOT degraded: Model2T must rate it reliable for the conflict to be credible
+    surface_appearance_offset: -0.8
+    why: >-
+      the second structural payload (SENSOR_INSPECTION_AUX, the existing Twin2T sensor model) starts in the middle
+      of the lane view of the target, so the first readings are single-sensor and every later view yields two
+      credible readings of the same component that disagree. A credible disagreement must raise U_C instead of
+      being averaged away.
+  localization_degradation:
+    fix_outage_start_s: 90.0
+    fix_outage_duration_s: 90.0   # past the end of the mission: the fix never returns
+    expect_state: HOLD
+    expect_reason: LOCALIZATION_LOST
+    deadline_s: 40.0              # ENGINEERING_ESTIMATE; the I2 repair measured 28.6 s on the NAV transit
+    motion: hold
+    hold_radius_m: 0.5            # ENGINEERING_ESTIMATE, checked by conrad.sim.mission.unity_faults
+    why: >-
+      the synthetic USBL-like position fix stops at 90 s. The estimator's position sigma grows, the supervisor
+      first reports POSE_SIGMA_ELEVATED (DEGRADED) and then LOCALIZATION_LOST, and the vehicle must hold.
+
+# What is reported (docs/audits/FLAGSHIP_UNITY.md). Nothing here is a pass/fail bound on the mission.
+report:
+  - structural estimate against Twin2T truth (corrosion depth, crack length), with the realistic sensor model
+  - U_C on the target belief before and after the second payload starts, and what the belief did
+  - comms timeline: finding, link return, alert arrival, critical belief delta arrival
+  - estimator error and sigma through the fix outage, the safety-state timeline and whether the vehicle stopped
+  - commands accepted and rejected, collisions, UIR, hard-constraint violations
+  - observation-only replay exactness and the truth-removal falsification verdict

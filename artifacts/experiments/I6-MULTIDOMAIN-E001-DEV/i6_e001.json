@@ -1,0 +1,3532 @@
+{
+ "experiment_id": "I6-MULTIDOMAIN-E001",
+ "partition": "development",
+ "evidence_class": "SURROGATE",
+ "execution_path": "python L1 kernel instead of Unity (ADR-0008)",
+ "config": "configs\\eval\\i6_multidomain.yaml",
+ "worlds": [
+  7810000,
+  7810001,
+  7810002,
+  7810003,
+  7810004,
+  7810005
+ ],
+ "arms": {
+  "TURBID": "I6-MULTIDOMAIN-TURBID",
+  "CLEAR": "I6-MULTIDOMAIN-CLEAR"
+ },
+ "decision_rule": "Unit = one final world with both arms. A criterion PASSES iff it passes on every final world (3 of 3). 'one mission produces 2S, 2T and 2E beliefs': in both arms every domain has DIRECT revisions, all with consumed evidence, some belief revised in place (max revision > 0), and no revision of another run in the store. 'Model1 reasons across all three via the Belief Bus': in both arms at least one EGDC decision's claim graph cites beliefs owned by SPATIAL, TECHNICAL and ECOLOGICAL (owner = bus head domain), no cited (belief, revision) is missing from the committed revisions, the query engine used query_model2s/2t/2e, every sensing-gate record cites claims and beliefs of all three domains, and the gate verdict agrees with the Twin2E truth verdict (true visibility at the true target) on at least 80 % of the gate records; TURBID has at least one DEFERRED_LOW_VISIBILITY, CLEAR has none and at least one PROCEED. 'children remain authoritative within domains': in both arms zero bus rejections, every bus head is the child's latest committed revision, every revision's provenance root comes from its own domain package, no DIRECT revision consumed evidence of another domain's sensors (and none unresolved), cross-domain deliveries exist and are all CROSS_DOMAIN_CONTEXT, CONTEXT revisions consume no evidence, and a bus loaded with the mission's heads rejects every foreign-domain write with its heads unchanged.",
+ "truth_agreement_min": 0.8,
+ "per_world": {
+  "7810000": {
+   "one mission produces 2S, 2T and 2E beliefs": true,
+   "Model1 reasons across all three via the Belief Bus": true,
+   "children remain authoritative within domains": false
+  },
+  "7810001": {
+   "one mission produces 2S, 2T and 2E beliefs": true,
+   "Model1 reasons across all three via the Belief Bus": true,
+   "children remain authoritative within domains": false
+  },
+  "7810002": {
+   "one mission produces 2S, 2T and 2E beliefs": true,
+   "Model1 reasons across all three via the Belief Bus": true,
+   "children remain authoritative within domains": false
+  },
+  "7810003": {
+   "one mission produces 2S, 2T and 2E beliefs": true,
+   "Model1 reasons across all three via the Belief Bus": true,
+   "children remain authoritative within domains": false
+  },
+  "7810004": {
+   "one mission produces 2S, 2T and 2E beliefs": true,
+   "Model1 reasons across all three via the Belief Bus": true,
+   "children remain authoritative within domains": false
+  },
+  "7810005": {
+   "one mission produces 2S, 2T and 2E beliefs": true,
+   "Model1 reasons across all three via the Belief Bus": true,
+   "children remain authoritative within domains": false
+  }
+ },
+ "summary": {
+  "one mission produces 2S, 2T and 2E beliefs": true,
+  "Model1 reasons across all three via the Belief Bus": true,
+  "children remain authoritative within domains": false
+ },
+ "runs": [
+  {
+   "seed": 7810000,
+   "arm": "TURBID",
+   "scenario": "I6-MULTIDOMAIN-TURBID",
+   "wall_s": 232.9,
+   "measured": {
+    "one mission produces 2S, 2T and 2E beliefs": {
+     "TECHNICAL": {
+      "revisions": 395,
+      "direct": 22,
+      "direct_with_evidence": 22,
+      "beliefs": 8,
+      "max_revision": 92,
+      "update_kinds": {
+       "CREATE": 5,
+       "CONTEXT": 346,
+       "DIRECT": 22,
+       "RELATIONAL": 22
+      }
+     },
+     "ECOLOGICAL": {
+      "revisions": 105,
+      "direct": 96,
+      "direct_with_evidence": 96,
+      "beliefs": 9,
+      "max_revision": 24,
+      "update_kinds": {
+       "CREATE": 9,
+       "DIRECT": 96
+      }
+     },
+     "SPATIAL": {
+      "revisions": 1011,
+      "direct": 684,
+      "direct_with_evidence": 684,
+      "beliefs": 81,
+      "max_revision": 39,
+      "update_kinds": {
+       "DIRECT": 684,
+       "RELATIONAL": 327
+      }
+     },
+     "run_ids": [
+      "018bcfe5-6801-70fa-85df-9eb17e0b9d85"
+     ],
+     "other_run_revisions": 0
+    },
+    "Model1 reasons across all three via the Belief Bus": {
+     "decisions": 60,
+     "decisions_citing_all_three": 60,
+     "cited_revisions_not_committed": 0,
+     "query_tools": {
+      "query_model2t": 300,
+      "query_model2s": 360,
+      "query_model2e": 60
+     },
+     "gate_records": 42,
+     "gate_verdicts": {
+      "DEFERRED_LOW_VISIBILITY": 42
+     },
+     "gate_records_citing_all_three": 42,
+     "gate_truth_agreement": 1.0,
+     "gate_truth_records": 42,
+     "turbidity_belief_range_ntu": [
+      13.339150746644691,
+      14.826535220014767
+     ],
+     "true_turbidity_range_ntu": [
+      26.207522825302185,
+      26.951429592045724
+     ],
+     "first_deferral": {
+      "t_s": 38.0,
+      "decision_id": "018bcfe5-6aa0-7282-8b9a-6beac0ee9039",
+      "turbidity_ntu_belief": 13.339150746644691,
+      "visibility_at_range": 0.4154373375337987,
+      "claims": {
+       "TECHNICAL": 1,
+       "SPATIAL": 10,
+       "ECOLOGICAL": 2
+      },
+      "beliefs": {
+       "TECHNICAL": [
+        "018bcfe5-6804-7fd2-897c-375009c2042a"
+       ],
+       "SPATIAL": [
+        "018bcfe5-680d-7b40-8199-ff10413f547c",
+        "018bcfe5-6810-76fc-998d-42afc12136b5",
+        "018bcfe5-684c-7985-81aa-54af0cc4e9e1",
+        "018bcfe5-684f-7287-ad66-a92830ba6ecb",
+        "018bcfe5-6852-7323-a8c9-02c2a54c973a",
+        "018bcfe5-685b-7867-8c6c-3bc5f90a57d4",
+        "018bcfe5-68a4-7062-bbaf-0b681583c5e7",
+        "018bcfe5-68a9-7eee-9932-dd86bc715eb7",
+        "018bcfe5-68b6-7a28-9011-a6c881d33d5c"
+       ],
+       "ECOLOGICAL": [
+        "018bcfe5-6804-7091-821a-514f8f452246"
+       ]
+      },
+      "truth": {
+       "decision_id": "018bcfe5-6aa0-7282-8b9a-6beac0ee9039",
+       "true_turbidity_ntu": 26.94451028277866,
+       "true_visibility_at_range": 0.32375105369699714,
+       "true_verdict": "DEFERRED_LOW_VISIBILITY"
+      }
+     },
+     "inspection_goal_started_s": null,
+     "mcbr_plans": 0
+    },
+    "children remain authoritative within domains": {
+     "bus_rejected": 0,
+     "bus_rejected_reasons": {},
+     "bus_heads": 93,
+     "bus_heads_per_domain": {
+      "TECHNICAL": 8,
+      "SPATIAL": 81,
+      "ECOLOGICAL": 4
+     },
+     "bus_head_not_child_latest": 5,
+     "revisions_checked": 1511,
+     "revisions_not_written_by_own_package": {},
+     "direct_evidence_from_other_domain_sensors": {},
+     "direct_evidence_unresolved": 0,
+     "context_deliveries": 2312,
+     "context_deliveries_by_pair": {
+      "TECHNICAL->SPATIAL": 49,
+      "TECHNICAL->ECOLOGICAL": 49,
+      "SPATIAL->TECHNICAL": 1011,
+      "SPATIAL->ECOLOGICAL": 1011,
+      "ECOLOGICAL->SPATIAL": 96,
+      "ECOLOGICAL->TECHNICAL": 96
+     },
+     "context_deliveries_not_context": 0,
+     "context_revisions": {
+      "TECHNICAL": 346
+     },
+     "context_revisions_with_evidence": 0,
+     "foreign_write_probe": {
+      "heads_loaded": 93,
+      "attempts": 186,
+      "rejected_foreign": 186,
+      "heads_unchanged": 186
+     }
+    }
+   },
+   "truth": [
+    {
+     "decision_id": "018bcfe5-6aa0-7282-8b9a-6beac0ee9039",
+     "true_turbidity_ntu": 26.94451028277866,
+     "true_visibility_at_range": 0.32375105369699714,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ac4-787f-a9c3-192fce6de166",
+     "true_turbidity_ntu": 26.951429592045724,
+     "true_visibility_at_range": 0.32366146074935265,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ae8-72e2-b109-5a9e1ae17d4d",
+     "true_turbidity_ntu": 26.94298682852053,
+     "true_visibility_at_range": 0.32377078309498086,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b0c-783a-9821-e7ec58dce724",
+     "true_turbidity_ntu": 26.922020703693,
+     "true_visibility_at_range": 0.3240424257310832,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b30-7323-a697-9e0136e14bd5",
+     "true_turbidity_ntu": 26.918923711384938,
+     "true_visibility_at_range": 0.3240825704935913,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b54-7dc9-a9ab-7be363641f3d",
+     "true_turbidity_ntu": 26.88103075067444,
+     "true_visibility_at_range": 0.3245741608802072,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b78-7cad-9508-f990d54a4e0b",
+     "true_turbidity_ntu": 26.869171159024024,
+     "true_visibility_at_range": 0.32472817008737775,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b9c-72a7-8327-9abb1eec88c3",
+     "true_turbidity_ntu": 26.864412180126052,
+     "true_visibility_at_range": 0.32478999095163574,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6bc0-79a9-aa2c-7d0b00f63dde",
+     "true_turbidity_ntu": 26.833705715900688,
+     "true_visibility_at_range": 0.32518916213368154,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6be6-7985-8470-fec168fca77e",
+     "true_turbidity_ntu": 26.802882642299796,
+     "true_visibility_at_range": 0.3255903425742934,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c0c-72f4-8465-b81e7f99c505",
+     "true_turbidity_ntu": 26.786178235036694,
+     "true_visibility_at_range": 0.3258079670192756,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c32-7d30-8935-873132e8d4e2",
+     "true_turbidity_ntu": 26.794782794921048,
+     "true_visibility_at_range": 0.32569584894839493,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c58-7066-891c-3c97a2832924",
+     "true_turbidity_ntu": 26.78084998412004,
+     "true_visibility_at_range": 0.32587741388357605,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c7e-7128-ae33-5a821fc66717",
+     "true_turbidity_ntu": 26.739043850236826,
+     "true_visibility_at_range": 0.32642281677197554,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ca4-75f5-a491-e98a3c2c8214",
+     "true_turbidity_ntu": 26.726270182076274,
+     "true_visibility_at_range": 0.3265896440579331,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6cca-70f2-b929-d6d8d0eccc98",
+     "true_turbidity_ntu": 26.721341026743104,
+     "true_visibility_at_range": 0.32665404284978805,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6cf0-7988-8e01-17c8594fe751",
+     "true_turbidity_ntu": 26.69275749912733,
+     "true_visibility_at_range": 0.32702773343116487,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d16-722b-bc00-8adec4a96b3f",
+     "true_turbidity_ntu": 26.654980540731493,
+     "true_visibility_at_range": 0.3275222715031523,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d3c-7010-ace1-4892b5762524",
+     "true_turbidity_ntu": 26.659252834590106,
+     "true_visibility_at_range": 0.3274663054297946,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d62-72d4-be5a-5a44f49f2a17",
+     "true_turbidity_ntu": 26.668293559661624,
+     "true_visibility_at_range": 0.32734790552600146,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d88-7f6b-a39b-9f28ba3d466f",
+     "true_turbidity_ntu": 26.634121842786755,
+     "true_visibility_at_range": 0.32779565306021785,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6dae-7aa0-8736-f45bb6af91c4",
+     "true_turbidity_ntu": 26.605752885984064,
+     "true_visibility_at_range": 0.32816783301629354,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6dd4-7289-b22f-90e23d00292a",
+     "true_turbidity_ntu": 26.604600899072594,
+     "true_visibility_at_range": 0.3281829551666372,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6dfa-728e-8db9-b14719c2496d",
+     "true_turbidity_ntu": 26.558313636549574,
+     "true_visibility_at_range": 0.3287911456463998,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e20-7728-af4f-97c112570446",
+     "true_turbidity_ntu": 26.517166224579146,
+     "true_visibility_at_range": 0.3293327474232487,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e46-7d5d-840e-0677befcc36c",
+     "true_turbidity_ntu": 26.49494484043145,
+     "true_visibility_at_range": 0.32962560673847047,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e6c-7166-8cc4-f22b57c1040e",
+     "true_turbidity_ntu": 26.47765661470573,
+     "true_visibility_at_range": 0.32985363124793815,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e92-7fe4-a744-556cd4eb418e",
+     "true_turbidity_ntu": 26.457221325476404,
+     "true_visibility_at_range": 0.33012336765006284,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6eb8-770b-bca6-633091eae2d9",
+     "true_turbidity_ntu": 26.441520649040385,
+     "true_visibility_at_range": 0.33033075917416826,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ede-7a57-9e17-ee0c3d0a5b9c",
+     "true_turbidity_ntu": 26.418579394013207,
+     "true_visibility_at_range": 0.33063402638707784,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f04-71fc-81bd-d4af5b2a6e08",
+     "true_turbidity_ntu": 26.39913338698814,
+     "true_visibility_at_range": 0.33089130689967294,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f2a-7807-9c21-40bbc43307db",
+     "true_turbidity_ntu": 26.388527817992824,
+     "true_visibility_at_range": 0.33103170830171347,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f50-78e4-9402-4c505c4eca48",
+     "true_turbidity_ntu": 26.36590204221146,
+     "true_visibility_at_range": 0.3313314378818827,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f76-7fb1-83cc-bd393145aed5",
+     "true_turbidity_ntu": 26.386512730071665,
+     "true_visibility_at_range": 0.3310583916969635,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f9c-7f2d-a7b2-91c7c737cc01",
+     "true_turbidity_ntu": 26.34308574549209,
+     "true_visibility_at_range": 0.33163396616835356,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6fc2-7712-a40e-e0a68f587e5d",
+     "true_turbidity_ntu": 26.32123640165702,
+     "true_visibility_at_range": 0.331923932243434,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6fe8-7576-b108-637c4d1f0849",
+     "true_turbidity_ntu": 26.271699410920267,
+     "true_visibility_at_range": 0.332582284794387,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-700e-7aa7-9e93-d96b44935390",
+     "true_turbidity_ntu": 26.26943987501411,
+     "true_visibility_at_range": 0.3326123454173975,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-7034-7bb7-8970-4fd2f642ee35",
+     "true_turbidity_ntu": 26.256357229896913,
+     "true_visibility_at_range": 0.33278644893918385,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-705a-7a53-b690-87a19c1f7411",
+     "true_turbidity_ntu": 26.24293768950655,
+     "true_visibility_at_range": 0.33296513053910864,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-7080-73fc-811d-002a3890be83",
+     "true_turbidity_ntu": 26.222996102870457,
+     "true_visibility_at_range": 0.33323083061453984,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-70a6-7cbc-9a7f-83b10be017ed",
+     "true_turbidity_ntu": 26.207522825302185,
+     "true_visibility_at_range": 0.33343714137948455,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    }
+   ],
+   "pass": {
+    "one mission produces 2S, 2T and 2E beliefs": true,
+    "Model1 reasons across all three via the Belief Bus": true,
+    "children remain authoritative within domains": false
+   }
+  },
+  {
+   "seed": 7810000,
+   "arm": "CLEAR",
+   "scenario": "I6-MULTIDOMAIN-CLEAR",
+   "wall_s": 263.6,
+   "measured": {
+    "one mission produces 2S, 2T and 2E beliefs": {
+     "TECHNICAL": {
+      "revisions": 503,
+      "direct": 22,
+      "direct_with_evidence": 22,
+      "beliefs": 7,
+      "max_revision": 110,
+      "update_kinds": {
+       "CREATE": 5,
+       "CONTEXT": 464,
+       "DIRECT": 22,
+       "RELATIONAL": 12
+      }
+     },
+     "ECOLOGICAL": {
+      "revisions": 106,
+      "direct": 97,
+      "direct_with_evidence": 97,
+      "beliefs": 9,
+      "max_revision": 24,
+      "update_kinds": {
+       "CREATE": 9,
+       "DIRECT": 97
+      }
+     },
+     "SPATIAL": {
+      "revisions": 1011,
+      "direct": 688,
+      "direct_with_evidence": 688,
+      "beliefs": 81,
+      "max_revision": 39,
+      "update_kinds": {
+       "DIRECT": 688,
+       "RELATIONAL": 323
+      }
+     },
+     "run_ids": [
+      "018bcfe5-6801-70fa-85df-9eb17e0b9d85"
+     ],
+     "other_run_revisions": 0
+    },
+    "Model1 reasons across all three via the Belief Bus": {
+     "decisions": 60,
+     "decisions_citing_all_three": 60,
+     "cited_revisions_not_committed": 0,
+     "query_tools": {
+      "query_model2t": 300,
+      "query_model2s": 360,
+      "query_model2e": 60
+     },
+     "gate_records": 8,
+     "gate_verdicts": {
+      "PROCEED": 8
+     },
+     "gate_records_citing_all_three": 8,
+     "gate_truth_agreement": 1.0,
+     "gate_truth_records": 8,
+     "turbidity_belief_range_ntu": [
+      1.9909236011383542,
+      2.0301235643069857
+     ],
+     "true_turbidity_range_ntu": [
+      1.9859980043253316,
+      1.9980268339663427
+     ],
+     "first_deferral": null,
+     "inspection_goal_started_s": null,
+     "mcbr_plans": 4
+    },
+    "children remain authoritative within domains": {
+     "bus_rejected": 0,
+     "bus_rejected_reasons": {},
+     "bus_heads": 93,
+     "bus_heads_per_domain": {
+      "TECHNICAL": 7,
+      "SPATIAL": 81,
+      "ECOLOGICAL": 5
+     },
+     "bus_head_not_child_latest": 5,
+     "revisions_checked": 1620,
+     "revisions_not_written_by_own_package": {},
+     "direct_evidence_from_other_domain_sensors": {},
+     "direct_evidence_unresolved": 0,
+     "context_deliveries": 2294,
+     "context_deliveries_by_pair": {
+      "TECHNICAL->SPATIAL": 39,
+      "TECHNICAL->ECOLOGICAL": 39,
+      "SPATIAL->TECHNICAL": 1011,
+      "SPATIAL->ECOLOGICAL": 1011,
+      "ECOLOGICAL->SPATIAL": 97,
+      "ECOLOGICAL->TECHNICAL": 97
+     },
+     "context_deliveries_not_context": 0,
+     "context_revisions": {
+      "TECHNICAL": 464
+     },
+     "context_revisions_with_evidence": 0,
+     "foreign_write_probe": {
+      "heads_loaded": 93,
+      "attempts": 186,
+      "rejected_foreign": 186,
+      "heads_unchanged": 186
+     }
+    }
+   },
+   "truth": [
+    {
+     "decision_id": "018bcfe5-6ac2-71f2-8c45-6c4ba4792d90",
+     "true_turbidity_ntu": 1.9976954471218784,
+     "true_visibility_at_range": 0.8781763793456062,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6ae5-74e6-a1bf-ef3fdbec0a85",
+     "true_turbidity_ntu": 1.9980268339663427,
+     "true_visibility_at_range": 0.8781647387787876,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6c4b-7598-afa2-971c354d1c3d",
+     "true_turbidity_ntu": 1.9929337173961024,
+     "true_visibility_at_range": 0.8783436608188839,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6c70-715a-bb06-4e611e9f8088",
+     "true_turbidity_ntu": 1.990895100993757,
+     "true_visibility_at_range": 0.8784152879710037,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6de2-703d-b7ce-090ada978651",
+     "true_turbidity_ntu": 1.9880898954877115,
+     "true_visibility_at_range": 0.8785138589172319,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6e07-729e-b769-4e74b23e4b08",
+     "true_turbidity_ntu": 1.9859980043253316,
+     "true_visibility_at_range": 0.878587372207925,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6f79-7488-a821-7b41e4733819",
+     "true_turbidity_ntu": 1.9868507365541854,
+     "true_visibility_at_range": 0.8785574047282868,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6f9e-727e-8520-a1fd0a61504b",
+     "true_turbidity_ntu": 1.986292994923334,
+     "true_visibility_at_range": 0.8785770052685151,
+     "true_verdict": "PROCEED"
+    }
+   ],
+   "pass": {
+    "one mission produces 2S, 2T and 2E beliefs": true,
+    "Model1 reasons across all three via the Belief Bus": true,
+    "children remain authoritative within domains": false
+   }
+  },
+  {
+   "seed": 7810001,
+   "arm": "TURBID",
+   "scenario": "I6-MULTIDOMAIN-TURBID",
+   "wall_s": 232.1,
+   "measured": {
+    "one mission produces 2S, 2T and 2E beliefs": {
+     "TECHNICAL": {
+      "revisions": 385,
+      "direct": 22,
+      "direct_with_evidence": 22,
+      "beliefs": 8,
+      "max_revision": 90,
+      "update_kinds": {
+       "CREATE": 5,
+       "CONTEXT": 336,
+       "DIRECT": 22,
+       "RELATIONAL": 22
+      }
+     },
+     "ECOLOGICAL": {
+      "revisions": 105,
+      "direct": 96,
+      "direct_with_evidence": 96,
+      "beliefs": 9,
+      "max_revision": 24,
+      "update_kinds": {
+       "CREATE": 9,
+       "DIRECT": 96
+      }
+     },
+     "SPATIAL": {
+      "revisions": 1024,
+      "direct": 642,
+      "direct_with_evidence": 642,
+      "beliefs": 77,
+      "max_revision": 39,
+      "update_kinds": {
+       "DIRECT": 642,
+       "RELATIONAL": 382
+      }
+     },
+     "run_ids": [
+      "018bcfe5-6801-7e7e-99d6-bd74a0d433c0"
+     ],
+     "other_run_revisions": 0
+    },
+    "Model1 reasons across all three via the Belief Bus": {
+     "decisions": 60,
+     "decisions_citing_all_three": 60,
+     "cited_revisions_not_committed": 0,
+     "query_tools": {
+      "query_model2t": 300,
+      "query_model2s": 360,
+      "query_model2e": 60
+     },
+     "gate_records": 43,
+     "gate_verdicts": {
+      "DEFERRED_LOW_VISIBILITY": 43
+     },
+     "gate_records_citing_all_three": 43,
+     "gate_truth_agreement": 1.0,
+     "gate_truth_records": 43,
+     "turbidity_belief_range_ntu": [
+      11.653053411067877,
+      14.116378430121367
+     ],
+     "true_turbidity_range_ntu": [
+      26.171436627713994,
+      26.865365934444522
+     ],
+     "first_deferral": {
+      "t_s": 36.0,
+      "decision_id": "018bcfe5-6a78-7d9d-a424-579645a07cda",
+      "turbidity_ntu_belief": 11.653053411067877,
+      "visibility_at_range": 0.4439589391959547,
+      "claims": {
+       "TECHNICAL": 1,
+       "SPATIAL": 10,
+       "ECOLOGICAL": 2
+      },
+      "beliefs": {
+       "TECHNICAL": [
+        "018bcfe5-6804-7e36-aef2-1314568a3d84"
+       ],
+       "SPATIAL": [
+        "018bcfe5-6807-7439-af1a-39711f0d1509",
+        "018bcfe5-680a-759d-8561-e6793393844c",
+        "018bcfe5-6831-7430-980a-e46e8175752b",
+        "018bcfe5-6834-7c8a-a3b2-96fae4c40e3e",
+        "018bcfe5-6837-76f4-bac3-9d53cd40556d",
+        "018bcfe5-6879-7331-8728-52526aabf465",
+        "018bcfe5-687f-79c8-a803-439a2405116c",
+        "018bcfe5-68bd-7afe-aa64-b1065734bc13",
+        "018bcfe5-68c2-7790-a02b-dcbd2e9450c5"
+       ],
+       "ECOLOGICAL": [
+        "018bcfe5-6804-71df-85a2-895300b2d2b0"
+       ]
+      },
+      "truth": {
+       "decision_id": "018bcfe5-6a78-7d9d-a424-579645a07cda",
+       "true_turbidity_ntu": 26.865365934444522,
+       "true_visibility_at_range": 0.32477760039372955,
+       "true_verdict": "DEFERRED_LOW_VISIBILITY"
+      }
+     },
+     "inspection_goal_started_s": null,
+     "mcbr_plans": 0
+    },
+    "children remain authoritative within domains": {
+     "bus_rejected": 0,
+     "bus_rejected_reasons": {},
+     "bus_heads": 89,
+     "bus_heads_per_domain": {
+      "TECHNICAL": 8,
+      "SPATIAL": 77,
+      "ECOLOGICAL": 4
+     },
+     "bus_head_not_child_latest": 5,
+     "revisions_checked": 1514,
+     "revisions_not_written_by_own_package": {},
+     "direct_evidence_from_other_domain_sensors": {},
+     "direct_evidence_unresolved": 0,
+     "context_deliveries": 2338,
+     "context_deliveries_by_pair": {
+      "TECHNICAL->SPATIAL": 49,
+      "TECHNICAL->ECOLOGICAL": 49,
+      "SPATIAL->TECHNICAL": 1024,
+      "SPATIAL->ECOLOGICAL": 1024,
+      "ECOLOGICAL->SPATIAL": 96,
+      "ECOLOGICAL->TECHNICAL": 96
+     },
+     "context_deliveries_not_context": 0,
+     "context_revisions": {
+      "TECHNICAL": 336
+     },
+     "context_revisions_with_evidence": 0,
+     "foreign_write_probe": {
+      "heads_loaded": 89,
+      "attempts": 178,
+      "rejected_foreign": 178,
+      "heads_unchanged": 178
+     }
+    }
+   },
+   "truth": [
+    {
+     "decision_id": "018bcfe5-6a78-7d9d-a424-579645a07cda",
+     "true_turbidity_ntu": 26.865365934444522,
+     "true_visibility_at_range": 0.32477760039372955,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6a9c-7284-bfa8-3f2133f7b774",
+     "true_turbidity_ntu": 26.84873766417354,
+     "true_visibility_at_range": 0.3249936918389944,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ac0-778a-aa2f-2d5b257415a7",
+     "true_turbidity_ntu": 26.84459546191334,
+     "true_visibility_at_range": 0.325047543884388,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ae4-7365-86f1-6bc9a972007c",
+     "true_turbidity_ntu": 26.860701503559582,
+     "true_visibility_at_range": 0.32483820215380876,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b08-7afd-87a9-eead032ffa82",
+     "true_turbidity_ntu": 26.85811581684533,
+     "true_visibility_at_range": 0.32487180108424857,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b2c-70c6-84d9-50f0d39b9157",
+     "true_turbidity_ntu": 26.84821175973167,
+     "true_visibility_at_range": 0.3250005285359479,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b50-70d6-9f44-f9719f1751c1",
+     "true_turbidity_ntu": 26.84372482132139,
+     "true_visibility_at_range": 0.3250588640649438,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b74-753e-a33e-de6e9b83c7fa",
+     "true_turbidity_ntu": 26.844373768812176,
+     "true_visibility_at_range": 0.32505042632908954,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b98-7bd9-bb27-246549edc04a",
+     "true_turbidity_ntu": 26.8417551893655,
+     "true_visibility_at_range": 0.32508447492685827,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6bbc-7c04-aa4e-9b910830cdac",
+     "true_turbidity_ntu": 26.825218247728206,
+     "true_visibility_at_range": 0.3252995821828999,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6be2-7be8-a20f-3eece03035e1",
+     "true_turbidity_ntu": 26.819049973206393,
+     "true_visibility_at_range": 0.32537985357020116,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c08-71b3-b0b2-8f806a039d13",
+     "true_turbidity_ntu": 26.809502696925904,
+     "true_visibility_at_range": 0.3255041369543724,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c2e-7d6a-9200-1c200996d9fb",
+     "true_turbidity_ntu": 26.79131037648023,
+     "true_visibility_at_range": 0.3257410901811314,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c54-7767-9da6-8c8a3c89fed7",
+     "true_turbidity_ntu": 26.766715216347198,
+     "true_visibility_at_range": 0.3260617140421717,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c7a-7433-9090-5405037a70e1",
+     "true_turbidity_ntu": 26.737191604414217,
+     "true_visibility_at_range": 0.32644700227986545,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ca0-7827-a235-8caadb558e54",
+     "true_turbidity_ntu": 26.713803883621402,
+     "true_visibility_at_range": 0.32675253922755765,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6cc6-7865-826c-b422d8b55695",
+     "true_turbidity_ntu": 26.69746642478948,
+     "true_visibility_at_range": 0.32696614126055856,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6cec-769c-8c05-d9dff9e7f630",
+     "true_turbidity_ntu": 26.698395488695724,
+     "true_visibility_at_range": 0.32695399058871855,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d12-77c3-a909-0f50489d4ba6",
+     "true_turbidity_ntu": 26.69431611294996,
+     "true_visibility_at_range": 0.32700734566887607,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d38-75d0-b0ed-bcfada175202",
+     "true_turbidity_ntu": 26.657265691707657,
+     "true_visibility_at_range": 0.3274923353578077,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d5e-7baf-b13e-bc3938e1bb57",
+     "true_turbidity_ntu": 26.63305344000222,
+     "true_visibility_at_range": 0.3278096620711005,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d84-7c51-b13b-f772b16250cb",
+     "true_turbidity_ntu": 26.627009723493067,
+     "true_visibility_at_range": 0.3278889191975274,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6daa-7bed-ad5a-db9b02a744dd",
+     "true_turbidity_ntu": 26.598936323749054,
+     "true_visibility_at_range": 0.328257324274485,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6dd0-7872-8290-ef990b700b78",
+     "true_turbidity_ntu": 26.586043010783523,
+     "true_visibility_at_range": 0.32842666091354134,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6df6-70a7-8d92-56a4f487bc7b",
+     "true_turbidity_ntu": 26.556346870321573,
+     "true_visibility_at_range": 0.32881701287673526,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e1c-7815-93a3-b5dd91b23ae0",
+     "true_turbidity_ntu": 26.551664431661923,
+     "true_visibility_at_range": 0.3288786052643285,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e42-7df3-bf8e-3b64dc016898",
+     "true_turbidity_ntu": 26.52554798504988,
+     "true_visibility_at_range": 0.32922235040254766,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e68-7642-be46-39089e90aca3",
+     "true_turbidity_ntu": 26.51137463759849,
+     "true_visibility_at_range": 0.32940905063133197,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e8e-718f-82ca-36e9e2f2d408",
+     "true_turbidity_ntu": 26.491990719613618,
+     "true_visibility_at_range": 0.3296645591945086,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6eb4-76b2-b548-9b5ead304929",
+     "true_turbidity_ntu": 26.46813020893916,
+     "true_visibility_at_range": 0.32997934798038275,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6eda-74ae-ae78-671664ed5795",
+     "true_turbidity_ntu": 26.431168032266733,
+     "true_visibility_at_range": 0.3304675790114111,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f00-7c1d-bd7b-5ab87c625017",
+     "true_turbidity_ntu": 26.427758651347553,
+     "true_visibility_at_range": 0.3305126496789343,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f26-7714-a003-5e3d3c59cf7d",
+     "true_turbidity_ntu": 26.390142610082215,
+     "true_visibility_at_range": 0.3310103270968887,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f4c-79c2-bd1e-61f8932fe49e",
+     "true_turbidity_ntu": 26.370654569475306,
+     "true_visibility_at_range": 0.3312684574007253,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f72-7971-b070-68fff2114b7c",
+     "true_turbidity_ntu": 26.350895099748907,
+     "true_visibility_at_range": 0.3315303884616798,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f98-7d6e-985b-148da8f46cbc",
+     "true_turbidity_ntu": 26.31683229407903,
+     "true_visibility_at_range": 0.3319824105423896,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6fbe-74bc-8ae7-6515fedaa43b",
+     "true_turbidity_ntu": 26.287987599139587,
+     "true_visibility_at_range": 0.3323656688535482,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6fe4-7e1e-8779-f587ffecfc58",
+     "true_turbidity_ntu": 26.251338921817535,
+     "true_visibility_at_range": 0.3328532566412089,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-700a-772e-86fe-208f19f673b3",
+     "true_turbidity_ntu": 26.239395937945844,
+     "true_visibility_at_range": 0.3330123050714691,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-7030-7c9b-bed3-5a765f2376b3",
+     "true_turbidity_ntu": 26.21838186432421,
+     "true_visibility_at_range": 0.3332923405525325,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-7056-7b40-b08f-52a643319d5c",
+     "true_turbidity_ntu": 26.18223044599027,
+     "true_visibility_at_range": 0.33377464882428154,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-707c-7a9d-9d7b-4587914999e2",
+     "true_turbidity_ntu": 26.171436627713994,
+     "true_visibility_at_range": 0.3339187880544811,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-70a2-7aae-a132-66657056bc58",
+     "true_turbidity_ntu": 26.172985672463625,
+     "true_visibility_at_range": 0.33389809848965135,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    }
+   ],
+   "pass": {
+    "one mission produces 2S, 2T and 2E beliefs": true,
+    "Model1 reasons across all three via the Belief Bus": true,
+    "children remain authoritative within domains": false
+   }
+  },
+  {
+   "seed": 7810001,
+   "arm": "CLEAR",
+   "scenario": "I6-MULTIDOMAIN-CLEAR",
+   "wall_s": 249.1,
+   "measured": {
+    "one mission produces 2S, 2T and 2E beliefs": {
+     "TECHNICAL": {
+      "revisions": 481,
+      "direct": 22,
+      "direct_with_evidence": 22,
+      "beliefs": 7,
+      "max_revision": 105,
+      "update_kinds": {
+       "CREATE": 5,
+       "CONTEXT": 441,
+       "DIRECT": 22,
+       "RELATIONAL": 13
+      }
+     },
+     "ECOLOGICAL": {
+      "revisions": 106,
+      "direct": 97,
+      "direct_with_evidence": 97,
+      "beliefs": 9,
+      "max_revision": 24,
+      "update_kinds": {
+       "CREATE": 9,
+       "DIRECT": 97
+      }
+     },
+     "SPATIAL": {
+      "revisions": 1005,
+      "direct": 637,
+      "direct_with_evidence": 637,
+      "beliefs": 77,
+      "max_revision": 39,
+      "update_kinds": {
+       "DIRECT": 637,
+       "RELATIONAL": 368
+      }
+     },
+     "run_ids": [
+      "018bcfe5-6801-7e7e-99d6-bd74a0d433c0"
+     ],
+     "other_run_revisions": 0
+    },
+    "Model1 reasons across all three via the Belief Bus": {
+     "decisions": 60,
+     "decisions_citing_all_three": 60,
+     "cited_revisions_not_committed": 0,
+     "query_tools": {
+      "query_model2t": 300,
+      "query_model2s": 360,
+      "query_model2e": 60
+     },
+     "gate_records": 8,
+     "gate_verdicts": {
+      "PROCEED": 8
+     },
+     "gate_records_citing_all_three": 8,
+     "gate_truth_agreement": 1.0,
+     "gate_truth_records": 8,
+     "turbidity_belief_range_ntu": [
+      1.9733736373987503,
+      2.023824089165612
+     ],
+     "true_turbidity_range_ntu": [
+      1.9968241697548639,
+      2.004002150663062
+     ],
+     "first_deferral": null,
+     "inspection_goal_started_s": null,
+     "mcbr_plans": 4
+    },
+    "children remain authoritative within domains": {
+     "bus_rejected": 0,
+     "bus_rejected_reasons": {},
+     "bus_heads": 89,
+     "bus_heads_per_domain": {
+      "TECHNICAL": 7,
+      "SPATIAL": 77,
+      "ECOLOGICAL": 5
+     },
+     "bus_head_not_child_latest": 5,
+     "revisions_checked": 1592,
+     "revisions_not_written_by_own_package": {},
+     "direct_evidence_from_other_domain_sensors": {},
+     "direct_evidence_unresolved": 0,
+     "context_deliveries": 2284,
+     "context_deliveries_by_pair": {
+      "TECHNICAL->SPATIAL": 40,
+      "TECHNICAL->ECOLOGICAL": 40,
+      "SPATIAL->TECHNICAL": 1005,
+      "SPATIAL->ECOLOGICAL": 1005,
+      "ECOLOGICAL->SPATIAL": 97,
+      "ECOLOGICAL->TECHNICAL": 97
+     },
+     "context_deliveries_not_context": 0,
+     "context_revisions": {
+      "TECHNICAL": 441
+     },
+     "context_revisions_with_evidence": 0,
+     "foreign_write_probe": {
+      "heads_loaded": 89,
+      "attempts": 178,
+      "rejected_foreign": 178,
+      "heads_unchanged": 178
+     }
+    }
+   },
+   "truth": [
+    {
+     "decision_id": "018bcfe5-6a77-704c-9532-48ace22af904",
+     "true_turbidity_ntu": 1.9974514049122192,
+     "true_visibility_at_range": 0.8781849518716108,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6a9a-70c3-97d4-f2d99758e88e",
+     "true_turbidity_ntu": 1.9968241697548639,
+     "true_visibility_at_range": 0.8782069852870713,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6c21-7b04-9407-58afaf8a5126",
+     "true_turbidity_ntu": 2.004002150663062,
+     "true_visibility_at_range": 0.8779548713632285,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6c46-7359-9aee-21cdd6477915",
+     "true_turbidity_ntu": 2.0037313091977698,
+     "true_visibility_at_range": 0.8779643828781034,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6db8-7338-adb7-d2fd4914e295",
+     "true_turbidity_ntu": 2.0035664870947967,
+     "true_visibility_at_range": 0.8779701712146211,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6ddd-741b-96db-5cdf23d3676f",
+     "true_turbidity_ntu": 2.002544098044082,
+     "true_visibility_at_range": 0.8780060770324066,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6f4f-7bdd-84e3-57890405d3f6",
+     "true_turbidity_ntu": 2.002814242030857,
+     "true_visibility_at_range": 0.8779965895611839,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6f74-7908-a3e9-3c89651ca429",
+     "true_turbidity_ntu": 2.0021342305649186,
+     "true_visibility_at_range": 0.8780204717959045,
+     "true_verdict": "PROCEED"
+    }
+   ],
+   "pass": {
+    "one mission produces 2S, 2T and 2E beliefs": true,
+    "Model1 reasons across all three via the Belief Bus": true,
+    "children remain authoritative within domains": false
+   }
+  },
+  {
+   "seed": 7810002,
+   "arm": "TURBID",
+   "scenario": "I6-MULTIDOMAIN-TURBID",
+   "wall_s": 226.3,
+   "measured": {
+    "one mission produces 2S, 2T and 2E beliefs": {
+     "TECHNICAL": {
+      "revisions": 459,
+      "direct": 25,
+      "direct_with_evidence": 25,
+      "beliefs": 8,
+      "max_revision": 92,
+      "update_kinds": {
+       "CREATE": 5,
+       "CONTEXT": 404,
+       "DIRECT": 25,
+       "RELATIONAL": 25
+      }
+     },
+     "ECOLOGICAL": {
+      "revisions": 105,
+      "direct": 96,
+      "direct_with_evidence": 96,
+      "beliefs": 9,
+      "max_revision": 24,
+      "update_kinds": {
+       "CREATE": 9,
+       "DIRECT": 96
+      }
+     },
+     "SPATIAL": {
+      "revisions": 895,
+      "direct": 464,
+      "direct_with_evidence": 464,
+      "beliefs": 62,
+      "max_revision": 39,
+      "update_kinds": {
+       "DIRECT": 464,
+       "RELATIONAL": 431
+      }
+     },
+     "run_ids": [
+      "018bcfe5-6801-7c06-ba90-4a34ded42764"
+     ],
+     "other_run_revisions": 0
+    },
+    "Model1 reasons across all three via the Belief Bus": {
+     "decisions": 60,
+     "decisions_citing_all_three": 60,
+     "cited_revisions_not_committed": 0,
+     "query_tools": {
+      "query_model2t": 300,
+      "query_model2s": 360,
+      "query_model2e": 60
+     },
+     "gate_records": 43,
+     "gate_verdicts": {
+      "DEFERRED_LOW_VISIBILITY": 43
+     },
+     "gate_records_citing_all_three": 43,
+     "gate_truth_agreement": 1.0,
+     "gate_truth_records": 43,
+     "turbidity_belief_range_ntu": [
+      13.68053015166008,
+      14.410707402595634
+     ],
+     "true_turbidity_range_ntu": [
+      26.69848844631676,
+      26.9776383529206
+     ],
+     "first_deferral": {
+      "t_s": 36.0,
+      "decision_id": "018bcfe5-6a7b-735e-ab55-54c1b49b2845",
+      "turbidity_ntu_belief": 13.68053015166008,
+      "visibility_at_range": 0.4077546315168159,
+      "claims": {
+       "TECHNICAL": 1,
+       "SPATIAL": 10,
+       "ECOLOGICAL": 2
+      },
+      "beliefs": {
+       "TECHNICAL": [
+        "018bcfe5-6804-7ec5-923f-0cf7e031ccf3"
+       ],
+       "SPATIAL": [
+        "018bcfe5-680a-7dd9-a795-635c4c82be85",
+        "018bcfe5-682b-7766-9ace-cc9bed54d0b2",
+        "018bcfe5-682e-78d6-95fe-559c55fdfe36",
+        "018bcfe5-6831-7add-8927-9728c71735df",
+        "018bcfe5-683a-7aee-a4f4-d5cb10b03384",
+        "018bcfe5-683d-7ca5-aea2-85c90df0930d",
+        "018bcfe5-6873-785e-89bf-86eceee96bec",
+        "018bcfe5-68a8-76f4-95ca-006fd02c634f",
+        "018bcfe5-68ad-72d6-83eb-80da7b9b36de"
+       ],
+       "ECOLOGICAL": [
+        "018bcfe5-6804-78b1-8623-2e5edc498e28"
+       ]
+      },
+      "truth": {
+       "decision_id": "018bcfe5-6a7b-735e-ab55-54c1b49b2845",
+       "true_turbidity_ntu": 26.972052726006677,
+       "true_visibility_at_range": 0.3233945742986666,
+       "true_verdict": "DEFERRED_LOW_VISIBILITY"
+      }
+     },
+     "inspection_goal_started_s": null,
+     "mcbr_plans": 0
+    },
+    "children remain authoritative within domains": {
+     "bus_rejected": 0,
+     "bus_rejected_reasons": {},
+     "bus_heads": 74,
+     "bus_heads_per_domain": {
+      "TECHNICAL": 8,
+      "SPATIAL": 62,
+      "ECOLOGICAL": 4
+     },
+     "bus_head_not_child_latest": 5,
+     "revisions_checked": 1459,
+     "revisions_not_written_by_own_package": {},
+     "direct_evidence_from_other_domain_sensors": {},
+     "direct_evidence_unresolved": 0,
+     "context_deliveries": 2092,
+     "context_deliveries_by_pair": {
+      "TECHNICAL->SPATIAL": 55,
+      "TECHNICAL->ECOLOGICAL": 55,
+      "SPATIAL->TECHNICAL": 895,
+      "SPATIAL->ECOLOGICAL": 895,
+      "ECOLOGICAL->SPATIAL": 96,
+      "ECOLOGICAL->TECHNICAL": 96
+     },
+     "context_deliveries_not_context": 0,
+     "context_revisions": {
+      "TECHNICAL": 404
+     },
+     "context_revisions_with_evidence": 0,
+     "foreign_write_probe": {
+      "heads_loaded": 74,
+      "attempts": 148,
+      "rejected_foreign": 148,
+      "heads_unchanged": 148
+     }
+    }
+   },
+   "truth": [
+    {
+     "decision_id": "018bcfe5-6a7b-735e-ab55-54c1b49b2845",
+     "true_turbidity_ntu": 26.972052726006677,
+     "true_visibility_at_range": 0.3233945742986666,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6a9f-7688-8cbc-bc06640692ef",
+     "true_turbidity_ntu": 26.9776383529206,
+     "true_visibility_at_range": 0.32332232791227355,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ac3-7ac5-a366-96f56f7e1f68",
+     "true_turbidity_ntu": 26.96381719643484,
+     "true_visibility_at_range": 0.32350112487091115,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ae7-7497-b580-ede176d83c25",
+     "true_turbidity_ntu": 26.96957429131148,
+     "true_visibility_at_range": 0.3234266363812431,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b0b-78dc-8c67-ef8d56de942e",
+     "true_turbidity_ntu": 26.962124255690252,
+     "true_visibility_at_range": 0.32352303234207236,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b2f-749e-b3d8-a28423551332",
+     "true_turbidity_ntu": 26.929045776256352,
+     "true_visibility_at_range": 0.3239513816613316,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b53-719a-8574-152dbab4b944",
+     "true_turbidity_ntu": 26.91790999001496,
+     "true_visibility_at_range": 0.3240957119371186,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b77-7a70-a56e-7784f138a406",
+     "true_turbidity_ntu": 26.912746986660455,
+     "true_visibility_at_range": 0.3241626511389436,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b9b-79f9-89b2-f6d7e266fd2a",
+     "true_turbidity_ntu": 26.88206970632829,
+     "true_visibility_at_range": 0.3245606724341054,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6bc1-77dd-bf64-7cffd8fa8c0e",
+     "true_turbidity_ntu": 26.88589051102384,
+     "true_visibility_at_range": 0.324511072906755,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6be7-721f-8df2-9ef66d77cd61",
+     "true_turbidity_ntu": 26.8867304365137,
+     "true_visibility_at_range": 0.32450017048502544,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c0d-7fc1-a929-6157ec108f24",
+     "true_turbidity_ntu": 26.882398017140172,
+     "true_visibility_at_range": 0.3245564101909774,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c33-749d-9cd5-3902b7fccdd5",
+     "true_turbidity_ntu": 26.89828109896152,
+     "true_visibility_at_range": 0.3243502774376305,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c59-7214-84ff-a7eeda004fcf",
+     "true_turbidity_ntu": 26.871708902373122,
+     "true_visibility_at_range": 0.32469520869020124,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c7f-70d9-bdf3-4ff25d9b4760",
+     "true_turbidity_ntu": 26.866864796733978,
+     "true_visibility_at_range": 0.3247581291015235,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ca5-70fe-aa56-d62c08eeaeee",
+     "true_turbidity_ntu": 26.856358744132656,
+     "true_visibility_at_range": 0.324894634821722,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ccb-7004-9ecd-00d8b42a022c",
+     "true_turbidity_ntu": 26.860865289773443,
+     "true_visibility_at_range": 0.3248360740000101,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6cf1-762e-9ddb-b4792594bd4c",
+     "true_turbidity_ntu": 26.84092331902457,
+     "true_visibility_at_range": 0.3250952922321488,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d17-77e1-8c06-8f37926197c1",
+     "true_turbidity_ntu": 26.848829231885343,
+     "true_visibility_at_range": 0.3249925014840259,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d3d-7008-a9ad-3f61579b1fcf",
+     "true_turbidity_ntu": 26.842721270799775,
+     "true_visibility_at_range": 0.3250719128465478,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d63-79a3-b437-e9243f0a66dd",
+     "true_turbidity_ntu": 26.832826589136403,
+     "true_visibility_at_range": 0.325200597634581,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d89-73a0-b8ea-3f8d7d891766",
+     "true_turbidity_ntu": 26.826907302886603,
+     "true_visibility_at_range": 0.3252776049678304,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6daf-7ea2-8cbf-90baff0c7ed1",
+     "true_turbidity_ntu": 26.824111780249076,
+     "true_visibility_at_range": 0.3253139798378547,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6dd5-7c84-a5a1-028584d9c5e2",
+     "true_turbidity_ntu": 26.811746234609643,
+     "true_visibility_at_range": 0.32547492703316433,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6dfb-79ce-adc2-42768bfcc238",
+     "true_turbidity_ntu": 26.821176588864738,
+     "true_visibility_at_range": 0.3253521764317301,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e21-700e-9f59-c7b489edc0ca",
+     "true_turbidity_ntu": 26.84090231115401,
+     "true_visibility_at_range": 0.32509556541465623,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e47-7ff9-99ed-cb31a9d25b6e",
+     "true_turbidity_ntu": 26.832819413282294,
+     "true_visibility_at_range": 0.3252006909782762,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e6d-754f-af0c-92087aa73a58",
+     "true_turbidity_ntu": 26.815938994242533,
+     "true_visibility_at_range": 0.32542034608476494,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e93-7ffa-b12c-4a6ec10cf6f2",
+     "true_turbidity_ntu": 26.800548423725914,
+     "true_visibility_at_range": 0.32562074395454516,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6eb9-724b-9344-fa606d52aa6c",
+     "true_turbidity_ntu": 26.814173577547887,
+     "true_visibility_at_range": 0.3254433269966433,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6edf-712e-9366-21b3a151b4fa",
+     "true_turbidity_ntu": 26.805024189655825,
+     "true_visibility_at_range": 0.32556245308335224,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f05-72ce-bad7-7b9a021f8460",
+     "true_turbidity_ntu": 26.796690966134793,
+     "true_visibility_at_range": 0.32567099055935217,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f2b-7b9a-b784-31a967d62d3d",
+     "true_turbidity_ntu": 26.790750296815066,
+     "true_visibility_at_range": 0.3257483879013059,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f51-743b-ac3f-b9233e878727",
+     "true_turbidity_ntu": 26.76887010994303,
+     "true_visibility_at_range": 0.32603361012143084,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f77-7b71-b3f4-ba0dcc87972e",
+     "true_turbidity_ntu": 26.765086347848886,
+     "true_visibility_at_range": 0.32608295920045594,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f9d-79b4-9bb3-45fdd9713a07",
+     "true_turbidity_ntu": 26.73180978860797,
+     "true_visibility_at_range": 0.3265172849500326,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6fc3-7615-845d-b861e120f325",
+     "true_turbidity_ntu": 26.72253599889522,
+     "true_visibility_at_range": 0.3266384295235576,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6fe9-7e3f-99ef-f984b01bdf87",
+     "true_turbidity_ntu": 26.720649177398297,
+     "true_visibility_at_range": 0.326663082790294,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-700f-7bdd-9734-7644337bfede",
+     "true_turbidity_ntu": 26.705694833551636,
+     "true_visibility_at_range": 0.3268585425263902,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-7035-7030-a4d7-b3007d43ff04",
+     "true_turbidity_ntu": 26.710950302123962,
+     "true_visibility_at_range": 0.32678983795622357,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-705b-7eea-b59b-63b2b78e6664",
+     "true_turbidity_ntu": 26.70193332742664,
+     "true_visibility_at_range": 0.326907725442723,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-7081-73d6-932d-da93896f6d56",
+     "true_turbidity_ntu": 26.714811830021283,
+     "true_visibility_at_range": 0.32673936553130434,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-70a7-78f2-8792-c6cfff933dfa",
+     "true_turbidity_ntu": 26.69848844631676,
+     "true_visibility_at_range": 0.32695277487637264,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    }
+   ],
+   "pass": {
+    "one mission produces 2S, 2T and 2E beliefs": true,
+    "Model1 reasons across all three via the Belief Bus": true,
+    "children remain authoritative within domains": false
+   }
+  },
+  {
+   "seed": 7810002,
+   "arm": "CLEAR",
+   "scenario": "I6-MULTIDOMAIN-CLEAR",
+   "wall_s": 243.6,
+   "measured": {
+    "one mission produces 2S, 2T and 2E beliefs": {
+     "TECHNICAL": {
+      "revisions": 542,
+      "direct": 25,
+      "direct_with_evidence": 25,
+      "beliefs": 8,
+      "max_revision": 110,
+      "update_kinds": {
+       "CREATE": 5,
+       "CONTEXT": 494,
+       "DIRECT": 25,
+       "RELATIONAL": 18
+      }
+     },
+     "ECOLOGICAL": {
+      "revisions": 105,
+      "direct": 96,
+      "direct_with_evidence": 96,
+      "beliefs": 9,
+      "max_revision": 24,
+      "update_kinds": {
+       "CREATE": 9,
+       "DIRECT": 96
+      }
+     },
+     "SPATIAL": {
+      "revisions": 893,
+      "direct": 462,
+      "direct_with_evidence": 462,
+      "beliefs": 62,
+      "max_revision": 39,
+      "update_kinds": {
+       "DIRECT": 462,
+       "RELATIONAL": 431
+      }
+     },
+     "run_ids": [
+      "018bcfe5-6801-7c06-ba90-4a34ded42764"
+     ],
+     "other_run_revisions": 0
+    },
+    "Model1 reasons across all three via the Belief Bus": {
+     "decisions": 60,
+     "decisions_citing_all_three": 60,
+     "cited_revisions_not_committed": 0,
+     "query_tools": {
+      "query_model2t": 300,
+      "query_model2s": 360,
+      "query_model2e": 60
+     },
+     "gate_records": 8,
+     "gate_verdicts": {
+      "PROCEED": 8
+     },
+     "gate_records_citing_all_three": 8,
+     "gate_truth_agreement": 1.0,
+     "gate_truth_records": 8,
+     "turbidity_belief_range_ntu": [
+      1.9737253575548146,
+      2.0215079023835743
+     ],
+     "true_turbidity_range_ntu": [
+      1.999560868481137,
+      2.00358844503224
+     ],
+     "first_deferral": null,
+     "inspection_goal_started_s": null,
+     "mcbr_plans": 4
+    },
+    "children remain authoritative within domains": {
+     "bus_rejected": 0,
+     "bus_rejected_reasons": {},
+     "bus_heads": 74,
+     "bus_heads_per_domain": {
+      "TECHNICAL": 8,
+      "SPATIAL": 62,
+      "ECOLOGICAL": 4
+     },
+     "bus_head_not_child_latest": 5,
+     "revisions_checked": 1540,
+     "revisions_not_written_by_own_package": {},
+     "direct_evidence_from_other_domain_sensors": {},
+     "direct_evidence_unresolved": 0,
+     "context_deliveries": 2074,
+     "context_deliveries_by_pair": {
+      "TECHNICAL->SPATIAL": 48,
+      "TECHNICAL->ECOLOGICAL": 48,
+      "SPATIAL->TECHNICAL": 893,
+      "SPATIAL->ECOLOGICAL": 893,
+      "ECOLOGICAL->SPATIAL": 96,
+      "ECOLOGICAL->TECHNICAL": 96
+     },
+     "context_deliveries_not_context": 0,
+     "context_revisions": {
+      "TECHNICAL": 494
+     },
+     "context_revisions_with_evidence": 0,
+     "foreign_write_probe": {
+      "heads_loaded": 74,
+      "attempts": 148,
+      "rejected_foreign": 148,
+      "heads_unchanged": 148
+     }
+    }
+   },
+   "truth": [
+    {
+     "decision_id": "018bcfe5-6a72-7f49-b0da-a6de6be33b33",
+     "true_turbidity_ntu": 2.0017689158014043,
+     "true_visibility_at_range": 0.8780333020432864,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6a94-764c-94c2-d9f00aad3977",
+     "true_turbidity_ntu": 2.002250046479599,
+     "true_visibility_at_range": 0.8780164042555643,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6bee-7299-83fc-bb08ad1787de",
+     "true_turbidity_ntu": 1.999560868481137,
+     "true_visibility_at_range": 0.8781108550312366,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6c12-7a91-a38e-c8dcc543651a",
+     "true_turbidity_ntu": 2.0010372477170555,
+     "true_visibility_at_range": 0.8780589995770899,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6d7a-72fb-abdc-d3121b9147fc",
+     "true_turbidity_ntu": 2.000587360116049,
+     "true_visibility_at_range": 0.8780748008335398,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6d9e-7deb-8333-e2e25856cdcc",
+     "true_turbidity_ntu": 1.9997277564691014,
+     "true_visibility_at_range": 0.8781049932046499,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6f06-7908-8f69-1fce75e8abae",
+     "true_turbidity_ntu": 2.0032305192845734,
+     "true_visibility_at_range": 0.8779819700825363,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6f2a-7111-a233-e13f0afac8ba",
+     "true_turbidity_ntu": 2.00358844503224,
+     "true_visibility_at_range": 0.8779694000783959,
+     "true_verdict": "PROCEED"
+    }
+   ],
+   "pass": {
+    "one mission produces 2S, 2T and 2E beliefs": true,
+    "Model1 reasons across all three via the Belief Bus": true,
+    "children remain authoritative within domains": false
+   }
+  },
+  {
+   "seed": 7810003,
+   "arm": "TURBID",
+   "scenario": "I6-MULTIDOMAIN-TURBID",
+   "wall_s": 212.8,
+   "measured": {
+    "one mission produces 2S, 2T and 2E beliefs": {
+     "TECHNICAL": {
+      "revisions": 446,
+      "direct": 23,
+      "direct_with_evidence": 23,
+      "beliefs": 8,
+      "max_revision": 92,
+      "update_kinds": {
+       "CREATE": 5,
+       "CONTEXT": 404,
+       "DIRECT": 23,
+       "RELATIONAL": 14
+      }
+     },
+     "ECOLOGICAL": {
+      "revisions": 105,
+      "direct": 96,
+      "direct_with_evidence": 96,
+      "beliefs": 9,
+      "max_revision": 24,
+      "update_kinds": {
+       "CREATE": 9,
+       "DIRECT": 96
+      }
+     },
+     "SPATIAL": {
+      "revisions": 834,
+      "direct": 375,
+      "direct_with_evidence": 375,
+      "beliefs": 56,
+      "max_revision": 39,
+      "update_kinds": {
+       "DIRECT": 375,
+       "RELATIONAL": 459
+      }
+     },
+     "run_ids": [
+      "018bcfe5-6801-7152-9929-960fc81b7714"
+     ],
+     "other_run_revisions": 0
+    },
+    "Model1 reasons across all three via the Belief Bus": {
+     "decisions": 60,
+     "decisions_citing_all_three": 60,
+     "cited_revisions_not_committed": 0,
+     "query_tools": {
+      "query_model2t": 300,
+      "query_model2s": 360,
+      "query_model2e": 60
+     },
+     "gate_records": 43,
+     "gate_verdicts": {
+      "DEFERRED_LOW_VISIBILITY": 43
+     },
+     "gate_records_citing_all_three": 43,
+     "gate_truth_agreement": 1.0,
+     "gate_truth_records": 43,
+     "turbidity_belief_range_ntu": [
+      19.951458122589216,
+      20.951829207731812
+     ],
+     "true_turbidity_range_ntu": [
+      26.62660707132736,
+      26.827818159097546
+     ],
+     "first_deferral": {
+      "t_s": 36.0,
+      "decision_id": "018bcfe5-6a64-73c0-a155-6a486958ed47",
+      "turbidity_ntu_belief": 20.64328842196671,
+      "visibility_at_range": 0.3096459907740488,
+      "claims": {
+       "TECHNICAL": 1,
+       "SPATIAL": 8,
+       "ECOLOGICAL": 2
+      },
+      "beliefs": {
+       "TECHNICAL": [
+        "018bcfe5-6804-77c2-8533-f4c6115ae2d6"
+       ],
+       "SPATIAL": [
+        "018bcfe5-6807-7127-9181-5362dd24673e",
+        "018bcfe5-6828-7eea-88cd-56f4ace39c69",
+        "018bcfe5-682b-7708-90cb-3d4d039799f8",
+        "018bcfe5-682e-7c0e-81ca-70d862307ad2",
+        "018bcfe5-683a-7622-b3b7-52a2fee20fd6",
+        "018bcfe5-6876-7b78-a1c0-ed404f1d37df",
+        "018bcfe5-687b-72d4-ba7d-af41a5456e2a"
+       ],
+       "ECOLOGICAL": [
+        "018bcfe5-6804-7516-9723-f9a6360ea1f2"
+       ]
+      },
+      "truth": {
+       "decision_id": "018bcfe5-6a64-73c0-a155-6a486958ed47",
+       "true_turbidity_ntu": 26.827818159097546,
+       "true_visibility_at_range": 0.32526575393865276,
+       "true_verdict": "DEFERRED_LOW_VISIBILITY"
+      }
+     },
+     "inspection_goal_started_s": null,
+     "mcbr_plans": 0
+    },
+    "children remain authoritative within domains": {
+     "bus_rejected": 0,
+     "bus_rejected_reasons": {},
+     "bus_heads": 68,
+     "bus_heads_per_domain": {
+      "TECHNICAL": 8,
+      "SPATIAL": 56,
+      "ECOLOGICAL": 4
+     },
+     "bus_head_not_child_latest": 5,
+     "revisions_checked": 1385,
+     "revisions_not_written_by_own_package": {},
+     "direct_evidence_from_other_domain_sensors": {},
+     "direct_evidence_unresolved": 0,
+     "context_deliveries": 1944,
+     "context_deliveries_by_pair": {
+      "TECHNICAL->SPATIAL": 42,
+      "TECHNICAL->ECOLOGICAL": 42,
+      "SPATIAL->TECHNICAL": 834,
+      "SPATIAL->ECOLOGICAL": 834,
+      "ECOLOGICAL->SPATIAL": 96,
+      "ECOLOGICAL->TECHNICAL": 96
+     },
+     "context_deliveries_not_context": 0,
+     "context_revisions": {
+      "TECHNICAL": 404
+     },
+     "context_revisions_with_evidence": 0,
+     "foreign_write_probe": {
+      "heads_loaded": 68,
+      "attempts": 136,
+      "rejected_foreign": 136,
+      "heads_unchanged": 136
+     }
+    }
+   },
+   "truth": [
+    {
+     "decision_id": "018bcfe5-6a64-73c0-a155-6a486958ed47",
+     "true_turbidity_ntu": 26.827818159097546,
+     "true_visibility_at_range": 0.32526575393865276,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6a86-74b3-860d-4fc4e28229ac",
+     "true_turbidity_ntu": 26.814338891651296,
+     "true_visibility_at_range": 0.325441174988886,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6aa8-7d18-9314-697899b309e2",
+     "true_turbidity_ntu": 26.810019230357966,
+     "true_visibility_at_range": 0.3254974116730888,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6aca-72cd-a373-b8fbebb9f0c7",
+     "true_turbidity_ntu": 26.791360472103193,
+     "true_visibility_at_range": 0.32574043745367187,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6aec-7df6-8100-399690fad8a6",
+     "true_turbidity_ntu": 26.796414848534233,
+     "true_visibility_at_range": 0.32567458751891526,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b0e-7734-b475-db73078b5ea9",
+     "true_turbidity_ntu": 26.777353237937294,
+     "true_visibility_at_range": 0.3259229974955098,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b30-7c68-9a4b-878f9d61f1bc",
+     "true_turbidity_ntu": 26.78256177119572,
+     "true_visibility_at_range": 0.32585510133765766,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b52-72dd-a041-c3e87d5571fa",
+     "true_turbidity_ntu": 26.76595222520022,
+     "true_visibility_at_range": 0.3260716654820755,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b74-7f8e-a352-63d05f03ff06",
+     "true_turbidity_ntu": 26.766529733606095,
+     "true_visibility_at_range": 0.3260641332039655,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b98-79cb-ab42-3a3a49ea615f",
+     "true_turbidity_ntu": 26.76184829555329,
+     "true_visibility_at_range": 0.3261251968827371,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6bbc-7b50-961a-1e10292a3b0e",
+     "true_turbidity_ntu": 26.761915257810927,
+     "true_visibility_at_range": 0.3261243233607288,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6be0-7e55-8dd5-28e3f866d995",
+     "true_turbidity_ntu": 26.76496164418491,
+     "true_visibility_at_range": 0.3260845857541036,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c04-7d39-887d-5fd179802128",
+     "true_turbidity_ntu": 26.76131060204041,
+     "true_visibility_at_range": 0.32613221117427765,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c28-7ede-b81b-04c50d2c44c3",
+     "true_turbidity_ntu": 26.78304712516288,
+     "true_visibility_at_range": 0.3258487751964201,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c4c-7351-87dc-569d58ccee3c",
+     "true_turbidity_ntu": 26.782177548132402,
+     "true_visibility_at_range": 0.32586010941795135,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c70-7d5d-8c9b-086060a60ecb",
+     "true_turbidity_ntu": 26.769097748825025,
+     "true_visibility_at_range": 0.3260306414178867,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c94-784b-ada6-5faeb6cc42db",
+     "true_turbidity_ntu": 26.78270782966768,
+     "true_visibility_at_range": 0.3258531975872916,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6cb8-754f-a47f-ef31cdb4c4a1",
+     "true_turbidity_ntu": 26.772896468674485,
+     "true_visibility_at_range": 0.32598110521870144,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6cdc-77f8-b3a6-21470d212947",
+     "true_turbidity_ntu": 26.77966893033966,
+     "true_visibility_at_range": 0.3258928093972961,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d00-7ab0-8844-210f573872c5",
+     "true_turbidity_ntu": 26.774999261855125,
+     "true_visibility_at_range": 0.325953687537989,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d24-78ec-9ae6-1e4ee179c3b7",
+     "true_turbidity_ntu": 26.758668541434,
+     "true_visibility_at_range": 0.3261666794382954,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d48-7393-8fde-c91df2889a23",
+     "true_turbidity_ntu": 26.76897083608894,
+     "true_visibility_at_range": 0.32603229651971777,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d6c-760a-80d2-d77cfb352c77",
+     "true_turbidity_ntu": 26.750390095747246,
+     "true_visibility_at_range": 0.3262747034483487,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d90-7778-8af2-fee4ce9b5335",
+     "true_turbidity_ntu": 26.755654917979236,
+     "true_visibility_at_range": 0.3262059995503807,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6db4-70b4-b010-7904783457cf",
+     "true_turbidity_ntu": 26.769247799722145,
+     "true_visibility_at_range": 0.32602868457614986,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6dd8-77d5-a64b-d6a24828bcfc",
+     "true_turbidity_ntu": 26.7805918701473,
+     "true_visibility_at_range": 0.32588077844150176,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6dfc-7e2d-920c-62a0068f1e4e",
+     "true_turbidity_ntu": 26.76940618715945,
+     "true_visibility_at_range": 0.3260266190287795,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e20-7d12-bec7-87e506186371",
+     "true_turbidity_ntu": 26.762219847212222,
+     "true_visibility_at_range": 0.32612035002443757,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e44-7ab3-b77d-4ee2dde2dae2",
+     "true_turbidity_ntu": 26.757979984670197,
+     "true_visibility_at_range": 0.3261756629329379,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e68-7b89-bb68-a606d5eeb2f1",
+     "true_turbidity_ntu": 26.743763818681,
+     "true_visibility_at_range": 0.32636119437348926,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e8c-7dfd-95d1-22283f5dc2c7",
+     "true_turbidity_ntu": 26.723578751817783,
+     "true_visibility_at_range": 0.3266248056806053,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6eb0-70a2-aa93-e5bda7210fea",
+     "true_turbidity_ntu": 26.70057051979846,
+     "true_visibility_at_range": 0.3269255464221277,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ed4-71c6-9c97-bac1f540e816",
+     "true_turbidity_ntu": 26.717709537030252,
+     "true_visibility_at_range": 0.32670149592806275,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ef8-7054-a185-536dbb943e30",
+     "true_turbidity_ntu": 26.71794681852811,
+     "true_visibility_at_range": 0.32669839513396576,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f1c-70e1-9da8-3b70c3f3b6c1",
+     "true_turbidity_ntu": 26.708720248493936,
+     "true_visibility_at_range": 0.3268189896109749,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f40-7cbd-a710-dcb290c46cb1",
+     "true_turbidity_ntu": 26.71186813641994,
+     "true_visibility_at_range": 0.3267778406196221,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f64-7fd9-ba9c-670f247d8b95",
+     "true_turbidity_ntu": 26.71445147674742,
+     "true_visibility_at_range": 0.32674407522925014,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f88-7515-bed5-bc163f3bd5cc",
+     "true_turbidity_ntu": 26.699147224647167,
+     "true_visibility_at_range": 0.32694415941376054,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6fac-7c92-8c48-773efd169c5d",
+     "true_turbidity_ntu": 26.68799681284601,
+     "true_visibility_at_range": 0.32709001441874785,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6fd0-72aa-8951-11bd79651da6",
+     "true_turbidity_ntu": 26.68545446547472,
+     "true_visibility_at_range": 0.32712327916766337,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ff4-771d-983d-f26e2fcb2aea",
+     "true_turbidity_ntu": 26.654793019486313,
+     "true_visibility_at_range": 0.32752472820773304,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-7018-73fd-ab91-2b6d2ec4fa57",
+     "true_turbidity_ntu": 26.6484910892021,
+     "true_visibility_at_range": 0.3276073001346872,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-703c-7956-8e66-7bfe466649bc",
+     "true_turbidity_ntu": 26.62660707132736,
+     "true_visibility_at_range": 0.3278942002473928,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    }
+   ],
+   "pass": {
+    "one mission produces 2S, 2T and 2E beliefs": true,
+    "Model1 reasons across all three via the Belief Bus": true,
+    "children remain authoritative within domains": false
+   }
+  },
+  {
+   "seed": 7810003,
+   "arm": "CLEAR",
+   "scenario": "I6-MULTIDOMAIN-CLEAR",
+   "wall_s": 221.6,
+   "measured": {
+    "one mission produces 2S, 2T and 2E beliefs": {
+     "TECHNICAL": {
+      "revisions": 531,
+      "direct": 23,
+      "direct_with_evidence": 23,
+      "beliefs": 8,
+      "max_revision": 109,
+      "update_kinds": {
+       "CREATE": 5,
+       "CONTEXT": 489,
+       "DIRECT": 23,
+       "RELATIONAL": 14
+      }
+     },
+     "ECOLOGICAL": {
+      "revisions": 105,
+      "direct": 96,
+      "direct_with_evidence": 96,
+      "beliefs": 9,
+      "max_revision": 24,
+      "update_kinds": {
+       "CREATE": 9,
+       "DIRECT": 96
+      }
+     },
+     "SPATIAL": {
+      "revisions": 824,
+      "direct": 360,
+      "direct_with_evidence": 360,
+      "beliefs": 55,
+      "max_revision": 39,
+      "update_kinds": {
+       "DIRECT": 360,
+       "RELATIONAL": 464
+      }
+     },
+     "run_ids": [
+      "018bcfe5-6801-7152-9929-960fc81b7714"
+     ],
+     "other_run_revisions": 0
+    },
+    "Model1 reasons across all three via the Belief Bus": {
+     "decisions": 60,
+     "decisions_citing_all_three": 60,
+     "cited_revisions_not_committed": 0,
+     "query_tools": {
+      "query_model2t": 300,
+      "query_model2s": 360,
+      "query_model2e": 60
+     },
+     "gate_records": 8,
+     "gate_verdicts": {
+      "PROCEED": 8
+     },
+     "gate_records_citing_all_three": 8,
+     "gate_truth_agreement": 1.0,
+     "gate_truth_records": 8,
+     "turbidity_belief_range_ntu": [
+      1.9373920790402406,
+      2.0002159735099028
+     ],
+     "true_turbidity_range_ntu": [
+      1.9849849881746606,
+      1.990205586023109
+     ],
+     "first_deferral": null,
+     "inspection_goal_started_s": null,
+     "mcbr_plans": 4
+    },
+    "children remain authoritative within domains": {
+     "bus_rejected": 0,
+     "bus_rejected_reasons": {},
+     "bus_heads": 67,
+     "bus_heads_per_domain": {
+      "TECHNICAL": 8,
+      "SPATIAL": 55,
+      "ECOLOGICAL": 4
+     },
+     "bus_head_not_child_latest": 5,
+     "revisions_checked": 1460,
+     "revisions_not_written_by_own_package": {},
+     "direct_evidence_from_other_domain_sensors": {},
+     "direct_evidence_unresolved": 0,
+     "context_deliveries": 1924,
+     "context_deliveries_by_pair": {
+      "TECHNICAL->SPATIAL": 42,
+      "TECHNICAL->ECOLOGICAL": 42,
+      "SPATIAL->TECHNICAL": 824,
+      "SPATIAL->ECOLOGICAL": 824,
+      "ECOLOGICAL->SPATIAL": 96,
+      "ECOLOGICAL->TECHNICAL": 96
+     },
+     "context_deliveries_not_context": 0,
+     "context_revisions": {
+      "TECHNICAL": 489
+     },
+     "context_revisions_with_evidence": 0,
+     "foreign_write_probe": {
+      "heads_loaded": 67,
+      "attempts": 134,
+      "rejected_foreign": 134,
+      "heads_unchanged": 134
+     }
+    }
+   },
+   "truth": [
+    {
+     "decision_id": "018bcfe5-6a51-7019-b203-1f7690044f32",
+     "true_turbidity_ntu": 1.9864946346596823,
+     "true_visibility_at_range": 0.8785699190556642,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6a71-784d-a6cc-a3de166439b7",
+     "true_turbidity_ntu": 1.985395450221148,
+     "true_visibility_at_range": 0.8786085483201993,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6bb7-71c1-8503-80a418235bb6",
+     "true_turbidity_ntu": 1.9851043330671019,
+     "true_visibility_at_range": 0.878618779500573,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6bd9-72da-9e14-d13edf7b4177",
+     "true_turbidity_ntu": 1.9849849881746606,
+     "true_visibility_at_range": 0.878622973857134,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6d2d-77e9-9fa0-572bd60d9d5f",
+     "true_turbidity_ntu": 1.9876167507316622,
+     "true_visibility_at_range": 0.8785304856435869,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6d4f-7640-a049-e4d9f5f3ecec",
+     "true_turbidity_ntu": 1.988423294619405,
+     "true_visibility_at_range": 0.8785021431650428,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6ea3-7946-90d3-4bfa4fed787d",
+     "true_turbidity_ntu": 1.990205586023109,
+     "true_visibility_at_range": 0.8784395155247674,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6ec5-7c2b-bde2-dd1f360b98e2",
+     "true_turbidity_ntu": 1.990019099555461,
+     "true_visibility_at_range": 0.8784460682324989,
+     "true_verdict": "PROCEED"
+    }
+   ],
+   "pass": {
+    "one mission produces 2S, 2T and 2E beliefs": true,
+    "Model1 reasons across all three via the Belief Bus": true,
+    "children remain authoritative within domains": false
+   }
+  },
+  {
+   "seed": 7810004,
+   "arm": "TURBID",
+   "scenario": "I6-MULTIDOMAIN-TURBID",
+   "wall_s": 221.6,
+   "measured": {
+    "one mission produces 2S, 2T and 2E beliefs": {
+     "TECHNICAL": {
+      "revisions": 450,
+      "direct": 24,
+      "direct_with_evidence": 24,
+      "beliefs": 8,
+      "max_revision": 91,
+      "update_kinds": {
+       "CREATE": 5,
+       "CONTEXT": 404,
+       "DIRECT": 24,
+       "RELATIONAL": 17
+      }
+     },
+     "ECOLOGICAL": {
+      "revisions": 108,
+      "direct": 99,
+      "direct_with_evidence": 99,
+      "beliefs": 9,
+      "max_revision": 24,
+      "update_kinds": {
+       "CREATE": 9,
+       "DIRECT": 99
+      }
+     },
+     "SPATIAL": {
+      "revisions": 982,
+      "direct": 557,
+      "direct_with_evidence": 557,
+      "beliefs": 77,
+      "max_revision": 39,
+      "update_kinds": {
+       "DIRECT": 557,
+       "RELATIONAL": 425
+      }
+     },
+     "run_ids": [
+      "018bcfe5-6801-7b71-a3fc-c22e5d3bef72"
+     ],
+     "other_run_revisions": 0
+    },
+    "Model1 reasons across all three via the Belief Bus": {
+     "decisions": 60,
+     "decisions_citing_all_three": 60,
+     "cited_revisions_not_committed": 0,
+     "query_tools": {
+      "query_model2t": 300,
+      "query_model2s": 360,
+      "query_model2e": 60
+     },
+     "gate_records": 43,
+     "gate_verdicts": {
+      "DEFERRED_LOW_VISIBILITY": 43
+     },
+     "gate_records_citing_all_three": 43,
+     "gate_truth_agreement": 1.0,
+     "gate_truth_records": 43,
+     "turbidity_belief_range_ntu": [
+      25.87905032967863,
+      26.04993358398544
+     ],
+     "true_turbidity_range_ntu": [
+      25.801592716109777,
+      26.84967396117806
+     ],
+     "first_deferral": {
+      "t_s": 36.0,
+      "decision_id": "018bcfe5-6a81-7803-8067-0d8fbf42b187",
+      "turbidity_ntu_belief": 26.029380877954775,
+      "visibility_at_range": 0.25713291248060033,
+      "claims": {
+       "TECHNICAL": 1,
+       "SPATIAL": 10,
+       "ECOLOGICAL": 2
+      },
+      "beliefs": {
+       "TECHNICAL": [
+        "018bcfe5-6804-772c-8c65-91a1fc540b4d"
+       ],
+       "SPATIAL": [
+        "018bcfe5-680a-7659-8984-7ed640d5070d",
+        "018bcfe5-682b-7534-a45b-890884d0de07",
+        "018bcfe5-682e-73c0-ad57-55111c5eb259",
+        "018bcfe5-6831-7990-b44f-0dd244b84bdd",
+        "018bcfe5-683a-7419-8dfb-96363770c6ab",
+        "018bcfe5-686c-7209-93f1-791b3635adc5",
+        "018bcfe5-6872-7213-a6b6-242967d66a3b",
+        "018bcfe5-6894-7c0c-8a0c-c06991c5961d",
+        "018bcfe5-6899-71ee-b079-5a100b4d5bf2"
+       ],
+       "ECOLOGICAL": [
+        "018bcfe5-6804-78b7-bfda-15fc48b82d3e"
+       ]
+      },
+      "truth": {
+       "decision_id": "018bcfe5-6a81-7803-8067-0d8fbf42b187",
+       "true_turbidity_ntu": 26.84967396117806,
+       "true_visibility_at_range": 0.3249815204421104,
+       "true_verdict": "DEFERRED_LOW_VISIBILITY"
+      }
+     },
+     "inspection_goal_started_s": null,
+     "mcbr_plans": 0
+    },
+    "children remain authoritative within domains": {
+     "bus_rejected": 0,
+     "bus_rejected_reasons": {},
+     "bus_heads": 90,
+     "bus_heads_per_domain": {
+      "TECHNICAL": 8,
+      "SPATIAL": 77,
+      "ECOLOGICAL": 5
+     },
+     "bus_head_not_child_latest": 5,
+     "revisions_checked": 1540,
+     "revisions_not_written_by_own_package": {},
+     "direct_evidence_from_other_domain_sensors": {},
+     "direct_evidence_unresolved": 0,
+     "context_deliveries": 2254,
+     "context_deliveries_by_pair": {
+      "TECHNICAL->SPATIAL": 46,
+      "TECHNICAL->ECOLOGICAL": 46,
+      "SPATIAL->TECHNICAL": 982,
+      "SPATIAL->ECOLOGICAL": 982,
+      "ECOLOGICAL->SPATIAL": 99,
+      "ECOLOGICAL->TECHNICAL": 99
+     },
+     "context_deliveries_not_context": 0,
+     "context_revisions": {
+      "TECHNICAL": 404
+     },
+     "context_revisions_with_evidence": 0,
+     "foreign_write_probe": {
+      "heads_loaded": 90,
+      "attempts": 180,
+      "rejected_foreign": 180,
+      "heads_unchanged": 180
+     }
+    }
+   },
+   "truth": [
+    {
+     "decision_id": "018bcfe5-6a81-7803-8067-0d8fbf42b187",
+     "true_turbidity_ntu": 26.84967396117806,
+     "true_visibility_at_range": 0.3249815204421104,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6aa6-720a-a675-04c393101b62",
+     "true_turbidity_ntu": 26.831948669580754,
+     "true_visibility_at_range": 0.325212017833667,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6aca-72c9-a473-fed9cf980cbc",
+     "true_turbidity_ntu": 26.82184460608792,
+     "true_visibility_at_range": 0.3253434829135807,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6aee-7a4b-a171-efc774f2c4a8",
+     "true_turbidity_ntu": 26.806190571872474,
+     "true_visibility_at_range": 0.32554726422744784,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b12-7e63-8b1b-6e78ed7e4110",
+     "true_turbidity_ntu": 26.775999967708067,
+     "true_visibility_at_range": 0.3259406404486004,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b36-7cc0-bda9-b7de95e6d4c9",
+     "true_turbidity_ntu": 26.762100156183457,
+     "true_visibility_at_range": 0.3261219113753829,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b5a-76fa-8d3b-23d455dc290d",
+     "true_turbidity_ntu": 26.73722325736269,
+     "true_visibility_at_range": 0.3264465889597214,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b7e-750e-9b98-97e29ccae1ee",
+     "true_turbidity_ntu": 26.74147180071362,
+     "true_visibility_at_range": 0.3263911167739763,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ba2-72a6-ad95-41628dfe0067",
+     "true_turbidity_ntu": 26.71561054425119,
+     "true_visibility_at_range": 0.3267289268428269,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6bc8-7a50-8662-8db2200b2386",
+     "true_turbidity_ntu": 26.70214857040755,
+     "true_visibility_at_range": 0.32690491087110707,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6bee-7f66-94ce-6d0a525237d1",
+     "true_turbidity_ntu": 26.700767352903437,
+     "true_visibility_at_range": 0.32692297244144464,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c14-7e64-9550-eedb3ca43ae3",
+     "true_turbidity_ntu": 26.666759645376864,
+     "true_visibility_at_range": 0.3273679910873207,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c3a-7115-a1fe-275b84cb7176",
+     "true_turbidity_ntu": 26.654134899824598,
+     "true_visibility_at_range": 0.32753335033975367,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c60-7f28-bce7-720de3f1c507",
+     "true_turbidity_ntu": 26.623839666087655,
+     "true_visibility_at_range": 0.3279304989015308,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c86-7d53-849c-724552d0f5fe",
+     "true_turbidity_ntu": 26.575694775469806,
+     "true_visibility_at_range": 0.32856263450815226,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6cac-7f13-a297-5a41f2d15d52",
+     "true_turbidity_ntu": 26.553049490132906,
+     "true_visibility_at_range": 0.3288603851251265,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6cd2-7deb-988a-a96516b306c7",
+     "true_turbidity_ntu": 26.512166369530803,
+     "true_visibility_at_range": 0.3293986186499524,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6cf8-7b25-b95f-8add31a766a7",
+     "true_turbidity_ntu": 26.493586269265347,
+     "true_visibility_at_range": 0.32964352001899233,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d1e-7ffd-aaa7-747a2c48c260",
+     "true_turbidity_ntu": 26.476103480000063,
+     "true_visibility_at_range": 0.32987412416939615,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d44-7e3b-a560-f2274b848c42",
+     "true_turbidity_ntu": 26.45516462461356,
+     "true_visibility_at_range": 0.33015052736783945,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d6a-7da9-b03c-4a7dacfa1904",
+     "true_turbidity_ntu": 26.4251147731582,
+     "true_visibility_at_range": 0.33054760493468216,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d90-7e0c-ac6d-36ac807c7439",
+     "true_turbidity_ntu": 26.404111009338244,
+     "true_visibility_at_range": 0.33082543137937265,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6db6-77ae-ad27-79fbe44be9d6",
+     "true_turbidity_ntu": 26.390504467374193,
+     "true_visibility_at_range": 0.3310055359915396,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ddc-7d74-8974-8b892d0c2013",
+     "true_turbidity_ntu": 26.381458612266556,
+     "true_visibility_at_range": 0.33112532678717244,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e02-7b8a-a165-e42c35eac4b2",
+     "true_turbidity_ntu": 26.36062014326822,
+     "true_visibility_at_range": 0.33140144764417645,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e28-7462-a883-9f93e24872b9",
+     "true_turbidity_ntu": 26.31999636484576,
+     "true_visibility_at_range": 0.33194039656753876,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e4e-71a6-9b72-aa19de1112d7",
+     "true_turbidity_ntu": 26.288364834134306,
+     "true_visibility_at_range": 0.3323606536929328,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e74-780a-9608-12bf2f18dd35",
+     "true_turbidity_ntu": 26.256601964848386,
+     "true_visibility_at_range": 0.3327831911761124,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e9a-75a8-b1b3-9822fb7311ec",
+     "true_turbidity_ntu": 26.226121580258255,
+     "true_visibility_at_range": 0.33318917300155254,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ec0-7e1f-a421-2ce5e55e8599",
+     "true_turbidity_ntu": 26.17497748130829,
+     "true_visibility_at_range": 0.3338714971019315,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ee6-76a9-8a92-1b18a01df321",
+     "true_turbidity_ntu": 26.152026912696456,
+     "true_visibility_at_range": 0.3341781394607967,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f0c-7d3d-abe7-9e0eb051418f",
+     "true_turbidity_ntu": 26.125985069116478,
+     "true_visibility_at_range": 0.3345264254229018,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f32-7eb8-ada3-73b59955b239",
+     "true_turbidity_ntu": 26.083652926915025,
+     "true_visibility_at_range": 0.33509335408198104,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f58-78c1-800b-ee5a715fc794",
+     "true_turbidity_ntu": 26.046822544035212,
+     "true_visibility_at_range": 0.3355873825590413,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f7e-7849-9eb8-55001036d4f6",
+     "true_turbidity_ntu": 26.0374563506952,
+     "true_visibility_at_range": 0.335713133165961,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6fa4-7cdd-90f5-e10e9994a738",
+     "true_turbidity_ntu": 26.009028353263353,
+     "true_visibility_at_range": 0.3360950963772862,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6fca-7e6f-b9c8-5c27d6a5e9cd",
+     "true_turbidity_ntu": 25.974498332209386,
+     "true_visibility_at_range": 0.3365596319420544,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ff0-7604-bae0-1e0eb4e6b187",
+     "true_turbidity_ntu": 25.955587213192363,
+     "true_visibility_at_range": 0.33681431702774856,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-7016-71f1-8c5d-c9be1d024f62",
+     "true_turbidity_ntu": 25.922420258649478,
+     "true_visibility_at_range": 0.33726145777379124,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-703c-7030-a51c-8fd9f927e71b",
+     "true_turbidity_ntu": 25.906371291840568,
+     "true_visibility_at_range": 0.3374780352009016,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-7062-7492-9bd4-90581cc89e62",
+     "true_turbidity_ntu": 25.862428573703205,
+     "true_visibility_at_range": 0.33807174491955594,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-7088-7946-9fb8-788c809b2c11",
+     "true_turbidity_ntu": 25.822485493604553,
+     "true_visibility_at_range": 0.33861232172206784,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-70ae-7b81-89aa-47072c21502a",
+     "true_turbidity_ntu": 25.801592716109777,
+     "true_visibility_at_range": 0.33889542207643447,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    }
+   ],
+   "pass": {
+    "one mission produces 2S, 2T and 2E beliefs": true,
+    "Model1 reasons across all three via the Belief Bus": true,
+    "children remain authoritative within domains": false
+   }
+  },
+  {
+   "seed": 7810004,
+   "arm": "CLEAR",
+   "scenario": "I6-MULTIDOMAIN-CLEAR",
+   "wall_s": 216.4,
+   "measured": {
+    "one mission produces 2S, 2T and 2E beliefs": {
+     "TECHNICAL": {
+      "revisions": 523,
+      "direct": 24,
+      "direct_with_evidence": 24,
+      "beliefs": 7,
+      "max_revision": 106,
+      "update_kinds": {
+       "CREATE": 5,
+       "CONTEXT": 479,
+       "DIRECT": 24,
+       "RELATIONAL": 15
+      }
+     },
+     "ECOLOGICAL": {
+      "revisions": 109,
+      "direct": 100,
+      "direct_with_evidence": 100,
+      "beliefs": 9,
+      "max_revision": 24,
+      "update_kinds": {
+       "CREATE": 9,
+       "DIRECT": 100
+      }
+     },
+     "SPATIAL": {
+      "revisions": 983,
+      "direct": 559,
+      "direct_with_evidence": 559,
+      "beliefs": 77,
+      "max_revision": 39,
+      "update_kinds": {
+       "DIRECT": 559,
+       "RELATIONAL": 424
+      }
+     },
+     "run_ids": [
+      "018bcfe5-6801-7b71-a3fc-c22e5d3bef72"
+     ],
+     "other_run_revisions": 0
+    },
+    "Model1 reasons across all three via the Belief Bus": {
+     "decisions": 60,
+     "decisions_citing_all_three": 60,
+     "cited_revisions_not_committed": 0,
+     "query_tools": {
+      "query_model2t": 300,
+      "query_model2s": 360,
+      "query_model2e": 60
+     },
+     "gate_records": 8,
+     "gate_verdicts": {
+      "PROCEED": 8
+     },
+     "gate_records_citing_all_three": 8,
+     "gate_truth_agreement": 1.0,
+     "gate_truth_records": 8,
+     "turbidity_belief_range_ntu": [
+      1.9706585843065652,
+      2.0118091092867934
+     ],
+     "true_turbidity_range_ntu": [
+      1.9895924519379364,
+      1.9968951893844575
+     ],
+     "first_deferral": null,
+     "inspection_goal_started_s": null,
+     "mcbr_plans": 4
+    },
+    "children remain authoritative within domains": {
+     "bus_rejected": 0,
+     "bus_rejected_reasons": {},
+     "bus_heads": 89,
+     "bus_heads_per_domain": {
+      "TECHNICAL": 7,
+      "SPATIAL": 77,
+      "ECOLOGICAL": 5
+     },
+     "bus_head_not_child_latest": 5,
+     "revisions_checked": 1615,
+     "revisions_not_written_by_own_package": {},
+     "direct_evidence_from_other_domain_sensors": {},
+     "direct_evidence_unresolved": 0,
+     "context_deliveries": 2254,
+     "context_deliveries_by_pair": {
+      "TECHNICAL->SPATIAL": 44,
+      "TECHNICAL->ECOLOGICAL": 44,
+      "SPATIAL->TECHNICAL": 983,
+      "SPATIAL->ECOLOGICAL": 983,
+      "ECOLOGICAL->SPATIAL": 100,
+      "ECOLOGICAL->TECHNICAL": 100
+     },
+     "context_deliveries_not_context": 0,
+     "context_revisions": {
+      "TECHNICAL": 479
+     },
+     "context_revisions_with_evidence": 0,
+     "foreign_write_probe": {
+      "heads_loaded": 89,
+      "attempts": 178,
+      "rejected_foreign": 178,
+      "heads_unchanged": 178
+     }
+    }
+   },
+   "truth": [
+    {
+     "decision_id": "018bcfe5-6a6f-7755-8e06-eeb0a2f658ae",
+     "true_turbidity_ntu": 1.9949553923535945,
+     "true_visibility_at_range": 0.8782726346754323,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6a91-7108-890f-ca1b9dd3dfc0",
+     "true_turbidity_ntu": 1.9950703352530192,
+     "true_visibility_at_range": 0.8782685966365905,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6beb-7d3f-87e1-86cd73f6499d",
+     "true_turbidity_ntu": 1.996508138150233,
+     "true_visibility_at_range": 0.8782180870037514,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6c0f-77f8-87bf-cedba803b491",
+     "true_turbidity_ntu": 1.9968951893844575,
+     "true_visibility_at_range": 0.8782044904932228,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6d77-784d-a0c6-56d76652d1b6",
+     "true_turbidity_ntu": 1.9941781450124534,
+     "true_visibility_at_range": 0.8782999405027015,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6d9b-7a26-bc90-c7ff4e1619db",
+     "true_turbidity_ntu": 1.9958251880813709,
+     "true_visibility_at_range": 0.8782420784955695,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6f03-759f-aba8-a56d1786f483",
+     "true_turbidity_ntu": 1.9895924519379364,
+     "true_visibility_at_range": 0.8784610598373066,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6f27-7919-9000-53829e610761",
+     "true_turbidity_ntu": 1.990918953809843,
+     "true_visibility_at_range": 0.8784144498642711,
+     "true_verdict": "PROCEED"
+    }
+   ],
+   "pass": {
+    "one mission produces 2S, 2T and 2E beliefs": true,
+    "Model1 reasons across all three via the Belief Bus": true,
+    "children remain authoritative within domains": false
+   }
+  },
+  {
+   "seed": 7810005,
+   "arm": "TURBID",
+   "scenario": "I6-MULTIDOMAIN-TURBID",
+   "wall_s": 211.7,
+   "measured": {
+    "one mission produces 2S, 2T and 2E beliefs": {
+     "TECHNICAL": {
+      "revisions": 441,
+      "direct": 19,
+      "direct_with_evidence": 19,
+      "beliefs": 8,
+      "max_revision": 91,
+      "update_kinds": {
+       "CREATE": 5,
+       "CONTEXT": 404,
+       "DIRECT": 19,
+       "RELATIONAL": 13
+      }
+     },
+     "ECOLOGICAL": {
+      "revisions": 105,
+      "direct": 96,
+      "direct_with_evidence": 96,
+      "beliefs": 9,
+      "max_revision": 24,
+      "update_kinds": {
+       "CREATE": 9,
+       "DIRECT": 96
+      }
+     },
+     "SPATIAL": {
+      "revisions": 1058,
+      "direct": 644,
+      "direct_with_evidence": 644,
+      "beliefs": 71,
+      "max_revision": 39,
+      "update_kinds": {
+       "DIRECT": 644,
+       "RELATIONAL": 414
+      }
+     },
+     "run_ids": [
+      "018bcfe5-6801-75ad-b357-8f722afaff13"
+     ],
+     "other_run_revisions": 0
+    },
+    "Model1 reasons across all three via the Belief Bus": {
+     "decisions": 60,
+     "decisions_citing_all_three": 60,
+     "cited_revisions_not_committed": 0,
+     "query_tools": {
+      "query_model2t": 300,
+      "query_model2s": 360,
+      "query_model2e": 60
+     },
+     "gate_records": 43,
+     "gate_verdicts": {
+      "DEFERRED_LOW_VISIBILITY": 43
+     },
+     "gate_records_citing_all_three": 43,
+     "gate_truth_agreement": 1.0,
+     "gate_truth_records": 43,
+     "turbidity_belief_range_ntu": [
+      15.330400880057415,
+      18.90248958792212
+     ],
+     "true_turbidity_range_ntu": [
+      25.86478215977591,
+      26.802605706490727
+     ],
+     "first_deferral": {
+      "t_s": 36.0,
+      "decision_id": "018bcfe5-6a81-7d5d-9cc6-e8b8a323fc7d",
+      "turbidity_ntu_belief": 17.43176181461365,
+      "visibility_at_range": 0.35256326477956634,
+      "claims": {
+       "TECHNICAL": 1,
+       "SPATIAL": 10,
+       "ECOLOGICAL": 2
+      },
+      "beliefs": {
+       "TECHNICAL": [
+        "018bcfe5-6804-7e13-905d-62af9462d719"
+       ],
+       "SPATIAL": [
+        "018bcfe5-680a-7d56-976f-d2fb6dbfd266",
+        "018bcfe5-6810-728b-a5a5-2343dd08ce4d",
+        "018bcfe5-6831-701a-8ef7-8525d5f4a7b8",
+        "018bcfe5-6834-7ce3-8cb7-5ff90612d7ef",
+        "018bcfe5-6837-79c5-b472-9bf1d20e1625",
+        "018bcfe5-6883-7ffb-9fb8-816f40f5b5b9",
+        "018bcfe5-6889-75e1-a574-2ad838cc49de",
+        "018bcfe5-689e-72a9-a719-5335076f693a",
+        "018bcfe5-68a3-790c-ab99-177eb72bc70e"
+       ],
+       "ECOLOGICAL": [
+        "018bcfe5-6804-7d02-9fe5-058a2b5ed172"
+       ]
+      },
+      "truth": {
+       "decision_id": "018bcfe5-6a81-7d5d-9cc6-e8b8a323fc7d",
+       "true_turbidity_ntu": 26.802605706490727,
+       "true_visibility_at_range": 0.3255939492992678,
+       "true_verdict": "DEFERRED_LOW_VISIBILITY"
+      }
+     },
+     "inspection_goal_started_s": null,
+     "mcbr_plans": 0
+    },
+    "children remain authoritative within domains": {
+     "bus_rejected": 0,
+     "bus_rejected_reasons": {},
+     "bus_heads": 83,
+     "bus_heads_per_domain": {
+      "TECHNICAL": 8,
+      "SPATIAL": 71,
+      "ECOLOGICAL": 4
+     },
+     "bus_head_not_child_latest": 5,
+     "revisions_checked": 1604,
+     "revisions_not_written_by_own_package": {},
+     "direct_evidence_from_other_domain_sensors": {},
+     "direct_evidence_unresolved": 0,
+     "context_deliveries": 2382,
+     "context_deliveries_by_pair": {
+      "TECHNICAL->SPATIAL": 37,
+      "TECHNICAL->ECOLOGICAL": 37,
+      "SPATIAL->TECHNICAL": 1058,
+      "SPATIAL->ECOLOGICAL": 1058,
+      "ECOLOGICAL->SPATIAL": 96,
+      "ECOLOGICAL->TECHNICAL": 96
+     },
+     "context_deliveries_not_context": 0,
+     "context_revisions": {
+      "TECHNICAL": 404
+     },
+     "context_revisions_with_evidence": 0,
+     "foreign_write_probe": {
+      "heads_loaded": 83,
+      "attempts": 166,
+      "rejected_foreign": 166,
+      "heads_unchanged": 166
+     }
+    }
+   },
+   "truth": [
+    {
+     "decision_id": "018bcfe5-6a81-7d5d-9cc6-e8b8a323fc7d",
+     "true_turbidity_ntu": 26.802605706490727,
+     "true_visibility_at_range": 0.3255939492992678,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6aa6-71b8-9758-00165fdd261b",
+     "true_turbidity_ntu": 26.80207646267033,
+     "true_visibility_at_range": 0.32560084211565227,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6aca-7fdc-816d-5755e7ea9a20",
+     "true_turbidity_ntu": 26.799090833262206,
+     "true_visibility_at_range": 0.3256397293756461,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6aee-79c8-99d6-5b66bcc1bc18",
+     "true_turbidity_ntu": 26.786319404455877,
+     "true_visibility_at_range": 0.3258061272596112,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b12-75e7-b2e8-145b58446cc5",
+     "true_turbidity_ntu": 26.769388874163297,
+     "true_visibility_at_range": 0.32602684480876176,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b36-7163-b64f-cd4f2a485b7d",
+     "true_turbidity_ntu": 26.770505081347093,
+     "true_visibility_at_range": 0.32601228859346776,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b5a-7ee5-8d6e-d18fb1ea9828",
+     "true_turbidity_ntu": 26.748574690136117,
+     "true_visibility_at_range": 0.3262983971457081,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6b7e-79a3-b8c7-cd6554c79e7b",
+     "true_turbidity_ntu": 26.73490476286986,
+     "true_visibility_at_range": 0.3264768649483422,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ba2-742a-9a94-7134ce6e7d9e",
+     "true_turbidity_ntu": 26.698590436644444,
+     "true_visibility_at_range": 0.32695144103826757,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6bc8-7fb3-b469-457cf20e177c",
+     "true_turbidity_ntu": 26.670662221824408,
+     "true_visibility_at_range": 0.3273168919313238,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6bee-7e44-b7f2-af0f0aac8864",
+     "true_turbidity_ntu": 26.66881414612562,
+     "true_visibility_at_range": 0.32734108908142734,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c14-7b87-9aec-1495e1834cb8",
+     "true_turbidity_ntu": 26.64246483697395,
+     "true_visibility_at_range": 0.32768627942218265,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c3a-7d8c-9a5f-bb0a60251985",
+     "true_turbidity_ntu": 26.62893901905534,
+     "true_visibility_at_range": 0.32786361638840283,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c60-74e2-8dd3-3f257db95540",
+     "true_turbidity_ntu": 26.591368677729047,
+     "true_visibility_at_range": 0.3283567047245909,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6c86-70d3-a978-42cf204cf2a5",
+     "true_turbidity_ntu": 26.556581381435645,
+     "true_visibility_at_range": 0.32881392844144136,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6cac-72af-baee-7f5f3fb97a46",
+     "true_turbidity_ntu": 26.54306955322695,
+     "true_visibility_at_range": 0.3289916915677597,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6cd2-79d7-96ba-9b5469f81815",
+     "true_turbidity_ntu": 26.541801489645042,
+     "true_visibility_at_range": 0.32900837928629095,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6cf8-7e1b-b7f8-c6ab13c5b659",
+     "true_turbidity_ntu": 26.52529018086636,
+     "true_visibility_at_range": 0.3292257454160223,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d1e-710f-a2fb-6b8763b3af74",
+     "true_turbidity_ntu": 26.504395031566617,
+     "true_visibility_at_range": 0.3295010292860996,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d44-7a8c-bcc7-621042e3d508",
+     "true_turbidity_ntu": 26.480261184581558,
+     "true_visibility_at_range": 0.32981926796474537,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d6a-7610-9d31-0dd910c6924d",
+     "true_turbidity_ntu": 26.475909578031015,
+     "true_visibility_at_range": 0.32987668270900683,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6d90-72e2-98ec-24cff739ad58",
+     "true_turbidity_ntu": 26.451217094660322,
+     "true_visibility_at_range": 0.33020266264767717,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6db6-7192-a693-198062fe1dc1",
+     "true_turbidity_ntu": 26.413377211115495,
+     "true_visibility_at_range": 0.33070283429295466,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ddc-7994-8ba8-043873ecf78f",
+     "true_turbidity_ntu": 26.396999419821658,
+     "true_visibility_at_range": 0.3309195525525456,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e02-7cb3-ab2f-60c0446fd82c",
+     "true_turbidity_ntu": 26.375689465220105,
+     "true_visibility_at_range": 0.33120174803258295,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e28-7db8-a0e8-342a390ad58e",
+     "true_turbidity_ntu": 26.352831137836674,
+     "true_visibility_at_range": 0.3315047152374069,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e4e-78ef-a5a7-51d345ef7d37",
+     "true_turbidity_ntu": 26.317824112781516,
+     "true_visibility_at_range": 0.3319692401490972,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e74-7551-b5ea-2672629a112b",
+     "true_turbidity_ntu": 26.29387015619896,
+     "true_visibility_at_range": 0.3322874716534345,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6e9a-7214-a206-c1a1888d0bfc",
+     "true_turbidity_ntu": 26.26764028734493,
+     "true_visibility_at_range": 0.3326362888821716,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ec0-75db-a7fa-97b87d3eb29d",
+     "true_turbidity_ntu": 26.23772086772965,
+     "true_visibility_at_range": 0.3330346185787486,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ee6-7a96-836b-28e72a0e554a",
+     "true_turbidity_ntu": 26.201253836125442,
+     "true_visibility_at_range": 0.333520764416902,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f0c-7721-ba8e-db4e2c4d858b",
+     "true_turbidity_ntu": 26.16007894928583,
+     "true_visibility_at_range": 0.33407052420791383,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f32-736f-bf73-d3ae3bcf90b2",
+     "true_turbidity_ntu": 26.101080524225587,
+     "true_visibility_at_range": 0.33485984060156,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f58-7871-b91e-ef4b4a815a4f",
+     "true_turbidity_ntu": 26.052503550140134,
+     "true_visibility_at_range": 0.33551113226417517,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6f7e-7ce5-bea0-f34abc601a48",
+     "true_turbidity_ntu": 26.043431368202516,
+     "true_visibility_at_range": 0.33563290707946425,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6fa4-7fb7-85f7-712ba17244f0",
+     "true_turbidity_ntu": 25.998735842231294,
+     "true_visibility_at_range": 0.3362334953642847,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6fca-7a7e-8745-a1c42ab9b4a3",
+     "true_turbidity_ntu": 25.981565469715107,
+     "true_visibility_at_range": 0.33646450486029883,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-6ff0-758e-b359-947a6646b3e5",
+     "true_turbidity_ntu": 25.970352457371597,
+     "true_visibility_at_range": 0.336615449934594,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-7016-7bed-b9fc-66312d7040df",
+     "true_turbidity_ntu": 25.937262991679752,
+     "true_visibility_at_range": 0.33706128193163737,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-703c-7a4b-8ead-14011bc4e4b8",
+     "true_turbidity_ntu": 25.913754066151768,
+     "true_visibility_at_range": 0.33737838894818667,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-7062-7a90-9ad7-7120ad66d5df",
+     "true_turbidity_ntu": 25.888350870081275,
+     "true_visibility_at_range": 0.33772138275602936,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-7088-7fc2-b900-2ffd7f39aca1",
+     "true_turbidity_ntu": 25.869983256839657,
+     "true_visibility_at_range": 0.3379695993574702,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    },
+    {
+     "decision_id": "018bcfe5-70ae-71a4-a6db-89059ade1d42",
+     "true_turbidity_ntu": 25.86478215977591,
+     "true_visibility_at_range": 0.3380399191796551,
+     "true_verdict": "DEFERRED_LOW_VISIBILITY"
+    }
+   ],
+   "pass": {
+    "one mission produces 2S, 2T and 2E beliefs": true,
+    "Model1 reasons across all three via the Belief Bus": true,
+    "children remain authoritative within domains": false
+   }
+  },
+  {
+   "seed": 7810005,
+   "arm": "CLEAR",
+   "scenario": "I6-MULTIDOMAIN-CLEAR",
+   "wall_s": 207.8,
+   "measured": {
+    "one mission produces 2S, 2T and 2E beliefs": {
+     "TECHNICAL": {
+      "revisions": 528,
+      "direct": 19,
+      "direct_with_evidence": 19,
+      "beliefs": 7,
+      "max_revision": 109,
+      "update_kinds": {
+       "CREATE": 5,
+       "CONTEXT": 494,
+       "DIRECT": 19,
+       "RELATIONAL": 10
+      }
+     },
+     "ECOLOGICAL": {
+      "revisions": 105,
+      "direct": 96,
+      "direct_with_evidence": 96,
+      "beliefs": 9,
+      "max_revision": 24,
+      "update_kinds": {
+       "CREATE": 9,
+       "DIRECT": 96
+      }
+     },
+     "SPATIAL": {
+      "revisions": 1060,
+      "direct": 647,
+      "direct_with_evidence": 647,
+      "beliefs": 71,
+      "max_revision": 39,
+      "update_kinds": {
+       "DIRECT": 647,
+       "RELATIONAL": 413
+      }
+     },
+     "run_ids": [
+      "018bcfe5-6801-75ad-b357-8f722afaff13"
+     ],
+     "other_run_revisions": 0
+    },
+    "Model1 reasons across all three via the Belief Bus": {
+     "decisions": 60,
+     "decisions_citing_all_three": 60,
+     "cited_revisions_not_committed": 0,
+     "query_tools": {
+      "query_model2t": 300,
+      "query_model2s": 360,
+      "query_model2e": 60
+     },
+     "gate_records": 9,
+     "gate_verdicts": {
+      "PROCEED": 9
+     },
+     "gate_records_citing_all_three": 9,
+     "gate_truth_agreement": 1.0,
+     "gate_truth_records": 9,
+     "turbidity_belief_range_ntu": [
+      1.9254704496580315,
+      2.0010773346624973
+     ],
+     "true_turbidity_range_ntu": [
+      1.984059601173405,
+      1.9945298411643013
+     ],
+     "first_deferral": null,
+     "inspection_goal_started_s": null,
+     "mcbr_plans": 4
+    },
+    "children remain authoritative within domains": {
+     "bus_rejected": 0,
+     "bus_rejected_reasons": {},
+     "bus_heads": 82,
+     "bus_heads_per_domain": {
+      "TECHNICAL": 7,
+      "SPATIAL": 71,
+      "ECOLOGICAL": 4
+     },
+     "bus_head_not_child_latest": 5,
+     "revisions_checked": 1693,
+     "revisions_not_written_by_own_package": {},
+     "direct_evidence_from_other_domain_sensors": {},
+     "direct_evidence_unresolved": 0,
+     "context_deliveries": 2380,
+     "context_deliveries_by_pair": {
+      "TECHNICAL->SPATIAL": 34,
+      "TECHNICAL->ECOLOGICAL": 34,
+      "SPATIAL->TECHNICAL": 1060,
+      "SPATIAL->ECOLOGICAL": 1060,
+      "ECOLOGICAL->SPATIAL": 96,
+      "ECOLOGICAL->TECHNICAL": 96
+     },
+     "context_deliveries_not_context": 0,
+     "context_revisions": {
+      "TECHNICAL": 494
+     },
+     "context_revisions_with_evidence": 0,
+     "foreign_write_probe": {
+      "heads_loaded": 82,
+      "attempts": 164,
+      "rejected_foreign": 164,
+      "heads_unchanged": 164
+     }
+    }
+   },
+   "truth": [
+    {
+     "decision_id": "018bcfe5-6a78-7967-b265-9e5cb1578cd9",
+     "true_turbidity_ntu": 1.9928121741197584,
+     "true_visibility_at_range": 0.8783479310999162,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6a9b-79ce-b52f-843442539f9d",
+     "true_turbidity_ntu": 1.9938997100828237,
+     "true_visibility_at_range": 0.8783097225324598,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6abe-727c-9623-0091de6c3acc",
+     "true_turbidity_ntu": 1.9945298411643013,
+     "true_visibility_at_range": 0.8782875848012411,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6c51-7a2c-b398-8d48bee46518",
+     "true_turbidity_ntu": 1.9914589420057767,
+     "true_visibility_at_range": 0.8783954767318146,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6c76-7b41-94ab-9f54c77efb18",
+     "true_turbidity_ntu": 1.9903875969979077,
+     "true_visibility_at_range": 0.8784331201227472,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6de8-7443-8752-0f0309e783da",
+     "true_turbidity_ntu": 1.9911330394893896,
+     "true_visibility_at_range": 0.8784069276583021,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6e0d-7552-93d8-88bb1595c7f0",
+     "true_turbidity_ntu": 1.9912018017665725,
+     "true_visibility_at_range": 0.8784045116111993,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6f7f-7dbd-bb26-b63c86dd4369",
+     "true_turbidity_ntu": 1.984059601173405,
+     "true_visibility_at_range": 0.8786554971102226,
+     "true_verdict": "PROCEED"
+    },
+    {
+     "decision_id": "018bcfe5-6fa4-7fb7-85f7-712ba17244f0",
+     "true_turbidity_ntu": 1.9846723998836249,
+     "true_visibility_at_range": 0.8786339598159699,
+     "true_verdict": "PROCEED"
+    }
+   ],
+   "pass": {
+    "one mission produces 2S, 2T and 2E beliefs": true,
+    "Model1 reasons across all three via the Belief Bus": true,
+    "children remain authoritative within domains": false
+   }
+  }
+ ]
+}

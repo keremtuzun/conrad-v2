@@ -6,6 +6,7 @@
 //   capsule     {"kind":"capsule","id","p0_m":[3],"p1_m":[3],"radius_m"}
 //   heightfield {"kind":"heightfield","id","origin_m":[3],"spacing_m":[2],"heights_m":[[nx][ny]]}
 //               vertex (i, j) = origin + (i*dx, j*dy, heights[i][j])
+//   optics_grid (Twin 2E water optics) and the optional fouling_cover key of box/capsule: see EcologyScene.cs.
 using System;
 using System.Collections.Generic;
 using Conrad.UnityV2.Core;
@@ -28,6 +29,7 @@ namespace Conrad.UnityV2.EnvironmentInteraction
             if (primitives.Count > MaxPrimitives) throw new JsonException("too many primitives (max " + MaxPrimitives + ")");
             // Validate and build into a detached root first so a bad primitive leaves the old world untouched.
             var staging = new GameObject("SceneGeometryStaging").transform;
+            OpticsField optics = null;
             try
             {
                 foreach (object o in primitives)
@@ -40,6 +42,11 @@ namespace Conrad.UnityV2.EnvironmentInteraction
                         case "box": Box(staging, id, p); break;
                         case "capsule": Capsule(staging, id, p); break;
                         case "heightfield": Heightfield(staging, id, p); break;
+                        case "optics_grid":
+                            if (optics != null) throw new JsonException("at most one optics_grid per request");
+                            optics = EcologySceneBuilder.ParseOptics(id, p);
+                            new GameObject("optics:" + id).transform.SetParent(staging, false); // counted, no collider
+                            break;
                         default: throw new JsonException("unknown primitive kind '" + kind + "'");
                     }
                 }
@@ -49,13 +56,17 @@ namespace Conrad.UnityV2.EnvironmentInteraction
                 UnityEngine.Object.Destroy(staging.gameObject);
                 throw;
             }
-            if (J.Bool(body, "replace"))
-                for (int i = root.childCount - 1; i >= 0; i--)
-                {
-                    var child = root.GetChild(i).gameObject;
-                    child.SetActive(false); // colliders leave the physics scene immediately
-                    UnityEngine.Object.Destroy(child);
-                }
+            bool replace = J.Bool(body, "replace");
+            for (int i = root.childCount - 1; i >= 0; i--)
+            {
+                var child = root.GetChild(i).gameObject;
+                // replace: everything goes; an incremental optics update replaces only the previous optics grid
+                if (!replace && !(optics != null && child.name.StartsWith("optics:", StringComparison.Ordinal))) continue;
+                child.SetActive(false); // colliders leave the physics scene immediately
+                UnityEngine.Object.Destroy(child);
+            }
+            if (optics != null) OpticsField.Set(optics);
+            else if (replace) OpticsField.Set(null);
             while (staging.childCount > 0) staging.GetChild(0).SetParent(root, true);
             UnityEngine.Object.Destroy(staging.gameObject);
             Physics.SyncTransforms();
@@ -100,6 +111,7 @@ namespace Conrad.UnityV2.EnvironmentInteraction
                 ConradFrames.ToEngine(ConradFrames.QuatToUnity(Q(p, "orientation_wxyz"))));
             // Box-local Conrad extents (sx, sy, sz) are Unity-local (sy, sz, sx) under the same axis map.
             go.transform.localScale = new Vector3((float)size.Y, (float)size.Z, (float)size.X);
+            EcologySceneBuilder.ApplyFouling(go, p);
         }
 
         public static void Capsule(Transform parent, string id, Dictionary<string, object> p)
@@ -114,6 +126,7 @@ namespace Conrad.UnityV2.EnvironmentInteraction
             // The unit capsule primitive: radius 0.5, height 2 along local Y. Scale x/z by diameter; y by half length.
             float d = (float)(2.0 * r);
             go.transform.localScale = new Vector3(d, 0.5f * (length + d), d);
+            EcologySceneBuilder.ApplyFouling(go, p);
         }
 
         public static void Heightfield(Transform parent, string id, Dictionary<string, object> p)
