@@ -159,6 +159,9 @@ class ShoreLink:
             energy_per_bit_j=link.energy_per_bit_j,
             packet_bits=link.packet_bits,
             outages_s=link.outages_s,
+            outage_follows_critical_finding=link.outage_follows_critical_finding,
+            outage_hold_after_finding_s=link.outage_hold_after_finding_s,
+            outage_max_s=link.outage_max_s,
         )
         raw = dict(cfg.baac)
         shadows = [ShadowArm.model_validate(a) for a in raw.pop("shadow_arms", [])]
@@ -189,6 +192,11 @@ class ShoreLink:
     @property
     def dropped(self) -> int:
         return self.arms[PRIMARY].dropped
+
+    @property
+    def effective_outages_s(self) -> tuple[tuple[float, float], ...]:
+        """The outage windows that actually happened, after a finding-following end was resolved."""
+        return self.channel.outage_windows(self.profile.name)
 
     def mission_value(self, m: BeliefMessage) -> float:
         if m.domain is Domain.TECHNICAL and m.world_entity_id in self.critical_ids:
@@ -229,6 +237,20 @@ class ShoreLink:
             if first_critical:  # latency is measured from the FIRST critical offer of each belief
                 self._critical_offered.add(bid)
                 self.critical_offers.append((m.belief_id, m.revision, now.time_ns))
+                self._arm_outage_hold(now)
+
+    def _arm_outage_hold(self, now: TimeStamp) -> None:
+        """Finding-following outage: hold the link down until the finding has had its declared time.
+
+        Armed once, at the mission's FIRST critical finding, with the identical value on every arm, so all
+        five policies still see the same link. With a fixed window the stressor can miss the event it is
+        meant to test (gate I7 seed 5500002: finding at 68.1 s against a [6 s, 60 s) window).
+        """
+        if not self.profile.outage_follows_critical_finding:
+            return
+        until = now.time_ns / NS_PER_S + self.profile.outage_hold_after_finding_s
+        for arm in self.arms.values():
+            arm.channel.hold_outage_until(until)
 
     def step(self, now_s: float, dt_s: float) -> None:
         self.flush(TimeStamp(time_ns=round(now_s * NS_PER_S), clock_domain=self.channel.clock_domain))

@@ -32,6 +32,22 @@ class LinkProfile(ConradModel):
     max_retries: int = Field(default=3, ge=0)
     max_range_m: float | None = Field(default=None, gt=0)
     outages_s: tuple[tuple[float, float], ...] = ()
+    outage_follows_critical_finding: bool = Field(
+        default=False,
+        description="the outage window's END follows the mission's first critical finding instead of being "
+        "fixed: each window starts at its declared start and stays DOWN until the finding has been made "
+        "plus ``outage_hold_after_finding_s``, capped at ``outage_max_s`` after the start. A fixed window "
+        "can miss the event it is meant to stress (gate I7 seed 5500002, finding at 68.1 s against a "
+        "[6 s, 60 s) window). The declared END of ``outages_s`` is unused in this mode.",
+    )
+    outage_hold_after_finding_s: float = Field(
+        default=45.0, ge=0, description="link stays down this long after the first critical finding"
+    )
+    outage_max_s: float = Field(
+        default=120.0,
+        gt=0,
+        description="hard cap on one window, so a mission that never makes a finding still reconnects",
+    )
     bandwidth_schedule: tuple[tuple[float, float], ...] = Field(
         default=(), description="(start_s, factor) steps applied to bandwidth_bps"
     )
@@ -54,10 +70,29 @@ class ChannelSim:
         self.rng = np.random.default_rng(seed)
         self.clock_domain = clock_domain
         self.range_m: float | None = None
+        self.outage_hold_until_s: float | None = None  # armed by the runtime at the first critical finding
+
+    def hold_outage_until(self, t_s: float) -> None:
+        """Arm a finding-following outage (``LinkProfile.outage_follows_critical_finding``).
+
+        Called once, at the first critical finding, with the same value for every arm of the I7 harness, so
+        every policy still sees the identical link.
+        """
+        self.outage_hold_until_s = t_s if self.outage_hold_until_s is None else self.outage_hold_until_s
+
+    def outage_windows(self, name: str) -> tuple[tuple[float, float], ...]:
+        """The effective outage windows, after applying a finding-following end."""
+        p = self.profiles[name]
+        if not p.outage_follows_critical_finding:
+            return p.outages_s
+        hold = self.outage_hold_until_s
+        return tuple(
+            (a, min(a + p.outage_max_s, a + p.outage_max_s if hold is None else hold)) for a, _ in p.outages_s
+        )
 
     def bandwidth(self, name: str, t_s: float) -> float:
         p = self.profiles[name]
-        if any(a <= t_s < b for a, b in p.outages_s):
+        if any(a <= t_s < b for a, b in self.outage_windows(name)):
             return 0.0
         if p.max_range_m is not None and self.range_m is not None and self.range_m > p.max_range_m:
             return 0.0

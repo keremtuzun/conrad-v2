@@ -221,7 +221,7 @@ def fly(cfg: dict[str, Any], job: dict[str, Any], backend: str, runs_root: Path)
     harness = shore.harness_report()
     duration = float(session.rcfg.duration_s)
     steps = round(duration / float(session.rcfg.control_period_s))
-    outages = [(float(a), float(b)) for a, b in shore.profile.outages_s]
+    outages = [(float(a), float(b)) for a, b in shore.effective_outages_s]
     arms: dict[str, Any] = {}
     reconnect: dict[str, Any] = {}
     for arm_name, arm in shore.arms.items():

@@ -100,7 +100,8 @@ and the iteration-4 doc sections. It was held back only because Model2T was edit
 |---|---|---|
 | 2026201 | MCBR | CONTAMINATED (tuned on it) |
 | 5300000-5300059 | mission final_test | SPENT (2T-R2, MCBR-E003, COM-I7-E001/E002) |
-| 5500000-5500004 | I7 surrogate v2 (`configs/eval/partitions_i7_v2.yaml`) | declared 2026-09-20 for COM-I7-E003/E004 after the BAAC scheduling repair |
+| 5500000-5500004 | I7 surrogate v2 (`configs/eval/partitions_i7_v2.yaml`) | SPENT (COM-I7-E003/E004) |
+| 5600000-5600004 | I7 surrogate v3 (`configs/eval/partitions_i7_v3.yaml`) | SPENT (COM-I7-E005/E006, the finding-following outage construction) |
 | 6300000-6300011, 6400000-6400019, 6600000-6600019 | 2E | SPENT |
 | 6500000-6500059 | 2T FINAL-3 | SPENT |
 | 6700000-6700059 | 2T FINAL-4 | declared, check whether it was consumed |

@@ -89,6 +89,9 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
     # Re-run of E001/E002 on the fresh partitions_i7_v2.yaml final seeds after the 2026-09-20 BAAC repair.
     "COM-I7-E003": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e003.yaml"),
     "COM-I7-E004": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e004.yaml"),
+    # Third run: fresh partitions_i7_v3.yaml final seeds, with the finding-following outage construction.
+    "COM-I7-E005": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e005.yaml"),
+    "COM-I7-E006": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e006.yaml"),
     "2S-E001": ("conrad.evaluation.spatial_experiments.e001_coverage", "configs/eval/2s_e001.yaml"),
     "2S-E002": ("conrad.evaluation.spatial_experiments.e002_counterfactual", "configs/eval/2s_e002.yaml"),
     "2S-E003": ("conrad.evaluation.spatial_experiments.e003_pose", "configs/eval/2s_e003.yaml"),

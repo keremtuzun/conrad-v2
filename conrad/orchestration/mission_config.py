@@ -25,6 +25,11 @@ class LinkConfig(ConradModel):
     energy_per_bit_j: float = Field(default=1e-4, ge=0)
     packet_bits: int = Field(default=1024, gt=0)
     outages_s: tuple[tuple[float, float], ...] = ()
+    # Finding-following outage (gate I7). A fixed window can miss the event it is meant to stress: see
+    # conrad.communication.channel.LinkProfile and docs/audits/I7_COMMUNICATIONS.md.
+    outage_follows_critical_finding: bool = False
+    outage_hold_after_finding_s: float = Field(default=45.0, ge=0)
+    outage_max_s: float = Field(default=120.0, gt=0)
 
 
 class AssociationSettings(ConradModel):

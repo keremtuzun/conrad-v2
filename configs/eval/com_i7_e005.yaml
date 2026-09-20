@@ -1,0 +1,25 @@
+# COM-I7-E005: gate I7 bandwidth sweep, third surrogate run. Python-kernel SURROGATE; SYNTHETIC_ONLY link.
+# Every policy runs the same mission (BAAC primary + shadow arms over the identical offer stream and link).
+#
+# Run history: COM-I7-E001 (seeds 5300000-5300004, pre-repair, SPENT), COM-I7-E003 (5500000-5500004, after the
+# BAAC scheduler repair, SPENT), and this one on the freshly declared, digest-pinned final_test split of
+# configs/eval/partitions_i7_v3.yaml (5600000-5600004), declared before any run touched it.
+#
+# BAAC is UNCHANGED since E003. The only change between E003/E004 and this run is the I7-OUTAGE-CRITICAL
+# outage construction, which affects E006 and not this bandwidth sweep.
+experiment_id: COM-I7-E005
+hypothesis: BAAC retains more mission-relevant information at the receiver than raw/FIFO/fixed-priority at every non-zero bandwidth level
+primary_metric: mission_information_retained
+direction: higher
+baselines: [C-B0_send_all, C-B1_fifo, C-B2_fixed_priority, C-B4_value_per_bit]
+partition: final_test
+partition_domain: i7_mission_v3
+seeds: [5600000, 5600001, 5600002, 5600003, 5600004]
+scenario: I7-BANDWIDTH
+bandwidth_levels: [1.0, 0.5, 0.1, 0.01, 0.001, 0.0]
+closed_loop_levels: []
+# deadlines in seconds of AVAILABLE link after the offer (ENGINEERING_ESTIMATE, not from the spec)
+deadline_linkup_s: {critical: 30.0, routine: 120.0}
+queue_trace_every_s: 10
+workers: 8
+keep_bundles: false

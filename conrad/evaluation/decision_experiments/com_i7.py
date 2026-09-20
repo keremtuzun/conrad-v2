@@ -87,7 +87,7 @@ def _score_arm(
         else None
     )
     bits = int(sum(t["bits"] for t in rep["transmissions"]))
-    outages = [(float(a), float(b)) for a, b in shore.profile.outages_s]
+    outages = [(float(a), float(b)) for a, b in shore.effective_outages_s]
     bw = arm.profile.bandwidth_bps
 
     # arrivals by belief: alert/delta receipts (t, revision)
@@ -187,7 +187,7 @@ def _reconnection_trace(rep: dict[str, Any], shore: Any, n: int = 12) -> list[di
     """What happened at each reconnection: first sends/receipts and whether the critical belief went first."""
     crit = {str(b): r for b, r, _ in shore.critical_offers}
     out = []
-    for a, b in shore.profile.outages_s:
+    for a, b in shore.effective_outages_s:
         a_ns, b_ns = int(a * NS), int(b * NS)
         found = [c for c in shore.critical_offers if a_ns <= c[2] < b_ns]
         txs = [t for t in rep["transmissions"] if t["sent_ns"] >= b_ns][:n]
@@ -235,7 +235,7 @@ def mission_job(job: dict[str, Any]) -> dict[str, Any]:
         policy_key = primary if arm_name == "primary" else arm_name
         rep = harness["arms"][arm_name]
         arms[policy_key] = _score_arm(rep, arm, shore, duration, job["cfg"])
-        if shore.profile.outages_s:
+        if shore.effective_outages_s:
             reconnect[policy_key] = _reconnection_trace(rep, shore)
     report = outcome["report"]
     offer_digest = hashlib.sha256(json.dumps(harness["offer_log"]).encode()).hexdigest()

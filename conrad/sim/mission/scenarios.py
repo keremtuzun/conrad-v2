@@ -42,13 +42,29 @@ SCENARIOS: dict[str, Override] = {
         "world": {},
         "runtime": {"link": {"bandwidth_bps": 300.0, "outages_s": [[20.0, 70.0]]}},
     },
-    # Gate I7 harness (COM-I7-E001/E002). The defect is on the lane side, so the critical structural finding is
-    # made by the lane pass itself (not by MCBR); I7-OUTAGE-CRITICAL drops the link at 6 s, before the robot
-    # reaches a view of the defect, and restores it at 60 s. The link stays the declared mission link.
+    # Gate I7 harness. The defect is on the lane side, so the critical structural finding is made by the lane
+    # pass itself (not by MCBR). The link stays the declared mission link.
+    #
+    # I7-OUTAGE-CRITICAL drops the link at 6 s, before the robot can reach a view of the defect, and holds it
+    # down until 45 s after the critical finding is made (capped at 120 s of outage so a mission that never
+    # makes a finding still reconnects). Until 2026-09-20 the window was the FIXED [6 s, 60 s), which is a
+    # construction defect: the stressor can miss the event it exists to test. It did, on final seed 5500002,
+    # whose lane pass only reaches a view of the defect at 66.25 s, so the finding was made at 68.1 s with the
+    # link already back and that world never exercised the outage path at all (COM-I7-E004; see
+    # docs/audits/I7_COMMUNICATIONS.md). The 45 s hold is the original declaration's own interval: [6, 60)
+    # left 44.9 s of outage after the 15.1 s finding on the worlds where the fixed window did work.
     "I7-BANDWIDTH": {"world": {"defect": {"side": "near"}}, "runtime": {"duration_s": 240.0}},
     "I7-OUTAGE-CRITICAL": {
         "world": {"defect": {"side": "near"}},
-        "runtime": {"duration_s": 240.0, "link": {"outages_s": [[6.0, 60.0]]}},
+        "runtime": {
+            "duration_s": 240.0,
+            "link": {
+                "outages_s": [[6.0, 60.0]],
+                "outage_follows_critical_finding": True,
+                "outage_hold_after_finding_s": 45.0,
+                "outage_max_s": 120.0,
+            },
+        },
     },
     # ch20 "Integrated intelligence benchmarks" (spec lines ~9681-9703): one-line definitions, no criteria.
     "INT-001": {"world": {"defect": {"side": "near"}}, "runtime": {}},

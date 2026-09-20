@@ -548,8 +548,8 @@ I7A = "tests/acceptance/test_i7_constrained_comms.py::"
 # The I7 surrogate criteria now read COM-I7-E003/E004 (fresh final seeds of configs/eval/partitions_i7_v2.yaml).
 # COM-I7-E001/E002 stay on disk as the spent pre-repair record: their seeds 5300000-5300004 are SPENT and the
 # 2026-09-20 BAAC scheduler repair made their BAAC numbers stale.
-I7_E001 = "artifacts/experiments/COM-I7-E003/com_i7_e003.json"
-I7_E002 = "artifacts/experiments/COM-I7-E004/com_i7_e004.json"
+I7_E001 = "artifacts/experiments/COM-I7-E005/com_i7_e005.json"
+I7_E002 = "artifacts/experiments/COM-I7-E006/com_i7_e006.json"
 
 
 def _i7_bandwidth_check(d: dict) -> tuple[bool, str]:

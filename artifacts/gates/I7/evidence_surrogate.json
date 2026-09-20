@@ -2,27 +2,27 @@
   "gate_id": "I7",
   "evidence_class": "SURROGATE",
   "execution_path": "python L1 kernel instead of Unity; pytest nodes + retained experiment artifacts (I7)",
-  "git_commit": "79d57f8717d00a0cffebc17fb72ae11cd52835a8",
+  "git_commit": "6e7913d9f8a99f863d1328718c5f683c2db11ac7",
   "criteria": [
     {
       "criterion": "full mission under constrained bandwidth",
       "status": "PASS",
-      "measured": "test_artifacts_are_final_split_surrogate=PASS; test_full_mission_under_constrained_bandwidth=PASS; test_no_duplicate_contribution_at_the_receiver=PASS; experiment: bw_100pct: baac=0.626 crit_latency=2.4418333331999995; bw_50pct: baac=0.589 crit_latency=1.0613333332; bw_10pct: baac=0.261 crit_latency=1.3050000000000002; bw_1pct: baac=0.027 crit_latency=1.2; bw_0.1pct: baac=0.027 crit_latency=127.8; bw_0pct: baac=0.000 crit_latency=None"
+      "measured": "test_artifacts_are_final_split_surrogate=PASS; test_full_mission_under_constrained_bandwidth=PASS; test_no_duplicate_contribution_at_the_receiver=PASS; experiment: bw_100pct: baac=0.634 crit_latency=1.0919999998; bw_50pct: baac=0.590 crit_latency=1.1226666664; bw_10pct: baac=0.251 crit_latency=1.4699999998; bw_1pct: baac=0.026 crit_latency=4.1333333331999995; bw_0.1pct: baac=0.018 crit_latency=121.75; bw_0pct: baac=0.000 crit_latency=None"
     },
     {
       "criterion": "full mission under outages",
-      "status": "FAIL",
-      "measured": "test_outage_finding_is_created_while_the_link_is_down=FAIL; test_critical_delta_is_delivered_first_after_reconnection=FAIL; test_receiver_synchronised_for_critical_beliefs_after_reconnection=FAIL; test_stale_and_redundant_units_are_coalesced_or_dropped=PASS; experiment: critical_delivered_first=8/10; critical delta latency s=[98.416666666, 51.257499999, 60.083333333, 11.430833333, 46.0, 5.8725, 97.15, 50.384166666, 98.283333333, 49.290833333]"
+      "status": "PASS",
+      "measured": "test_outage_finding_is_created_while_the_link_is_down=PASS; test_critical_delta_is_delivered_first_after_reconnection=PASS; test_receiver_synchronised_for_critical_beliefs_after_reconnection=PASS; test_stale_and_redundant_units_are_coalesced_or_dropped=PASS; experiment: critical_delivered_first=10/10; critical delta latency s=[98.549999999, 51.270833333, 98.616666666, 51.2775, 99.0, 51.2975, 98.549999999, 51.270833333, 99.216666666, 51.3375]"
     },
     {
       "criterion": "BAAC retains more mission-relevant information than raw/FIFO/fixed-priority",
       "status": "FAIL",
-      "measured": "test_baac_retains_more_than_raw_fifo_fixed_priority_every_nonzero_level=FAIL; test_value_per_bit_comparison_is_reported=PASS; experiment: BAAC minus policy retained (mean): bw_100pct: raw +0.395, fifo +0.395, fixed_priority +0.463, value_per_bit +0.056; bw_50pct: raw +0.358, fifo +0.358, fixed_priority +0.478, value_per_bit +0.044; bw_10pct: raw +0.030, fifo +0.030, fixed_priority +0.249, value_per_bit +0.052; bw_1pct: raw +0.027, fifo +0.027, fixed_priority +0.027, value_per_bit +0.000; bw_0.1pct: raw +0.027, fifo +0.027, fixed_priority +0.027, value_per_bit +0.027"
+      "measured": "test_baac_retains_more_than_raw_fifo_fixed_priority_every_nonzero_level=FAIL; test_value_per_bit_comparison_is_reported=PASS; experiment: BAAC minus policy retained (mean): bw_100pct: raw +0.417, fifo +0.417, fixed_priority +0.479, value_per_bit +0.057; bw_50pct: raw +0.373, fifo +0.373, fixed_priority +0.484, value_per_bit +0.060; bw_10pct: raw +0.034, fifo +0.034, fixed_priority +0.240, value_per_bit +0.040; bw_1pct: raw +0.026, fifo +0.026, fixed_priority +0.026, value_per_bit +0.000; bw_0.1pct: raw +0.018, fifo +0.018, fixed_priority +0.018, value_per_bit +0.018"
     },
     {
       "criterion": "critical latency and sync error compared against baselines",
       "status": "PASS",
-      "measured": "test_value_per_bit_comparison_is_reported=PASS; experiment: compared for every arm and level; BAAC worse in: bw_100pct alert latency: value_per_bit 1.13s < baac 2.44s"
+      "measured": "test_value_per_bit_comparison_is_reported=PASS; experiment: compared for every arm and level; BAAC worse in: bw_10pct alert latency: value_per_bit 1.29s < baac 1.47s"
     }
   ],
   "artifacts": [

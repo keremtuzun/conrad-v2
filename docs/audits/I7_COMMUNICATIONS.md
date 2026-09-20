@@ -822,22 +822,141 @@ and not smuggled in:
 
 Options 2 and 3 both turn the current FAIL into a PASS, which is precisely why neither may be adopted now.
 
+**Adaptive fidelity was considered as a way to win this on merit, and does not work.** The obvious mechanism
+answer is a genuinely lower-fidelity belief increment that fits the 2,880-bit budget: the identity plus a
+quantised point estimate plus a coarse uncertainty band, carrying enough for the receiver to hold a usable
+revision. BAAC would then deliver a real update where raw, FIFO and fixed priority deliver nothing. It was
+investigated and not built, because the binding constraint is the scoring model, not the wire format:
+
+1. `Fidelity` is a frozen schema enum F0..F4 (`conrad/schemas/comms.py`), which this workstream may not edit,
+   so no level below F1 can be added there.
+2. `comm_oracle.belief_score` credits ANY view at `retained[1]`, whatever built it. A coarse update stored as
+   a real belief view would therefore score exactly like a full 5,000-bit F1 delta: 0.7 current, 0.35 stale.
+   That is an overclaim, it would inflate BAAC at every level and not just the failing ones, and it would
+   flip criterion 3 by paying a roughly 400-bit point estimate the price of a full delta.
+3. Storing it alongside the alert instead scores 0.000 on exactly the failing cells. `belief_score` credits
+   an alert only while `alert_revision >= the sender's latest revision`, and **on seed 5500001 BAAC ends at
+   revision 348 of 376 even at 100 % bandwidth, 24 times the 1 % budget** (measured, COM-I7-E003 and E004).
+   If the receiver cannot be current on that belief with the whole link, a 400-bit update on a 12 bps link
+   certainly cannot: at 1 % it takes about 33 s to serialise, so the last one that completes is tens of
+   revisions behind. The same holds on development world 5100001, where BAAC ends at 355 of 383 at 100 %.
+
+So the three possible landings are: overclaim, no effect, or add a scoring rule that credits the new level,
+and only the third produces a pass. Its credit value would be the thing that decides the gate, chosen after
+seeing the failure, and it is the same `STALE_CREDIT` asymmetry the 2026-09-20 pass already refused to change
+for that reason. Nothing under `conrad/evaluation/oracle/` was touched.
+
+This is a finding about the criterion meeting a belief that is revised 376 times in 240 s, not a defect that
+can be coded around. The currency requirement (an alert counts only while it is not stale) and the mission
+value of a fast-revising belief are in genuine tension at 1 % of the link, and resolving it is question 1
+above, not an implementation task.
+
 Two more declarations need the same treatment, for criterion 2, and for the same reason:
 
-4. **The outage window is fixed and the finding time is not.** `I7-OUTAGE-CRITICAL` drops the link over
-   [6 s, 60 s) on every world, and the finding time is whatever the lane pass gives (15.1 to 68.1 s across
-   these five seeds). Either the scenario has to make the window depend on the world (for instance, drop the
-   link before the patch first becomes visible and restore it a fixed interval later), or the criterion has
-   to say what happens on a world where the finding falls outside the window. Widening the window to 70 s
-   now, having seen that 5500002 missed it at 68.1 s, would be tuning the scenario to the result.
+4. **The outage window was fixed and the finding time is not. REPAIRED, see the next section.** The question
+   is closed: the window now follows the finding, which was a construction defect rather than a threshold.
 5. **The surrogate and the Unity harness disagree about end-of-mission sync.** The Unity rule requires the
    receiver to hold at least the revision found during the outage; the surrogate test requires exact
    equality with the sender's newest revision. The Unity rule was declared on development seeds before any
    final world was built and is the better one, but adopting it for the surrogate now, after seeing that
    5500001 fails the stricter form, would again be changing the rule to fit the outcome.
 
-None of the five is decided here. The sequence for all of them is the same: decide, declare in
+Of the five, only number 4 is decided, and it is decided as a construction repair rather than a
+reinterpretation (next section). The sequence for the rest is the same: decide, declare in
 `configs/eval/i7_unity.yaml` and the acceptance test, then run on unused seeds.
+
+## The three surrogate runs, side by side
+
+Three runs, three disjoint final ranges, each run once after a freeze. Nothing was re-run on a spent range.
+
+| | run 1 | run 2 | run 3 |
+|---|---|---|---|
+| experiments | COM-I7-E001 / E002 | COM-I7-E003 / E004 | COM-I7-E005 / E006 |
+| final seeds | 5300000-5300004 (SPENT) | 5500000-5500004 (SPENT) | 5600000-5600004 (SPENT) |
+| partition file | `partitions.yaml` mission | `partitions_i7_v2.yaml` | `partitions_i7_v3.yaml` |
+| BAAC | pre-repair | repaired | repaired, unchanged from run 2 |
+| outage construction | fixed [6 s, 60 s) | fixed [6 s, 60 s) | follows the finding |
+| surrogate criteria passed | 4 of 4 | 2 of 4 | **3 of 4** |
+
+Bandwidth sweep, mean retained over the 5 seeds of each run:
+
+| level | run 1 BAAC | run 2 BAAC | run 3 BAAC | run 3 raw | run 3 FIFO | run 3 fixed | run 3 value-per-bit |
+|---|---|---|---|---|---|---|---|
+| 100 % | 0.628 | 0.626 | 0.634 | 0.217 | 0.217 | 0.155 | 0.577 |
+| 50 % | 0.589 | 0.589 | 0.590 | 0.217 | 0.217 | 0.106 | 0.529 |
+| 10 % | 0.330 | 0.261 | 0.251 | 0.217 | 0.217 | 0.011 | 0.211 |
+| 1 % | 0.060 | 0.027 | 0.026 | 0.000 | 0.000 | 0.000 | 0.026 |
+| 0.1 % | 0.060 | 0.018 | 0.018 | 0.000 | 0.000 | 0.000 | 0.000 |
+| 0 % | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
+
+The three runs are on different worlds, so the BAAC columns are not a controlled comparison of the repair;
+the controlled comparison is the development sweep above, where the same worlds were run before and after.
+What the three runs do show is that the repaired BAAC clears raw, FIFO and fixed priority at 100 %, 50 % and
+10 % on every seed of every run, and that the 1 % and 0.1 % tie is a property of the world draw: run 1 drew
+five slow-revising critical beliefs and scored 0.060, runs 2 and 3 each drew two fast-revising ones.
+
+**Criterion 2 is won on run 3, and it is won by the construction repair.** All 10 shadow flights made the
+critical finding while the link was down (findings at 15.1, 16.1, 17.1, 54.1 and 75.1 s, the last two of
+which the old fixed window would have missed or nearly missed), held a critical unit for the whole remaining
+outage, delivered the F0 alert and the F1 delta ahead of every routine delta, and ended with the receiver at
+the sender's latest critical revision at 100 % on all five seeds. Duplicate contributions and resync requests
+were 0 in every arm of all 30 missions. Criterion 2 numbers are NOT comparable with runs 1 and 2, because the
+scenario changed; that change was declared before run 3 and the defect and the seed it hit are named.
+
+**Criterion 3 still fails on run 3, in three places, and the third one is new:**
+
+1. **1 % on seeds 5600001 and 5600002** (critical belief revised 353 and 381 times): every policy 0.000.
+   BAAC delivered the 184-bit alert at 1.0 s; raw, FIFO and fixed priority delivered nothing.
+2. **0.1 % on the same seeds**: every policy 0.000. BAAC's alert arrived at 87.0 s and 108.0 s; the
+   baselines sent 0 bits.
+3. **Outage at 10 % on seed 5600001: BAAC 0.108 against FIFO 0.114.** This is a real loss of 0.006, not a
+   tie, and it is a cost of the outage repair: that world's finding comes at 75.1 s, so the finding-following
+   window runs [6 s, 120.1 s) and leaves about 120 s of a 120 bps link for 19 reported beliefs. The old fixed
+   window would have scored that seed higher by not stressing it for as long. Reporting it rather than
+   choosing the construction that flatters the number.
+
+## The outage construction repair (2026-09-20)
+
+**A stressor that can miss the event it exists to test is a construction defect.** `I7-OUTAGE-CRITICAL`
+dropped the link over a FIXED `[6 s, 60 s)` window and relied on the lane pass reaching the lane-side defect
+inside it. The finding time is a property of the world, not of the scenario: across the ten final seeds used
+so far it ranges from 15.1 s to 68.1 s. On COM-I7-E004 seed 5500002 the patch first became visible at
+66.25 s and the finding was made at 68.1 s, with the link already back for 8 s, so that world never exercised
+the outage path at all. The criterion then failed for a world that was never actually stressed.
+
+**The new construction**, declared in `conrad/sim/mission/scenarios.py` BEFORE the run that uses it:
+
+- the outage opens at its declared start, 6 s, which is still before the robot can reach any view of the
+  defect on any world seen so far;
+- it stays DOWN until 45 s after the mission's first critical finding;
+- capped at 120 s of outage, so a mission that never makes a finding still reconnects and the mission is
+  never silently starved.
+
+The 45 s hold is not a new number: `[6, 60)` left 44.9 s of outage after the 15.1 s finding on the worlds
+where the fixed window did work, so the construction keeps the original declaration's own interval and only
+stops the window from expiring before the event arrives. A world whose finding comes at 15.1 s reconnects at
+60.1 s, which is the old behaviour to within 0.1 s; a world whose finding comes at 68.1 s now reconnects at
+113.1 s instead of never having been stressed.
+
+| File | Change |
+|---|---|
+| `conrad/communication/channel.py` | `LinkProfile.outage_follows_critical_finding`, `outage_hold_after_finding_s`, `outage_max_s`; `ChannelSim.hold_outage_until()` and `ChannelSim.outage_windows()`, which resolves the effective window. Armed once and idempotent, so a second call cannot move it. |
+| `conrad/orchestration/mission_config.py` | The same three fields on `LinkConfig`. |
+| `conrad/orchestration/comms.py` | `ShoreLink._arm_outage_hold()` arms the hold at the mission's FIRST critical offer with the identical value on every arm, so all five policies still share one link; `ShoreLink.effective_outages_s` exposes what actually happened. |
+| `conrad/evaluation/decision_experiments/com_i7.py`, `com_i7_unity.py` | The scorer and the reconnection trace read the EFFECTIVE window, not the declared one. |
+| `tests/unit/communication/test_finding_following_outage.py` | 6 tests, one of which pins the old defect (a fixed window is already back up at 68.1 s). |
+
+Verified on the development worlds before the final run (4 flights, `sweep_outagefix.json`): the finding is
+made during the outage on both worlds at both levels (15.1 s and 57.1 s), a critical unit is held for the
+whole remaining outage, the F0 alert and F1 delta arrive ahead of every routine delta, duplicate
+contributions and resync requests are 0, and BAAC stays strictly above raw, FIFO and fixed priority in all
+four cells (0.660, 0.220, 0.572, 0.165 against a best baseline of 0.179, 0.158, 0.222, 0.114).
+
+**Criterion 2 numbers before and after this change are not comparable.** On a world whose finding is late the
+outage is now materially longer, which makes the scenario harder for every arm, and on world 5100001 at 10 %
+the baselines drop (raw 0.142 to 0.085, FIFO 0.114 to 0.114) while BAAC holds at 0.165. The change was
+declared before the run, and the defect and the seed it hit are named in the scenario file, in
+`configs/eval/com_i7_e006.yaml` and here.
 
 ### What this does and does not mean for the gate
 
@@ -852,22 +971,24 @@ criterion 3 records FAIL**, because 2 of the 5 seeds tie every policy at 0.000 a
 statements are both true and neither cancels the other: a mechanism defect was fixed on merit, and the gate
 criterion as currently declared is not met on the final draw.
 
-The recorded surrogate status is therefore (`artifacts/gates/I7/evidence_surrogate.json`, re-recorded
-2026-09-20 against COM-I7-E003 / E004):
+The recorded surrogate status is (`artifacts/gates/I7/evidence_surrogate.json`, re-recorded 2026-09-20
+against COM-I7-E005 / E006 on seeds 5600000-5600004):
 
 | criterion | surrogate status | why |
 |---|---|---|
 | full mission under constrained bandwidth | PASS | all 30 missions ran, every arm measured, 0 duplicate contributions |
-| full mission under outages | **FAIL** | seed 5500002 makes its finding after the link is back; seed 5500001 ends 348 of 376 at 100 % |
-| BAAC retains more mission-relevant information than raw/FIFO/fixed-priority | **FAIL** | seeds 5500001 and 5500002 tie every policy at 0.000 at 1 % and 0.1 % |
-| critical latency and sync error compared against baselines | PASS | every arm measured at every level; BAAC worse than value-per-bit on alert latency at 100 % (2.44 s against 1.13 s) |
+| full mission under outages | **PASS** | all 10 shadow flights make the finding during the outage, hold it, deliver it first, and end in sync at 100 % |
+| BAAC retains more mission-relevant information than raw/FIFO/fixed-priority | **FAIL** | all-policy 0.000 ties at 1 % and 0.1 %, plus a 0.006 loss to FIFO in the outage at 10 % on seed 5600001 |
+| critical latency and sync error compared against baselines | PASS | every arm measured at every level; every case where BAAC is worse is listed in the evidence |
 
-The previous record was "surrogate PASS on 4 of 4". It is now 2 of 4. Four acceptance tests are STRICT
-xfails whose reasons quote the measured failure, so both a silent improvement and a silent regression break
-the suite: `test_outage_finding_is_created_while_the_link_is_down`,
-`test_critical_delta_is_delivered_first_after_reconnection`,
-`test_receiver_synchronised_for_critical_beliefs_after_reconnection` and
-`test_baac_retains_more_than_raw_fifo_fixed_priority_every_nonzero_level`.
+The record went 4 of 4 (run 1, pre-repair) to 2 of 4 (run 2) to **3 of 4** (run 3). One acceptance test is a
+STRICT xfail whose reason quotes the measured failure, so both a silent improvement and a silent regression
+break the suite: `test_baac_retains_more_than_raw_fifo_fixed_priority_every_nonzero_level`. The three
+criterion 2 tests were strict xfails against run 2 and are now ordinary passing tests again; one of them,
+`test_outage_finding_is_created_while_the_link_is_down`, had to stop comparing the finding time against the
+DECLARED outage end, because that end no longer exists. It now checks the finding time against the declared
+START and against `link_down_at_finding`, which is measured from the channel at the finding time and is
+strictly stronger than the interval test it replaced.
 
 `scripts/record_gate_evidence.py` was reading a strict xfail as NOT_RUN, because pytest reports it in the
 junit XML as `<skipped type="pytest.xfail">`. That hid a failing criterion behind "no evidence", which is the

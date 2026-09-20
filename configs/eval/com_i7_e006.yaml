@@ -1,0 +1,27 @@
+# COM-I7-E006: critical structural finding made while the acoustic link is down, then reconnection.
+# Python-kernel SURROGATE; SYNTHETIC_ONLY link. Shadow arms + closed-loop baseline primaries.
+#
+# The I7-OUTAGE-CRITICAL construction CHANGED between COM-I7-E004 and this run, and the change was declared
+# in conrad/sim/mission/scenarios.py before this run was started. The outage used to be the fixed
+# [6 s, 60 s); it now opens at 6 s and holds the link down until 45 s after the first critical finding,
+# capped at 120 s. A fixed window can miss the event it exists to stress, and on COM-I7-E004 seed 5500002 it
+# did: that world's finding was made at 68.1 s with the link already back, so it never exercised the outage
+# path. Criterion 2 numbers are therefore NOT comparable between E004 and E006.
+#
+# Seeds: the freshly declared, digest-pinned final_test split of configs/eval/partitions_i7_v3.yaml
+# (5600000-5600004). The E002 and E004 seeds are SPENT. BAAC itself is unchanged since E003/E004.
+experiment_id: COM-I7-E006
+hypothesis: after reconnection BAAC delivers the queued critical belief delta first, coalesces stale units, and the receiver never double-counts a revision
+primary_metric: critical_delta_latency_s
+direction: lower
+baselines: [C-B0_send_all, C-B1_fifo, C-B2_fixed_priority, C-B4_value_per_bit]
+partition: final_test
+partition_domain: i7_mission_v3
+seeds: [5600000, 5600001, 5600002, 5600003, 5600004]
+scenario: I7-OUTAGE-CRITICAL
+bandwidth_levels: [1.0, 0.1]
+closed_loop_levels: [1.0]
+deadline_linkup_s: {critical: 30.0, routine: 120.0}
+queue_trace_every_s: 5
+workers: 8
+keep_bundles: true
