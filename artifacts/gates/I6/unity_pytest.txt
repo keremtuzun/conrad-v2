@@ -1,0 +1,25 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.15, pytest-8.4.2, pluggy-1.6.0 -- C:\Users\Kerem\Kerem\conrad-v2\.venv\Scripts\python.exe
+hypothesis profile 'default'
+rootdir: C:\Users\Kerem\Kerem\conrad-v2
+configfile: pyproject.toml
+plugins: anyio-4.15.1, hypothesis-6.168.0, cov-6.3.0
+collecting ... collected 6 items
+
+tests/unity_live/test_i6_unity.py::test_one_mission_produces_2s_2t_2e_beliefs PASSED [ 16%]
+tests/unity_live/test_i6_unity.py::test_model1_reasons_across_all_three_via_the_belief_bus PASSED [ 33%]
+tests/unity_live/test_i6_unity.py::test_children_remain_authoritative_within_domains PASSED [ 50%]
+tests/unity_live/test_i6_unity.py::test_twin2e_reaches_the_unity_camera PASSED [ 66%]
+tests/unity_live/test_i6_unity.py::test_no_twin_truth_leakage_on_runtime_side PASSED [ 83%]
+tests/unity_live/test_i6_unity.py::test_bundle_replays_deterministically PASSED [100%]
+
+=================================== PASSES ====================================
+- generated xml file: C:\Users\Kerem\Kerem\conrad-v2\artifacts\gates\I6\unity_pytest.xml -
+=========================== short test summary info ===========================
+PASSED tests/unity_live/test_i6_unity.py::test_one_mission_produces_2s_2t_2e_beliefs
+PASSED tests/unity_live/test_i6_unity.py::test_model1_reasons_across_all_three_via_the_belief_bus
+PASSED tests/unity_live/test_i6_unity.py::test_children_remain_authoritative_within_domains
+PASSED tests/unity_live/test_i6_unity.py::test_twin2e_reaches_the_unity_camera
+PASSED tests/unity_live/test_i6_unity.py::test_no_twin_truth_leakage_on_runtime_side
+PASSED tests/unity_live/test_i6_unity.py::test_bundle_replays_deterministically
+======================== 6 passed in 727.80s (0:12:07) ========================

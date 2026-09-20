@@ -1,0 +1,986 @@
+{
+ "meta": {
+  "worlds": [
+   7800014,
+   7800015,
+   7800016
+  ],
+  "arms": {
+   "TURBID": "I6-UNITY-TURBID",
+   "CLEAR": "I6-UNITY-CLEAR"
+  },
+  "partition": "configs/eval/partitions_unity_gates.yaml final_test (declared in i6_multidomain.yaml)",
+  "results": "artifacts\\gates\\I6\\unity_i6_results.json"
+ },
+ "criteria": {
+  "one mission produces 2S, 2T and 2E beliefs": {
+   "per_world": {
+    "7800014": true,
+    "7800015": true,
+    "7800016": true
+   },
+   "runs": {
+    "I6-UNITY-TURBID-s7800014": {
+     "TECHNICAL": {
+      "revisions": 447,
+      "direct": 21,
+      "direct_with_evidence": 21,
+      "beliefs": 8,
+      "max_revision": 89,
+      "update_kinds": {
+       "CREATE": 5,
+       "CONTEXT": 400,
+       "DIRECT": 21,
+       "RELATIONAL": 21
+      }
+     },
+     "ECOLOGICAL": {
+      "revisions": 105,
+      "direct": 96,
+      "direct_with_evidence": 96,
+      "beliefs": 9,
+      "max_revision": 24,
+      "update_kinds": {
+       "CREATE": 9,
+       "DIRECT": 96
+      }
+     },
+     "SPATIAL": {
+      "revisions": 814,
+      "direct": 595,
+      "direct_with_evidence": 595,
+      "beliefs": 57,
+      "max_revision": 38,
+      "update_kinds": {
+       "DIRECT": 595,
+       "RELATIONAL": 219
+      }
+     },
+     "run_ids": [
+      "018bcfe5-6801-7f6e-8878-003dba011f42"
+     ],
+     "other_run_revisions": 0
+    },
+    "I6-UNITY-CLEAR-s7800014": {
+     "TECHNICAL": {
+      "revisions": 534,
+      "direct": 21,
+      "direct_with_evidence": 21,
+      "beliefs": 8,
+      "max_revision": 107,
+      "update_kinds": {
+       "CREATE": 5,
+       "CONTEXT": 490,
+       "DIRECT": 21,
+       "RELATIONAL": 18
+      }
+     },
+     "ECOLOGICAL": {
+      "revisions": 105,
+      "direct": 96,
+      "direct_with_evidence": 96,
+      "beliefs": 9,
+      "max_revision": 24,
+      "update_kinds": {
+       "CREATE": 9,
+       "DIRECT": 96
+      }
+     },
+     "SPATIAL": {
+      "revisions": 814,
+      "direct": 595,
+      "direct_with_evidence": 595,
+      "beliefs": 57,
+      "max_revision": 38,
+      "update_kinds": {
+       "DIRECT": 595,
+       "RELATIONAL": 219
+      }
+     },
+     "run_ids": [
+      "018bcfe5-6801-7f6e-8878-003dba011f42"
+     ],
+     "other_run_revisions": 0
+    },
+    "I6-UNITY-TURBID-s7800015": {
+     "TECHNICAL": {
+      "revisions": 438,
+      "direct": 16,
+      "direct_with_evidence": 16,
+      "beliefs": 8,
+      "max_revision": 87,
+      "update_kinds": {
+       "CREATE": 5,
+       "CONTEXT": 401,
+       "DIRECT": 16,
+       "RELATIONAL": 16
+      }
+     },
+     "ECOLOGICAL": {
+      "revisions": 105,
+      "direct": 96,
+      "direct_with_evidence": 96,
+      "beliefs": 9,
+      "max_revision": 24,
+      "update_kinds": {
+       "CREATE": 9,
+       "DIRECT": 96
+      }
+     },
+     "SPATIAL": {
+      "revisions": 753,
+      "direct": 465,
+      "direct_with_evidence": 465,
+      "beliefs": 54,
+      "max_revision": 38,
+      "update_kinds": {
+       "DIRECT": 465,
+       "RELATIONAL": 288
+      }
+     },
+     "run_ids": [
+      "018bcfe5-6801-7599-b389-fda5f7e31a5c"
+     ],
+     "other_run_revisions": 0
+    },
+    "I6-UNITY-CLEAR-s7800015": {
+     "TECHNICAL": {
+      "revisions": 590,
+      "direct": 76,
+      "direct_with_evidence": 76,
+      "beliefs": 8,
+      "max_revision": 165,
+      "update_kinds": {
+       "CREATE": 5,
+       "CONTEXT": 491,
+       "DIRECT": 76,
+       "RELATIONAL": 18
+      }
+     },
+     "ECOLOGICAL": {
+      "revisions": 105,
+      "direct": 96,
+      "direct_with_evidence": 96,
+      "beliefs": 9,
+      "max_revision": 24,
+      "update_kinds": {
+       "CREATE": 9,
+       "DIRECT": 96
+      }
+     },
+     "SPATIAL": {
+      "revisions": 830,
+      "direct": 636,
+      "direct_with_evidence": 636,
+      "beliefs": 73,
+      "max_revision": 38,
+      "update_kinds": {
+       "DIRECT": 636,
+       "RELATIONAL": 194
+      }
+     },
+     "run_ids": [
+      "018bcfe5-6801-7599-b389-fda5f7e31a5c"
+     ],
+     "other_run_revisions": 0
+    },
+    "I6-UNITY-TURBID-s7800016": {
+     "TECHNICAL": {
+      "revisions": 430,
+      "direct": 12,
+      "direct_with_evidence": 12,
+      "beliefs": 8,
+      "max_revision": 88,
+      "update_kinds": {
+       "CREATE": 5,
+       "CONTEXT": 401,
+       "DIRECT": 12,
+       "RELATIONAL": 12
+      }
+     },
+     "ECOLOGICAL": {
+      "revisions": 105,
+      "direct": 96,
+      "direct_with_evidence": 96,
+      "beliefs": 9,
+      "max_revision": 24,
+      "update_kinds": {
+       "CREATE": 9,
+       "DIRECT": 96
+      }
+     },
+     "SPATIAL": {
+      "revisions": 794,
+      "direct": 466,
+      "direct_with_evidence": 466,
+      "beliefs": 66,
+      "max_revision": 38,
+      "update_kinds": {
+       "DIRECT": 466,
+       "RELATIONAL": 328
+      }
+     },
+     "run_ids": [
+      "018bcfe5-6801-7876-9419-13cf2c766949"
+     ],
+     "other_run_revisions": 0
+    },
+    "I6-UNITY-CLEAR-s7800016": {
+     "TECHNICAL": {
+      "revisions": 602,
+      "direct": 81,
+      "direct_with_evidence": 81,
+      "beliefs": 8,
+      "max_revision": 175,
+      "update_kinds": {
+       "CREATE": 5,
+       "CONTEXT": 491,
+       "DIRECT": 81,
+       "RELATIONAL": 25
+      }
+     },
+     "ECOLOGICAL": {
+      "revisions": 107,
+      "direct": 98,
+      "direct_with_evidence": 98,
+      "beliefs": 9,
+      "max_revision": 24,
+      "update_kinds": {
+       "CREATE": 9,
+       "DIRECT": 98
+      }
+     },
+     "SPATIAL": {
+      "revisions": 778,
+      "direct": 607,
+      "direct_with_evidence": 607,
+      "beliefs": 73,
+      "max_revision": 38,
+      "update_kinds": {
+       "DIRECT": 607,
+       "RELATIONAL": 171
+      }
+     },
+     "run_ids": [
+      "018bcfe5-6801-7876-9419-13cf2c766949"
+     ],
+     "other_run_revisions": 0
+    }
+   }
+  },
+  "Model1 reasons across all three via the Belief Bus": {
+   "per_world": {
+    "7800014": true,
+    "7800015": true,
+    "7800016": true
+   },
+   "runs": {
+    "I6-UNITY-TURBID-s7800014": {
+     "decisions": 60,
+     "decisions_citing_all_three": 59,
+     "cited_revisions_not_committed": 0,
+     "query_tools": {
+      "query_model2t": 300,
+      "query_model2s": 360,
+      "query_model2e": 60
+     },
+     "gate_records": 43,
+     "gate_verdicts": {
+      "DEFERRED_LOW_VISIBILITY": 43
+     },
+     "gate_records_citing_all_three": 43,
+     "gate_truth_agreement": 1.0,
+     "gate_truth_records": 43,
+     "turbidity_belief_range_ntu": [
+      10.944919,
+      11.257811
+     ],
+     "true_turbidity_range_ntu": [
+      26.33824,
+      26.909623
+     ],
+     "first_deferral": {
+      "t_s": 36.0,
+      "decision_id": "018bcfe5-6aad-70ab-8c7a-e0678036e658",
+      "turbidity_ntu_belief": 10.944919,
+      "visibility_at_range": 0.454803,
+      "claims": {
+       "TECHNICAL": 1,
+       "SPATIAL": 14,
+       "ECOLOGICAL": 2
+      },
+      "beliefs": {
+       "TECHNICAL": [
+        "018bcfe5-6804-78d3-bff6-6d4647ef4356"
+       ],
+       "SPATIAL": [
+        "018bcfe5-6805-7f84-8dd4-e98bbcb37273",
+        "018bcfe5-6808-7fbd-9aea-4d3db0d9e03f",
+        "018bcfe5-680b-76b6-90bd-dde40b344037",
+        "018bcfe5-680e-7938-9c00-fd62e28ec98b",
+        "018bcfe5-6835-7ab6-9191-06498a0e3bbb",
+        "018bcfe5-6838-7b91-84d9-3804c4d08d98",
+        "018bcfe5-683b-7147-8184-f3dd7c901312",
+        "018bcfe5-683e-7eef-a6a3-93976e2b893a",
+        "018bcfe5-6841-7e2e-a381-8d613b2cb3d8",
+        "018bcfe5-6848-75c2-87f9-fc3be626ee5c",
+        "018bcfe5-684b-727b-b604-e1094f365607",
+        "018bcfe5-68a3-75b2-87c8-b26603dbeee2",
+        "018bcfe5-68b2-76b9-94c9-79249c949d46"
+       ],
+       "ECOLOGICAL": [
+        "018bcfe5-6804-78ff-8229-b566837e2405"
+       ]
+      },
+      "truth": {
+       "decision_id": "018bcfe5-6aad-70ab-8c7a-e0678036e658",
+       "true_turbidity_ntu": 26.909623,
+       "true_visibility_at_range": 0.324203,
+       "true_verdict": "DEFERRED_LOW_VISIBILITY"
+      }
+     },
+     "inspection_goal_started_s": null,
+     "mcbr_plans": 0
+    },
+    "I6-UNITY-CLEAR-s7800014": {
+     "decisions": 60,
+     "decisions_citing_all_three": 59,
+     "cited_revisions_not_committed": 0,
+     "query_tools": {
+      "query_model2t": 300,
+      "query_model2s": 360,
+      "query_model2e": 60
+     },
+     "gate_records": 8,
+     "gate_verdicts": {
+      "PROCEED": 8
+     },
+     "gate_records_citing_all_three": 8,
+     "gate_truth_agreement": 1.0,
+     "gate_truth_records": 8,
+     "turbidity_belief_range_ntu": [
+      1.910756,
+      1.997736
+     ],
+     "true_turbidity_range_ntu": [
+      1.998065,
+      2.000414
+     ],
+     "first_deferral": null,
+     "inspection_goal_started_s": null,
+     "mcbr_plans": 4
+    },
+    "I6-UNITY-TURBID-s7800015": {
+     "decisions": 60,
+     "decisions_citing_all_three": 59,
+     "cited_revisions_not_committed": 0,
+     "query_tools": {
+      "query_model2t": 300,
+      "query_model2s": 360,
+      "query_model2e": 60
+     },
+     "gate_records": 44,
+     "gate_verdicts": {
+      "DEFERRED_LOW_VISIBILITY": 44
+     },
+     "gate_records_citing_all_three": 44,
+     "gate_truth_agreement": 1.0,
+     "gate_truth_records": 44,
+     "turbidity_belief_range_ntu": [
+      14.029757,
+      22.486021
+     ],
+     "true_turbidity_range_ntu": [
+      25.487435,
+      26.905125
+     ],
+     "first_deferral": {
+      "t_s": 34.0,
+      "decision_id": "018bcfe5-6a4d-7a80-89a1-2d0af6289b78",
+      "turbidity_ntu_belief": 20.180142,
+      "visibility_at_range": 0.318365,
+      "claims": {
+       "TECHNICAL": 1,
+       "SPATIAL": 10,
+       "ECOLOGICAL": 2
+      },
+      "beliefs": {
+       "TECHNICAL": [
+        "018bcfe5-6804-7e34-9326-8644788a1a74"
+       ],
+       "SPATIAL": [
+        "018bcfe5-6829-7ba8-ba2a-1335e9f38c81",
+        "018bcfe5-682f-72db-bc19-8c30191bd30c",
+        "018bcfe5-6835-7cfe-8479-6c25bb4df1e5",
+        "018bcfe5-6838-7f84-b431-0f0e3a524b74",
+        "018bcfe5-683b-7b74-a6cd-3b121b842b3b",
+        "018bcfe5-6874-7421-9a38-86e6a645a916",
+        "018bcfe5-687a-7db2-95ac-76fc5ed3ed6d",
+        "018bcfe5-6883-7544-adb4-c1f08e2775cb",
+        "018bcfe5-6886-7a4b-bdeb-51f40d36e5d4"
+       ],
+       "ECOLOGICAL": [
+        "018bcfe5-6804-7da0-a0f7-1ea443493411"
+       ]
+      },
+      "truth": {
+       "decision_id": "018bcfe5-6a4d-7a80-89a1-2d0af6289b78",
+       "true_turbidity_ntu": 26.905125,
+       "true_visibility_at_range": 0.324261,
+       "true_verdict": "DEFERRED_LOW_VISIBILITY"
+      }
+     },
+     "inspection_goal_started_s": null,
+     "mcbr_plans": 0
+    },
+    "I6-UNITY-CLEAR-s7800015": {
+     "decisions": 60,
+     "decisions_citing_all_three": 59,
+     "cited_revisions_not_committed": 0,
+     "query_tools": {
+      "query_model2t": 300,
+      "query_model2s": 360,
+      "query_model2e": 60
+     },
+     "gate_records": 2,
+     "gate_verdicts": {
+      "PROCEED": 2
+     },
+     "gate_records_citing_all_three": 2,
+     "gate_truth_agreement": 1.0,
+     "gate_truth_records": 2,
+     "turbidity_belief_range_ntu": [
+      1.875776,
+      1.918117
+     ],
+     "true_turbidity_range_ntu": [
+      1.998602,
+      1.998947
+     ],
+     "first_deferral": null,
+     "inspection_goal_started_s": 34.1,
+     "mcbr_plans": 2
+    },
+    "I6-UNITY-TURBID-s7800016": {
+     "decisions": 60,
+     "decisions_citing_all_three": 59,
+     "cited_revisions_not_committed": 0,
+     "query_tools": {
+      "query_model2t": 300,
+      "query_model2s": 360,
+      "query_model2e": 60
+     },
+     "gate_records": 43,
+     "gate_verdicts": {
+      "DEFERRED_LOW_VISIBILITY": 43
+     },
+     "gate_records_citing_all_three": 43,
+     "gate_truth_agreement": 1.0,
+     "gate_truth_records": 43,
+     "turbidity_belief_range_ntu": [
+      25.905406,
+      25.940812
+     ],
+     "true_turbidity_range_ntu": [
+      26.665309,
+      26.958202
+     ],
+     "first_deferral": {
+      "t_s": 36.0,
+      "decision_id": "018bcfe5-6a71-766a-80b0-40a1167fd68b",
+      "turbidity_ntu_belief": 25.940812,
+      "visibility_at_range": 0.257305,
+      "claims": {
+       "TECHNICAL": 1,
+       "SPATIAL": 10,
+       "ECOLOGICAL": 2
+      },
+      "beliefs": {
+       "TECHNICAL": [
+        "018bcfe5-6804-7ffa-b07e-27a085822b1a"
+       ],
+       "SPATIAL": [
+        "018bcfe5-6832-7183-b5a7-de4cef8dafb9",
+        "018bcfe5-6838-70ac-9a05-fa8ca923be5a",
+        "018bcfe5-683e-7027-bb30-6c4c6122e870",
+        "018bcfe5-6841-732c-b210-fafc90cbb257",
+        "018bcfe5-6844-7b1f-9511-984bcf56945d",
+        "018bcfe5-6864-78bd-820a-5e7c00bd826b",
+        "018bcfe5-686a-7842-a8dc-dc06b631ec77",
+        "018bcfe5-6876-74f5-96a3-bc188df4324d",
+        "018bcfe5-6879-7152-b3f7-2a81dbbf004f"
+       ],
+       "ECOLOGICAL": [
+        "018bcfe5-6804-784f-9c44-42660b9810ba"
+       ]
+      },
+      "truth": {
+       "decision_id": "018bcfe5-6a71-766a-80b0-40a1167fd68b",
+       "true_turbidity_ntu": 26.958202,
+       "true_visibility_at_range": 0.323574,
+       "true_verdict": "DEFERRED_LOW_VISIBILITY"
+      }
+     },
+     "inspection_goal_started_s": null,
+     "mcbr_plans": 0
+    },
+    "I6-UNITY-CLEAR-s7800016": {
+     "decisions": 60,
+     "decisions_citing_all_three": 59,
+     "cited_revisions_not_committed": 0,
+     "query_tools": {
+      "query_model2t": 300,
+      "query_model2s": 360,
+      "query_model2e": 60
+     },
+     "gate_records": 8,
+     "gate_verdicts": {
+      "PROCEED": 8
+     },
+     "gate_records_citing_all_three": 8,
+     "gate_truth_agreement": 1.0,
+     "gate_truth_records": 8,
+     "turbidity_belief_range_ntu": [
+      1.934546,
+      1.978917
+     ],
+     "true_turbidity_range_ntu": [
+      1.992072,
+      1.999018
+     ],
+     "first_deferral": null,
+     "inspection_goal_started_s": 36.1,
+     "mcbr_plans": 4
+    }
+   }
+  },
+  "children remain authoritative within domains": {
+   "per_world": {
+    "7800014": true,
+    "7800015": true,
+    "7800016": true
+   },
+   "runs": {
+    "I6-UNITY-TURBID-s7800014": {
+     "bus_rejected": 0,
+     "bus_rejected_reasons": {},
+     "bus_heads": 69,
+     "bus_heads_per_domain": {
+      "TECHNICAL": 8,
+      "ECOLOGICAL": 4,
+      "SPATIAL": 57
+     },
+     "bus_head_not_a_child_revision": 0,
+     "bus_head_behind_child": 5,
+     "revisions_checked": 1366,
+     "revisions_not_written_by_own_package": {},
+     "direct_evidence_from_other_domain_sensors": {},
+     "direct_evidence_unresolved": 0,
+     "context_deliveries": 1914,
+     "context_deliveries_by_pair": {
+      "TECHNICAL->SPATIAL": 47,
+      "TECHNICAL->ECOLOGICAL": 47,
+      "ECOLOGICAL->SPATIAL": 96,
+      "ECOLOGICAL->TECHNICAL": 96,
+      "SPATIAL->TECHNICAL": 814,
+      "SPATIAL->ECOLOGICAL": 814
+     },
+     "context_deliveries_not_context": 0,
+     "context_revisions": {
+      "TECHNICAL": 400
+     },
+     "context_revisions_with_evidence": 0,
+     "foreign_write_probe": {
+      "heads_loaded": 69,
+      "attempts": 138,
+      "rejected_foreign": 138,
+      "heads_unchanged": 138
+     }
+    },
+    "I6-UNITY-CLEAR-s7800014": {
+     "bus_rejected": 0,
+     "bus_rejected_reasons": {},
+     "bus_heads": 69,
+     "bus_heads_per_domain": {
+      "TECHNICAL": 8,
+      "ECOLOGICAL": 4,
+      "SPATIAL": 57
+     },
+     "bus_head_not_a_child_revision": 0,
+     "bus_head_behind_child": 5,
+     "revisions_checked": 1453,
+     "revisions_not_written_by_own_package": {},
+     "direct_evidence_from_other_domain_sensors": {},
+     "direct_evidence_unresolved": 0,
+     "context_deliveries": 1908,
+     "context_deliveries_by_pair": {
+      "TECHNICAL->SPATIAL": 44,
+      "TECHNICAL->ECOLOGICAL": 44,
+      "ECOLOGICAL->SPATIAL": 96,
+      "ECOLOGICAL->TECHNICAL": 96,
+      "SPATIAL->TECHNICAL": 814,
+      "SPATIAL->ECOLOGICAL": 814
+     },
+     "context_deliveries_not_context": 0,
+     "context_revisions": {
+      "TECHNICAL": 490
+     },
+     "context_revisions_with_evidence": 0,
+     "foreign_write_probe": {
+      "heads_loaded": 69,
+      "attempts": 138,
+      "rejected_foreign": 138,
+      "heads_unchanged": 138
+     }
+    },
+    "I6-UNITY-TURBID-s7800015": {
+     "bus_rejected": 0,
+     "bus_rejected_reasons": {},
+     "bus_heads": 66,
+     "bus_heads_per_domain": {
+      "TECHNICAL": 8,
+      "ECOLOGICAL": 4,
+      "SPATIAL": 54
+     },
+     "bus_head_not_a_child_revision": 0,
+     "bus_head_behind_child": 5,
+     "revisions_checked": 1296,
+     "revisions_not_written_by_own_package": {},
+     "direct_evidence_from_other_domain_sensors": {},
+     "direct_evidence_unresolved": 0,
+     "context_deliveries": 1772,
+     "context_deliveries_by_pair": {
+      "TECHNICAL->SPATIAL": 37,
+      "TECHNICAL->ECOLOGICAL": 37,
+      "ECOLOGICAL->SPATIAL": 96,
+      "ECOLOGICAL->TECHNICAL": 96,
+      "SPATIAL->TECHNICAL": 753,
+      "SPATIAL->ECOLOGICAL": 753
+     },
+     "context_deliveries_not_context": 0,
+     "context_revisions": {
+      "TECHNICAL": 401
+     },
+     "context_revisions_with_evidence": 0,
+     "foreign_write_probe": {
+      "heads_loaded": 66,
+      "attempts": 132,
+      "rejected_foreign": 132,
+      "heads_unchanged": 132
+     }
+    },
+    "I6-UNITY-CLEAR-s7800015": {
+     "bus_rejected": 0,
+     "bus_rejected_reasons": {},
+     "bus_heads": 85,
+     "bus_heads_per_domain": {
+      "TECHNICAL": 8,
+      "ECOLOGICAL": 4,
+      "SPATIAL": 73
+     },
+     "bus_head_not_a_child_revision": 0,
+     "bus_head_behind_child": 5,
+     "revisions_checked": 1525,
+     "revisions_not_written_by_own_package": {},
+     "direct_evidence_from_other_domain_sensors": {},
+     "direct_evidence_unresolved": 0,
+     "context_deliveries": 2050,
+     "context_deliveries_by_pair": {
+      "TECHNICAL->SPATIAL": 99,
+      "TECHNICAL->ECOLOGICAL": 99,
+      "ECOLOGICAL->SPATIAL": 96,
+      "ECOLOGICAL->TECHNICAL": 96,
+      "SPATIAL->TECHNICAL": 830,
+      "SPATIAL->ECOLOGICAL": 830
+     },
+     "context_deliveries_not_context": 0,
+     "context_revisions": {
+      "TECHNICAL": 491
+     },
+     "context_revisions_with_evidence": 0,
+     "foreign_write_probe": {
+      "heads_loaded": 85,
+      "attempts": 170,
+      "rejected_foreign": 170,
+      "heads_unchanged": 170
+     }
+    },
+    "I6-UNITY-TURBID-s7800016": {
+     "bus_rejected": 0,
+     "bus_rejected_reasons": {},
+     "bus_heads": 78,
+     "bus_heads_per_domain": {
+      "TECHNICAL": 8,
+      "ECOLOGICAL": 4,
+      "SPATIAL": 66
+     },
+     "bus_head_not_a_child_revision": 0,
+     "bus_head_behind_child": 5,
+     "revisions_checked": 1329,
+     "revisions_not_written_by_own_package": {},
+     "direct_evidence_from_other_domain_sensors": {},
+     "direct_evidence_unresolved": 0,
+     "context_deliveries": 1838,
+     "context_deliveries_by_pair": {
+      "TECHNICAL->SPATIAL": 29,
+      "TECHNICAL->ECOLOGICAL": 29,
+      "ECOLOGICAL->SPATIAL": 96,
+      "ECOLOGICAL->TECHNICAL": 96,
+      "SPATIAL->TECHNICAL": 794,
+      "SPATIAL->ECOLOGICAL": 794
+     },
+     "context_deliveries_not_context": 0,
+     "context_revisions": {
+      "TECHNICAL": 401
+     },
+     "context_revisions_with_evidence": 0,
+     "foreign_write_probe": {
+      "heads_loaded": 78,
+      "attempts": 156,
+      "rejected_foreign": 156,
+      "heads_unchanged": 156
+     }
+    },
+    "I6-UNITY-CLEAR-s7800016": {
+     "bus_rejected": 0,
+     "bus_rejected_reasons": {},
+     "bus_heads": 86,
+     "bus_heads_per_domain": {
+      "TECHNICAL": 8,
+      "ECOLOGICAL": 5,
+      "SPATIAL": 73
+     },
+     "bus_head_not_a_child_revision": 0,
+     "bus_head_behind_child": 5,
+     "revisions_checked": 1487,
+     "revisions_not_written_by_own_package": {},
+     "direct_evidence_from_other_domain_sensors": {},
+     "direct_evidence_unresolved": 0,
+     "context_deliveries": 1974,
+     "context_deliveries_by_pair": {
+      "TECHNICAL->SPATIAL": 111,
+      "TECHNICAL->ECOLOGICAL": 111,
+      "ECOLOGICAL->SPATIAL": 98,
+      "ECOLOGICAL->TECHNICAL": 98,
+      "SPATIAL->TECHNICAL": 778,
+      "SPATIAL->ECOLOGICAL": 778
+     },
+     "context_deliveries_not_context": 0,
+     "context_revisions": {
+      "TECHNICAL": 491
+     },
+     "context_revisions_with_evidence": 0,
+     "foreign_write_probe": {
+      "heads_loaded": 86,
+      "attempts": 172,
+      "rejected_foreign": 172,
+      "heads_unchanged": 172
+     }
+    }
+   }
+  },
+  "twin2e -> unity": {
+   "camera": {
+    "TURBID-s7800014": {
+     "rgb_frames": 119,
+     "rgb_frames_with_optics_grid": 119,
+     "mean_transmission_min": 0.00535,
+     "mean_transmission_max": 0.389253,
+     "mean_transmission_last": 0.012891,
+     "optics_updates": 121
+    },
+    "CLEAR-s7800014": {
+     "rgb_frames": 119,
+     "rgb_frames_with_optics_grid": 119,
+     "mean_transmission_min": 0.195695,
+     "mean_transmission_max": 0.389253,
+     "mean_transmission_last": 0.242655,
+     "optics_updates": 120
+    },
+    "TURBID-s7800015": {
+     "rgb_frames": 119,
+     "rgb_frames_with_optics_grid": 119,
+     "mean_transmission_min": 0.00208,
+     "mean_transmission_max": 0.34587,
+     "mean_transmission_last": 0.005065,
+     "optics_updates": 121
+    },
+    "CLEAR-s7800015": {
+     "rgb_frames": 119,
+     "rgb_frames_with_optics_grid": 119,
+     "mean_transmission_min": 0.13031,
+     "mean_transmission_max": 0.34587,
+     "mean_transmission_last": 0.225636,
+     "optics_updates": 120
+    },
+    "TURBID-s7800016": {
+     "rgb_frames": 119,
+     "rgb_frames_with_optics_grid": 119,
+     "mean_transmission_min": 0.003538,
+     "mean_transmission_max": 0.33439,
+     "mean_transmission_last": 0.011001,
+     "optics_updates": 121
+    },
+    "CLEAR-s7800016": {
+     "rgb_frames": 119,
+     "rgb_frames_with_optics_grid": 119,
+     "mean_transmission_min": 0.140561,
+     "mean_transmission_max": 0.33439,
+     "mean_transmission_last": 0.241571,
+     "optics_updates": 120
+    }
+   },
+   "eco_conversion": {
+    "s7800014": {
+     "grid_shape": [
+      29,
+      21,
+      16
+     ],
+     "spacing_m": 1.0,
+     "optics": {
+      "t_s": 0.0,
+      "points": 400,
+      "attenuation_max_abs_per_m": 0.0,
+      "attenuation_rms_per_m": 0.0,
+      "rays": 100,
+      "ray_length_m": 4.0,
+      "transmission_max_abs": 0.0,
+      "transmission_rms": 0.0
+     },
+     "fouling": {
+      "entities": 10,
+      "fouled_entities": 2,
+      "cover_max_abs": 0.0,
+      "cover_mean_abs": 0.0
+     },
+     "notes": [
+      "optics: Twin2E turbidity -> beam attenuation with Twin2E ObservationConfig constants; camera only",
+      "fouling: one cover per structure (visual colour); colliders unchanged",
+      "range imager and sonar are not attenuated (kernel parity)"
+     ]
+    },
+    "s7800015": {
+     "grid_shape": [
+      29,
+      21,
+      16
+     ],
+     "spacing_m": 1.0,
+     "optics": {
+      "t_s": 0.0,
+      "points": 400,
+      "attenuation_max_abs_per_m": 0.0,
+      "attenuation_rms_per_m": 0.0,
+      "rays": 100,
+      "ray_length_m": 4.0,
+      "transmission_max_abs": 0.0,
+      "transmission_rms": 0.0
+     },
+     "fouling": {
+      "entities": 10,
+      "fouled_entities": 1,
+      "cover_max_abs": 0.0,
+      "cover_mean_abs": 0.0
+     },
+     "notes": [
+      "optics: Twin2E turbidity -> beam attenuation with Twin2E ObservationConfig constants; camera only",
+      "fouling: one cover per structure (visual colour); colliders unchanged",
+      "range imager and sonar are not attenuated (kernel parity)"
+     ]
+    },
+    "s7800016": {
+     "grid_shape": [
+      29,
+      21,
+      16
+     ],
+     "spacing_m": 1.0,
+     "optics": {
+      "t_s": 0.0,
+      "points": 400,
+      "attenuation_max_abs_per_m": 0.0,
+      "attenuation_rms_per_m": 0.0,
+      "rays": 100,
+      "ray_length_m": 4.0,
+      "transmission_max_abs": 0.0,
+      "transmission_rms": 0.0
+     },
+     "fouling": {
+      "entities": 10,
+      "fouled_entities": 4,
+      "cover_max_abs": 0.097409,
+      "cover_mean_abs": 0.004383
+     },
+     "notes": [
+      "optics: Twin2E turbidity -> beam attenuation with Twin2E ObservationConfig constants; camera only",
+      "fouling: one cover per structure (visual colour); colliders unchanged",
+      "range imager and sonar are not attenuated (kernel parity)"
+     ]
+    }
+   }
+  },
+  "leakage": {
+   "runs": {
+    "TURBID-s7800014": {
+     "texts_scanned": 6322,
+     "violations": []
+    },
+    "CLEAR-s7800014": {
+     "texts_scanned": 6476,
+     "violations": []
+    },
+    "TURBID-s7800015": {
+     "texts_scanned": 6158,
+     "violations": []
+    },
+    "CLEAR-s7800015": {
+     "texts_scanned": 6772,
+     "violations": []
+    },
+    "TURBID-s7800016": {
+     "texts_scanned": 6211,
+     "violations": []
+    },
+    "CLEAR-s7800016": {
+     "texts_scanned": 6821,
+     "violations": []
+    }
+   }
+  },
+  "replay": {
+   "run": "artifacts\\unity\\gate_runs\\I6\\I6-UNITY-TURBID-s7800014",
+   "events": {
+    "original": 5627,
+    "replayed": 5627,
+    "equal": true,
+    "first_difference": null
+   },
+   "decisions": {
+    "original": 60,
+    "replayed": 60,
+    "equal": true,
+    "first_difference": null
+   },
+   "revisions": {
+    "original": 1366,
+    "replayed": 1366,
+    "equal": true,
+    "first_difference": null
+   },
+   "trajectory": {
+    "samples": [
+     121,
+     121
+    ],
+    "max_abs_difference": 0.0,
+    "tolerance": 0.0,
+    "equal": true
+   },
+   "equal": true,
+   "verified_files": 296,
+   "verified_objects": 197,
+   "same_player_binary": true
+  }
+ }
+}
