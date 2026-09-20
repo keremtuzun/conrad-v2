@@ -298,12 +298,13 @@
     "LOCALIZATION_LOST",
     "POSE_SIGMA_HIGH",
     "ALTITUDE_UNMONITORED",
-    "SAFE_HOLD_ACTION:STATION_KEEP"
+    "STATE_ESTIMATE_NOT_TRUSTWORTHY",
+    "SAFE_HOLD_ACTION:ZERO_THRUST"
    ],
    "authorized_after": 900,
    "executed_after": 900,
-   "true_speed_last_10s_mean_mps": 0.020914,
-   "estimated_drift_from_hold_point_max_m": 0.019461
+   "true_speed_last_10s_mean_mps": 0.000869,
+   "estimated_drift_from_hold_point_max_m": 0.242405
   },
   "fault THRUSTER_FAULT": {
    "seed": 7400002,
@@ -369,7 +370,8 @@
    "final_reasons": [
     "STATE_STALE",
     "ALTITUDE_UNMONITORED",
-    "SAFE_HOLD_ACTION:STATION_KEEP"
+    "STATE_ESTIMATE_NOT_TRUSTWORTHY",
+    "SAFE_HOLD_ACTION:ZERO_THRUST"
    ],
    "authorized_after": 1979,
    "executed_after": 0,

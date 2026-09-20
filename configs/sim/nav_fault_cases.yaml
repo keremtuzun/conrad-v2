@@ -10,8 +10,12 @@
 #                        really stops (mean true speed over the last 10 s <= 0.1 m/s): refused commands must not
 #                        leave the hardware on its last command
 #                "refused": no non-zero command is authorized after the state is reached, and the vehicle stops
-#                "hold": the stack holds the position it had when the state was reached (safe_hold_action
-#                        STATION_KEEP of RobotConfig): estimate within hold_radius_m of that point, vehicle stopped
+#                "hold": the stack stays at the position it had when the state was reached: estimate within
+#                        hold_radius_m of that point, vehicle stopped. Since 2026-09-20 a HOLD taken because the
+#                        estimate itself is untrustworthy no longer station keeps on it (the flagship defect):
+#                        the supervisor substitutes SafetyConfig.untrusted_state_hold_action (ZERO_THRUST), so
+#                        this rule also shows that the estimate does not run away once thrust is removed.
+#                        Thresholds unchanged.
 #                "avoid_target": no non-zero command to the faulted thruster after the state is reached, while
 #                        the other thrusters keep being commanded and >= 90 % of those commands are executed
 # deadline_s is an evaluation allowance, not a spec number: for LOCALIZATION_LOST it covers the covariance growth

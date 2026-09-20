@@ -8,6 +8,7 @@ from conrad.robotics.hardware.config import load_robot_config
 from conrad.robotics.safety import (
     MissionBoundary,
     Reason,
+    SafeHoldAction,
     SafetyConfig,
     SafetyInputs,
     SafetyState,
@@ -61,6 +62,17 @@ def command(alloc, ids, force=(5.0, 0, 0), now=NOW, clock="SIM"):
         torque_nm=(0, 0, 0),
     )
     return alloc.allocate(w, mission_id=ids.new(), run_id=ids.new(), now_ns=now, clock_domain=clock)[0]
+
+
+def zero_command(alloc, ids, now=NOW, clock="SIM"):
+    return alloc.zero_command(
+        trace_id=ids.new(),
+        mission_id=ids.new(),
+        run_id=ids.new(),
+        now_ns=now,
+        clock_domain=clock,
+        source_wrench_id=ids.new(),
+    )
 
 
 def test_normal_authorizes_with_reason_codes():
@@ -145,21 +157,111 @@ def test_boundary_and_hold_uses_configured_action_not_surface():
     assert s.authorize(command(alloc, ids), a, NOW, "SIM").authorized  # station keeping may still thrust
 
 
+def test_hold_with_lost_localization_commands_no_motion():
+    """FLAGSHIP-UNITY defect: the RobotConfig says STATION_KEEP, but station keeping runs a controller against
+    the estimate the supervisor has just declared lost. The assessment must fall back to the open-loop action."""
+    s, alloc, ids = sup()
+    assert s.safe_hold_action is SafeHoldAction.STATION_KEEP  # configs/robot/sim_reference.yaml
+    a = s.assess(inputs(state=state(sigma=2.0)))
+    assert a.state is SafetyState.HOLD and Reason.LOCALIZATION_LOST in a.reason_codes
+    assert a.safe_hold_action is SafeHoldAction.ZERO_THRUST and not a.state_trustworthy
+    assert Reason.STATE_NOT_TRUSTWORTHY in a.reason_codes
+    assert f"{Reason.SAFE_HOLD}:ZERO_THRUST" in a.reason_codes
+    assert a.zero_thrust_required
+    d = s.authorize(command(alloc, ids), a, NOW, "SIM")
+    assert not d.authorized and Reason.ZERO_REQUIRED in d.reason_codes
+    assert s.authorize(zero_command(alloc, ids), a, NOW, "SIM").authorized
+
+
+@pytest.mark.parametrize(
+    "kw",
+    [
+        {"state": state(health=HealthLevel.FAULT)},
+        {"estimator_reasons": (Reason.LOCALIZATION_LOST,)},
+        {"state": None},
+        {"state": state(t_s=9.0)},
+    ],
+)
+def test_every_untrustworthy_state_refuses_station_keeping(kw):
+    s, _, _ = sup()
+    a = s.assess(inputs(**kw))
+    assert a.state is SafetyState.HOLD and not a.state_trustworthy
+    assert a.safe_hold_action is SafeHoldAction.ZERO_THRUST and a.zero_thrust_required
+
+
+@pytest.mark.parametrize(
+    ("kw", "code"),
+    [
+        ({"obstacle_clearance_m": 0.3}, Reason.COLLISION_ENVELOPE),
+        ({"state": state(pos=(0, 0, -59.9))}, Reason.DEPTH_LIMIT),
+        ({"altitude_m": 0.2}, Reason.ALTITUDE_LIMIT),
+    ],
+)
+def test_station_keep_survives_a_hold_while_localization_is_valid(kw, code):
+    """The fix must not turn every HOLD into a stop: with a trustworthy estimate the configured STATION_KEEP
+    still applies and a non-zero command is still authorized."""
+    s, alloc, ids = sup()
+    a = s.assess(inputs(**kw))
+    assert a.state is SafetyState.HOLD and code in a.reason_codes
+    assert a.state_trustworthy and Reason.STATE_NOT_TRUSTWORTHY not in a.reason_codes
+    assert a.safe_hold_action is SafeHoldAction.STATION_KEEP and not a.zero_thrust_required
+    assert f"{Reason.SAFE_HOLD}:STATION_KEEP" in a.reason_codes
+    assert s.authorize(command(alloc, ids), a, NOW, "SIM").authorized
+
+
+def test_untrusted_state_hold_action_refuses_a_closed_loop_action():
+    with pytest.raises(ValueError, match="closes a control loop"):
+        SafetyConfig(untrusted_state_hold_action=SafeHoldAction.STATION_KEEP)
+    assert SafetyConfig().untrusted_state_hold_action is SafeHoldAction.ZERO_THRUST  # safe default
+    cfg = SafetyConfig(untrusted_state_hold_action=SafeHoldAction.SURFACE)
+    s, _, _ = sup(untrusted_state_hold_action=SafeHoldAction.SURFACE)
+    a = s.assess(inputs(state=state(sigma=2.0)))
+    assert cfg.untrusted_state_hold_action is SafeHoldAction.SURFACE
+    assert a.safe_hold_action is SafeHoldAction.SURFACE and not a.zero_thrust_required
+    assert f"{Reason.SAFE_HOLD}:SURFACE" in a.reason_codes
+    # a missing state is still a full stop, whatever the configured untrusted-state action says
+    assert s.assess(inputs(state=None)).zero_thrust_required
+
+
+BOX = MissionBoundary(min_xyz_m=(-5, -5, -20), max_xyz_m=(5, 5, 0))
+
+
+def test_worst_case_boundary_holds_before_the_estimate_crosses():
+    s, _, _ = sup(boundary=BOX, boundary_sigma_k=3.0)
+    a = s.assess(inputs(state=state(pos=(4.0, 0, -5), sigma=0.1)))  # 3*0.1 m of margin left inside
+    assert a.state is SafetyState.NORMAL and Reason.BOUNDARY_RISK not in a.reason_codes
+    b = s.assess(inputs(state=state(pos=(4.0, 0, -5), sigma=0.5)))  # worst case reaches x = 5.5 m
+    assert b.state is SafetyState.HOLD and Reason.BOUNDARY_RISK in b.reason_codes
+    assert Reason.BOUNDARY not in b.reason_codes and b.state_trustworthy
+
+
+def test_boundary_breach_with_a_lost_estimate_escalates_to_emergency_stop():
+    s, alloc, ids = sup(boundary=BOX)
+    a = s.assess(inputs(state=state(pos=(8, 0, -5), sigma=2.0)))
+    assert a.state is SafetyState.EMERGENCY_STOP and a.zero_thrust_required
+    assert Reason.BOUNDARY in a.reason_codes and Reason.BOUNDARY_BREACH_UNLOCALIZED in a.reason_codes
+    assert not s.authorize(command(alloc, ids), a, NOW, "SIM").authorized
+    assert s.authorize(zero_command(alloc, ids), a, NOW, "SIM").authorized
+    back = s.assess(inputs(state=state(pos=(0, 0, -5), sigma=0.1)))  # latched until an operator acknowledges
+    assert back.state is SafetyState.EMERGENCY_STOP
+    s.reset_latch()
+    assert s.assess(inputs(state=state(pos=(0, 0, -5), sigma=0.1))).state is SafetyState.NORMAL
+
+
+def test_boundary_breach_escalation_is_configurable():
+    s, _, _ = sup(boundary=BOX, boundary_breach_escalates_to_estop=False)
+    a = s.assess(inputs(state=state(pos=(8, 0, -5), sigma=2.0)))
+    assert a.state is SafetyState.HOLD and Reason.BOUNDARY_BREACH_UNLOCALIZED not in a.reason_codes
+    assert a.zero_thrust_required  # the safe-hold rule still stops the vehicle
+
+
 def test_stale_state_requires_zero_thrust():
     s, alloc, ids = sup()
     a = s.assess(inputs(state=state(t_s=9.0)))
     assert a.zero_thrust_required
     d = s.authorize(command(alloc, ids), a, NOW, "SIM")
     assert not d.authorized and Reason.ZERO_REQUIRED in d.reason_codes
-    zero = alloc.zero_command(
-        trace_id=ids.new(),
-        mission_id=ids.new(),
-        run_id=ids.new(),
-        now_ns=NOW,
-        clock_domain="SIM",
-        source_wrench_id=ids.new(),
-    )
-    assert s.authorize(zero, a, NOW, "SIM").authorized
+    assert s.authorize(zero_command(alloc, ids), a, NOW, "SIM").authorized
 
 
 def test_emergency_stop_latches_and_overrides_everything():

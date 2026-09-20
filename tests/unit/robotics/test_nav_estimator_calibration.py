@@ -143,7 +143,11 @@ def _hold_config(action):
 
 
 @pytest.mark.parametrize("action", ["STATION_KEEP", "ZERO_THRUST"])
-def test_growing_sigma_slows_then_holds_with_configured_policy(action):
+def test_growing_sigma_slows_then_stops_whatever_the_configured_hold_action(action):
+    """Updated 2026-09-20 (FLAGSHIP-UNITY safe-hold defect): this test used to assert that a STATION_KEEP
+    RobotConfig kept station keeping in a LOCALIZATION_LOST HOLD (``not zero_thrust_required``). That is the
+    behaviour that drove the flagship vehicle out of its mission boundary, so it now asserts the safe outcome:
+    whatever the configured action, a HOLD taken because the estimate is lost commands no motion."""
     cfg = _hold_config(action)
     ids = IdFactory(seed=2)
     hw = build_sim_hardware(cfg, 2)  # no position-fix renderer: the vehicle is blind from the start
@@ -175,14 +179,10 @@ def test_growing_sigma_slows_then_holds_with_configured_policy(action):
             assert 0.75 < sigma <= 1.5 and a.speed_scale == stack.config.safety.degraded_speed_scale
         if a.state is SafetyState.HOLD:
             assert sigma > 1.5 and Reason.LOCALIZATION_LOST in a.reason_codes
-            assert f"{Reason.SAFE_HOLD}:{action}" in a.reason_codes
+            assert not a.state_trustworthy and Reason.STATE_NOT_TRUSTWORTHY in a.reason_codes
+            assert f"{Reason.SAFE_HOLD}:ZERO_THRUST" in a.reason_codes  # not the configured `action`
             hold_refs.append(res.reference.position_world_m.copy())
-            if action == "ZERO_THRUST":
-                assert a.zero_thrust_required and all(
-                    v == 0.0 for v in res.command.thruster_commands.values()
-                )
-            else:
-                assert not a.zero_thrust_required
+            assert a.zero_thrust_required and all(v == 0.0 for v in res.command.thruster_commands.values())
             if len(hold_refs) > 50:
                 break
         hw.advance(0.02)

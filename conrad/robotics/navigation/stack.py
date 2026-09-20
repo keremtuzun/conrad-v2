@@ -187,10 +187,20 @@ class NavigationStack:
         self, a: SafetyAssessment, p: np.ndarray, q: np.ndarray, dt: float, now: int
     ) -> ControlReference:
         if a.hold_required or (a.state is not SafetyState.NORMAL and a.state is not SafetyState.DEGRADED):
+            # the action comes from the ASSESSMENT, not from RobotConfig: the supervisor replaces a station
+            # keep by an open-loop action whenever the estimate behind it is not trustworthy
+            surface_z = self.config.safety.water_surface_z_m
+            if not a.state_trustworthy and a.safe_hold_action is SafeHoldAction.SURFACE:
+                # ascend on the independently observed depth channel and follow the estimate horizontally
+                # instead of chasing a frozen point that the drift walks away from
+                self._hold_pose = None
+                return ControlReference(
+                    np.array([p[0], p[1], surface_z]), quat_from_yaw(yaw_of(q)), speed_limit_mps=0.25
+                )
             if self._hold_pose is None:
                 hold_p = p.copy()
-                if self.supervisor.safe_hold_action is SafeHoldAction.SURFACE:
-                    hold_p[2] = self.config.safety.water_surface_z_m  # only because RobotConfig says so
+                if a.safe_hold_action is SafeHoldAction.SURFACE:
+                    hold_p[2] = surface_z  # only because RobotConfig says so
                 self._hold_pose = (hold_p, quat_from_yaw(yaw_of(q)))
             return ControlReference(self._hold_pose[0], self._hold_pose[1], speed_limit_mps=0.25)
         self._hold_pose = None

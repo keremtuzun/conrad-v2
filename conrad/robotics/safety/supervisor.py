@@ -3,6 +3,15 @@
 ``assess`` maps monitored conditions to a safety state (worst wins; leak and operator E-stop latch).
 ``authorize`` validates one AllocatedCommand against that state and either attaches a
 SafetyAuthorization or refuses it. Every decision carries reason codes.
+
+Two rules protect a HOLD taken because the state estimate itself is bad (FLAGSHIP-UNITY, 2026-09-20):
+
+* the assessment carries the safe-hold action the consumer must execute. While the estimate is not
+  trustworthy (missing, stale, estimator FAULT, LOCALIZATION_LOST, sigma above the limit) it is
+  ``SafetyConfig.untrusted_state_hold_action`` (ZERO_THRUST by default), never a station keep that would
+  close a control loop on the estimate that was just declared lost;
+* the mission boundary is judged on the worst case the estimate admits (inflated by ``boundary_sigma_k``
+  sigma), and a real breach while the estimate is untrustworthy latches EMERGENCY_STOP.
 """
 
 from __future__ import annotations
@@ -85,12 +94,16 @@ class SafetySupervisor:
         c = self.config
         sigma: float | None = None
         speed = 0.0
+        # the estimate may not be used as a control reference once any of these holds (see the module docstring)
+        untrusted = False
         if x.state is None:
             add(SafetyState.HOLD, Reason.STATE_MISSING)
+            untrusted = True
         else:
             age_s = (x.now_ns - x.state.timestamp.time_ns) / NS_PER_S
             if x.state.timestamp.clock_domain != x.clock_domain or age_s > self.stale_s:
                 add(SafetyState.HOLD, Reason.STATE_STALE)
+                untrusted = True
             sigma = x.state.pose.position_sigma_m()
             if x.state.linear_velocity_body_mps is not None:
                 speed = float(np.linalg.norm(x.state.linear_velocity_body_mps))
@@ -102,6 +115,7 @@ class SafetySupervisor:
             )
             if lost:
                 add(SafetyState.HOLD, Reason.LOCALIZATION_LOST)
+                untrusted = True
                 if sigma is not None and sigma > self.max_sigma:
                     add(SafetyState.HOLD, Reason.POSE_SIGMA_HIGH)
                 self._loss_since_ns = self._loss_since_ns if self._loss_since_ns is not None else x.now_ns
@@ -121,8 +135,17 @@ class SafetySupervisor:
             depth, depth_sigma = c.water_surface_z_m - float(p[2]), (sigma or 0.0)
             if depth + c.depth_sigma_k * depth_sigma > self.max_depth:
                 add(SafetyState.HOLD, Reason.DEPTH_LIMIT)
-            if c.boundary is not None and not c.boundary.contains(p):
-                add(SafetyState.HOLD, Reason.BOUNDARY)
+            if c.boundary is not None:
+                # the boundary is judged on the WORST CASE the estimate admits, not on its mean: a drifting
+                # estimate must stop the vehicle before the true position can be outside, not after.
+                if not c.boundary.contains(p):
+                    add(SafetyState.HOLD, Reason.BOUNDARY)
+                    if untrusted and c.boundary_breach_escalates_to_estop:
+                        # the declared operating volume is breached and the vehicle cannot navigate back on an
+                        # estimate it may not use: latch, so no autonomy resumes motion without an operator.
+                        self.emergency_stop(Reason.BOUNDARY_BREACH_UNLOCALIZED)
+                elif sigma is None or not c.boundary.contains_ball(p, c.boundary_sigma_k * sigma):
+                    add(SafetyState.HOLD, Reason.BOUNDARY_RISK)
         faulted: set[str] = set()
         if x.health is not None:
             if x.health.leak_detected and Reason.LEAK not in self._latched:
@@ -176,18 +199,24 @@ class SafetySupervisor:
             found.append((state, Reason.DEGRADED_DWELL))
         reasons = tuple(dict.fromkeys([code for _, code in found] + info))
         hold = state is SafetyState.HOLD
+        action = c.untrusted_state_hold_action if untrusted else self.safe_hold_action
         zero = state in (SafetyState.EMERGENCY_STOP, SafetyState.RECOVER) or (
             hold
             and (
+                # no usable state at all: nothing may be commanded, whatever the configured actions say
                 Reason.STATE_STALE in reasons
                 or Reason.STATE_MISSING in reasons
-                or self.safe_hold_action is SafeHoldAction.ZERO_THRUST
+                or action is SafeHoldAction.ZERO_THRUST
             )
         )
+        if untrusted:
+            reasons = (*reasons, Reason.STATE_NOT_TRUSTWORTHY)
         if hold:
-            reasons = (*reasons, f"{Reason.SAFE_HOLD}:{self.safe_hold_action.value}")
+            reasons = (*reasons, f"{Reason.SAFE_HOLD}:{action.value}")
         scale = 1.0 if state is SafetyState.NORMAL else c.degraded_speed_scale
-        a = SafetyAssessment(state, reasons, scale, hold, zero, d_safe, frozenset(faulted))
+        a = SafetyAssessment(
+            state, reasons, scale, hold, zero, d_safe, frozenset(faulted), action, not untrusted
+        )
         if state is not self.state or (self.last is not None and reasons != self.last.reason_codes):
             self.history.append((x.now_ns, state, reasons))
         self.state, self.last = state, a

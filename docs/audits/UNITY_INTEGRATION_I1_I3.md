@@ -328,3 +328,236 @@ this run.
   (EXT-HW-05 is OPEN).
 - **Thresholds are evaluation allowances, not spec numbers.** The deadlines were set before any run. The 0.1 m/s
   stop threshold was added after the development finding and before the final run.
+
+## Safe-hold under lost localization (2026-09-20)
+
+The flagship mission (`docs/audits/FLAGSHIP_UNITY.md`, section 7) found a safety defect in the HOLD behaviour.
+It is fixed here, in the supervisor/monitors layer, and I1 and I2 were re-recorded on the current player and the
+current code. Every number in this section comes from runs executed for it.
+
+### The defect
+
+The position fix was lost at 90.0 s of the 150 s flagship mission and never returned. The supervisor behaved as
+designed on the state machine: DEGRADED 12.0 s after the outage, LOCALIZATION_LOST and HOLD after 23.6 s, held to
+the end. The vehicle did not stop. The RobotConfig safe-hold action is STATION_KEEP
+(`configs/robot/sim_reference.yaml`), and station keeping runs a position controller against the vehicle's own
+estimate. With no fixes the EKF dead-reckoned, the estimate walked 4.74 m away from the hold point and the
+controller chased it: true mean speed 0.207 m/s over the last 10 s, the TRUE position outside the mission
+boundary from 122.6 s (276 of 1500 control steps, hard constraint `MISSION_BOUNDARY_VIOLATION`), a
+`COLLISION_ENVELOPE` violation at 138.4 s and a minimum true clearance of 0.058 m. Final estimator sigma 4.63 m
+against a true error of 0.53 m: the filter was honest, the hold action was not.
+
+Holding station against an estimate that has just been declared untrustworthy is unsafe, because the reference
+and the feedback come from the same failed source. The `MISSION_BOUNDARY_VIOLATION` was raised while the state
+was already HOLD, so nothing escalated either.
+
+Two corrections to the flagship write-up, both checked here:
+
+- the I2 NAV fault case did not pass because of a ZERO_THRUST configuration. The NAV runs use the same
+  `sim_reference` RobotConfig with STATION_KEEP. It passed because the fault fires 10 s into a 50 s run, so the
+  vehicle station kept on the lost estimate for only about 21 s and drifted 0.019 m in that time;
+- the boundary rules below are inert for the NAV benchmarks, whose `SafetyConfig.boundary` is None.
+
+### The rule
+
+**A HOLD may not command a closed loop on an untrustworthy estimate.** In
+`conrad/robotics/safety/supervisor.py` the assessment now carries the safe-hold action the consumer must execute,
+and that action is not read from RobotConfig when the estimate is bad. The estimate is "not trustworthy" when any
+of these holds, which are exactly the conditions that already force HOLD:
+
+| Condition | Reason code |
+|---|---|
+| no state at all | `STATE_MISSING` |
+| state older than `safety.state_stale_after_s`, or the wrong clock domain | `STATE_STALE` |
+| estimator health FAULT, or the estimator declares it | `LOCALIZATION_LOST` |
+| no position covariance, or sigma above `safety.max_pose_sigma_m` | `LOCALIZATION_LOST`, `POSE_SIGMA_HIGH` |
+
+When one of them holds, the assessment reports `STATE_ESTIMATE_NOT_TRUSTWORTHY`, sets `state_trustworthy = False`
+and replaces the configured action by `SafetyConfig.untrusted_state_hold_action`, whose default is
+`ZERO_THRUST`. The reason code that already named the action (`SAFE_HOLD_ACTION:<action>`) now names the
+**effective** action, so the event log shows `SAFE_HOLD_ACTION:ZERO_THRUST` rather than the configured
+`STATION_KEEP`. `SafetyAssessment.safe_hold_action` and `.state_trustworthy` are new public fields, so every
+consumer inherits the rule; `NavigationStack._reference` reads the assessment instead of
+`supervisor.safe_hold_action`.
+
+Why zero thrust and not a station keep with a wider dead band or a slower gain: there is no trustworthy reference
+to hold. A dead band would only change how far the estimate has to walk before the chase starts. Zero thrust is
+the one action whose safety does not depend on the estimate being right, it is already the defined response to
+`STATE_STALE`, and it is in the ch20 `safe_hold_action` vocabulary, so no new hardware semantics are introduced.
+
+It stays configurable. `untrusted_state_hold_action` accepts `ZERO_THRUST` (default) or `SURFACE`, and a
+validator refuses `STATION_KEEP` with the reason, because `STATION_KEEP` is the one action in the vocabulary that
+closes a loop on the estimate (`ESTIMATE_CLOSED_LOOP_ACTIONS` in `monitors.py`). `SURFACE` is a declared
+ascend-and-hold: with an untrustworthy estimate the stack drives only the depth channel, which the pressure
+sensor observes directly and which a position-fix outage does not touch, and it follows the estimate
+horizontally instead of chasing a frozen point. A missing or stale state is still a full stop whatever the
+configuration says, which is the pre-existing guarantee, kept.
+
+`STATION_KEEP` is unchanged while localization is valid. A HOLD for `COLLISION_ENVELOPE`, `DEPTH_LIMIT`,
+`ALTITUDE_LIMIT` or a boundary breach with a good estimate still station keeps and still authorizes thrust.
+
+### Boundary enforcement under lost localization
+
+Decision: **the mission boundary is judged on the worst case the estimate admits, and a real breach that the
+vehicle cannot navigate out of escalates to a latched emergency stop.** Implemented in `assess`:
+
+1. **Worst case, not mean.** The containment test inflates the estimate by `boundary_sigma_k * sigma_pose`
+   (`SafetyConfig.boundary_sigma_k`, default 3.0, the same k the depth limit already uses). If the ball is not
+   fully inside the box, the supervisor raises `MISSION_BOUNDARY_RISK` and holds. A drifting estimate therefore
+   stops the vehicle before the true position can be outside, instead of after. This is what the flagship needed:
+   the nominal estimate crossed at 122.7 s, while sigma had been above 2 m since about 120 s.
+2. **Breach plus lost estimate escalates.** If the nominal estimate is outside the boundary while the state is
+   untrustworthy, the supervisor latches EMERGENCY_STOP with `MISSION_BOUNDARY_BREACH_UNLOCALIZED`. The reasoning
+   is that the vehicle has left its declared operating volume and, by rule 1 above, may not use its estimate to
+   come back, so no autonomy should resume motion until an operator acknowledges. The latch is cleared only by
+   `reset_latch`, as for leak and operator E-stop.
+3. **A breach with a good estimate does not escalate.** It stays HOLD with `MISSION_BOUNDARY_VIOLATION` and
+   station keeping, which is the behaviour that can actually recover the vehicle.
+
+`boundary_breach_escalates_to_estop` (default true) makes rule 2 configurable; with it off the breach stays a
+HOLD, and rule 1 of the safe-hold section still stops the vehicle. Rules 1 and 2 only apply where a boundary is
+configured: `MissionRuntime` sets it from `MissionContext.spec`, and the NAV benchmarks have none.
+
+### Tests
+
+| Test | What it fixes in place |
+|---|---|
+| `tests/unit/robotics/test_nav_safety.py::test_hold_with_lost_localization_commands_no_motion` | STATION_KEEP config, sigma above the limit: HOLD carries `SAFE_HOLD_ACTION:ZERO_THRUST` and `STATE_ESTIMATE_NOT_TRUSTWORTHY`, a thrusting command is refused with `ZERO_THRUST_REQUIRED` and an all-zero command is authorized |
+| `...::test_every_untrustworthy_state_refuses_station_keeping` | the same for estimator FAULT, an estimator-declared `LOCALIZATION_LOST`, a missing state and a stale state |
+| `...::test_station_keep_survives_a_hold_while_localization_is_valid` | `COLLISION_ENVELOPE`, `DEPTH_LIMIT` and `ALTITUDE_LIMIT` holds still station keep and still authorize thrust |
+| `...::test_untrusted_state_hold_action_refuses_a_closed_loop_action` | the validator, the ZERO_THRUST default, the SURFACE alternative, and that a missing state stops anyway |
+| `...::test_worst_case_boundary_holds_before_the_estimate_crosses` | 3 sigma inflation: NORMAL at sigma 0.1 m, `MISSION_BOUNDARY_RISK` HOLD at sigma 0.5 m, same position |
+| `...::test_boundary_breach_with_a_lost_estimate_escalates_to_emergency_stop` | breach plus lost estimate latches EMERGENCY_STOP, survives the vehicle being back inside, clears on `reset_latch` |
+| `...::test_boundary_breach_escalation_is_configurable` | with escalation off the breach is a HOLD that still commands zero thrust |
+| `tests/simulation/nav/test_safe_hold_lost_localization.py` (5 tests) | the flagship condition on the Python kernel |
+
+The simulation test runs the flagship condition on the L1 kernel, not Unity, so it is fast (22 s): 150 s at a
+0.1 s control period, 1 Hz USBL-like fixes until 90.0 s and none afterwards, a 5x IMU noise fault at the outage
+so the dead reckoning really drifts (as NAV-007 does), a mission boundary, and the commands actually submitted
+through the CommandGateway. Measured on seed 9: HOLD with LOCALIZATION_LOST at 112.9 s (22.9 s after the
+outage), then 371 control steps in which the maximum absolute authorized thruster command is **0.0**, true mean
+speed over the last 10 s **0.0447 m/s** (threshold 0.1), **0 of 1500** steps with the true position outside the
+boundary, 0 collisions. Over the same window the estimate ran away by **1.935 m**, so this is the flagship
+condition and not a quiet run: the vehicle simply did not follow it, the true horizontal drift after HOLD being
+**0.302 m**.
+
+**One existing test asserted the old behaviour and was updated.**
+`tests/unit/robotics/test_nav_estimator_calibration.py::test_growing_sigma_slows_then_holds_with_configured_policy`
+asserted that a STATION_KEEP RobotConfig kept `zero_thrust_required` false in a LOCALIZATION_LOST HOLD. That is
+the defect. It is now
+`test_growing_sigma_slows_then_stops_whatever_the_configured_hold_action` and asserts the safe outcome for both
+parametrized configurations: the effective action is ZERO_THRUST and every thruster command is 0.0. The rest of
+the test (the NORMAL, DEGRADED, HOLD sequence, the sigma bands, the speed scale, the fixed hold reference) is
+unchanged. No threshold was moved anywhere, and no other test was touched.
+
+Suites run on the changed paths: `tests/leakage`, `tests/contract`, `tests/unit/robotics` and
+`tests/simulation/nav`, **317 passed**. ruff and mypy are clean on `conrad/robotics`.
+
+### Before and after on the kernel (scratch measurement, not a test)
+
+To show that the rule changes what the vehicle does and not only what the log says, the same 150 s kernel run was
+executed once with the pre-2026-09-20 rule restored (a scratch script that allows `untrusted_state_hold_action`
+to be STATION_KEEP, with `boundary_sigma_k = 0` and escalation off). Both runs reach HOLD with
+LOCALIZATION_LOST at 112.9 s.
+
+| | Old rule (station keep on the lost estimate) | New rule |
+|---|---|---|
+| max absolute authorized thruster command after HOLD | 0.3054 | **0.0** |
+| true horizontal drift from the hold point | 1.479 m | **0.302 m** |
+| true vertical drift from the hold point | 0.044 m | 1.440 m (buoyant ascent, see below) |
+| true mean speed over the last 10 s | 0.0674 m/s | 0.0447 m/s |
+
+The kernel drift is much smaller than the flagship's 4.74 m, so this is a demonstration of the mechanism, not a
+reproduction of its magnitude. The magnitude evidence is the flagship run itself.
+
+### Re-recorded I1 and I2
+
+The Unity player was **not** rebuilt: no C# was changed. It is the binary the flagship run produced
+(`ConradSim.exe`, sha256 `36c5c9f13481406382a8e9ef8fc0ea7cdf055c43bb12fc8fd545b07c199cd277`, Unity 6000.5.9f1,
+built 2026-09-20T03:51:10Z, 0 errors, 0 warnings), so `same_player_binary` is true in every replay below. Both
+gates were recorded sequentially with `scripts/record_unity_gate_evidence.py`, with no other player running. Git
+commit at record: `025b302faff03a7dd6037f6349e5894a2b449809`. I3 and I4 were deliberately **not** re-recorded:
+Model2T is being repaired in parallel and I3 has to wait for it.
+
+**I2: PASS, all 7 criteria, 13 of 13 tests in 928.60 s.** Seeds 7400001 to 7400006
+(`configs/eval/partitions_nav.yaml` final_test), unchanged.
+
+| Benchmark | Final error (m) | Other metric | Estimation RMS (m) | Result |
+|---|---|---|---|---|
+| NAV-001 | 0.085 | | 0.112 | PASS |
+| NAV-002 | 0.055 | | 0.112 | PASS |
+| NAV-003 | 0.070 | min clearance 0.442 m, 0 collisions | 0.104 | PASS |
+| NAV-004 | 0.023 | standoff RMS 0.013 m (bound 0.25) | 0.095 | PASS |
+| NAV-005 | 0.020 | station RMS 0.072 m (bound 0.15) | 0.075 | PASS |
+| NAV-006 | 0.076 | | 0.126 | PASS |
+
+Uses estimated state: a +0.5 m fix bias moved the true end point by -0.508 m (tolerance 0.15 m). Replay: NAV-003
+and NAV-006 both give a true-trajectory max difference of 0.0 and 3000 = 3000 identical gateway acks, over 427
+verified bundle files each.
+
+| Fault case (seed) | Safe state | Time after fault | Motion rule evidence |
+|---|---|---|---|
+| LOSS_OF_LOCALIZATION (7400001) | HOLD, LOCALIZATION_LOST | 22.10 s (deadline 35 s) | hold-point drift **0.242 m** (radius 1.0 m), true speed **0.00087 m/s** |
+| THRUSTER_FAULT on H1 (7400002) | DEGRADED, DEGRADED_MANEUVERABILITY | 0.02 s | 0 commands to H1, 100 % executed |
+| STALE_STATE, IMU dropout (7400003) | HOLD, STATE_STALE, zero thrust | 0.52 s | all-zero commands, speed 3.8e-5 m/s |
+| LOW_BATTERY (7400004) | RETURN, BATTERY_LOW | 0.02 s | all-zero commands, speed 2.2e-5 m/s |
+| LEAK (7400005) | RECOVER, LEAK_DETECTED | 0.02 s | all-zero commands, speed 1.7e-5 m/s |
+
+The LOSS_OF_LOCALIZATION case is the one the change touches. Its recorded reason codes are now
+`LOCALIZATION_LOST`, `POSE_SIGMA_HIGH`, `ALTITUDE_UNMONITORED`, `STATE_ESTIMATE_NOT_TRUSTWORTHY`,
+`SAFE_HOLD_ACTION:ZERO_THRUST`. All 900 commands issued after the safe state was reached were authorized and
+executed, and the true speed fell from 0.0209 m/s on the previous recording to **0.00087 m/s**, a factor of 24.
+The estimated hold-point drift rose from 0.019 m to 0.242 m, well inside the declared 1.0 m radius, because
+nothing is correcting the estimate any more. The declared expectation in `configs/sim/nav_fault_cases.yaml` was
+**not** changed, and neither was any threshold; only the comment that described "hold" as station keeping.
+
+**I1: PASS, all 9 criteria, 10 of 10 tests in 148.89 s.** Seed 7800000
+(`configs/eval/partitions_unity_gates.yaml` final_test).
+
+| Criterion | Measured | Result |
+|---|---|---|
+| robot moves through synthetic world | true path 15.93 m in 60 s, 600 commands via `unity_v2`, 0 collisions, min clearance 0.695 m | PASS |
+| persistent map | 275 spatial revisions, all DIRECT; max revision 16; 50 beliefs | PASS |
+| geometry | 206 occupied-claimed cells; median \|Twin2S sdf\| 0.101 m, p90 0.165 m; 100 % within 0.5 m | PASS |
+| occupancy | 78 of 1200 probes claimed free; wrong 0.0 | PASS |
+| coverage | lane region 0.101; target segment 0.457; 913 observed cells | PASS |
+| observed/inferred/unknown | OBSERVED 913, INFERRED 12, UNKNOWN 3655; 500 of 500 points below the seabed UNKNOWN | PASS |
+| uncertainty | mean U_O: OBSERVED 0.052, INFERRED 0.856, UNKNOWN 0.852; per-channel std 0.211, 0.018, 0.035, 0.404 | PASS |
+| provenance | 25 of 25 evidence items re-derive bit-exactly from their raw Unity frames | PASS |
+| no Twin truth leakage | 2226 runtime texts scanned, 0 violations | PASS |
+| replay | events 2520 = 2520, decisions 30 = 30, revisions 343 = 343, trajectory max \|d\| 0.0; 156 files, 97 objects | equal |
+
+`conrad gates status` after both recordings: U0 PASS, 2S-FIRST PASS, I1 PASS, I2 PASS, 2T PASS, I3 PASS,
+I4 FAIL. Unchanged by this work except that I1 and I2 now rest on current evidence.
+
+### Honest notes
+
+- **Zero thrust is not a hover on the kernel vehicle.** `sim_reference` is 11.5 kg with a displaced volume of
+  0.01125 m3, so at 1025 kg/m3 it is positively buoyant by about 0.31 N and rises at roughly 0.045 m/s with the
+  thrusters off. That is the 1.440 m of vertical drift in the table above, and it is the declared fail-safe
+  behaviour of a positively buoyant vehicle, not a chase. It does mean that a long enough zero-thrust hold will
+  eventually reach the top face of a mission boundary or the surface: about 22 s per metre of headroom at that
+  rate. The Unity player's vehicle does not show it (0.00087 m/s over the I2 fault run). Recorded as OPEN: a
+  depth-holding variant that keeps the vertical loop, which a position-fix outage does not invalidate, and drops
+  only the horizontal one, would be strictly better than either option in the vocabulary. `SURFACE` is the
+  nearest available approximation and is implemented, but no gate exercises it.
+- **The boundary rules are untested on the integrated mission path.** They are covered by unit tests and by the
+  kernel simulation test. Re-running the flagship mission is not part of this workstream, so the claim that they
+  would have prevented the 122.6 s excursion is an argument from the recorded sigma trace, not a measurement.
+- **`MISSION_BOUNDARY_RISK` can hold a mission that plans close to its boundary.** With the default k of 3 and a
+  healthy sigma of about 0.06 m the margin is 0.18 m, so this only bites in the last 20 cm. It is a new way for a
+  mission to stop, and it is deliberate.
+- **The before/after kernel table is a scratch measurement**, produced by a throwaway script that monkeypatches
+  the closed-loop guard away. It is not in the test suite and cannot be reproduced by running the tests.
+- **Deadlines and the 0.1 m/s stop threshold are unchanged evaluation allowances**, as the I2 repair section
+  already states.
+- **LOCALIZATION_LOST now fires at 22.10 s on seed 7400001, where the 2026-09-19 I2 repair table reports
+  28.64 s.** The evidence file that was in the tree before this work (recorded earlier on 2026-09-20, after the
+  flagship player rebuild and not by this workstream) already read 22.1 s, so the change predates the safe-hold
+  rule and is not caused by it. I did not investigate which change moved it. Both are inside the declared 35 s
+  deadline.
+- **I1 and I2 evidence had already been re-recorded earlier on 2026-09-20** by another run, on the same seeds and
+  the same player. The numbers in the I1 and I2 tables above are from my own runs and are the ones in
+  `artifacts/gates/{I1,I2}/`. The NAV benchmark numbers are unchanged by the safe-hold rule, as expected: it only
+  acts once the estimate is declared untrustworthy, which on the NAV benchmarks happens only in the
+  LOSS_OF_LOCALIZATION fault case.

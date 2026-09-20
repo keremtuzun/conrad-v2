@@ -87,15 +87,15 @@
    "problems": []
   },
   "no Twin truth leakage": {
-   "texts_scanned": 2230,
+   "texts_scanned": 2226,
    "world_entity_ids": 12,
    "violations": [],
    "registry_ids_on_cells": 5
   },
   "replay": {
    "events": {
-    "original": 2522,
-    "replayed": 2522,
+    "original": 2520,
+    "replayed": 2520,
     "equal": true,
     "first_difference": null
    },
@@ -106,8 +106,8 @@
     "first_difference": null
    },
    "revisions": {
-    "original": 344,
-    "replayed": 344,
+    "original": 343,
+    "replayed": 343,
     "equal": true,
     "first_difference": null
    },

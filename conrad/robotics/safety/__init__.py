@@ -1,6 +1,7 @@
 """Safety Supervisor (ch20 Safety Supervisor / Safety states / Collision envelope / Localization loss)."""
 
 from conrad.robotics.safety.monitors import (
+    ESTIMATE_CLOSED_LOOP_ACTIONS,
     MissionBoundary,
     Reason,
     SafeHoldAction,
@@ -29,6 +30,10 @@ IMPLEMENTATION_METADATA = {
         "estimator health DEGRADED (NIS inconsistency, gated fixes/depth) -> DEGRADED + ESTIMATOR_DEGRADED",
         "pose sigma > degraded_sigma_fraction*max_pose_sigma_m -> DEGRADED (speed scaled, SYNTHETIC config)",
         "pose sigma > max_pose_sigma_m or estimator FAULT -> HOLD with the configured safe_hold_action",
+        "an untrustworthy estimate (missing/stale/FAULT/LOCALIZATION_LOST/sigma>limit) replaces that action "
+        "by SafetyConfig.untrusted_state_hold_action (ZERO_THRUST default); STATION_KEEP is refused there",
+        "the mission boundary is tested on the estimate inflated by boundary_sigma_k*sigma "
+        "(MISSION_BOUNDARY_RISK -> HOLD); a real breach with an untrustworthy estimate latches EMERGENCY_STOP",
         "D_safe = radius + v*t_react + v^2/(2 a_brake) + k*sigma_pose + map margin (SYNTHETIC_ONLY constants)",
     ],
     "baselines": ["rule-based deterministic supervisor"],
@@ -37,6 +42,7 @@ IMPLEMENTATION_METADATA = {
 }
 
 __all__ = [
+    "ESTIMATE_CLOSED_LOOP_ACTIONS",
     "IMPLEMENTATION_METADATA",
     "SUPERVISOR_VERSION",
     "MissionBoundary",

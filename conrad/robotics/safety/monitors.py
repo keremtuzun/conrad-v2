@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 
 import numpy as np
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from conrad.schemas.base import ConradModel
 from conrad.schemas.robot import BatteryState, RobotState, SystemHealth, ThrusterState
@@ -33,6 +33,12 @@ class SafeHoldAction(str, Enum):
     SURFACE = "SURFACE"
 
 
+#: Safe-hold actions that run a closed control loop against the vehicle's own position estimate. They are only
+#: legitimate while that estimate is trustworthy: holding station on an estimate the supervisor has just declared
+#: lost makes the controller chase the dead-reckoning drift (FLAGSHIP-UNITY, 2026-09-20).
+ESTIMATE_CLOSED_LOOP_ACTIONS = frozenset({SafeHoldAction.STATION_KEEP})
+
+
 class Reason:
     STATE_MISSING = "STATE_MISSING"
     STATE_STALE = "STATE_STALE"
@@ -50,6 +56,8 @@ class Reason:
     BATTERY_LOW = "BATTERY_LOW"
     BATTERY_UNKNOWN = "BATTERY_UNKNOWN"
     BOUNDARY = "MISSION_BOUNDARY_VIOLATION"
+    BOUNDARY_RISK = "MISSION_BOUNDARY_RISK"
+    BOUNDARY_BREACH_UNLOCALIZED = "MISSION_BOUNDARY_BREACH_UNLOCALIZED"
     DEPTH_LIMIT = "DEPTH_LIMIT"
     ALTITUDE_LIMIT = "ALTITUDE_LIMIT"
     ALTITUDE_UNMONITORED = "ALTITUDE_UNMONITORED"
@@ -68,6 +76,7 @@ class Reason:
     ZERO_REQUIRED = "ZERO_THRUST_REQUIRED"
     STATE_FORBIDS_MOTION = "SAFETY_STATE_FORBIDS_MOTION"
     SAFE_HOLD = "SAFE_HOLD_ACTION"
+    STATE_NOT_TRUSTWORTHY = "STATE_ESTIMATE_NOT_TRUSTWORTHY"
 
 
 class MissionBoundary(ConradModel):
@@ -79,6 +88,13 @@ class MissionBoundary(ConradModel):
 
     def contains(self, p: np.ndarray) -> bool:
         return bool(np.all(p >= np.asarray(self.min_xyz_m)) and np.all(p <= np.asarray(self.max_xyz_m)))
+
+    def contains_ball(self, p: np.ndarray, radius_m: float) -> bool:
+        """True when the whole ball of that radius around ``p`` is inside the box (worst-case containment)."""
+        r = max(0.0, float(radius_m))
+        return bool(
+            np.all(p - r >= np.asarray(self.min_xyz_m)) and np.all(p + r <= np.asarray(self.max_xyz_m))
+        )
 
 
 class SafetyConfig(ConradModel):
@@ -96,6 +112,34 @@ class SafetyConfig(ConradModel):
     water_surface_z_m: float = Field(
         default=0.0, description="WORLD z of the water surface from the mission context; depth = surface - z"
     )
+    untrusted_state_hold_action: SafeHoldAction = Field(
+        default=SafeHoldAction.ZERO_THRUST,
+        description=(
+            "safe-hold action that replaces RobotConfig.safety.safe_hold_action while the state estimate is "
+            "not trustworthy (missing, stale, estimator FAULT, LOCALIZATION_LOST or sigma above the limit). "
+            "It may not be an action that closes a control loop on that estimate."
+        ),
+    )
+    boundary_sigma_k: float = Field(
+        default=3.0,
+        ge=0,
+        description="k of the worst-case mission-boundary test: the estimate is inflated by k*sigma_pose",
+    )
+    boundary_breach_escalates_to_estop: bool = Field(
+        default=True,
+        description="a boundary breach while the state estimate is not trustworthy latches EMERGENCY_STOP",
+    )
+
+    @field_validator("untrusted_state_hold_action")
+    @classmethod
+    def _untrusted_action_is_open_loop(cls, v: SafeHoldAction) -> SafeHoldAction:
+        if v in ESTIMATE_CLOSED_LOOP_ACTIONS:
+            raise ValueError(
+                f"untrusted_state_hold_action={v.value} closes a control loop on the very estimate that was "
+                f"declared untrustworthy; allowed: "
+                f"{sorted(a.value for a in SafeHoldAction if a not in ESTIMATE_CLOSED_LOOP_ACTIONS)}"
+            )
+        return v
 
 
 @dataclass(frozen=True)
@@ -121,6 +165,12 @@ class SafetyAssessment:
     zero_thrust_required: bool
     d_safe_m: float
     faulted_actuators: frozenset[str] = field(default_factory=frozenset)
+    #: the safe-hold action every consumer must execute for THIS assessment. It is the configured
+    #: ``RobotConfig.safety.safe_hold_action`` while the estimate is trustworthy and
+    #: ``SafetyConfig.untrusted_state_hold_action`` otherwise; never the configured one blindly.
+    safe_hold_action: SafeHoldAction = SafeHoldAction.ZERO_THRUST
+    #: False when the estimate is missing, stale, or the estimator/sigma declares localization lost.
+    state_trustworthy: bool = True
 
 
 def collision_envelope(
