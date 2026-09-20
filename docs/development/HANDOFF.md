@@ -113,6 +113,8 @@ and the iteration-4 doc sections. It was held back only because Model2T was edit
 | 7800014-7800016 | I6 surrogate | used |
 | 7800017 | flagship | used |
 | 8000000+ | I4 occluded family | reserved by the in-flight work |
+| 8000200-8000219, 8001000-8001059 | I4 formal runs 1 and 2 | SPENT (gate I4 = FAIL, decided) |
+| 8002000-8002319 | MCBR V4 (`configs/eval/partitions_i4_mcbr_v4.yaml`) | reserved. Development 8002000-8002039 read once by ACTIVE-MCBR-E006; final 8002200-8002259 and OOD 8002300-8002319 UNREAD |
 
 Partition files are digest-pinned in `conrad/evaluation/partitions.py`; a changed file is refused. Add a new
 versioned file rather than editing an existing one.

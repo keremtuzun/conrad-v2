@@ -1,0 +1,65 @@
+# Immutable seed partition for the MCBR V4 investigation on the world family
+# ACTIVE_INSPECTION_OCCLUDED_V1. SYNTHETIC_ONLY. Created 2026-09-20 BEFORE any run on any of these seeds.
+#
+# WHY A NEW FILE. Gate I4 is decided and its verdict is final: on ACTIVE_INSPECTION_OCCLUDED_V1 the production
+# MCBR planner beats a fixed inspection route and random views and does NOT beat a systematic coverage sweep
+# (run 1, 8000200-8000219, 20 worlds; pre-registered replication run 2, 8001000-8001059, 60 worlds,
+# +0.0094 [-0.0828, +0.0979] on hidden_state_error_improvement, a tie). Every seed of both runs is SPENT and
+# is never re-read as independent evidence. The diagnostic work that motivates a possible V4 is post-hoc
+# analysis of those spent traces (docs/audits/MCBR_V3_FAILURE_ANALYSIS.md) and therefore cannot tune anything.
+# Any V4 mechanism needs its own development worlds to be designed on, its own validation worlds to be
+# selected on, and its own untouched final worlds. This file declares all three, before the mechanism exists.
+#
+# DO NOT EDIT: conrad.evaluation.partitions pins the digest of this file's canonical content
+# (I4_MCBR_V4_PARTITIONS_SHA256) and refuses a changed copy. Add a new versioned file instead.
+version: partitions-i4-mcbr-v4-2026-09-20-v1
+scenario: I4-OCCLUDED
+families: [pipeline_with_supports]
+# The OOD split holds out a STRUCTURAL family, exactly as the v1 file does: bent pipeline geometry with a
+# wider occluder standoff range (scenario I4-OCCLUDED-OOD), so the held-out worlds differ in geometry family
+# and not only in seed.
+ood_families: [bent_pipeline]
+
+# ---------------------------------------------------------------------------- worlds
+# Sizes are chosen from the MEASURED power of the spent runs, before anything is run here. Run 2 measured a
+# paired 95 % CI half width of about 0.09 on hidden_state_error_improvement at n = 60, and the per-world
+# outcome is close to all-or-nothing (the defect is either read or it is not: measured 0.78 when read against
+# 0.00 when not). 60 final worlds therefore keep the same resolving power as the run that produced the
+# reference tie; a smaller final split would not be able to separate V4 from V3. Development and validation
+# are 40 each, which is what a python-kernel design round fits comfortably (about 50 s per mission per arm).
+world_seeds:
+  development: {explicit: [], range: [8002000, 8002040]}
+  validation: {explicit: [], range: [8002100, 8002140]}
+  final_test: {explicit: [], range: [8002200, 8002260]}
+  ood_test: {explicit: [], range: [8002300, 8002320]}
+
+# Every range already owned by another partition file, by a reserved block or by a spent experiment. The
+# loader refuses this file if any of its seeds falls inside one of them.
+reserved_elsewhere:
+  - {range: [2026201, 2026204], owner: partitions.yaml contaminated development seeds}
+  - {range: [3100000, 3400030], owner: partitions.yaml abstract domain}
+  - {range: [5100000, 5400040], owner: partitions.yaml mission domain}
+  - {range: [5500000, 5500005], owner: partitions_i7_v2.yaml (SPENT)}
+  - {range: [5600000, 5600005], owner: partitions_i7_v3.yaml (SPENT)}
+  - {range: [6300000, 6700060], owner: 2E/2T repeat finals (SPENT)}
+  - {range: [6900000, 7000000], owner: reserved for another agent}
+  - {range: [7100000, 7100010], owner: M1-ACTION-E001 development}
+  - {range: [7300000, 7410021], owner: M1-ACTION / NAV finals}
+  - {range: [7500000, 7600010], owner: I5 partitions (SPENT)}
+  - {range: [7800000, 7810020], owner: partitions_unity_gates.yaml (I1, I3, I4 v1 - SPENT)}
+  - {range: [7900000, 7900010], owner: I5 v2 final_test (SPENT)}
+  - {range: [8000000, 8000024], owner: i4_occluded development}
+  - {range: [8000100, 8000124], owner: i4_occluded validation}
+  - {range: [8000200, 8000220], owner: i4_occluded final_test (SPENT, formal run 1)}
+  - {range: [8000300, 8000312], owner: i4_occluded ood_test (declared, unrun)}
+  - {range: [8001000, 8001060], owner: i4_occluded_v2 final_test (SPENT, formal run 2)}
+
+# ---------------------------------------------------------------------------- access
+# The standard rule of conrad.evaluation.partitions applies unchanged: design and tuning may read development
+# and validation, selection may read validation, final evaluation may read final_test and ood_test. The
+# diagnostic phase that declared this file read the DEVELOPMENT split only and never opened final_test or
+# ood_test.
+purpose_note: >-
+  development and validation are for designing and selecting a V4 mechanism; final_test and ood_test are read
+  once, after a mechanism is frozen, and never before. The oracle headroom test of the diagnostic phase used
+  development seeds only.

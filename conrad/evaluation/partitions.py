@@ -74,6 +74,13 @@ I4_OCCLUDED_DOMAIN = "i4_occluded"
 I4_OCCLUDED_V2_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_i4_occluded_v2.yaml"
 I4_OCCLUDED_V2_PARTITIONS_SHA256 = "ad4f97312ea19eaeef47995b2d80299c4b9cd49a59b448c365bb545c5f363fb6"
 I4_OCCLUDED_V2_DOMAIN = "i4_occluded_v2"
+# MCBR V4 investigation on the same world family. Gate I4 is decided and both of its final splits
+# (8000200-8000219 and 8001000-8001059) are SPENT, so a V4 mechanism needs entirely fresh development,
+# validation and final worlds. Pinned on 2026-09-20 before any run on any of its seeds; the diagnostic phase
+# that declared it read the development split only.
+I4_MCBR_V4_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_i4_mcbr_v4.yaml"
+I4_MCBR_V4_PARTITIONS_SHA256 = "17490d3dbcc85673ebe624e6f04357f42b87a2316d431d2982af58e40e864457"
+I4_MCBR_V4_DOMAIN = "i4_mcbr_v4"
 # Gate I7 surrogate missions, version 2 (COM-I7-E003/E004): the v1 final seeds 5300000-5300004, and the whole
 # mission final_test range they come from, are SPENT by COM-I7-E001/E002, and the 2026-09-20 BAAC scheduler
 # repair made that evidence stale. Pinned on 2026-09-20 before any run on its final_test seeds.
@@ -719,6 +726,82 @@ def _i4_occluded_v2_split(part: Partition) -> Split:
     )
 
 
+def load_i4_mcbr_v4(path: Path = I4_MCBR_V4_PARTITIONS_PATH, *, verify_digest: bool = True) -> dict[str, Any]:
+    """The MCBR V4 partition; every seed is fresh and disjoint from every other file and reserved range."""
+    digest = canonical_digest(path)
+    if verify_digest and digest != I4_MCBR_V4_PARTITIONS_SHA256:
+        raise PartitionIntegrityError(
+            f"{path} changed after freezing: digest {digest} != pinned {I4_MCBR_V4_PARTITIONS_SHA256}"
+        )
+    raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+    validate_i4_mcbr_v4(
+        raw,
+        load()["raw"],
+        load_nav()["raw"],
+        [load_i5()["raw"], load_i5_v2()["raw"], load_i5_v3()["raw"], load_i5_unity()["raw"]],
+        load_unity_gates()["raw"],
+        [load_i4_occluded()["raw"], load_i4_occluded_v2()["raw"]],
+        [load_i7_v2()["raw"], load_i7_v3()["raw"]],
+    )
+    return {"raw": raw, "digest": digest}
+
+
+def validate_i4_mcbr_v4(
+    raw: dict[str, Any],
+    main: dict[str, Any],
+    nav: dict[str, Any],
+    i5_files: list[dict[str, Any]],
+    unity: dict[str, Any],
+    i4_files: list[dict[str, Any]],
+    i7_files: list[dict[str, Any]],
+) -> None:
+    """Splits are pairwise disjoint, families do not overlap the OOD families, and no seed is reused."""
+    seeds = raw["world_seeds"]
+    by_part = {p: set(_seeds(seeds[p.value])) for p in Partition if p.value in seeds}
+    missing = [p.value for p in Partition if p.value not in seeds]
+    if missing:
+        raise PartitionIntegrityError(f"i4_mcbr_v4 is missing splits: {missing}")
+    for a in by_part:
+        for b in by_part:
+            if a is not b and by_part[a] & by_part[b]:
+                raise PartitionIntegrityError(f"i4_mcbr_v4: {a.value} and {b.value} seeds overlap")
+    if set(raw["families"]) & set(raw["ood_families"]):
+        raise PartitionIntegrityError("i4_mcbr_v4: OOD families overlap in-distribution families")
+    taken = {
+        s
+        for domain in ("abstract", "mission")
+        for p in Partition
+        for s in _seeds(main[domain]["world_seeds"][p.value])
+    }
+    taken |= {s for part in nav["noise_seeds"].values() for s in _seeds(part)}
+    taken |= {s for part in unity["world_seeds"].values() for s in _seeds(part)}
+    for other in (*i5_files, *i4_files, *i7_files):
+        taken |= {s for part in other["world_seeds"].values() for s in _seeds(part)}
+    for r in raw.get("reserved_elsewhere", []):
+        taken |= set(_seeds(r))
+    mine = set().union(*by_part.values()) if by_part else set()
+    if mine & taken:
+        raise PartitionIntegrityError(
+            "i4_mcbr_v4 seeds collide with seeds used by another partition or experiment"
+        )
+
+
+def _i4_mcbr_v4_split(part: Partition) -> Split:
+    loaded = load_i4_mcbr_v4()
+    raw = loaded["raw"]
+    if part.value not in raw["world_seeds"]:
+        raise KeyError(f"i4_mcbr_v4 partition has no {part.value!r} split")
+    fams = raw["ood_families"] if part is Partition.OOD_TEST else raw["families"]
+    return Split(
+        domain=I4_MCBR_V4_DOMAIN,
+        partition=part,
+        world_seeds=_seeds(raw["world_seeds"][part.value]),
+        families=tuple(fams),
+        replicates_per_world=1,
+        digest=loaded["digest"],
+    )
+
+
 def load_i7_v3(path: Path = I7_V3_PARTITIONS_PATH, *, verify_digest: bool = True) -> dict[str, Any]:
     """The gate I7 surrogate partition v3; disjoint from every other partition file and reserved range."""
     digest = canonical_digest(path)
@@ -777,6 +860,8 @@ def split(domain: str, partition: str | Partition, purpose: str | Purpose) -> Sp
         return _i4_occluded_split(part)
     if domain == I4_OCCLUDED_V2_DOMAIN:
         return _i4_occluded_v2_split(part)
+    if domain == I4_MCBR_V4_DOMAIN:
+        return _i4_mcbr_v4_split(part)
     if domain == I7_V2_DOMAIN:
         return _i7_v2_split(part)
     if domain == I7_V3_DOMAIN:
@@ -799,6 +884,9 @@ def partition_of(domain: str, seed: int) -> Partition | None:
     if domain == I4_OCCLUDED_DOMAIN:
         ws = load_i4_occluded()["raw"]["world_seeds"]
         return next((Partition(p) for p, spec in ws.items() if int(seed) in _seeds(spec)), None)
+    if domain == I4_MCBR_V4_DOMAIN:
+        v4 = load_i4_mcbr_v4()["raw"]["world_seeds"]
+        return next((Partition(p) for p, spec in v4.items() if int(seed) in _seeds(spec)), None)
     if domain == I5_DOMAIN:
         i5 = load_i5()["raw"]["world_seeds"]
         return next((Partition(p) for p, spec in i5.items() if int(seed) in _seeds(spec)), None)

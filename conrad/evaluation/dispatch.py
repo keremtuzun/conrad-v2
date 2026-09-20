@@ -83,6 +83,15 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
         "conrad.evaluation.decision_experiments.active_mcbr_i4_occluded",
         "configs/eval/active_mcbr_e005_ood.yaml",
     ),
+    # Development-only headroom measurement for the MCBR V4 question; it promotes no gate.
+    "ACTIVE-MCBR-E006": (
+        "conrad.evaluation.decision_experiments.i4_oracle_headroom",
+        "configs/eval/i4_oracle_headroom.yaml",
+    ),
+    "ACTIVE-MCBR-E006-W": (
+        "conrad.evaluation.decision_experiments.i4_oracle_headroom",
+        "configs/eval/i4_oracle_headroom_weighted.yaml",
+    ),
     "COM-BAAC-E001": ("conrad.evaluation.decision_experiments.com_baac", "configs/eval/com_baac_e001.yaml"),
     "COM-I7-E001": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e001.yaml"),
     "COM-I7-E002": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e002.yaml"),

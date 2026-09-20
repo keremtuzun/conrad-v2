@@ -1,0 +1,31 @@
+# ACTIVE-MCBR-E006 (I4 oracle headroom): the ceiling of view selection on ACTIVE_INSPECTION_OCCLUDED_V1. SYNTHETIC_ONLY.
+# DEVELOPMENT worlds only (configs/eval/partitions_i4_mcbr_v4.yaml, purpose design). The final and OOD splits
+# of that file have never been opened.
+experiment_id: ACTIVE-MCBR-E006
+partition_file: configs/eval/partitions_i4_mcbr_v4.yaml
+world_family: ACTIVE_INSPECTION_OCCLUDED_V1
+scenario: I4-OCCLUDED
+seeds: [8002000, 8002001, 8002002, 8002003, 8002004, 8002005, 8002006, 8002007, 8002008, 8002009, 8002010, 8002011, 8002012, 8002013, 8002014, 8002015, 8002016, 8002017, 8002018, 8002019, 8002020, 8002021, 8002022, 8002023, 8002024, 8002025, 8002026, 8002027, 8002028, 8002029, 8002030, 8002031, 8002032, 8002033, 8002034, 8002035, 8002036, 8002037, 8002038, 8002039]
+primary_metric: hidden_state_error_improvement
+direction: higher
+baseline: A-B2_coverage
+reference_arms: [PRODUCTION]
+question: >-
+  Gate I4 is decided: the production MCBR planner does not beat a systematic coverage sweep on this family.
+  Before designing a V4 ranking rule, measure the ceiling. Replace the ranking rule with an evaluation-only
+  oracle that sees truth and picks the candidate that would actually reveal most of the hidden defect, with
+  one-step and two-step lookahead, under budgets identical to coverage's. If the ORACLE cannot beat coverage,
+  the family has no exploitable view-selection headroom and a V4 that only re-ranks views is not worth
+  building.
+# Matched budgets: identical mission duration, observation budget, sensor, candidate generator, feasibility
+# filter and PlanningRequest for every arm. Only the ranking rule differs. Twin2E off, as in the formal runs.
+runtime:
+  duration_s: 100.0
+  control_period_s: 0.1
+  max_plans_per_need: 4
+  model2e_enabled: false
+workers: 10
+decision_rule: >-
+  Unit = one world, paired across arms. An arm beats the baseline on a metric iff the lower bound of the 95 %
+  paired percentile-bootstrap CI over worlds (4000 resamples) is above 0. This is a DEVELOPMENT measurement:
+  it selects nothing, promotes no gate and is reported whatever its sign.
