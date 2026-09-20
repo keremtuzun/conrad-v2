@@ -1,0 +1,22 @@
+# COM-I7-E004: critical structural finding made while the acoustic link is down (outage 6-60 s), then
+# reconnection. Re-run of COM-I7-E002 after the 2026-09-20 BAAC scheduler repair (bounded ch19 Level 0/1
+# pre-emption + receiver-relative increment value). Python-kernel SURROGATE; SYNTHETIC_ONLY link.
+# Shadow arms + closed-loop baseline primaries.
+#
+# Seeds: the freshly declared, digest-pinned final_test split of configs/eval/partitions_i7_v2.yaml
+# (5500000-5500004). COM-I7-E002's seeds 5300000-5300004 are SPENT and its evidence is stale after the repair.
+experiment_id: COM-I7-E004
+hypothesis: after reconnection BAAC delivers the queued critical belief delta first, coalesces stale units, and the receiver never double-counts a revision
+primary_metric: critical_delta_latency_s
+direction: lower
+baselines: [C-B0_send_all, C-B1_fifo, C-B2_fixed_priority, C-B4_value_per_bit]
+partition: final_test
+partition_domain: i7_mission_v2
+seeds: [5500000, 5500001, 5500002, 5500003, 5500004]
+scenario: I7-OUTAGE-CRITICAL
+bandwidth_levels: [1.0, 0.1]
+closed_loop_levels: [1.0]
+deadline_linkup_s: {critical: 30.0, routine: 120.0}
+queue_trace_every_s: 5
+workers: 8
+keep_bundles: true

@@ -8,6 +8,13 @@ information than raw/FIFO/fixed-priority approaches."
 and cannot promote the gate. The formal run through Unity still has to come from the integrator. All link
 numbers are SYNTHETIC_ONLY.
 
+> **Superseded sections.** On 2026-09-20 a BAAC scheduling defect found on development world 5100001 was
+> diagnosed and repaired (see "The BAAC scheduling repair" at the end of this file). The repair changes BAAC's
+> behaviour, so the COM-I7-E001 and COM-I7-E002 tables below are the PRE-REPAIR record on the now SPENT seeds
+> 5300000-5300004 and are no longer the gate's surrogate evidence. The current surrogate evidence is
+> COM-I7-E003 / COM-I7-E004 on the freshly declared final seeds 5500000-5500004. The baseline arms are
+> unchanged by the repair; only the BAAC rows below are stale.
+
 ## Why the earlier I7 runs failed
 
 `I7-COMMS-OUTAGE` and `INT-010` put the defect on the far (+Y) side. In those runs MCBR returned
@@ -471,4 +478,399 @@ for it, and the retention criterion failed on that crippled run because every po
 - **All link numbers stay SYNTHETIC_ONLY.**
 - **The gate can fail.** Criterion 3 fails on development world 5100001 at 10 % and at 1 %. See the risk
   section above. A failed research mechanism is an acceptable result; do not spend the two held-out worlds
-  expecting a pass.
+  expecting a pass. **Repaired on 2026-09-20; see the next section. The 10 % failure is fixed on merit, the
+  1 % one is an all-policy tie at 0.000 and is still there.**
+
+## The BAAC scheduling repair (2026-09-20)
+
+The risk recorded above was real, and it was a defect in the mechanism, not an artefact of the measurement.
+It was diagnosed and fixed on the mission DEVELOPMENT seeds 5100000 and 5100001 only. No final world and no
+Unity player was touched, criterion 3 (the spec's own claim) was not changed, no threshold, test or baseline
+was weakened, and the communication oracle was not touched.
+
+### What the link was actually being spent on
+
+One instrumented development flight (world 5100001, `I7-BANDWIDTH`, 10 % of the declared link, all five arms)
+accounts for every transmitted bit by belief, and by whether that belief was already at the receiver when the
+bits were sent. Artifact: `artifacts/experiments/I7-REPAIR-DIAG/diag-base-s5100001-bw0.1.json`.
+
+| world 5100001, 10 %, pre-repair | BAAC | raw | FIFO | fixed priority | value-per-bit |
+|---|---|---|---|---|---|
+| bits sent | 26,844 | 28,230 | 29,251 | 28,659 | 26,929 |
+| beliefs any bits were spent on | 2 | 6 | 6 | 3 | 5 |
+| beliefs at the receiver | 2 | 5 | 5 | 1 | 5 |
+| bits on the ONE critical belief | 20,538 (76.5 %) | 5,296 | 6,320 | 21,514 (75.1 %) | 6,728 |
+| bits re-sending a belief the receiver already held | 16,521 (61.5 %) | 0 | 0 | 0 | 4,254 (15.8 %) |
+| F0 alert frames sent | 6 (1,104 bits) | 0 | 0 | 0 | 13 (2,392 bits) |
+| coalesced re-offers | 163 | 0 | 0 | 0 | 0 |
+
+The mission makes 187 offers over 240 s and reports 18 beliefs. The critical belief is offered 16 times (it is
+revised 383 times; `reoffer_interval_s` is 15 s). Pre-repair BAAC put 76.5 % of a 27 kbit link into that one
+belief, landing 3 of its deltas and 6 alert frames and ending at receiver revision 245 of 383. raw and FIFO
+spend about 5.3 kbit per belief and land 5 distinct beliefs each. The oracle averages over all 18 reported
+beliefs, so 5 stale-but-distinct beliefs beat 2 well-tracked ones.
+
+Its delta was not cheap either: because that belief changes in almost every field, a revision delta measures
+3.5 to 6 kbit, about the size of a first delivery. The traffic was near-full-size re-deliveries of one belief,
+not cheap incremental updates.
+
+Two mechanisms produced it.
+
+1. **Pre-emption was unbounded.** `policy.critical_first` puts a critical unit's F0/F1 first in the ordering
+   key lexicographically, so it beats everything else whatever the value per bit. Every 15 s the critical
+   belief was re-offered, a fresh delta was built against the receiver model, and it pre-empted every
+   never-sent belief again. ch19 gives Level 0/1 pre-emption so the FINDING gets through; it does not ask for
+   one belief to own the link for the rest of the mission.
+2. **The value model ignored what the receiver already held.** The term was
+   `mission_value * information_retained[level]`, the unit's ABSOLUTE information content, identical for a
+   re-offer of a belief the receiver already holds and for the first delivery of one it has never seen.
+
+### Which cause dominates (measured, not assumed)
+
+Four full missions on the failing cell, one per combination, everything else identical. Artifact:
+`artifacts/experiments/I7-REPAIR-DIAG/sweep_abl.json`.
+
+| world 5100001, bandwidth 10 % | BAAC retained | beliefs at the receiver |
+|---|---|---|
+| A, neither (the shipped behaviour) | 0.080 | 2 |
+| B, bounded pre-emption only | 0.222 | 4 |
+| C, receiver-relative value only | 0.080 | 2 |
+| D, both (the repair) | **0.250** | 5 |
+
+Unbounded pre-emption dominates: alone it recovers 0.142 of the 0.170 gap. The value model alone changes
+nothing at all, because pre-emption outranks it; what it adds is the last belief, which turns a tie with raw
+and FIFO (0.222 = 0.222, not "strictly more") into a strict win. Both are needed and neither is sufficient.
+raw 0.222, FIFO 0.222 and fixed priority 0.028 are identical in all four runs: no baseline moves.
+At 1 % on the same world all four combinations score 0.000, and so does every baseline.
+
+### What changed
+
+| File | Change |
+|---|---|
+| `conrad/communication/config.py` | `preempt_until_delivered` (default true), `receiver_relative_value` (default true), `stale_view_credit` (default 0.5, ENGINEERING_ESTIMATE). All three are ablation switches, so the table above is reproducible. |
+| `conrad/communication/scheduler.py` | `_critical_undelivered()`: a critical unit pre-empts only while the receiver does not yet hold that belief (no alert of it at F0, no view of it at F1). Afterwards it competes on value per bit, keeping the high mission value the finding gave it. `receiver_credit()`: the information the receiver already holds about the unit's belief, so an increment is scored by what the receiver GAINS. Both are applied only when `policy.use_novelty and policy.use_receiver_knowledge`, which is BAAC only. |
+| `conrad/communication/__init__.py` | Exports `receiver_credit`; the two modelling assumptions are listed in `IMPLEMENTATION_METADATA`. |
+| `tests/unit/communication/test_i7_scheduler_repair.py` | 13 new tests: the pre-repair choice with both switches off, each switch alone reproducing the measured ablation, the repaired choice, pre-emption still absolute until the finding lands, the first-alert exemption, and that no baseline plan moves when either switch is toggled. |
+
+The stale-view credit is 0.5 of the F1 level. It is the same modelling assumption the communication oracle
+makes for a stale view, and that is stated rather than hidden: it is a property of "an older revision of a
+belief is not ignorance of it", not a number fitted to the score. Nothing in `conrad/evaluation/oracle/` was
+changed, and the scheduler does not import it (`tests/leakage` still passes).
+
+### One regression the first attempt caused, and its fix
+
+The first repaired sweep improved retention but pushed BAAC's critical alert latency from about 1.0 s to
+12.5 s at 100 % on both development worlds: the stale-view discount was also being applied to the F0 alert, so
+whenever the belief had been reported as routine before it became critical, the alert scored below its cost
+and the finding only arrived with the whole F1 delta. ch19 Level 0 is an emergency control message whose
+value is timeliness, not information content, so the FIRST alert about a belief is now exempt from the
+discount and every later alert of the same belief is discounted like any other increment. Measured effect,
+BAAC critical alert latency, pre-repair / first attempt / shipped:
+
+| cell | pre-repair | first attempt | shipped |
+|---|---|---|---|
+| 5100000 bandwidth 100 % | 1.03 s | 12.51 s | 1.03 s |
+| 5100001 bandwidth 50 % | 1.10 s | 12.42 s | 1.05 s |
+| 5100001 bandwidth 100 % | 1.15 s | 10.34 s | 5.00 s |
+
+Retention is bit-identical between the two attempts at every cell, so the exemption costs nothing there. The
+residual is the last row: 1.15 s to 5.00 s on one cell at full bandwidth. It is inside the 30 s critical
+deadline, raw, FIFO and fixed priority never deliver that belief at all, and value-per-bit reaches 1.00 s. It
+is listed under criterion 4 below rather than tuned away.
+
+### The development sweep, before and after
+
+All five arms, both development worlds, kernel backend, 240 s missions at a 0.1 s control period, one flight
+per cell. "Verdict" is criterion 3 as written: BAAC STRICTLY greater than raw, FIFO and fixed priority.
+Artifacts: `sweep_before-extra.json`, `sweep_after2.json` and the earlier
+`artifacts/experiments/I7-UNITY-HARNESS-CHECK/kernel_reduced.json` for the cells it already covered.
+
+| world | case | BAAC before | BAAC after | raw | FIFO | fixed | value-per-bit | verdict before -> after |
+|---|---|---|---|---|---|---|---|---|
+| 5100000 | bandwidth 100 % | 0.660 | 0.660 | 0.179 | 0.179 | 0.100 | 0.577 | WIN -> WIN |
+| 5100000 | bandwidth 50 % | 0.629 | 0.660 | 0.179 | 0.179 | 0.026 | 0.561 | WIN -> WIN |
+| 5100000 | bandwidth 10 % | 0.220 | 0.232 | 0.179 | 0.179 | 0.000 | 0.179 | WIN -> WIN |
+| 5100000 | bandwidth 1 % | 0.041 | 0.041 | 0.000 | 0.000 | 0.000 | 0.041 | WIN -> WIN |
+| 5100000 | bandwidth 0.1 % | 0.041 | 0.041 | 0.000 | 0.000 | 0.000 | 0.000 | WIN -> WIN |
+| 5100000 | bandwidth 0 % | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | floor, not judged |
+| 5100000 | outage 100 % | 0.660 | 0.660 | 0.179 | 0.158 | 0.026 | 0.554 | WIN -> WIN |
+| 5100000 | outage 10 % | 0.220 | 0.220 | 0.126 | 0.158 | 0.000 | 0.198 | WIN -> WIN |
+| 5100001 | bandwidth 100 % | 0.537 | 0.572 | 0.222 | 0.222 | 0.222 | 0.537 | WIN -> WIN |
+| 5100001 | bandwidth 50 % | 0.486 | 0.423 | 0.222 | 0.222 | 0.222 | 0.520 | WIN -> WIN |
+| 5100001 | bandwidth 10 % | **0.080** | **0.250** | 0.222 | 0.222 | 0.028 | 0.222 | **LOSS -> WIN** |
+| 5100001 | bandwidth 1 % | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | TIE -> TIE |
+| 5100001 | bandwidth 0.1 % | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | TIE -> TIE |
+| 5100001 | bandwidth 0 % | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | floor, not judged |
+| 5100001 | outage 100 % | 0.537 | 0.572 | 0.222 | 0.028 | 0.028 | 0.486 | WIN -> WIN |
+| 5100001 | outage 10 % | **0.051** | **0.165** | 0.142 | 0.114 | 0.000 | 0.171 | **LOSS -> WIN** |
+
+Beliefs at BAAC's receiver on world 5100001 went from 2 to 5 at bandwidth 10 %, from 1 to 3 at outage 10 %,
+from 11 to 13 at 100 %, and from 8 to 10 at 50 %.
+
+**Two losses, not one.** The outage scenario at 10 % had never been run on a development world before this
+pass (the earlier kernel check only flew the outage at 100 %), and the same defect was losing there too:
+BAAC 0.051 against raw 0.142 and FIFO 0.114. Both losses are now wins.
+
+**Levels that are still not a strict win, stated plainly.**
+
+- **World 5100001 at 1 % and at 0.1 %: every policy scores exactly 0.000.** BAAC is not worse, but it is not
+  strictly greater either, so criterion 3 as written does not pass there. This is arithmetic, not scheduling:
+  1 % of the link carries 2,880 bits over the mission and 0.1 % carries 288, while the cheapest F1 delta in
+  that world measures about 5,000 bits. The only thing that fits is the 184-bit F0 alert, and the oracle
+  credits an alert only while `alert_revision >= the sender's latest revision`; that world's critical belief
+  is revised 383 times, so any alert is stale by mission end. No scheduling policy can score above zero there.
+  Making it score would mean changing the oracle or adding a fidelity level below F1 after seeing the result,
+  which is tuning the measurement. It is left failing.
+- **Value-per-bit still beats BAAC on retention at 50 % on world 5100001** (0.520 against 0.423), and the
+  repair widened that gap from 0.034 to 0.097. Value-per-bit is outside the ch25 comparison set, it is
+  reported and never required, but it is a real cost of the repair on that cell.
+
+### The outage path was re-run and did not regress
+
+Both outage flights per world (100 % and 10 %), repaired BAAC, from `sweep_after2.json`:
+
+| | 5100000 100 % | 5100000 10 % | 5100001 100 % | 5100001 10 % |
+|---|---|---|---|---|
+| ran a full mission, no failed module | yes | yes | yes | yes |
+| finding created while the link was down | yes | yes | yes | yes |
+| a critical unit held in the queue for the whole remaining outage | yes | yes | yes | yes |
+| F0 alert and F1 delta delivered ahead of every routine delta | yes | yes | yes | yes |
+| receiver holds at least the revision found during the outage | 24 of 24 | 24 of 24 | 355 of 54 | 54 of 54 |
+| coalesced re-offers | 159 | 160 | 168 | 167 |
+| duplicate contributions | 0 | 0 | 0 | 0 |
+| resync requests | 0 | 0 | 0 | 0 |
+
+The critical alert and delta latencies are unchanged by the repair in every outage cell (46.31 / 51.25,
+47.53 / 98.35, 4.15 / 9.33 and 5.53 / 57.15 s). One end-of-mission number did move: on world 5100001 at
+outage 10 % the receiver's critical revision at mission end is 54 instead of 245, because BAAC no longer
+spends the scarce link re-tracking that one belief. It still holds the revision the finding was made at,
+which is what criterion 2 requires, and the end-of-mission sync error is compared under criterion 4, where
+ch26 Phase 11 puts it. On the same cell BAAC's overall receiver sync error improved from 1.000 to 0.889 and
+its retention tripled.
+
+### Criterion 4: every case where BAAC is worse than a baseline
+
+Measured on the repaired development sweep. **BAAC is never worse than raw, FIFO or fixed priority** on
+critical alert latency, critical delta latency, receiver sync error or critical sync, at any level on either
+world. Against value-per-bit, which is outside the ch25 set:
+
+| cell | BAAC is worse on |
+|---|---|
+| 5100000 bandwidth 50 % | alert latency 1.31 s against 1.00 s |
+| 5100000 outage 100 % | alert latency 46.31 s against 46.15 s |
+| 5100001 bandwidth 100 % | alert latency 5.00 s against 1.00 s |
+| 5100001 bandwidth 50 % | alert latency 1.05 s against 1.00 s; sync error 0.778 against 0.611 |
+| 5100001 outage 10 % | sync error 0.889 against 0.833 |
+
+### The two harness findings, re-checked in this code
+
+Both were reported OPEN by the earlier pass and both stay OPEN. Neither was changed, and the repair does not
+depend on either.
+
+- **F2 adds nothing to the oracle score once F1 carries the evidence IDs.** Still true, and now bounded:
+  in the instrumented 10 % flight BAAC never reaches F2 at all (100 % of its bits are F0 and F1), so the
+  coarseness costs nothing in the regime where criterion 3 was failing. It only bites at high bandwidth,
+  where BAAC pays roughly 1 kbit per belief for an increment the oracle already credited from F1. The wire
+  format genuinely carries more at F2 (the evidence IDs and a quantised embedding); it is the scoring model
+  that is coarse. Making the scheduler skip F2 would be tuning to the oracle, so it is not done.
+- **The sender's receiver-model can regress on a stale acknowledgement.** Still reachable only for
+  value-per-bit (C-B4), which can hold several revisions of one belief and deliver them out of order. BAAC
+  coalesces to one unit per belief, and the repair does not change that: bounded pre-emption changes WHEN a
+  unit is sent, never how many units of one belief are queued. Duplicate contributions and resync requests
+  were 0 in every arm of all 16 repaired development flights, and the property test
+  `test_sender_model_is_never_ahead_of_the_receiver` still pins the safe direction.
+
+### Fresh final seeds for the surrogate
+
+The repair changes BAAC's behaviour, so the COM-I7-E001 / E002 evidence on mission final_test seeds
+5300000-5300004 is stale, and those seeds (and the whole 5300000-5300059 range) are SPENT. A new
+digest-pinned partition file was declared BEFORE the re-run:
+
+- `configs/eval/partitions_i7_v2.yaml`, domain `i7_mission_v2`, final_test **5500000-5500004**, pinned in
+  `conrad.evaluation.partitions` as `I7_V2_PARTITIONS_SHA256`. It carries no development split: the I7
+  development runs keep using the `mission` development split.
+- Collision check before choosing it: every 5/6/7/8-million seed literal under `configs/`, `conrad/`,
+  `scripts/`, `tests/` and `docs/` was listed; the used bands are 5000000, 5100000-5400040, 6100000-6700060,
+  6900000-7000000, 7100000-7100010, 7300000-7300010, 7400001-7410021, 7500000-7500010, 7600000-7600010,
+  7700000-7700010, 7710000-7710002, 7800000-7820000, 7900000-7900010 and 8000000-8000313. Nothing anywhere
+  used 55xxxxx. The file's loader also checks disjointness against every other partition file on load.
+- `configs/eval/com_i7_e003.yaml` and `com_i7_e004.yaml` re-run the E001 and E002 designs unchanged on those
+  seeds; `com_i7.py` takes a `partition_domain` key so the seed check uses the new domain;
+  `conrad/evaluation/dispatch.py` registers `COM-I7-E003` and `COM-I7-E004`;
+  `tests/acceptance/test_i7_constrained_comms.py` and the `SURROGATE_PLAN["I7"]` entries of
+  `scripts/record_gate_evidence.py` read the E003/E004 artifacts. E001/E002 stay on disk as the spent
+  pre-repair record.
+
+```
+python -m uv run conrad eval run --experiment COM-I7-E003
+python -m uv run conrad eval run --experiment COM-I7-E004
+python -m uv run python scripts/record_gate_evidence.py --surrogate I7
+```
+
+### COM-I7-E003: bandwidth sweep, FINAL, seeds 5500000-5500004, repaired BAAC
+
+Means over the 5 fresh final seeds. Shadow arms, so every policy saw the identical offer stream and link.
+
+| bw | BAAC | raw | FIFO | fixed priority | value-per-bit | BAAC strictly more than the ch25 set on EVERY seed |
+|---|---|---|---|---|---|---|
+| 100 % | **0.626** | 0.231 | 0.231 | 0.163 | 0.570 | yes (worst seed +0.350) |
+| 50 % | **0.589** | 0.231 | 0.231 | 0.111 | 0.545 | yes (worst seed +0.254) |
+| 10 % | **0.261** | 0.231 | 0.231 | 0.012 | 0.208 | yes (worst seed +0.028) |
+| 1 % | 0.027 | 0.000 | 0.000 | 0.000 | 0.027 | **no** |
+| 0.1 % | 0.027 | 0.000 | 0.000 | 0.000 | 0.000 | **no** |
+| 0 % | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | floor, not judged |
+
+The 10 % regime, which is where the defect lived, is a win on all five seeds. The 1 % and 0.1 % rows are the
+failure: on 2 of the 5 seeds every policy scores exactly 0.000, so "strictly greater" does not hold.
+
+| seed | critical belief revised | 1 % BAAC / raw | 0.1 % BAAC / raw |
+|---|---|---|---|
+| 5500000 | 27 times | 0.046 / 0.000 | 0.046 / 0.000 |
+| 5500001 | 376 times | **0.000 / 0.000** | **0.000 / 0.000** |
+| 5500002 | 361 times | **0.000 / 0.000** | **0.000 / 0.000** |
+| 5500003 | 28 times | 0.046 / 0.000 | 0.046 / 0.000 |
+| 5500004 | 29 times | 0.044 / 0.000 | 0.044 / 0.000 |
+
+This is the 5100001 regime, and it is arithmetic rather than scheduling: 1 % of the declared link carries
+2,880 bits over the 240 s mission and 0.1 % carries 288, while the cheapest F1 delta in those worlds measures
+about 5,000 bits. Only the 184-bit F0 alert fits, and `comm_oracle.belief_score` credits an alert only while
+`alert_revision >= the sender's latest revision`.
+
+**The repair is not the cause.** On development world 5100001 the 1 % cell scores 0.000 for every policy both
+before and after the repair (TIE -> TIE in the sweep table above), and on 5100000 it scores 0.041 both before
+and after. What changed is the draw: the old final seeds 5300000-5300004 happened to contain five
+slow-revising critical beliefs, and the fresh draw contains two fast-revising ones.
+
+**What BAAC actually did on those two seeds, which the score does not show.** BAAC delivered the critical F0
+alert and raw, FIFO and fixed priority delivered nothing at all:
+
+| seed | level | BAAC alert arrival | raw / FIFO / fixed | BAAC bits | baseline bits |
+|---|---|---|---|---|---|
+| 5500001 | 1 % | yes, 1.0 s after the offer | never | 2,392 | 2,049 (an F1 fragment that never completed) |
+| 5500001 | 0.1 % | yes, 107.0 s | never | 184 | 0 |
+| 5500002 | 1 % | yes, 1.0 s | never | 2,576 | 2,049 (never completed) |
+| 5500002 | 0.1 % | yes, 94.0 s | never | 184 | 0 |
+
+The alert carried revision 46 on 5500001 and 63 on 5500002; those beliefs reach 376 and 361 by mission end,
+so the alert is stale and scores 0.000. Value-per-bit matches BAAC exactly on these four cells. This is a real
+behavioural difference that `mission_information_retained` does not capture. It is recorded as a limitation of
+the measurement, **not** as a claimed win: the criterion is scored on retention, and on retention it is a tie.
+
+Value-per-bit also beats BAAC on one seed at 50 % (worst-seed difference -0.060). It is outside the ch25
+comparison set, reported and never required.
+
+### COM-I7-E004: critical finding during an outage, FINAL, seeds 5500000-5500004, repaired BAAC
+
+30 missions: 10 shadow flights (100 % and 10 %) plus 20 closed-loop flights with each baseline as the primary.
+
+| | 100 % BAAC | 10 % BAAC | 100 % raw | 100 % FIFO | 100 % fixed | 100 % value-per-bit |
+|---|---|---|---|---|---|---|
+| retained (mean of 5 seeds) | **0.626** | **0.217** | 0.231 | 0.130 | 0.042 | 0.541 |
+| 10 % baselines | | | 0.151 | 0.154 | 0.000 | 0.205 |
+
+BAAC is strictly above raw, FIFO and fixed priority in the outage scenario at both levels on every seed.
+Duplicate contributions were 0 in every arm of all 30 missions, and coalescing ran in all of them (106 to 159
+superseded re-offers per flight).
+
+Where criterion 2 fails:
+
+| seed | patch first visible | finding made at | inside the outage [6 s, 60 s)? | critical revision at the receiver, 100 % |
+|---|---|---|---|---|
+| 5500000 | 14.25 s | 15.1 s | yes | 27 of 27 |
+| 5500001 | 53.25 s | 55.1 s | yes | **348 of 376** |
+| 5500002 | 66.25 s | 68.1 s | **no** | 361 of 361 |
+| 5500003 | 15.25 s | 16.1 s | yes | 28 of 28 |
+| 5500004 | 16.25 s | 17.1 s | yes | 29 of 29 |
+
+1. **Seed 5500002 never exercises the outage path.** The outage window is fixed at [6 s, 60 s) by the
+   `I7-OUTAGE-CRITICAL` scenario, and on that world the lane pass only reaches a view of the lane-side defect
+   at 66.25 s, so the finding is made 8 s after the link is already back. This is world geometry against a
+   fixed window, not a communication fault: on the other 4 seeds the finding is made during the outage, is
+   held in the queue for the rest of it, and its F0 alert and F1 delta arrive ahead of every routine delta at
+   both bandwidth levels (8 of 8 flights).
+2. **Seed 5500001 ends 348 of 376 at 100 %.** That belief is revised 376 times in 240 s, so its last offers
+   are younger than the link latency. The receiver does hold revision 46, the revision the finding was made
+   at during the outage, which is what the Unity harness rule (criterion 2, revised on development seeds
+   before any final world was built) requires. The surrogate test still demands exact end-of-mission
+   equality, so it fails here. The two rules disagree, and that disagreement is now recorded rather than
+   silently resolved.
+
+### OPEN, and decisions to make BEFORE any further run
+
+The rule implemented in `tests/acceptance/test_i7_constrained_comms.py` and in
+`com_i7_unity.retention_measure` requires BAAC to be **strictly greater than raw, FIFO and fixed priority on
+every seed at every non-zero level**. The ch25/ch26 wording is "BAAC must retain more mission-relevant
+information than raw/FIFO/fixed-priority approaches", which does not itself say how to aggregate over seeds
+and levels, nor what to do with a level where the link cannot carry a single update from any policy and every
+arm ties at 0.000.
+
+That gap is now load-bearing: it is the whole difference between the recorded FAIL and a PASS.
+
+**It is not resolved here, and it must not be resolved by this pass.** Re-deriving the aggregation after
+seeing which seeds tie would be manufacturing a pass, which is exactly what ADR-0008 and the workstream rules
+forbid. The result stands as FAIL. If the aggregation is to change, the sequence is: decide the rule, write it
+into `configs/eval/i7_unity.yaml` and the acceptance test as a declaration, and only then run, on seeds that
+have not been used. Candidate readings someone will have to choose between, listed so the decision is explicit
+and not smuggled in:
+
+1. Keep the current rule. I7 criterion 3 is FAIL and stays FAIL until the mechanism can deliver an update at
+   1 % on a world whose critical belief is revised hundreds of times, which at 2,880 bits it cannot.
+2. Judge only levels where at least one policy delivers a scored update, and record the all-zero levels as
+   NOT EVALUABLE with the bits that were carried. This changes what "every non-zero level" means.
+3. Judge the mean over seeds per level rather than every seed, with the per-seed spread reported. At 1 % and
+   0.1 % the mean is +0.027 for BAAC against 0.000 for all three baselines.
+
+Options 2 and 3 both turn the current FAIL into a PASS, which is precisely why neither may be adopted now.
+
+Two more declarations need the same treatment, for criterion 2, and for the same reason:
+
+4. **The outage window is fixed and the finding time is not.** `I7-OUTAGE-CRITICAL` drops the link over
+   [6 s, 60 s) on every world, and the finding time is whatever the lane pass gives (15.1 to 68.1 s across
+   these five seeds). Either the scenario has to make the window depend on the world (for instance, drop the
+   link before the patch first becomes visible and restore it a fixed interval later), or the criterion has
+   to say what happens on a world where the finding falls outside the window. Widening the window to 70 s
+   now, having seen that 5500002 missed it at 68.1 s, would be tuning the scenario to the result.
+5. **The surrogate and the Unity harness disagree about end-of-mission sync.** The Unity rule requires the
+   receiver to hold at least the revision found during the outage; the surrogate test requires exact
+   equality with the sender's newest revision. The Unity rule was declared on development seeds before any
+   final world was built and is the better one, but adopting it for the surrogate now, after seeing that
+   5500001 fails the stricter form, would again be changing the rule to fit the outcome.
+
+None of the five is decided here. The sequence for all of them is the same: decide, declare in
+`configs/eval/i7_unity.yaml` and the acceptance test, then run on unused seeds.
+
+### What this does and does not mean for the gate
+
+The formal path is unchanged and was not run: no Unity player was launched, `configs/eval/i7_unity.yaml`
+still declares worlds 7800018 and 7800019, and `scripts/check_i7_unity_harness.py --wiring` still resolves all
+24 declared flights. I7 stays BLOCKED_UPSTREAM behind I6, I5 and I4 whatever the surrogate says.
+
+The repair is real and the development evidence for it is clean: criterion 3 now passes on both development
+worlds at every level where any policy scores above zero, where before it lost outright at bandwidth 10 % and
+at outage 10 % on world 5100001. The surrogate verdict is a different matter. **On the fresh final seeds
+criterion 3 records FAIL**, because 2 of the 5 seeds tie every policy at 0.000 at 1 % and 0.1 %. The two
+statements are both true and neither cancels the other: a mechanism defect was fixed on merit, and the gate
+criterion as currently declared is not met on the final draw.
+
+The recorded surrogate status is therefore (`artifacts/gates/I7/evidence_surrogate.json`, re-recorded
+2026-09-20 against COM-I7-E003 / E004):
+
+| criterion | surrogate status | why |
+|---|---|---|
+| full mission under constrained bandwidth | PASS | all 30 missions ran, every arm measured, 0 duplicate contributions |
+| full mission under outages | **FAIL** | seed 5500002 makes its finding after the link is back; seed 5500001 ends 348 of 376 at 100 % |
+| BAAC retains more mission-relevant information than raw/FIFO/fixed-priority | **FAIL** | seeds 5500001 and 5500002 tie every policy at 0.000 at 1 % and 0.1 % |
+| critical latency and sync error compared against baselines | PASS | every arm measured at every level; BAAC worse than value-per-bit on alert latency at 100 % (2.44 s against 1.13 s) |
+
+The previous record was "surrogate PASS on 4 of 4". It is now 2 of 4. Four acceptance tests are STRICT
+xfails whose reasons quote the measured failure, so both a silent improvement and a silent regression break
+the suite: `test_outage_finding_is_created_while_the_link_is_down`,
+`test_critical_delta_is_delivered_first_after_reconnection`,
+`test_receiver_synchronised_for_critical_beliefs_after_reconnection` and
+`test_baac_retains_more_than_raw_fifo_fixed_priority_every_nonzero_level`.
+
+`scripts/record_gate_evidence.py` was reading a strict xfail as NOT_RUN, because pytest reports it in the
+junit XML as `<skipped type="pytest.xfail">`. That hid a failing criterion behind "no evidence", which is the
+opposite of what HANDOFF section 1 rule 3 asks for. It now reads `pytest.xfail` as FAIL and keeps real skips
+as NOT_RUN, and the artifact check can no longer upgrade a failed test node, only add its measured numbers.
+No other gate's recorded criteria point at an xfailed node, so only I7's record changes.

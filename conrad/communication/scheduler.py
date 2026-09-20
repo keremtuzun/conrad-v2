@@ -126,6 +126,55 @@ def novelty(entry: QueueEntry, to_level: int, receiver: ReceiverKnowledge) -> fl
     return 0.0 if (known is not None and known >= rev and to_level <= 1) else 1.0
 
 
+def receiver_credit(entry: QueueEntry, to_level: int, receiver: ReceiverKnowledge, cfg: BAACConfig) -> float:
+    """Information about this unit's belief the receiver ALREADY holds, as a retained fraction (0..1).
+
+    A receiver holding an older revision of a belief is not ignorant of it: it holds the belief's
+    structure and only its revision is stale (``cfg.stale_view_credit``). An increment therefore buys
+    only the DIFFERENCE between what the receiver holds and what the increment carries. Without this,
+    a re-offer of an already delivered belief is scored at the full information content of the unit,
+    and on a link too slow to carry every belief the few fastest-changing beliefs take all of it
+    (gate I7 development world 5100001).
+
+    The FIRST F0 alert about a belief is exempt. ch19 Level 0 is an emergency control message whose value
+    is timeliness, not information content: discounting it against a stale view the receiver happens to
+    hold delays the first alert until the whole F1 delta can cross the link (measured on both development
+    worlds at 100 %: 1.0 s to 12.5 s). Every LATER alert of the same belief is discounted like any other
+    increment, which is what stops the re-alert thrash.
+    """
+    unit = entry.content.unit
+    if unit.content_type is InformationType.EVIDENCE or not unit.belief_ids:
+        return 0.0
+    rev = entry.content.new_revision
+    if rev is None:
+        return 0.0
+    bid = unit.belief_ids[0]
+    if to_level <= 0 and bid not in receiver.alerted:
+        return 0.0
+    credit = 0.0
+    known = receiver.known_revision(bid)
+    if known is not None:
+        credit = cfg.information_retained[1] * (1.0 if known >= rev else cfg.stale_view_credit)
+    if receiver.alerted.get(bid, -1) >= rev:
+        credit = max(credit, cfg.information_retained[0])
+    return credit
+
+
+def _critical_undelivered(entry: QueueEntry, to_level: int, receiver: ReceiverKnowledge) -> bool:
+    """Has the critical finding itself still not reached the receiver at this level?
+
+    ch19 gives a critical unit's F0 alert and F1 delta Level 0/1 pre-emption so the FINDING gets through.
+    Once the receiver holds that belief, later revisions of it are tracking, not an alert, and they keep
+    competing on value per bit with the high mission value the finding already carries.
+    """
+    if not entry.content.unit.belief_ids:
+        return True
+    bid = entry.content.unit.belief_ids[0]
+    if to_level <= 0:
+        return bid not in receiver.alerted
+    return receiver.known_revision(bid) is None
+
+
 def _options(entry: QueueEntry, level: int, policy: SchedulingPolicy) -> list[int]:
     levels = [lv for lv in entry.content.levels if lv > level]
     if not levels or (not policy.progressive and level >= 0):
@@ -157,7 +206,10 @@ def schedule(
     fractional capacity to step discretisation. An increment already in progress can only be continued; its
     priority uses its REMAINING bits. FIFO / fixed-priority orders are strict (head-of-line blocking);
     value orders skip what cannot go. With ``policy.critical_first`` a critical unit's F0 alert and F1
-    belief delta pre-empt everything else; ordering within each class is value per bit.
+    belief delta pre-empt everything else until the receiver holds that belief
+    (``cfg.preempt_until_delivered``); ordering within each class is value per bit, and for BAAC the value
+    of an increment is what the receiver GAINS by it (``receiver_credit``), not the unit's absolute
+    information content.
     """
     carry = carry_bits or {}
     budget = {
@@ -194,7 +246,10 @@ def schedule(
                 bits = opt.size_bits - cur_bits
                 done = in_progress[1] if in_progress is not None else 0
                 remaining = max(bits - done, 1)
-                value = e.content.unit.mission_value * max(opt.information_retained - cur_ret, 0.0)
+                held = cur_ret
+                if policy.use_novelty and policy.use_receiver_knowledge and cfg.receiver_relative_value:
+                    held = max(cur_ret, receiver_credit(e, lv, receiver, cfg))
+                value = e.content.unit.mission_value * max(opt.information_retained - held, 0.0)
                 if policy.use_novelty:
                     value *= novelty(e, lv, receiver)
                 if policy.use_uncertainty:
@@ -212,7 +267,12 @@ def schedule(
                 elif policy.order == "class":
                     key = (float(e.critical), e.content.unit.mission_value, -float(t), prio)
                 else:
-                    preempt = float(policy.critical_first and e.critical and lv <= 1)
+                    preempt = float(
+                        policy.critical_first
+                        and e.critical
+                        and lv <= 1
+                        and (not cfg.preempt_until_delivered or _critical_undelivered(e, lv, receiver))
+                    )
                     key = (preempt, prio, -float(t), -float(lv))
                 name, chunk = pick if pick is not None else ("", 0)
                 inc = ScheduledIncrement(

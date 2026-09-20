@@ -19,6 +19,7 @@ from conrad.communication.scheduler import (
     confidence_adjustment,
     novelty,
     policy_by_name,
+    receiver_credit,
     schedule,
 )
 from conrad.communication.units import UnitBuilder, UnitContent, alert_frame, increment_bits, payload_bits
@@ -26,13 +27,24 @@ from conrad.communication.units import UnitBuilder, UnitContent, alert_frame, in
 IMPLEMENTATION_METADATA = {
     "implementation_status": "EXPERIMENTAL_CANDIDATE",
     "source_sections": ["ch16 BAAC", "ch19", "ch33 BAAC exact implementation"],
-    "configuration_keys": ["BAACConfig.*", "LinkProfile.*", "SchedulingPolicy.*", "BAACHeadsConfig.*"],
+    "configuration_keys": [
+        "BAACConfig.*",
+        "LinkProfile.*",
+        "SchedulingPolicy.*",
+        "BAACHeadsConfig.*",
+        "BAACConfig.preempt_until_delivered",
+        "BAACConfig.receiver_relative_value",
+        "BAACConfig.stale_view_credit",
+    ],
     "assumptions": [
         "information_retained per fidelity level is an ENGINEERING_ESTIMATE",
         "F3/F4 sizes use referenced evidence byte lengths (PayloadRef.byte_length or configured default)",
         "link-layer ARQ success counts as receiver acknowledgement",
         "increments larger than one step are fragmented; a chunk lost after ARQ retries is resent",
         "channel numbers are SYNTHETIC_ONLY until calibrated against physical links",
+        "a receiver holding an older revision of a belief still holds stale_view_credit of its F1 "
+        "information (ENGINEERING_ESTIMATE); BAAC scores an increment by what the receiver GAINS",
+        "ch19 Level 0/1 pre-emption by a critical unit ends once the receiver holds that belief",
     ],
     "baselines": [
         "C-B0 send all",
@@ -77,5 +89,6 @@ __all__ = [
     "novelty",
     "payload_bits",
     "policy_by_name",
+    "receiver_credit",
     "schedule",
 ]

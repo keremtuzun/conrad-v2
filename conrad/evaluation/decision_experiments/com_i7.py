@@ -264,16 +264,22 @@ def mission_job(job: dict[str, Any]) -> dict[str, Any]:
 
 
 # ---------------------------------------------------------------------------------------------- experiment
-def _check_seeds(seeds: list[int], partition: str) -> None:
+def _check_seeds(seeds: list[int], partition: str, domain: str = "mission") -> None:
+    """Every seed belongs to the declared partition of the declared domain (``partition_domain``).
+
+    The reported I7 runs moved to the digest-pinned ``i7_mission_v2`` domain (configs/eval/partitions_i7_v2.yaml)
+    after the 2026-09-20 BAAC repair made the COM-I7-E001/E002 evidence on 5300000-5300004 stale. Development
+    runs keep using the ``mission`` development split.
+    """
     part = Partition(partition)
     purpose = (
         Purpose.FINAL_EVALUATION if part in (Partition.FINAL_TEST, Partition.OOD_TEST) else Purpose.DESIGN
     )
     check_access(part, purpose)
     for s in seeds:
-        got = partition_of("mission", s)
+        got = partition_of(domain, s)
         if got is not part:
-            raise ValueError(f"seed {s} is in partition {got}, not {part.value}")
+            raise ValueError(f"seed {s} is in partition {got} of domain {domain!r}, not {part.value}")
 
 
 def _jobs(config: dict[str, Any], seeds: list[int], out: Path) -> list[dict[str, Any]]:
@@ -382,7 +388,8 @@ def run(config: dict[str, Any], seeds: list[int], out_dir: str | Path) -> dict[s
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     partition = str(config.get("partition", "final_test"))
-    _check_seeds(seeds, partition)
+    domain = str(config.get("partition_domain", "mission"))
+    _check_seeds(seeds, partition, domain)
     jobs = _jobs(config, seeds, out)
     workers = int(config.get("workers", 1))
     if workers > 1:
@@ -397,6 +404,7 @@ def run(config: dict[str, Any], seeds: list[int], out_dir: str | Path) -> dict[s
         "evidence_class": EVIDENCE_CLASS,
         "data_status": "SYNTHETIC_ONLY",
         "partition": partition,
+        "partition_domain": domain,
         "seeds": seeds,
         "scenario": config["scenario"],
         "policies": POLICIES,

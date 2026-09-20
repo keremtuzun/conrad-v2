@@ -22,6 +22,26 @@ class BAACConfig(ConradModel):
     embedding_summary_dims: int = Field(default=16, gt=0, description="F2 carries this many quantised dims")
     compressed_evidence_fraction: float = Field(default=0.05, gt=0, le=1, description="F3 bytes / raw bytes")
     default_raw_evidence_bytes: int = Field(default=200_000, gt=0)
+    preempt_until_delivered: bool = Field(
+        default=True,
+        description="ch19 Level 0/1 pre-emption by a critical unit lasts until the receiver holds that "
+        "belief; afterwards the critical unit competes on value per bit (it keeps its high mission "
+        "value). Unbounded pre-emption lets one fast-moving critical belief hold the whole link.",
+    )
+    receiver_relative_value: bool = Field(
+        default=True,
+        description="BAAC only: score an increment by the information the receiver GAINS, discounting what "
+        "it already holds about that belief (``stale_view_credit``), instead of by the unit's absolute "
+        "information content.",
+    )
+    stale_view_credit: float = Field(
+        default=0.5,
+        ge=0,
+        le=1,
+        description="fraction of a belief's F1 information a receiver still holds when its view is at an "
+        "older revision (ENGINEERING_ESTIMATE; the same modelling assumption the communication oracle "
+        "makes for a stale view)",
+    )
     high_aleatoric: float = Field(default=0.5, ge=0)
     high_epistemic: float = Field(default=0.5, ge=0)
     high_contradiction: float = Field(default=0.5, ge=0)
