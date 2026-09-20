@@ -249,9 +249,15 @@ def test_low_power_reaches_return_and_safe_hold():
         ]
         assert "RETURN_TO_SAFE_STATE" in chosen
         assert sess.runtime.supervisor.state.value == "SAFE_HOLD"
-        assert (
-            sess.runtime.executive.stats.refused_by_supervisor > 0
-        )  # RETURN motion is not authorized (EXT-HW-05)
+        # RETURN motion is not authorized (EXT-HW-05). Since the I2 fault repair the stack no longer offers a
+        # motion command the supervisor must refuse: it commands an explicit all-zero stop, which is accepted.
+        # Either way the vehicle must not be driven, so assert the outcome rather than the refusal count.
+        st = sess.runtime.executive.stats
+        assert st.refused_by_supervisor > 0 or st.accepted > 0
+        last = sess.runtime.stack.step()
+        assert all(v == 0.0 for v in last.command.thruster_commands.values()), last.command
+        truth = sess.world.hardware.truth_access().true_state()  # evaluation side only
+        assert float(np.linalg.norm(truth.linear_velocity_body_mps)) < 0.05, truth.linear_velocity_body_mps
     finally:
         sess.finish()
 
