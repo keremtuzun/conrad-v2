@@ -25,7 +25,14 @@ from conrad.schemas.ids import IdFactory
 from conrad.settings import REPO_ROOT
 
 PRODUCTION = "PRODUCTION"
-FROZEN_PATH = REPO_ROOT / "configs" / "active" / "mcbr_frozen_v2.yaml"
+FROZEN_PATH = REPO_ROOT / "configs" / "active" / "mcbr_frozen_v4.yaml"
+"""The frozen production selection. It pointed at ``mcbr_frozen_v2.yaml`` until 2026-09-21 while the audit
+trail, the gate I4 run-2 harness and ``artifacts/gates/I4/unity_i4_occluded_rep2_results.json`` all named
+``mcbr_frozen_v3.yaml``. No result was affected, because v2 and v3 have byte-identical ``planner`` and
+``mission_predictive`` sections (``config_digest 8eca16cc...5d903``), so the planner that flew was the
+planner the audit describes. v4 keeps those two sections byte-identical again and adds the ``view_execution``
+section selected in ``docs/audits/MCBR_V4.md``, so the pointer now names the file that actually describes
+production. v2 and v3 are left on disk untouched as historical evidence."""
 
 
 class FrozenConfigError(RuntimeError):
@@ -54,7 +61,19 @@ def load_frozen(path: Path = FROZEN_PATH) -> dict[str, Any]:
             raise FrozenConfigError(
                 f"{path}: mission_predictive digest {pd} != recorded {raw.get('mission_predictive_digest')}"
             )
+    if "view_execution" in raw:  # v4+: the view execution protocol is frozen with the planner
+        vd = planner_digest(raw["view_execution"])
+        if vd != raw.get("view_execution_digest"):
+            raise FrozenConfigError(
+                f"{path}: view_execution digest {vd} != recorded {raw.get('view_execution_digest')}"
+            )
     return dict(raw)
+
+
+def production_view_execution(path: Path = FROZEN_PATH) -> dict[str, Any] | None:
+    """The frozen mission view execution protocol, if this frozen file declares one (v4+)."""
+    raw = load_frozen(path).get("view_execution")
+    return None if raw is None else dict(raw)
 
 
 def build_planner(section: dict[str, Any], ids: IdFactory, cfg: MCBRConfig, name: str) -> MCBRPlanner:

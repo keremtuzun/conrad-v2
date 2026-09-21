@@ -1,0 +1,13 @@
+{
+  "experiment_id": "I4-ORACLE-HEADROOM",
+  "module": "conrad.evaluation.decision_experiments.i4_oracle_headroom",
+  "config": "configs\\eval\\i4_oracle_headroom.yaml",
+  "seeds": [
+    8002000,
+    8002001,
+    8002002,
+    8002003
+  ],
+  "wall_s": 255.8,
+  "out_dir": "artifacts\\experiments\\I4-ORACLE-HEADROOM-SMOKE"
+}

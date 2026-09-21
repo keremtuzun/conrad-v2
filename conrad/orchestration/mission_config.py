@@ -12,6 +12,7 @@ from typing import Any
 
 from pydantic import Field
 
+from conrad.active.production import PRODUCTION, production_view_execution
 from conrad.orchestration.multidomain_settings import MultiDomainSettings
 from conrad.schemas.base import ConradModel
 
@@ -69,6 +70,56 @@ class RouteSettings(ConradModel):
     detour_climb_m: float = Field(default=1.6, gt=0, description="REPLAN detour: climb over a blocked leg")
 
 
+class ViewExecutionSettings(ConradModel):
+    """MCBR V4 execution protocol. Every switch is OFF by default, so the recorded V3 behaviour is unchanged.
+
+    The V3 diagnostics measured that an accepted view is frequently never flown and that nothing told the
+    planner so. These settings close that loop inside the existing contracts: MCBR still only outputs an
+    ObservationPlan and navigation still moves the robot.
+    """
+
+    enabled: bool = Field(default=False, description="master switch for the V4 execution protocol")
+    protect_active_view: bool = Field(
+        default=True,
+        description="a running inspection view is not abandoned by REPLAN(ROUTE_BLOCKED); the running view "
+        "IS the attempt, exactly as the existing busy guard already treats MCBR and NAVIGATION requests",
+    )
+    belief_map_navigation: bool = Field(
+        default=True,
+        description="the navigation stack's global and local planners see Model2S OBSERVED occupancy, not "
+        "only the surveyed registry design, so the approach routes around discovered structure",
+    )
+    refund_abandoned_attempt: bool = Field(
+        default=True,
+        description="a view that was accepted and never flown does not spend a planning attempt on the need",
+    )
+    drop_abandoned_prior_view: bool = Field(
+        default=True,
+        description="a view that was never flown is not a prior view: it delivered no observation",
+    )
+    declare_budgets: bool = Field(
+        default=True,
+        description="the PlanningRequest carries the remaining mission time and energy, so the feasibility "
+        "filter can refuse a view that cannot be reached and dwelled on in the time that is left",
+    )
+    budget_from_mission_duration: bool = Field(
+        default=False,
+        description="with no operator time budget declared, use the mission's own remaining duration as the "
+        "planning horizon; a view that cannot be reached and dwelled on before the mission ends is then "
+        "refused by the feasibility filter instead of being commanded and abandoned at the clock",
+    )
+    max_view_attempts: int = Field(
+        default=8, gt=0, description="hard cap on accepted view goals per need, whatever the refunds"
+    )
+    route_aware_navigation_cost: bool = Field(
+        default=False,
+        description="the planner's navigation-cost estimate charges a candidate whose believed corridor "
+        "crosses OBSERVED occupied cells; it never refuses one, because on this family the only view that "
+        "resolves the defect is reached through a gap between the discovered panels",
+    )
+    blocked_cost_multiplier: float = Field(default=2.0, ge=1.0)
+
+
 class MissionRuntimeConfig(ConradModel):
     duration_s: float = Field(default=90.0, gt=0)
     control_period_s: float = Field(default=0.05, gt=0)
@@ -81,6 +132,10 @@ class MissionRuntimeConfig(ConradModel):
         "or any conrad.active.make_planners name (baselines)",
     )
     mcbr: dict[str, Any] = Field(default_factory=lambda: {"n_azimuth": 8, "elevations_rad": [0.0, 0.35]})
+    v4: dict[str, Any] = Field(
+        default_factory=dict, description="conrad.active.v4.V4Config fields when planner is V4"
+    )
+    view_execution: ViewExecutionSettings = ViewExecutionSettings()
     decision: dict[str, Any] = Field(default_factory=dict)
     model2s: dict[str, Any] = Field(
         default_factory=lambda: {
@@ -115,6 +170,15 @@ class MissionRuntimeConfig(ConradModel):
     inspection_station_half_m: float = Field(default=0.5, gt=0, description="mid-span station half length")
     inspection_dwell_s: float = Field(default=6.0, gt=0)
     inspection_timeout_s: float = Field(default=60.0, gt=0)
+    view_position_tolerance_m: float = Field(
+        default=0.35,
+        gt=0,
+        description="declared pose tolerance of an accepted MCBR view; a view is credited as FLOWN only "
+        "inside it (conrad.orchestration.view_execution)",
+    )
+    view_orientation_tolerance_rad: float = Field(
+        default=0.3, gt=0, description="declared aim tolerance of an accepted MCBR view"
+    )
     mcbr_unknown_block_probability: float = Field(
         default=0.05,
         ge=0,
@@ -140,4 +204,17 @@ class MissionRuntimeConfig(ConradModel):
 
 
 def runtime_config(raw: dict[str, Any] | None) -> MissionRuntimeConfig:
-    return MissionRuntimeConfig.model_validate(raw or {})
+    """Resolve the runtime configuration, then adopt the FROZEN view execution protocol for PRODUCTION.
+
+    The V4 selection is a mission protocol, not a ranking rule, so freezing it means the production planner
+    and the protocol it was selected with travel together. An explicit ``view_execution`` block in the
+    mission configuration still wins, which is what lets an experiment run the incumbent protocol as a
+    control arm.
+    """
+    cfg = MissionRuntimeConfig.model_validate(raw or {})
+    if cfg.planner != PRODUCTION or "view_execution" in cfg.model_fields_set:
+        return cfg
+    frozen = production_view_execution()
+    return (
+        cfg if frozen is None else cfg.model_copy(update={"view_execution": ViewExecutionSettings(**frozen)})
+    )

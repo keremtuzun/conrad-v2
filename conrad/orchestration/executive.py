@@ -20,6 +20,20 @@ import numpy as np
 from conrad.orchestration.mission_config import MissionRuntimeConfig
 from conrad.orchestration.mission_context import MissionContext
 from conrad.orchestration.services import RuntimeServices
+from conrad.orchestration.view_execution import (
+    ABANDONED_MISSION_END,
+    ABANDONED_NAV_REJECTED,
+    ABANDONED_PREEMPTED,
+    ABANDONED_SAFE_HOLD,
+    ABANDONED_TIMEOUT,
+    ABANDONED_TRAJECTORY_LOST,
+    ARRIVED_DWELL_SHORT,
+    COMPLETED_OFF_POSE,
+    FLOWN,
+    ViewCommand,
+    ViewLedger,
+)
+from conrad.robotics.estimation.rotations import yaw_of
 from conrad.robotics.navigation import GoalStatus, NavigationStack
 from conrad.runtime.command_gateway import CommandGateway
 from conrad.schemas.decision import NavigationGoal
@@ -69,6 +83,11 @@ class MissionExecutive:
         self.transit_done = False
         self.command_rows: list[dict[str, Any]] = []
         self.latest_decision_record: UUID | None = None  # parent of goals not motivated by a specific plan
+        # View execution ledger (deployment plane, no truth): every accepted view goal is closed with a
+        # reason code, so "the plan was adopted" and "the view was flown" stop being the same statement.
+        self.views = ViewLedger()
+        self.goal_rejections: list[dict[str, Any]] = []
+        self._last_tick_ns: int | None = None
 
     # ------------------------------------------------------------------ goals
     def _plan_record(
@@ -95,12 +114,18 @@ class MissionExecutive:
         parent: UUID | None,
         now: TimeStamp,
         plan_id: UUID | None = None,
+        view: ViewCommand | None = None,
+        preempt_reason: str | None = None,
     ) -> bool:
+        """``view`` opens a view execution record; ``preempt_reason`` names why a running view is dropped."""
         parent = parent or self.latest_decision_record
         record = self._plan_record(goal, f"goal:{purpose}", () if parent is None else (parent,), now)
+        prev = self._close_reason(purpose, preempt_reason, now.time_ns)
         traj = self.stack.set_goal(goal)
         if traj is None:
             reason = self.stack.records[-1].payload if self.stack.records else {}
+            # the stack cleared its objective while refusing this goal, so a running view lost its trajectory
+            self.views.close(now.time_ns, ABANDONED_TRAJECTORY_LOST, prev[1])
             self.s.emit(
                 EventType.ACTION_REJECTED,
                 MODULE,
@@ -108,17 +133,24 @@ class MissionExecutive:
                 {"goal_id": str(goal.goal_id), "purpose": purpose, "reason": reason},
                 severity=Severity.WARNING,
             )
-            self.stats.goals.append(
-                {
-                    "goal_id": str(goal.goal_id),
-                    "purpose": purpose,
-                    "accepted": False,
-                    "t_s": now.time_ns / 1e9,
-                    "reason": reason,
-                }
-            )
+            row = {
+                "goal_id": str(goal.goal_id),
+                "purpose": purpose,
+                "accepted": False,
+                "t_s": now.time_ns / 1e9,
+                "reason": reason,
+            }
+            self.stats.goals.append(row)
+            self.goal_rejections.append({**row, "plan_id": None if plan_id is None else str(plan_id)})
+            if view is not None:
+                self._record_refused_view(view, goal.goal_id, purpose, now.time_ns, reason)
             return False
+        self.views.close(now.time_ns, prev[0], prev[1])
         self.active = ActiveGoal(goal, purpose, record, now.time_ns, plan_id)
+        if view is not None:
+            self.views.open(
+                view, goal.goal_id, purpose, now.time_ns, self.stack.estimator.get_state().pose.position_m
+            )
         self.s.emit(
             EventType.GOAL_ACCEPTED,
             MODULE,
@@ -155,6 +187,50 @@ class MissionExecutive:
         )
         return True
 
+    def _close_reason(self, new_purpose: str, preempt_reason: str | None, now_ns: int) -> tuple[str, str]:
+        """Why the currently running view ends, decided BEFORE the stack accepts the replacing goal.
+
+        The navigation stack's ``status`` is overwritten by ``set_goal``, so the verdict has to be taken
+        from the state the running view actually reached.
+        """
+        rec, status = self.views.open_record, self.stack.status.value
+        if rec is None:
+            return ABANDONED_PREEMPTED, status
+        if self.stack.status is GoalStatus.COMPLETE:
+            if not rec.reached:
+                return COMPLETED_OFF_POSE, status
+            if rec.aimed and rec.time_within_tolerance_s + 1e-9 >= rec.dwell_s:
+                return FLOWN, status
+            return ARRIVED_DWELL_SHORT, status
+        if self.stack.status is GoalStatus.REJECTED:
+            return ABANDONED_NAV_REJECTED, status
+        if preempt_reason is not None:
+            return preempt_reason, status
+        if new_purpose == "SAFE_HOLD":
+            return ABANDONED_SAFE_HOLD, status
+        if (
+            now_ns - (self.active.started_ns if self.active else now_ns)
+        ) / 1e9 > self.cfg.inspection_timeout_s:
+            return ABANDONED_TIMEOUT, status
+        return ABANDONED_PREEMPTED, status
+
+    def _record_refused_view(
+        self, view: ViewCommand, goal_id: UUID, purpose: str, now_ns: int, reason: object
+    ) -> None:
+        """A view goal the navigation stack refused outright: opened and closed in the same instant."""
+        self.views.open(view, goal_id, purpose, now_ns, self.stack.estimator.get_state().pose.position_m)
+        self.views.close(now_ns, ABANDONED_NAV_REJECTED, str(reason))
+
+    def close_views(self, now_ns: int) -> None:
+        """Mission end: a view still running was never flown, and the record says so."""
+        rec = self.views.open_record
+        if rec is None:
+            return
+        if self.stack.status is GoalStatus.COMPLETE and rec.aimed:
+            self.views.close(now_ns, FLOWN, self.stack.status.value)
+        else:
+            self.views.close(now_ns, ABANDONED_MISSION_END, self.stack.status.value)
+
     def transit_goal(self, now: TimeStamp, from_index: int = 1) -> bool:
         lane = self.ctx.transit_lane
         via = [list(p) for p in lane[from_index:-1]]
@@ -177,7 +253,7 @@ class MissionExecutive:
         ahead = [i for i in range(1, len(lane)) if (lane[i] - lane[0]) @ d / float(d @ d) > progress + 0.02]
         return self.transit_goal(now, ahead[0] if ahead else len(lane) - 1)
 
-    def hold_goal(self, now: TimeStamp, purpose: str = "HOLD") -> bool:
+    def hold_goal(self, now: TimeStamp, purpose: str = "HOLD", preempt_reason: str | None = None) -> bool:
         pose = self.stack.estimator.get_state().pose
         goal = NavigationGoal(
             goal_id=self.ids.new(),
@@ -190,7 +266,7 @@ class MissionExecutive:
             observation_constraints={"primitive": "STATION_KEEP", "duration_s": 3600.0},
             risk_limit=0.3,
         )
-        return self.set_goal(goal, purpose, None, now)
+        return self.set_goal(goal, purpose, None, now, preempt_reason=preempt_reason)
 
     # ------------------------------------------------------------------ planned route (Model 1 context)
     def planned_path(self) -> list[np.ndarray]:
@@ -244,7 +320,13 @@ class MissionExecutive:
             start += rc.leg_length_m
         return legs
 
-    def replan_detour(self, blocked: list[SpatialSupport], now: TimeStamp, parent: UUID | None) -> bool:
+    def replan_detour(
+        self,
+        blocked: list[SpatialSupport],
+        now: TimeStamp,
+        parent: UUID | None,
+        preempt_reason: str | None = None,
+    ) -> bool:
         """REPLAN(ROUTE_BLOCKED): re-route the active transit over the blocked legs (climb, pass, descend).
 
         Only the remaining lane via-points are changed; the navigation stack plans the new trajectory and the
@@ -253,7 +335,7 @@ class MissionExecutive:
         if not blocked:
             return False
         if self.active is None or self.active.purpose != "TRANSIT":
-            return self.hold_goal(now, "HOLD")
+            return self.hold_goal(now, "HOLD", preempt_reason=preempt_reason)
         path = self.planned_path()
         climb = self.cfg.route.detour_climb_m
         los = np.asarray([np.asarray(b.center_m) - np.asarray(b.half_extent_m) for b in blocked])
@@ -299,6 +381,12 @@ class MissionExecutive:
         self.stats.steps += 1
         state = res.assessment.state.value
         now_ns = self.s.clock_ns()
+        dt_s = (
+            self.cfg.control_period_s if self._last_tick_ns is None else (now_ns - self._last_tick_ns) / 1e9
+        )
+        self._last_tick_ns = now_ns
+        pose = res.state.pose
+        self.views.update(now_ns, pose.position_m, yaw_of(np.asarray(pose.orientation_wxyz)), dt_s)
         new_reasons = set(res.assessment.reason_codes) - self._seen_reasons
         self._seen_reasons |= new_reasons
         if state != self.safety_state or new_reasons:

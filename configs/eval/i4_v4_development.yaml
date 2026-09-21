@@ -1,0 +1,60 @@
+# ACTIVE-MCBR-E007-DEV: MCBR V4 design round. DEVELOPMENT worlds only. SYNTHETIC_ONLY.
+#
+# It measures WHY accepted views are not flown (the view execution ledger records one reason code per
+# accepted view goal) and whether the V4 execution protocol changes the mechanism. It selects nothing:
+# selection happens on the validation split, and the final split stays closed.
+experiment_id: ACTIVE-MCBR-E007-DEV
+partition_file: configs/eval/partitions_i4_mcbr_v4.yaml
+partition: development
+purpose: design
+world_family: ACTIVE_INSPECTION_OCCLUDED_V1
+scenario: I4-OCCLUDED
+seeds: [8002000, 8002001, 8002002, 8002003, 8002004, 8002005, 8002006, 8002007, 8002008, 8002009, 8002010, 8002011, 8002012, 8002013, 8002014, 8002015, 8002016, 8002017, 8002018, 8002019, 8002020, 8002021, 8002022, 8002023, 8002024, 8002025, 8002026, 8002027, 8002028, 8002029, 8002030, 8002031, 8002032, 8002033, 8002034, 8002035, 8002036, 8002037, 8002038, 8002039]
+primary_metric: hidden_state_error_improvement
+direction: higher
+baseline: A-B2_coverage
+reference_arms: [V3_PRODUCTION]
+out_name: i4_v4_development.json
+question: >-
+  ACTIVE-MCBR-E006 bounded better ranking at about +0.017 over V3 and pointed at two things it does not
+  bound: whether a chosen view is ever flown, and which candidates the feasibility filter offers. Measure
+  the execution breakdown of the incumbent on fresh development worlds, then test whether closing the view
+  execution loop moves the only quantity that matters on this family, the number of worlds in which the
+  defect is read.
+# Identical budgets for every arm: same duration, same max_plans_per_need, same sensors, same metric.
+runtime:
+  duration_s: 100.0
+  control_period_s: 0.1
+  max_plans_per_need: 4
+  model2e_enabled: false
+arms:
+  # --- references, unchanged V3 behaviour (the ledger only records) ---------------------------------
+  V3_PRODUCTION: {planner: PRODUCTION}
+  A-B2_coverage: {planner: A-B2_coverage}
+  # --- V4 variants -----------------------------------------------------------------------------------
+  # protocol only: the incumbent V3 ranker, with the execution loop closed around it
+  V4_protocol_only:
+    planner: PRODUCTION
+    view_execution: {enabled: true}
+  # the V4 planner (V3's ranking rule behind an execution-aware feasibility filter) plus the protocol
+  V4_full:
+    planner: V4
+    view_execution: {enabled: true}
+  # ablation: the protocol without giving the navigation stack the observed occupancy of the belief map
+  V4_no_belief_map:
+    planner: V4
+    view_execution: {enabled: true, belief_map_navigation: false}
+  # candidate supply: the same mechanism with a denser ring (ring candidates stay the baseline)
+  V4_supply:
+    planner: V4
+    view_execution: {enabled: true}
+    mcbr: {n_azimuth: 16, elevations_rad: [0.0, 0.35, 0.7]}
+  # approach cost: the planner charges a candidate whose believed corridor crosses observed structure
+  V4_route_cost:
+    planner: V4
+    view_execution: {enabled: true, route_aware_navigation_cost: true}
+workers: 12
+decision_rule: >-
+  Unit = one world, paired across arms. This is a DEVELOPMENT round: it reports the execution breakdown and
+  every metric for every arm, it selects nothing, and it is reported whatever its sign. If the read rate
+  does not move here, the work stops and no validation or final run is spent.

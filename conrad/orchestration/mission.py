@@ -111,6 +111,10 @@ class MissionRuntime:
             safety=SafetyConfig(boundary=boundary),
             trajectory=TrajectoryConfig(cruise_speed_fraction=config.cruise_speed_fraction),
         )
+        # NAVIGATION MAP. V3 planned over the SURVEYED REGISTRY DESIGN alone, so the global planner routed
+        # straight through structure that is not in the registry even after Model2S had observed it, and the
+        # approach to an inspection view ran into it. With the V4 switch on, both planners also read Model2S
+        # OBSERVED occupancy (belief plane; the twin is never consulted). UNKNOWN space stays traversable.
         self.stack = NavigationStack(
             hardware,
             self.robot_config,
@@ -119,8 +123,8 @@ class MissionRuntime:
             run_id,
             context.launch_pose,
             config=nav_cfg,
-            is_free=lambda p: context.design_distance(p) > config.planner_inflation_m,
-            local_distance=context.design_distance,
+            is_free=self._nav_is_free,
+            local_distance=self._nav_distance,
         )
         self.gateway = CommandGateway(
             hardware,
@@ -220,6 +224,34 @@ class MissionRuntime:
                     "messages": len(msgs),
                 },
             )
+
+    # ------------------------------------------------------------------ navigation map (belief plane)
+    def _nav_is_free(self, points: Any) -> Any:
+        import numpy as np
+
+        p = np.atleast_2d(np.asarray(points, dtype=np.float64))
+        free = self.ctx.design_distance(p) > self.cfg.planner_inflation_m
+        if self.cfg.view_execution.enabled and self.cfg.view_execution.belief_map_navigation:
+            from conrad.domains.spatial.queries import UnknownPolicy
+
+            free &= np.asarray(self.m2s.is_free(p, UnknownPolicy.PERMISSIVE), dtype=bool)
+        return np.asarray(free, dtype=bool)
+
+    def _nav_distance(self, points: Any) -> Any:
+        """Distance to the nearest known obstacle for the local planner: surveyed design, plus, with the
+        V4 switch on, the nearest OBSERVED occupied belief cell that is not part of that design."""
+        import numpy as np
+
+        p = np.atleast_2d(np.asarray(points, dtype=np.float64))
+        d = np.asarray(self.ctx.design_distance(p), dtype=np.float64)
+        if not (self.cfg.view_execution.enabled and self.cfg.view_execution.belief_map_navigation):
+            return d
+        from conrad.domains.spatial.queries import UnknownPolicy
+
+        blocked = ~np.asarray(self.m2s.is_free(p, UnknownPolicy.PERMISSIVE), dtype=bool)
+        if blocked.any():  # a believed obstacle is at most one voxel away from the queried point
+            d[blocked] = np.minimum(d[blocked], float(self.m2s.cfg.grid.base_voxel_m) * 0.5)
+        return d
 
     # ------------------------------------------------------------------ lifecycle
     def estimated_pose(self) -> Any:
@@ -343,6 +375,7 @@ class MissionRuntime:
         self._inbox_seen = len(lines)
 
     def finish(self, reason: str = "mission duration reached") -> None:
+        self.executive.close_views(self.hw.now_ns())
         self.executive.flush()
         self.s.flush_provenance()
         self.supervisor.stop(reason)

@@ -27,7 +27,13 @@ from conrad.active.candidates import (
 )
 from conrad.active.config import MCBRConfig
 from conrad.active.eig import GainBreakdown, InformationGainEstimator
-from conrad.active.gap import KnowledgeGap, PriorView, build_knowledge_gaps, need_satisfied
+from conrad.active.gap import (
+    AbandonedView,
+    KnowledgeGap,
+    PriorView,
+    build_knowledge_gaps,
+    need_satisfied,
+)
 from conrad.active.predictive import PredictiveBelief, predicted_coverage
 from conrad.schemas.belief import BeliefMessage
 from conrad.schemas.decision import (
@@ -62,6 +68,13 @@ class PlanningRequest:
     # Optional belief-side predictive model (conrad.active.predictive). Planners that need it fall back to
     # the analytic channel estimate when it is absent; it is computed from BELIEF, never from twin truth.
     predictive: PredictiveBelief | None = None
+    # Views this mission accepted and did not fly, with the runtime's reason. Belief plane. Empty by
+    # default, so every existing planner and baseline sees exactly the request it saw before.
+    abandoned_views: tuple[AbandonedView, ...] = ()
+    # What the mission has left when the plan is made. ``None`` = the caller does not declare a budget and
+    # the feasibility filter does not test one (the pre-V4 behaviour).
+    time_remaining_s: float | None = None
+    energy_remaining_j: float | None = None
 
 
 @dataclass
@@ -99,6 +112,24 @@ class StopRule(Protocol):
     def __call__(self, best: ScoredCandidate, req: PlanningRequest) -> bool: ...
 
 
+class ExtraFilter(Protocol):
+    """Additional feasibility reasons, evaluated with the shared filter and BEFORE any ranking.
+
+    Returning a non-empty tuple refuses the candidate, exactly as ``FeasibilityFilter`` does, and the
+    reason codes are kept in the plan's rejected list. It cannot promote a candidate the shared filter
+    refused, so filter-before-rank still holds for every planner that supplies one.
+    """
+
+    def __call__(
+        self,
+        raw: RawCandidate,
+        visibility: float,
+        cost: ResourceCost | None,
+        request: PlanningRequest,
+        gap: KnowledgeGap,
+    ) -> tuple[str, ...]: ...
+
+
 class MCBRPlanner:
     """Shared pipeline; ``scorer`` is the ranking rule. Default = full MCBR (mission value - cost).
 
@@ -114,12 +145,14 @@ class MCBRPlanner:
         name: str = "mcbr_full",
         value_gate: bool = True,
         stop: StopRule | None = None,
+        extra_filter: ExtraFilter | None = None,
     ) -> None:
         self._ids = id_factory
         self.config = config or MCBRConfig()
         self.name = name
         self.value_gate = value_gate
         self.stop = stop
+        self.extra_filter = extra_filter
         self.generator = ViewpointGenerator(self.config)
         self.filter = FeasibilityFilter(self.config)
         self.eig = InformationGainEstimator(self.config)
@@ -148,6 +181,8 @@ class MCBRPlanner:
                 vis = min(vis, predicted_coverage(request.predictive, raw.pose, raw.sensor))
             cost = request.navigation_cost(request.robot_pose, raw.pose)
             reasons = self.filter.reasons(raw, bool(ok), vis, cost, need, request.bounds)
+            if self.extra_filter is not None:
+                reasons = reasons + self.extra_filter(raw, vis, cost, request, gap)
             scored = self._score(gap, raw, vis, cost, need)
             if reasons:
                 rejected.append(RejectedCandidate(action=scored.action, reason_codes=reasons))

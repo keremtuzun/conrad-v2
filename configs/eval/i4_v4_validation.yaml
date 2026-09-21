@@ -1,0 +1,67 @@
+# ACTIVE-MCBR-E007-VAL: MCBR V4 selection round. VALIDATION worlds only. SYNTHETIC_ONLY.
+#
+# Declared BEFORE the validation split was read. The primary metric, the secondaries and the selection rule
+# below are fixed here; the final_test and ood_test splits of configs/eval/partitions_i4_mcbr_v4.yaml stay
+# closed until exactly one V4 candidate has been selected and frozen.
+experiment_id: ACTIVE-MCBR-E007-VAL
+partition_file: configs/eval/partitions_i4_mcbr_v4.yaml
+partition: validation
+purpose: selection
+world_family: ACTIVE_INSPECTION_OCCLUDED_V1
+scenario: I4-OCCLUDED
+seeds: [8002100, 8002101, 8002102, 8002103, 8002104, 8002105, 8002106, 8002107, 8002108, 8002109, 8002110, 8002111, 8002112, 8002113, 8002114, 8002115, 8002116, 8002117, 8002118, 8002119, 8002120, 8002121, 8002122, 8002123, 8002124, 8002125, 8002126, 8002127, 8002128, 8002129, 8002130, 8002131, 8002132, 8002133, 8002134, 8002135, 8002136, 8002137, 8002138, 8002139]
+primary_metric: hidden_state_error_improvement
+direction: higher
+baseline: A-B2_coverage
+reference_arms: [V3_PRODUCTION]
+out_name: i4_v4_validation.json
+question: >-
+  Which single V4 variant, if any, is carried to the one final run? The development rounds showed that the
+  read rate on this family is set by whether an accepted view is flown, not by how the view is ranked.
+  Validation decides between the variants on worlds none of them was designed on.
+# DECLARED BEFORE LOOKING (selection rule)
+#   primary metric   hidden_state_error_improvement, higher is better
+#   secondaries      defect_read, fraction_views_flown, empty_plan_rate, views_before_detection,
+#                    time_to_detection_s, redundant_observations, travel_m, energy_j, planning_latency_ms
+#   unit             one world, paired across arms; 95 % paired percentile bootstrap, 4000 resamples
+#   selection        among the V4 variants whose paired benefit over V3_PRODUCTION on the primary metric
+#                    has a 95 % CI lower bound above 0, take the one with the highest primary mean; break a
+#                    tie in the primary mean by the higher defect_read, then by the lower planning latency.
+#                    If NO V4 variant clears that bar, nothing is frozen, no final run is spent, and the
+#                    honest conclusion is recorded instead of a selection.
+runtime:
+  duration_s: 100.0
+  control_period_s: 0.1
+  max_plans_per_need: 4
+  model2e_enabled: false
+arms:
+  V3_PRODUCTION: {planner: PRODUCTION}
+  A-B2_coverage: {planner: A-B2_coverage}
+  V4_protocol_only:
+    planner: PRODUCTION
+    view_execution: {enabled: true}
+  V4_full:
+    planner: V4
+    view_execution: {enabled: true}
+  V4_no_belief_map:
+    planner: V4
+    view_execution: {enabled: true, belief_map_navigation: false}
+  V4_route_cost:
+    planner: V4
+    view_execution: {enabled: true, route_aware_navigation_cost: true}
+  V4_supply:
+    planner: V4
+    view_execution: {enabled: true}
+    mcbr: {n_azimuth: 16, elevations_rad: [0.0, 0.35, 0.7]}
+  V4_deadline:
+    planner: V4
+    view_execution: {enabled: true, budget_from_mission_duration: true}
+  V4_supply_deadline:
+    planner: V4
+    view_execution: {enabled: true, budget_from_mission_duration: true}
+    mcbr: {n_azimuth: 16, elevations_rad: [0.0, 0.35, 0.7]}
+workers: 12
+decision_rule: >-
+  Unit = one world, paired across arms, 95 % paired percentile-bootstrap CI over 40 worlds with 4000
+  resamples. Exactly one V4 variant is selected, by the rule declared above, and every variant that fails
+  stays in the record.

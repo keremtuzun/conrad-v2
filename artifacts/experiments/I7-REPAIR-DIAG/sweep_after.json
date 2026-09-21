@@ -1,0 +1,1930 @@
+{
+ "tag": "after",
+ "variants": [
+  [
+   "after",
+   {}
+  ]
+ ],
+ "backend": "kernel",
+ "evidence_class": "SURROGATE (python L1 kernel mission, development seeds)",
+ "seeds": [
+  5100000,
+  5100001
+ ],
+ "levels": [
+  1.0,
+  0.5,
+  0.1,
+  0.01,
+  0.001,
+  0.0
+ ],
+ "outage_levels": [
+  1.0,
+  0.1
+ ],
+ "wall_clock_s": 779.6,
+ "rows": [
+  {
+   "run_id": "I7-after-bandwidth-s5100000-bw0",
+   "seed": 5100000,
+   "role": "bandwidth",
+   "bandwidth_factor": 0.0,
+   "ran_full_mission": true,
+   "failed_modules": [],
+   "beliefs_reported": 19,
+   "wall_s": 502.7,
+   "arms": {
+    "baac": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 0,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 170,
+     "queue_depth_max": 19,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": null,
+      "routine": null
+     },
+     "drop_reasons": {}
+    },
+    "raw": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 0,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 189,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": null,
+      "routine": null
+     },
+     "drop_reasons": {}
+    },
+    "fifo": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 0,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 189,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": null,
+      "routine": null
+     },
+     "drop_reasons": {}
+    },
+    "fixed_priority": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 0,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 189,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": null,
+      "routine": null
+     },
+     "drop_reasons": {}
+    },
+    "value_per_bit": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 0,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 189,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": null,
+      "routine": null
+     },
+     "drop_reasons": {}
+    }
+   },
+   "outage": null
+  },
+  {
+   "run_id": "I7-after-bandwidth-s5100000-bw0.001",
+   "seed": 5100000,
+   "role": "bandwidth",
+   "bandwidth_factor": 0.001,
+   "ran_full_mission": true,
+   "failed_modules": [],
+   "beliefs_reported": 19,
+   "wall_s": 503.4,
+   "arms": {
+    "baac": {
+     "retained": 0.040601503759398506,
+     "critical_retained": 0.3,
+     "bits_sent": 184,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 1,
+     "coalesced": 170,
+     "queue_depth_max": 19,
+     "critical_alert_latency_s": 147.0,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.4666666666666667,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "raw": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 0,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 189,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "fifo": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 0,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 189,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "fixed_priority": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 0,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 189,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "value_per_bit": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 184,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 1,
+     "coalesced": 0,
+     "queue_depth_max": 189,
+     "critical_alert_latency_s": 147.0,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    }
+   },
+   "outage": null
+  },
+  {
+   "run_id": "I7-after-bandwidth-s5100000-bw0.01",
+   "seed": 5100000,
+   "role": "bandwidth",
+   "bandwidth_factor": 0.01,
+   "ran_full_mission": true,
+   "failed_modules": [],
+   "beliefs_reported": 19,
+   "wall_s": 502.9,
+   "arms": {
+    "baac": {
+     "retained": 0.040601503759398506,
+     "critical_retained": 0.3,
+     "bits_sent": 2424,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 1,
+     "coalesced": 163,
+     "queue_depth_max": 19,
+     "critical_alert_latency_s": 2.0,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "raw": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 2049,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 189,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "fifo": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 2049,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 189,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "fixed_priority": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 2049,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 189,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "value_per_bit": {
+     "retained": 0.040601503759398506,
+     "critical_retained": 0.3,
+     "bits_sent": 2760,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 1,
+     "coalesced": 0,
+     "queue_depth_max": 189,
+     "critical_alert_latency_s": 2.0,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    }
+   },
+   "outage": null
+  },
+  {
+   "run_id": "I7-after-bandwidth-s5100000-bw0.1",
+   "seed": 5100000,
+   "role": "bandwidth",
+   "bandwidth_factor": 0.1,
+   "ran_full_mission": true,
+   "failed_modules": [],
+   "beliefs_reported": 19,
+   "wall_s": 503.3,
+   "arms": {
+    "baac": {
+     "retained": 0.2315789473684211,
+     "critical_retained": 0.35,
+     "bits_sent": 29433,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 1,
+     "coalesced": 168,
+     "queue_depth_max": 19,
+     "critical_alert_latency_s": 1.0,
+     "critical_delta_latency_s": 48.408333333,
+     "receiver_sync_error": 0.8421052631578947,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.07692307692307693,
+      "routine": 0.02127659574468085
+     },
+     "drop_reasons": {}
+    },
+    "raw": {
+     "retained": 0.17894736842105266,
+     "critical_retained": 0.35,
+     "bits_sent": 30270,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 184,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.9473684210526315,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.02127659574468085
+     },
+     "drop_reasons": {}
+    },
+    "fifo": {
+     "retained": 0.17894736842105266,
+     "critical_retained": 0.35,
+     "bits_sent": 30158,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 184,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.9473684210526315,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.02127659574468085
+     },
+     "drop_reasons": {}
+    },
+    "fixed_priority": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 27663,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 189,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "value_per_bit": {
+     "retained": 0.17894736842105266,
+     "critical_retained": 0.35,
+     "bits_sent": 28559,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 1,
+     "coalesced": 0,
+     "queue_depth_max": 189,
+     "critical_alert_latency_s": 1.0,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.9473684210526315,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.02127659574468085
+     },
+     "drop_reasons": {}
+    }
+   },
+   "outage": null
+  },
+  {
+   "run_id": "I7-after-bandwidth-s5100000-bw0.5",
+   "seed": 5100000,
+   "role": "bandwidth",
+   "bandwidth_factor": 0.5,
+   "ran_full_mission": true,
+   "failed_modules": [],
+   "beliefs_reported": 19,
+   "wall_s": 503.3,
+   "arms": {
+    "baac": {
+     "retained": 0.6601503759398497,
+     "critical_retained": 0.85,
+     "bits_sent": 143565,
+     "receiver_beliefs": 14,
+     "receiver_alerts": 1,
+     "coalesced": 158,
+     "queue_depth_max": 19,
+     "critical_alert_latency_s": 1.306666666,
+     "critical_delta_latency_s": 13.02,
+     "receiver_sync_error": 0.5263157894736842,
+     "sync_critical_all_equal": true,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.75,
+      "routine": 0.5897435897435898
+     },
+     "drop_reasons": {}
+    },
+    "raw": {
+     "retained": 0.17894736842105266,
+     "critical_retained": 0.35,
+     "bits_sent": 145552,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 173,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.9473684210526315,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.05319148936170213
+     },
+     "drop_reasons": {}
+    },
+    "fifo": {
+     "retained": 0.17894736842105266,
+     "critical_retained": 0.35,
+     "bits_sent": 145553,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 173,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.9473684210526315,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.05319148936170213
+     },
+     "drop_reasons": {}
+    },
+    "fixed_priority": {
+     "retained": 0.026315789473684216,
+     "critical_retained": 0.0,
+     "bits_sent": 144071,
+     "receiver_beliefs": 1,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 177,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.010638297872340425
+     },
+     "drop_reasons": {}
+    },
+    "value_per_bit": {
+     "retained": 0.5609022556390978,
+     "critical_retained": 0.35,
+     "bits_sent": 145977,
+     "receiver_beliefs": 12,
+     "receiver_alerts": 1,
+     "coalesced": 0,
+     "queue_depth_max": 179,
+     "critical_alert_latency_s": 1.0,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.5789473684210527,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 1,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.4224137931034483
+     },
+     "drop_reasons": {}
+    }
+   },
+   "outage": null
+  },
+  {
+   "run_id": "I7-after-bandwidth-s5100000-bw1",
+   "seed": 5100000,
+   "role": "bandwidth",
+   "bandwidth_factor": 1.0,
+   "ran_full_mission": true,
+   "failed_modules": [],
+   "beliefs_reported": 19,
+   "wall_s": 503.4,
+   "arms": {
+    "baac": {
+     "retained": 0.6601503759398497,
+     "critical_retained": 0.85,
+     "bits_sent": 293599,
+     "receiver_beliefs": 14,
+     "receiver_alerts": 1,
+     "coalesced": 157,
+     "queue_depth_max": 18,
+     "critical_alert_latency_s": 12.514166666,
+     "critical_delta_latency_s": 12.514166666,
+     "receiver_sync_error": 0.5263157894736842,
+     "sync_critical_all_equal": true,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.6585365853658537
+     },
+     "drop_reasons": {}
+    },
+    "raw": {
+     "retained": 0.17894736842105266,
+     "critical_retained": 0.35,
+     "bits_sent": 290307,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 172,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.9473684210526315,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.05319148936170213
+     },
+     "drop_reasons": {}
+    },
+    "fifo": {
+     "retained": 0.17894736842105266,
+     "critical_retained": 0.35,
+     "bits_sent": 293007,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 172,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.9473684210526315,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.05319148936170213
+     },
+     "drop_reasons": {}
+    },
+    "fixed_priority": {
+     "retained": 0.10000000000000003,
+     "critical_retained": 0.35,
+     "bits_sent": 291215,
+     "receiver_beliefs": 3,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 174,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.031914893617021274
+     },
+     "drop_reasons": {}
+    },
+    "value_per_bit": {
+     "retained": 0.5766917293233084,
+     "critical_retained": 0.35,
+     "bits_sent": 294195,
+     "receiver_beliefs": 13,
+     "receiver_alerts": 1,
+     "coalesced": 0,
+     "queue_depth_max": 177,
+     "critical_alert_latency_s": 1.028333333,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.5789473684210527,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.5423728813559322
+     },
+     "drop_reasons": {}
+    }
+   },
+   "outage": null
+  },
+  {
+   "run_id": "I7-after-bandwidth-s5100001-bw0",
+   "seed": 5100001,
+   "role": "bandwidth",
+   "bandwidth_factor": 0.0,
+   "ran_full_mission": true,
+   "failed_modules": [],
+   "beliefs_reported": 18,
+   "wall_s": 259.1,
+   "arms": {
+    "baac": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 0,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 169,
+     "queue_depth_max": 18,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": null,
+      "routine": null
+     },
+     "drop_reasons": {}
+    },
+    "raw": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 0,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 187,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": null,
+      "routine": null
+     },
+     "drop_reasons": {}
+    },
+    "fifo": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 0,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 187,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": null,
+      "routine": null
+     },
+     "drop_reasons": {}
+    },
+    "fixed_priority": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 0,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 187,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": null,
+      "routine": null
+     },
+     "drop_reasons": {}
+    },
+    "value_per_bit": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 0,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 187,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": null,
+      "routine": null
+     },
+     "drop_reasons": {}
+    }
+   },
+   "outage": null
+  },
+  {
+   "run_id": "I7-after-bandwidth-s5100001-bw0.001",
+   "seed": 5100001,
+   "role": "bandwidth",
+   "bandwidth_factor": 0.001,
+   "ran_full_mission": true,
+   "failed_modules": [],
+   "beliefs_reported": 18,
+   "wall_s": 259.1,
+   "arms": {
+    "baac": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 184,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 1,
+     "coalesced": 169,
+     "queue_depth_max": 18,
+     "critical_alert_latency_s": 105.0,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.18181818181818182,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "raw": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 0,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 187,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "fifo": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 0,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 187,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "fixed_priority": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 0,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 187,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "value_per_bit": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 184,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 1,
+     "coalesced": 0,
+     "queue_depth_max": 187,
+     "critical_alert_latency_s": 105.0,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    }
+   },
+   "outage": null
+  },
+  {
+   "run_id": "I7-after-bandwidth-s5100001-bw0.01",
+   "seed": 5100001,
+   "role": "bandwidth",
+   "bandwidth_factor": 0.01,
+   "ran_full_mission": true,
+   "failed_modules": [],
+   "beliefs_reported": 18,
+   "wall_s": 259.2,
+   "arms": {
+    "baac": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 2760,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 1,
+     "coalesced": 169,
+     "queue_depth_max": 18,
+     "critical_alert_latency_s": 1.0,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "raw": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 2049,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 187,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "fifo": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 2049,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 187,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "fixed_priority": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 2049,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 187,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "value_per_bit": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 2760,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 1,
+     "coalesced": 0,
+     "queue_depth_max": 187,
+     "critical_alert_latency_s": 1.0,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    }
+   },
+   "outage": null
+  },
+  {
+   "run_id": "I7-after-bandwidth-s5100001-bw0.1",
+   "seed": 5100001,
+   "role": "bandwidth",
+   "bandwidth_factor": 0.1,
+   "ran_full_mission": true,
+   "failed_modules": [],
+   "beliefs_reported": 18,
+   "wall_s": 259.2,
+   "arms": {
+    "baac": {
+     "retained": 0.2504065040650407,
+     "critical_retained": 0.35,
+     "bits_sent": 26715,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 1,
+     "coalesced": 167,
+     "queue_depth_max": 18,
+     "critical_alert_latency_s": 1.0,
+     "critical_delta_latency_s": 52.141666666,
+     "receiver_sync_error": 0.8333333333333334,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.09090909090909091,
+      "routine": 0.05154639175257732
+     },
+     "drop_reasons": {}
+    },
+    "raw": {
+     "retained": 0.22195121951219512,
+     "critical_retained": 0.35,
+     "bits_sent": 28230,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 182,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.8888888888888888,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.020618556701030927
+     },
+     "drop_reasons": {}
+    },
+    "fifo": {
+     "retained": 0.22195121951219512,
+     "critical_retained": 0.35,
+     "bits_sent": 29251,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 182,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.8888888888888888,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.020618556701030927
+     },
+     "drop_reasons": {}
+    },
+    "fixed_priority": {
+     "retained": 0.028455284552845534,
+     "critical_retained": 0.0,
+     "bits_sent": 28659,
+     "receiver_beliefs": 1,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 186,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.010309278350515464
+     },
+     "drop_reasons": {}
+    },
+    "value_per_bit": {
+     "retained": 0.22195121951219512,
+     "critical_retained": 0.35,
+     "bits_sent": 26929,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 1,
+     "coalesced": 0,
+     "queue_depth_max": 187,
+     "critical_alert_latency_s": 1.0,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.8888888888888888,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.030927835051546393
+     },
+     "drop_reasons": {}
+    }
+   },
+   "outage": null
+  },
+  {
+   "run_id": "I7-after-bandwidth-s5100001-bw0.5",
+   "seed": 5100001,
+   "role": "bandwidth",
+   "bandwidth_factor": 0.5,
+   "ran_full_mission": true,
+   "failed_modules": [],
+   "beliefs_reported": 18,
+   "wall_s": 259.3,
+   "arms": {
+    "baac": {
+     "retained": 0.42276422764227645,
+     "critical_retained": 0.35,
+     "bits_sent": 145068,
+     "receiver_beliefs": 10,
+     "receiver_alerts": 1,
+     "coalesced": 166,
+     "queue_depth_max": 18,
+     "critical_alert_latency_s": 12.416666666,
+     "critical_delta_latency_s": 12.416666666,
+     "receiver_sync_error": 0.7777777777777778,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.2897196261682243
+     },
+     "drop_reasons": {}
+    },
+    "raw": {
+     "retained": 0.22195121951219512,
+     "critical_retained": 0.35,
+     "bits_sent": 144757,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 182,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.8888888888888888,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.05154639175257732
+     },
+     "drop_reasons": {}
+    },
+    "fifo": {
+     "retained": 0.22195121951219512,
+     "critical_retained": 0.35,
+     "bits_sent": 144758,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 182,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.8888888888888888,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.05154639175257732
+     },
+     "drop_reasons": {}
+    },
+    "fixed_priority": {
+     "retained": 0.22195121951219512,
+     "critical_retained": 0.35,
+     "bits_sent": 144756,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 182,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.8888888888888888,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.05154639175257732
+     },
+     "drop_reasons": {}
+    },
+    "value_per_bit": {
+     "retained": 0.5203252032520326,
+     "critical_retained": 0.35,
+     "bits_sent": 147014,
+     "receiver_beliefs": 10,
+     "receiver_alerts": 1,
+     "coalesced": 0,
+     "queue_depth_max": 186,
+     "critical_alert_latency_s": 1.0,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.6111111111111112,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 1,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.33035714285714285
+     },
+     "drop_reasons": {}
+    }
+   },
+   "outage": null
+  },
+  {
+   "run_id": "I7-after-bandwidth-s5100001-bw1",
+   "seed": 5100001,
+   "role": "bandwidth",
+   "bandwidth_factor": 1.0,
+   "ran_full_mission": true,
+   "failed_modules": [],
+   "beliefs_reported": 18,
+   "wall_s": 259.3,
+   "arms": {
+    "baac": {
+     "retained": 0.5715447154471546,
+     "critical_retained": 0.35,
+     "bits_sent": 284505,
+     "receiver_beliefs": 13,
+     "receiver_alerts": 1,
+     "coalesced": 167,
+     "queue_depth_max": 16,
+     "critical_alert_latency_s": 10.344166666,
+     "critical_delta_latency_s": 10.344166666,
+     "receiver_sync_error": 0.6111111111111112,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.6050420168067226
+     },
+     "drop_reasons": {}
+    },
+    "raw": {
+     "retained": 0.22195121951219512,
+     "critical_retained": 0.35,
+     "bits_sent": 285870,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 182,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.8888888888888888,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.05154639175257732
+     },
+     "drop_reasons": {}
+    },
+    "fifo": {
+     "retained": 0.22195121951219512,
+     "critical_retained": 0.35,
+     "bits_sent": 285871,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 182,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.8888888888888888,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.05154639175257732
+     },
+     "drop_reasons": {}
+    },
+    "fixed_priority": {
+     "retained": 0.22195121951219512,
+     "critical_retained": 0.35,
+     "bits_sent": 285868,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 182,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.8888888888888888,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.05154639175257732
+     },
+     "drop_reasons": {}
+    },
+    "value_per_bit": {
+     "retained": 0.5373983739837399,
+     "critical_retained": 0.35,
+     "bits_sent": 286935,
+     "receiver_beliefs": 11,
+     "receiver_alerts": 1,
+     "coalesced": 0,
+     "queue_depth_max": 187,
+     "critical_alert_latency_s": 1.0,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.6111111111111112,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.5537190082644629
+     },
+     "drop_reasons": {}
+    }
+   },
+   "outage": null
+  },
+  {
+   "run_id": "I7-after-outage-s5100000-bw0.1",
+   "seed": 5100000,
+   "role": "outage",
+   "bandwidth_factor": 0.1,
+   "ran_full_mission": true,
+   "failed_modules": [],
+   "beliefs_reported": 19,
+   "wall_s": 502.7,
+   "arms": {
+    "baac": {
+     "retained": 0.22030075187969927,
+     "critical_retained": 0.85,
+     "bits_sent": 21212,
+     "receiver_beliefs": 3,
+     "receiver_alerts": 1,
+     "coalesced": 160,
+     "queue_depth_max": 19,
+     "critical_alert_latency_s": 47.533333333,
+     "critical_delta_latency_s": 98.349999999,
+     "receiver_sync_error": 0.8421052631578947,
+     "sync_critical_all_equal": true,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.02127659574468085
+     },
+     "drop_reasons": {}
+    },
+    "raw": {
+     "retained": 0.12631578947368424,
+     "critical_retained": 0.35,
+     "bits_sent": 21855,
+     "receiver_beliefs": 3,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 179,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.9473684210526315,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.02127659574468085
+     },
+     "drop_reasons": {}
+    },
+    "fifo": {
+     "retained": 0.15789473684210528,
+     "critical_retained": 0.0,
+     "bits_sent": 20831,
+     "receiver_beliefs": 3,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 179,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.8421052631578947,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.05319148936170213
+     },
+     "drop_reasons": {}
+    },
+    "fixed_priority": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 21515,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 182,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "value_per_bit": {
+     "retained": 0.19849624060150378,
+     "critical_retained": 0.3,
+     "bits_sent": 21513,
+     "receiver_beliefs": 3,
+     "receiver_alerts": 1,
+     "coalesced": 0,
+     "queue_depth_max": 182,
+     "critical_alert_latency_s": 47.533333333,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.8421052631578947,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.031914893617021274
+     },
+     "drop_reasons": {}
+    }
+   },
+   "outage": {
+    "critical_delivered_first": [
+     true
+    ],
+    "link_down_at_finding": [
+     true
+    ],
+    "finding_t_s": [
+     15.1
+    ],
+    "critical_held_whole_outage": [
+     true
+    ],
+    "sync_critical": [
+     {
+      "belief_id": "018bcfe5-6804-7adb-8aad-e3bbbfeeaf66",
+      "sender_revision": 24,
+      "intent_revision": 24,
+      "receiver_revision": 24,
+      "equal": true,
+      "duplicates": 0
+     }
+    ]
+   }
+  },
+  {
+   "run_id": "I7-after-outage-s5100000-bw1",
+   "seed": 5100000,
+   "role": "outage",
+   "bandwidth_factor": 1.0,
+   "ran_full_mission": true,
+   "failed_modules": [],
+   "beliefs_reported": 19,
+   "wall_s": 503.0,
+   "arms": {
+    "baac": {
+     "retained": 0.6601503759398497,
+     "critical_retained": 0.85,
+     "bits_sent": 229604,
+     "receiver_beliefs": 14,
+     "receiver_alerts": 1,
+     "coalesced": 159,
+     "queue_depth_max": 19,
+     "critical_alert_latency_s": 46.306666666,
+     "critical_delta_latency_s": 51.250833333,
+     "receiver_sync_error": 0.5263157894736842,
+     "sync_critical_all_equal": true,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.68
+     },
+     "drop_reasons": {}
+    },
+    "raw": {
+     "retained": 0.17894736842105266,
+     "critical_retained": 0.35,
+     "bits_sent": 227375,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 174,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.9473684210526315,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.05319148936170213
+     },
+     "drop_reasons": {}
+    },
+    "fifo": {
+     "retained": 0.15789473684210528,
+     "critical_retained": 0.0,
+     "bits_sent": 228284,
+     "receiver_beliefs": 3,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 176,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.8421052631578947,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.05319148936170213
+     },
+     "drop_reasons": {}
+    },
+    "fixed_priority": {
+     "retained": 0.026315789473684216,
+     "critical_retained": 0.0,
+     "bits_sent": 226462,
+     "receiver_beliefs": 1,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 178,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.010638297872340425
+     },
+     "drop_reasons": {}
+    },
+    "value_per_bit": {
+     "retained": 0.5541353383458647,
+     "critical_retained": 0.3,
+     "bits_sent": 225169,
+     "receiver_beliefs": 11,
+     "receiver_alerts": 1,
+     "coalesced": 0,
+     "queue_depth_max": 179,
+     "critical_alert_latency_s": 46.153333333,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.5789473684210527,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.4661016949152542
+     },
+     "drop_reasons": {}
+    }
+   },
+   "outage": {
+    "critical_delivered_first": [
+     true
+    ],
+    "link_down_at_finding": [
+     true
+    ],
+    "finding_t_s": [
+     15.1
+    ],
+    "critical_held_whole_outage": [
+     true
+    ],
+    "sync_critical": [
+     {
+      "belief_id": "018bcfe5-6804-7adb-8aad-e3bbbfeeaf66",
+      "sender_revision": 24,
+      "intent_revision": 24,
+      "receiver_revision": 24,
+      "equal": true,
+      "duplicates": 0
+     }
+    ]
+   }
+  },
+  {
+   "run_id": "I7-after-outage-s5100001-bw0.1",
+   "seed": 5100001,
+   "role": "outage",
+   "bandwidth_factor": 0.1,
+   "ran_full_mission": true,
+   "failed_modules": [],
+   "beliefs_reported": 18,
+   "wall_s": 259.1,
+   "arms": {
+    "baac": {
+     "retained": 0.16504065040650412,
+     "critical_retained": 0.35,
+     "bits_sent": 21854,
+     "receiver_beliefs": 3,
+     "receiver_alerts": 1,
+     "coalesced": 167,
+     "queue_depth_max": 18,
+     "critical_alert_latency_s": 5.533333333,
+     "critical_delta_latency_s": 57.15,
+     "receiver_sync_error": 0.8888888888888888,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.09090909090909091,
+      "routine": 0.05154639175257732
+     },
+     "drop_reasons": {}
+    },
+    "raw": {
+     "retained": 0.14227642276422767,
+     "critical_retained": 0.0,
+     "bits_sent": 20831,
+     "receiver_beliefs": 3,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 184,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.8888888888888888,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.020618556701030927
+     },
+     "drop_reasons": {}
+    },
+    "fifo": {
+     "retained": 0.11382113821138214,
+     "critical_retained": 0.0,
+     "bits_sent": 20945,
+     "receiver_beliefs": 2,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 185,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.8888888888888888,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.05154639175257732
+     },
+     "drop_reasons": {}
+    },
+    "fixed_priority": {
+     "retained": 0.0,
+     "critical_retained": 0.0,
+     "bits_sent": 22538,
+     "receiver_beliefs": 0,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 187,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "drop_reasons": {}
+    },
+    "value_per_bit": {
+     "retained": 0.17073170731707318,
+     "critical_retained": 0.0,
+     "bits_sent": 20972,
+     "receiver_beliefs": 3,
+     "receiver_alerts": 1,
+     "coalesced": 0,
+     "queue_depth_max": 187,
+     "critical_alert_latency_s": 5.533333333,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.8333333333333334,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.020618556701030927
+     },
+     "drop_reasons": {}
+    }
+   },
+   "outage": {
+    "critical_delivered_first": [
+     true
+    ],
+    "link_down_at_finding": [
+     true
+    ],
+    "finding_t_s": [
+     57.1
+    ],
+    "critical_held_whole_outage": [
+     true
+    ],
+    "sync_critical": [
+     {
+      "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+      "sender_revision": 383,
+      "intent_revision": 388,
+      "receiver_revision": 54,
+      "equal": false,
+      "duplicates": 0
+     }
+    ]
+   }
+  },
+  {
+   "run_id": "I7-after-outage-s5100001-bw1",
+   "seed": 5100001,
+   "role": "outage",
+   "bandwidth_factor": 1.0,
+   "ran_full_mission": true,
+   "failed_modules": [],
+   "beliefs_reported": 18,
+   "wall_s": 259.1,
+   "arms": {
+    "baac": {
+     "retained": 0.5715447154471546,
+     "critical_retained": 0.35,
+     "bits_sent": 225950,
+     "receiver_beliefs": 13,
+     "receiver_alerts": 1,
+     "coalesced": 168,
+     "queue_depth_max": 18,
+     "critical_alert_latency_s": 4.153333333,
+     "critical_delta_latency_s": 9.330833333,
+     "receiver_sync_error": 0.6111111111111112,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.6721311475409836
+     },
+     "drop_reasons": {}
+    },
+    "raw": {
+     "retained": 0.22195121951219512,
+     "critical_retained": 0.35,
+     "bits_sent": 222142,
+     "receiver_beliefs": 5,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 182,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.8888888888888888,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.05154639175257732
+     },
+     "drop_reasons": {}
+    },
+    "fifo": {
+     "retained": 0.028455284552845534,
+     "critical_retained": 0.0,
+     "bits_sent": 222139,
+     "receiver_beliefs": 1,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 186,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.010309278350515464
+     },
+     "drop_reasons": {}
+    },
+    "fixed_priority": {
+     "retained": 0.028455284552845534,
+     "critical_retained": 0.0,
+     "bits_sent": 222138,
+     "receiver_beliefs": 1,
+     "receiver_alerts": 0,
+     "coalesced": 0,
+     "queue_depth_max": 186,
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 1.0,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.010309278350515464
+     },
+     "drop_reasons": {}
+    },
+    "value_per_bit": {
+     "retained": 0.4861788617886179,
+     "critical_retained": 0.0,
+     "bits_sent": 223901,
+     "receiver_beliefs": 10,
+     "receiver_alerts": 1,
+     "coalesced": 0,
+     "queue_depth_max": 187,
+     "critical_alert_latency_s": 4.153333333,
+     "critical_delta_latency_s": null,
+     "receiver_sync_error": 0.6111111111111112,
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "resync_requests": 0,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.415929203539823
+     },
+     "drop_reasons": {}
+    }
+   },
+   "outage": {
+    "critical_delivered_first": [
+     true
+    ],
+    "link_down_at_finding": [
+     true
+    ],
+    "finding_t_s": [
+     57.1
+    ],
+    "critical_held_whole_outage": [
+     true
+    ],
+    "sync_critical": [
+     {
+      "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+      "sender_revision": 383,
+      "intent_revision": 388,
+      "receiver_revision": 355,
+      "equal": false,
+      "duplicates": 0
+     }
+    ]
+   }
+  }
+ ]
+}

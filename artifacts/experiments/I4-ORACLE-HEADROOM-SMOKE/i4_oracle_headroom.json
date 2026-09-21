@@ -1,0 +1,1296 @@
+{
+ "arms": [
+  "A-B2_coverage",
+  "ORACLE_1STEP",
+  "ORACLE_2STEP",
+  "PRODUCTION"
+ ],
+ "baseline": "A-B2_coverage",
+ "config": {
+  "baseline": "A-B2_coverage",
+  "decision_rule": "Unit = one world, paired across arms. An arm beats the baseline on a metric iff the lower bound of the 95 % paired percentile-bootstrap CI over worlds (4000 resamples) is above 0. This is a DEVELOPMENT measurement: it selects nothing, promotes no gate and is reported whatever its sign.",
+  "direction": "higher",
+  "experiment_id": "I4-ORACLE-HEADROOM",
+  "partition_file": "configs/eval/partitions_i4_mcbr_v4.yaml",
+  "primary_metric": "hidden_state_error_improvement",
+  "question": "Gate I4 is decided: the production MCBR planner does not beat a systematic coverage sweep on this family. Before designing a V4 ranking rule, measure the ceiling. Replace the ranking rule with an evaluation-only oracle that sees truth and picks the candidate that would actually reveal most of the hidden defect, with one-step and two-step lookahead, under budgets identical to coverage's. If the ORACLE cannot beat coverage, the family has no exploitable view-selection headroom and a V4 that only re-ranks views is not worth building.",
+  "reference_arms": [
+   "PRODUCTION"
+  ],
+  "runtime": {
+   "control_period_s": 0.1,
+   "duration_s": 100.0,
+   "max_plans_per_need": 4,
+   "model2e_enabled": false
+  },
+  "scenario": "I4-OCCLUDED",
+  "seeds": [
+   8002000,
+   8002001,
+   8002002,
+   8002003,
+   8002004,
+   8002005,
+   8002006,
+   8002007,
+   8002008,
+   8002009,
+   8002010,
+   8002011,
+   8002012,
+   8002013,
+   8002014,
+   8002015,
+   8002016,
+   8002017,
+   8002018,
+   8002019,
+   8002020,
+   8002021,
+   8002022,
+   8002023,
+   8002024,
+   8002025,
+   8002026,
+   8002027,
+   8002028,
+   8002029,
+   8002030,
+   8002031,
+   8002032,
+   8002033,
+   8002034,
+   8002035,
+   8002036,
+   8002037,
+   8002038,
+   8002039
+  ],
+  "workers": 10,
+  "world_family": "ACTIVE_INSPECTION_OCCLUDED_V1"
+ },
+ "data_status": "SYNTHETIC_ONLY",
+ "decision_rule": "Unit = one world, paired across arms. An arm beats the baseline on a metric iff the lower bound of the 95 % paired percentile-bootstrap CI over worlds (4000 resamples) is above 0. This is a DEVELOPMENT measurement: it selects nothing, promotes no gate and is reported whatever its sign.",
+ "evidence_kind": "SURROGATE",
+ "evidence_note": "python sim kernel; it measures headroom on DEVELOPMENT worlds and promotes no gate",
+ "experiment_id": "I4-ORACLE-HEADROOM",
+ "headroom": {
+  "A-B2_coverage": {
+   "fraction_read": 0.25,
+   "mean": 0.22542807609054666,
+   "mean_when_read": 0.9017123043621866,
+   "n": 4,
+   "observations": 3.25,
+   "worlds_with_the_defect_read": 1
+  },
+  "ORACLE_1STEP": {
+   "extra_worlds_read_vs_coverage": 0,
+   "fraction_read": 0.25,
+   "mean": 0.15159574297205305,
+   "mean_when_read": 0.6063829718882122,
+   "n": 4,
+   "observations": 3.0,
+   "worlds_with_the_defect_read": 1
+  },
+  "ORACLE_2STEP": {
+   "extra_worlds_read_vs_coverage": 0,
+   "fraction_read": 0.25,
+   "mean": 0.15159574297205305,
+   "mean_when_read": 0.6063829718882122,
+   "n": 4,
+   "observations": 3.0,
+   "worlds_with_the_defect_read": 1
+  },
+  "PRODUCTION": {
+   "extra_worlds_read_vs_coverage": 1,
+   "fraction_read": 0.5,
+   "mean": 0.409526098006851,
+   "mean_when_read": 0.819052196013702,
+   "n": 4,
+   "observations": 2.75,
+   "worlds_with_the_defect_read": 2
+  }
+ },
+ "mission_config": "configs/sim/mission_test_small.yaml",
+ "n_worlds": 4,
+ "paired_vs_coverage": {
+  "ORACLE_1STEP": {
+   "collisions": {
+    "baseline_mean": 0.0,
+    "benefit_mean": -1.0,
+    "candidate_mean": 1.0,
+    "ci95": [
+     -3.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "energy_j": {
+    "baseline_mean": 18345.679134617985,
+    "benefit_mean": 320.68171358315976,
+    "candidate_mean": 18024.997421034823,
+    "ci95": [
+     -2213.892842447073,
+     2619.047965908594
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_final": {
+    "baseline_mean": 0.7745719239094534,
+    "benefit_mean": -0.07383233311849359,
+    "candidate_mean": 0.848404257027947,
+    "ci95": [
+     -0.22149699935548078,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_improvement": {
+    "baseline_mean": 0.22542807609054666,
+    "benefit_mean": -0.0738323331184936,
+    "candidate_mean": 0.15159574297205305,
+    "ci95": [
+     -0.2214969993554808,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "info_per_kj": {
+    "baseline_mean": 0.012018845090843994,
+    "benefit_mean": -0.005280244091574778,
+    "candidate_mean": 0.006738600999269216,
+    "ci95": [
+     -0.015840732274724333,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "info_per_time": {
+    "baseline_mean": 0.0022542807609054667,
+    "benefit_mean": -0.0007383233311849362,
+    "candidate_mean": 0.0015159574297205305,
+    "ci95": [
+     -0.0022149699935548085,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "mission_error_reduction": {
+    "baseline_mean": 0.22542807609054666,
+    "benefit_mean": -0.0738323331184936,
+    "candidate_mean": 0.15159574297205305,
+    "ci95": [
+     -0.2214969993554808,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "mission_success": {
+    "baseline_mean": 0.25,
+    "benefit_mean": 0.0,
+    "candidate_mean": 0.25,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "observations": {
+    "baseline_mean": 3.25,
+    "benefit_mean": 0.25,
+    "candidate_mean": 3.0,
+    "ci95": [
+     -0.75,
+     1.5
+    ],
+    "fraction_improved": 0.25,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "redundant_observations": {
+    "baseline_mean": 3.0,
+    "benefit_mean": 0.25,
+    "candidate_mean": 2.75,
+    "ci95": [
+     -0.75,
+     1.5
+    ],
+    "fraction_improved": 0.25,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "travel_m": {
+    "baseline_mean": 26.162678081740776,
+    "benefit_mean": 1.7688250333218702,
+    "candidate_mean": 24.393853048418904,
+    "ci95": [
+     0.020202690890362973,
+     3.5174473757533775
+    ],
+    "fraction_improved": 0.75,
+    "n_worlds": 4,
+    "repeatable_benefit": true
+   }
+  },
+  "ORACLE_2STEP": {
+   "collisions": {
+    "baseline_mean": 0.0,
+    "benefit_mean": -1.0,
+    "candidate_mean": 1.0,
+    "ci95": [
+     -3.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "energy_j": {
+    "baseline_mean": 18345.679134617985,
+    "benefit_mean": 320.68171358315976,
+    "candidate_mean": 18024.997421034823,
+    "ci95": [
+     -2213.892842447073,
+     2619.047965908594
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_final": {
+    "baseline_mean": 0.7745719239094534,
+    "benefit_mean": -0.07383233311849359,
+    "candidate_mean": 0.848404257027947,
+    "ci95": [
+     -0.22149699935548078,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_improvement": {
+    "baseline_mean": 0.22542807609054666,
+    "benefit_mean": -0.0738323331184936,
+    "candidate_mean": 0.15159574297205305,
+    "ci95": [
+     -0.2214969993554808,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "info_per_kj": {
+    "baseline_mean": 0.012018845090843994,
+    "benefit_mean": -0.005280244091574778,
+    "candidate_mean": 0.006738600999269216,
+    "ci95": [
+     -0.015840732274724333,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "info_per_time": {
+    "baseline_mean": 0.0022542807609054667,
+    "benefit_mean": -0.0007383233311849362,
+    "candidate_mean": 0.0015159574297205305,
+    "ci95": [
+     -0.0022149699935548085,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "mission_error_reduction": {
+    "baseline_mean": 0.22542807609054666,
+    "benefit_mean": -0.0738323331184936,
+    "candidate_mean": 0.15159574297205305,
+    "ci95": [
+     -0.2214969993554808,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "mission_success": {
+    "baseline_mean": 0.25,
+    "benefit_mean": 0.0,
+    "candidate_mean": 0.25,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "observations": {
+    "baseline_mean": 3.25,
+    "benefit_mean": 0.25,
+    "candidate_mean": 3.0,
+    "ci95": [
+     -0.75,
+     1.5
+    ],
+    "fraction_improved": 0.25,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "redundant_observations": {
+    "baseline_mean": 3.0,
+    "benefit_mean": 0.25,
+    "candidate_mean": 2.75,
+    "ci95": [
+     -0.75,
+     1.5
+    ],
+    "fraction_improved": 0.25,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "travel_m": {
+    "baseline_mean": 26.162678081740776,
+    "benefit_mean": 1.7688250333218702,
+    "candidate_mean": 24.393853048418904,
+    "ci95": [
+     0.020202690890362973,
+     3.5174473757533775
+    ],
+    "fraction_improved": 0.75,
+    "n_worlds": 4,
+    "repeatable_benefit": true
+   }
+  },
+  "PRODUCTION": {
+   "collisions": {
+    "baseline_mean": 0.0,
+    "benefit_mean": 0.0,
+    "candidate_mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "energy_j": {
+    "baseline_mean": 18345.679134617985,
+    "benefit_mean": 1070.4031739795419,
+    "candidate_mean": 17275.275960638442,
+    "ci95": [
+     47.373142071648545,
+     2093.433205887435
+    ],
+    "fraction_improved": 0.75,
+    "n_worlds": 4,
+    "repeatable_benefit": true
+   },
+   "hidden_state_error_final": {
+    "baseline_mean": 0.7745719239094534,
+    "benefit_mean": 0.1840980219163044,
+    "candidate_mean": 0.590473901993149,
+    "ci95": [
+     -0.15429485169460508,
+     0.7065889174435183
+    ],
+    "fraction_improved": 0.25,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_improvement": {
+    "baseline_mean": 0.22542807609054666,
+    "benefit_mean": 0.18409802191630437,
+    "candidate_mean": 0.409526098006851,
+    "ci95": [
+     -0.15429485169460516,
+     0.7065889174435183
+    ],
+    "fraction_improved": 0.25,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "info_per_kj": {
+    "baseline_mean": 0.012018845090843994,
+    "benefit_mean": 0.010980772845978369,
+    "candidate_mean": 0.022999617936822363,
+    "ci95": [
+     -0.008488654382769788,
+     0.0414309729207049
+    ],
+    "fraction_improved": 0.25,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "info_per_time": {
+    "baseline_mean": 0.0022542807609054667,
+    "benefit_mean": 0.0018409802191630435,
+    "candidate_mean": 0.004095260980068511,
+    "ci95": [
+     -0.001542948516946052,
+     0.007065889174435182
+    ],
+    "fraction_improved": 0.25,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "mission_error_reduction": {
+    "baseline_mean": 0.22542807609054666,
+    "benefit_mean": 0.18409802191630437,
+    "candidate_mean": 0.409526098006851,
+    "ci95": [
+     -0.15429485169460516,
+     0.7065889174435183
+    ],
+    "fraction_improved": 0.25,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "mission_success": {
+    "baseline_mean": 0.25,
+    "benefit_mean": 0.25,
+    "candidate_mean": 0.5,
+    "ci95": [
+     0.0,
+     0.75
+    ],
+    "fraction_improved": 0.25,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "observations": {
+    "baseline_mean": 3.25,
+    "benefit_mean": 0.5,
+    "candidate_mean": 2.75,
+    "ci95": [
+     -0.75,
+     2.25
+    ],
+    "fraction_improved": 0.25,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "redundant_observations": {
+    "baseline_mean": 3.0,
+    "benefit_mean": 0.75,
+    "candidate_mean": 2.25,
+    "ci95": [
+     -0.75,
+     3.0
+    ],
+    "fraction_improved": 0.25,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   },
+   "travel_m": {
+    "baseline_mean": 26.162678081740776,
+    "benefit_mean": 0.5407568354799741,
+    "candidate_mean": 25.621921246260804,
+    "ci95": [
+     -0.7533357074942142,
+     1.8348493784541624
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 4,
+    "repeatable_benefit": false
+   }
+  }
+ },
+ "partition": "development",
+ "partition_digest": "17490d3dbcc85673ebe624e6f04357f42b87a2316d431d2982af58e40e864457",
+ "partition_file": "configs/eval/partitions_i4_mcbr_v4.yaml",
+ "per_world": {
+  "8002000": {
+   "A-B2_coverage": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.008760228834361327,
+    "crack_abs_error_m": 0.09051767503251772,
+    "critical_delivered": 0.0,
+    "energy_j": 17066.51457828127,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 4.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B2_coverage",
+    "planner_name_in_run": "A-B2_coverage",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 4.0,
+    "seed": 8002000,
+    "target_observed": 0.0,
+    "time_s": 100.0,
+    "travel_m": 22.78444513443939,
+    "uir": 0.0
+   },
+   "ORACLE_1STEP": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.008760228834361327,
+    "crack_abs_error_m": 0.09051767503251772,
+    "critical_delivered": 0.0,
+    "energy_j": 17281.481895452845,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 4.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "ORACLE_1STEP",
+    "planner_name_in_run": "ORACLE_1STEP",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 4.0,
+    "seed": 8002000,
+    "target_observed": 0.0,
+    "time_s": 100.0,
+    "travel_m": 21.970246479156057,
+    "uir": 0.0
+   },
+   "ORACLE_2STEP": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.008760228834361327,
+    "crack_abs_error_m": 0.09051767503251772,
+    "critical_delivered": 0.0,
+    "energy_j": 17281.481895452845,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 4.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "ORACLE_2STEP",
+    "planner_name_in_run": "ORACLE_2STEP",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 4.0,
+    "seed": 8002000,
+    "target_observed": 0.0,
+    "time_s": 100.0,
+    "travel_m": 21.970246479156057,
+    "uir": 0.0
+   },
+   "PRODUCTION": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.008760228834361327,
+    "crack_abs_error_m": 0.09051767503251772,
+    "critical_delivered": 0.0,
+    "energy_j": 16793.29252881127,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 4.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "PRODUCTION",
+    "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 4.0,
+    "seed": 8002000,
+    "target_observed": 0.0,
+    "time_s": 100.0,
+    "travel_m": 22.847219653985764,
+    "uir": 0.0
+   }
+  },
+  "8002001": {
+   "A-B2_coverage": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.007040598176479052,
+    "crack_abs_error_m": 0.11200216618239188,
+    "critical_delivered": 0.0,
+    "energy_j": 18932.41190712064,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 34.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 4.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B2_coverage",
+    "planner_name_in_run": "A-B2_coverage",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 4.0,
+    "seed": 8002001,
+    "target_observed": 0.0,
+    "time_s": 100.0,
+    "travel_m": 28.36605041728765,
+    "uir": 0.0
+   },
+   "ORACLE_1STEP": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.007040598176479052,
+    "crack_abs_error_m": 0.11200216618239188,
+    "critical_delivered": 0.0,
+    "energy_j": 16059.949886454078,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 34.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 2.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "ORACLE_1STEP",
+    "planner_name_in_run": "ORACLE_1STEP",
+    "plans": [
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 2.0,
+    "seed": 8002001,
+    "target_observed": 0.0,
+    "time_s": 100.0,
+    "travel_m": 25.174027185637947,
+    "uir": 0.0
+   },
+   "ORACLE_2STEP": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.007040598176479052,
+    "crack_abs_error_m": 0.11200216618239188,
+    "critical_delivered": 0.0,
+    "energy_j": 16059.949886454078,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 34.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 2.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "ORACLE_2STEP",
+    "planner_name_in_run": "ORACLE_2STEP",
+    "plans": [
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 2.0,
+    "seed": 8002001,
+    "target_observed": 0.0,
+    "time_s": 100.0,
+    "travel_m": 25.174027185637947,
+    "uir": 0.0
+   },
+   "PRODUCTION": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.007040598176479052,
+    "crack_abs_error_m": 0.11200216618239188,
+    "critical_delivered": 0.0,
+    "energy_j": 16318.511806119914,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 34.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 4.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "PRODUCTION",
+    "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 4.0,
+    "seed": 8002001,
+    "target_observed": 0.0,
+    "time_s": 100.0,
+    "travel_m": 26.044770587660363,
+    "uir": 0.0
+   }
+  },
+  "8002002": {
+   "A-B2_coverage": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.0006256504650863828,
+    "crack_abs_error_m": 0.01167503130929888,
+    "critical_delivered": 1.0,
+    "energy_j": 18756.217788535996,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "hidden_state_error_final": 0.09828769563781342,
+    "hidden_state_error_improvement": 0.9017123043621866,
+    "info_per_kj": 0.048075380363375976,
+    "info_per_time": 0.009017123043621867,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.9017123043621866,
+    "mission_success": 1.0,
+    "observations": 1.0,
+    "patch_max_visible_fraction": 0.7222222222222222,
+    "planner": "A-B2_coverage",
+    "planner_name_in_run": "A-B2_coverage",
+    "plans": [
+     "PLAN",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED",
+     "NEED_SATISFIED"
+    ],
+    "redundant_observations": 0.0,
+    "seed": 8002002,
+    "target_observed": 1.0,
+    "time_s": 100.0,
+    "travel_m": 26.803162180350036,
+    "uir": 0.0
+   },
+   "ORACLE_1STEP": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.002021666734063777,
+    "crack_abs_error_m": 0.0530349210373078,
+    "critical_delivered": 1.0,
+    "energy_j": 22496.61954884897,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "hidden_state_error_final": 0.3936170281117878,
+    "hidden_state_error_improvement": 0.6063829718882122,
+    "info_per_kj": 0.026954403997076864,
+    "info_per_time": 0.006063829718882122,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.6063829718882122,
+    "mission_success": 1.0,
+    "observations": 2.0,
+    "patch_max_visible_fraction": 0.3055555555555556,
+    "planner": "ORACLE_1STEP",
+    "planner_name_in_run": "ORACLE_1STEP",
+    "plans": [
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 1.0,
+    "seed": 8002002,
+    "target_observed": 1.0,
+    "time_s": 100.0,
+    "travel_m": 27.576955453852644,
+    "uir": 0.0
+   },
+   "ORACLE_2STEP": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.002021666734063777,
+    "crack_abs_error_m": 0.0530349210373078,
+    "critical_delivered": 1.0,
+    "energy_j": 22496.61954884897,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "hidden_state_error_final": 0.3936170281117878,
+    "hidden_state_error_improvement": 0.6063829718882122,
+    "info_per_kj": 0.026954403997076864,
+    "info_per_time": 0.006063829718882122,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.6063829718882122,
+    "mission_success": 1.0,
+    "observations": 2.0,
+    "patch_max_visible_fraction": 0.3055555555555556,
+    "planner": "ORACLE_2STEP",
+    "planner_name_in_run": "ORACLE_2STEP",
+    "plans": [
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 1.0,
+    "seed": 8002002,
+    "target_observed": 1.0,
+    "time_s": 100.0,
+    "travel_m": 27.576955453852644,
+    "uir": 0.0
+   },
+   "PRODUCTION": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.001957271653524325,
+    "crack_abs_error_m": 0.035825716675939076,
+    "critical_delivered": 1.0,
+    "energy_j": 18934.693553862697,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "hidden_state_error_final": 0.3040141645639535,
+    "hidden_state_error_improvement": 0.6959858354360464,
+    "info_per_kj": 0.036757174519682925,
+    "info_per_time": 0.006959858354360464,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.6959858354360464,
+    "mission_success": 1.0,
+    "observations": 2.0,
+    "patch_max_visible_fraction": 0.8333333333333334,
+    "planner": "PRODUCTION",
+    "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+    "plans": [
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 1.0,
+    "seed": 8002002,
+    "target_observed": 1.0,
+    "time_s": 100.0,
+    "travel_m": 28.24705907579209,
+    "uir": 0.0
+   }
+  },
+  "8002003": {
+   "A-B2_coverage": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.003332698399668135,
+    "crack_abs_error_m": 0.07467683269885768,
+    "critical_delivered": 0.0,
+    "energy_j": 18627.57226453403,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 4.0,
+    "patch_max_visible_fraction": 0.3333333333333333,
+    "planner": "A-B2_coverage",
+    "planner_name_in_run": "A-B2_coverage",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 4.0,
+    "seed": 8002003,
+    "target_observed": 0.0,
+    "time_s": 100.0,
+    "travel_m": 26.697054594886026,
+    "uir": 0.0
+   },
+   "ORACLE_1STEP": {
+    "collisions": 4.0,
+    "corrosion_abs_error_m": 0.003332698399668135,
+    "crack_abs_error_m": 0.07467683269885768,
+    "critical_delivered": 0.0,
+    "energy_j": 16261.938353383403,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 4.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "ORACLE_1STEP",
+    "planner_name_in_run": "ORACLE_1STEP",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 4.0,
+    "seed": 8002003,
+    "target_observed": 0.0,
+    "time_s": 100.0,
+    "travel_m": 22.854183075028974,
+    "uir": 0.0
+   },
+   "ORACLE_2STEP": {
+    "collisions": 4.0,
+    "corrosion_abs_error_m": 0.003332698399668135,
+    "crack_abs_error_m": 0.07467683269885768,
+    "critical_delivered": 0.0,
+    "energy_j": 16261.938353383403,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "observations": 4.0,
+    "patch_max_visible_fraction": 0.0,
+    "planner": "ORACLE_2STEP",
+    "planner_name_in_run": "ORACLE_2STEP",
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "redundant_observations": 4.0,
+    "seed": 8002003,
+    "target_observed": 0.0,
+    "time_s": 100.0,
+    "travel_m": 22.854183075028974,
+    "uir": 0.0
+   },
+   "PRODUCTION": {
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 5.348765966248616e-05,
+    "crack_abs_error_m": 0.007446290734714561,
+    "critical_delivered": 1.0,
+    "energy_j": 17054.605953759885,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "hidden_state_error_final": 0.05788144340864233,
+    "hidden_state_error_improvement": 0.9421185565913577,
+    "info_per_kj": 0.055241297227606526,
+    "info_per_time": 0.009421185565913577,
+    "inspection_goal_t_s": 32.0,
+    "mission_error_reduction": 0.9421185565913577,
+    "mission_success": 1.0,
+    "observations": 1.0,
+    "patch_max_visible_fraction": 0.625,
+    "planner": "PRODUCTION",
+    "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+    "plans": [
+     "PLAN"
+    ],
+    "redundant_observations": 0.0,
+    "seed": 8002003,
+    "target_observed": 1.0,
+    "time_s": 100.0,
+    "travel_m": 25.348635667604988,
+    "uir": 0.0
+   }
+  }
+ },
+ "primary_metric": "hidden_state_error_improvement",
+ "question": "Gate I4 is decided: the production MCBR planner does not beat a systematic coverage sweep on this family. Before designing a V4 ranking rule, measure the ceiling. Replace the ranking rule with an evaluation-only oracle that sees truth and picks the candidate that would actually reveal most of the hidden defect, with one-step and two-step lookahead, under budgets identical to coverage's. If the ORACLE cannot beat coverage, the family has no exploitable view-selection headroom and a V4 that only re-ranks views is not worth building.",
+ "scenario": "I4-OCCLUDED",
+ "summary": {
+  "A-B2_coverage": {
+   "collisions": {
+    "mean": 0.0,
+    "n": 4,
+    "std": 0.0
+   },
+   "energy_j": {
+    "mean": 18345.679134617985,
+    "n": 4,
+    "std": 746.4119223946382
+   },
+   "hidden_state_error_final": {
+    "mean": 0.7745719239094534,
+    "n": 4,
+    "std": 0.3904528812413296
+   },
+   "hidden_state_error_improvement": {
+    "mean": 0.22542807609054666,
+    "n": 4,
+    "std": 0.39045288124132965
+   },
+   "info_per_kj": {
+    "mean": 0.012018845090843994,
+    "n": 4,
+    "std": 0.020817250345641577
+   },
+   "info_per_time": {
+    "mean": 0.0022542807609054667,
+    "n": 4,
+    "std": 0.003904528812413297
+   },
+   "mission_error_reduction": {
+    "mean": 0.22542807609054666,
+    "n": 4,
+    "std": 0.39045288124132965
+   },
+   "mission_success": {
+    "mean": 0.25,
+    "n": 4,
+    "std": 0.4330127018922193
+   },
+   "observations": {
+    "mean": 3.25,
+    "n": 4,
+    "std": 1.299038105676658
+   },
+   "patch_max_visible_fraction": {
+    "mean": 0.2638888888888889,
+    "n": 4,
+    "std": 0.2975595178559521
+   },
+   "redundant_observations": {
+    "mean": 3.0,
+    "n": 4,
+    "std": 1.7320508075688772
+   },
+   "target_observed": {
+    "mean": 0.25,
+    "n": 4,
+    "std": 0.4330127018922193
+   },
+   "travel_m": {
+    "mean": 26.162678081740776,
+    "n": 4,
+    "std": 2.0593133342001697
+   }
+  },
+  "ORACLE_1STEP": {
+   "collisions": {
+    "mean": 1.0,
+    "n": 4,
+    "std": 1.7320508075688772
+   },
+   "energy_j": {
+    "mean": 18024.997421034823,
+    "n": 4,
+    "std": 2622.8805195780606
+   },
+   "hidden_state_error_final": {
+    "mean": 0.848404257027947,
+    "n": 4,
+    "std": 0.2625715290387484
+   },
+   "hidden_state_error_improvement": {
+    "mean": 0.15159574297205305,
+    "n": 4,
+    "std": 0.2625715290387485
+   },
+   "info_per_kj": {
+    "mean": 0.006738600999269216,
+    "n": 4,
+    "std": 0.011671599302668688
+   },
+   "info_per_time": {
+    "mean": 0.0015159574297205305,
+    "n": 4,
+    "std": 0.0026257152903874847
+   },
+   "mission_error_reduction": {
+    "mean": 0.15159574297205305,
+    "n": 4,
+    "std": 0.2625715290387485
+   },
+   "mission_success": {
+    "mean": 0.25,
+    "n": 4,
+    "std": 0.4330127018922193
+   },
+   "observations": {
+    "mean": 3.0,
+    "n": 4,
+    "std": 1.0
+   },
+   "patch_max_visible_fraction": {
+    "mean": 0.0763888888888889,
+    "n": 4,
+    "std": 0.13230943668928924
+   },
+   "redundant_observations": {
+    "mean": 2.75,
+    "n": 4,
+    "std": 1.299038105676658
+   },
+   "target_observed": {
+    "mean": 0.25,
+    "n": 4,
+    "std": 0.4330127018922193
+   },
+   "travel_m": {
+    "mean": 24.393853048418904,
+    "n": 4,
+    "std": 2.1786041997914696
+   }
+  },
+  "ORACLE_2STEP": {
+   "collisions": {
+    "mean": 1.0,
+    "n": 4,
+    "std": 1.7320508075688772
+   },
+   "energy_j": {
+    "mean": 18024.997421034823,
+    "n": 4,
+    "std": 2622.8805195780606
+   },
+   "hidden_state_error_final": {
+    "mean": 0.848404257027947,
+    "n": 4,
+    "std": 0.2625715290387484
+   },
+   "hidden_state_error_improvement": {
+    "mean": 0.15159574297205305,
+    "n": 4,
+    "std": 0.2625715290387485
+   },
+   "info_per_kj": {
+    "mean": 0.006738600999269216,
+    "n": 4,
+    "std": 0.011671599302668688
+   },
+   "info_per_time": {
+    "mean": 0.0015159574297205305,
+    "n": 4,
+    "std": 0.0026257152903874847
+   },
+   "mission_error_reduction": {
+    "mean": 0.15159574297205305,
+    "n": 4,
+    "std": 0.2625715290387485
+   },
+   "mission_success": {
+    "mean": 0.25,
+    "n": 4,
+    "std": 0.4330127018922193
+   },
+   "observations": {
+    "mean": 3.0,
+    "n": 4,
+    "std": 1.0
+   },
+   "patch_max_visible_fraction": {
+    "mean": 0.0763888888888889,
+    "n": 4,
+    "std": 0.13230943668928924
+   },
+   "redundant_observations": {
+    "mean": 2.75,
+    "n": 4,
+    "std": 1.299038105676658
+   },
+   "target_observed": {
+    "mean": 0.25,
+    "n": 4,
+    "std": 0.4330127018922193
+   },
+   "travel_m": {
+    "mean": 24.393853048418904,
+    "n": 4,
+    "std": 2.1786041997914696
+   }
+  },
+  "PRODUCTION": {
+   "collisions": {
+    "mean": 0.0,
+    "n": 4,
+    "std": 0.0
+   },
+   "energy_j": {
+    "mean": 17275.275960638442,
+    "n": 4,
+    "std": 993.7388586250178
+   },
+   "hidden_state_error_final": {
+    "mean": 0.590473901993149,
+    "n": 4,
+    "std": 0.41866966632612845
+   },
+   "hidden_state_error_improvement": {
+    "mean": 0.409526098006851,
+    "n": 4,
+    "std": 0.41866966632612845
+   },
+   "info_per_kj": {
+    "mean": 0.022999617936822363,
+    "n": 4,
+    "std": 0.02391004546785719
+   },
+   "info_per_time": {
+    "mean": 0.004095260980068511,
+    "n": 4,
+    "std": 0.004186696663261285
+   },
+   "mission_error_reduction": {
+    "mean": 0.409526098006851,
+    "n": 4,
+    "std": 0.41866966632612845
+   },
+   "mission_success": {
+    "mean": 0.5,
+    "n": 4,
+    "std": 0.5
+   },
+   "observations": {
+    "mean": 2.75,
+    "n": 4,
+    "std": 1.299038105676658
+   },
+   "patch_max_visible_fraction": {
+    "mean": 0.36458333333333337,
+    "n": 4,
+    "std": 0.37194939731994014
+   },
+   "redundant_observations": {
+    "mean": 2.25,
+    "n": 4,
+    "std": 1.7853571071357126
+   },
+   "target_observed": {
+    "mean": 0.5,
+    "n": 4,
+    "std": 0.5
+   },
+   "travel_m": {
+    "mean": 25.621921246260804,
+    "n": 4,
+    "std": 1.9263828879037237
+   }
+  }
+ },
+ "world_family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+ "world_seeds": [
+  8002000,
+  8002001,
+  8002002,
+  8002003
+ ]
+}

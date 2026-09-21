@@ -1,0 +1,18 @@
+{
+ "arms": [
+  "V3_PRODUCTION",
+  "A-B2_coverage",
+  "V4_protocol_only",
+  "V4_full",
+  "V4_no_belief_map",
+  "V4_supply",
+  "V4_route_cost"
+ ],
+ "code_commit": "4ec7193a6c6f478469233619ed7fc14e8fa3845c",
+ "config": "configs/eval/i4_v4_development.yaml",
+ "experiment_id": "ACTIVE-MCBR-E007-DEV",
+ "n_worlds": 40,
+ "partition": "development",
+ "partition_digest": "17490d3dbcc85673ebe624e6f04357f42b87a2316d431d2982af58e40e864457",
+ "wall_clock_s": 2688.7915154999937
+}

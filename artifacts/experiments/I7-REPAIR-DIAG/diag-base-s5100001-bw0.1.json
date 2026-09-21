@@ -1,0 +1,401 @@
+{
+ "run_id": "diag-base-s5100001-bw0.1",
+ "seed": 5100001,
+ "factor": 0.1,
+ "scenario": "I7-BANDWIDTH",
+ "beliefs_reported": 18,
+ "offers_total": 187,
+ "offers_per_belief": {
+  "018bcfe5-6804-75ef-ba40-0448a1c7d238": 17,
+  "018bcfe5-6801-78e7-8ea3-3d97dd2fec09": 16,
+  "018bcfe5-6804-7ba1-a680-73ccbe2a50c1": 16,
+  "018bcfe5-6807-7b25-9ea4-f98d1540253f": 16,
+  "018bcfe5-680a-79d1-8bb2-262bbe71bd1b": 16,
+  "018bcfe5-6837-7a44-b843-eef2346dc511": 16,
+  "018bcfe5-683a-74b9-9669-c26cfb848ebb": 16,
+  "018bcfe5-683d-7321-a45f-f50128dc10c9": 16,
+  "018bcfe5-68ab-7390-a83f-7568e123b9b5": 16,
+  "018bcfe5-68b0-7b42-88ea-eb8abd1e682c": 16
+ },
+ "intent_latest": {
+  "018bcfe5-6802-7f35-8a4a-ed359f3e81b4": [
+   30,
+   0.5
+  ],
+  "018bcfe5-6804-75ef-ba40-0448a1c7d238": [
+   388,
+   0.9
+  ],
+  "018bcfe5-6806-74bc-b186-7aaf2bf4736a": [
+   0,
+   0.5
+  ],
+  "018bcfe5-6808-724f-a7c2-5bcd6ca38b1f": [
+   16,
+   0.5
+  ],
+  "018bcfe5-680a-70d9-856d-0e5983889490": [
+   0,
+   0.5
+  ],
+  "018bcfe5-6837-7a44-b843-eef2346dc511": [
+   79,
+   0.05
+  ],
+  "018bcfe5-683a-74b9-9669-c26cfb848ebb": [
+   79,
+   0.05
+  ],
+  "018bcfe5-683d-7321-a45f-f50128dc10c9": [
+   79,
+   0.05
+  ],
+  "018bcfe5-6801-78e7-8ea3-3d97dd2fec09": [
+   48,
+   0.3
+  ],
+  "018bcfe5-6804-7ba1-a680-73ccbe2a50c1": [
+   48,
+   0.3
+  ],
+  "018bcfe5-6807-7b25-9ea4-f98d1540253f": [
+   48,
+   0.3
+  ],
+  "018bcfe5-680a-79d1-8bb2-262bbe71bd1b": [
+   48,
+   0.3
+  ],
+  "018bcfe5-68ab-7390-a83f-7568e123b9b5": [
+   77,
+   0.05
+  ],
+  "018bcfe5-68b0-7b42-88ea-eb8abd1e682c": [
+   77,
+   0.05
+  ],
+  "018bcfe5-6816-7b20-9852-78f07bf30171": [
+   5,
+   0.5
+  ],
+  "018bcfe5-6812-74e1-96b4-d4835d5a1563": [
+   9,
+   0.5
+  ],
+  "018bcfe5-6810-7757-9cd0-e0567c507846": [
+   5,
+   0.5
+  ],
+  "018bcfe5-680d-7ff2-aa97-4df1e4a07e97": [
+   17,
+   0.3
+  ]
+ },
+ "critical_offers": [
+  [
+   "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+   54,
+   57100000000
+  ]
+ ],
+ "arms": {
+  "baac": {
+   "retained": 0.0796747967479675,
+   "bits_sent": 26844,
+   "receiver_beliefs": 2,
+   "policy": "C-B10_baac",
+   "total_bits": 26844,
+   "bits_first_delivery": 10323,
+   "bits_refresh_of_delivered": 16521,
+   "frac_refresh": 0.6154447921323201,
+   "bits_critical_unit": 20538,
+   "bits_routine_unit": 6306,
+   "frac_critical": 0.7650871703173894,
+   "beliefs_touched": 2,
+   "beliefs_at_receiver": 2,
+   "alerts_at_receiver": 1,
+   "coalesced": 163,
+   "top_beliefs_by_bits": [
+    {
+     "belief": "018bcfe5",
+     "bits": 20538,
+     "frac": 0.7651,
+     "critical": true,
+     "applied_revs": 3,
+     "sender_rev": 383,
+     "receiver_rev": 245
+    },
+    {
+     "belief": "018bcfe5",
+     "bits": 6306,
+     "frac": 0.2349,
+     "critical": false,
+     "applied_revs": 1,
+     "sender_rev": 16,
+     "receiver_rev": 0
+    }
+   ],
+   "offers_per_belief_max": null
+  },
+  "raw": {
+   "retained": 0.22195121951219512,
+   "bits_sent": 28230,
+   "receiver_beliefs": 5,
+   "policy": "C-B0_send_all",
+   "total_bits": 28230,
+   "bits_first_delivery": 28230,
+   "bits_refresh_of_delivered": 0,
+   "frac_refresh": 0.0,
+   "bits_critical_unit": 0,
+   "bits_routine_unit": 28230,
+   "frac_critical": 0.0,
+   "beliefs_touched": 6,
+   "beliefs_at_receiver": 5,
+   "alerts_at_receiver": 0,
+   "coalesced": 0,
+   "top_beliefs_by_bits": [
+    {
+     "belief": "018bcfe5",
+     "bits": 6296,
+     "frac": 0.223,
+     "critical": false,
+     "applied_revs": 1,
+     "sender_rev": 0,
+     "receiver_rev": 0
+    },
+    {
+     "belief": "018bcfe5",
+     "bits": 5304,
+     "frac": 0.1879,
+     "critical": false,
+     "applied_revs": 1,
+     "sender_rev": 0,
+     "receiver_rev": 0
+    },
+    {
+     "belief": "018bcfe5",
+     "bits": 5296,
+     "frac": 0.1876,
+     "critical": true,
+     "applied_revs": 1,
+     "sender_rev": 383,
+     "receiver_rev": 0
+    },
+    {
+     "belief": "018bcfe5",
+     "bits": 5120,
+     "frac": 0.1814,
+     "critical": false,
+     "applied_revs": 1,
+     "sender_rev": 30,
+     "receiver_rev": 0
+    },
+    {
+     "belief": "018bcfe5",
+     "bits": 5097,
+     "frac": 0.1806,
+     "critical": false,
+     "applied_revs": 1,
+     "sender_rev": 16,
+     "receiver_rev": 0
+    },
+    {
+     "belief": "018bcfe5",
+     "bits": 1117,
+     "frac": 0.0396,
+     "critical": false,
+     "applied_revs": 0,
+     "sender_rev": 75,
+     "receiver_rev": null
+    }
+   ],
+   "offers_per_belief_max": null
+  },
+  "fifo": {
+   "retained": 0.22195121951219512,
+   "bits_sent": 29251,
+   "receiver_beliefs": 5,
+   "policy": "C-B1_fifo",
+   "total_bits": 29251,
+   "bits_first_delivery": 29251,
+   "bits_refresh_of_delivered": 0,
+   "frac_refresh": 0.0,
+   "bits_critical_unit": 0,
+   "bits_routine_unit": 29251,
+   "frac_critical": 0.0,
+   "beliefs_touched": 6,
+   "beliefs_at_receiver": 5,
+   "alerts_at_receiver": 0,
+   "coalesced": 0,
+   "top_beliefs_by_bits": [
+    {
+     "belief": "018bcfe5",
+     "bits": 6320,
+     "frac": 0.2161,
+     "critical": true,
+     "applied_revs": 1,
+     "sender_rev": 383,
+     "receiver_rev": 0
+    },
+    {
+     "belief": "018bcfe5",
+     "bits": 6142,
+     "frac": 0.21,
+     "critical": false,
+     "applied_revs": 1,
+     "sender_rev": 30,
+     "receiver_rev": 0
+    },
+    {
+     "belief": "018bcfe5",
+     "bits": 5304,
+     "frac": 0.1813,
+     "critical": false,
+     "applied_revs": 1,
+     "sender_rev": 0,
+     "receiver_rev": 0
+    },
+    {
+     "belief": "018bcfe5",
+     "bits": 5272,
+     "frac": 0.1802,
+     "critical": false,
+     "applied_revs": 1,
+     "sender_rev": 0,
+     "receiver_rev": 0
+    },
+    {
+     "belief": "018bcfe5",
+     "bits": 5096,
+     "frac": 0.1742,
+     "critical": false,
+     "applied_revs": 1,
+     "sender_rev": 16,
+     "receiver_rev": 0
+    },
+    {
+     "belief": "018bcfe5",
+     "bits": 1117,
+     "frac": 0.0382,
+     "critical": false,
+     "applied_revs": 0,
+     "sender_rev": 46,
+     "receiver_rev": null
+    }
+   ],
+   "offers_per_belief_max": null
+  },
+  "fixed_priority": {
+   "retained": 0.028455284552845534,
+   "bits_sent": 28659,
+   "receiver_beliefs": 1,
+   "policy": "C-B2_fixed_priority",
+   "total_bits": 28659,
+   "bits_first_delivery": 28659,
+   "bits_refresh_of_delivered": 0,
+   "frac_refresh": 0.0,
+   "bits_critical_unit": 21514,
+   "bits_routine_unit": 7145,
+   "frac_critical": 0.7506891377926654,
+   "beliefs_touched": 3,
+   "beliefs_at_receiver": 1,
+   "alerts_at_receiver": 0,
+   "coalesced": 0,
+   "top_beliefs_by_bits": [
+    {
+     "belief": "018bcfe5",
+     "bits": 21514,
+     "frac": 0.7507,
+     "critical": true,
+     "applied_revs": 0,
+     "sender_rev": 383,
+     "receiver_rev": null
+    },
+    {
+     "belief": "018bcfe5",
+     "bits": 6094,
+     "frac": 0.2126,
+     "critical": false,
+     "applied_revs": 1,
+     "sender_rev": 16,
+     "receiver_rev": 0
+    },
+    {
+     "belief": "018bcfe5",
+     "bits": 1051,
+     "frac": 0.0367,
+     "critical": false,
+     "applied_revs": 0,
+     "sender_rev": 30,
+     "receiver_rev": null
+    }
+   ],
+   "offers_per_belief_max": null
+  },
+  "value_per_bit": {
+   "retained": 0.22195121951219512,
+   "bits_sent": 26929,
+   "receiver_beliefs": 5,
+   "policy": "C-B4_value_per_bit",
+   "total_bits": 26929,
+   "bits_first_delivery": 22675,
+   "bits_refresh_of_delivered": 4254,
+   "frac_refresh": 0.15797096067436592,
+   "bits_critical_unit": 2392,
+   "bits_routine_unit": 24537,
+   "frac_critical": 0.08882617252775818,
+   "beliefs_touched": 5,
+   "beliefs_at_receiver": 5,
+   "alerts_at_receiver": 1,
+   "coalesced": 0,
+   "top_beliefs_by_bits": [
+    {
+     "belief": "018bcfe5",
+     "bits": 7355,
+     "frac": 0.2731,
+     "critical": false,
+     "applied_revs": 1,
+     "sender_rev": 30,
+     "receiver_rev": 0
+    },
+    {
+     "belief": "018bcfe5",
+     "bits": 6728,
+     "frac": 0.2498,
+     "critical": true,
+     "applied_revs": 1,
+     "sender_rev": 383,
+     "receiver_rev": 0
+    },
+    {
+     "belief": "018bcfe5",
+     "bits": 4344,
+     "frac": 0.1613,
+     "critical": false,
+     "applied_revs": 1,
+     "sender_rev": 0,
+     "receiver_rev": 0
+    },
+    {
+     "belief": "018bcfe5",
+     "bits": 4312,
+     "frac": 0.1601,
+     "critical": false,
+     "applied_revs": 1,
+     "sender_rev": 0,
+     "receiver_rev": 0
+    },
+    {
+     "belief": "018bcfe5",
+     "bits": 4190,
+     "frac": 0.1556,
+     "critical": false,
+     "applied_revs": 1,
+     "sender_rev": 16,
+     "receiver_rev": 0
+    }
+   ],
+   "offers_per_belief_max": null
+  }
+ }
+}

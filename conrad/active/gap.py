@@ -39,6 +39,24 @@ class PriorView(ConradModel):
     modality: str
 
 
+class AbandonedView(ConradModel):
+    """A view the mission ACCEPTED and did not fly, with the reason the runtime recorded.
+
+    Belief plane: the commanded pose comes from the plan and the closest approach from the runtime's own
+    state estimate (``conrad.orchestration.view_execution``). No truth, no twin state. A planner that reads
+    it can stop re-offering a pose the mission has already failed to reach; a planner that ignores it
+    behaves exactly as before, because the field defaults to empty.
+    """
+
+    position_m: Vec3
+    aim_point_m: Vec3
+    reason: str
+    closest_approach_m: float = Field(
+        default=float("inf"), description="closest the vehicle got to the commanded pose, in metres"
+    )
+    plan_id: UUID | None = None
+
+
 class KnowledgeGap(ConradModel):
     need_id: UUID
     belief_id: UUID

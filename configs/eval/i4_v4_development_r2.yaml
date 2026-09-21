@@ -1,0 +1,43 @@
+# ACTIVE-MCBR-E007-DEV2: second MCBR V4 design round on the SAME development worlds. SYNTHETIC_ONLY.
+#
+# Round 1 (ACTIVE-MCBR-E007-DEV) removed the route-blocked pre-emption of a view in flight and left one
+# failure mode standing: 14 to 16 accepted views per 40 worlds were still in the air when the mission clock
+# ran out (ABANDONED_MISSION_END). Round 2 tests the one mechanism that addresses it: declare the mission's
+# own remaining duration as the planning horizon, so the shared feasibility filter refuses a view that
+# cannot be reached and dwelled on before the mission ends, instead of commanding it and abandoning it.
+#
+# V3_PRODUCTION is repeated here on purpose: the runs are deterministic per seed, so its rows must
+# reproduce round 1 exactly, which is asserted when the two records are read together.
+experiment_id: ACTIVE-MCBR-E007-DEV2
+partition_file: configs/eval/partitions_i4_mcbr_v4.yaml
+partition: development
+purpose: design
+world_family: ACTIVE_INSPECTION_OCCLUDED_V1
+scenario: I4-OCCLUDED
+seeds: [8002000, 8002001, 8002002, 8002003, 8002004, 8002005, 8002006, 8002007, 8002008, 8002009, 8002010, 8002011, 8002012, 8002013, 8002014, 8002015, 8002016, 8002017, 8002018, 8002019, 8002020, 8002021, 8002022, 8002023, 8002024, 8002025, 8002026, 8002027, 8002028, 8002029, 8002030, 8002031, 8002032, 8002033, 8002034, 8002035, 8002036, 8002037, 8002038, 8002039]
+primary_metric: hidden_state_error_improvement
+direction: higher
+baseline: V3_PRODUCTION
+reference_arms: [V3_PRODUCTION]
+out_name: i4_v4_development_r2.json
+question: >-
+  Does declaring the mission's own remaining duration as the planning horizon convert views abandoned at
+  the mission clock into views that are flown, and does that move the read rate further?
+runtime:
+  duration_s: 100.0
+  control_period_s: 0.1
+  max_plans_per_need: 4
+  model2e_enabled: false
+arms:
+  V3_PRODUCTION: {planner: PRODUCTION}
+  V4_deadline:
+    planner: V4
+    view_execution: {enabled: true, budget_from_mission_duration: true}
+  V4_supply_deadline:
+    planner: V4
+    view_execution: {enabled: true, budget_from_mission_duration: true}
+    mcbr: {n_azimuth: 16, elevations_rad: [0.0, 0.35, 0.7]}
+workers: 12
+decision_rule: >-
+  DEVELOPMENT round. It selects nothing and is reported whatever its sign; selection happens on the
+  validation split.

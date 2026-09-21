@@ -1,0 +1,16 @@
+acceptance:
+  baseline: FLAGSHIP-I4-FIXEDVIEW (A-B1_fixed_inspection)
+  budgets: {}
+  direction: lower
+  evaluation_split_hash: OPEN
+  evidence_artifact: null
+  gate_id: I4
+  guardrails: {}
+  kind: RESEARCH
+  max_violations: OPEN
+  minimum_effect: OPEN
+  primary_metric: target_hidden_state_abs_error (corrosion_depth_m, crack_length_m)
+  seeds: OPEN
+  status: NOT_EVALUABLE
+  suite_id: OPEN
+  uncertainty_method: OPEN

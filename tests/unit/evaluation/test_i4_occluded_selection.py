@@ -25,8 +25,7 @@ def test_selection_picks_highest_mean_arm_that_beats_every_required_comparator()
     assert result["eligible"] == ["LOW", "WINNER"]
     assert result["winner"] == "WINNER"
     assert all(
-        result["pairwise"]["WINNER"][baseline][PRIMARY]["ci95"][0] > 0.0
-        for baseline in I4_COMPARATORS
+        result["pairwise"]["WINNER"][baseline][PRIMARY]["ci95"][0] > 0.0 for baseline in I4_COMPARATORS
     )
 
 

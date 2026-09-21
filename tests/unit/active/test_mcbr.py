@@ -250,7 +250,7 @@ def test_a_b5b_entropy_nbv_uses_the_candidates_own_predicted_entropy_reduction()
         scalars = (ScalarBelief(key="q", mean=0.5, var=1.0),)
         hypotheses = ()
         epistemic = 0.0
-        used_modalities = frozenset()
+        used_modalities: frozenset[str] = frozenset()
 
         def predict(self, pose, sensor):
             # a candidate-dependent measurement quality: the closer to +X, the sharper the reading

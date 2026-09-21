@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from conrad.decision.uir import uir_report
+from conrad.orchestration.view_execution import summarize as summarize_views
 
 if TYPE_CHECKING:
     from conrad.orchestration.mission import MissionRuntime
@@ -45,9 +46,18 @@ def runtime_metrics(rt: MissionRuntime) -> dict[str, Any]:
                 "status": a.plan.status.value,
                 "planner": rt.deliberation.planner.name,
                 "rejected": len(a.plan.rejected),
+                "feasible": sum(1 for r in a.table if r.get("feasible")),
+                "candidates": len(a.table),
+                "latency_ms": a.latency_ms,
             }
             for a in rt.deliberation.plans
         ],
+        "view_execution": summarize_views(rt.executive.views.records),
+        "goal_rejections": rt.executive.goal_rejections,
+        "empty_plans": rt.routing.empty_plans,
+        "view_outcomes": rt.routing.view_outcomes,
+        "deferred_replans": rt.routing.deferred_replans,
+        "replans": rt.routing.replans,
         "commands_accepted": rt.gateway.accepted,
         "commands_rejected": rt.gateway.rejected,
         "commands_refused_by_safety_supervisor": x.refused_by_supervisor,
@@ -79,6 +89,7 @@ def write_mission_artifacts(rt: MissionRuntime, run_dir: Path) -> dict[str, Any]
     _dump(
         out / "trajectories.json", {"estimated_track": rt.estimated_track, "goals": rt.executive.stats.goals}
     )
+    _dump(out / "view_execution.json", rt.executive.views.to_json())
     _jsonl(out / "baac_transmissions.jsonl", [t.canonical_json() for t in rt.shore.sender.transmissions])
     _dump(out / "receiver_state.json", rt.shore.receiver_state())
     _dump(out / "structural_associations.json", rt.perception.structural_log)

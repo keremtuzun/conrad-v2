@@ -1,0 +1,36 @@
+# ACTIVE-MCBR-E007-DIAG: why are accepted MCBR views not flown? DEVELOPMENT worlds only. SYNTHETIC_ONLY.
+# This is the measurement pass of the MCBR V4 work. It changes no planner and selects nothing: both arms are
+# the incumbent V3 configuration, instrumented by the view execution ledger
+# (conrad.orchestration.view_execution), which records a reason code for every accepted view goal.
+experiment_id: ACTIVE-MCBR-E007-DIAG
+partition_file: configs/eval/partitions_i4_mcbr_v4.yaml
+partition: development
+purpose: design
+world_family: ACTIVE_INSPECTION_OCCLUDED_V1
+scenario: I4-OCCLUDED
+seeds: [8002000, 8002001, 8002002, 8002003, 8002004, 8002005, 8002006, 8002007, 8002008, 8002009, 8002010, 8002011, 8002012, 8002013, 8002014, 8002015, 8002016, 8002017, 8002018, 8002019, 8002020, 8002021, 8002022, 8002023, 8002024, 8002025, 8002026, 8002027, 8002028, 8002029, 8002030, 8002031, 8002032, 8002033, 8002034, 8002035, 8002036, 8002037, 8002038, 8002039]
+primary_metric: hidden_state_error_improvement
+direction: higher
+baseline: A-B2_coverage
+reference_arms: [V3_PRODUCTION]
+out_name: i4_v4_diagnostic.json
+question: >-
+  ACTIVE-MCBR-E006 bounded better ranking at about +0.017 and pointed at two things it does not bound:
+  whether a chosen view is ever flown, and which candidates the feasibility filter offers. Measure both.
+  For every accepted view goal, record whether the vehicle reached the commanded pose inside the declared
+  tolerance with the declared aim, and if not, exactly which of the competing explanations ended it: a
+  pre-empting need, the mission clock, the navigation goal tolerance, a different controller acceptance
+  criterion, an observation taken away from the intended pose, or a late feasibility or safety refusal.
+# Identical budgets for both arms; only the ranking rule differs, exactly as in the formal runs.
+runtime:
+  duration_s: 100.0
+  control_period_s: 0.1
+  max_plans_per_need: 4
+  model2e_enabled: false
+arms:
+  V3_PRODUCTION: {planner: PRODUCTION}
+  A-B2_coverage: {planner: A-B2_coverage}
+workers: 12
+decision_rule: >-
+  This pass decides nothing. It reports the execution breakdown and the mission metrics of the incumbent on
+  fresh development worlds, and it is reported whatever it says.

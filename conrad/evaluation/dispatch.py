@@ -92,6 +92,20 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
         "conrad.evaluation.decision_experiments.i4_oracle_headroom",
         "configs/eval/i4_oracle_headroom_weighted.yaml",
     ),
+    # MCBR V4: the view execution rounds (docs/audits/MCBR_V4.md). DEV and DEV2 are development, VAL is the
+    # selection round on validation. None of them reads final_test or ood_test.
+    "ACTIVE-MCBR-E007-DEV": (
+        "conrad.evaluation.decision_experiments.i4_view_execution",
+        "configs/eval/i4_v4_development.yaml",
+    ),
+    "ACTIVE-MCBR-E007-DEV2": (
+        "conrad.evaluation.decision_experiments.i4_view_execution",
+        "configs/eval/i4_v4_development_r2.yaml",
+    ),
+    "ACTIVE-MCBR-E007-VAL": (
+        "conrad.evaluation.decision_experiments.i4_view_execution",
+        "configs/eval/i4_v4_validation.yaml",
+    ),
     "COM-BAAC-E001": ("conrad.evaluation.decision_experiments.com_baac", "configs/eval/com_baac_e001.yaml"),
     "COM-I7-E001": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e001.yaml"),
     "COM-I7-E002": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e002.yaml"),

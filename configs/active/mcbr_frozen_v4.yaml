@@ -1,0 +1,278 @@
+# FROZEN production planner v4 behind the MCBR interface. DO NOT EDIT: conrad.active.production verifies
+# config_digest = sha256(canonical JSON of `planner`), mission_predictive_digest = sha256(canonical JSON of
+# `mission_predictive`) and view_execution_digest = sha256(canonical JSON of `view_execution`), and refuses a
+# file whose content no longer matches. Add a new versioned file instead.
+#
+# v4 selects the MCBR VIEW EXECUTION PROTOCOL, not a new ranking rule. See docs/audits/MCBR_V4.md.
+config_digest: 8eca16cc896e560b26cbe9814828fe9f75801d843e0e38bedb5442299805d903
+frozen_on: '2026-09-21'
+i4_mcbr_v4_partitions_digest: 17490d3dbcc85673ebe624e6f04357f42b87a2316d431d2982af58e40e864457
+i4_occluded_family_digest: 2d40d25ce4596df843f70ff38850fbb44f247155b79b4bede6b9f88e4ef24e09
+i4_occluded_partitions_digest: d929beb67c051ea1116e33ebb8e51cd638f5894ef54989a0a3f2ec3a9221b557
+i4_occluded_selection:
+  code_baseline: includes Model2T iteration 4 (footprint crediting, per-region sizing, recalibrated intact band)
+  development:
+    n_worlds: 24
+    partition: development
+    primary_means:
+      A-B0_random: 0.2246
+      A-B10_mcbr_full: 0.1436
+      A-B1_fixed_inspection: 0.0637
+      A-B2_coverage: 0.2646
+      A-B4_geometric_nbv: 0.1826
+      A-B5_entropy_nbv: 0.2646
+      A-B5b_entropy_nbv_predictive: 0.3505
+      A-B6b_bayes_eig: 0.394
+      A-B7_uncertainty_nbv: 0.2148
+      PRODUCTION: 0.3647
+  document: docs/audits/I4_WORLD_FAMILY.md
+  eligible_arms: []
+  experiment_id: ACTIVE-MCBR-E005
+  outcome: 'NO CHANGE. No arm cleared the predeclared rule (beat fixed AND random AND coverage with a 95 % paired
+    CI lower bound above 0) on validation: every arm beat fixed, two beat coverage, none beat random. The incumbent
+    planner is retained because it is not losing (2nd of 10 on both splits) and no alternative beats it with a CI
+    excluding 0 on either split: PRODUCTION - A-B5b = +0.014 [-0.148, +0.158] on development and -0.018 [-0.183,
+    +0.150] on validation.'
+  power_note: the per-world outcome is close to all-or-nothing (the target is either OBSERVED or not), so at n =
+    24 the paired CI half width against random is about 0.20 while the effect is about 0.13. The final split has
+    20 worlds. Reported, not worked around.
+  rule: Unit = one world (paired across planners). An arm "beats" a baseline on a metric iff the lower bound of
+    the 95 % paired percentile-bootstrap CI (4000 resamples) of the benefit is > 0. The arm selected as PRODUCTION
+    is the one with the highest mean hidden_state_error_improvement among arms that beat fixed, random and coverage;
+    if no arm beats all three, the highest mean is still reported and the honest conclusion is recorded instead
+    of a selection.
+  validation:
+    n_worlds: 24
+    partition: validation
+    primary_means:
+      A-B0_random: 0.279
+      A-B10_mcbr_full: 0.2884
+      A-B1_fixed_inspection: 0.0
+      A-B2_coverage: 0.2402
+      A-B4_geometric_nbv: 0.351
+      A-B5_entropy_nbv: 0.2402
+      A-B5b_entropy_nbv_predictive: 0.4244
+      A-B6b_bayes_eig: 0.3614
+      A-B7_uncertainty_nbv: 0.2797
+      PRODUCTION: 0.4062
+  world_family: ACTIVE_INSPECTION_OCCLUDED_V1
+mission_note: the integrated runtime now supplies the belief-side predictive model above to every planner's PlanningRequest;
+  the production ranker (bayes_eig, ratio) ranks by its expected entropy reduction per unit cost
+mission_predictive:
+  config:
+    enabled: true
+    footprint_axial_m: 1.0
+    footprint_discount: 0.0
+    footprint_half_angle_deg: 50.0
+    incidence_power: 1.0
+    nominal_reliability: 1.0
+    probe_offset_m: 0.15
+    read_channel: false
+    read_min_band_probability: 0.0
+    seen_surface_discount: 0.0
+    track_discount: 0.8
+    track_max_positions: 16
+  model: conrad.orchestration.mission_predictive.MissionPredictive -> conrad.active.surface_predictive.SurfaceCellPredictive
+  selected: SURFACE_CELL_EIG[C_track_noread]
+  selection:
+    arms_dev_mean:
+      A-B1_fixed_inspection: 0.756
+      A-B2_coverage: 0.736
+      A_track_band05: 0.727
+      B_track_band0: 0.547
+      C_track_noread: 0.73
+      D_nopred (v1 fallback): 0.636
+    n_worlds: 26
+    note: highest development mean among the predictive-model arms; it does NOT beat fixed or coverage on development
+      (C - fixed = -0.026 [-0.064, +0.011], C - coverage = -0.006 [-0.151, +0.136])
+    partitions:
+    - 'unity_gate development (8 worlds where MCBR planned: 7810006,7,9,10,11,14,15,17)'
+    - mission development (18 worlds where MCBR planned)
+    primary_metric: hidden_state_error_improvement
+    purpose: design
+mission_predictive_digest: 2fa5b75d6e9618c0a1274eff284d014a30df4c0ba17a8d83969c2c8609d41431
+partitions_digest: 074ae11310252217315b2ac3324fd914d1964a3e34b76b57a65f0ca3a3acb904
+planner:
+  ranker:
+    cost_mode: ratio
+    cost_weight: 1.0
+    kind: bayes_eig
+  selected: V-bayes_eig_ratio
+selection:
+  experiment_id: ACTIVE-MCBR-SEL001
+  n_worlds: 40
+  note: conventional Bayesian EIG per unit cost won on validation; per the brief it becomes the production planner
+    behind the MCBR interface. Its lead over A-B6b and A-B11 is not significant (paired CI includes 0).
+  partition: validation
+  primary_metric: mission_error_reduction
+  runner_up: A-B6b_bayes_eig
+  selection_config_digest: 4462c7f7f36fd911a37a0c52f7acaf4a807f08f8fa4f0db4a550cadb5890788a
+  validation_mean: 0.5052
+shared_candidate_generation:
+  abstract_world:
+    n_azimuth: 8
+  mission: MissionRuntimeConfig.mcbr (deployment config)
+  sensor_aware_visibility: true
+supersedes: 'configs/active/mcbr_frozen_v3.yaml. The planner and mission_predictive sections are BYTE IDENTICAL
+  to v2 and v3 (same config_digest and mission_predictive_digest), because MCBR V4 does not re-rank views: ACTIVE-MCBR-E006
+  bounded the whole remaining ranking headroom above V3 at +0.0168 [-0.0821, +0.1269]. What v4 adds is the view_execution
+  section, the mission protocol that makes an accepted view actually get flown. v2 and v3 are left untouched as
+  historical evidence.'
+unity_gates_partitions_digest: ad753291d5825dace90f5757790efd096a5f867d51abe51de6545dceff12f88c
+v4_selection:
+  development:
+    experiment_id: ACTIVE-MCBR-E007-DEV
+    n_worlds: 40
+    partition: development
+    primary_means:
+      A-B2_coverage: 0.2187
+      V3_PRODUCTION: 0.2885
+      V4_full: 0.4001
+      V4_no_belief_map: 0.3978
+      V4_protocol_only: 0.4001
+      V4_route_cost: 0.4062
+      V4_supply: 0.4764
+    worlds_read:
+      A-B2_coverage: 11
+      V3_PRODUCTION: 15
+      V4_full: 20
+      V4_no_belief_map: 20
+      V4_protocol_only: 20
+      V4_route_cost: 21
+      V4_supply: 23
+  document: docs/audits/MCBR_V4.md
+  experiment_id: ACTIVE-MCBR-E007-VAL
+  limitations: SYNTHETIC_ONLY, python sim kernel, one world family. The final_test and ood_test splits of configs/eval/partitions_i4_mcbr_v4.yaml
+    have not been read. This freeze promotes no gate; gate I4 stays FAIL as artifacts/gates/I4/evidence_formal.json
+    records it.
+  not_selected: V4_supply and V4_supply_deadline (0.4462, 22 worlds read) remove empty plans entirely but cost about
+    three times the planning latency; V4_no_belief_map (0.4526, 23) and V4_route_cost (0.4941, 25) are within noise
+    of the selected arm. Every variant stays in the record.
+  outcome: SELECTED. Every V4 variant beat the incumbent V3 planner on the primary metric with a 95 % paired CI
+    excluding 0, and every V4 variant also beat the coverage sweep that gate I4 could not beat. V4_protocol_only,
+    V4_full and V4_deadline tie exactly at 0.4971 with 25 of 40 worlds read against V3's 0.1937 with 10; the declared
+    tie-break names V4_protocol_only.
+  partition_file: configs/eval/partitions_i4_mcbr_v4.yaml
+  power_note: the per-world outcome on this family is exactly binary (0.78 when the defect is read, 0.000 when it
+    is not), so the primary metric is a success rate in disguise and the paired CI half width at n = 40 is about
+    0.12. The measured benefit over V3 is +0.3034, which is larger than that.
+  rule: Declared in configs/eval/i4_v4_validation.yaml BEFORE the validation split was read. Primary metric hidden_state_error_improvement,
+    higher is better; unit = one world, paired across arms, 95 % paired percentile bootstrap, 4000 resamples. Among
+    the V4 variants whose paired benefit over V3_PRODUCTION on the primary metric has a CI lower bound above 0,
+    take the highest primary mean; break a tie by the higher defect_read, then by the lower planning latency. If
+    no variant clears the bar, freeze nothing.
+  selected: V4_protocol_only
+  selected_note: the frozen V3 ranking rule, with the V4 view execution protocol closed around it. On all 40 validation
+    worlds this arm is per-world IDENTICAL to V4_full (the conrad.active.v4 planner) and to V4_deadline on every
+    behavioural metric; the declared tie-break on planning latency chose between behaviourally identical arms and
+    resolved on wall-clock noise (1447 ms against 1461 ms and 1463 ms). The selected mechanism is the execution
+    protocol.
+  validation:
+    benefit_over_v3:
+      A-B2_coverage:
+        defect_read:
+        - 0.075
+        - - -0.025
+          - 0.2
+        hidden_state_error_improvement:
+        - 0.0628
+        - - -0.0286
+          - 0.1609
+      V4_deadline:
+        defect_read:
+        - 0.375
+        - - 0.225
+          - 0.525
+        hidden_state_error_improvement:
+        - 0.3034
+        - - 0.1808
+          - 0.4279
+      V4_full:
+        defect_read:
+        - 0.375
+        - - 0.225
+          - 0.525
+        hidden_state_error_improvement:
+        - 0.3034
+        - - 0.1808
+          - 0.4279
+      V4_no_belief_map:
+        defect_read:
+        - 0.325
+        - - 0.175
+          - 0.475
+        hidden_state_error_improvement:
+        - 0.2589
+        - - 0.1254
+          - 0.3957
+      V4_protocol_only:
+        defect_read:
+        - 0.375
+        - - 0.225
+          - 0.525
+        hidden_state_error_improvement:
+        - 0.3034
+        - - 0.1808
+          - 0.4279
+      V4_route_cost:
+        defect_read:
+        - 0.375
+        - - 0.225
+          - 0.525
+        hidden_state_error_improvement:
+        - 0.3004
+        - - 0.1762
+          - 0.4267
+      V4_supply:
+        defect_read:
+        - 0.3
+        - - 0.1
+          - 0.475
+        hidden_state_error_improvement:
+        - 0.2525
+        - - 0.0946
+          - 0.4049
+      V4_supply_deadline:
+        defect_read:
+        - 0.3
+        - - 0.1
+          - 0.475
+        hidden_state_error_improvement:
+        - 0.2525
+        - - 0.0946
+          - 0.4049
+    n_worlds: 40
+    partition: validation
+    primary_means:
+      A-B2_coverage: 0.2565
+      V3_PRODUCTION: 0.1937
+      V4_deadline: 0.4971
+      V4_full: 0.4971
+      V4_no_belief_map: 0.4526
+      V4_protocol_only: 0.4971
+      V4_route_cost: 0.4941
+      V4_supply: 0.4462
+      V4_supply_deadline: 0.4462
+    worlds_read:
+      A-B2_coverage: 13
+      V3_PRODUCTION: 10
+      V4_deadline: 25
+      V4_full: 25
+      V4_no_belief_map: 23
+      V4_protocol_only: 25
+      V4_route_cost: 25
+      V4_supply: 22
+      V4_supply_deadline: 22
+  world_family: ACTIVE_INSPECTION_OCCLUDED_V1
+view_execution:
+  belief_map_navigation: true
+  blocked_cost_multiplier: 2.0
+  budget_from_mission_duration: false
+  declare_budgets: true
+  drop_abandoned_prior_view: true
+  enabled: true
+  max_view_attempts: 8
+  protect_active_view: true
+  refund_abandoned_attempt: true
+  route_aware_navigation_cost: false
+view_execution_digest: 8eab12e582523ad1597f151abcd049dac4da8b709f56ba45b776b7b26950ab08

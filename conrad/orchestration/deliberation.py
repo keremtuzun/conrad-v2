@@ -11,6 +11,7 @@ implementation_status: EXPERIMENTAL_CANDIDATE
 from __future__ import annotations
 
 import math
+import time
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from typing import Any
@@ -19,9 +20,11 @@ from uuid import UUID
 import numpy as np
 
 from conrad.active import MCBRConfig, MCBRPlanner, PlanningRequest, SensorOption, make_planners
+from conrad.active.gap import AbandonedView
 from conrad.active.planner import PlanResult
 from conrad.active.predictive import PredictiveBelief
 from conrad.active.production import PRODUCTION, production_planner
+from conrad.active.v4 import V4, V4Config, v4_planner
 from conrad.decision.config import DecisionConfig
 from conrad.decision.context import DecisionContext, DecisionSummary, MissionRequirement
 from conrad.decision.egdc import EGDC, DecisionOutcome
@@ -64,6 +67,8 @@ class AdoptedPlan:
     adoption_record: UUID
     decision_id: UUID
     table: list[dict[str, Any]]
+    latency_ms: float = 0.0
+    """Wall-clock cost of the planner call itself (deployment-side planning latency)."""
 
 
 class Deliberation:
@@ -82,6 +87,8 @@ class Deliberation:
         mcbr_cfg = MCBRConfig(**cfg.mcbr)
         if cfg.planner == PRODUCTION:  # default: the frozen, validation-selected planner (configs/active)
             self.planner: MCBRPlanner = production_planner(s.ids.child("mcbr"), mcbr_cfg)
+        elif cfg.planner == V4:  # MCBR V4 from configuration (selection round; freeze comes later)
+            self.planner = v4_planner(s.ids.child("mcbr"), mcbr_cfg, V4Config(**cfg.v4))
         else:
             planners = make_planners(s.ids.child("mcbr"), mcbr_cfg)
             if cfg.planner not in planners:
@@ -302,6 +309,9 @@ class Deliberation:
         robot_pose: Pose,
         now: TimeStamp,
         prior_views: Sequence[Any],
+        abandoned_views: Sequence[AbandonedView] = (),
+        time_remaining_s: float | None = None,
+        energy_remaining_j: float | None = None,
     ) -> AdoptedPlan:
         req = PlanningRequest(
             need=need,
@@ -315,8 +325,13 @@ class Deliberation:
             prior_views=tuple(prior_views),
             rng=np.random.default_rng(now.time_ns % (2**32)),
             predictive=None if self.predictive_provider is None else self.predictive_provider(beliefs),
+            abandoned_views=tuple(abandoned_views),
+            time_remaining_s=time_remaining_s,
+            energy_remaining_j=energy_remaining_j,
         )
+        t0 = time.perf_counter()
         result: PlanResult = self.planner.plan(req)
+        latency_ms = 1000.0 * (time.perf_counter() - t0)
         adoption = ProvenanceRecord(
             record_id=self.ids.new(),
             source_type=SourceType.PLAN,
@@ -349,7 +364,7 @@ class Deliberation:
                 "provenance_id": str(adoption.record_id),
             },
         )
-        adopted = AdoptedPlan(plan, adoption.record_id, decision.record.decision_id, result.table)
+        adopted = AdoptedPlan(plan, adoption.record_id, decision.record.decision_id, result.table, latency_ms)
         self.plans.append(adopted)
         return adopted
 
@@ -433,9 +448,45 @@ class Deliberation:
         if clearance < self.cfg.planner_inflation_m:
             dist *= 1.6  # the believed route must go around the surveyed structure
         risk = 0.05 if clearance >= self.cfg.planner_inflation_m else 0.2
+        if self.cfg.view_execution.route_aware_navigation_cost and self.corridor_blocked(p, q):
+            # The BELIEF already says this corridor is occupied by structure that is not in the registry.
+            # Charging it (rather than refusing it) is deliberate: on ACTIVE_INSPECTION_OCCLUDED_V1 the only
+            # view that resolves the defect is reached through a gap between the discovered panels, so a
+            # refusal here would delete exactly the candidates the mission needs.
+            dist *= self.cfg.view_execution.blocked_cost_multiplier
+            risk = max(risk, 0.2)
         return ResourceCost(
             time_s=dist / self.cfg.cruise_speed_mps, energy_j=ENERGY_PER_M_J * dist, risk=risk, travel_m=dist
         )
+
+    def corridor_blocked(self, p: np.ndarray, q: np.ndarray) -> bool:
+        """Does the believed straight corridor from ``p`` to ``q`` cross OBSERVED occupied, unregistered cells?
+
+        Belief plane only, and exactly the test ``route_context`` uses to declare a planned leg blocked:
+        Model2S OBSERVED cells above ``occupied_probability`` that are farther than ``design_clearance_m``
+        from the surveyed design (known structure is not an obstacle).
+        """
+        if self.m2s is None:
+            return False
+        rc = self.cfg.route
+        res = float(self.m2s.cfg.grid.base_voxel_m)
+        d = q - p
+        length = float(np.linalg.norm(d))
+        if length < 1e-6:
+            return False
+        n = int(np.clip(np.ceil(length / max(res * 0.5, 1e-6)), 2, 96))
+        line = p + np.linspace(0.0, 1.0, n)[:, None] * d
+        axis = d / length
+        ref = np.array([0.0, 0.0, 1.0]) if abs(axis[2]) < 0.9 else np.array([1.0, 0.0, 0.0])
+        u = np.cross(axis, ref)
+        u = u / max(float(np.linalg.norm(u)), 1e-9)
+        v = np.cross(axis, u)
+        h = rc.corridor_half_m
+        pts = np.vstack([line, line + h * u, line - h * u, line + h * v, line - h * v])
+        st = self.m2s.occupancy_state(pts)
+        occ = (st.status == OBSERVED) & (st.probability >= rc.occupied_probability)
+        occ &= self.ctx.design_distance(pts) > rc.design_clearance_m
+        return int(occ.sum()) >= rc.min_occupied_cells
 
 
 def _revisions(snapshot: BeliefSnapshot, belief_ids: Sequence[UUID]) -> tuple[int, ...]:
@@ -444,9 +495,13 @@ def _revisions(snapshot: BeliefSnapshot, belief_ids: Sequence[UUID]) -> tuple[in
     return tuple(seen.get(b, -1) for b in belief_ids)
 
 
-def _yaw(q: tuple[float, float, float, float]) -> float:
+def yaw_of_quat(q: tuple[float, float, float, float]) -> float:
+    """Yaw of a (w, x, y, z) quaternion, in radians."""
     w, x, y, z = q
     return math.atan2(2 * (w * z + x * y), 1 - 2 * (y * y + z * z))
+
+
+_yaw = yaw_of_quat
 
 
 def view_pose(plan: ObservationPlan, mount_yaw: float = 0.0) -> Pose:

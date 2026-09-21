@@ -1,0 +1,14 @@
+{
+ "arms": [
+  "V3_PRODUCTION",
+  "V4_deadline",
+  "V4_supply_deadline"
+ ],
+ "code_commit": "4ec7193a6c6f478469233619ed7fc14e8fa3845c",
+ "config": "configs/eval/i4_v4_development_r2.yaml",
+ "experiment_id": "ACTIVE-MCBR-E007-DEV2",
+ "n_worlds": 40,
+ "partition": "development",
+ "partition_digest": "17490d3dbcc85673ebe624e6f04357f42b87a2316d431d2982af58e40e864457",
+ "wall_clock_s": 1215.6152338000247
+}
