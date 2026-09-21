@@ -498,3 +498,23 @@ The held-out OOD split 8000300-8000311 (`I4-OCCLUDED-OOD-UNITY`, bent pipeline g
 the pass decision from the start and is still unrun and unread. With the gate decided it adds no decision
 value, so it was left for the integrator to sequence. It is 48 flights, about 1.1 h, and the harness is in
 place.
+
+## 11. Family closed (2026-09-21)
+
+Three formal runs used this family and it is now closed. No further final partition will be drawn from it.
+
+| Run | Split | Worlds | Verdict |
+|---|---|---|---|
+| 1 | 8000200-8000219 | 20 | FAIL, 3 of 5. Coverage not beaten: +0.163 [-0.045, +0.369] |
+| 2 (replication) | 8001000-8001059 | 60 | FAIL. +0.0094 [-0.0828, +0.0979], a tie |
+| 3 (MCBR V4) | 8002200-8002229 | 30 | FAIL, 4 of 5. Coverage beaten: +0.1345 [+0.0234, +0.2535]; info/kJ vs random +0.0377 [-0.00021, +0.0749] |
+
+Unread and remaining unread: 8002230-8002259 (the declared remainder of run 3's split) and the OOD split
+8002300-8002319. Neither may be used to revisit I4.
+
+The family did its job. It was built because the previous `straight_pipeline` family had a generator defect
+that left the "hidden" defect visible from the lane in a share of worlds, so the gate premise was barely
+exercised. In this family the defect is genuinely unreachable from the nominal route, the fixed, random and
+coverage baselines remain real competitors (coverage reads 11 of 30 worlds), and the production system's
+advantage over them is measurable. What the family also showed, which no ranking change could have revealed,
+is that the binding constraint was the robot's ability to reach a chosen view at all.
