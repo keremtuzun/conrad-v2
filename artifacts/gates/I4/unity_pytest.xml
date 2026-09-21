@@ -1,27 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="11" time="6705.524" timestamp="2026-09-20T16:19:48.577312+03:00" hostname="KeremTüzün"><testcase classname="tests.unity_live.test_i4_occluded_unity" name="test_declared_arm_set_is_recorded" time="6575.790" /><testcase classname="tests.unity_live.test_i4_occluded_unity" name="test_results_file_is_written" time="0.042" /><testcase classname="tests.unity_live.test_i4_occluded_unity" name="test_closed_loop_mcbr_view_improves_hidden_target" time="0.015" /><testcase classname="tests.unity_live.test_i4_occluded_unity" name="test_beats_fixed_views_on_hidden_state_reconstruction" time="0.017" /><testcase classname="tests.unity_live.test_i4_occluded_unity" name="test_beats_random_views" time="0.017" /><testcase classname="tests.unity_live.test_i4_occluded_unity" name="test_beats_coverage_only" time="0.017"><failure message="AssertionError: PRODUCTION does not beat A-B2_coverage: hidden_state_error_improvement: +0.1635 CI95 [-0.04476929276659981, 0.3693231214694793]&#10;assert not ['hidden_state_error_improvement: +0.1635 CI95 [-0.04476929276659981, 0.3693231214694793]']">flights = {'arms': ('PRODUCTION', 'A-B1_fixed_inspection', 'A-B0_random', 'A-B2_coverage'), 'cfg': {'arm_set': {'arms': ['PRODUC...ror_m': 0.0006287055355694488, 'crack_abs_error_m': 0.0013888102960637055, 'critical_delivered': 1.0, ...}}, ...}, ...}
-
-    def test_beats_coverage_only(flights):
-&gt;       _criterion(flights, "beats coverage-only", COVERAGE, {"hidden_state_error_improvement": "higher"})
-
-tests\unity_live\test_i4_occluded_unity.py:277: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-flights = {'arms': ('PRODUCTION', 'A-B1_fixed_inspection', 'A-B0_random', 'A-B2_coverage'), 'cfg': {'arm_set': {'arms': ['PRODUC...ror_m': 0.0006287055355694488, 'crack_abs_error_m': 0.0013888102960637055, 'critical_delivered': 1.0, ...}}, ...}, ...}
-name = 'beats coverage-only', base = 'A-B2_coverage'
-metrics = {'hidden_state_error_improvement': 'higher'}
-
-    def _criterion(flights: dict[str, Any], name: str, base: str, metrics: dict[str, str]) -&gt; None:
-        pw = flights["per_world"]
-        rows = {m: _paired(pw, base, m, d) for m, d in metrics.items()}
-        means = {p: {m: float(np.mean([pw[w][p][m] for w in pw])) for m in metrics} for p in (PRODUCTION, base)}
-        measured(GATE, name, comparator=base, paired=rows, means=means)
-        failures = [f"{m}: {r['benefit_mean']:+.4f} CI95 {r['ci95']}" for m, r in rows.items() if not _beats(r)]
-&gt;       assert not failures, f"PRODUCTION does not beat {base}: " + "; ".join(failures)
-E       AssertionError: PRODUCTION does not beat A-B2_coverage: hidden_state_error_improvement: +0.1635 CI95 [-0.04476929276659981, 0.3693231214694793]
-E       assert not ['hidden_state_error_improvement: +0.1635 CI95 [-0.04476929276659981, 0.3693231214694793]']
-
-tests\unity_live\test_i4_occluded_unity.py:201: AssertionError</failure></testcase><testcase classname="tests.unity_live.test_i4_occluded_unity" name="test_beats_simple_views_on_information_per_time_and_energy[A-B1_fixed_inspection]" time="0.021" /><testcase classname="tests.unity_live.test_i4_occluded_unity" name="test_beats_simple_views_on_information_per_time_and_energy[A-B0_random]" time="0.016" /><testcase classname="tests.unity_live.test_i4_occluded_unity" name="test_beats_simple_views_on_information_per_time_and_energy[A-B2_coverage]" time="0.018"><failure message="AssertionError: PRODUCTION does not beat A-B2_coverage: info_per_time: +0.0016 CI95 [-0.0004476929276659983, 0.0036932312146947927]; info_per_kj: +0.0418 CI95 [-0.009223464972655557, 0.09222439167280518]&#10;assert not ['info_per_time: +0.0016 CI95 [-0.0004476929276659983, 0.0036932312146947927]', 'info_per_kj: +0.0418 CI95 [-0.009223464972655557, 0.09222439167280518]']">flights = {'arms': ('PRODUCTION', 'A-B1_fixed_inspection', 'A-B0_random', 'A-B2_coverage'), 'cfg': {'arm_set': {'arms': ['PRODUC...ror_m': 0.0006287055355694488, 'crack_abs_error_m': 0.0013888102960637055, 'critical_delivered': 1.0, ...}}, ...}, ...}
-base = 'A-B2_coverage'
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="14" time="339.383" timestamp="2026-09-21T08:37:28.632084+03:00" hostname="KeremTüzün"><testcase classname="tests.unity_live.test_i4_v4_unity_final" name="test_every_arm_is_reported_on_every_metric" time="235.834" /><testcase classname="tests.unity_live.test_i4_v4_unity_final" name="test_v3_protocol_control_attributes_the_effect" time="0.013" /><testcase classname="tests.unity_live.test_i4_v4_unity_final" name="test_declared_arm_set_is_recorded" time="0.020" /><testcase classname="tests.unity_live.test_i4_v4_unity_final" name="test_run3_is_declared_fresh_and_does_not_touch_the_earlier_runs" time="9.786" /><testcase classname="tests.unity_live.test_i4_v4_unity_final" name="test_results_file_is_written" time="0.069" /><testcase classname="tests.unity_live.test_i4_v4_unity_final" name="test_closed_loop_mcbr_view_improves_hidden_target" time="0.015" /><testcase classname="tests.unity_live.test_i4_v4_unity_final" name="test_beats_fixed_views_on_hidden_state_reconstruction" time="0.020" /><testcase classname="tests.unity_live.test_i4_v4_unity_final" name="test_beats_random_views" time="0.020" /><testcase classname="tests.unity_live.test_i4_v4_unity_final" name="test_beats_coverage_only" time="0.020" /><testcase classname="tests.unity_live.test_i4_v4_unity_final" name="test_beats_simple_views_on_information_per_time_and_energy[A-B1_fixed_inspection]" time="0.020" /><testcase classname="tests.unity_live.test_i4_v4_unity_final" name="test_beats_simple_views_on_information_per_time_and_energy[A-B0_random]" time="0.021"><failure message="AssertionError: PRODUCTION does not beat A-B0_random: info_per_kj: +0.0377 CI95 [-0.00020770319353082196, 0.07489257780727646]&#10;assert not ['info_per_kj: +0.0377 CI95 [-0.00020770319353082196, 0.07489257780727646]']">flights = {'arms': ('PRODUCTION', 'V3_PROTOCOL_CONTROL', 'A-B2_coverage', 'A-B1_fixed_inspection', 'A-B0_random'), 'cfg': {'arm_...': 0.0, 'corrosion_abs_error_m': 0.004563924097618081, 'crack_abs_error_m': 0.05467888307749956, ...}, ...}, ...}, ...}
+base = 'A-B0_random'
 
     @pytest.mark.parametrize("base", [FIXED, RANDOM, COVERAGE])
     def test_beats_simple_views_on_information_per_time_and_energy(flights, base):
@@ -32,11 +10,11 @@ base = 'A-B2_coverage'
             {"info_per_time": "higher", "info_per_kj": "higher"},
         )
 
-tests\unity_live\test_i4_occluded_unity.py:282: 
+tests\unity_live\test_i4_v4_unity_final.py:422: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-flights = {'arms': ('PRODUCTION', 'A-B1_fixed_inspection', 'A-B0_random', 'A-B2_coverage'), 'cfg': {'arm_set': {'arms': ['PRODUC...ror_m': 0.0006287055355694488, 'crack_abs_error_m': 0.0013888102960637055, 'critical_delivered': 1.0, ...}}, ...}, ...}
-name = 'information/time/energy vs A-B2_coverage', base = 'A-B2_coverage'
+flights = {'arms': ('PRODUCTION', 'V3_PROTOCOL_CONTROL', 'A-B2_coverage', 'A-B1_fixed_inspection', 'A-B0_random'), 'cfg': {'arm_...': 0.0, 'corrosion_abs_error_m': 0.004563924097618081, 'crack_abs_error_m': 0.05467888307749956, ...}, ...}, ...}, ...}
+name = 'information/time/energy vs A-B0_random', base = 'A-B0_random'
 metrics = {'info_per_kj': 'higher', 'info_per_time': 'higher'}
 
     def _criterion(flights: dict[str, Any], name: str, base: str, metrics: dict[str, str]) -&gt; None:
@@ -46,7 +24,7 @@ metrics = {'info_per_kj': 'higher', 'info_per_time': 'higher'}
         measured(GATE, name, comparator=base, paired=rows, means=means)
         failures = [f"{m}: {r['benefit_mean']:+.4f} CI95 {r['ci95']}" for m, r in rows.items() if not _beats(r)]
 &gt;       assert not failures, f"PRODUCTION does not beat {base}: " + "; ".join(failures)
-E       AssertionError: PRODUCTION does not beat A-B2_coverage: info_per_time: +0.0016 CI95 [-0.0004476929276659983, 0.0036932312146947927]; info_per_kj: +0.0418 CI95 [-0.009223464972655557, 0.09222439167280518]
-E       assert not ['info_per_time: +0.0016 CI95 [-0.0004476929276659983, 0.0036932312146947927]', 'info_per_kj: +0.0418 CI95 [-0.009223464972655557, 0.09222439167280518]']
+E       AssertionError: PRODUCTION does not beat A-B0_random: info_per_kj: +0.0377 CI95 [-0.00020770319353082196, 0.07489257780727646]
+E       assert not ['info_per_kj: +0.0377 CI95 [-0.00020770319353082196, 0.07489257780727646]']
 
-tests\unity_live\test_i4_occluded_unity.py:201: AssertionError</failure></testcase><testcase classname="tests.unity_live.test_i4_occluded_unity" name="test_no_twin_truth_leakage_on_runtime_side" time="18.208" /><testcase classname="tests.unity_live.test_i4_occluded_unity" name="test_bundle_replays_deterministically" time="98.912" /></testsuite></testsuites>
+tests\unity_live\test_i4_v4_unity_final.py:231: AssertionError</failure></testcase><testcase classname="tests.unity_live.test_i4_v4_unity_final" name="test_beats_simple_views_on_information_per_time_and_energy[A-B2_coverage]" time="0.021" /><testcase classname="tests.unity_live.test_i4_v4_unity_final" name="test_no_twin_truth_leakage_on_runtime_side" time="22.408" /><testcase classname="tests.unity_live.test_i4_v4_unity_final" name="test_bundle_replays_deterministically" time="64.179" /></testsuite></testsuites>

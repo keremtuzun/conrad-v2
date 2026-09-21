@@ -1,0 +1,151 @@
+# Gate I4, FORMAL RUN 3: the MCBR V4 view execution repair on held-out worlds. SYNTHETIC_ONLY.
+# DECLARED 2026-09-21 BEFORE ANY FLIGHT ON THESE WORLDS. Nothing below may change after the first flight.
+#
+# WHAT RUNS 1 AND 2 RECORDED, AND KEEP RECORDING. Gate I4 = FAIL.
+#   run 1, final_test 8000200-8000219, 20 worlds, four arms (configs/eval/i4_occluded_unity.yaml):
+#     beats fixed views    +0.232 [+0.081, +0.399]  PASS
+#     beats random views   +0.206 [+0.030, +0.382]  PASS
+#     closed loop                                   PASS
+#     beats coverage-only  +0.163 [-0.045, +0.369]  FAIL
+#     information/time/energy vs coverage           FAIL
+#   run 2, pre-registered replication, final_test 8001000-8001059, 60 worlds, two arms:
+#     beats coverage-only  +0.0094 [-0.0828, +0.0979]  FAIL, a tie
+# Both runs stand. Their worlds are SPENT and are neither re-flown nor re-scored, and if run 3 passes the
+# earlier FAIL stays on the record beside it.
+#
+# WHY A THIRD RUN IS NOT SHOPPING. Runs 1 and 2 measured the SAME mechanism twice. What changed since is a
+# measured defect in the mission protocol, not a threshold, a family or a baseline: on fresh development
+# worlds, 45 of the incumbent's 103 accepted inspection views were abandoned in flight by a
+# REPLAN(ROUTE_BLOCKED) decision and never flown, and the repair raises the fraction of accepted views
+# actually flown from 0.466 to 0.813 and the worlds in which the defect is read from 15 of 40 to 20 of 40
+# (docs/audits/MCBR_V4.md sections 3 and 5). The mechanism was designed on the development split, selected
+# on the validation split under a rule declared before that split was read, and frozen in
+# configs/active/mcbr_frozen_v4.yaml before this file was written. Run 3 evaluates the frozen mechanism once,
+# on worlds it has never seen.
+experiment_id: I4-V4-UNITY-FINAL
+gate: I4
+run: 3
+supersedes_nothing: >-
+  run 1 and run 2 remain the record of the V3 mechanism. Run 3 is the first and only final evaluation of the
+  V4 mechanism, and it is reported beside them, never instead of them.
+run1_results: artifacts/gates/I4/unity_i4_occluded_results.json
+run2_results: artifacts/gates/I4/unity_i4_occluded_rep2_results.json
+run1_verdict: FAIL
+run2_verdict: FAIL
+world_family: ACTIVE_INSPECTION_OCCLUDED_V1
+scenario: I4-OCCLUDED-UNITY
+partition_file: configs/eval/partitions_i4_mcbr_v4.yaml
+partition_digest: 17490d3dbcc85673ebe624e6f04357f42b87a2316d431d2982af58e40e864457
+family_file: configs/eval/i4_occluded_family.yaml
+family_digest: f77c5dbb7d665e3740e76cd4dfd97f37d0f0060bc2b336af6391ff0758877bdd
+frozen_planner_file: configs/active/mcbr_frozen_v4.yaml
+design_evidence: artifacts/experiments/ACTIVE-MCBR-E007-DEV/i4_v4_development.json
+selection_evidence: artifacts/experiments/ACTIVE-MCBR-E007-VAL/i4_v4_validation.json
+
+# ---------------------------------------------------------------------------- worlds (FIXED NOW)
+# The FIRST 30 worlds of the declared final split of configs/eval/partitions_i4_mcbr_v4.yaml. 8002230-8002259
+# stay UNREAD and must not be added afterwards, whatever run 3 measures. Enlarging a split after seeing the
+# numbers is the failure mode this declaration exists to prevent.
+final_worlds: {range: [8002200, 8002230], n: 30}
+unread_remainder: {range: [8002230, 8002260], n: 30, status: NOT_READ}
+power_note: >-
+  Sized before the run from the MEASURED validation effect, not from a wish. On the 40 validation worlds the
+  frozen mechanism beat coverage-only by +0.2406 with a 95 % paired CI of [+0.1072, +0.3757], a half width of
+  about 0.13 at n = 40, and beat the V3 protocol by +0.3034 [+0.1808, +0.4279]. The per-world outcome on this
+  family is exactly binary (about 0.78 when the defect is read, 0.000 when it is not), so the primary metric
+  is a success rate and the paired CI half width scales as 1/sqrt(n): about 0.15 at n = 30. An effect of
+  +0.24 is therefore separable at n = 30, while the +0.0094 tie run 2 measured was not separable at n = 60.
+  Cost enters the choice honestly and only after the power argument: at the 90.1 s per flight measured on
+  this host in a dry run on a development world, 5 arms x 30 worlds is 150 flights, about 3.8 h, against
+  about 7.5 h for 60 worlds. Thirty worlds is enough for this effect; sixty would buy resolution this
+  comparison does not need.
+
+# ---------------------------------------------------------------------------- arms (FIXED NOW)
+# Four arms decide the gate criteria, which name fixed, random and coverage explicitly. The fifth arm decides
+# nothing and is flown to attribute the result: it is the frozen production planner running the INCUMBENT
+# execution protocol, so the difference between it and PRODUCTION is the repair and nothing else.
+arm_set:
+  name: v4_final_five_arm
+  reduced: true
+  arms: [PRODUCTION, V3_PROTOCOL_CONTROL, A-B2_coverage, A-B1_fixed_inspection, A-B0_random]
+  gate_arms: [PRODUCTION, A-B2_coverage, A-B1_fixed_inspection, A-B0_random]
+  control_arms: [V3_PROTOCOL_CONTROL]
+  dropped_arms:
+    [A-B3_frontier, A-B4_geometric_nbv, A-B5_entropy_nbv, A-B5b_entropy_nbv_predictive, A-B6_standard_eig,
+     A-B6b_bayes_eig, A-B7_uncertainty_nbv, A-B9_mcbr_no_mission, A-B10_mcbr_full, A-B11_mission_conditioned,
+     A-B12_hypothesis_discrimination]
+  dropped_arms_reason: >-
+    the ch25 gate criteria name a fixed inspection route, random views and a systematic coverage sweep, and
+    those three are all flown. The other baselines are SELECTION evidence from the validation split
+    (ACTIVE-MCBR-E005) and were never gate comparators; flying all eleven would be 330 flights and would
+    inform no criterion.
+  dropped_arms_evidence: artifacts/experiments/ACTIVE-MCBR-E005/active_mcbr_e005.json
+  reason: >-
+    four gate arms plus one attribution control. Run 1 flew the same four gate arms on 20 worlds; run 3 flies
+    them on 30 fresh worlds and adds the V3-protocol control.
+  decides_criteria:
+    - closed loop
+    - beats fixed views on actual hidden-state reconstruction
+    - beats random views
+    - beats coverage-only
+    - beats simple views on information/time/energy
+  flights: {final: 150}
+arm_runtime:
+  PRODUCTION: {planner: PRODUCTION}
+  V3_PROTOCOL_CONTROL: {planner: PRODUCTION, view_execution: {enabled: false}}
+  A-B2_coverage: {planner: A-B2_coverage}
+  A-B1_fixed_inspection: {planner: A-B1_fixed_inspection}
+  A-B0_random: {planner: A-B0_random}
+
+# ---------------------------------------------------------------------------- declared limitation
+declared_limitation: >-
+  The three baseline arms fly the INCUMBENT execution protocol, exactly as they did in runs 1 and 2, because
+  the protocol is part of the production mechanism under test and not part of the shared budget. A
+  coverage-sweep arm carrying the V4 protocol is therefore NOT flown, and this run cannot separate "MCBR's
+  ranking beats a coverage sweep" from "the production stack beats a coverage sweep". The gate criterion is
+  the second statement, and that is what a PASS here would mean. This limitation is declared before the run
+  and is reported with the verdict whatever the verdict is.
+
+# ---------------------------------------------------------------------------- matched budgets (unchanged)
+# Identical to runs 1 and 2: same mission duration, observation limit, sensor capability, starting belief,
+# candidate generator, feasibility filter, PlanningRequest, and measured energy and navigation accounting.
+# Twin2E OFF, as in both earlier runs. Strictly sequential flights, one Unity player at a time.
+runtime: {duration_s: 100.0, control_period_s: 0.1, max_plans_per_need: 4, model2e_enabled: false}
+sequential: true
+primary_metric: hidden_state_error_improvement
+
+# ---------------------------------------------------------------------------- reported for every arm
+report_metrics:
+  - hidden_state_error_improvement
+  - info_per_time
+  - info_per_kj
+  - observations
+  - fraction_views_flown
+  - redundant_observations
+  - travel_m
+  - energy_j
+  - target_observed
+  - corrosion_abs_error_m
+  - crack_abs_error_m
+  - collisions
+post_detection_severity_note: >-
+  "post-detection severity error" is reported as the mean absolute corrosion-depth and crack-length error over
+  the worlds in which the defect was actually read, beside the all-world means. In a world where the defect
+  was never read the quantity does not exist and the prior-mean error is substituted by score_mission_run, so
+  mixing the two would report a detection rate as a sizing accuracy.
+
+decision_rule: >-
+  Unit = one world, paired across arms. PRODUCTION beats a comparator on a metric iff the lower bound of the
+  95 % paired percentile-bootstrap CI over worlds (4000 resamples, rng seed 20260919) of the benefit
+  (PRODUCTION better = positive) is above 0. Identical rule, resample count and seed to runs 1 and 2. Gate I4
+  passes iff every criterion passes: the closed loop, beats fixed views, beats random views, beats
+  coverage-only on hidden_state_error_improvement, and beats fixed, random AND coverage on info_per_time AND
+  info_per_kj. A TIE WITH COVERAGE IS A FAIL. No numeric margin is invented, and every paired CI is reported
+  whatever its sign, including the V3-protocol control, which decides nothing.
+run_once: >-
+  This split is read exactly once. If a criterion fails, gate I4 stays FAIL and the investigation ENDS: there
+  is no V5, no further final partition, and no enlargement of this one. 8002230-8002259 stay unread. Nothing
+  is tuned, added or removed after these numbers exist.
+ood: >-
+  The ood_test split (8002300-8002319, family bent_pipeline, scenario I4-OCCLUDED-OOD) is flown ONLY if the
+  final passes, is reported separately, and is never part of the pass decision.

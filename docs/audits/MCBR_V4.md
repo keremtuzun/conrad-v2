@@ -1,5 +1,12 @@
 # MCBR V4: the chosen view is now the flown view (2026-09-21)
 
+**Outcome: the repair works and gate I4 still FAILS.** On 30 held-out worlds the frozen V4 stack beats the
+coverage sweep that runs 1 and 2 could not beat (+0.1345 [+0.0234, +0.2535]), beats fixed and random views,
+and reads the defect in 16 of 30 worlds against the incumbent protocol's 12 and coverage's 11. It fails one
+criterion: information per unit energy against random views, +0.0377 [-0.00021, +0.0749], a tie. One failing
+criterion is a failing gate. Section 9.1 has the numbers; sections 1 to 8 are the development and validation
+work that preceded the run and are unchanged by it.
+
 All data is SYNTHETIC_ONLY and every run in this document is on the python sim kernel. It is SURROGATE
 evidence: it promotes no gate and it changes no recorded result.
 
@@ -444,6 +451,12 @@ For the one final run, when you sequence it:
 * **Not yet done.** No final or OOD seed has been read, no gate evidence has been written, and gate I4's
   recorded verdict is unchanged.
 
+**This section was written before the final run and is left exactly as it was.** What was actually flown
+differs from it in two declared ways, both fixed in `configs/eval/i4_v4_unity_final.yaml` before the first
+flight: 30 worlds rather than 60, with the power argument in section 9, and five arms rather than three,
+because the gate criteria name a fixed route and random views as well as coverage. Section 9.1 records the
+result.
+
 Two limitations to carry into that run:
 
 * the whole effect measured here is the execution protocol. The `conrad.active.v4` planner is implemented,
@@ -455,7 +468,185 @@ Two limitations to carry into that run:
   optimistic relative to the flown trajectory. Calibrating that model against the realised trajectory is the
   obvious next mechanism, and it was not attempted here.
 
-## 9. Artifacts
+## 9. Gate I4 formal run 3: declared before the first flight
+
+Recorded here on 2026-09-21 BEFORE any world of 8002200-8002229 was flown, together with
+`configs/eval/i4_v4_unity_final.yaml` and `tests/unity_live/test_i4_v4_unity_final.py`. Nothing below may be
+changed once the first flight has happened.
+
+* **Path.** The formal Unity path, the built player
+  `unity/ConradUnityV2/Builds/Win64/ConradSim.exe` (Unity 6000.5.9f1, SHA-256
+  `36c5c9f13481406382a8e9ef8fc0ea7cdf055c43bb12fc8fd545b07c199cd277`), strictly sequential flights, one
+  player at a time, scenario `I4-OCCLUDED-UNITY`, worlds paired across arms.
+* **Arms, five.** `PRODUCTION` (the frozen V4: the planner and the frozen `view_execution` protocol),
+  `A-B1_fixed_inspection`, `A-B0_random`, `A-B2_coverage`, and `V3_PROTOCOL_CONTROL`, which is the same
+  frozen planner with `view_execution: {enabled: false}`. The first four decide the gate criteria; the fifth
+  decides nothing and is flown so that the difference between it and `PRODUCTION` is the repair and nothing
+  else.
+* **Worlds, fixed now.** The first 30 of the declared final split, 8002200-8002229. **8002230-8002259 stay
+  unread and will not be added afterwards, whatever this run measures.**
+* **Power argument, made before the run.** On validation the frozen mechanism beat coverage-only by +0.2406
+  [+0.1072, +0.3757], a paired CI half width of about 0.13 at n = 40, and beat the V3 protocol by +0.3034
+  [+0.1808, +0.4279]. The per-world outcome is binary, so the primary metric is a success rate and the half
+  width scales as one over the square root of n: about 0.15 at n = 30. An effect of +0.24 is separable there,
+  while the +0.0094 tie run 2 measured was not separable at n = 60. Cost enters only after that argument: at
+  the 90.1 s per flight measured on this host in a dry run on a development world, 150 flights is about
+  3.8 h against about 7.5 h for 60 worlds.
+* **Matched budgets.** Identical to runs 1 and 2: 100 s mission, `max_plans_per_need` 4, one structural
+  sensor, the same candidate generator, feasibility filter, `PlanningRequest` and starting belief, Twin2E
+  off, measured energy and navigation accounting.
+* **Decision rule.** Unit = one world, paired across arms, 95 % paired percentile bootstrap, 4000 resamples,
+  rng seed 20260919, identical to runs 1 and 2. `PRODUCTION` beats a comparator on a metric iff the CI lower
+  bound of the benefit is above 0. Gate I4 passes iff every criterion passes: the closed loop, beats fixed,
+  beats random, beats coverage on `hidden_state_error_improvement`, and beats fixed, random AND coverage on
+  `info_per_time` AND `info_per_kj`. **A tie with coverage is a FAIL.**
+* **Read once.** If a criterion fails, gate I4 stays FAIL and the investigation ends: no V5, no further final
+  partition, no enlargement of this one.
+* **OOD.** `ood_test` (8002300-8002319, family `bent_pipeline`, scenario `I4-OCCLUDED-OOD`) is flown only if
+  the final passes, is reported separately, and is never part of the pass decision.
+* **Declared limitation.** The three baseline arms fly the incumbent execution protocol, exactly as in runs 1
+  and 2, because the protocol is part of the production mechanism under test rather than of the shared
+  budget. A coverage arm carrying the V4 protocol is NOT flown, so this run cannot separate "MCBR's ranking
+  beats a coverage sweep" from "the production stack beats a coverage sweep". The gate criterion is the
+  second statement, and that is what a PASS would mean.
+* **Runs 1 and 2 stand.** Their worlds are spent and are neither re-flown nor re-scored. If run 3 passes,
+  I4 = PASS on merit and the earlier FAIL stays on the record beside it.
+
+### 9.1 Result: gate I4 = FAIL
+
+150 flights, 30 worlds x 5 arms, strictly sequential on the built player, 3 h 13 min. Every world flew every
+arm; the stored record holds 150 run directories and is internally consistent (per-world arm and seed labels
+correct, every mission 100 s, `info_per_time` exactly `hidden_state_error_improvement / 100` for every row,
+and the family's binary outcome intact: 0.000 in every world where the defect was not read).
+
+**Four of five criteria pass. One fails, and one failing criterion is a failing gate.**
+
+| criterion | verdict | measured |
+|---|---|---|
+| closed loop | PASS | MCBR planned in 27 of 30 worlds, 20 of those produced an informative view, mean improvement 0.4291, target OBSERVED in 53.3 % |
+| beats fixed views | PASS | +0.2392 [+0.0995, +0.3798] |
+| beats random views | PASS | +0.1556 [+0.0019, +0.3080] |
+| beats coverage-only | PASS | **+0.1345 [+0.0234, +0.2535]** |
+| beats simple views on information/time/energy | **FAIL** | `info_per_kj` against random views **+0.0377 [-0.00021, +0.0749]** |
+
+The failing entry is one of the six pairings inside that criterion. The other five pass: against fixed views
+`info_per_time` +0.00239 [+0.00100, +0.00380] and `info_per_kj` +0.0574 [+0.0231, +0.0923]; against random
+views `info_per_time` +0.00156 [+0.00002, +0.00308]; against coverage `info_per_time` +0.00135
+[+0.00023, +0.00253] and `info_per_kj` +0.0319 [+0.0049, +0.0607]. The criterion requires all of them, so it
+fails, and the gate fails with it. The interval misses zero by 0.00021, which is not a reason to move
+anything: the rule was fixed before the run, a CI that includes zero is a tie, and a tie is a FAIL.
+
+**Gate I4 = FAIL.** `artifacts/gates/I4/evidence_formal.json` records `official=FAIL formal=FAIL`.
+
+#### Per arm, 30 worlds
+
+| metric | PRODUCTION (V4) | V3_PROTOCOL_CONTROL | A-B2 coverage | A-B0 random | A-B1 fixed |
+|---|---|---|---|---|---|
+| `hidden_state_error_improvement` | **0.4291** | 0.3220 | 0.2946 | 0.2735 | 0.1899 |
+| worlds where the defect was read | **16 / 30** | 12 / 30 | 11 / 30 | 10 / 30 | 7 / 30 |
+| `info_per_time` | 0.004291 | 0.003220 | 0.002946 | 0.002735 | 0.001899 |
+| `info_per_kj` | 0.10357 | 0.07926 | 0.07164 | 0.06592 | 0.04617 |
+| accepted views | 1.77 | 2.17 | 2.60 | 2.47 | 2.57 |
+| fraction of accepted views flown | **0.792** | 0.569 | 0.547 | 0.525 | 0.422 |
+| fraction that reached the pose tolerance | 0.900 | 0.647 | 0.547 | 0.558 | 0.489 |
+| redundant observations | **0.97** | 1.67 | 2.17 | 1.90 | 2.27 |
+| travel m | 25.41 | 23.94 | 25.79 | 25.80 | 23.65 |
+| energy J | 4120 | 3927 | 4113 | 4230 | 3983 |
+| mission time s | 100 | 100 | 100 | 100 | 100 |
+| target OBSERVED rate | 0.533 | 0.400 | 0.367 | 0.333 | 0.233 |
+| collisions | 0.10 | 0.00 | 0.00 | 0.30 | 0.43 |
+| corrosion abs error m, all worlds | 0.00318 | 0.00397 | 0.00404 | 0.00435 | 0.00497 |
+| crack abs error m, all worlds | 0.03833 | 0.04685 | 0.05052 | 0.04768 | 0.05514 |
+| post-detection corrosion abs error m | 0.00089 | 0.00093 | 0.00058 | 0.00074 | 0.00091 |
+| post-detection crack abs error m | 0.02155 | 0.02035 | 0.02665 | 0.02214 | 0.02068 |
+
+Post-detection severity error is over the worlds in which each arm actually read the defect, which is why
+those columns are not comparable across arms with different read rates: a 7-world mean and a 16-world mean
+are different populations. The all-world rows are the ones that carry the arms' ranking, and on them the V4
+arm is the most accurate of the five on both quantities. Within the worlds each arm did read, sizing accuracy
+is essentially the same for every arm, which is the same finding the V3 diagnostics reported: on this family
+the outcome is set by whether the defect is read at all, not by how well it is then sized.
+
+#### Paired CIs against every comparator
+
+95 % paired percentile bootstrap over the 30 worlds, 4000 resamples, rng seed 20260919, identical to runs 1
+and 2. Positive = PRODUCTION better in the metric's declared direction.
+
+| comparator | `hidden_state_error_improvement` | `info_per_time` | `info_per_kj` | defect read | views flown |
+|---|---|---|---|---|---|
+| `A-B1_fixed_inspection` | +0.2392 [+0.0995, +0.3798] | +0.00239 [+0.00100, +0.00380] | +0.0574 [+0.0231, +0.0923] | +0.300 [+0.133, +0.467] | +0.369 [+0.217, +0.522] |
+| `A-B0_random` | +0.1556 [+0.0019, +0.3080] | +0.00156 [+0.00002, +0.00308] | **+0.0377 [-0.0002, +0.0749]** | +0.200 [+0.033, +0.367] | +0.267 [+0.119, +0.408] |
+| `A-B2_coverage` | +0.1345 [+0.0234, +0.2535] | +0.00135 [+0.00023, +0.00253] | +0.0319 [+0.0049, +0.0607] | +0.167 [+0.033, +0.300] | +0.244 [+0.092, +0.394] |
+| `V3_PROTOCOL_CONTROL` | +0.1071 [+0.0106, +0.2215] | +0.00107 [+0.00011, +0.00221] | +0.0243 [+0.0009, +0.0504] | +0.133 [+0.033, +0.267] | +0.222 [+0.097, +0.361] |
+
+Travel and energy, paired, positive = PRODUCTION uses less: against coverage +0.38 m [-0.97, +1.65] and
+-6 J [-210, +166]; against random +0.39 m [-1.10, +1.81] and +111 J [-168, +369]; against the V3 control
+-1.47 m [-2.54, -0.52] and -192 J [-379, -43]. The V4 arm buys its extra reads with a little more travel and
+energy than the V3 control, and with no measurable cost against coverage or random.
+
+#### What the control says, and it decides nothing
+
+`V3_PROTOCOL_CONTROL` is the same frozen planner with `view_execution: {enabled: false}`. Against it,
+PRODUCTION improves the primary metric by +0.1071 [+0.0106, +0.2215], reads the defect in 4 more worlds
+(16 against 12), and flies 0.792 of its accepted views against 0.569. **The effect is the execution repair,
+not the family and not the ranking rule**, which is byte-identical in the two arms. The control also
+out-performs coverage on its own (0.3220 against 0.2946, 12 worlds read against 11), so the V3 mechanism is
+not worse here than it was in runs 1 and 2; the repair is what moves it clear.
+
+#### Two things the result is not
+
+* It is not a repeat of the run-1 and run-2 failure. **The criterion those two runs failed, "beats
+  coverage-only", passes here**: +0.1345 [+0.0234, +0.2535] against run 1's +0.163 [-0.045, +0.369] and run
+  2's +0.0094 [-0.0828, +0.0979]. What fails is a different criterion that both earlier runs also failed.
+* It is not a near miss that could be argued away. `info_per_kj` is `1000 x improvement / energy_j`, so
+  against random views it is the primary metric divided by a per-world energy that is itself noisy, and the
+  paired interval on the ratio is wider than the interval on the numerator. PRODUCTION beats random on the
+  primary metric and on `info_per_time`; it does not, at this sample size, beat random on information per
+  unit energy. That is the measurement.
+
+#### Integrity of this run
+
+* **No final world was used for tuning.** The mechanism was designed on the development split
+  (8002000-8002039) and selected on the validation split (8002100-8002139) under a rule declared before that
+  split was read, and frozen in `configs/active/mcbr_frozen_v4.yaml` before `configs/eval/i4_v4_unity_final.yaml`
+  was written. The final split was opened once, after the freeze.
+* **The sample size was fixed before the run**, with the power argument in section 9, and it was not changed
+  afterwards. **8002230-8002259 remain unread**, and stay unread now that the result is known.
+* **No baseline was removed and no threshold moved.** All three comparators the ch25 criteria name were
+  flown, on the same worlds, with the same budgets, the same mission duration, the same observation limit,
+  the same sensor, the same starting belief and the same energy and navigation accounting as runs 1 and 2.
+  The fifth arm was added before the run and decides nothing.
+* **No truth leakage.** 154,188 deployment-side artifacts scanned across the PRODUCTION bundles, zero
+  violations, including the unregistered occluder entity IDs.
+* **Deterministic replay.** World 8002200 replays bit-identically: 4691 events, 50 decisions, 1088 belief
+  revisions, trajectory max difference 0.0, 253 files and 165 objects verified, same player binary.
+* **The earlier FAIL is retained beside this one.** Runs 1 and 2 are neither re-flown nor re-scored and
+  their recorded evidence is preserved at `artifacts/gates/I4/evidence_formal_v3_runs_1_2.json`,
+  `unity_measured_v3_runs_1_2.json` and `unity_pytest_v3_runs_1_2.xml`.
+* **Nothing was adjusted after the numbers existed.** The one change made after the first flight was to
+  re-run the already-flown bundles without `-x`, because the first invocation stopped at the failing
+  criterion and left the leakage scan, the replay and the coverage half of the information criterion
+  unevaluated. No flight was repeated; `fly()` resumes a finished bundle and never re-scores a new one.
+* **The OOD split was not flown.** `ood_test` (8002300-8002319) was declared to run only if the final
+  passed. It did not pass, so those 20 worlds are untouched.
+
+#### Where this leaves the work
+
+Gate I4 stays FAIL, and by the rule declared before the run this is the end of the line: no V5, no further
+final partition, no enlargement of this one. What the three runs have established between them is worth
+stating plainly, because it is not nothing:
+
+* the V3 mechanism ties a systematic coverage sweep on this family, twice, on 20 and on 60 held-out worlds;
+* the reason was measurable and was measured: 44 % of accepted inspection views were abandoned in flight by
+  a pre-empting route-blocked replan and never flown;
+* repairing that raises the fraction of accepted views flown from 0.42-0.57 to 0.79 on held-out worlds and
+  the worlds in which the defect is read from 11 of 30 to 16 of 30, and it makes the production stack beat
+  the coverage sweep on hidden-state reconstruction with a CI above zero, which is the criterion two earlier
+  formal runs could not clear;
+* and it still does not clear every criterion the gate requires, because information per unit energy against
+  random views comes out a tie at n = 30.
+
+## 10. Artifacts
 
 | file | content |
 |---|---|
@@ -480,7 +671,7 @@ at commit `4ec7193a6c6f478469233619ed7fc14e8fa3845c`, on partition digest
 `17490d3dbcc85673ebe624e6f04357f42b87a2316d431d2982af58e40e864457`, in 2689 s, 1216 s and 3332 s of wall
 clock respectively.
 
-## 10. Tests added
+## 11. Tests added
 
 | test | what it pins |
 |---|---|

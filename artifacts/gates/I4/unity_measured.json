@@ -1,140 +1,450 @@
 {
  "meta": {
   "scenario": "I4-OCCLUDED-UNITY",
+  "run": 3,
   "world_family": "ACTIVE_INSPECTION_OCCLUDED_V1",
   "worlds": [
-   8000200,
-   8000201,
-   8000202,
-   8000203,
-   8000204,
-   8000205,
-   8000206,
-   8000207,
-   8000208,
-   8000209,
-   8000210,
-   8000211,
-   8000212,
-   8000213,
-   8000214,
-   8000215,
-   8000216,
-   8000217,
-   8000218,
-   8000219
+   8002200,
+   8002201,
+   8002202,
+   8002203,
+   8002204,
+   8002205,
+   8002206,
+   8002207,
+   8002208,
+   8002209,
+   8002210,
+   8002211,
+   8002212,
+   8002213,
+   8002214,
+   8002215,
+   8002216,
+   8002217,
+   8002218,
+   8002219,
+   8002220,
+   8002221,
+   8002222,
+   8002223,
+   8002224,
+   8002225,
+   8002226,
+   8002227,
+   8002228,
+   8002229
   ],
   "arm_set": {
-   "name": "reduced",
+   "name": "v4_final_five_arm",
    "reduced": true,
-   "reason": "about 83 s per sequential Unity flight; ten arms x twenty worlds is 200 flights (about 4.6 h) against 80 flights (about 1.8 h) for the four arms the criteria name. No criterion depends on a dropped arm.",
    "arms": [
     "PRODUCTION",
+    "V3_PROTOCOL_CONTROL",
+    "A-B2_coverage",
     "A-B1_fixed_inspection",
-    "A-B0_random",
-    "A-B2_coverage"
+    "A-B0_random"
+   ],
+   "gate_arms": [
+    "PRODUCTION",
+    "A-B2_coverage",
+    "A-B1_fixed_inspection",
+    "A-B0_random"
+   ],
+   "control_arms": [
+    "V3_PROTOCOL_CONTROL"
    ],
    "dropped_arms": [
+    "A-B3_frontier",
     "A-B4_geometric_nbv",
     "A-B5_entropy_nbv",
     "A-B5b_entropy_nbv_predictive",
+    "A-B6_standard_eig",
     "A-B6b_bayes_eig",
     "A-B7_uncertainty_nbv",
-    "A-B10_mcbr_full"
+    "A-B9_mcbr_no_mission",
+    "A-B10_mcbr_full",
+    "A-B11_mission_conditioned",
+    "A-B12_hypothesis_discrimination"
    ],
-   "dropped_arms_evidence": "artifacts/experiments/ACTIVE-MCBR-E005-SEL/active_mcbr_e005_selection.json",
+   "dropped_arms_reason": "the ch25 gate criteria name a fixed inspection route, random views and a systematic coverage sweep, and those three are all flown. The other baselines are SELECTION evidence from the validation split (ACTIVE-MCBR-E005) and were never gate comparators; flying all eleven would be 330 flights and would inform no criterion.",
+   "dropped_arms_evidence": "artifacts/experiments/ACTIVE-MCBR-E005/active_mcbr_e005.json",
+   "reason": "four gate arms plus one attribution control. Run 1 flew the same four gate arms on 20 worlds; run 3 flies them on 30 fresh worlds and adds the V3-protocol control.",
+   "decides_criteria": [
+    "closed loop",
+    "beats fixed views on actual hidden-state reconstruction",
+    "beats random views",
+    "beats coverage-only",
+    "beats simple views on information/time/energy"
+   ],
    "flights": {
-    "final": 80,
-    "ood": 48
+    "final": 150
    }
   },
-  "partition": "configs/eval/partitions_i4_occluded.yaml final_test (declared in configs/eval/i4_occluded_unity.yaml)",
-  "partition_digest": "d929beb67c051ea1116e33ebb8e51cd638f5894ef54989a0a3f2ec3a9221b557",
-  "supersedes": "the straight_pipeline formal I4 run of 2026-09-19/20 (12 SPENT worlds; that family did not exercise the ch25 premise)",
-  "results": "artifacts\\gates\\I4\\unity_i4_occluded_results.json"
+  "partition": "configs/eval/partitions_i4_mcbr_v4.yaml final_test first 30 (declared in i4_v4_unity_final.yaml)",
+  "partition_digest": "17490d3dbcc85673ebe624e6f04357f42b87a2316d431d2982af58e40e864457",
+  "mechanism": "MCBR V4 view execution protocol, frozen in configs/active/mcbr_frozen_v4.yaml",
+  "earlier_runs": {
+   "run1": {
+    "results": "artifacts/gates/I4/unity_i4_occluded_results.json",
+    "verdict": "FAIL"
+   },
+   "run2": {
+    "results": "artifacts/gates/I4/unity_i4_occluded_rep2_results.json",
+    "verdict": "FAIL"
+   }
+  },
+  "declared_limitation": "The three baseline arms fly the INCUMBENT execution protocol, exactly as they did in runs 1 and 2, because the protocol is part of the production mechanism under test and not part of the shared budget. A coverage-sweep arm carrying the V4 protocol is therefore NOT flown, and this run cannot separate \"MCBR's ranking beats a coverage sweep\" from \"the production stack beats a coverage sweep\". The gate criterion is the second statement, and that is what a PASS here would mean. This limitation is declared before the run and is reported with the verdict whatever the verdict is.",
+  "results": "artifacts\\gates\\I4\\unity_i4_v4_final_results.json"
  },
  "criteria": {
+  "per arm": {
+   "n_worlds": 30,
+   "metrics": {
+    "PRODUCTION": {
+     "hidden_state_error_improvement": 0.429103,
+     "info_per_time": 0.004291,
+     "info_per_kj": 0.103573,
+     "observations": 1.766667,
+     "fraction_views_flown": 0.791667,
+     "fraction_views_reached": 0.9,
+     "redundant_observations": 0.966667,
+     "travel_m": 25.409367,
+     "energy_j": 4119.642193,
+     "time_s": 100.0,
+     "target_observed": 0.533333,
+     "corrosion_abs_error_m": 0.003185,
+     "crack_abs_error_m": 0.038328,
+     "collisions": 0.1,
+     "defect_read": 0.533333,
+     "views_before_detection": 0.866667,
+     "time_to_detection_s": 71.733333,
+     "empty_plan_rate": 0.15,
+     "planning_latency_ms": 1336.604932,
+     "worlds_read": 16.0,
+     "post_detection_corrosion_abs_error_m": 0.000893,
+     "post_detection_crack_abs_error_m": 0.021552
+    },
+    "V3_PROTOCOL_CONTROL": {
+     "hidden_state_error_improvement": 0.32204,
+     "info_per_time": 0.00322,
+     "info_per_kj": 0.079262,
+     "observations": 2.166667,
+     "fraction_views_flown": 0.569444,
+     "fraction_views_reached": 0.647222,
+     "redundant_observations": 1.666667,
+     "travel_m": 23.940964,
+     "energy_j": 3927.330191,
+     "time_s": 100.0,
+     "target_observed": 0.4,
+     "corrosion_abs_error_m": 0.003974,
+     "crack_abs_error_m": 0.046853,
+     "collisions": 0.0,
+     "defect_read": 0.4,
+     "views_before_detection": 1.666667,
+     "time_to_detection_s": 82.273333,
+     "empty_plan_rate": 0.194444,
+     "planning_latency_ms": 1346.339652,
+     "worlds_read": 12.0,
+     "post_detection_corrosion_abs_error_m": 0.000935,
+     "post_detection_crack_abs_error_m": 0.02035
+    },
+    "A-B2_coverage": {
+     "hidden_state_error_improvement": 0.294574,
+     "info_per_time": 0.002946,
+     "info_per_kj": 0.071644,
+     "observations": 2.6,
+     "fraction_views_flown": 0.547222,
+     "fraction_views_reached": 0.547222,
+     "redundant_observations": 2.166667,
+     "travel_m": 25.787108,
+     "energy_j": 4113.447775,
+     "time_s": 100.0,
+     "target_observed": 0.366667,
+     "corrosion_abs_error_m": 0.004044,
+     "crack_abs_error_m": 0.050519,
+     "collisions": 0.0,
+     "defect_read": 0.366667,
+     "views_before_detection": 2.166667,
+     "time_to_detection_s": 84.876667,
+     "empty_plan_rate": 0.175,
+     "planning_latency_ms": 1335.582925,
+     "worlds_read": 11.0,
+     "post_detection_corrosion_abs_error_m": 0.000578,
+     "post_detection_crack_abs_error_m": 0.026647
+    },
+    "A-B1_fixed_inspection": {
+     "hidden_state_error_improvement": 0.189895,
+     "info_per_time": 0.001899,
+     "info_per_kj": 0.046172,
+     "observations": 2.566667,
+     "fraction_views_flown": 0.422222,
+     "fraction_views_reached": 0.488889,
+     "redundant_observations": 2.266667,
+     "travel_m": 23.647317,
+     "energy_j": 3983.091708,
+     "time_s": 100.0,
+     "target_observed": 0.233333,
+     "corrosion_abs_error_m": 0.004967,
+     "crack_abs_error_m": 0.055141,
+     "collisions": 0.433333,
+     "defect_read": 0.233333,
+     "views_before_detection": 2.266667,
+     "time_to_detection_s": 88.213333,
+     "empty_plan_rate": 0.158333,
+     "planning_latency_ms": 1351.677372,
+     "worlds_read": 7.0,
+     "post_detection_corrosion_abs_error_m": 0.000913,
+     "post_detection_crack_abs_error_m": 0.020675
+    },
+    "A-B0_random": {
+     "hidden_state_error_improvement": 0.273483,
+     "info_per_time": 0.002735,
+     "info_per_kj": 0.06592,
+     "observations": 2.466667,
+     "fraction_views_flown": 0.525,
+     "fraction_views_reached": 0.558333,
+     "redundant_observations": 1.9,
+     "travel_m": 25.803554,
+     "energy_j": 4230.186098,
+     "time_s": 100.0,
+     "target_observed": 0.333333,
+     "corrosion_abs_error_m": 0.004355,
+     "crack_abs_error_m": 0.047679,
+     "collisions": 0.3,
+     "defect_read": 0.333333,
+     "views_before_detection": 1.766667,
+     "time_to_detection_s": 81.363333,
+     "empty_plan_rate": 0.15,
+     "planning_latency_ms": 1357.806604,
+     "worlds_read": 10.0,
+     "post_detection_corrosion_abs_error_m": 0.000744,
+     "post_detection_crack_abs_error_m": 0.022142
+    }
+   }
+  },
+  "v3 protocol control": {
+   "comparator": "V3_PROTOCOL_CONTROL",
+   "decides_nothing": true,
+   "paired": {
+    "hidden_state_error_improvement": {
+     "benefit_mean": 0.107063,
+     "ci95": [
+      0.010592,
+      0.221472
+     ],
+     "n_worlds": 30,
+     "production_mean": 0.429103,
+     "baseline_mean": 0.32204,
+     "fraction_improved": 0.2
+    },
+    "defect_read": {
+     "benefit_mean": 0.133333,
+     "ci95": [
+      0.033333,
+      0.266667
+     ],
+     "n_worlds": 30,
+     "production_mean": 0.533333,
+     "baseline_mean": 0.4,
+     "fraction_improved": 0.133333
+    },
+    "fraction_views_flown": {
+     "benefit_mean": 0.222222,
+     "ci95": [
+      0.097222,
+      0.361111
+     ],
+     "n_worlds": 30,
+     "production_mean": 0.791667,
+     "baseline_mean": 0.569444,
+     "fraction_improved": 0.333333
+    },
+    "info_per_time": {
+     "benefit_mean": 0.001071,
+     "ci95": [
+      0.000106,
+      0.002215
+     ],
+     "n_worlds": 30,
+     "production_mean": 0.004291,
+     "baseline_mean": 0.00322,
+     "fraction_improved": 0.2
+    },
+    "info_per_kj": {
+     "benefit_mean": 0.024311,
+     "ci95": [
+      0.000904,
+      0.050433
+     ],
+     "n_worlds": 30,
+     "production_mean": 0.103573,
+     "baseline_mean": 0.079262,
+     "fraction_improved": 0.2
+    },
+    "travel_m": {
+     "benefit_mean": -1.468403,
+     "ci95": [
+      -2.544283,
+      -0.519024
+     ],
+     "n_worlds": 30,
+     "production_mean": 25.409367,
+     "baseline_mean": 23.940964,
+     "fraction_improved": 0.166667
+    },
+    "energy_j": {
+     "benefit_mean": -192.312001,
+     "ci95": [
+      -379.237345,
+      -42.507249
+     ],
+     "n_worlds": 30,
+     "production_mean": 4119.642193,
+     "baseline_mean": 3927.330191,
+     "fraction_improved": 0.166667
+    }
+   },
+   "control_vs_coverage": {
+    "hidden_state_error_improvement": {
+     "control_mean": 0.32204,
+     "coverage_mean": 0.294574
+    },
+    "fraction_views_flown": {
+     "control_mean": 0.569444,
+     "coverage_mean": 0.547222
+    },
+    "defect_read": {
+     "control_mean": 0.4,
+     "coverage_mean": 0.366667
+    }
+   }
+  },
   "arm set": {
-   "name": "reduced",
+   "name": "v4_final_five_arm",
    "reduced": true,
    "arms": [
     "PRODUCTION",
+    "V3_PROTOCOL_CONTROL",
+    "A-B2_coverage",
     "A-B1_fixed_inspection",
-    "A-B0_random",
-    "A-B2_coverage"
+    "A-B0_random"
+   ],
+   "gate_arms": [
+    "PRODUCTION",
+    "A-B2_coverage",
+    "A-B1_fixed_inspection",
+    "A-B0_random"
+   ],
+   "control_arms": [
+    "V3_PROTOCOL_CONTROL"
    ],
    "dropped_arms": [
+    "A-B3_frontier",
     "A-B4_geometric_nbv",
     "A-B5_entropy_nbv",
     "A-B5b_entropy_nbv_predictive",
+    "A-B6_standard_eig",
     "A-B6b_bayes_eig",
     "A-B7_uncertainty_nbv",
-    "A-B10_mcbr_full"
+    "A-B9_mcbr_no_mission",
+    "A-B10_mcbr_full",
+    "A-B11_mission_conditioned",
+    "A-B12_hypothesis_discrimination"
    ],
-   "reason": "about 83 s per sequential Unity flight; ten arms x twenty worlds is 200 flights (about 4.6 h) against 80 flights (about 1.8 h) for the four arms the criteria name. No criterion depends on a dropped arm.",
-   "dropped_arms_evidence": "artifacts/experiments/ACTIVE-MCBR-E005-SEL/active_mcbr_e005_selection.json",
-   "flights": 80,
-   "world_family": "ACTIVE_INSPECTION_OCCLUDED_V1"
+   "reason": "four gate arms plus one attribution control. Run 1 flew the same four gate arms on 20 worlds; run 3 flies them on 30 fresh worlds and adds the V3-protocol control.",
+   "dropped_arms_evidence": "artifacts/experiments/ACTIVE-MCBR-E005/active_mcbr_e005.json",
+   "flights": 150,
+   "world_family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+   "declared_limitation": "The three baseline arms fly the INCUMBENT execution protocol, exactly as they did in runs 1 and 2, because the protocol is part of the production mechanism under test and not part of the shared budget. A coverage-sweep arm carrying the V4 protocol is therefore NOT flown, and this run cannot separate \"MCBR's ranking beats a coverage sweep\" from \"the production stack beats a coverage sweep\". The gate criterion is the second statement, and that is what a PASS here would mean. This limitation is declared before the run and is reported with the verdict whatever the verdict is."
+  },
+  "declaration": {
+   "run": 3,
+   "n_worlds": 30,
+   "declared_before_flight": "configs\\eval\\i4_v4_unity_final.yaml",
+   "unread_remainder": [
+    8002230,
+    8002231,
+    8002232,
+    "...",
+    8002259
+   ],
+   "run1_verdict": "FAIL",
+   "run2_verdict": "FAIL",
+   "power_note": "Sized before the run from the MEASURED validation effect, not from a wish. On the 40 validation worlds the frozen mechanism beat coverage-only by +0.2406 with a 95 % paired CI of [+0.1072, +0.3757], a half width of about 0.13 at n = 40, and beat the V3 protocol by +0.3034 [+0.1808, +0.4279]. The per-world outcome on this family is exactly binary (about 0.78 when the defect is read, 0.000 when it is not), so the primary metric is a success rate and the paired CI half width scales as 1/sqrt(n): about 0.15 at n = 30. An effect of +0.24 is therefore separable at n = 30, while the +0.0094 tie run 2 measured was not separable at n = 60. Cost enters the choice honestly and only after the power argument: at the 90.1 s per flight measured on this host in a dry run on a development world, 5 arms x 30 worlds is 150 flights, about 3.8 h, against about 7.5 h for 60 worlds. Thirty worlds is enough for this effect; sixty would buy resolution this comparison does not need."
   },
   "results": {
-   "path": "artifacts\\gates\\I4\\unity_i4_occluded_results.json",
-   "n_worlds": 20,
-   "partition_digest": "d929beb67c051ea1116e33ebb8e51cd638f5894ef54989a0a3f2ec3a9221b557",
+   "path": "artifacts\\gates\\I4\\unity_i4_v4_final_results.json",
+   "n_worlds": 30,
+   "partition_digest": "17490d3dbcc85673ebe624e6f04357f42b87a2316d431d2982af58e40e864457",
    "family_digest": "f77c5dbb7d665e3740e76cd4dfd97f37d0f0060bc2b336af6391ff0758877bdd",
-   "config_digest": "8eca16cc896e560b26cbe9814828fe9f75801d843e0e38bedb5442299805d903"
+   "config_digest": "8eca16cc896e560b26cbe9814828fe9f75801d843e0e38bedb5442299805d903",
+   "view_execution_digest": "8eab12e582523ad1597f151abcd049dac4da8b709f56ba45b776b7b26950ab08",
+   "player_exe_sha256": "36c5c9f13481406382a8e9ef8fc0ea7cdf055c43bb12fc8fd545b07c199cd277"
   },
   "closed loop": {
-   "worlds": 20,
-   "worlds_where_mcbr_planned": 18,
-   "worlds_with_informative_mcbr_view": 10,
-   "mean_hidden_state_error_improvement": 0.392229,
-   "target_observed_fraction": 0.5,
+   "worlds": 30,
+   "worlds_where_mcbr_planned": 27,
+   "worlds_with_informative_mcbr_view": 20,
+   "mean_hidden_state_error_improvement": 0.429103,
+   "target_observed_fraction": 0.533333,
+   "fraction_of_accepted_views_flown": 0.791667,
    "patch_max_visible_fraction": [
-    0.6875,
-    0.979167,
+    0.0,
+    0.891304,
+    0.479167,
+    0.0,
+    0.0,
+    0.916667,
     0.75,
-    0.9375,
     0.0,
+    0.871795,
+    0.475,
+    0.771429,
+    0.956522,
+    0.909091,
     0.0,
-    0.354167,
-    0.395833,
-    0.395833,
-    0.575,
+    0.416667,
+    0.479167,
+    0.541667,
     0.666667,
-    0.72973,
-    0.125,
-    0.0,
-    0.0,
     0.0,
     1.0,
+    0.9375,
+    0.970588,
+    0.645833,
+    0.625,
+    1.0,
     0.0,
-    0.895833,
-    0.854167
+    0.75,
+    0.833333,
+    0.875,
+    0.9375
    ],
-   "fixed_route_patch_max_visible_fraction_mean": 0.221802,
-   "fixed_route_target_observed_fraction": 0.25
+   "fixed_route_patch_max_visible_fraction_mean": 0.266978,
+   "fixed_route_target_observed_fraction": 0.233333
   },
   "beats fixed views": {
    "comparator": "A-B1_fixed_inspection",
    "paired": {
     "hidden_state_error_improvement": {
-     "benefit_mean": 0.231547,
+     "benefit_mean": 0.239208,
      "ci95": [
-      0.081003,
-      0.398981
+      0.099543,
+      0.379824
      ],
-     "n_worlds": 20,
-     "production_mean": 0.392229,
-     "baseline_mean": 0.160682,
-     "fraction_improved": 0.4
+     "n_worlds": 30,
+     "production_mean": 0.429103,
+     "baseline_mean": 0.189895,
+     "fraction_improved": 0.366667
     }
    },
    "means": {
     "PRODUCTION": {
-     "hidden_state_error_improvement": 0.392229
+     "hidden_state_error_improvement": 0.429103
     },
     "A-B1_fixed_inspection": {
-     "hidden_state_error_improvement": 0.160682
+     "hidden_state_error_improvement": 0.189895
     }
    }
   },
@@ -142,23 +452,23 @@
    "comparator": "A-B0_random",
    "paired": {
     "hidden_state_error_improvement": {
-     "benefit_mean": 0.205964,
+     "benefit_mean": 0.15562,
      "ci95": [
-      0.029987,
-      0.382097
+      0.001862,
+      0.308009
      ],
-     "n_worlds": 20,
-     "production_mean": 0.392229,
-     "baseline_mean": 0.186265,
-     "fraction_improved": 0.35
+     "n_worlds": 30,
+     "production_mean": 0.429103,
+     "baseline_mean": 0.273483,
+     "fraction_improved": 0.266667
     }
    },
    "means": {
     "PRODUCTION": {
-     "hidden_state_error_improvement": 0.392229
+     "hidden_state_error_improvement": 0.429103
     },
     "A-B0_random": {
-     "hidden_state_error_improvement": 0.186265
+     "hidden_state_error_improvement": 0.273483
     }
    }
   },
@@ -166,23 +476,23 @@
    "comparator": "A-B2_coverage",
    "paired": {
     "hidden_state_error_improvement": {
-     "benefit_mean": 0.163495,
+     "benefit_mean": 0.134529,
      "ci95": [
-      -0.044769,
-      0.369323
+      0.023392,
+      0.253467
      ],
-     "n_worlds": 20,
-     "production_mean": 0.392229,
-     "baseline_mean": 0.228734,
-     "fraction_improved": 0.45
+     "n_worlds": 30,
+     "production_mean": 0.429103,
+     "baseline_mean": 0.294574,
+     "fraction_improved": 0.333333
     }
    },
    "means": {
     "PRODUCTION": {
-     "hidden_state_error_improvement": 0.392229
+     "hidden_state_error_improvement": 0.429103
     },
     "A-B2_coverage": {
-     "hidden_state_error_improvement": 0.228734
+     "hidden_state_error_improvement": 0.294574
     }
    }
   },
@@ -190,36 +500,36 @@
    "comparator": "A-B1_fixed_inspection",
    "paired": {
     "info_per_time": {
-     "benefit_mean": 0.002315,
+     "benefit_mean": 0.002392,
      "ci95": [
-      0.00081,
-      0.00399
+      0.000995,
+      0.003798
      ],
-     "n_worlds": 20,
-     "production_mean": 0.003922,
-     "baseline_mean": 0.001607,
-     "fraction_improved": 0.4
+     "n_worlds": 30,
+     "production_mean": 0.004291,
+     "baseline_mean": 0.001899,
+     "fraction_improved": 0.366667
     },
     "info_per_kj": {
-     "benefit_mean": 0.057895,
+     "benefit_mean": 0.057401,
      "ci95": [
-      0.020079,
-      0.099866
+      0.023083,
+      0.092335
      ],
-     "n_worlds": 20,
-     "production_mean": 0.098064,
-     "baseline_mean": 0.040169,
-     "fraction_improved": 0.4
+     "n_worlds": 30,
+     "production_mean": 0.103573,
+     "baseline_mean": 0.046172,
+     "fraction_improved": 0.366667
     }
    },
    "means": {
     "PRODUCTION": {
-     "info_per_time": 0.003922,
-     "info_per_kj": 0.098064
+     "info_per_time": 0.004291,
+     "info_per_kj": 0.103573
     },
     "A-B1_fixed_inspection": {
-     "info_per_time": 0.001607,
-     "info_per_kj": 0.040169
+     "info_per_time": 0.001899,
+     "info_per_kj": 0.046172
     }
    }
   },
@@ -227,36 +537,36 @@
    "comparator": "A-B0_random",
    "paired": {
     "info_per_time": {
-     "benefit_mean": 0.00206,
+     "benefit_mean": 0.001556,
      "ci95": [
-      0.0003,
-      0.003821
+      1.9e-05,
+      0.00308
      ],
-     "n_worlds": 20,
-     "production_mean": 0.003922,
-     "baseline_mean": 0.001863,
-     "fraction_improved": 0.35
+     "n_worlds": 30,
+     "production_mean": 0.004291,
+     "baseline_mean": 0.002735,
+     "fraction_improved": 0.266667
     },
     "info_per_kj": {
-     "benefit_mean": 0.050743,
+     "benefit_mean": 0.037653,
      "ci95": [
-      0.006893,
-      0.094516
+      -0.000208,
+      0.074893
      ],
-     "n_worlds": 20,
-     "production_mean": 0.098064,
-     "baseline_mean": 0.047322,
-     "fraction_improved": 0.35
+     "n_worlds": 30,
+     "production_mean": 0.103573,
+     "baseline_mean": 0.06592,
+     "fraction_improved": 0.3
     }
    },
    "means": {
     "PRODUCTION": {
-     "info_per_time": 0.003922,
-     "info_per_kj": 0.098064
+     "info_per_time": 0.004291,
+     "info_per_kj": 0.103573
     },
     "A-B0_random": {
-     "info_per_time": 0.001863,
-     "info_per_kj": 0.047322
+     "info_per_time": 0.002735,
+     "info_per_kj": 0.06592
     }
    }
   },
@@ -264,48 +574,48 @@
    "comparator": "A-B2_coverage",
    "paired": {
     "info_per_time": {
-     "benefit_mean": 0.001635,
+     "benefit_mean": 0.001345,
      "ci95": [
-      -0.000448,
-      0.003693
+      0.000234,
+      0.002535
      ],
-     "n_worlds": 20,
-     "production_mean": 0.003922,
-     "baseline_mean": 0.002287,
-     "fraction_improved": 0.45
+     "n_worlds": 30,
+     "production_mean": 0.004291,
+     "baseline_mean": 0.002946,
+     "fraction_improved": 0.333333
     },
     "info_per_kj": {
-     "benefit_mean": 0.041812,
+     "benefit_mean": 0.031929,
      "ci95": [
-      -0.009223,
-      0.092224
+      0.004901,
+      0.060712
      ],
-     "n_worlds": 20,
-     "production_mean": 0.098064,
-     "baseline_mean": 0.056253,
-     "fraction_improved": 0.5
+     "n_worlds": 30,
+     "production_mean": 0.103573,
+     "baseline_mean": 0.071644,
+     "fraction_improved": 0.333333
     }
    },
    "means": {
     "PRODUCTION": {
-     "info_per_time": 0.003922,
-     "info_per_kj": 0.098064
+     "info_per_time": 0.004291,
+     "info_per_kj": 0.103573
     },
     "A-B2_coverage": {
-     "info_per_time": 0.002287,
-     "info_per_kj": 0.056253
+     "info_per_time": 0.002946,
+     "info_per_kj": 0.071644
     }
    }
   },
   "leakage": {
-   "texts_scanned": 102014,
+   "texts_scanned": 154188,
    "violations": []
   },
   "replay": {
-   "world": 8000200,
+   "world": 8002200,
    "events": {
-    "original": 4915,
-    "replayed": 4915,
+    "original": 4691,
+    "replayed": 4691,
     "equal": true,
     "first_difference": null
    },
@@ -316,8 +626,8 @@
     "first_difference": null
    },
    "revisions": {
-    "original": 1304,
-    "replayed": 1304,
+    "original": 1088,
+    "replayed": 1088,
     "equal": true,
     "first_difference": null
    },
@@ -331,7 +641,7 @@
     "equal": true
    },
    "equal": true,
-   "verified_files": 252,
+   "verified_files": 253,
    "verified_objects": 165,
    "same_player_binary": true
   }
