@@ -407,3 +407,61 @@ Two findings worth carrying forward:
 - The binding constraint on this family is statistical power, not the size of the effect: the per-world
   outcome is close to all-or-nothing, so 24 paired worlds give a CI half width of about 0.20 against random.
   The declared final split has 20 worlds.
+
+## 9. Final I4 outcome (2026-09-21, commit b5629ab): FAIL, with the coverage criterion won
+
+This section closes I4. No further I4 experiment will be run: no new final partition, no enlarged sample,
+no threshold, CI rule, metric or baseline change, and no MCBR V5.
+
+**Chronology, preserved in order.**
+
+| Run | Family | Worlds | Result |
+|---|---|---|---|
+| ACTIVE-MCBR-E003 (surrogate) | straight_pipeline | final partition | FAIL, MCBR lost to fixed and coverage |
+| Formal run 1 | straight_pipeline, 12 worlds | 7800002-7800013 | FAIL, fixed views unbeaten. Later found to rest on a generator defect: the far defect used the pipe heading's +Y normal while the lane used its right-hand normal, so the hidden defect often sat lane-side |
+| Formal run 1 (occluded) | ACTIVE_INSPECTION_OCCLUDED_V1, 20 worlds | 8000200-8000219 | FAIL, 3 of 5. Beat fixed +0.232 and random +0.206; coverage not beaten +0.163 [-0.045, +0.369] |
+| Formal run 2 (replication) | same family, 60 worlds | 8001000-8001059 | FAIL. +0.0094 [-0.0828, +0.0979], a statistical tie, not an underpowered interval |
+| Diagnostics | development | 8002000-8002039 | The tie is a success-rate result: both arms read the defect in exactly 28 of 60 worlds, and (28/60) x (0.7816 - 0.7614) = +0.0094 is the entire gate difference |
+| Oracle headroom | development | 40 worlds | A truth-seeing oracle beats coverage by +0.0865 but beats V3 by only +0.0168, so better ranking was bounded at about a fifth of the certifying run's noise floor |
+| Formal run 3 (V4) | same family, 30 declared worlds | 8002200-8002229 | **FAIL on one pairing**, 4 of 5 criteria PASS |
+
+**Retractions, kept rather than edited away.** Run 1's diagnosis ("MCBR is not spending its budget", 1.95 views
+against coverage's 2.90) did not replicate at n=60 (2.65 against 2.77) and was withdrawn, along with the
+travel-cost follow-up it implied. Two further hypotheses died the same way: the read channel (`read_channel:
+false`) cannot explain the tie because there are almost no post-detection views, and the candidate generator
+was not the limitation. Only Limitation B survived measurement, and the oracle capped its repair at +0.017.
+
+**Final run 3 numbers, 30 worlds, 5 arms, 150 sequential Unity flights.**
+
+| Criterion | Verdict | Measured |
+|---|---|---|
+| closed loop | PASS | planned in 27 of 30, informative in 20 |
+| beats fixed views | PASS | +0.2392 [+0.0995, +0.3798] |
+| beats random views | PASS | +0.1556 [+0.0019, +0.3080] |
+| beats coverage-only | **PASS** | **+0.1345 [+0.0234, +0.2535]** |
+| beats simple views on information/time/energy | **FAIL** | five of six pairings pass; info/kJ vs random is +0.0377 [-0.00021, +0.0749] |
+
+The failing interval misses zero by 0.00021. The rule was fixed before the run, a CI spanning zero is a tie,
+and a tie is a FAIL. Nothing was changed after the numbers existed.
+
+| Metric | V4 | V3 control | coverage | random | fixed |
+|---|---|---|---|---|---|
+| hidden-state error improvement | 0.4291 | 0.3220 | 0.2946 | 0.2735 | 0.1899 |
+| worlds read | 16/30 | 12/30 | 11/30 | 10/30 | 7/30 |
+| views | 1.77 | 2.17 | 2.60 | 2.47 | 2.57 |
+| flown-view fraction | 0.792 | 0.569 | 0.547 | 0.525 | 0.422 |
+| redundant observations | 0.97 | 1.67 | 2.17 | 1.90 | 2.27 |
+| info/kJ | 0.1036 | 0.0793 | 0.0716 | 0.0659 | 0.0462 |
+
+**What was actually repaired, and the attribution.** The unflown views were not a planning failure.
+`DecisionRouting._route` guarded MCBR and NAVIGATION with a busy test but not the MISSION_EXECUTIVE branch,
+and `replan_detour` detoured only TRANSIT goals, calling `hold_goal` for anything else. In this family the
+approach to any defect-resolving view must cross observed occupied cells, so the better the view, the more
+reliably the robot cancelled its own approach. V3 accepted 103 views and flew 48; 45 were abandoned as
+route-blocked. The `V3_PROTOCOL_CONTROL` arm runs the same frozen planner with `view_execution` disabled and
+scores 0.3220 against 0.4291, so the gain is the execution repair, not the world family and not the ranker,
+whose code is byte-identical across those two arms. The V4 planner's own filters are inert on this family.
+
+**The defensible claim.** On worlds where the nominal route cannot see the defect, the production system reads
+the defect in 16 of 30 worlds against a systematic sweep's 11, using fewer views, less redundancy, less travel
+and less energy. It does not satisfy every pairing of the information criterion, so gate I4 is FAIL.
