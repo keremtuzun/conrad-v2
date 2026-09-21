@@ -100,7 +100,27 @@ Nothing is at D6 or above: the only real-data result is a smoke-level experiment
 
 ## H. Tests and checks
 
-PENDING_CI
+Commands run on the working tree at the commit named in each gate's evidence:
+
+```
+python -m uv run ruff format --check .
+python -m uv run ruff check .
+python -m uv run mypy conrad tests
+python -m uv run pytest -q --ignore=tests/unity_live
+```
+
+- Format and lint: clean.
+- mypy: 0 errors across 596 source files. It had regressed to 75 errors, all in tests added during this pass;
+  they were fixed as real typing defects (narrowing asserts, correct annotations, documented casts), with no
+  ignores added and no test weakened. One Unity assertion was strengthened in the process.
+- pytest: **1373 passed, 1 skipped, 4 xfailed** in 15 min 17 s. The Unity-live modules are excluded from that
+  command because they launch the player; they are run by the gate recorders instead.
+- The 4 strict xfails are the recorded gate failures, each quoting its measured reason: two for I4, one for
+  the I5 integrated-actions criterion and one for I7 criterion 3. The Unity recorder reads an xfail as FAIL,
+  and `scripts/record_gate_evidence.py` was fixed during this pass to do the same: it had been reading a
+  strict xfail as NOT_RUN, so a failing criterion could appear as absent evidence.
+- The 1 skip is the Unity-bundle falsification, which reports itself inconclusive when the source has changed
+  since the bundle was recorded rather than claiming a pass.
 
 Test kinds are separated: smoke, integration, gate acceptance. A test that encodes a currently failing gate is
 a strict xfail, and the Unity recorder now reads an xfail as FAIL rather than as a skip.
@@ -148,7 +168,30 @@ Failures kept: TCDP, CEFD, RBP, learned association, MCBR against fixed views.
   I1 bundle replay bit-exactly, and no truth path is opened. Controls: corrupting truth changes nothing;
   altering one depth reading or dropping one structural observation changes the output; an edited recording
   with stale digests is refused.
-- **New Unity flagship with outage, contradiction and localization degradation:** PENDING_FLAGSHIP
+- **New Unity flagship with outage, contradiction and localization degradation:** `FLAGSHIP-UNITY` on held-out world 7800017, 150 s, production defaults, all three stressors declared before
+the run (`docs/audits/FLAGSHIP_UNITY.md`).
+
+- **Outage:** link down 6 to 70 s. The critical finding was made at 14.3 s while the link was down, queued,
+  and delivered after reconnection: alert at 71.3 s, belief update at 77.0 s. Receiver in sync with the
+  sender, 0 duplicates, 0 resync requests.
+- **Contradiction:** two credible disagreeing structural readings drove U_C from 0.350 to 1.000. The estimate
+  swung and the variance stayed wide; the belief was not averaged away.
+- **Localization degradation:** fix outage at 90 s, DEGRADED at +12.0 s, LOCALIZATION_LOST and HOLD at
+  +23.6 s.
+- **Structural result under the realistic sensor model:** corrosion 13.587 mm against 6.003 mm truth
+  (error 7.584 mm), crack 70.61 mm against 80.00 mm (error 9.397 mm). No inspection goal was ever accepted:
+  all four MCBR plans reported the need satisfied and three revisit goals were refused by the planner.
+- **Replay:** CC-10 on the integrated run, 13 of 13 items identical (505 observations, 266 evidence items,
+  1346 revisions, 75 decisions, the MCBR candidate tables, 1500 commands, BAAC deltas, receiver state,
+  terminal status), Unity trajectory difference 0.0.
+- **Truth-removal falsification: PASS.** 1500 ticks, 0 divergences, no truth path opened and no truth module
+  imported.
+- **A safety defect it exposed, since repaired:** with the fix lost, the configured safe-hold action was
+  station keeping against a dead-reckoned estimate. The vehicle chased its own drift at 0.207 m/s, its true
+  position left the mission boundary at 122.6 s and a collision-envelope violation followed. A HOLD now never
+  closes a control loop on an estimate declared untrustworthy, and the boundary is judged on the 3-sigma
+  worst case. Re-measured on the same condition: zero authorized thrust for 371 steps, true speed 0.045 m/s,
+  0 of 1500 steps outside the boundary.
 
 ## M. Safety
 
