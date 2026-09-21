@@ -298,3 +298,31 @@ research, which the spec allows.
 
 ### I8, I9
 Not software-passable: they need the target onboard computer and the physical vehicle.
+
+## Evidence provenance after MCBR V4 (checked 2026-09-21)
+
+MCBR V4 (`9280b5b`) did more than repair a routing branch. `runtime_config()` adopts the frozen v4
+`view_execution` block whenever the mission uses the `PRODUCTION` planner and does not override it, so at HEAD
+those missions run with `protect_active_view`, `belief_map_navigation`, `refund_abandoned_attempt` and
+`drop_abandoned_prior_view` on. `belief_map_navigation` changes what the global and local planners treat as
+free space (Model2S OBSERVED occupancy, not only the surveyed design), which affects navigation on every goal,
+not only inspection views.
+
+Which formal evidence this touches:
+
+| Gate | Mission path | Planner | Affected? |
+|---|---|---|---|
+| I1 | `I1-UNITY` through `MissionRuntime` | PRODUCTION (no override) | yes, recorded before `9280b5b` |
+| I3 | `I3-UNITY` through `MissionRuntime` | PRODUCTION (no override) | yes, recorded before `9280b5b` |
+| I6 | `I6-MULTIDOMAIN-*` through `MissionRuntime` | PRODUCTION (no override) | yes, recorded at `3e1470e` |
+| I2 | `run_unity_nav`, the navigation stack without the mission runtime | not applicable | no |
+| I4 | recorded at `9280b5b` or later | PRODUCTION with the frozen protocol | no, current |
+
+The criteria those three gates test are qualitative (geometry and occupancy bounds, knowledge status,
+uncertainty response, provenance, leakage, replay exactness, multi-domain coexistence and domain authority),
+and nothing in the protocol change is expected to flip them. But the evidence must describe the shipped code,
+and it currently describes code one behavioural change old. I1 and I3 are about 10 and 15 minutes of Unity
+time; I6 is about an hour. They are queued behind the formal I5 run, which holds the player.
+
+This is recorded here rather than resolved silently, because "the outcome probably would not change" is not
+the same as evidence taken on the code that ships.
