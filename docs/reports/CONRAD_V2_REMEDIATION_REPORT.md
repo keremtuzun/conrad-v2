@@ -72,18 +72,33 @@ L1 kernel; it never promotes a gate (ADR-0008).
 | Gate | Official | Formal | Surrogate |
 |---|---|---|---|
 | P0, I0, C1, 2S-FIRST, U0 | PASS | PASS | |
-| I1 | PASS | PASS (9 of 9, world 7800000) | PASS |
+| I1 | PASS | PASS (9 of 9, world 7800000, re-recorded after the safety fix) | PASS |
 | I2 | PASS | PASS (7 of 7, NAV seeds 7400001-7400006, incl. 5 fault cases) | |
-| 2T | PASS | PASS (FINAL-3, 6500000-6500059) | |
-| 2T-TCDP | FAIL | FAIL | |
-| I3 | PASS | PASS (3 of 3, world 7800001) | |
-| I4 | FAIL | FAIL (3 of 5, 12 worlds, 48 Unity flights) | FAIL |
-| I5 | BLOCKED_UPSTREAM | action matrix PASS; mission criteria NOT_RUN | FAIL |
+| 2T | PASS | PASS (FINAL-4, 6700000-6700059) | |
+| 2T-TCDP | FAIL | FAIL, killed | |
+| I3 | PASS | PASS (3 of 3, world 7800001, re-recorded after Model2T R4) | |
+| I4 | FAIL | FAIL (4 of 5, 30 worlds 8002200-8002229, 150 Unity flights) | FAIL |
+| I5 | BLOCKED_UPSTREAM | action matrix 7 of 7 PASS; mission criteria NOT_RUN | FAIL |
 | 2E | PASS | PASS (FINAL-3, 6600000-6600019) | |
-| 2E-CEFD | FAIL | FAIL | |
-| I6 | BLOCKED_UPSTREAM | not run | PASS |
-| I7 | BLOCKED_UPSTREAM | not run | PASS |
+| 2E-CEFD | FAIL | FAIL, killed | |
+| I6 | BLOCKED_UPSTREAM | PASS (3 of 3, worlds 7800014-7800016) | PASS |
+| I7 | BLOCKED_UPSTREAM | not run | FAIL (3 of 4, seeds 5600000-5600004) |
 | I8, I9 | BLOCKED_EXTERNAL | | |
+
+**I4, the gate that received the most work.** Three formal runs across two world families, the first of which
+rested on a generator defect that left the hidden defect visible from the lane. Final run: 4 of 5 criteria
+PASS, including "beats coverage-only" at +0.1345 [+0.0234, +0.2535], which both earlier runs failed. The gate
+fails on the information criterion, which requires six pairings: five pass and information per kJ against
+random views is +0.0377 [-0.00021, +0.0749], missing zero by 0.00021. The rule was fixed before the run, a CI
+spanning zero is a tie, and a tie is a FAIL.
+
+The substantive finding stands: the production system reads the defect in 16 of 30 worlds against a systematic
+sweep's 11, using fewer views (1.77 against 2.60), less redundancy (0.97 against 2.17), less travel and less
+energy. A control arm running the same frozen planner with the execution repair disabled scores 0.3220 against
+0.4291, and the ranking code is byte-identical between them, so the gain is the execution repair rather than
+the planner or the family. The repair itself: the routing layer had no busy guard on the mission-executive
+branch and detoured only transit goals, so the approach to any view that could resolve the defect was
+cancelled. V3 accepted 103 views and flew 48.
 
 ## G. Maturity (D0 to D8)
 
