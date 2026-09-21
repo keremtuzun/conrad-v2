@@ -39,9 +39,15 @@ I2_FAULT_CASES = tuple(fault_cases()["cases"])  # configs/sim/nav_fault_cases.ya
 T1 = "tests/unity_live/test_i1_unity.py::"
 T2 = "tests/unity_live/test_i2_unity.py::"
 T3 = "tests/unity_live/test_i3_unity.py::"
-# I4 moved to the ACTIVE_INSPECTION_OCCLUDED_V1 family on 2026-09-20 (configs/eval/i4_occluded_unity.yaml).
-# tests/unity_live/test_i4_unity.py stays as the record of the straight_pipeline run whose 12 worlds are SPENT.
-T4 = "tests/unity_live/test_i4_occluded_unity.py::"
+# I4 moved to the ACTIVE_INSPECTION_OCCLUDED_V1 family on 2026-09-20 (configs/eval/i4_occluded_unity.yaml)
+# and, on 2026-09-21, to formal RUN 3 of that same family: the frozen MCBR V4 view execution repair on the
+# fresh final split of configs/eval/partitions_i4_mcbr_v4.yaml (configs/eval/i4_v4_unity_final.yaml,
+# docs/audits/MCBR_V4.md). The earlier modules stay as the record of what they measured and their worlds are
+# SPENT: test_i4_unity.py (straight_pipeline, 12 worlds), test_i4_occluded_unity.py (run 1, 20 worlds, FAIL)
+# and test_i4_occluded_unity_rep2.py (run 2, 60 worlds, FAIL). Run 3 is reported BESIDE them, never instead
+# of them, and their recorded evidence is preserved as evidence_formal_v3_runs_1_2.json.
+T4_RUN1 = "tests/unity_live/test_i4_occluded_unity.py::"
+T4 = "tests/unity_live/test_i4_v4_unity_final.py::"
 T5 = "tests/unity_live/test_i5_unity.py::"
 T6 = "tests/unity_live/test_i6_unity.py::"
 T7 = "tests/unity_live/test_i7_unity.py::"
@@ -53,7 +59,7 @@ MODULES = {
     "I1": "tests/unity_live/test_i1_unity.py",
     "I2": "tests/unity_live/test_i2_unity.py",
     "I3": "tests/unity_live/test_i3_unity.py",
-    "I4": "tests/unity_live/test_i4_occluded_unity.py",
+    "I4": "tests/unity_live/test_i4_v4_unity_final.py",
     "I5": "tests/unity_live/test_i5_unity.py",
     "I6": "tests/unity_live/test_i6_unity.py",
     "I7": "tests/unity_live/test_i7_unity.py",
@@ -72,6 +78,9 @@ REPLAY = {
         T4 + "test_no_twin_truth_leakage_on_runtime_side",
         T4 + "test_declared_arm_set_is_recorded",
         T4 + "test_results_file_is_written",
+        T4 + "test_run3_is_declared_fresh_and_does_not_touch_the_earlier_runs",
+        T4 + "test_every_arm_is_reported_on_every_metric",
+        T4 + "test_v3_protocol_control_attributes_the_effect",
     ],
     # I5: empty ON PURPOSE. The replay, the leakage scan and the grid check belong to the Unity missions and
     # are listed on the three mission criteria below; attaching them to every criterion would make the six
@@ -149,11 +158,14 @@ PLAN: dict[str, list[tuple[str, list[str], list[str]]]] = {
             ["persistent technical belief"],
         ),
     ],
-    # I4: the 20 held-out worlds of configs/eval/partitions_i4_occluded.yaml final_test x the DECLARED REDUCED
-    # arm set {PRODUCTION, fixed, random, coverage}, sequential Unity flights on the world family
-    # ACTIVE_INSPECTION_OCCLUDED_V1; paired bootstrap over worlds, "beats" = CI95 lower bound > 0. Worlds,
-    # arms, budgets, the reduction and the decision rule are declared in configs/eval/i4_occluded_unity.yaml
-    # before any flight. The OOD split is flown separately and is NOT part of the pass decision.
+    # I4, FORMAL RUN 3 (2026-09-21): the first 30 held-out worlds of configs/eval/partitions_i4_mcbr_v4.yaml
+    # final_test (8002200-8002229; 8002230-8002259 stay UNREAD) x the DECLARED arm set {PRODUCTION, fixed,
+    # random, coverage} plus the V3_PROTOCOL_CONTROL arm, which decides no criterion and attributes the
+    # effect. Sequential Unity flights on the world family ACTIVE_INSPECTION_OCCLUDED_V1; paired bootstrap
+    # over worlds, "beats" = CI95 lower bound > 0, identical rule, resample count and seed to runs 1 and 2.
+    # Worlds, arms, budgets, the size, the power argument and the decision rule are declared in
+    # configs/eval/i4_v4_unity_final.yaml before any flight. The OOD split is flown only if the final passes,
+    # is reported separately and is NOT part of the pass decision.
     "I4": [
         (
             "critical structure partly hidden -> uncertain -> MCBR view -> navigation -> new evidence -> belief improves",
@@ -344,16 +356,25 @@ def record(gate: str, rerun: bool = True) -> GateEvidence:
     if gate == "I4":
         arms = data["criteria"].get("arm set", {})
         note += (
-            "; world family ACTIVE_INSPECTION_OCCLUDED_V1 (docs/audits/I4_WORLD_FAMILY.md), declared with its "
-            "splits, metrics and decision rule before any world of the family was built; worlds, arms, budgets "
-            "and the reduction declared before any flight in configs/eval/i4_occluded_unity.yaml; per-world "
-            "results in artifacts/gates/I4/unity_i4_occluded_results.json; "
-            f"arm_set={json.dumps({k: arms.get(k) for k in ('name', 'reduced', 'arms', 'dropped_arms', 'flights')}, sort_keys=True)}"
+            "; FORMAL RUN 3, the frozen MCBR V4 view execution repair (docs/audits/MCBR_V4.md, mechanism "
+            "frozen in configs/active/mcbr_frozen_v4.yaml, designed on the development split and selected on "
+            "the validation split of configs/eval/partitions_i4_mcbr_v4.yaml under a rule declared before "
+            "that split was read); world family ACTIVE_INSPECTION_OCCLUDED_V1 "
+            "(docs/audits/I4_WORLD_FAMILY.md), declared with its splits, metrics and decision rule before any "
+            "world of the family was built; worlds, arms, budgets, the size and the power argument declared "
+            "before any flight in configs/eval/i4_v4_unity_final.yaml; per-world results in "
+            "artifacts/gates/I4/unity_i4_v4_final_results.json; "
+            f"arm_set={json.dumps({k: arms.get(k) for k in ('name', 'reduced', 'arms', 'gate_arms', 'control_arms', 'dropped_arms', 'flights')}, sort_keys=True)}"
             "; the dropped arms are SELECTION evidence from the validation split "
-            "(artifacts/experiments/ACTIVE-MCBR-E005-SEL), never gate comparators; the OOD split 8000300-8000311 "
-            "is flown separately and is NOT part of this pass decision; this run SUPERSEDES the straight_pipeline "
-            "formal I4 run of 2026-09-19/20, whose family did not exercise the ch25 premise and whose 12 worlds "
-            "are spent"
+            "(artifacts/experiments/ACTIVE-MCBR-E005-SEL), never gate comparators; V3_PROTOCOL_CONTROL "
+            "decides no criterion and is flown to attribute the effect to the repair; the ood_test split "
+            "8002300-8002319 is flown only if this run passes, is reported separately and is NOT part of this "
+            "pass decision; DECLARED LIMITATION: the three baseline arms fly the incumbent execution "
+            "protocol, so this run decides whether the production stack beats a coverage sweep, not whether "
+            "MCBR's ranking alone does; RUN 1 (20 worlds, configs/eval/i4_occluded_unity.yaml) and RUN 2 (60 "
+            "worlds, configs/eval/i4_occluded_unity_rep2.yaml) both recorded gate I4 = FAIL on the V3 "
+            "mechanism, their worlds are SPENT, they are neither re-flown nor re-scored, and their evidence "
+            "is preserved at artifacts/gates/I4/evidence_formal_v3_runs_1_2.json"
         )
     if gate == "I5":
         note += (
@@ -386,9 +407,14 @@ def record(gate: str, rerun: bool = True) -> GateEvidence:
             f"artifacts/unity/gate_runs/{gate}",
             *(
                 (
-                    "artifacts/gates/I4/unity_i4_occluded_results.json",
-                    "configs/eval/i4_occluded_unity.yaml",
+                    "artifacts/gates/I4/unity_i4_v4_final_results.json",
+                    "configs/eval/i4_v4_unity_final.yaml",
+                    "configs/active/mcbr_frozen_v4.yaml",
+                    "docs/audits/MCBR_V4.md",
                     "docs/audits/I4_WORLD_FAMILY.md",
+                    "artifacts/gates/I4/evidence_formal_v3_runs_1_2.json",
+                    "artifacts/gates/I4/unity_i4_occluded_results.json",
+                    "artifacts/gates/I4/unity_i4_occluded_rep2_results.json",
                 )
                 if gate == "I4"
                 else ()
