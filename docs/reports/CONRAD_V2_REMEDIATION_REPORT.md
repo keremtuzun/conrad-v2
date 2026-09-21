@@ -19,9 +19,22 @@ contract test now checks the ledger rather than leaving it as prose.
 
 ## C. Legacy independence
 
-The previous evidence (clean clone, legacy repository renamed away, full suite green) stands for the code as
-it was at `28871b4`. It was not re-executed under the system Python at the end of this pass.
-**This is an open item, not a claim.**
+**Re-executed on 2026-09-21 at the end of this pass: PASS** (`artifacts/migration/legacy_independence_2026-09-21.json`).
+The legacy repository was renamed away, Conrad V2 was clean-cloned into a temporary directory with no caches
+and no virtualenv, and every step ran with the legacy repo unreachable:
+
+| Step | Result |
+|---|---|
+| `uv sync --all-groups --locked` | OK, 41.0 s |
+| `ruff format --check` | OK, 709 files |
+| `ruff check` | OK |
+| `mypy conrad tests` | OK, 0 issues in 621 source files |
+| tests (quick profile) | 162 passed |
+| `conrad db migrate`, `conrad doctor` | OK |
+| simulation smoke, replay smoke, core training smoke | OK; replay REPRODUCED |
+
+The rename is restored in a `finally` block. Verified afterwards: the legacy repository is at HEAD `6bf01ee`
+with 0 modified files, exactly as it was before this pass began.
 
 ## D. Requirements coverage
 
