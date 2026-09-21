@@ -107,7 +107,9 @@ and the iteration-4 doc sections. It was held back only because Model2T was edit
 | 6700000-6700059 | 2T FINAL-4 | declared, check whether it was consumed |
 | 7300001-7300006 | old I2 NAV | CONTAMINATED |
 | 7400001-7400006 | NAV final | used by the current I2 evidence |
-| 7600000-7600009, 7900000-7900009 | I5 finals | SPENT |
+| 7600000-7600009, 7900000-7900009, 7700000-7700009 | I5 surrogate finals v1/v2/v3 (M1-ACTION-E002/E003/E004) | SPENT |
+| 7710000, 7710001 | formal Unity I5 (`configs/eval/partitions_i5_unity.yaml`) | SPENT (flown by an accidental player launch, no result read). 7710002-7710009 UNFLOWN; 7710100-7710109 is its development split |
+| 7720000-7720009 | I5 surrogate final v4 (`configs/eval/partitions_i5_v4.yaml`, M1-ACTION-E005) | declared 2026-09-21, run once |
 | 7800000, 7800001 | I1, I3 | current evidence |
 | 7800002-7800013 | I4 | SPENT (the failed formal run) |
 | 7800014-7800016 | I6 surrogate | used |

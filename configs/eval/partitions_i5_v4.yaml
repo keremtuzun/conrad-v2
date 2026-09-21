@@ -1,0 +1,48 @@
+# Immutable I5 integrated-mission seed partition, version 4 (gate I5, M1-ACTION-E005). SYNTHETIC_ONLY.
+# Created 2026-09-21. DO NOT EDIT: conrad.evaluation.partitions pins the digest of this file's canonical content
+# (I5_V4_PARTITIONS_SHA256) and refuses to load a changed copy. A new split needs a new version.
+#
+# Why a new version: every earlier I5 final split is SPENT. 7600000-7600009 (M1-ACTION-E002, partitions_i5.yaml),
+# 7900000-7900009 (M1-ACTION-E003, partitions_i5_v2.yaml) and 7700000-7700009 (M1-ACTION-E004,
+# partitions_i5_v3.yaml) all had their per-scenario results read and written into
+# docs/audits/I5_ACTION_MATRIX.md. A fresh final split is also needed on its own merits: M1-ACTION-E004 ran
+# BEFORE commit 9280b5b (MCBR V4), which turned the frozen view execution protocol on for the PRODUCTION
+# planner, so the E004 numbers no longer describe the code on disk. The I5 iteration-4 measurements were made
+# on the v1/v2/v3 development seeds only, which this file keeps as its development split (shared on purpose,
+# never a final seed).
+#
+# final_test 7720000-7720009 was declared before any run used it. Before it was chosen, configs/, conrad/,
+# scripts/, tests/, docs/ and artifacts/ were searched for every 5/6/7/8-million seed literal. The three-digit
+# prefixes in use are 500, 510, 520, 530, 534, 540, 550, 560, 609, 610, 620, 630, 640, 650, 660, 670, 690, 700,
+# 707, 710, 730, 740, 741, 750, 760, 770, 771, 780, 781, 782, 790 and 800; nothing anywhere used 772xxxx, and no
+# reserved_elsewhere range of any partition file covers it.
+# Checked on load: disjoint from every seed of partitions.yaml, partitions_nav.yaml, partitions_i5.yaml,
+# partitions_i5_v2.yaml, partitions_i5_v3.yaml, partitions_i5_unity.yaml and partitions_unity_gates.yaml, and
+# from the ranges under reserved_elsewhere; development may equal the v1/v2/v3 development split and nothing else.
+version: partitions-i5-missions-2026-09-21-v4
+scenarios: [I5-NOMINAL, I5-NOMINAL-READABLE, I5-CRITICAL-FINDING, I5-UNCERTAIN-BELIEF, I5-ROUTE-BLOCKED,
+            I5-BATTERY-RESERVE, I5-TIME-RESERVE, I5-COMMS-OUTAGE]
+world_seeds:
+  development: {explicit: [], range: [7500000, 7500010]}
+  final_test: {explicit: [], range: [7720000, 7720010]}
+reserved_elsewhere:
+  - {range: [5300000, 5300060], owner: partitions.yaml mission final_test (SPENT)}
+  - {range: [5500000, 5500005], owner: partitions_i7_v2.yaml (SPENT)}
+  - {range: [5600000, 5600005], owner: partitions_i7_v3.yaml (SPENT)}
+  - {range: [6300000, 6300012], owner: 2E-E00x-R2 final}
+  - {range: [6400000, 6400020], owner: 2E-E00x-R3 final}
+  - {range: [6500000, 6500060], owner: 2T-E00x-R3 final (FINAL-3, SPENT)}
+  - {range: [6600000, 6600020], owner: 2E-E00x-R4 final}
+  - {range: [6700000, 6700060], owner: 2T-E00x-R4 final (FINAL-4)}
+  - {range: [6900000, 7000001], owner: reserved for another workstream}
+  - {range: [7100000, 7100010], owner: M1-ACTION-E001 development}
+  - {range: [7300000, 7300010], owner: M1-ACTION-E001 final; former I2 NAV final}
+  - {range: [7400001, 7410021], owner: partitions_nav.yaml noise seeds}
+  - {range: [7600000, 7600010], owner: M1-ACTION-E002 final (partitions_i5.yaml v1, SPENT)}
+  - {range: [7700000, 7700010], owner: M1-ACTION-E004 final (partitions_i5_v3.yaml, SPENT)}
+  - {range: [7710000, 7710110], owner: partitions_i5_unity.yaml (formal Unity I5 worlds)}
+  - {range: [7800000, 7810020], owner: partitions_unity_gates.yaml (formal Unity gates)}
+  - {range: [7900000, 7900010], owner: M1-ACTION-E003 final (partitions_i5_v2.yaml, SPENT)}
+  - {range: [8000000, 8000313], owner: partitions_i4_occluded.yaml (gate I4 occluded family)}
+  - {range: [8001000, 8001060], owner: gate I4 formal run 2 (SPENT)}
+  - {range: [8002000, 8002320], owner: partitions_i4_mcbr_v4.yaml (MCBR V4)}

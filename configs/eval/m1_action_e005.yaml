@@ -1,0 +1,60 @@
+# M1-ACTION-E005: gate I5 actions inside integrated missions, iteration 4 (python-kernel SURROGATE; SYNTHETIC_ONLY).
+# Same harness as M1-ACTION-E002/E003/E004 (conrad.evaluation.decision_experiments.m1_action_integrated).
+# Frozen before the final run. See docs/audits/I5_ACTION_MATRIX.md, "Iteration 4".
+#
+# WHY A NEW FINAL RUN. M1-ACTION-E004 ran on 2026-09-20, BEFORE commit 9280b5b (MCBR V4). That commit repaired
+# a routing defect and, through conrad.orchestration.mission_config.runtime_config, made the FROZEN V4 view
+# execution protocol the default for the PRODUCTION planner. Every I5 scenario therefore now runs with
+# view_execution.enabled=true, protect_active_view=true, belief_map_navigation=true, refund_abandoned_attempt=true
+# and drop_abandoned_prior_view=true. That is the same routing surface the blocked-route scenario exercises, so
+# the E004 numbers no longer describe the code on disk and are not re-used. NOTHING in conrad/decision was
+# changed by this iteration: the action-matrix evidence M1-ACTION-E001 still describes the shipped decision code
+# and is not re-run.
+#
+# Seeds: configs/eval/partitions_i5_v4.yaml (digest-pinned, domain i5_mission_v4), final_test 7720000-7720009,
+# declared before any run touched it. The v1/v2/v3 final splits 7600000-7600009, 7900000-7900009 and
+# 7700000-7700009 are SPENT. Development 7500000-7500009 (shared with v1/v2/v3) were the only I5 seeds read
+# while measuring iteration 4.
+#
+# Success floor, UIR bound, contact clearance, latency budgets, arms and baselines are UNCHANGED from E004.
+# They are ENGINEERING_ESTIMATE values: ch25/ch26 leave the I5 bounds OPEN. THE NOMINAL LATENCY BUDGET IS NOT
+# RELAXED AGAIN: it stays at the 20 s that iteration 3 declared for the two nominal (continue) scenarios, with
+# 4 s everywhere else.
+#
+# ONE SCORING CHANGE, declared here BEFORE the final run, decided on development seeds only, and STRICTER than
+# E004's rule:
+#
+#   I5-NOMINAL LOSES ITS "NOT APPLICABLE" EXEMPTION. Iteration 3 exempted it from the continue criterion on the
+#   measured claim that its warrant "cannot arise by construction" (Model2T surface coverage saturated at
+#   0.58-0.79, below the 0.8 a component-level condition needs, and 2.5x the mission time added zero new cells).
+#   That claim is FALSE at HEAD. Re-measured on the same ten development seeds with the V4 protocol on: the
+#   critical condition becomes OBSERVED on 2 of 10 seeds, and the declared warrant (OBSERVED INTACT with nothing
+#   pending) arises on 1 of 10 (seed 7500001, onset 112.0 s of a 120 s mission). One counterexample disproves
+#   "cannot", so the exemption is withdrawn and the scenario is scored like every other one. This makes the
+#   criterion harder to pass, not easier. The audit reports the verdict under BOTH rules so the change is
+#   auditable.
+experiment_id: M1-ACTION-E005
+hypothesis: >-
+  Inside full integrated missions on the code that ships at HEAD (MCBR V4 view execution protocol on), EGDC
+  issues the warranted action class (continue, request evidence, replan, return, escalate / operator alert,
+  store-and-forward) within the latency budget, with zero hard-constraint violations, no over-escalation in the
+  nominal missions, traceable decisions with UIR 0, and mission outcomes no worse than a rule/FSM baseline and
+  the naive act-on-claims baseline on the same seeds.
+partition: final_test
+partition_domain: i5_mission_v4
+seeds: [7720000, 7720001, 7720002, 7720003, 7720004, 7720005, 7720006, 7720007, 7720008, 7720009]
+scenarios: [I5-NOMINAL, I5-NOMINAL-READABLE, I5-CRITICAL-FINDING, I5-UNCERTAIN-BELIEF, I5-ROUTE-BLOCKED,
+            I5-BATTERY-RESERVE, I5-TIME-RESERVE, I5-COMMS-OUTAGE]
+arms: [egdc_structured, rule_fsm, naive_act_on_claims]
+baselines: [rule_fsm, naive_act_on_claims]
+# seconds from warrant onset to the first expected action; decisions run every 2 s, so 4 s = two cycles.
+# The two nominal (continue) scenarios keep the 20 s declared in iteration 3. NOT relaxed again.
+latency_budget_s: {default: 4.0, I5-NOMINAL: 20.0, I5-NOMINAL-READABLE: 20.0}
+success_floor: 0.9
+uir_max: 0.0
+contact_clearance_m: 0.3
+primary_metric: verdicts.per_scenario_correct_rate
+direction: higher
+workers: 6  # 8+ contends with the other workstreams sharing this host
+keep_bundles: false
+limitations: [synthetic data only, python L1 kernel (not Unity), SURROGATE evidence for gate I5]

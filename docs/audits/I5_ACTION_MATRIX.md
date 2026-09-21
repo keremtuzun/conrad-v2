@@ -855,3 +855,207 @@ scene and the replay of an I5 bundle are all untested. Expect to debug them on t
 - What is left is not in Model 1. The two remaining failures are a Model2S detection (the replan warrant on one
   seed), an E001 precedence (report before detour), and a Model2T coverage limit (the nominal condition that
   cannot close, and the one readable-nominal and two finding missions where the component was never read).
+
+## Iteration 4 (M1-ACTION-E005, 2026-09-21)
+
+Iteration 3 ended with the actions criterion FAIL on two counts: `I5-ROUTE-BLOCKED` at 8/10 and 43
+over-escalations in the nominal missions. **Neither number survives contact with the current HEAD.** Between
+E004 and this iteration, commit `9280b5b` (MCBR V4, `docs/audits/MCBR_V4.md`) repaired a routing defect and,
+through `conrad.orchestration.mission_config.runtime_config`, made the FROZEN V4 view execution protocol the
+default for the `PRODUCTION` planner. Every I5 scenario now runs with `view_execution.enabled=true`,
+`protect_active_view=true`, `belief_map_navigation=true`, `refund_abandoned_attempt=true` and
+`drop_abandoned_prior_view=true`. That is the same routing surface `I5-ROUTE-BLOCKED` exercises, so the E004
+numbers no longer describe the code on disk. This iteration re-measured instead of trusting them.
+
+Scope check first: between `cbfb68b` (iteration 3) and HEAD, the only commits touching any I5 surface are
+`9280b5b` (MCBR V4: `conrad/orchestration/*`) and `3d2e6c2` (I7: `comms.py`, `mission_config.py` and the two
+I7 scenarios, all inert here because `outage_follows_critical_finding` defaults to False). **`conrad/decision/*`
+and `conrad/domains/technical/*` are untouched.** The stored M1-ACTION-E001 final artifact therefore still
+describes the shipped decision code, and it was NOT re-run: the rule is that it is re-run once on its final
+split only if decision code changed, and none did.
+
+### 1. The recomputed defect list (development seeds 7500000-7500009, EGDC arm, 80 missions, HEAD)
+
+| scenario | warrant reached | correct | latency mean / max (s) | ESCALATE | over-escalations | violations | task success |
+|---|---|---|---|---|---|---|---|
+| I5-NOMINAL | 1/10 | 0/10 | - | 0 | 0 | 0 | 2/10 |
+| I5-NOMINAL-READABLE | 10/10 | 9/10 | 6.0 / 20.0 | 4 | 4 | 0 | 9/10 |
+| I5-CRITICAL-FINDING | 9/10 | 9/10 | 0.0 / 0.0 | 6 | 0 | 0 | 9/10 |
+| I5-UNCERTAIN-BELIEF | 10/10 | 10/10 | 0.0 / 0.0 | 24 | 0 | 0 | 10/10 |
+| I5-ROUTE-BLOCKED | 10/10 | 9/10 | 0.8 / 8.0 | 32 | 0 | 0 | 8/10 |
+| I5-BATTERY-RESERVE | 10/10 | 10/10 | 0.0 / 0.0 | 0 | 0 | 0 | 10/10 |
+| I5-TIME-RESERVE | 10/10 | 10/10 | 0.0 / 0.0 | 0 | 0 | 0 | 10/10 |
+| I5-COMMS-OUTAGE | 9/10 | 9/10 | 0.0 / 0.0 | 8 | 0 | 0 | 9/10 |
+| all | 69/80 | 66/80 | 0.6 / 20.0 | 74 | 4 | 0 | 67/80 |
+
+Correct given warrant 0.957 (66/69). Hard-constraint violations 0. Traceable decisions 3910/3910. UIR 0.0 over
+673 relied world claims.
+
+What that means against the historical list:
+
+1. **The route-blocked defect is GONE, and MCBR V4 is why.** E004 measured 8/10 with an 18 s latency miss and
+   two missions clearing the box by 0.30 m and 0.24 m. At HEAD the replan warrant arises in 10/10, REPLAN is
+   executed in 10/10 (`replan_holds` 0 in every mission), latency is 0 s on nine seeds, and obstacle clearance
+   rises to 0.49-1.53 m on eight of ten. The two that still fail the 0.3 m task rule clear by 0.233 m
+   (7500001) and 0.265 m (7500008). The ACTION rate is 9/10, which meets the 0.9 floor; the single miss is
+   seed 7500008, where the warrant arose at 16 s and EGDC transmitted a pending critical finding first,
+   replanning at 24 s (8 s, over the 4 s budget). That precedence is the E001 design reading and was not
+   changed to make this pass.
+2. **Nominal over-escalation fell from 43 to 4**, and the 35 that used to come from `I5-NOMINAL` are now 0.
+   V4's `refund_abandoned_attempt` is the mechanism: a view that was accepted and never flown no longer spends
+   the need's planning budget, so the budget stops running out and the dead-end ESCALATE trigger stops firing.
+3. **The nominal continue warrant is no longer confined to the readable scenario** (section 4).
+4. All four remaining correctness misses are missing warrants, not wrong actions: `I5-CRITICAL-FINDING` and
+   `I5-COMMS-OUTAGE` on seed 7500007 (the defect was never observed) and `I5-NOMINAL` on eight seeds.
+
+So exactly ONE thing still fails the declared rule on development: the 4 over-escalations, all in one mission.
+
+### 2. The 4 remaining over-escalations are a correct escalation on a measured dead end
+
+All four are in `I5-NOMINAL-READABLE` seed 7500009, at 50, 52, 54 and 56 s. The trace says what happened.
+
+From 22 s the critical component is OBSERVED INTACT, and from 46 s there is nothing pending, so the warrant
+holds. The requirement nevertheless stays open for the whole mission, for two measured reasons, both
+belief-side:
+
+- `UNCALIBRATED_SOURCE` with the 0.45 epistemic floor and `calibration_only_epistemic=True`. It cannot close,
+  because `_confirmed_after_request` needs the belief to reach a revision NEWER than the one an executed
+  information request saw, and the evidence-backed belief's revision is frozen at 32 from about 40 s on.
+- `CROSS_DOMAIN_DISAGREEMENT`: the Model2S context belief for that component reports coverage below
+  `min_spatial_coverage` while 2T is confident. That is a blocking issue, so `satisfied` is False whatever the
+  condition says, and CONTINUE cannot be chosen.
+
+The revision froze because the runtime could not act, and the ledger says so exactly:
+
+| measurement (seed 7500009) | value |
+|---|---|
+| MCBR plans adopted | 4, **all empty**: `status=NEED_SATISFIED`, 0 candidates, 0 feasible, no rejection reasons |
+| views accepted (`view_attempts`) | 0 |
+| view outcomes | none |
+| REVISIT goals commanded | 3, **all refused** by the navigation stack (`PlanningError: goal lies in space the active policy forbids`) |
+| plan attempts on the open need | 4 of 4 (`max_plans_per_need`) |
+
+No observation was available to take. With an open critical item, information attempts used up and no
+autonomous path left, ESCALATE_TO_OPERATOR is the trigger ch17 L7968-7979 intends. The harness counts it as
+over-escalation only because the mission is nominal. **This is not a Model 1 defect**, and the remaining
+failure of the actions criterion on development is a label, not a wrong action.
+
+### 3. A fix was written, measured, and REJECTED
+
+The tempting reading was that this is the same defect iteration 2 fixed twice: a decision the runtime never
+carried out should not count as an attempt (`Deliberation.mark_not_executed`). `DecisionRouting` has four early
+returns that do NOT mark: `PLAN_ATTEMPTS_EXHAUSTED`, `VIEW_ATTEMPTS_EXHAUSTED` (both V4), the empty-plan path,
+and a refused view or REVISIT goal. Two versions were implemented in `conrad/orchestration/routing.py` and
+measured on the failing mission:
+
+| version | over-escalations (seed 7500009) | what the robot did instead |
+|---|---|---|
+| HEAD, unchanged | **4** | 3 REVISIT goals commanded (all refused), then QUERY_BELIEF |
+| mark the empty-plan and refused-goal paths | **8** (worse) | the plan budget is spent by 42 s instead of 68 s, so `PLAN_ATTEMPTS_EXHAUSTED` then counts the attempts and the dead end arrives earlier and lasts longer; 21 REVISIT goals commanded, all refused |
+| mark all four paths | **0** | REQUEST_INFORMATION in 58 of 60 decisions, 38 of 38 post-onset decisions deferred, 0 executed: a livelock. CONTINUE still never issued |
+
+The third version scores better and behaves worse: it removes the escalation by removing the robot's only way
+of noticing it is stuck, and replaces it with an unbounded loop of requests that nothing can answer. That is a
+manufactured pass, so **both versions were reverted and `conrad/orchestration/routing.py` is unchanged from
+HEAD.** The negative result is recorded here because it is the substantive finding: the attempt counter is
+carrying a signal ("the runtime has no way to serve this need") that it was never designed to carry, and the
+principled repair is to give Model 1 that fact explicitly rather than through an attempt count. That is a new
+mechanism in the decision plane, it would move the ESCALATE semantics that M1-ACTION-E001 pins, and it is left
+OPEN rather than rushed into a gate iteration.
+
+### 4. The I5-NOMINAL NOT APPLICABLE exemption is WITHDRAWN
+
+Iteration 3 exempted `I5-NOMINAL` from the continue criterion on the measured claim that its warrant "cannot
+arise by construction, whatever Model 1 does": Model2T surface coverage saturated at 45/72, 57/72 and 42/72
+cells against the 0.8 a component-level condition needs, and 2.5 times the mission time added exactly zero new
+cells. **That claim is false at HEAD.** Re-measured on the same ten development seeds with the V4 protocol on:
+
+| measurement | iteration 3 (pre-V4, 3 seeds) | HEAD (10 seeds) |
+|---|---|---|
+| missions reaching an OBSERVED critical condition | 0 | **2 of 10** (7500001 from 102 s, 7500004 from 72 s) |
+| missions reaching the declared warrant (OBSERVED INTACT, nothing pending) | 0 | **1 of 10** (7500001, onset 112.0 s of a 120 s mission) |
+| over-escalations | 35 in 10 final missions | 0 in 10 development missions |
+
+On seed 7500001 EGDC then chose REQUEST_INFORMATION(CONFIRM_CONDITION), the E001 confirming look at an
+uncalibrated critical source, for all five remaining decisions, and the mission ended. One counterexample
+disproves "cannot", so the exemption goes: `ScenarioSpec.warrant_by_construction` is True for every scenario
+again and `I5-NOMINAL` is scored like the rest. **This makes the criterion strictly harder to pass**, it was
+decided on development seeds only, and it is declared in `configs/eval/m1_action_e005.yaml` before the run that
+uses it. The iteration-3 measurement is kept in `not_applicable_reason` as the record of why the exemption
+existed, and `tests/unit/decision/test_i5_integrated_harness.py::test_the_i5_nominal_exemption_is_withdrawn_at_head`
+pins the withdrawal.
+
+Both verdicts on the development numbers, so the change is auditable:
+
+- under iteration 3's rule (I5-NOMINAL exempt): every scored scenario is at or above the 0.9 floor, so the
+  criterion fails on the 4 over-escalations alone.
+- under iteration 4's rule (I5-NOMINAL scored): it fails on those 4 AND on `I5-NOMINAL` at 0/10.
+
+### 5. Seeds
+
+`configs/eval/partitions_i5_v4.yaml` (version `partitions-i5-missions-2026-09-21-v4`, digest-pinned in
+`conrad.evaluation.partitions` as `I5_V4_PARTITIONS_SHA256` = `73454d92...a56c77`, domain `i5_mission_v4`).
+Development 7500000-7500009 (the v1/v2/v3 development split, shared on purpose); final test **7720000-7720009**,
+declared before any run touched it. All three earlier final splits are SPENT: 7600000-7600009 (E002),
+7900000-7900009 (E003) and 7700000-7700009 (E004).
+
+Collision check before the declaration: `configs/`, `conrad/`, `scripts/`, `tests/`, `docs/` and `artifacts/`
+were searched for every 5/6/7/8-million seed literal. The three-digit prefixes in use are 500, 510, 520, 530,
+534, 540, 550, 560, 609, 610, 620, 630, 640, 650, 660, 670, 690, 700, 707, 710, 730, 740, 741, 750, 760, 770,
+771, 780, 781, 782, 790 and 800. Nothing anywhere uses 772xxxx. Every range in the "Spent and contaminated
+seeds" table of `docs/development/HANDOFF.md` was checked against it. The loader re-checks disjointness from
+`partitions.yaml`, `partitions_nav.yaml`, `partitions_i5.yaml`, `partitions_i5_v2.yaml`, `partitions_i5_v3.yaml`,
+`partitions_i5_unity.yaml` and `partitions_unity_gates.yaml` on every load, and
+`test_i5_v4_final_is_fresh_and_guarded` proves eight specific collisions are refused.
+
+The formal Unity worlds are unchanged: `configs/eval/partitions_i5_unity.yaml` is already digest-pinned, and
+its declared worlds 7710002 and 7710003 have never been flown. Only 7710000 and 7710001 are spent, by the
+accidental player launch iteration 3 recorded.
+
+### 6. The formal Unity harness is now verified as far as it can be without a player
+
+`scripts/check_i5_unity_harness.py` (new, modelled on the existing `check_i7_unity_harness.py`) has three modes,
+and only the last can start a player:
+
+- `--wiring` reports `ok: true`. All 7 declared scenarios are registered in `UNITY_SCENARIOS` and resolve to a
+  concrete Unity runtime; `I5-BATTERY-RESERVE` is the only omission and it is named with its reason; the
+  declared worlds 7710002 and 7710003 are inside the pinned held-out split and are not the two given up; all
+  four thresholds are equal to the surrogate config's; the recorder plan equals
+  `conrad.evaluation.gates.GATE_BY_ID["I5"].criteria` exactly and `REPLAY["I5"]` is empty on purpose; the
+  stored M1-ACTION-E001 final artifact still reads recall 1.00 in all eight classes with 0 hard-constraint
+  violations.
+- `--kernel` runs the Unity module's OWN flight loop, scoring and verdicts on the python kernel over
+  development seeds, so `drive_and_score` to `summarize` to `verdicts` is exercised end to end without a
+  player. Measured on development seed 7500000, 3 scenarios by 3 arms, 9 sequential flights, 787 s: all three
+  scenarios 1.0, 0 over-escalations, 0 violations, traceable 1.0, UIR 0.0, and all three mission criteria
+  computed (`actions_exercised_correctly`, `traceable_low_uir`, `competitive_outcomes` all True, with
+  `scenarios_not_applicable` empty, which is the withdrawn exemption taking effect). The artifact is
+  `artifacts/experiments/I5-UNITY-HARNESS-CHECK/kernel.json`, outside `artifacts/gates/`, and is a harness
+  check, never gate evidence.
+- `--unity` refuses any world outside the development range 7710100-7710109, so a debug run cannot touch a
+  final world.
+
+**The formal Unity I5 run has still NOT been executed**, and neither has the development debug flight. The
+player belongs to another workstream and permission to launch it was not given in this iteration. The scoring
+of a full grid, the lane obstacle inside the converted Unity scene and the replay of an I5 bundle therefore
+remain untested, exactly as iteration 3 left them.
+
+### 7. Limitations (iteration 4)
+
+- The defect list is measured on the DEVELOPMENT split only. `M1-ACTION-E005` is the declared final run on the
+  fresh split; its results are recorded below when it completes.
+- `conrad/orchestration/routing.py` and `conrad/decision/*` are unchanged, so this iteration ships no behaviour
+  change: it is a re-measurement, a withdrawn exemption, a fresh split and a verified harness.
+- The 0.9 floor, the 20 s nominal latency budget, the 0.3 m contact clearance and
+  `operator_value_autonomous_factor = 0` are still ENGINEERING_ESTIMATE values. The nominal budget was NOT
+  relaxed again.
+- Safety events are higher than E004 reported (66 in 80 EGDC development missions against 13 in 80 final
+  missions), but the two are not comparable: E004's number is a final split with three arms and this one is a
+  development split with one. They concentrate in the retreat scenarios, where entering a safe hold is the
+  point (battery 16, time 6), and in one route-blocked mission (seed 7500008, 18 events, clearance 0.265 m).
+  Whether that is a V4 regression is not established here and is left OPEN.
+- The development grid ran the EGDC arm only, so the two baselines and the "competitive mission outcomes"
+  comparison are not re-measured here. E005 carries all three arms.
+- What is left is still not in Model 1: an MCBR candidate-supply failure (`NEED_SATISFIED` with zero candidates
+  while a Model 1 requirement is open), a navigation policy that refuses the revisit pose, and a Model2T
+  coverage limit.

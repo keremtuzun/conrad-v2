@@ -21,14 +21,17 @@ from conrad.evaluation.partitions import (
     I5_DOMAIN,
     I5_V2_DOMAIN,
     I5_V3_DOMAIN,
+    I5_V4_DOMAIN,
     Partition,
     PartitionAccessError,
     PartitionIntegrityError,
     Purpose,
     load,
     load_i5,
+    load_i5_unity,
     load_i5_v2,
     load_i5_v3,
+    load_i5_v4,
     load_nav,
     load_unity_gates,
     partition_of,
@@ -37,6 +40,7 @@ from conrad.evaluation.partitions import (
     validate_i5,
     validate_i5_v2,
     validate_i5_v3,
+    validate_i5_v4,
 )
 from conrad.schemas.decision import ActionType
 from conrad.schemas.ids import IdFactory
@@ -102,6 +106,43 @@ def test_i5_v3_final_is_fresh_and_guarded():
         bad = {**raw, "world_seeds": {**raw["world_seeds"], "final_test": {"explicit": [bad_seed]}}}
         with pytest.raises(PartitionIntegrityError, match=r"collide|overlap"):
             validate_i5_v3(bad, *args)
+
+
+def test_i5_v4_final_is_fresh_and_guarded():
+    """M1-ACTION-E005 (I5 iteration 4): a fourth final split, disjoint from all three spent ones."""
+    raw = load_i5_v4()["raw"]
+    final = set(split(I5_V4_DOMAIN, Partition.FINAL_TEST, Purpose.FINAL_EVALUATION).world_seeds)
+    spent = {
+        s
+        for domain in (I5_DOMAIN, I5_V2_DOMAIN, I5_V3_DOMAIN)
+        for s in split(domain, Partition.FINAL_TEST, Purpose.FINAL_EVALUATION).world_seeds
+    }
+    assert final and not final & spent
+    for spent_seed in (7600000, 7900000, 7700000):
+        assert partition_of(I5_V4_DOMAIN, spent_seed) is None
+    assert set(raw["scenarios"]) == set(SPECS)
+    with pytest.raises(PartitionAccessError):
+        split(I5_V4_DOMAIN, Partition.FINAL_TEST, Purpose.DESIGN)
+    args = (
+        load()["raw"],
+        load_nav()["raw"],
+        [load_i5()["raw"], load_i5_v2()["raw"], load_i5_v3()["raw"]],
+        load_i5_unity()["raw"],
+        load_unity_gates()["raw"],
+    )
+    # spent v1/v2/v3 finals, Unity gates, formal Unity I5 worlds, E001 final, I4 family, shared development
+    for bad_seed in (7600003, 7900004, 7700005, 7800005, 7710002, 7300002, 8000201, 7500001):
+        bad = {**raw, "world_seeds": {**raw["world_seeds"], "final_test": {"explicit": [bad_seed]}}}
+        with pytest.raises(PartitionIntegrityError, match=r"collide|overlap"):
+            validate_i5_v4(bad, *args)
+
+
+def test_the_i5_nominal_exemption_is_withdrawn_at_head():
+    """I5 iteration 4: the "warrant cannot arise" exemption is withdrawn, so the scenario is scored."""
+    assert SPECS["I5-NOMINAL"].warrant_by_construction is True
+    assert SPECS["I5-NOMINAL"].check_over_escalation is True
+    assert "WITHDRAWN" in SPECS["I5-NOMINAL"].not_applicable_reason
+    assert all(s.warrant_by_construction for s in SPECS.values())
 
 
 def test_a_scenario_whose_warrant_cannot_arise_is_not_applicable_not_zero():

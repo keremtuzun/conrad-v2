@@ -1,0 +1,189 @@
+{
+ "config": "configs\\eval\\i5_unity.yaml",
+ "module": "tests/unity_live/test_i5_unity.py",
+ "final_worlds": [
+  7710002,
+  7710003
+ ],
+ "worlds_given_up": [
+  7710000,
+  7710001
+ ],
+ "development_worlds": [
+  7710100,
+  7710101,
+  7710102,
+  7710103,
+  7710104,
+  7710105,
+  7710106,
+  7710107,
+  7710108,
+  7710109
+ ],
+ "worlds_are_held_out_final": true,
+ "worlds_are_not_given_up": true,
+ "flights": 42,
+ "scenarios": [
+  "I5-NOMINAL",
+  "I5-NOMINAL-READABLE",
+  "I5-CRITICAL-FINDING",
+  "I5-UNCERTAIN-BELIEF",
+  "I5-ROUTE-BLOCKED",
+  "I5-TIME-RESERVE",
+  "I5-COMMS-OUTAGE"
+ ],
+ "unity_scenarios_missing": [],
+ "omitted_scenarios": [
+  "I5-BATTERY-RESERVE"
+ ],
+ "omissions_declared_with_reason": true,
+ "thresholds_equal_surrogate": {
+  "latency_budget_s": true,
+  "success_floor": true,
+  "uir_max": true,
+  "contact_clearance_m": true
+ },
+ "matrix_artifact": "artifacts\\experiments\\M1-ACTION-E001\\m1_action_e001.json",
+ "matrix_artifact_present": true,
+ "matrix": {
+  "partition": "final_test",
+  "purpose": "final_evaluation",
+  "classes": {
+   "change sensing": 1.0,
+   "continue": 1.0,
+   "escalate": 1.0,
+   "hold": 1.0,
+   "replan": 1.0,
+   "report": 1.0,
+   "request evidence": 1.0,
+   "return": 1.0
+  },
+  "hard_constraint_violations": 0
+ },
+ "recorder_plan": [
+  "continue",
+  "request evidence",
+  "replan",
+  "change sensing",
+  "return",
+  "escalate",
+  "hard constraints inviolable",
+  "actions exercised correctly inside integrated missions",
+  "traceable decisions with low measured UIR",
+  "competitive mission outcomes vs decision baselines"
+ ],
+ "recorder_plan_matches_gates_py": true,
+ "gates_py_criteria": [
+  "continue",
+  "request evidence",
+  "replan",
+  "change sensing",
+  "return",
+  "escalate",
+  "hard constraints inviolable",
+  "actions exercised correctly inside integrated missions",
+  "traceable decisions with low measured UIR",
+  "competitive mission outcomes vs decision baselines"
+ ],
+ "replay_nodes_empty_on_purpose": true,
+ "player": {
+  "player": "ConradSim.exe",
+  "player_exe_sha256": "36c5c9f13481406382a8e9ef8fc0ea7cdf055c43bb12fc8fd545b07c199cd277",
+  "build_info": {
+   "unity_version": "6000.5.9f1",
+   "result": "Succeeded",
+   "output": "Builds/Win64/ConradSim.exe",
+   "total_size_bytes": 93422872,
+   "total_errors": 0,
+   "total_warnings": 0,
+   "build_started_utc": "2026-09-20T03:51:10.1367628Z",
+   "build_seconds": 21.1982802
+  }
+ },
+ "resolved": [
+  {
+   "scenario": "I5-NOMINAL",
+   "duration_s": 120.0,
+   "control_period_s": 0.1,
+   "outages_s": [],
+   "time_budget_s": null,
+   "planner": "PRODUCTION",
+   "view_execution_enabled": true,
+   "protect_active_view": true,
+   "belief_map_navigation": true
+  },
+  {
+   "scenario": "I5-NOMINAL-READABLE",
+   "duration_s": 120.0,
+   "control_period_s": 0.1,
+   "outages_s": [],
+   "time_budget_s": null,
+   "planner": "PRODUCTION",
+   "view_execution_enabled": true,
+   "protect_active_view": true,
+   "belief_map_navigation": true
+  },
+  {
+   "scenario": "I5-CRITICAL-FINDING",
+   "duration_s": 120.0,
+   "control_period_s": 0.1,
+   "outages_s": [],
+   "time_budget_s": null,
+   "planner": "PRODUCTION",
+   "view_execution_enabled": true,
+   "protect_active_view": true,
+   "belief_map_navigation": true
+  },
+  {
+   "scenario": "I5-UNCERTAIN-BELIEF",
+   "duration_s": 120.0,
+   "control_period_s": 0.1,
+   "outages_s": [],
+   "time_budget_s": null,
+   "planner": "PRODUCTION",
+   "view_execution_enabled": true,
+   "protect_active_view": true,
+   "belief_map_navigation": true
+  },
+  {
+   "scenario": "I5-ROUTE-BLOCKED",
+   "duration_s": 120.0,
+   "control_period_s": 0.1,
+   "outages_s": [],
+   "time_budget_s": null,
+   "planner": "PRODUCTION",
+   "view_execution_enabled": true,
+   "protect_active_view": true,
+   "belief_map_navigation": true
+  },
+  {
+   "scenario": "I5-TIME-RESERVE",
+   "duration_s": 120.0,
+   "control_period_s": 0.1,
+   "outages_s": [],
+   "time_budget_s": 150.0,
+   "planner": "PRODUCTION",
+   "view_execution_enabled": true,
+   "protect_active_view": true,
+   "belief_map_navigation": true
+  },
+  {
+   "scenario": "I5-COMMS-OUTAGE",
+   "duration_s": 120.0,
+   "control_period_s": 0.1,
+   "outages_s": [
+    [
+     6.0,
+     80.0
+    ]
+   ],
+   "time_budget_s": null,
+   "planner": "PRODUCTION",
+   "view_execution_enabled": true,
+   "protect_active_view": true,
+   "belief_map_navigation": true
+  }
+ ],
+ "ok": true
+}

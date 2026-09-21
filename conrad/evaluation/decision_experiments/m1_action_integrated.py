@@ -67,6 +67,7 @@ from conrad.evaluation.partitions import (
     I5_DOMAIN,
     I5_V2_DOMAIN,
     I5_V3_DOMAIN,
+    I5_V4_DOMAIN,
     Partition,
     Purpose,
     check_access,
@@ -93,6 +94,7 @@ PARTITION_FILES = {
     I5_DOMAIN: "configs/eval/partitions_i5.yaml",
     I5_V2_DOMAIN: "configs/eval/partitions_i5_v2.yaml",
     I5_V3_DOMAIN: "configs/eval/partitions_i5_v3.yaml",
+    I5_V4_DOMAIN: "configs/eval/partitions_i5_v4.yaml",
 }
 DEFAULT_CONFIG = "configs/sim/mission_default.yaml"
 EVIDENCE_CLASS = "SURROGATE (python L1 kernel mission, not Unity)"
@@ -131,19 +133,29 @@ SPECS: dict[str, ScenarioSpec] = {
             frozenset(),
             "inspected_without_escalation",
             check_over_escalation=True,
-            warrant_by_construction=False,
+            # I5 iteration 4 (2026-09-21) WITHDRAWS the NOT APPLICABLE exemption iteration 3 gave this
+            # scenario. The exemption's premise was "the continue warrant cannot arise, whatever Model 1
+            # does", proven on development seeds 7500000-7500002 against the code of 2026-09-20. It is FALSE
+            # at HEAD: with the frozen MCBR V4 view execution protocol on (commit 9280b5b), the same ten
+            # development missions reach an OBSERVED critical condition on 2 of 10 seeds and the declared
+            # warrant (OBSERVED INTACT, nothing pending) on 1 of 10 (seed 7500001, onset 112.0 s of a 120 s
+            # mission; EGDC then chose REQUEST_INFORMATION(CONFIRM_CONDITION), the E001 confirming look, for
+            # all five remaining decisions and the mission ended). One counterexample disproves "cannot", so
+            # the scenario is scored like every other one. This makes the criterion STRICTER, and it is
+            # declared here before the run that uses it. The measurement iteration 3 made is kept below as
+            # the record of why the exemption existed, and the audit reports the verdict under both rules.
+            warrant_by_construction=True,
             not_applicable_reason=(
-                "the continue warrant cannot arise in this scenario, whatever Model 1 does. Measured on I5 "
-                "development seeds 7500000-7500002 on the repaired Model2T: this world yields ONE averaged "
+                "WITHDRAWN at HEAD, see the comment above. The iteration-3 measurement was: measured on I5 "
+                "development seeds 7500000-7500002 on the repaired Model2T, this world yields ONE averaged "
                 "reading per view, so a view can anchor only one surface cell and credit its declared "
                 "footprint around it, and the Model2T surface coverage of the critical component saturates "
                 "at 45/72, 57/72 and 42/72 cells (0.63, 0.79, 0.58), below the 0.8 completeness fraction a "
                 "component-level condition needs. Running the same missions for 300 s instead of 120 s adds "
-                "about 150 further readings and exactly zero new cells, so the condition never closes and "
-                "the OBSERVED INTACT onset never occurs. I5-NOMINAL-READABLE, whose surface is read per "
-                "tile, is the scenario that exercises continue (see docs/audits/I5_ACTION_MATRIX.md, "
-                "Iteration 3). This scenario still scores over-escalation, hard constraints, traceability, "
-                "UIR and its mission outcome."
+                "about 150 further readings and exactly zero new cells, so the condition never closed and "
+                "the OBSERVED INTACT onset never occurred. I5-NOMINAL-READABLE, whose surface is read per "
+                "tile, is the scenario that exercises continue most often (see "
+                "docs/audits/I5_ACTION_MATRIX.md, Iteration 3 and Iteration 4)."
             ),
         ),
         ScenarioSpec(
