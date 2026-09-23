@@ -1320,3 +1320,10 @@ classes scored 0.7, so R2 is **DEVELOPMENT FAIL** and no final seed was read. Th
 its hold value only when the existing `_must_retreat` predicate is false. DIAG7 reran the six exact failures:
 battery 3/3 and time 3/3, correct-given-warrant 1.0, violations 0, traceability 1.0 and UIR 0. Full exact-source
 development remains required before freeze.
+
+`M1-ACTION-E008-DEVELOPMENT-R3` is the exact-source full DEVELOPMENT PASS at commit `eaa6144`. Artifact SHA256:
+`F2E360876F3FA41305499C2031A3A2518C3FDF553BF569D3F19B1E47FC247F3F`. All eight scenario classes scored
+1.0 correct-given-warrant; nominal over-escalations 0; hard violations 0; traceability 1.0; UIR 0. EGDC task
+success was 69 versus rule-FSM 67 and naive 17; safety events were 85 versus 159 and 263. The untouched v6
+final seeds `7750000..7750009` are frozen in `M1-ACTION-E008` before first access. This remains DEVELOPMENT
+evidence until that one-shot surrogate final is executed.

@@ -1,0 +1,25 @@
+# M1-ACTION-E008: one-shot I5 integrated-mission surrogate final. SYNTHETIC_ONLY; not formal Unity.
+# Frozen before any v6 final seed was executed or read. Earlier 772/773 final blocks are SPENT.
+experiment_id: M1-ACTION-E008
+hypothesis: >-
+  On the untouched v6 final split, Model 1 preserves calibration freshness into MCBR, represents an accepted
+  same-target acquisition while it is active, terminates finite infeasible acquisition with explicit WAIT only
+  while holding is safe, preserves mandatory reserve retreat, and replans grounded route blockers before report
+  retries. Every warranted I5 action class meets its frozen latency floor with zero nominal escalation/retreat,
+  zero hard violations, complete traceability, UIR 0, and outcomes no worse than either frozen baseline.
+partition: final_test
+partition_domain: i5_mission_v6
+seeds: [7750000, 7750001, 7750002, 7750003, 7750004, 7750005, 7750006, 7750007, 7750008, 7750009]
+scenarios: [I5-NOMINAL, I5-NOMINAL-READABLE, I5-CRITICAL-FINDING, I5-UNCERTAIN-BELIEF, I5-ROUTE-BLOCKED,
+            I5-BATTERY-RESERVE, I5-TIME-RESERVE, I5-COMMS-OUTAGE]
+arms: [egdc_structured, rule_fsm, naive_act_on_claims]
+baselines: [rule_fsm, naive_act_on_claims]
+latency_budget_s: {default: 4.0, I5-NOMINAL: 20.0, I5-NOMINAL-READABLE: 20.0}
+success_floor: 0.9
+uir_max: 0.0
+contact_clearance_m: 0.3
+primary_metric: verdicts.per_scenario_correct_given_warrant_rate
+direction: higher
+workers: 6
+keep_bundles: false
+limitations: [synthetic data only, python L1 kernel (not Unity), SURROGATE evidence for gate I5]
