@@ -187,7 +187,7 @@ PLAN: dict[str, list[tuple[str, list[str], list[str]]]] = {
     ],
     # I5: both halves of the ch25 formal path. The six action-matrix class criteria and "hard constraints
     # inviolable" read the stored M1-ACTION-E001 final artifact (held-out belief fixtures, no world, no
-    # player). The three integrated-mission criteria (ch25 I5 + ch26 Phase 9) fly the eight I5-* scenarios x
+    # player). The three integrated-mission criteria (ch25 I5 + ch26 Phase 9) fly the seven declared I5-* scenarios x
     # 3 arms x the 2 worlds declared in configs/eval/i5_unity.yaml before any run; the replay, the leakage
     # scan and the grid-coverage check are attached to each of them.
     "I5": [
@@ -381,10 +381,12 @@ def record(gate: str, rerun: bool = True) -> GateEvidence:
             "; the action-matrix half is M1-ACTION-E001 on held-out BELIEF FIXTURES (no world, no player), "
             "the integrated-mission half is Unity on the worlds declared before any run in "
             "configs/eval/i5_unity.yaml (reduced sweep: 2 worlds, declared as reduced); per-flight results in "
-            "artifacts/gates/I5/unity_i5_results.json; the success floor, the 4 s latency budget, the UIR "
-            "bound and the contact clearance are ENGINEERING_ESTIMATE values (ch25/ch26 leave the I5 bounds "
-            "OPEN); I5-NOMINAL is declared NOT APPLICABLE to the continue criterion (measured: its warrant "
-            "cannot arise by construction) and is still scored for everything else"
+            "artifacts/gates/I5/unity_i5_results.json; the success floor, the latency budgets (4 s by "
+            "default, 20 s in the two nominal scenarios), the UIR bound and the contact clearance are "
+            "ENGINEERING_ESTIMATE values (ch25/ch26 leave the I5 bounds OPEN); EVERY declared scenario is "
+            "scored, I5-NOMINAL included: its iteration-3 NOT APPLICABLE exemption was WITHDRAWN in "
+            "iteration 4 after the warrant was measured at HEAD, which makes the rule strictly harder to "
+            "pass (docs/audits/I5_ACTION_MATRIX.md, Iteration 4)"
         )
     if gate == "I7":
         sweep = data["criteria"].get("sweep", {})

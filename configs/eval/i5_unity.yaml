@@ -6,38 +6,40 @@
 # belief-level fixtures and needs no world: it is world-independent and already recorded FORMAL. The Unity
 # module re-checks its stored final artifact so that one recorder command writes all ten I5 criteria.
 #
-# Worlds: configs/eval/partitions_i5_unity.yaml final_test (digest-pinned). Fresh worlds are needed because the
+# Worlds: configs/eval/partitions_i5_unity_v2.yaml final_test (digest-pinned). Fresh worlds are needed because the
 # unity_gate final_test split is fully allocated (7800000 I1, 7800001 I3, 7800002-7800013 I4, 7800014-7800016
 # I6, 7800017 flagship, 7800018-7800019 I7) and every python-kernel I5 final split is spent by its surrogate.
 #
-# REDUCED SWEEP, declared as one: the python-kernel surrogate M1-ACTION-E004 runs 8 scenarios x 3 arms x 10
+# REDUCED SWEEP, declared as one: the python-kernel surrogate M1-ACTION-E008 runs 8 scenarios x 3 arms x 10
 # seeds = 240 missions. Unity flights are sequential and cost real time, so the formal run is 7 scenarios x
 # 3 arms x 2 worlds = 42 flights, the same order as the formal I4 run. Fewer worlds means wider intervals, not
 # a weaker rule: the thresholds below are the surrogate's, unchanged.
-experiment_id: I5-UNITY
-# 7710002 and 7710003, NOT the first two of the split. On 2026-09-20 a pytest collection check of
-# tests/unity_live/test_i5_unity.py launched the player by accident and flew three partial I5-NOMINAL missions
-# on 7710000 before it was stopped. No result was read and the bundles were deleted, but a world that has been
-# flown is not held out any more, so 7710000 and 7710001 are given up and the formal run uses two untouched
-# worlds of the same pinned split. See docs/audits/I5_ACTION_MATRIX.md, "Iteration 3".
-final_worlds: [7710002, 7710003]
+experiment_id: I5-UNITY-V2
+partition_domain: i5_unity_v2
+partition_file: configs/eval/partitions_i5_unity_v2.yaml
+# The recovered interrupted v1 run touched 7710002/7710003 and produced partial/readable outcomes. The whole
+# v1 selection is therefore retired. V2 was declared and digest-pinned before either selected world was built;
+# it uses a disjoint block rather than choosing replacements from the old pool after observing v1.
+final_worlds: [7710300, 7710301]
 worlds_given_up:
   7710000: flown by accident (3 partial I5-NOMINAL flights, no result read, bundles deleted)
   7710001: given up with it, so the pair stays contiguous and no partly touched world is reused
+  7710002: spent by the interrupted recovered formal run
+  7710003: spent by the interrupted recovered formal run
 # Seven of the eight surrogate scenarios. I5-BATTERY-RESERVE is left out because it needs a LOW_POWER fault and
 # the Unity mission path realises only FIX_OUTAGE faults (conrad/sim/mission/unity_world.py refuses the rest;
 # Unity-side faults go through run_unity_nav's bridge injection, which the mission path does not use). The
 # "return" action class is exercised on Unity by I5-TIME-RESERVE, which needs no fault, and the battery case
-# keeps its surrogate evidence in M1-ACTION-E004. This is a declared reduction, not a relaxed rule.
+# keeps its surrogate evidence in M1-ACTION-E008. This is a declared reduction, not a relaxed rule.
 scenarios: [I5-NOMINAL, I5-NOMINAL-READABLE, I5-CRITICAL-FINDING, I5-UNCERTAIN-BELIEF, I5-ROUTE-BLOCKED,
             I5-TIME-RESERVE, I5-COMMS-OUTAGE]
 scenarios_not_on_the_unity_path:
   I5-BATTERY-RESERVE: >-
     needs a LOW_POWER fault; the Unity mission path realises only FIX_OUTAGE faults. Its surrogate result
-    stands in M1-ACTION-E004, and I5-TIME-RESERVE carries the "return" class on the formal path.
+    stands in M1-ACTION-E008, and I5-TIME-RESERVE carries the "return" class on the formal path.
 arms: [egdc_structured, rule_fsm, naive_act_on_claims]
 baselines: [rule_fsm, naive_act_on_claims]
-# identical to configs/eval/m1_action_e004.yaml; ENGINEERING_ESTIMATE values, ch25/ch26 leave the I5 bounds
+# identical to configs/eval/m1_action_e008.yaml; ENGINEERING_ESTIMATE values, ch25/ch26 leave the I5 bounds
 # OPEN. The two nominal (continue) scenarios carry the raised 20 s budget declared there: the warranted
 # CONTINUE follows a confirming look, and routing executes no information action while the lane survey runs.
 latency_budget_s: {default: 4.0, I5-NOMINAL: 20.0, I5-NOMINAL-READABLE: 20.0}
@@ -50,8 +52,11 @@ decision_rule: >-
   (conrad.evaluation.decision_experiments.m1_action_integrated.verdicts), computed over the Unity flights.
   "actions exercised correctly inside integrated missions": every scenario that CAN raise its warrant by
   construction reaches the success floor, zero hard-constraint violations, zero over-escalations in the nominal
-  missions. I5-NOMINAL is declared NOT APPLICABLE to the continue criterion (its warrant cannot arise by
-  construction; see docs/audits/I5_ACTION_MATRIX.md, "Iteration 3") and is still scored for everything else.
+  missions. EVERY declared scenario is scored, I5-NOMINAL included: the iteration-3 NOT APPLICABLE exemption
+  ("its warrant cannot arise by construction") was WITHDRAWN in iteration 4 after the warrant was measured on a
+  development seed at HEAD, so ScenarioSpec.warrant_by_construction is True everywhere and
+  verdicts()["scenarios_not_applicable"] is empty. See docs/audits/I5_ACTION_MATRIX.md, "Iteration 4",
+  section 4. This makes the rule strictly harder to pass than iteration 3's.
   "traceable decisions with low measured UIR": every EGDC decision traceable and UIR <= uir_max.
   "competitive mission outcomes vs decision baselines": EGDC's pooled task success at least each baseline's,
   its safety events at most each baseline's, and no more hard-constraint violations.

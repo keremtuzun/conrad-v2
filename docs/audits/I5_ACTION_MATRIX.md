@@ -1327,3 +1327,26 @@ development remains required before freeze.
 success was 69 versus rule-FSM 67 and naive 17; safety events were 85 versus 159 and 263. The untouched v6
 final seeds `7750000..7750009` are frozen in `M1-ACTION-E008` before first access. This remains DEVELOPMENT
 evidence until that one-shot surrogate final is executed.
+
+### One-shot v6 surrogate final
+
+`M1-ACTION-E008` ran the frozen `7750000..7750009` final split exactly once. The result is **SURROGATE PASS**:
+artifact `artifacts/experiments/M1-ACTION-E008/m1_action_e008.json`, SHA256
+`F15F506951362156845109F63EB554E6A72A2F6C280ACBB7F7EC10C266C75FFD`. All eight scenarios scored 1.0
+correct-given-warrant; nominal over-escalations, hard violations and UIR were zero; traceability was 1.0.
+EGDC was competitive with both frozen baselines (task success 69 versus 69 and 16; safety events 36 versus 56
+and 177; violations 0 versus 0 and 30585). Raw correct rates and warrant counts remain explicit in the result:
+nominal 0.2 (2 warrants), readable 0.9 (9), critical 0.9 (9), uncertain 1.0 (10), route-blocked 1.0 (10),
+battery 1.0 (10), time 1.0 (10), and comms 0.9 (9). The split is permanently SPENT. This does not formally
+close I5 because the integrated-mission criterion requires the declared Unity path.
+
+### Fresh formal Unity declaration
+
+The recovered interrupted v1 Unity sweep touched both selected worlds `7710002` and `7710003`; its incomplete
+output remains non-verdict evidence and both worlds are SPENT. To avoid choosing replacement worlds from the
+same pool after observing v1, `partitions_i5_unity_v2.yaml` declares disjoint development `7710200..7710209`
+and final `7710300..7710309` blocks and pins canonical digest
+`664edb970ea347df21cf86f9bf50aaa60efd8a72e10ffcdb729b88c4923b91a9`. Formal config `I5-UNITY-V2`
+predeclares worlds `7710300` and `7710301`, the existing 42-flight grid, unchanged E008 thresholds and the same
+seven Unity-realizable scenarios. Neither v2 final world may be flown until this declaration is checked,
+committed and pushed.

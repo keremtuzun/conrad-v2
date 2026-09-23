@@ -98,6 +98,13 @@ I5_E003 = "artifacts/experiments/M1-ACTION-E003/m1_action_e003.json"
 # I5 iteration 3: they now point at M1-ACTION-E004 (fresh final seeds of configs/eval/partitions_i5_v3.yaml,
 # the repaired Model2T and the durable calibration-gap closure); E002 and E003 stay on disk as spent records.
 I5_E004 = "artifacts/experiments/M1-ACTION-E004/m1_action_e004.json"
+# I5 iteration 4: they now point at M1-ACTION-E005 (fresh final seeds of configs/eval/partitions_i5_v4.yaml,
+# the first I5 final run on the MCBR V4 routing repair, with the I5-NOMINAL exemption withdrawn). E002, E003
+# and E004 stay on disk as the spent iteration-1, iteration-2 and iteration-3 records.
+I5_E005 = "artifacts/experiments/M1-ACTION-E005/m1_action_e005.json"
+# I5 repair iteration 6: fresh v6 final split, frozen after exact-source development passed. E005 and E007
+# remain on disk as failed, spent records; E008 is the one-shot post-repair surrogate result.
+I5_E008 = "artifacts/experiments/M1-ACTION-E008/m1_action_e008.json"
 I5_MISSION_CRITERIA = (
     "actions exercised correctly inside integrated missions",
     "traceable decisions with low measured UIR",
@@ -134,7 +141,9 @@ def _i5_actions_check(d: dict) -> tuple[bool, str]:
     e = d["closed_loop"]["egdc_structured"]
     na = v.get("scenarios_not_applicable", {})
     rows = "; ".join(
-        f"{sc}: correct {e[sc]['correct']}/{e[sc]['n']} latency_max={e[sc]['latency_s_max']} "
+        f"{sc}: warrant {e[sc]['warrant_reached']}/{e[sc]['n']} correct_given_warrant="
+        f"{e[sc]['correct_given_warrant']} raw_correct={e[sc]['correct']}/{e[sc]['n']} "
+        f"latency_max={e[sc]['latency_s_max']} "
         f"forbidden={e[sc]['forbidden_after_onset']}" + (" [NOT APPLICABLE]" if sc in na else "")
         for sc in d["scenarios"]
     )
@@ -706,8 +715,8 @@ SURROGATE_PLAN: dict[str, list[tuple[str, list[str], Callable[[], tuple[Criterio
         ),
     ],
     # I5: the action-matrix criteria (belief-level fixtures, identical to the formal record) plus the integrated
-    # missions of M1-ACTION-E004 (python kernel, FINAL seeds of configs/eval/partitions_i5_v3.yaml; I5
-    # iteration 3). The E002 and E003 artifacts stay on disk as the spent iteration-1 and iteration-2 records.
+    # missions of M1-ACTION-E008 (python kernel, FINAL seeds of configs/eval/partitions_i5_v6.yaml; repair
+    # iteration 6). Earlier artifacts stay on disk as spent records, including the failed E005 and E007 runs.
     "I5": [
         *[c for c in PLAN["I5"] if c[0] not in I5_MISSION_CRITERIA],
         (
@@ -716,12 +725,12 @@ SURROGATE_PLAN: dict[str, list[tuple[str, list[str], Callable[[], tuple[Criterio
                 I5M + "test_artifact_is_final_split_surrogate",
                 I5M + "test_every_scenario_and_arm_ran_on_every_final_seed",
             ],
-            _exp(I5_E004, _i5_actions_check),
+            _exp(I5_E008, _i5_actions_check),
         ),
         (
             I5_MISSION_CRITERIA[1],
             [I5M + "test_artifact_is_final_split_surrogate", I5M + "test_uir_is_measured_on_the_e001_basis"],
-            _exp(I5_E004, _i5_trace_check),
+            _exp(I5_E008, _i5_trace_check),
         ),
         (
             I5_MISSION_CRITERIA[2],
@@ -729,7 +738,7 @@ SURROGATE_PLAN: dict[str, list[tuple[str, list[str], Callable[[], tuple[Criterio
                 I5M + "test_artifact_is_final_split_surrogate",
                 I5M + "test_baselines_ran_closed_loop_on_the_same_seeds",
             ],
-            _exp(I5_E004, _i5_competitive_check),
+            _exp(I5_E008, _i5_competitive_check),
         ),
     ],
     # I4: ACTIVE-MCBR-E004, integrated python-kernel mission on the 12 pre-declared I4 worlds (unity_gate

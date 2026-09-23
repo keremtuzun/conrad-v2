@@ -6,12 +6,12 @@ module decides BOTH halves and one recorder command writes all ten criteria:
 * the seven action-matrix criteria are belief-level fixtures (M1-ACTION-E001, held-out final split
   7300000-7300009). They are world-independent, so they need no player and are marked ``no_unity_player``:
   they read the stored final artifact, exactly as ``tests/acceptance/test_i5_action_matrix.py`` does.
-* the three integrated-mission criteria (ch25 I5 + ch26 Phase 9) fly the eight ``I5-*`` scenarios through
+* the three integrated-mission criteria (ch25 I5 + ch26 Phase 9) fly the seven declared ``I5-*`` scenarios through
   Unity on the held-out worlds declared in ``configs/eval/i5_unity.yaml`` BEFORE any run, once per arm
   (EGDC, the rule/FSM baseline, the naive act-on-claims baseline), strictly sequentially, one player at a
   time. Scoring is the surrogate's own code
   (``conrad.evaluation.decision_experiments.m1_action_integrated``) with the same thresholds, so the formal
-  numbers are comparable with M1-ACTION-E004 line by line.
+  numbers are comparable with M1-ACTION-E008 line by line.
 
 Nothing here has been executed: the Unity player belongs to another workstream (docs/audits/I5_ACTION_MATRIX.md,
 "Iteration 3"). Run it with ``python -m uv run python scripts/record_unity_gate_evidence.py I5``.
@@ -50,7 +50,7 @@ C_ACTIONS = "actions exercised correctly inside integrated missions"
 C_TRACE = "traceable decisions with low measured UIR"
 C_COMPETITIVE = "competitive mission outcomes vs decision baselines"
 MIN_PER_CONDITION = 50
-# 48 sequential 120 s Unity missions take far longer than the 600 s per-test guard of conftest.py.
+# 42 sequential 120 s Unity missions take far longer than the 600 s per-test guard of conftest.py.
 I5_HARD_TIMEOUT_S = 6 * 3600.0
 
 
@@ -119,8 +119,8 @@ def test_matrix_hard_constraints_inviolable(matrix):
 def _worlds(cfg: dict[str, Any]) -> list[int]:
     seeds = [int(s) for s in cfg["final_worlds"]]
     with P.purpose_scope(P.Purpose.FINAL_EVALUATION):
-        allowed = set(P.split(P.I5_UNITY_DOMAIN, "final_test", "final_evaluation").world_seeds)
-    assert set(seeds) <= allowed, "I5 Unity worlds must come from partitions_i5_unity.yaml final_test"
+        allowed = set(P.split(P.I5_UNITY_V2_DOMAIN, "final_test", "final_evaluation").world_seeds)
+    assert set(seeds) <= allowed, "I5 Unity worlds must come from partitions_i5_unity_v2.yaml final_test"
     return seeds
 
 
@@ -170,8 +170,8 @@ def flights() -> dict[str, Any]:
                 "evidence_class": "FORMAL (built Unity V2 player, lock-step TCP)",
                 "data_status": "SYNTHETIC_ONLY",
                 "partition": "final_test",
-                "partition_file": "configs/eval/partitions_i5_unity.yaml",
-                "partition_digest": P.load_i5_unity()["digest"],
+                "partition_file": cfg["partition_file"],
+                "partition_digest": P.load_i5_unity_v2()["digest"],
                 "config": str(CONFIG.relative_to(REPO_ROOT)),
                 "decision_rule": cfg["decision_rule"],
                 "worlds": seeds,
@@ -193,7 +193,7 @@ def flights() -> dict[str, Any]:
             "worlds": seeds,
             "scenarios": scenarios,
             "arms": list(cfg["arms"]),
-            "partition": "configs/eval/partitions_i5_unity.yaml final_test (declared in i5_unity.yaml)",
+            "partition": f"{cfg['partition_file']} final_test (declared in i5_unity.yaml)",
             "matrix_artifact": cfg["matrix_artifact"],
             "results": str(RESULTS.relative_to(REPO_ROOT)),
         },
@@ -207,6 +207,8 @@ def test_actions_exercised_correctly_inside_integrated_missions(flights):
         GATE,
         C_ACTIONS,
         per_scenario_correct_rate=v["per_scenario_correct_rate"],
+        per_scenario_correct_given_warrant_rate=v["per_scenario_correct_given_warrant_rate"],
+        per_scenario_warrant_reached=v["per_scenario_warrant_reached"],
         scenarios_scored=v["scenarios_scored_for_actions"],
         scenarios_not_applicable=v["scenarios_not_applicable"],
         success_floor=v["success_floor"],
@@ -218,7 +220,7 @@ def test_actions_exercised_correctly_inside_integrated_missions(flights):
         correct=e["ALL"]["correct"],
         n=e["ALL"]["n"],
     )
-    assert v["actions_exercised_correctly"], v["per_scenario_correct_rate"]
+    assert v["actions_exercised_correctly"], v["per_scenario_correct_given_warrant_rate"]
 
 
 def test_traceable_decisions_with_low_measured_uir(flights):

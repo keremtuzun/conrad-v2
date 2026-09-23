@@ -13,13 +13,13 @@ safe way in. It has three modes and only the last one can start a player:
   seeds. It exercises ``drive_and_score`` -> ``summarize`` -> ``verdicts`` end to end. Its numbers are
   SURROGATE and are written outside ``artifacts/gates/``, so they can never be read as gate evidence.
 * ``--unity``   the same loop through ``prepare_unity`` on the DEVELOPMENT worlds of
-  ``configs/eval/partitions_i5_unity.yaml`` (7710100-7710109). THIS LAUNCHES THE PLAYER. It refuses any world
+  the partition named by ``configs/eval/i5_unity.yaml``. THIS LAUNCHES THE PLAYER. It refuses any world
   that is not in that development split, so a debug run can never touch a final world.
 
 Usage:
   python -m uv run python scripts/check_i5_unity_harness.py --wiring
   python -m uv run python scripts/check_i5_unity_harness.py --kernel [--seeds 7500000] [--scenarios ...]
-  python -m uv run python scripts/check_i5_unity_harness.py --unity --worlds 7710100 [--scenarios ...]
+  python -m uv run python scripts/check_i5_unity_harness.py --unity --worlds 7710200 [--scenarios ...]
 """
 
 from __future__ import annotations
@@ -53,7 +53,7 @@ from conrad.sim.mission.run import prepare  # noqa: E402
 from conrad.sim.mission.unity_run import UNITY_SCENARIOS, player_identity, resolve_unity  # noqa: E402
 
 CONFIG_PATH = REPO_ROOT / "configs" / "eval" / "i5_unity.yaml"
-SURROGATE_CONFIG = REPO_ROOT / "configs" / "eval" / "m1_action_e004.yaml"
+SURROGATE_CONFIG = REPO_ROOT / "configs" / "eval" / "m1_action_e008.yaml"
 MISSION_CONFIG = REPO_ROOT / "configs" / "sim" / "mission_default.yaml"
 OUT = REPO_ROOT / "artifacts" / "experiments" / "I5-UNITY-HARNESS-CHECK"
 THRESHOLDS = ("latency_budget_s", "success_floor", "uir_max", "contact_clearance_m")
@@ -79,9 +79,9 @@ def wiring(cfg: dict[str, Any]) -> dict[str, Any]:
     omitted = set(SPECS) - set(scenarios)
     declared_omissions = set(cfg.get("scenarios_not_on_the_unity_path", {}))
     with P.purpose_scope(P.Purpose.FINAL_EVALUATION):
-        final = set(P.split(P.I5_UNITY_DOMAIN, "final_test", "final_evaluation").world_seeds)
+        final = set(P.split(P.I5_UNITY_V2_DOMAIN, "final_test", "final_evaluation").world_seeds)
     with P.purpose_scope(P.Purpose.DESIGN):
-        development = set(P.split(P.I5_UNITY_DOMAIN, "development", "design").world_seeds)
+        development = set(P.split(P.I5_UNITY_V2_DOMAIN, "development", "design").world_seeds)
     worlds = [int(w) for w in cfg["final_worlds"]]
     given_up = {int(w) for w in cfg.get("worlds_given_up", {})}
 
@@ -211,12 +211,12 @@ def _check_development(backend: str, seeds: list[int]) -> None:
     """A harness check never reads a final world."""
     if backend == "unity":
         with P.purpose_scope(P.Purpose.DESIGN):
-            allowed = set(P.split(P.I5_UNITY_DOMAIN, "development", "design").world_seeds)
+            allowed = set(P.split(P.I5_UNITY_V2_DOMAIN, "development", "design").world_seeds)
         bad = sorted(set(seeds) - allowed)
         if bad:
             raise SystemExit(
                 f"refusing to fly {bad}: the I5 Unity harness check runs only on the development worlds "
-                f"of configs/eval/partitions_i5_unity.yaml ({min(allowed)}-{max(allowed)})"
+                f"of configs/eval/partitions_i5_unity_v2.yaml ({min(allowed)}-{max(allowed)})"
             )
     else:
         with P.purpose_scope(P.Purpose.DESIGN):
@@ -260,7 +260,7 @@ def main() -> int:
         return 0
 
     if args.unity:
-        worlds = [int(x) for x in (args.worlds.split(",") if args.worlds else ["7710100"])]
+        worlds = [int(x) for x in (args.worlds.split(",") if args.worlds else ["7710200"])]
         _check_development("unity", worlds)
         report = flights("unity", cfg, worlds, scenarios)
         (OUT / "unity_development.json").write_text(
