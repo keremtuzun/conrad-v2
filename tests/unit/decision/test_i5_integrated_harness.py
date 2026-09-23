@@ -27,6 +27,7 @@ from conrad.evaluation.partitions import (
     I5_V2_DOMAIN,
     I5_V3_DOMAIN,
     I5_V4_DOMAIN,
+    I5_V5_DOMAIN,
     Partition,
     PartitionAccessError,
     PartitionIntegrityError,
@@ -37,6 +38,7 @@ from conrad.evaluation.partitions import (
     load_i5_v2,
     load_i5_v3,
     load_i5_v4,
+    load_i5_v5,
     load_nav,
     load_unity_gates,
     partition_of,
@@ -46,6 +48,7 @@ from conrad.evaluation.partitions import (
     validate_i5_v2,
     validate_i5_v3,
     validate_i5_v4,
+    validate_i5_v5,
 )
 from conrad.schemas.decision import ActionType
 from conrad.schemas.ids import IdFactory
@@ -181,6 +184,38 @@ def test_i5_v4_final_is_fresh_and_guarded():
         bad = {**raw, "world_seeds": {**raw["world_seeds"], "final_test": {"explicit": [bad_seed]}}}
         with pytest.raises(PartitionIntegrityError, match=r"collide|overlap"):
             validate_i5_v4(bad, *args)
+
+
+def test_i5_v5_final_is_fresh_digest_pinned_and_guarded():
+    """M1-ACTION-E007: post-repair final seeds are disjoint from every spent I5 split."""
+    loaded = load_i5_v5()
+    raw = loaded["raw"]
+    final = set(split(I5_V5_DOMAIN, Partition.FINAL_TEST, Purpose.FINAL_EVALUATION).world_seeds)
+    older_domains = (I5_DOMAIN, I5_V2_DOMAIN, I5_V3_DOMAIN, I5_V4_DOMAIN)
+    spent = {
+        seed
+        for domain in older_domains
+        for seed in split(domain, Partition.FINAL_TEST, Purpose.FINAL_EVALUATION).world_seeds
+    }
+    assert final == set(range(7730000, 7730010))
+    assert not final & spent
+    assert loaded["digest"]
+    for spent_seed in (7600000, 7900000, 7700000, 7720000):
+        assert partition_of(I5_V5_DOMAIN, spent_seed) is None
+    assert set(raw["scenarios"]) == set(SPECS)
+    with pytest.raises(PartitionAccessError):
+        split(I5_V5_DOMAIN, Partition.FINAL_TEST, Purpose.DESIGN)
+    args = (
+        load()["raw"],
+        load_nav()["raw"],
+        [load_i5()["raw"], load_i5_v2()["raw"], load_i5_v3()["raw"], load_i5_v4()["raw"]],
+        load_i5_unity()["raw"],
+        load_unity_gates()["raw"],
+    )
+    for bad_seed in (7600003, 7900004, 7700005, 7720002, 7800005, 7710002, 7300002, 8000201, 7500001):
+        bad = {**raw, "world_seeds": {**raw["world_seeds"], "final_test": {"explicit": [bad_seed]}}}
+        with pytest.raises(PartitionIntegrityError, match=r"collide|overlap"):
+            validate_i5_v5(bad, *args)
 
 
 def test_the_i5_nominal_exemption_is_withdrawn_at_head():

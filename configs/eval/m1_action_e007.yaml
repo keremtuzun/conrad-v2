@@ -1,0 +1,25 @@
+# M1-ACTION-E007: one-shot post-repair I5 integrated-mission surrogate final. SYNTHETIC_ONLY; not formal Unity.
+# Frozen before any v5 final seed was executed or read. E005 and its 7720000-7720009 split are SPENT.
+experiment_id: M1-ACTION-E007
+hypothesis: >-
+  On a fresh final split after the Model1-to-MCBR calibration-interface repair, EGDC executes every warranted
+  I5 action class within its frozen latency budget, with zero nominal over-escalations, zero hard-constraint
+  violations, complete decision traceability, UIR 0, and mission outcomes no worse than either frozen baseline.
+  Raw action rates and warrant coverage remain explicit; the 0.9 action floor applies to correct-given-warrant,
+  and a scored scenario with zero warrants fails rather than becoming exempt.
+partition: final_test
+partition_domain: i5_mission_v5
+seeds: [7730000, 7730001, 7730002, 7730003, 7730004, 7730005, 7730006, 7730007, 7730008, 7730009]
+scenarios: [I5-NOMINAL, I5-NOMINAL-READABLE, I5-CRITICAL-FINDING, I5-UNCERTAIN-BELIEF, I5-ROUTE-BLOCKED,
+            I5-BATTERY-RESERVE, I5-TIME-RESERVE, I5-COMMS-OUTAGE]
+arms: [egdc_structured, rule_fsm, naive_act_on_claims]
+baselines: [rule_fsm, naive_act_on_claims]
+latency_budget_s: {default: 4.0, I5-NOMINAL: 20.0, I5-NOMINAL-READABLE: 20.0}
+success_floor: 0.9
+uir_max: 0.0
+contact_clearance_m: 0.3
+primary_metric: verdicts.per_scenario_correct_given_warrant_rate
+direction: higher
+workers: 6
+keep_bundles: false
+limitations: [synthetic data only, python L1 kernel (not Unity), SURROGATE evidence for gate I5]

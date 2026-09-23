@@ -63,6 +63,12 @@ I5_V3_DOMAIN = "i5_mission_v3"
 I5_V4_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_i5_v4.yaml"
 I5_V4_PARTITIONS_SHA256 = "73454d92fd55cd482d21cafafe284b8d9036a5fb65740cb18465fab2bea56c77"
 I5_V4_DOMAIN = "i5_mission_v4"
+# I5 integrated-mission seeds, version 5 (M1-ACTION-E007): the v4 final_test seeds are SPENT (M1-ACTION-E005)
+# and were read before the recovered Model1-to-MCBR calibration-interface repair. Development equals the older
+# I5 development split; final_test is fresh. Pinned on 2026-09-23 before any run on it.
+I5_V5_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_i5_v5.yaml"
+I5_V5_PARTITIONS_SHA256 = "dca57885e6bd4baa3d5c5c71f10f481b72ee7250e04d5fd737a31b4cb25ad0c0"
+I5_V5_DOMAIN = "i5_mission_v5"
 # Held-out worlds of the FORMAL Unity gate I5 integrated missions. The unity_gate final_test split is fully
 # allocated and every I5 python-kernel final split is spent by its surrogate, so formal I5 gets its own worlds.
 # Pinned on 2026-09-20 before any run on them.
@@ -545,6 +551,76 @@ def _i5_v4_split(part: Partition) -> Split:
     )
 
 
+def load_i5_v5(path: Path = I5_V5_PARTITIONS_PATH, *, verify_digest: bool = True) -> dict[str, Any]:
+    """The post-repair I5 v5 partition; its final split is disjoint from every older I5 final."""
+    digest = canonical_digest(path)
+    if verify_digest and digest != I5_V5_PARTITIONS_SHA256:
+        raise PartitionIntegrityError(
+            f"{path} changed after freezing: digest {digest} != pinned {I5_V5_PARTITIONS_SHA256}"
+        )
+    raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+    validate_i5_v5(
+        raw,
+        load()["raw"],
+        load_nav()["raw"],
+        [load_i5()["raw"], load_i5_v2()["raw"], load_i5_v3()["raw"], load_i5_v4()["raw"]],
+        load_i5_unity()["raw"],
+        load_unity_gates()["raw"],
+    )
+    return {"raw": raw, "digest": digest}
+
+
+def validate_i5_v5(
+    raw: dict[str, Any],
+    main: dict[str, Any],
+    nav: dict[str, Any],
+    older: list[dict[str, Any]],
+    i5_unity: dict[str, Any],
+    unity: dict[str, Any],
+) -> None:
+    """Final seeds are globally fresh; development may only reuse the common older development split."""
+    seeds = raw["world_seeds"]
+    dev, final = set(_seeds(seeds["development"])), set(_seeds(seeds["final_test"]))
+    if dev & final:
+        raise PartitionIntegrityError("i5_v5: final_test and development seeds overlap")
+    taken = {
+        s
+        for domain in ("abstract", "mission")
+        for p in Partition
+        for s in _seeds(main[domain]["world_seeds"][p.value])
+    }
+    taken |= {s for part in nav["noise_seeds"].values() for s in _seeds(part)}
+    taken |= {s for part in unity["world_seeds"].values() for s in _seeds(part)}
+    taken |= {s for part in i5_unity["world_seeds"].values() for s in _seeds(part)}
+    for reserved in raw.get("reserved_elsewhere", []):
+        taken |= set(_seeds(reserved))
+    older_dev = set.intersection(*(set(_seeds(f["world_seeds"]["development"])) for f in older))
+    older_final = {
+        s for f in older for p, spec in f["world_seeds"].items() if p != "development" for s in _seeds(spec)
+    }
+    if final & (taken | older_dev | older_final):
+        raise PartitionIntegrityError("i5_v5 final_test seeds collide with seeds used by another partition")
+    if dev & (taken | older_final) or not dev <= older_dev:
+        raise PartitionIntegrityError(
+            "i5_v5 development seeds must be older I5 development seeds and nothing else"
+        )
+
+
+def _i5_v5_split(part: Partition) -> Split:
+    loaded = load_i5_v5()
+    raw = loaded["raw"]
+    if part.value not in raw["world_seeds"]:
+        raise KeyError(f"i5_v5 partition has no {part.value!r} split")
+    return Split(
+        domain=I5_V5_DOMAIN,
+        partition=part,
+        world_seeds=_seeds(raw["world_seeds"][part.value]),
+        families=tuple(raw["scenarios"]),
+        replicates_per_world=1,
+        digest=loaded["digest"],
+    )
+
+
 def _i5_v3_split(part: Partition) -> Split:
     loaded = load_i5_v3()
     raw = loaded["raw"]
@@ -933,6 +1009,8 @@ def split(domain: str, partition: str | Partition, purpose: str | Purpose) -> Sp
         return _i5_v3_split(part)
     if domain == I5_V4_DOMAIN:
         return _i5_v4_split(part)
+    if domain == I5_V5_DOMAIN:
+        return _i5_v5_split(part)
     if domain == I5_UNITY_DOMAIN:
         return _i5_unity_split(part)
     if domain == I4_OCCLUDED_DOMAIN:
@@ -978,6 +1056,9 @@ def partition_of(domain: str, seed: int) -> Partition | None:
     if domain == I5_V4_DOMAIN:
         v4 = load_i5_v4()["raw"]["world_seeds"]
         return next((Partition(p) for p, spec in v4.items() if int(seed) in _seeds(spec)), None)
+    if domain == I5_V5_DOMAIN:
+        v5 = load_i5_v5()["raw"]["world_seeds"]
+        return next((Partition(p) for p, spec in v5.items() if int(seed) in _seeds(spec)), None)
     if domain == I7_V2_DOMAIN:
         i7 = load_i7_v2()["raw"]["world_seeds"]
         return next((Partition(p) for p, spec in i7.items() if int(seed) in _seeds(spec)), None)
