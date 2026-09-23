@@ -1312,3 +1312,11 @@ operator-escalation behavior. Separately, a grounded active-route blocker suppre
 bonus until replan removes the blocker. DIAG6 measured zero nominal escalation/retreat actions, no post-budget
 evidence requests, route replans at 0 s latency in all three selected cases, zero violations, traceability 1.0,
 and UIR 0. This is DEVELOPMENT diagnosis only; full development, surrogate final, and formal Unity remain open.
+
+The first exact-source full rerun (`M1-ACTION-E008-DEVELOPMENT-R2`) preserved the intended repairs—zero nominal
+over-escalations and route-blocked 10/10—but exposed a safety-priority regression: unavailable-information
+`WAIT` outranked mandatory return on battery/time reserve in seeds 7740001, 7740003 and 7740009. Both reserve
+classes scored 0.7, so R2 is **DEVELOPMENT FAIL** and no final seed was read. The minimal correction gives WAIT
+its hold value only when the existing `_must_retreat` predicate is false. DIAG7 reran the six exact failures:
+battery 3/3 and time 3/3, correct-given-warrant 1.0, violations 0, traceability 1.0 and UIR 0. Full exact-source
+development remains required before freeze.

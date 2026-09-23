@@ -206,7 +206,7 @@ class ConsequenceEstimator:
             # Once the runtime has explicitly exhausted the finite acquisition budget, holding position is
             # the bounded safe response. It neither invents evidence nor turns a nominal information gap into
             # an operator alert/retreat, and it cannot recreate the unexecutable REQUEST_INFORMATION loop.
-            mission = 1.0 if ctx.unavailable_information_targets else 0.0
+            mission = 1.0 if ctx.unavailable_information_targets and not self._must_retreat(ctx) else 0.0
         elif kind in (ActionType.TRANSMIT_INFORMATION, ActionType.STORE_AND_FORWARD):
             # A grounded obstacle on the active route must be handled before a report is retried. Reporting
             # remains available and regains its normal value as soon as the detour removes the blocker.

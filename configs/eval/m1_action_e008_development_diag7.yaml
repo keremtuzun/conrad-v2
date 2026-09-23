@@ -1,0 +1,17 @@
+# Development-only verification that reserve retreat outranks unavailable-information hold.
+experiment_id: M1-ACTION-E008-DEVELOPMENT-DIAG7
+hypothesis: >-
+  Explicit unavailable-information WAIT is selected only while ordinary holding is safe; battery or time reserve
+  retreat remains mandatory and outranks the hold without changing grounding, route, or escalation semantics.
+partition: development
+partition_domain: i5_mission_v6
+seeds: [7740001, 7740003, 7740009]
+scenarios: [I5-BATTERY-RESERVE, I5-TIME-RESERVE]
+arms: [egdc_structured]
+latency_budget_s: {default: 4.0, I5-NOMINAL: 20.0, I5-NOMINAL-READABLE: 20.0}
+success_floor: 0.9
+uir_max: 0.0
+contact_clearance_m: 0.3
+workers: 6
+keep_bundles: true
+limitations: [synthetic data only, python L1 kernel, development verification only]

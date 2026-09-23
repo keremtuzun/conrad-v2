@@ -111,6 +111,24 @@ def test_explicit_acquisition_unavailable_waits_instead_of_livelocking_or_escala
     assert chosen.parameters["reason"] == "INFORMATION_ACQUISITION_UNAVAILABLE"
 
 
+def test_mandatory_retreat_outranks_unavailable_acquisition_wait():
+    ids = IdFactory(724)
+    b = make_belief(ids, uncertainty=unc(uo=0.9))
+    req = make_requirement(ids, belief_ids=[b.belief_id])
+    ctx = make_context(ids, [b], [req])
+    assert ctx.resource_state is not None
+    low = ctx.resource_state.model_copy(update={"time_remaining_s": 0.0})
+    ctx = ctx.model_copy(
+        update={
+            "resource_state": low,
+            "unavailable_information_targets": {b.belief_id: "NO_FEASIBLE_OBSERVATION"},
+        }
+    )
+
+    chosen = EGDC(ids).decide(ctx).record.chosen
+    assert chosen is not None and chosen.action_type is ActionType.RETURN_TO_SAFE_STATE
+
+
 def test_uncalibrated_gap_is_closed_by_a_newer_direct_revision_after_an_executed_request():
     ids = IdFactory(73)
     b = make_belief(ids, uncertainty=unc(calibrated=False), revision=3)
