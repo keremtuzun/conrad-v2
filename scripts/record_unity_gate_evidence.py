@@ -323,6 +323,10 @@ def record(gate: str, rerun: bool = True) -> GateEvidence:
     )
     mpath = ROOT / "artifacts" / "gates" / gate / "unity_measured.json"
     data = json.loads(mpath.read_text(encoding="utf-8")) if mpath.exists() else {"meta": {}, "criteria": {}}
+    matrix: dict = {}
+    if gate == "I5":
+        matrix_path = ROOT / "artifacts" / "experiments" / "M1-ACTION-E001" / "m1_action_e001.json"
+        matrix = json.loads(matrix_path.read_text(encoding="utf-8"))
     names = {c for c, _, _ in PLAN[gate]}
     if names != set(GATE_BY_ID[gate].criteria):
         raise SystemExit(f"{gate}: criterion names differ from conrad.evaluation.gates")
@@ -337,6 +341,31 @@ def record(gate: str, rerun: bool = True) -> GateEvidence:
         else:
             status = CriterionStatus.PASS
         values = {k: data["criteria"].get(k) for k in keys}
+        # The integrated-flight fixture resets unity_measured.json before writing its own metrics. Preserve the
+        # seven world-independent action-matrix measurements in formal evidence by reading the same immutable
+        # final artifact that the already-completed pytest nodes asserted. This changes presentation only: the
+        # node outcome remains authoritative and no Unity world is re-flown or re-scored.
+        if gate == "I5" and name in {
+            "continue",
+            "request evidence",
+            "replan",
+            "change sensing",
+            "return",
+            "escalate",
+        }:
+            row = matrix["summary"]["egdc_structured"]["per_class"][name]
+            values[name] = {
+                "recall": row["recall"],
+                "n_canonical": row["n_canonical"],
+                "floor": matrix["acceptance"]["canonical_recall_floor"],
+                "chosen_as_itself": matrix["summary"]["egdc_structured"]["confusion_matrix"][name][name],
+            }
+        elif gate == "I5" and name == "hard constraints inviolable":
+            summary = matrix["summary"]["egdc_structured"]
+            values[name] = {
+                "hard_constraint_violations": summary["hard_constraint_violations"],
+                "uir": summary["uir"],
+            }
         replay = {k: v for k, v in data["criteria"].items() if k.startswith("replay")}
         text = "; ".join(f"{n.split('::')[-1]}={s}" for n, s in zip(nodes, statuses, strict=True))
         text += "; measured: " + json.dumps({**values, **replay}, sort_keys=True)

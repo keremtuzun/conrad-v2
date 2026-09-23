@@ -1,0 +1,68 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.15, pytest-8.4.2, pluggy-1.6.0 -- C:\Users\Kerem\Kerem\conrad-v2\.venv\Scripts\python.exe
+hypothesis profile 'default'
+rootdir: C:\Users\Kerem\Kerem\conrad-v2
+configfile: pyproject.toml
+plugins: anyio-4.15.1, hypothesis-6.168.0, cov-6.3.0
+collecting ... collected 13 items
+
+tests/unity_live/test_i5_unity.py::test_action_matrix_class[continue] PASSED [  7%]
+tests/unity_live/test_i5_unity.py::test_action_matrix_class[request evidence] PASSED [ 15%]
+tests/unity_live/test_i5_unity.py::test_action_matrix_class[replan] PASSED [ 23%]
+tests/unity_live/test_i5_unity.py::test_action_matrix_class[change sensing] PASSED [ 30%]
+tests/unity_live/test_i5_unity.py::test_action_matrix_class[return] PASSED [ 38%]
+tests/unity_live/test_i5_unity.py::test_action_matrix_class[escalate] PASSED [ 46%]
+tests/unity_live/test_i5_unity.py::test_matrix_hard_constraints_inviolable PASSED [ 53%]
+tests/unity_live/test_i5_unity.py::test_actions_exercised_correctly_inside_integrated_missions FAILED [ 61%]
+tests/unity_live/test_i5_unity.py::test_traceable_decisions_with_low_measured_uir PASSED [ 69%]
+tests/unity_live/test_i5_unity.py::test_competitive_mission_outcomes_vs_decision_baselines PASSED [ 76%]
+tests/unity_live/test_i5_unity.py::test_every_scenario_and_arm_flew_on_every_world PASSED [ 84%]
+tests/unity_live/test_i5_unity.py::test_no_twin_truth_leakage_on_runtime_side PASSED [ 92%]
+tests/unity_live/test_i5_unity.py::test_bundle_replays_deterministically PASSED [100%]
+
+================================== FAILURES ===================================
+_________ test_actions_exercised_correctly_inside_integrated_missions _________
+
+flights = {'rows': [{'action_class': 'continue', 'arm': 'egdc_structured', 'decision_states': [{'battery': 0.9998588030226933, '...: {'chosen_at_onset': {'None': 2}, 'correct': 0, 'correct_given_warrant': None, 'correct_rate': 0.0, ...}, ...}}}, ...}
+
+    def test_actions_exercised_correctly_inside_integrated_missions(flights):
+        v, e = flights["verdicts"], flights["summary"]["closed_loop"][PRIMARY]
+        measured(
+            GATE,
+            C_ACTIONS,
+            per_scenario_correct_rate=v["per_scenario_correct_rate"],
+            per_scenario_correct_given_warrant_rate=v["per_scenario_correct_given_warrant_rate"],
+            per_scenario_warrant_reached=v["per_scenario_warrant_reached"],
+            scenarios_scored=v["scenarios_scored_for_actions"],
+            scenarios_not_applicable=v["scenarios_not_applicable"],
+            success_floor=v["success_floor"],
+            floor_status=v["floor_status"],
+            nominal_over_escalations=v["nominal_over_escalations"],
+            violations_total=v["violations_total"],
+            latency_s_max=e["ALL"]["latency_s_max"],
+            warrant_reached=e["ALL"]["warrant_reached"],
+            correct=e["ALL"]["correct"],
+            n=e["ALL"]["n"],
+        )
+>       assert v["actions_exercised_correctly"], v["per_scenario_correct_given_warrant_rate"]
+E       AssertionError: {'I5-COMMS-OUTAGE': 1.0, 'I5-CRITICAL-FINDING': 1.0, 'I5-NOMINAL': None, 'I5-NOMINAL-READABLE': 1.0, ...}
+E       assert False
+
+tests\unity_live\test_i5_unity.py:223: AssertionError
+=================================== PASSES ====================================
+- generated xml file: C:\Users\Kerem\Kerem\conrad-v2\artifacts\gates\I5\unity_pytest.xml -
+=========================== short test summary info ===========================
+PASSED tests/unity_live/test_i5_unity.py::test_action_matrix_class[continue]
+PASSED tests/unity_live/test_i5_unity.py::test_action_matrix_class[request evidence]
+PASSED tests/unity_live/test_i5_unity.py::test_action_matrix_class[replan]
+PASSED tests/unity_live/test_i5_unity.py::test_action_matrix_class[change sensing]
+PASSED tests/unity_live/test_i5_unity.py::test_action_matrix_class[return]
+PASSED tests/unity_live/test_i5_unity.py::test_action_matrix_class[escalate]
+PASSED tests/unity_live/test_i5_unity.py::test_matrix_hard_constraints_inviolable
+PASSED tests/unity_live/test_i5_unity.py::test_traceable_decisions_with_low_measured_uir
+PASSED tests/unity_live/test_i5_unity.py::test_competitive_mission_outcomes_vs_decision_baselines
+PASSED tests/unity_live/test_i5_unity.py::test_every_scenario_and_arm_flew_on_every_world
+PASSED tests/unity_live/test_i5_unity.py::test_no_twin_truth_leakage_on_runtime_side
+PASSED tests/unity_live/test_i5_unity.py::test_bundle_replays_deterministically
+FAILED tests/unity_live/test_i5_unity.py::test_actions_exercised_correctly_inside_integrated_missions
+================== 1 failed, 12 passed in 3849.21s (1:04:09) ==================

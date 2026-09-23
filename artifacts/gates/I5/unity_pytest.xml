@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="13" time="3849.209" timestamp="2026-09-23T18:27:33.841619+03:00" hostname="KeremTüzün"><testcase classname="tests.unity_live.test_i5_unity" name="test_action_matrix_class[continue]" time="0.034" /><testcase classname="tests.unity_live.test_i5_unity" name="test_action_matrix_class[request evidence]" time="0.017" /><testcase classname="tests.unity_live.test_i5_unity" name="test_action_matrix_class[replan]" time="0.005" /><testcase classname="tests.unity_live.test_i5_unity" name="test_action_matrix_class[change sensing]" time="0.005" /><testcase classname="tests.unity_live.test_i5_unity" name="test_action_matrix_class[return]" time="0.005" /><testcase classname="tests.unity_live.test_i5_unity" name="test_action_matrix_class[escalate]" time="0.006" /><testcase classname="tests.unity_live.test_i5_unity" name="test_matrix_hard_constraints_inviolable" time="0.005" /><testcase classname="tests.unity_live.test_i5_unity" name="test_actions_exercised_correctly_inside_integrated_missions" time="3682.130"><failure message="AssertionError: {'I5-COMMS-OUTAGE': 1.0, 'I5-CRITICAL-FINDING': 1.0, 'I5-NOMINAL': None, 'I5-NOMINAL-READABLE': 1.0, ...}&#10;assert False">flights = {'rows': [{'action_class': 'continue', 'arm': 'egdc_structured', 'decision_states': [{'battery': 0.9998588030226933, '...: {'chosen_at_onset': {'None': 2}, 'correct': 0, 'correct_given_warrant': None, 'correct_rate': 0.0, ...}, ...}}}, ...}
+
+    def test_actions_exercised_correctly_inside_integrated_missions(flights):
+        v, e = flights["verdicts"], flights["summary"]["closed_loop"][PRIMARY]
+        measured(
+            GATE,
+            C_ACTIONS,
+            per_scenario_correct_rate=v["per_scenario_correct_rate"],
+            per_scenario_correct_given_warrant_rate=v["per_scenario_correct_given_warrant_rate"],
+            per_scenario_warrant_reached=v["per_scenario_warrant_reached"],
+            scenarios_scored=v["scenarios_scored_for_actions"],
+            scenarios_not_applicable=v["scenarios_not_applicable"],
+            success_floor=v["success_floor"],
+            floor_status=v["floor_status"],
+            nominal_over_escalations=v["nominal_over_escalations"],
+            violations_total=v["violations_total"],
+            latency_s_max=e["ALL"]["latency_s_max"],
+            warrant_reached=e["ALL"]["warrant_reached"],
+            correct=e["ALL"]["correct"],
+            n=e["ALL"]["n"],
+        )
+&gt;       assert v["actions_exercised_correctly"], v["per_scenario_correct_given_warrant_rate"]
+E       AssertionError: {'I5-COMMS-OUTAGE': 1.0, 'I5-CRITICAL-FINDING': 1.0, 'I5-NOMINAL': None, 'I5-NOMINAL-READABLE': 1.0, ...}
+E       assert False
+
+tests\unity_live\test_i5_unity.py:223: AssertionError</failure></testcase><testcase classname="tests.unity_live.test_i5_unity" name="test_traceable_decisions_with_low_measured_uir" time="0.014" /><testcase classname="tests.unity_live.test_i5_unity" name="test_competitive_mission_outcomes_vs_decision_baselines" time="0.012" /><testcase classname="tests.unity_live.test_i5_unity" name="test_every_scenario_and_arm_flew_on_every_world" time="0.016" /><testcase classname="tests.unity_live.test_i5_unity" name="test_no_twin_truth_leakage_on_runtime_side" time="33.241" /><testcase classname="tests.unity_live.test_i5_unity" name="test_bundle_replays_deterministically" time="126.341" /></testsuite></testsuites>

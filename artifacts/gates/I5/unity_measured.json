@@ -1,18 +1,372 @@
 {
- "meta": {},
+ "meta": {
+  "worlds": [
+   7710300,
+   7710301
+  ],
+  "scenarios": [
+   "I5-NOMINAL",
+   "I5-NOMINAL-READABLE",
+   "I5-CRITICAL-FINDING",
+   "I5-UNCERTAIN-BELIEF",
+   "I5-ROUTE-BLOCKED",
+   "I5-TIME-RESERVE",
+   "I5-COMMS-OUTAGE"
+  ],
+  "arms": [
+   "egdc_structured",
+   "rule_fsm",
+   "naive_act_on_claims"
+  ],
+  "partition": "configs/eval/partitions_i5_unity_v2.yaml final_test (declared in i5_unity.yaml)",
+  "matrix_artifact": "artifacts/experiments/M1-ACTION-E001/m1_action_e001.json",
+  "results": "artifacts\\gates\\I5\\unity_i5_results.json"
+ },
  "criteria": {
-  "hard constraints inviolable": {
-   "chosen_action_audit": 0,
-   "injected_invalid_proposals": 210,
-   "injected_invalid_accepted": 0,
-   "total": 0,
-   "uir": {
-    "relied_unsupported_claims": 0,
-    "relied_world_claims": 632,
-    "unsupported_claim_fraction": 0.047337,
-    "unsupported_inference_rate": 0.0,
-    "world_claims": 4225
+  "actions exercised correctly inside integrated missions": {
+   "per_scenario_correct_rate": {
+    "I5-NOMINAL": 0.0,
+    "I5-NOMINAL-READABLE": 0.5,
+    "I5-CRITICAL-FINDING": 1.0,
+    "I5-UNCERTAIN-BELIEF": 1.0,
+    "I5-ROUTE-BLOCKED": 1.0,
+    "I5-TIME-RESERVE": 1.0,
+    "I5-COMMS-OUTAGE": 1.0
+   },
+   "per_scenario_correct_given_warrant_rate": {
+    "I5-NOMINAL": null,
+    "I5-NOMINAL-READABLE": 1.0,
+    "I5-CRITICAL-FINDING": 1.0,
+    "I5-UNCERTAIN-BELIEF": 1.0,
+    "I5-ROUTE-BLOCKED": 1.0,
+    "I5-TIME-RESERVE": 1.0,
+    "I5-COMMS-OUTAGE": 1.0
+   },
+   "per_scenario_warrant_reached": {
+    "I5-NOMINAL": 0,
+    "I5-NOMINAL-READABLE": 1,
+    "I5-CRITICAL-FINDING": 2,
+    "I5-UNCERTAIN-BELIEF": 2,
+    "I5-ROUTE-BLOCKED": 2,
+    "I5-TIME-RESERVE": 2,
+    "I5-COMMS-OUTAGE": 2
+   },
+   "scenarios_scored": [
+    "I5-NOMINAL",
+    "I5-NOMINAL-READABLE",
+    "I5-CRITICAL-FINDING",
+    "I5-UNCERTAIN-BELIEF",
+    "I5-ROUTE-BLOCKED",
+    "I5-TIME-RESERVE",
+    "I5-COMMS-OUTAGE"
+   ],
+   "scenarios_not_applicable": {},
+   "success_floor": 0.9,
+   "floor_status": "ENGINEERING_ESTIMATE (ch25 leaves the I5 bound OPEN)",
+   "nominal_over_escalations": 0,
+   "violations_total": 0,
+   "latency_s_max": 0.0,
+   "warrant_reached": 11,
+   "correct": 11,
+   "n": 14
+  },
+  "traceable decisions with low measured UIR": {
+   "traceable_fraction": 1.0,
+   "uir": 0.0,
+   "uir_max": 0.0,
+   "relied_world_claims": 137
+  },
+  "competitive mission outcomes vs decision baselines": {
+   "competitive": {
+    "rule_fsm": {
+     "egdc_task_success": 11,
+     "baseline_task_success": 11,
+     "egdc_safety_events": 12,
+     "baseline_safety_events": 16,
+     "per_scenario_success": {
+      "I5-NOMINAL": [
+       0,
+       0
+      ],
+      "I5-NOMINAL-READABLE": [
+       1,
+       1
+      ],
+      "I5-CRITICAL-FINDING": [
+       2,
+       2
+      ],
+      "I5-UNCERTAIN-BELIEF": [
+       2,
+       2
+      ],
+      "I5-ROUTE-BLOCKED": [
+       2,
+       2
+      ],
+      "I5-TIME-RESERVE": [
+       2,
+       2
+      ],
+      "I5-COMMS-OUTAGE": [
+       2,
+       2
+      ]
+     },
+     "egdc_violations": 0,
+     "baseline_violations": 0,
+     "not_worse": true
+    },
+    "naive_act_on_claims": {
+     "egdc_task_success": 11,
+     "baseline_task_success": 3,
+     "egdc_safety_events": 12,
+     "baseline_safety_events": 12,
+     "per_scenario_success": {
+      "I5-NOMINAL": [
+       0,
+       0
+      ],
+      "I5-NOMINAL-READABLE": [
+       1,
+       0
+      ],
+      "I5-CRITICAL-FINDING": [
+       2,
+       1
+      ],
+      "I5-UNCERTAIN-BELIEF": [
+       2,
+       1
+      ],
+      "I5-ROUTE-BLOCKED": [
+       2,
+       0
+      ],
+      "I5-TIME-RESERVE": [
+       2,
+       0
+      ],
+      "I5-COMMS-OUTAGE": [
+       2,
+       1
+      ]
+     },
+     "egdc_violations": 0,
+     "baseline_violations": 6005,
+     "not_worse": true
+    }
    }
+  },
+  "coverage of the declared grid": {
+   "flights": 42,
+   "declared": 42
+  },
+  "leakage": {
+   "runs": {
+    "I5-NOMINAL-s7710300-egdc_structured": {
+     "texts_scanned": 7232,
+     "violations": []
+    },
+    "I5-NOMINAL-s7710300-rule_fsm": {
+     "texts_scanned": 7232,
+     "violations": []
+    },
+    "I5-NOMINAL-s7710300-naive_act_on_claims": {
+     "texts_scanned": 6702,
+     "violations": []
+    },
+    "I5-NOMINAL-READABLE-s7710300-egdc_structured": {
+     "texts_scanned": 7492,
+     "violations": []
+    },
+    "I5-NOMINAL-READABLE-s7710300-rule_fsm": {
+     "texts_scanned": 7494,
+     "violations": []
+    },
+    "I5-NOMINAL-READABLE-s7710300-naive_act_on_claims": {
+     "texts_scanned": 7486,
+     "violations": []
+    },
+    "I5-CRITICAL-FINDING-s7710300-egdc_structured": {
+     "texts_scanned": 7175,
+     "violations": []
+    },
+    "I5-CRITICAL-FINDING-s7710300-rule_fsm": {
+     "texts_scanned": 7175,
+     "violations": []
+    },
+    "I5-CRITICAL-FINDING-s7710300-naive_act_on_claims": {
+     "texts_scanned": 6702,
+     "violations": []
+    },
+    "I5-UNCERTAIN-BELIEF-s7710300-egdc_structured": {
+     "texts_scanned": 6700,
+     "violations": []
+    },
+    "I5-UNCERTAIN-BELIEF-s7710300-rule_fsm": {
+     "texts_scanned": 6700,
+     "violations": []
+    },
+    "I5-UNCERTAIN-BELIEF-s7710300-naive_act_on_claims": {
+     "texts_scanned": 6692,
+     "violations": []
+    },
+    "I5-ROUTE-BLOCKED-s7710300-egdc_structured": {
+     "texts_scanned": 7155,
+     "violations": []
+    },
+    "I5-ROUTE-BLOCKED-s7710300-rule_fsm": {
+     "texts_scanned": 7158,
+     "violations": []
+    },
+    "I5-ROUTE-BLOCKED-s7710300-naive_act_on_claims": {
+     "texts_scanned": 6523,
+     "violations": []
+    },
+    "I5-TIME-RESERVE-s7710300-egdc_structured": {
+     "texts_scanned": 6058,
+     "violations": []
+    },
+    "I5-TIME-RESERVE-s7710300-rule_fsm": {
+     "texts_scanned": 6052,
+     "violations": []
+    },
+    "I5-TIME-RESERVE-s7710300-naive_act_on_claims": {
+     "texts_scanned": 6692,
+     "violations": []
+    },
+    "I5-COMMS-OUTAGE-s7710300-egdc_structured": {
+     "texts_scanned": 7175,
+     "violations": []
+    },
+    "I5-COMMS-OUTAGE-s7710300-rule_fsm": {
+     "texts_scanned": 7175,
+     "violations": []
+    },
+    "I5-COMMS-OUTAGE-s7710300-naive_act_on_claims": {
+     "texts_scanned": 6702,
+     "violations": []
+    },
+    "I5-NOMINAL-s7710301-egdc_structured": {
+     "texts_scanned": 6823,
+     "violations": []
+    },
+    "I5-NOMINAL-s7710301-rule_fsm": {
+     "texts_scanned": 6823,
+     "violations": []
+    },
+    "I5-NOMINAL-s7710301-naive_act_on_claims": {
+     "texts_scanned": 6544,
+     "violations": []
+    },
+    "I5-NOMINAL-READABLE-s7710301-egdc_structured": {
+     "texts_scanned": 8233,
+     "violations": []
+    },
+    "I5-NOMINAL-READABLE-s7710301-rule_fsm": {
+     "texts_scanned": 8233,
+     "violations": []
+    },
+    "I5-NOMINAL-READABLE-s7710301-naive_act_on_claims": {
+     "texts_scanned": 6843,
+     "violations": []
+    },
+    "I5-CRITICAL-FINDING-s7710301-egdc_structured": {
+     "texts_scanned": 6545,
+     "violations": []
+    },
+    "I5-CRITICAL-FINDING-s7710301-rule_fsm": {
+     "texts_scanned": 6812,
+     "violations": []
+    },
+    "I5-CRITICAL-FINDING-s7710301-naive_act_on_claims": {
+     "texts_scanned": 6537,
+     "violations": []
+    },
+    "I5-UNCERTAIN-BELIEF-s7710301-egdc_structured": {
+     "texts_scanned": 7156,
+     "violations": []
+    },
+    "I5-UNCERTAIN-BELIEF-s7710301-rule_fsm": {
+     "texts_scanned": 7156,
+     "violations": []
+    },
+    "I5-UNCERTAIN-BELIEF-s7710301-naive_act_on_claims": {
+     "texts_scanned": 6495,
+     "violations": []
+    },
+    "I5-ROUTE-BLOCKED-s7710301-egdc_structured": {
+     "texts_scanned": 6725,
+     "violations": []
+    },
+    "I5-ROUTE-BLOCKED-s7710301-rule_fsm": {
+     "texts_scanned": 6725,
+     "violations": []
+    },
+    "I5-ROUTE-BLOCKED-s7710301-naive_act_on_claims": {
+     "texts_scanned": 6436,
+     "violations": []
+    },
+    "I5-TIME-RESERVE-s7710301-egdc_structured": {
+     "texts_scanned": 5510,
+     "violations": []
+    },
+    "I5-TIME-RESERVE-s7710301-rule_fsm": {
+     "texts_scanned": 5510,
+     "violations": []
+    },
+    "I5-TIME-RESERVE-s7710301-naive_act_on_claims": {
+     "texts_scanned": 6495,
+     "violations": []
+    },
+    "I5-COMMS-OUTAGE-s7710301-egdc_structured": {
+     "texts_scanned": 6545,
+     "violations": []
+    },
+    "I5-COMMS-OUTAGE-s7710301-rule_fsm": {
+     "texts_scanned": 6679,
+     "violations": []
+    },
+    "I5-COMMS-OUTAGE-s7710301-naive_act_on_claims": {
+     "texts_scanned": 6537,
+     "violations": []
+    }
+   }
+  },
+  "replay": {
+   "run": "artifacts\\unity\\gate_runs\\I5\\I5-UNITY-I5-NOMINAL-s7710300-egdc_structured",
+   "events": {
+    "original": 6114,
+    "replayed": 6114,
+    "equal": true,
+    "first_difference": null
+   },
+   "decisions": {
+    "original": 60,
+    "replayed": 60,
+    "equal": true,
+    "first_difference": null
+   },
+   "revisions": {
+    "original": 1752,
+    "replayed": 1752,
+    "equal": true,
+    "first_difference": null
+   },
+   "trajectory": {
+    "samples": [
+     121,
+     121
+    ],
+    "max_abs_difference": 0.0,
+    "tolerance": 0.0,
+    "equal": true
+   },
+   "equal": true,
+   "verified_files": 297,
+   "verified_objects": 197,
+   "same_player_binary": true
   }
  }
 }

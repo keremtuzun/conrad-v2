@@ -1350,3 +1350,22 @@ and final `7710300..7710309` blocks and pins canonical digest
 predeclares worlds `7710300` and `7710301`, the existing 42-flight grid, unchanged E008 thresholds and the same
 seven Unity-realizable scenarios. Neither v2 final world may be flown until this declaration is checked,
 committed and pushed.
+
+### One-shot formal Unity result: I5-UNITY-V2 (FORMAL FAIL)
+
+The declaration was frozen and pushed at `ba901cd`; surrogate evidence was recorded and pushed at `016e4bc`.
+The formal recorder then flew all 42 missions exactly once, sequentially, on `7710300` and `7710301`. Both
+worlds are permanently SPENT. Result artifact `artifacts/gates/I5/unity_i5_results.json`, SHA256
+`9C2F9636790BC3254AA6C8799ABBC9E3E06AC438B36423969B16734AEDC2F54B`; player SHA256
+`36C5C9F13481406382A8E9EF8FC0EA7CDF055C43BB12FC8FD545B07C199CD277` (Unity `6000.5.9f1`).
+
+The formal verdict is **I5 FAIL (9/10 criteria)**. `I5-NOMINAL` reached its continue warrant on neither world,
+so its correct-given-warrant rate is undefined (`None`). The predeclared rule scores every declared scenario
+and treats a scored scenario with zero warrants as failure; the withdrawn iteration-3 exemption is not
+restored. The other six Unity scenarios each scored 1.0 correct-given-warrant: readable nominal 1/1; critical,
+uncertain, route-blocked, time-reserve and comms-outage 2/2 each. Nominal over-escalations, hard-constraint
+violations and measured UIR were all zero; traceability was 1.0. EGDC remained competitive: task success 11
+versus rule-FSM 11 and naive 3; safety events 12 versus 16 and 12; violations 0 versus 0 and 6005. Full 42/42
+coverage, runtime truth-leakage scan and deterministic bundle replay passed. The six action classes and hard
+constraints from the held-out action-matrix artifact also passed. No formal world will be rerun, no threshold
+will be changed, and this FAIL is retained rather than converted into a PASS from the surrogate result.
