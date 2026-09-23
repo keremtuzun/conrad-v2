@@ -1,0 +1,339 @@
+{
+ "base_git_commit": "b6f7cb203aad0ed9aee4b8ea677ece329f5b008a",
+ "current_source_sha256": {
+  "configs\\eval\\partitions_i4_energy_v1.yaml": "88496b341c21460e9533bc56c66273cb0e9631a1fb04d04fe6bba848d9361723",
+  "conrad\\orchestration\\deliberation.py": "8850e522443b075846b9ad406a55d8455133f7caa48494e5702a2f074b02c0d0",
+  "conrad\\orchestration\\mission_config.py": "bd02b08c0a0b48aa10799c5d1cbd31d202aede14b94049aa7e214aeaae0b67b8",
+  "conrad\\robotics\\trajectory\\generator.py": "0099c0a6215a6d24f6893b02619d1b7d45e3a37d681e88cc5d74f89d6f1e2f2a",
+  "scripts\\diagnose_i4_energy.py": "2dc03b08144e78dd937f4a24cf7e9b5b24c77a7a87bdbedf03a7147373bd996b",
+  "scripts\\fit_i4_energy_cost.py": "238a24c6038676553756c9161d6f7c34c530ba5ad759535af4c3b11124dde53d",
+  "scripts\\summarize_i4_energy.py": "b10d8ca5e12a4634fc048a6c05dee41307f6cd77ba7fa48a21031b66eedd1670"
+ },
+ "evidence_kind": "DEVELOPMENT_TRACE_MANIFEST",
+ "execution_path": "Python kernel surrogate",
+ "held_out_status": "validation, final and OOD not read",
+ "report_count": 80,
+ "reports": {
+  "8100000:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100000-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "9020deec800057e88913c00925d8624abaf652c064da1ac5936af8eb54b63903"
+  },
+  "8100000:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100000-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "9074751bb4388998ac29e34bdf42cdd98f01289d9673c57ae9f59a007f013728"
+  },
+  "8100001:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100001-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "f630c0090a64134642d7742603ecb3278a14798ccfb60536543c2b04a85b2a2b"
+  },
+  "8100001:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100001-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "37982646c331f5a481f69cfe0d6bf41c0542b9bbfa1d069e115901c56e90ebaa"
+  },
+  "8100002:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100002-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "6a1ed2468d73c1121e84ec5fede47aa13205478719259ca04fa456522c2e9ab0"
+  },
+  "8100002:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100002-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "1cc0a4b76c5e01aeab4867a472b059fe78439a910a205c84e9f2f9e9778d6109"
+  },
+  "8100003:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100003-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "a6bbf23a16823ca5ac59e9c17eb11f0d7718e64405bf757bf1b853f1ba5a592c"
+  },
+  "8100003:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100003-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "4e6840813cb2cbb2ff4ba8367ca5711c60dd92326d9b7a7ed2164e43ff4983e5"
+  },
+  "8100004:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100004-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "c94e66adfb357f74df6cf571a9456e3d611880cc89e7aa295386ac695c4ddb97"
+  },
+  "8100004:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100004-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "8d645df04208673497f9d9dcf579d7982eab564aedda9aa24d71c4bfe11ce24e"
+  },
+  "8100005:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100005-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "d89f8dd16e4f7127d61fa80a4145192cdc534445aca42f86fbc60e8a9b8e2146"
+  },
+  "8100005:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100005-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "f1b3bd7f892dd787b1f53fbf62f17563b7ed74930149d13a8f585bd23a853b37"
+  },
+  "8100006:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100006-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "ca36af6ba66b66c4ed2a8a531592c294ed15ecece9b751f8aa05f36593a74f3a"
+  },
+  "8100006:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100006-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "55b33b72982e9159da39faf296f4e90e23c3b762e8cabfa4787b3b511f3c93e2"
+  },
+  "8100007:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100007-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "812adeac11dd71b93340c0b911277edde0adaba98c434ca47bc430d6063a0308"
+  },
+  "8100007:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100007-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "ee7af060dafddf2d882584c958fb3881567015b122c7e1dc78e0a8dc82b184ff"
+  },
+  "8100008:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100008-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "c6cebc8a1f81af24854b49b10d47d569e363f86033d34790442340cf39d2242b"
+  },
+  "8100008:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100008-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "f4c871e22f8bd6c561a1823f7ac656f2daa1b9ed29a64a50222e38583a5e7c73"
+  },
+  "8100009:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100009-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "06338563a0feec9209bd66567fa03e776ac41b0016ad1decdddafee87f91c25e"
+  },
+  "8100009:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100009-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "71ce83338a748a6a0b85f0d07debe620d6c21241f39dab4d045e9771b7df347a"
+  },
+  "8100010:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100010-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "778aefac3633d67b8b10cb69ccb0d58ea627b5e6f41396c7e676126b05fd73aa"
+  },
+  "8100010:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100010-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "4e21b03af90aa6357506cb067f1a0c963de9a391b1e92259554989770bef7e7e"
+  },
+  "8100011:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100011-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "e5d9eae047a3c892c16ecd3ca54222ec4b16b52b2990bf0eb2d2f7637f1f6e98"
+  },
+  "8100011:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100011-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "cb2577a499625c4350eec2bb84a1cd77db98da9208d742120258183d1a53fb88"
+  },
+  "8100012:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100012-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "381a833201624e5ea578e9037435b3b807586fe21f5f7a305cfdef4bdeff0452"
+  },
+  "8100012:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100012-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "6f90e2ea09b1dafc83d096c6614f9fafbfdc5014af4fdc92232230cc18b11c0b"
+  },
+  "8100013:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100013-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "c8d039510773522abfc44cdce2db8828aa506a69d60dc6ee1f0c7f859cda8284"
+  },
+  "8100013:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100013-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "9fb4d71f6e33935a129a388f3626944fc4c5db11a56974c8460aa194f6933266"
+  },
+  "8100014:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100014-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "8193ace568e9a3094a3a83d213d605dd08af1690f6f7cc5cda93e9a229b7a1ab"
+  },
+  "8100014:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100014-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "95be0c75418e3752d92200a7cbf46897cc673831d1fee2b3c09ca975395c79cc"
+  },
+  "8100015:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100015-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "739b285cee45486d756fe16aa31506daaeddc4004c1651e98e105e17aac5a113"
+  },
+  "8100015:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100015-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "6421a729bde1109ba2f6c22ee7ff444584a66fd95c5e9ba5810c15ffcd87c8e6"
+  },
+  "8100016:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100016-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "d4e047082eb27e827a477c3a59b7b31a2f154300c548f158684a2d3a0d758efc"
+  },
+  "8100016:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100016-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "9c723d326ce500b98f6233cd2b7ef77da9bdcd9b0b66b6c2d228fe7c5317e472"
+  },
+  "8100017:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100017-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "302af905f33af7bd54e0cee3c057a45c6c81146a43d48b6f4b244442f1a4af57"
+  },
+  "8100017:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100017-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "d6aeadd2beb69cc5e871d19ecb7cc73e8cd929939f6239763d811218ca03961e"
+  },
+  "8100018:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100018-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "3b9527f5da708548ca41f074263b6252b146556f9565722de1c168bd2a131721"
+  },
+  "8100018:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100018-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "5fe109b06d2e898cc4fdbadcf2a1627cec990df259f46b8d364a3904a5695857"
+  },
+  "8100019:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100019-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "15e14ff331ef446e15e710b34cba048e4ef551ded8f123eddf236d111dd4b71b"
+  },
+  "8100019:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100019-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "f5f1e6a74583ada46f594b612a8abae08f7d8e102377dcef15fc95f5c5d83f54"
+  },
+  "8100020:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100020-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "65d0bade10277c913ba549a87658d5db4da246175f65cb1050b86c4b4701d832"
+  },
+  "8100020:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100020-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "d029cd928cea27f38a9bcc99d780e659ffda22dff0402abd290339509894861b"
+  },
+  "8100021:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100021-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "4897d9c1ecc87636a636f0aaf48dee111222f756ee23fe233474a5338ad645d3"
+  },
+  "8100021:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100021-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "9327a9b6397eb78a27e0010c162190c3049f3d3c07691387381cccc8b0d1e75a"
+  },
+  "8100022:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100022-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "31e9bf3f7b76853e929b4193ba207ba2d859822f4966fb0e3da84e8b8cee475c"
+  },
+  "8100022:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100022-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "d868438083c8379f8f3c6ff0ea2b9735382f33cf8f4c0ab06d6420fd05e4e9a1"
+  },
+  "8100023:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100023-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "32898ef63e5d01c04d495724bba3854ae7fe4f42564a3e48fa061669cd509e14"
+  },
+  "8100023:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100023-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "d8a94705e53031d6a9bc4caaa0a3e72a608dfc38088d1f778f62162897a96010"
+  },
+  "8100024:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100024-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "86051b46c69ac6f1700905157a1f5ea5495f29ef61273e2b173505f8d04d8eb8"
+  },
+  "8100024:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100024-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "9e0021f5558e782d9c33008779c70dc6279853326723ce2ec2971b02635094a5"
+  },
+  "8100025:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100025-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "b121b20fac862070b155a94793c8e1cdaa2e4f71f7d8be2dd5fb868427909aa9"
+  },
+  "8100025:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100025-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "5c2d5238f908c50f9d92e5a8e3912092e03e8077fa19fad0e59152df47fa8bc9"
+  },
+  "8100026:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100026-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "3bfdc3feeb63c85534f59bdff04ef76e96486c8a5756119a335f4901f51a89ad"
+  },
+  "8100026:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100026-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "aa44f327f294c8f63e586e589154f31114d0b9f3de3e2dae8453205d221419db"
+  },
+  "8100027:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100027-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "1e73278cde3df7abfa0718552b6c66703c07df38889adc235193e8ebab4318fe"
+  },
+  "8100027:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100027-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "cb64ac08e273e39f296125740f6739340adfec7a63ef6e61105e0b61b5f67d54"
+  },
+  "8100028:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100028-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "9f89ce5eadc9978c4bec4e9f6631c2609e7976952f41506b5b12ac3e9096539d"
+  },
+  "8100028:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100028-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "c1aae22a87373df9d83e4ff3c07487e955b61e70a1462db90561abfc17f3f653"
+  },
+  "8100029:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100029-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "2da4ec7f8ffcfb89e5f7e5f94f98dc787f2023d58bb18315881ad77bf02b2470"
+  },
+  "8100029:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100029-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "5821d36ed68a6d7c81185218162347ec48fb8fbfdf04e95d93927b4f7942abad"
+  },
+  "8100030:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100030-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "4a0b753bb5dd028db5d9ac8ed052f71db5c6baa56e22095f4584ff283b5f3091"
+  },
+  "8100030:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100030-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "e1b6c40dfe1d831ad01fa5318f2d8458d55dd1447b2a93c043e4fedad5e75596"
+  },
+  "8100031:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100031-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "a3765a374adec58b461a5f8d4d270c7ce5ecfc370dc9644cb428b2e7df8f9ae4"
+  },
+  "8100031:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100031-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "d22682abd9a93acc9e0c1d49bcc8f11097204d715537538be62aad0134dbc064"
+  },
+  "8100032:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100032-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "b764d6a96713ac44897036334e3e6e0dca575aa9449532aa3016ae1a56064ca5"
+  },
+  "8100032:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100032-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "048c60cb63130dde08283dc6ddd192002f696ef6a21e956a3c2a41cbe29ae7b7"
+  },
+  "8100033:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100033-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "a83a32db21236c0ba36eb95e105e810a3ee210f8016fe27efd5516802706bd8e"
+  },
+  "8100033:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100033-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "9a2d2ca5010b4477dc06136d4b3471f821870cc26d3331b24c98a280c70ce391"
+  },
+  "8100034:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100034-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "a510aab57f5c2ead1125a1234aca26073bc0b9dd5394fb22310b5b9be8af5b56"
+  },
+  "8100034:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100034-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "4ceb1eae20c945982c4af18789d277cde8f0c50686e43a079ee16414e067123a"
+  },
+  "8100035:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100035-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "4c2726b7f5ef09b4222207d5265dee33d376203186ff2454bc4a0d4e9e9ce46d"
+  },
+  "8100035:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100035-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "9d24aee28b801686bbb16074ddc488d169d688d7258e68a12e660d921b00cc70"
+  },
+  "8100036:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100036-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "e5dae2089b62ccdc6eb6e33372256b60ed11508e0d3fa204f313f3298dcac633"
+  },
+  "8100036:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100036-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "cffb021b3ee01002fb75d1d35999518a3843ed464c135800a8bbed3bd03f7248"
+  },
+  "8100037:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100037-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "fdd57e9f1443a247e98f173f03233b4cf048b5d10a9925c81c2cf0013561f0d6"
+  },
+  "8100037:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100037-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "2e1fbb37b0d8eb864f6f8d47d12f0589793ebace8b9d6d84dae8a16b6fe25f15"
+  },
+  "8100038:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100038-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "856697e5d5409c5b36661015bf7074703ffb55c2fd230798d7374b749c4ca26e"
+  },
+  "8100038:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100038-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "67ed76bebb6f5409afdca7db5dfca104e3b235e06f8dd6b42a68209c4f908422"
+  },
+  "8100039:V4_full": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100039-V4_full\\reports\\i4_energy_diagnostic.json",
+   "sha256": "5e8ecaaa29b05fb07ed70e76655b4f542bbf05403132a9fb75344b958667dd94"
+  },
+  "8100039:V4_short_leg": {
+   "path": "artifacts\\experiments\\I4-ENERGY-DIAG\\I4-ENERGY-DIAG-s8100039-V4_short_leg\\reports\\i4_energy_diagnostic.json",
+   "sha256": "b9a19c86727a0c0575eb87b497163d53e96abece239cec7f812ac7ab7c92a140"
+  }
+ },
+ "source_note": "Current source hashes are archival references, not proof of identical code at every earlier run start."
+}

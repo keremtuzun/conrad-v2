@@ -34,6 +34,7 @@ class TrajectoryConfig(ConradModel):
     sample_dt_s: float = Field(default=0.2, gt=0)
     corner_floor_fraction: float = Field(default=0.15, gt=0, le=1)
     max_yaw_rate_rps: float = Field(default=0.5, gt=0)
+    short_leg_fix: bool = False
 
 
 def derive_accel_limit(robot_config: RobotConfig, fraction: float) -> float:
@@ -94,6 +95,12 @@ class TrajectoryGenerator:
             q = final_orientation_wxyz if final_orientation_wxyz is not None else quat_from_yaw(start_yaw)
             return self.hold(pts[0], q, goal_id, trace_id)
         path, vertex_limit = _resample(pts, c.arc_step_m, v_max, c.corner_floor_fraction)
+        if c.short_leg_fix and len(path) == 2:
+            # A two-point path has zero speed at both ends. Its duration would otherwise be
+            # 2 * distance / 1e-6, even for a centimetre-scale move. Give the acceleration
+            # profile an interior vertex so a finite triangular profile can be constructed.
+            path = np.stack((path[0], (path[0] + path[1]) / 2, path[1]))
+            vertex_limit = np.full(3, v_max)
         ds = np.linalg.norm(np.diff(path, axis=0), axis=1)
         v = vertex_limit.copy()
         v[0] = v[-1] = 0.0

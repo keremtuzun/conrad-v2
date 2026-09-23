@@ -1,0 +1,329 @@
+{
+ "evidence_kind": "DEVELOPMENT_DIAGNOSTIC",
+ "partition": "new",
+ "arm": "V4_short_leg",
+ "execution_path": "Python kernel surrogate",
+ "seeds": [
+  8100000,
+  8100001,
+  8100002,
+  8100003,
+  8100004,
+  8100005,
+  8100006,
+  8100007,
+  8100008,
+  8100009,
+  8100010,
+  8100011,
+  8100012,
+  8100013,
+  8100014,
+  8100015,
+  8100016,
+  8100017,
+  8100018,
+  8100019,
+  8100020,
+  8100021,
+  8100022,
+  8100023,
+  8100024,
+  8100025,
+  8100026,
+  8100027,
+  8100028,
+  8100029,
+  8100030,
+  8100031,
+  8100032,
+  8100033,
+  8100034,
+  8100035,
+  8100036,
+  8100037,
+  8100038,
+  8100039
+ ],
+ "n_worlds": 40,
+ "meter_startup_energy_j": [
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5
+ ],
+ "completed_view_cost_error": {
+  "time_s": {
+   "n": 81,
+   "bias": 4.15991820164794,
+   "mae": 4.15991820164794,
+   "rmse": 4.867960304857797,
+   "q05": 1.690002284740686,
+   "q50": 2.782220666433415,
+   "q95": 8.276857762707671,
+   "underprediction_fraction": 1.0
+  },
+  "estimated_distance_m": {
+   "n": 81,
+   "bias": 2.3162995787605873,
+   "mae": 2.3368930126486496,
+   "rmse": 2.660348768435078,
+   "q05": 1.0250687864347172,
+   "q50": 1.7023093860458864,
+   "q95": 4.701619327494669,
+   "underprediction_fraction": 0.9876543209876543
+  },
+  "true_distance_m": {
+   "n": 81,
+   "bias": 0.8715324523729534,
+   "mae": 0.9538466538344544,
+   "rmse": 1.0657623915546193,
+   "q05": 0.48255276235485806,
+   "q50": 0.7815060278087587,
+   "q95": 1.6551326525582617,
+   "underprediction_fraction": 0.9876543209876543
+  },
+  "energy_j": {
+   "n": 81,
+   "bias": 3093.7130301826837,
+   "mae": 3093.7130301826837,
+   "rmse": 4128.134687607267,
+   "q05": 415.408570400236,
+   "q50": 1689.2712375212648,
+   "q95": 7423.393956698579,
+   "underprediction_fraction": 1.0
+  },
+  "approach_time_s": {
+   "n": 81,
+   "bias": 1.7809058559689275,
+   "mae": 1.9662907698290373,
+   "rmse": 2.8986744266566875,
+   "q05": -0.3099977152593141,
+   "q50": 0.40728913284362456,
+   "q95": 5.309972849037727,
+   "underprediction_fraction": 0.5802469135802469
+  },
+  "approach_estimated_distance_m": {
+   "n": 81,
+   "bias": 0.6387529908104201,
+   "mae": 0.8286954386031005,
+   "rmse": 1.2770104499015191,
+   "q05": -0.21987522446605823,
+   "q50": -0.02254037236925223,
+   "q95": 2.7148102044407825,
+   "underprediction_fraction": 0.4444444444444444
+  },
+  "approach_true_distance_m": {
+   "n": 81,
+   "bias": -0.08062566060791149,
+   "mae": 0.24351326037187151,
+   "rmse": 0.6012215551235048,
+   "q05": -0.4246156131083341,
+   "q50": -0.046705962378386236,
+   "q95": 0.4699327815297156,
+   "underprediction_fraction": 0.2839506172839506
+  },
+  "approach_energy_j": {
+   "n": 81,
+   "bias": 2293.0403227811476,
+   "mae": 2295.4818153112233,
+   "rmse": 3471.506167806324,
+   "q05": -7.332747577783337,
+   "q50": 708.3804172205032,
+   "q95": 6507.729531036764,
+   "underprediction_fraction": 0.5925925925925926
+  }
+ },
+ "censored_views": [
+  {
+   "seed": 8100005,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 6.071718008192207,
+   "elapsed_until_abandonment_s": 6.099999999999994,
+   "predicted_energy_j": 31.721232196612963,
+   "energy_until_abandonment_j": 379.5591149156353
+  },
+  {
+   "seed": 8100015,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 8.002894852133984,
+   "elapsed_until_abandonment_s": 4.099999999999994,
+   "predicted_energy_j": 78.0694764512156,
+   "energy_until_abandonment_j": 1185.7385689180883
+  },
+  {
+   "seed": 8100038,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 6.170054989530277,
+   "elapsed_until_abandonment_s": 6.099999999999994,
+   "predicted_energy_j": 34.081319748726635,
+   "energy_until_abandonment_j": 350.8467173549434
+  }
+ ],
+ "phase_energy_j": {
+  "hold": {
+   "n": 39,
+   "mean": 2129.1577841545663,
+   "sum": 83037.15358202808
+  },
+  "inspection_approach": {
+   "n": 33,
+   "mean": 6007.115633868301,
+   "sum": 198234.8159176539
+  },
+  "inspection_dwell": {
+   "n": 33,
+   "mean": 2078.2788771008645,
+   "sum": 68583.20294432853
+  },
+  "transit": {
+   "n": 40,
+   "mean": 7931.403218311262,
+   "sum": 317256.1287324506
+  },
+  "revisit": {
+   "n": 4,
+   "mean": 2468.9851564006085,
+   "sum": 9875.940625602434
+  }
+ },
+ "view_outcomes": {
+  "FLOWN": {
+   "views": 81,
+   "energy_j": 264901.8744607938,
+   "distance_m": 484.64824127951766,
+   "time_s": 1318.0
+  },
+  "ABANDONED_MISSION_END": {
+   "views": 3,
+   "energy_j": 1916.144401188667,
+   "distance_m": 3.1306061930825155,
+   "time_s": 16.299999999999983
+  }
+ },
+ "mission_metrics": {
+  "collisions": {
+   "n": 40,
+   "mean": 0.05
+  },
+  "corrosion_abs_error_m": {
+   "n": 40,
+   "mean": 0.003267970100358927
+  },
+  "crack_abs_error_m": {
+   "n": 40,
+   "mean": 0.05277916477271475
+  },
+  "critical_delivered": {
+   "n": 40,
+   "mean": 0.55
+  },
+  "energy_j": {
+   "n": 40,
+   "mean": 16927.181045051588
+  },
+  "hidden_state_error_final": {
+   "n": 40,
+   "mean": 0.6099267719374679
+  },
+  "hidden_state_error_improvement": {
+   "n": 40,
+   "mean": 0.3900732280625321
+  },
+  "info_per_kj": {
+   "n": 40,
+   "mean": 0.021558868732688134
+  },
+  "info_per_time": {
+   "n": 40,
+   "mean": 0.003900732280625321
+  },
+  "inspection_goal_t_s": {
+   "n": 33,
+   "mean": 33.45454545454545
+  },
+  "mission_error_reduction": {
+   "n": 40,
+   "mean": 0.3900732280625321
+  },
+  "mission_success": {
+   "n": 40,
+   "mean": 0.5
+  },
+  "observations": {
+   "n": 40,
+   "mean": 2.1
+  },
+  "patch_max_visible_fraction": {
+   "n": 40,
+   "mean": 0.48826736064882614
+  },
+  "redundant_observations": {
+   "n": 40,
+   "mean": 1.4
+  },
+  "seed": {
+   "n": 40,
+   "mean": 8100019.5
+  },
+  "target_observed": {
+   "n": 40,
+   "mean": 0.5
+  },
+  "time_s": {
+   "n": 40,
+   "mean": 100.0
+  },
+  "travel_m": {
+   "n": 40,
+   "mean": 25.36838445890808
+  },
+  "uir": {
+   "n": 40,
+   "mean": 0.0
+  }
+ },
+ "post_first_direct_revision_energy_j": {
+  "n": 22,
+  "mean": 3512.750181076027,
+  "sum": 77280.50398367259
+ },
+ "wasted_energy_j": null,
+ "wasted_energy_note": "No-value status cannot be established from a target direct revision alone"
+}

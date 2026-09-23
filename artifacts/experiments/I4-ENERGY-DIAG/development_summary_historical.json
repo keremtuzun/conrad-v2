@@ -1,0 +1,330 @@
+{
+ "evidence_kind": "DEVELOPMENT_DIAGNOSTIC",
+ "partition": "historical",
+ "execution_path": "Python kernel surrogate",
+ "seeds": [
+  8002000,
+  8002001,
+  8002002,
+  8002003,
+  8002004,
+  8002005,
+  8002006,
+  8002007,
+  8002008,
+  8002009,
+  8002010,
+  8002011,
+  8002012,
+  8002013,
+  8002014,
+  8002015,
+  8002016,
+  8002017,
+  8002018,
+  8002019,
+  8002020,
+  8002021,
+  8002022,
+  8002023,
+  8002024,
+  8002025,
+  8002026,
+  8002027,
+  8002028,
+  8002029,
+  8002030,
+  8002031,
+  8002032,
+  8002033,
+  8002034,
+  8002035,
+  8002036,
+  8002037,
+  8002038,
+  8002039
+ ],
+ "n_worlds": 40,
+ "meter_startup_energy_j": [
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5,
+  2.5
+ ],
+ "completed_view_cost_error": {
+  "time_s": {
+   "n": 64,
+   "bias": 4.492546951430324,
+   "mae": 4.533012383515546,
+   "rmse": 5.245557973346933,
+   "q05": -0.0032932552200652526,
+   "q50": 5.200651135025325,
+   "q95": 8.348946434945606,
+   "underprediction_fraction": 0.9375
+  },
+  "estimated_distance_m": {
+   "n": 64,
+   "bias": 2.5044756732127498,
+   "mae": 2.5620138513568187,
+   "rmse": 2.890234978818658,
+   "q05": -0.07904367171960008,
+   "q50": 2.795306601718846,
+   "q95": 4.334983392672015,
+   "underprediction_fraction": 0.9375
+  },
+  "energy_j": {
+   "n": 64,
+   "bias": 4607.808077146459,
+   "mae": 4607.808077146459,
+   "rmse": 5292.682945339701,
+   "q05": 606.1028248523936,
+   "q50": 5161.745403076587,
+   "q95": 8198.852487826667,
+   "underprediction_fraction": 1.0
+  },
+  "approach_time_s": {
+   "n": 57,
+   "bias": 2.4828243741053404,
+   "mae": 2.988980493527377,
+   "rmse": 3.5494193016128075,
+   "q05": -2.009576811200132,
+   "q50": 3.580318727124819,
+   "q95": 5.687636889481774,
+   "underprediction_fraction": 0.7368421052631579
+  },
+  "approach_estimated_distance_m": {
+   "n": 57,
+   "bias": 0.7792551470515051,
+   "mae": 1.289623335373152,
+   "rmse": 1.5640940469614282,
+   "q05": -1.7522262970099327,
+   "q50": 1.1405935540351058,
+   "q95": 2.3161305276314885,
+   "underprediction_fraction": 0.6491228070175439
+  },
+  "approach_energy_j": {
+   "n": 57,
+   "bias": 3901.4573001207687,
+   "mae": 3902.718405841091,
+   "rmse": 4568.570801501269,
+   "q05": -5.299637593587124,
+   "q50": 4395.755427863352,
+   "q95": 6874.500775350139,
+   "underprediction_fraction": 0.8596491228070176
+  }
+ },
+ "censored_views": [
+  {
+   "seed": 8002001,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 6.043445668861646,
+   "elapsed_until_abandonment_s": 26.099999999999994,
+   "predicted_energy_j": 31.042696052679517,
+   "energy_until_abandonment_j": 1581.2640129154697
+  },
+  {
+   "seed": 8002005,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 6.054974393675986,
+   "elapsed_until_abandonment_s": 38.099999999999994,
+   "predicted_energy_j": 31.319385448223645,
+   "energy_until_abandonment_j": 2138.112470589487
+  },
+  {
+   "seed": 8002008,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 6.04364771579169,
+   "elapsed_until_abandonment_s": 42.099999999999994,
+   "predicted_energy_j": 31.047545179000554,
+   "energy_until_abandonment_j": 2226.3647354181267
+  },
+  {
+   "seed": 8002014,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 6.057895763972735,
+   "elapsed_until_abandonment_s": 42.099999999999994,
+   "predicted_energy_j": 31.389498335345635,
+   "energy_until_abandonment_j": 2689.0752583499598
+  },
+  {
+   "seed": 8002017,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 6.026565098468154,
+   "elapsed_until_abandonment_s": 38.099999999999994,
+   "predicted_energy_j": 30.63756236323571,
+   "energy_until_abandonment_j": 2152.8720152091573
+  },
+  {
+   "seed": 8002023,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 6.062642669297854,
+   "elapsed_until_abandonment_s": 40.099999999999994,
+   "predicted_energy_j": 31.503424063148493,
+   "energy_until_abandonment_j": 2394.0116513230005
+  },
+  {
+   "seed": 8002025,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 6.05022235659975,
+   "elapsed_until_abandonment_s": 38.099999999999994,
+   "predicted_energy_j": 31.20533655839401,
+   "energy_until_abandonment_j": 2836.9440822159777
+  },
+  {
+   "seed": 8002027,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 6.035907846463651,
+   "elapsed_until_abandonment_s": 30.099999999999994,
+   "predicted_energy_j": 30.861788315127637,
+   "energy_until_abandonment_j": 1767.290093365249
+  },
+  {
+   "seed": 8002029,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 6.054844317633705,
+   "elapsed_until_abandonment_s": 44.099999999999994,
+   "predicted_energy_j": 31.316263623208936,
+   "energy_until_abandonment_j": 2584.421138352358
+  },
+  {
+   "seed": 8002030,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 6.063046437744222,
+   "elapsed_until_abandonment_s": 42.099999999999994,
+   "predicted_energy_j": 31.51311450586133,
+   "energy_until_abandonment_j": 2616.1847298190823
+  },
+  {
+   "seed": 8002032,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 6.061945673559543,
+   "elapsed_until_abandonment_s": 16.099999999999994,
+   "predicted_energy_j": 31.48669616542903,
+   "energy_until_abandonment_j": 861.684590310153
+  },
+  {
+   "seed": 8002033,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 6.079230835325866,
+   "elapsed_until_abandonment_s": 12.099999999999994,
+   "predicted_energy_j": 31.901540047820777,
+   "energy_until_abandonment_j": 1038.8820599030114
+  },
+  {
+   "seed": 8002034,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 6.0778704284062925,
+   "elapsed_until_abandonment_s": 34.099999999999994,
+   "predicted_energy_j": 31.868890281751018,
+   "energy_until_abandonment_j": 2495.313283972835
+  },
+  {
+   "seed": 8002036,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 6.0454306080342635,
+   "elapsed_until_abandonment_s": 42.099999999999994,
+   "predicted_energy_j": 31.09033459282233,
+   "energy_until_abandonment_j": 2564.0289787055754
+  },
+  {
+   "seed": 8002037,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 6.017430823366792,
+   "elapsed_until_abandonment_s": 6.099999999999994,
+   "predicted_energy_j": 30.418339760803,
+   "energy_until_abandonment_j": 394.8223563492211
+  },
+  {
+   "seed": 8002039,
+   "outcome": "ABANDONED_MISSION_END",
+   "predicted_time_s": 6.0659135402802695,
+   "elapsed_until_abandonment_s": 26.099999999999994,
+   "predicted_energy_j": 31.581924966726476,
+   "energy_until_abandonment_j": 1461.24440490067
+  }
+ ],
+ "phase_energy_j": {
+  "hold": {
+   "n": 26,
+   "mean": 2140.7231467121487,
+   "sum": 55658.80181451587
+  },
+  "inspection_approach": {
+   "n": 38,
+   "mean": 6530.4196667054985,
+   "sum": 248155.94733480897
+  },
+  "inspection_dwell": {
+   "n": 38,
+   "mean": 2518.2561407070225,
+   "sum": 95693.73334686685
+  },
+  "transit": {
+   "n": 40,
+   "mean": 7991.496180669298,
+   "sum": 319659.84722677193
+  },
+  "revisit": {
+   "n": 4,
+   "mean": 2309.1627791380724,
+   "sum": 9236.65111655229
+  }
+ },
+ "view_outcomes": {
+  "FLOWN": {
+   "views": 64,
+   "energy_j": 312047.1648199765,
+   "distance_m": 540.9726401506914,
+   "time_s": 1306.0
+  },
+  "ABANDONED_MISSION_END": {
+   "views": 16,
+   "energy_j": 31802.515861699332,
+   "distance_m": 76.10933655331017,
+   "time_s": 517.6000000000001
+  }
+ },
+ "post_first_direct_revision_energy_j": {
+  "n": 21,
+  "mean": 3901.0907744491838,
+  "sum": 81922.90626343287
+ },
+ "wasted_energy_j": null,
+ "wasted_energy_note": "No-value status cannot be established from a target direct revision alone"
+}

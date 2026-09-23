@@ -460,9 +460,13 @@ class Deliberation:
             # refusal here would delete exactly the candidates the mission needs.
             dist *= self.cfg.view_execution.blocked_cost_multiplier
             risk = max(risk, 0.2)
-        return ResourceCost(
-            time_s=dist / self.cfg.cruise_speed_mps, energy_j=ENERGY_PER_M_J * dist, risk=risk, travel_m=dist
-        )
+        correction = self.cfg.i4_cost_calibration
+        if correction.enabled:
+            time_s, energy_j = correction.estimate(dist, self.cfg.cruise_speed_mps)
+        else:
+            time_s = dist / self.cfg.cruise_speed_mps
+            energy_j = ENERGY_PER_M_J * dist
+        return ResourceCost(time_s=time_s, energy_j=energy_j, risk=risk, travel_m=dist)
 
     def corridor_blocked(self, p: np.ndarray, q: np.ndarray) -> bool:
         """Does the believed straight corridor from ``p`` to ``q`` cross OBSERVED occupied, unregistered cells?

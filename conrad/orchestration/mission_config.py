@@ -8,6 +8,7 @@ implementation_status: EXPERIMENTAL_CANDIDATE
 
 from __future__ import annotations
 
+import math
 from typing import Any
 
 from pydantic import Field
@@ -120,9 +121,30 @@ class ViewExecutionSettings(ConradModel):
     blocked_cost_multiplier: float = Field(default=2.0, ge=1.0)
 
 
+class I4CostCalibration(ConradModel):
+    """Opt-in belief-side view-cost correction, fitted only from development execution."""
+
+    enabled: bool = False
+    time_offset_s: float = Field(default=0.0, ge=0, allow_inf_nan=False)
+    time_scale: float = Field(default=1.0, ge=0, allow_inf_nan=False)
+    energy_offset_j: float = Field(default=0.0, ge=0, allow_inf_nan=False)
+    energy_per_m_j: float = Field(default=40.0, ge=0, allow_inf_nan=False)
+
+    def estimate(self, distance_m: float, cruise_speed_mps: float) -> tuple[float, float]:
+        if not math.isfinite(distance_m) or not math.isfinite(cruise_speed_mps) or distance_m < 0 or cruise_speed_mps <= 0:
+            raise ValueError("invalid navigation geometry or cruise speed")
+        time_s = self.time_offset_s + self.time_scale * distance_m / cruise_speed_mps
+        energy_j = self.energy_offset_j + self.energy_per_m_j * distance_m
+        if not math.isfinite(time_s) or not math.isfinite(energy_j):
+            raise ValueError("cost calibration produced a nonfinite estimate")
+        return time_s, energy_j
+
+
 class MissionRuntimeConfig(ConradModel):
     duration_s: float = Field(default=90.0, gt=0)
     control_period_s: float = Field(default=0.05, gt=0)
+    trajectory_short_leg_fix: bool = False
+    i4_cost_calibration: I4CostCalibration = I4CostCalibration()
     decision_period_s: float = Field(default=2.0, gt=0)
     decision_history_s: float = Field(default=20.0, gt=0, description="decision history H_t window")
     comms_period_s: float = Field(default=1.0, gt=0)

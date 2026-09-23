@@ -1,0 +1,294 @@
+{
+ "arm_runtime": {
+  "A-B0_random": {
+   "planner": "A-B0_random"
+  },
+  "A-B1_fixed_inspection": {
+   "planner": "A-B1_fixed_inspection"
+  },
+  "A-B2_coverage": {
+   "planner": "A-B2_coverage"
+  },
+  "V4_combined": {
+   "i4_cost_calibration": {
+    "enabled": true,
+    "energy_offset_j": 1600.0,
+    "time_offset_s": 2.8
+   },
+   "planner": "V4",
+   "trajectory_short_leg_fix": true,
+   "view_execution": {
+    "budget_from_mission_duration": true,
+    "enabled": true
+   }
+  },
+  "V4_energy": {
+   "i4_cost_calibration": {
+    "enabled": true,
+    "energy_offset_j": 1600.0
+   },
+   "planner": "V4",
+   "view_execution": {
+    "enabled": true
+   }
+  },
+  "V4_full": {
+   "planner": "V4",
+   "view_execution": {
+    "enabled": true
+   }
+  },
+  "V4_horizon": {
+   "planner": "V4",
+   "v4": {
+    "budget_reserve_s": 2.8
+   },
+   "view_execution": {
+    "budget_from_mission_duration": true,
+    "enabled": true
+   }
+  },
+  "V4_short_leg": {
+   "planner": "V4",
+   "trajectory_short_leg_fix": true,
+   "view_execution": {
+    "enabled": true
+   }
+  },
+  "V4_time": {
+   "i4_cost_calibration": {
+    "enabled": true,
+    "time_offset_s": 2.8
+   },
+   "planner": "V4",
+   "view_execution": {
+    "enabled": true
+   }
+  }
+ },
+ "arms": [
+  "V4_full",
+  "V4_short_leg",
+  "V4_time",
+  "V4_energy",
+  "V4_horizon",
+  "V4_combined",
+  "A-B1_fixed_inspection",
+  "A-B0_random",
+  "A-B2_coverage"
+ ],
+ "calibration_offsets": {
+  "energy_offset_j": 1600.0,
+  "time_offset_s": 2.8
+ },
+ "evidence_kind": "DEVELOPMENT_SCREEN",
+ "execution_path": "Python kernel surrogate",
+ "means": {
+  "A-B0_random": {
+   "ABANDONED_MISSION_END": 0.3,
+   "accepted_views": 2.6,
+   "collisions": 0.0,
+   "energy_j": 17895.474747530363,
+   "hidden_state_error_improvement": 0.3228544891730819,
+   "info_per_kj": 0.01828574748380698,
+   "info_per_time": 0.0032285448917308184,
+   "observations": 2.6,
+   "redundant_observations": 2.1,
+   "target_observed": 0.4,
+   "travel_m": 25.75654898575646,
+   "views_flown": 1.5
+  },
+  "A-B1_fixed_inspection": {
+   "ABANDONED_MISSION_END": 0.0,
+   "accepted_views": 3.6,
+   "collisions": 0.0,
+   "energy_j": 17045.047898204553,
+   "hidden_state_error_improvement": 0.15921429982350538,
+   "info_per_kj": 0.008621955947792668,
+   "info_per_time": 0.0015921429982350538,
+   "observations": 3.6,
+   "redundant_observations": 3.4,
+   "target_observed": 0.2,
+   "travel_m": 24.399400555967123,
+   "views_flown": 1.1
+  },
+  "A-B2_coverage": {
+   "ABANDONED_MISSION_END": 0.1,
+   "accepted_views": 3.5,
+   "collisions": 0.2,
+   "energy_j": 18437.461535832168,
+   "hidden_state_error_improvement": 0.3017344376498389,
+   "info_per_kj": 0.015947671989418346,
+   "info_per_time": 0.0030173443764983893,
+   "observations": 3.5,
+   "redundant_observations": 3.1,
+   "target_observed": 0.4,
+   "travel_m": 26.639466435476105,
+   "views_flown": 1.5
+  },
+  "V4_combined": {
+   "ABANDONED_MISSION_END": 0.2,
+   "accepted_views": 2.3,
+   "collisions": 0.1,
+   "energy_j": 17990.075419248577,
+   "hidden_state_error_improvement": 0.4949603658750745,
+   "info_per_kj": 0.027825132976902422,
+   "info_per_time": 0.004949603658750745,
+   "observations": 2.3,
+   "redundant_observations": 1.4,
+   "target_observed": 0.6,
+   "travel_m": 26.480609358087214,
+   "views_flown": 2.1
+  },
+  "V4_energy": {
+   "ABANDONED_MISSION_END": 0.4,
+   "accepted_views": 1.8,
+   "collisions": 0.1,
+   "energy_j": 17994.513284646055,
+   "hidden_state_error_improvement": 0.489702712649463,
+   "info_per_kj": 0.02748957689443877,
+   "info_per_time": 0.00489702712649463,
+   "observations": 1.8,
+   "redundant_observations": 1.1,
+   "target_observed": 0.6,
+   "travel_m": 26.48201575625921,
+   "views_flown": 1.4
+  },
+  "V4_full": {
+   "ABANDONED_MISSION_END": 0.3,
+   "accepted_views": 1.9,
+   "collisions": 0.0,
+   "energy_j": 17104.96204467699,
+   "hidden_state_error_improvement": 0.489702712649463,
+   "info_per_kj": 0.02748957689443877,
+   "info_per_time": 0.00489702712649463,
+   "observations": 1.9,
+   "redundant_observations": 1.2,
+   "target_observed": 0.6,
+   "travel_m": 25.589699167663735,
+   "views_flown": 1.6
+  },
+  "V4_horizon": {
+   "ABANDONED_MISSION_END": 0.3,
+   "accepted_views": 1.9,
+   "collisions": 0.0,
+   "energy_j": 17104.96204467699,
+   "hidden_state_error_improvement": 0.489702712649463,
+   "info_per_kj": 0.02748957689443877,
+   "info_per_time": 0.00489702712649463,
+   "observations": 1.9,
+   "redundant_observations": 1.2,
+   "target_observed": 0.6,
+   "travel_m": 25.589699167663735,
+   "views_flown": 1.6
+  },
+  "V4_short_leg": {
+   "ABANDONED_MISSION_END": 0.1,
+   "accepted_views": 2.3,
+   "collisions": 0.0,
+   "energy_j": 17128.52641717354,
+   "hidden_state_error_improvement": 0.4949603658750745,
+   "info_per_kj": 0.027825132976902422,
+   "info_per_time": 0.004949603658750745,
+   "observations": 2.3,
+   "redundant_observations": 1.4,
+   "target_observed": 0.6,
+   "travel_m": 25.609106160464346,
+   "views_flown": 2.2
+  },
+  "V4_time": {
+   "ABANDONED_MISSION_END": 0.3,
+   "accepted_views": 1.9,
+   "collisions": 0.0,
+   "energy_j": 17104.96204467699,
+   "hidden_state_error_improvement": 0.489702712649463,
+   "info_per_kj": 0.02748957689443877,
+   "info_per_time": 0.00489702712649463,
+   "observations": 1.9,
+   "redundant_observations": 1.2,
+   "target_observed": 0.6,
+   "travel_m": 25.589699167663735,
+   "views_flown": 1.6
+  }
+ },
+ "note": "Ten-world development screen only; no formal or validation claim",
+ "paired_vs_v4": {
+  "A-B0_random": {
+   "defect_read_difference": -0.19999999999999996,
+   "info_per_kj_95pct_development_ci": [
+    -0.022848153227973005,
+    0.0009135354237221206
+   ],
+   "info_per_kj_mean_difference": -0.009203829410631794
+  },
+  "A-B1_fixed_inspection": {
+   "defect_read_difference": -0.39999999999999997,
+   "info_per_kj_95pct_development_ci": [
+    -0.03286067404020741,
+    -0.005987068426730023
+   ],
+   "info_per_kj_mean_difference": -0.018867620946646103
+  },
+  "A-B2_coverage": {
+   "defect_read_difference": -0.19999999999999996,
+   "info_per_kj_95pct_development_ci": [
+    -0.027311670472756056,
+    0.004183848161925077
+   ],
+   "info_per_kj_mean_difference": -0.011541904905020427
+  },
+  "V4_combined": {
+   "defect_read_difference": 0.0,
+   "info_per_kj_95pct_development_ci": [
+    0.0,
+    0.0010066682473909474
+   ],
+   "info_per_kj_mean_difference": 0.0003355560824636492
+  },
+  "V4_energy": {
+   "defect_read_difference": 0.0,
+   "info_per_kj_95pct_development_ci": [
+    0.0,
+    0.0
+   ],
+   "info_per_kj_mean_difference": 0.0
+  },
+  "V4_horizon": {
+   "defect_read_difference": 0.0,
+   "info_per_kj_95pct_development_ci": [
+    0.0,
+    0.0
+   ],
+   "info_per_kj_mean_difference": 0.0
+  },
+  "V4_short_leg": {
+   "defect_read_difference": 0.0,
+   "info_per_kj_95pct_development_ci": [
+    0.0,
+    0.0010066682473909474
+   ],
+   "info_per_kj_mean_difference": 0.0003355560824636492
+  },
+  "V4_time": {
+   "defect_read_difference": 0.0,
+   "info_per_kj_95pct_development_ci": [
+    0.0,
+    0.0
+   ],
+   "info_per_kj_mean_difference": 0.0
+  }
+ },
+ "seeds": [
+  8100000,
+  8100001,
+  8100002,
+  8100003,
+  8100004,
+  8100005,
+  8100006,
+  8100007,
+  8100008,
+  8100009
+ ],
+ "wasted_energy_j": null
+}

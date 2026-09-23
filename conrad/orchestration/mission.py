@@ -109,7 +109,10 @@ class MissionRuntime:
             context.water_surface_z_m,
             control_period_s=config.control_period_s,
             safety=SafetyConfig(boundary=boundary),
-            trajectory=TrajectoryConfig(cruise_speed_fraction=config.cruise_speed_fraction),
+            trajectory=TrajectoryConfig(
+                cruise_speed_fraction=config.cruise_speed_fraction,
+                short_leg_fix=config.trajectory_short_leg_fix,
+            ),
         )
         # NAVIGATION MAP. V3 planned over the SURVEYED REGISTRY DESIGN alone, so the global planner routed
         # straight through structure that is not in the registry even after Model2S had observed it, and the

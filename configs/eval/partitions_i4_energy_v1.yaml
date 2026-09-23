@@ -1,0 +1,26 @@
+# New I4 energy-efficiency research cycle. Created before any 810xxxx world is built.
+# Same ACTIVE_INSPECTION_OCCLUDED_V1 substantive family and I4-OCCLUDED mission scenario.
+# Digest pinned in conrad/evaluation/partitions.py. Do not edit after first development run.
+version: partitions-i4-energy-v1-2026-09-23
+scenario: I4-OCCLUDED
+families: [pipeline_with_supports]
+ood_families: [bent_pipeline]
+world_seeds:
+  development: {explicit: [], range: [8100000, 8100040]}
+  validation: {explicit: [], range: [8100100, 8100140]}
+  final_test: {explicit: [], range: [8100200, 8100320]}
+  ood_test: {explicit: [], range: [8100400, 8100420]}
+final_pool_note: >-
+  120 untouched final worlds are reserved, not yet authorized for flight. The fixed final n and exact prefix
+  must be declared prospectively after development and validation power analysis, before any final flight.
+  Any unused final worlds remain unread forever after the one formal attempt. No final world is used for
+  design, calibration, variant selection or sample-size adaptation.
+historical_exclusions:
+  - {range: [8000000, 8000320], owner: old I4 family and V4 development/validation/final/OOD}
+  - {range: [8001000, 8001060], owner: old I4 replication final}
+  - {range: [8002000, 8002320], owner: old V4 research splits, including unread remainder and OOD}
+  - {range: [7800000, 7810020], owner: earlier Unity and flagship gates}
+  - {range: [5300000, 7900020], owner: historical mission, I5, I7 and other partitions}
+purpose_note: >-
+  Development is for fitting and ablations. Validation is for the single frozen selection and power
+  estimate. Final and OOD are inaccessible in a design, tuning or selection purpose scope.

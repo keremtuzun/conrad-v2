@@ -55,3 +55,15 @@ def test_degenerate_route_is_a_hold():
     g, ids = gen()
     traj = g.generate(np.array([[1, 2, -3.0]]), ids.new(), ids.new(), start_yaw=0.3)
     assert len(traj.points) == 1 and traj.planner.endswith(":hold")
+
+
+def test_short_leg_opt_in_uses_finite_triangular_profile():
+    g, ids = gen(short_leg_fix=True)
+    traj = g.generate(np.array([[0, 0, -5], [0.03, 0, -5]]), ids.new(), ids.new(), start_yaw=0.0)
+    times = np.array([point.t_s for point in traj.points])
+    speeds = np.array([np.linalg.norm(point.linear_velocity_mps) for point in traj.points])
+    assert 0 < times[-1] < 10
+    assert np.all(np.diff(times) > 0)
+    assert speeds[0] == 0 and speeds[-1] == 0
+    assert speeds.max() > 0
+    assert traj.points[-1].pose.position_m == pytest.approx((0.03, 0, -5))

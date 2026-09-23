@@ -104,6 +104,10 @@ I4_OCCLUDED_V2_DOMAIN = "i4_occluded_v2"
 I4_MCBR_V4_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_i4_mcbr_v4.yaml"
 I4_MCBR_V4_PARTITIONS_SHA256 = "17490d3dbcc85673ebe624e6f04357f42b87a2316d431d2982af58e40e864457"
 I4_MCBR_V4_DOMAIN = "i4_mcbr_v4"
+# New I4 energy-efficiency cycle. The V4 final and its unread remainder stay excluded.
+I4_ENERGY_V1_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_i4_energy_v1.yaml"
+I4_ENERGY_V1_PARTITIONS_SHA256 = "f608b278eee3200f51f6b695f3adda0b18152c7d965b02b57c5bc1b6884dec1f"
+I4_ENERGY_V1_DOMAIN = "i4_energy_v1"
 # Gate I7 surrogate missions, version 2 (COM-I7-E003/E004): the v1 final seeds 5300000-5300004, and the whole
 # mission final_test range they come from, are SPENT by COM-I7-E001/E002, and the 2026-09-20 BAAC scheduler
 # repair made that evidence stale. Pinned on 2026-09-20 before any run on its final_test seeds.
@@ -1074,6 +1078,64 @@ def _i4_mcbr_v4_split(part: Partition) -> Split:
     )
 
 
+def load_i4_energy_v1(
+    path: Path = I4_ENERGY_V1_PARTITIONS_PATH, *, verify_digest: bool = True
+) -> dict[str, Any]:
+    """Digest-pinned new I4 cycle; reject collisions with every existing partition YAML."""
+    digest = canonical_digest(path)
+    if verify_digest and digest != I4_ENERGY_V1_PARTITIONS_SHA256:
+        raise PartitionIntegrityError(
+            f"{path} changed after freezing: digest {digest} != pinned {I4_ENERGY_V1_PARTITIONS_SHA256}"
+        )
+    raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+    seeds = raw["world_seeds"]
+    if set(seeds) != {part.value for part in Partition}:
+        raise PartitionIntegrityError("i4_energy_v1 must declare all four splits")
+    by_part = {part: set(_seeds(seeds[part.value])) for part in Partition}
+    mine = set().union(*by_part.values())
+    if len(mine) != sum(map(len, by_part.values())):
+        raise PartitionIntegrityError("i4_energy_v1 splits overlap")
+    if set(raw["families"]) & set(raw["ood_families"]):
+        raise PartitionIntegrityError("i4_energy_v1 OOD family overlaps development family")
+
+    def specs(value: Any) -> Iterator[dict[str, Any]]:
+        if isinstance(value, dict):
+            if "range" in value and isinstance(value["range"], list):
+                yield value
+            else:
+                for child in value.values():
+                    yield from specs(child)
+        elif isinstance(value, list):
+            for child in value:
+                yield from specs(child)
+
+    for other_path in sorted((REPO_ROOT / "configs" / "eval").glob("partitions*.yaml")):
+        if other_path.resolve() == path.resolve():
+            continue
+        other = yaml.safe_load(other_path.read_text(encoding="utf-8"))
+        if not isinstance(other, dict):
+            continue
+        for spec in specs(other):
+            lo, hi = map(int, spec["range"])
+            if any(lo <= seed < hi for seed in mine) or mine & {int(s) for s in spec.get("explicit", [])}:
+                raise PartitionIntegrityError(f"i4_energy_v1 seed collides with {other_path}")
+    return {"raw": raw, "digest": digest}
+
+
+def _i4_energy_v1_split(part: Partition) -> Split:
+    loaded = load_i4_energy_v1()
+    raw = loaded["raw"]
+    fams = raw["ood_families"] if part is Partition.OOD_TEST else raw["families"]
+    return Split(
+        domain=I4_ENERGY_V1_DOMAIN,
+        partition=part,
+        world_seeds=_seeds(raw["world_seeds"][part.value]),
+        families=tuple(fams),
+        replicates_per_world=1,
+        digest=loaded["digest"],
+    )
+
+
 def load_i7_v3(path: Path = I7_V3_PARTITIONS_PATH, *, verify_digest: bool = True) -> dict[str, Any]:
     """The gate I7 surrogate partition v3; disjoint from every other partition file and reserved range."""
     digest = canonical_digest(path)
@@ -1142,6 +1204,8 @@ def split(domain: str, partition: str | Partition, purpose: str | Purpose) -> Sp
         return _i4_occluded_v2_split(part)
     if domain == I4_MCBR_V4_DOMAIN:
         return _i4_mcbr_v4_split(part)
+    if domain == I4_ENERGY_V1_DOMAIN:
+        return _i4_energy_v1_split(part)
     if domain == I7_V2_DOMAIN:
         return _i7_v2_split(part)
     if domain == I7_V3_DOMAIN:
@@ -1167,6 +1231,9 @@ def partition_of(domain: str, seed: int) -> Partition | None:
     if domain == I4_MCBR_V4_DOMAIN:
         v4 = load_i4_mcbr_v4()["raw"]["world_seeds"]
         return next((Partition(p) for p, spec in v4.items() if int(seed) in _seeds(spec)), None)
+    if domain == I4_ENERGY_V1_DOMAIN:
+        energy = load_i4_energy_v1()["raw"]["world_seeds"]
+        return next((Partition(p) for p, spec in energy.items() if int(seed) in _seeds(spec)), None)
     if domain == I5_DOMAIN:
         i5 = load_i5()["raw"]["world_seeds"]
         return next((Partition(p) for p, spec in i5.items() if int(seed) in _seeds(spec)), None)

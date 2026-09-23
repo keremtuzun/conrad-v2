@@ -47,3 +47,6 @@ artifacts/experiments/ID-REHEARSAL-E001/delivery/
 
 # harness-check run bundles: diagnostic output, not gate evidence (511 MB)
 artifacts/experiments/I7-UNITY-HARNESS-CHECK/runs/
+
+# I4 energy development run bundles are local replay traces; commit their compact summaries only.
+artifacts/experiments/I4-ENERGY-DIAG/I4-ENERGY-DIAG-s*/
