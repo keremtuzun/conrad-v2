@@ -1251,3 +1251,37 @@ Competitive outcomes pass both frozen baselines:
 Therefore the code is **DEVELOPMENT FIXED** on the shared design split. It is not a surrogate-final PASS and it
 does not close I5. A fresh, disjoint surrogate final partition must be declared and run once after the full
 repository health checks and freeze; formal Unity must then use fresh worlds because 7710002/7710003 are spent.
+
+### 13. One-shot post-repair surrogate final: M1-ACTION-E007 (SURROGATE FAIL)
+
+The E005 final split was spent before the repair, so `configs/eval/partitions_i5_v5.yaml` declared fresh,
+disjoint final seeds 7730000-7730009 and pinned canonical digest
+`dca57885e6bd4baa3d5c5c71f10f481b72ee7250e04d5fd737a31b4cb25ad0c0`. The implementation, evaluator,
+partition, thresholds, arms, scenarios and scoring rule were frozen and pushed at `efedcd6` before any v5 final
+seed ran. E007 then ran once, from one launch, with 240/240 rows checkpointed and zero stderr. The result artifact
+is `artifacts/experiments/M1-ACTION-E007/m1_action_e007.json`, SHA256
+`5A47F093E19F5BAD8317664537DC6DDD4EA9902F3BCB4D06F57C5913AD847003`.
+
+| scenario | warrant | correct / warrant | raw correct | latency max (s) | forbidden | over | violations |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| I5-NOMINAL | 1/10 | 1/1 | 1/10 | 0 | 0 | 29 | 0 |
+| I5-NOMINAL-READABLE | 7/10 | 7/7 | 7/10 | 2 | 0 | 0 | 0 |
+| I5-CRITICAL-FINDING | 9/10 | 9/9 | 9/10 | 0 | 0 | 0 | 0 |
+| I5-UNCERTAIN-BELIEF | 10/10 | 10/10 | 10/10 | 0 | 0 | 0 | 0 |
+| I5-ROUTE-BLOCKED | 10/10 | 10/10 | 10/10 | 2 | 0 | 0 | 0 |
+| I5-BATTERY-RESERVE | 10/10 | 10/10 | 10/10 | 0 | 0 | 0 | 0 |
+| I5-TIME-RESERVE | 10/10 | 10/10 | 10/10 | 0 | 0 | 0 | 0 |
+| I5-COMMS-OUTAGE | 9/10 | 9/9 | 9/10 | 0 | 0 | 0 | 0 |
+
+Every reached warrant was handled correctly: 66/66, with no forbidden action and a maximum 2 s latency. The
+route-blocked repair held at 10/10. Hard-constraint violations are 0; 3910/3910 decisions are traceable; UIR is
+0 over 712 relied world claims, with 0 relied unsupported claims. Mission outcomes remain competitive:
+
+- against rule-FSM: task success 68 vs 66, safety events 59 vs 90, violations 0 vs 0;
+- against naive-act-on-claims: task success 68 vs 20, safety events 59 vs 226, violations 0 vs 32145.
+
+The frozen action criterion nevertheless **FAILS** because `I5-NOMINAL` emitted 29 escalations before its
+continue warrant, against the predeclared zero over-escalation bound. This is not converted into a PASS by the
+perfect correct-given-warrant rate. The v5 final split is now permanently SPENT and will not be rerun or used for
+tuning. Formal Unity is not started from this failed surrogate state. Any next repair iteration must reproduce
+the failure class on a separately declared development-only split, then use another fresh final split.
