@@ -1,0 +1,21 @@
+# Full I5 v6 DEVELOPMENT verification after explicit acquisition-status and route-precedence repair.
+experiment_id: M1-ACTION-E008-DEVELOPMENT-R2
+hypothesis: >-
+  Model 1 receives both active acquisition and finite acquisition-unavailable runtime state. It postpones
+  attempt exhaustion while a same-target view is active, and after a finite series of infeasible plans waits
+  explicitly in the existing hold state without an evidence-request loop, operator escalation, or retreat.
+  A grounded blocker on the active route is replanned before pending-report retries. Calibration freshness,
+  hard constraints, grounding, MCBR feasibility rules, and baseline implementations remain unchanged.
+partition: development
+partition_domain: i5_mission_v6
+seeds: [7740000, 7740001, 7740002, 7740003, 7740004, 7740005, 7740006, 7740007, 7740008, 7740009]
+scenarios: [I5-NOMINAL, I5-NOMINAL-READABLE, I5-CRITICAL-FINDING, I5-UNCERTAIN-BELIEF, I5-ROUTE-BLOCKED,
+            I5-BATTERY-RESERVE, I5-TIME-RESERVE, I5-COMMS-OUTAGE]
+arms: [egdc_structured, rule_fsm, naive_act_on_claims]
+latency_budget_s: {default: 4.0, I5-NOMINAL: 20.0, I5-NOMINAL-READABLE: 20.0}
+success_floor: 0.9
+uir_max: 0.0
+contact_clearance_m: 0.3
+workers: 6
+keep_bundles: false
+limitations: [synthetic data only, python L1 kernel, development evidence only]

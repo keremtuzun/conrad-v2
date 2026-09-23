@@ -1,0 +1,18 @@
+# Development-only verification of acquisition-unavailable termination and route-blocked precedence.
+experiment_id: M1-ACTION-E008-DEVELOPMENT-DIAG4
+hypothesis: >-
+  A finite series of failed acquisition plans becomes an explicit runtime availability status and selects safe
+  return rather than repeated request or operator escalation, while a grounded active-route blocker is replanned
+  before pending-report retries. Attempts exhausted without explicit planner unavailability still escalate.
+partition: development
+partition_domain: i5_mission_v6
+seeds: [7740000, 7740001, 7740003]
+scenarios: [I5-NOMINAL-READABLE, I5-ROUTE-BLOCKED]
+arms: [egdc_structured]
+latency_budget_s: {default: 4.0, I5-NOMINAL: 20.0, I5-NOMINAL-READABLE: 20.0}
+success_floor: 0.9
+uir_max: 0.0
+contact_clearance_m: 0.3
+workers: 6
+keep_bundles: true
+limitations: [synthetic data only, python L1 kernel, development verification only]

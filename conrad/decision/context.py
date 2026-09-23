@@ -84,6 +84,11 @@ class DecisionContext(ConradModel):
         "not reported (then only the window is available).",
     )
     active_information_needs: tuple[InformationNeed, ...] = ()
+    unavailable_information_targets: dict[UUID, str] = Field(
+        default_factory=dict,
+        description="Runtime-reported terminal acquisition status by belief target. This reports planner/"
+        "execution availability only; it never reports world truth or whether the requirement is satisfied.",
+    )
     available_modalities: tuple[str, ...] = Field(
         default=(), description="sensing modalities currently usable (from capabilities/health)"
     )
@@ -114,6 +119,22 @@ class DecisionContext(ConradModel):
             and d.executed is not False
             and wanted.intersection(d.target_belief_ids)
         )
+
+    def information_in_flight(self, belief_ids: tuple[UUID, ...]) -> bool:
+        """Whether an accepted, active information need is acquiring any requested belief.
+
+        The runtime supplies only needs attached to its currently active acquisition goal. This is
+        execution state, not a claim that the acquisition succeeded, and therefore only postpones the
+        attempts-exhausted fallback while that goal remains active.
+        """
+        wanted = set(belief_ids)
+        return bool(wanted) and any(
+            wanted.intersection(need.target_belief_ids) for need in self.active_information_needs
+        )
+
+    def information_unavailable(self, belief_ids: tuple[UUID, ...]) -> bool:
+        """Whether the runtime explicitly exhausted acquisition for any requested belief."""
+        return any(belief_id in self.unavailable_information_targets for belief_id in belief_ids)
 
     def request_answered(self, belief_id: UUID, revision: int) -> bool:
         """Has an executed information request on this belief been answered by a newer revision?

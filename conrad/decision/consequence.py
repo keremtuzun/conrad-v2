@@ -202,8 +202,15 @@ class ConsequenceEstimator:
             mission = 1.0 if self._must_retreat(ctx) else -0.5
             if kind is ActionType.ABORT_MISSION:
                 mission -= 0.1
+        elif kind is ActionType.WAIT:
+            # Once the runtime has explicitly exhausted the finite acquisition budget, holding position is
+            # the bounded safe response. It neither invents evidence nor turns a nominal information gap into
+            # an operator alert/retreat, and it cannot recreate the unexecutable REQUEST_INFORMATION loop.
+            mission = 1.0 if ctx.unavailable_information_targets else 0.0
         elif kind in (ActionType.TRANSMIT_INFORMATION, ActionType.STORE_AND_FORWARD):
-            mission = 0.3
+            # A grounded obstacle on the active route must be handled before a report is retried. Reporting
+            # remains available and regains its normal value as soon as the detour removes the blocker.
+            mission = 0.0 if graph.route_blocking_claim_ids else 0.3
             if action.parameters.get("intent") == "REPORT_FINDING":
                 # an unreported finding delivered (or durably queued, ch18 'Store-and-forward') is worth its
                 # requirement's consequence; the value decays once a report of it was already issued
@@ -251,6 +258,8 @@ class ConsequenceEstimator:
         A U_E excess that comes only from the uncalibrated-source floor is a calibration gap, not OOD: an
         independent confirming observation is an autonomous path (see ``claims.calibration_only_epistemic``).
         """
+        if ctx.information_in_flight(a.target_belief_ids):
+            return False
         tries = ctx.attempts_on(a.target_belief_ids, ActionType.REQUEST_INFORMATION)
         if tries >= self.config.max_information_attempts:
             return True

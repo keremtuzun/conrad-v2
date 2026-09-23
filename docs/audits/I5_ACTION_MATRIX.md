@@ -1285,3 +1285,30 @@ continue warrant, against the predeclared zero over-escalation bound. This is no
 perfect correct-given-warrant rate. The v5 final split is now permanently SPENT and will not be rerun or used for
 tuning. Formal Unity is not started from this failed surrogate state. Any next repair iteration must reproduce
 the failure class on a separately declared development-only split, then use another fresh final split.
+
+## 2026-09-23 — v6 repair iteration: execution-state closure
+
+The frozen v5 surrogate final (`M1-ACTION-E007`) failed with 29 nominal over-escalations. Its
+`7730000..7730009` seeds remain spent. A disjoint v6 development/final partition was declared before use:
+development `7740000..7740009`, sealed final `7750000..7750009`.
+
+The first v6 diagnostic reproduced the premature-escalation class: request attempts were exhausted while an
+accepted same-target information-acquisition goal was still executing. Model 1's existing
+`active_information_needs` input was never populated. The repair now carries the accepted `InformationNeed`
+from plan adoption through the active executive goal into `DecisionContext`; attempt exhaustion is postponed
+only while that exact target is in flight. Unit tests pin matching, disjoint-target, and post-goal behavior.
+
+The first full v6 development matrix then exposed two further development failures rather than a pass:
+
+- `I5-NOMINAL-READABLE` seed 7740000: three `NO_FEASIBLE_OBSERVATION` plans were followed by eight operator
+  escalations. The request counter was standing in for missing planner/execution availability state.
+- `I5-ROUTE-BLOCKED` seeds 7740001 and 7740003: a grounded route-block warrant was delayed 6 s and 22 s while
+  pending reports outranked replan, beyond the declared 4 s budget.
+
+The principled follow-up exposes finite acquisition-unavailable status by belief ID without world truth. After
+Model 1's finite budget yields no feasible plan, it stops requesting and emits the explicit bounded hold action
+`WAIT:INFORMATION_ACQUISITION_UNAVAILABLE`; attempts exhausted without this runtime status retain the existing
+operator-escalation behavior. Separately, a grounded active-route blocker suppresses the report retry's mission
+bonus until replan removes the blocker. DIAG6 measured zero nominal escalation/retreat actions, no post-budget
+evidence requests, route replans at 0 s latency in all three selected cases, zero violations, traceability 1.0,
+and UIR 0. This is DEVELOPMENT diagnosis only; full development, surrogate final, and formal Unity remain open.

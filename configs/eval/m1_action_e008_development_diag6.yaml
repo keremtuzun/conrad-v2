@@ -1,0 +1,18 @@
+# Development-only verification of finite unavailable-acquisition hold and route-blocked precedence.
+experiment_id: M1-ACTION-E008-DEVELOPMENT-DIAG6
+hypothesis: >-
+  After Model 1's finite acquisition budget yields no feasible observation, an explicit unavailable status
+  selects WAIT in the existing hold state, ending requests without escalation or retreat; a grounded route
+  blocker is replanned before pending-report retries. Attempts-only dead ends remain conservative.
+partition: development
+partition_domain: i5_mission_v6
+seeds: [7740000, 7740001, 7740003]
+scenarios: [I5-NOMINAL-READABLE, I5-ROUTE-BLOCKED]
+arms: [egdc_structured]
+latency_budget_s: {default: 4.0, I5-NOMINAL: 20.0, I5-NOMINAL-READABLE: 20.0}
+success_floor: 0.9
+uir_max: 0.0
+contact_clearance_m: 0.3
+workers: 6
+keep_bundles: true
+limitations: [synthetic data only, python L1 kernel, development verification only]

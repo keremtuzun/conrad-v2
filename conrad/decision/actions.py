@@ -88,7 +88,22 @@ class CandidateActionGenerator:
             if assessment.satisfied or not assessment.matters:
                 continue
             out.extend(self._for_assessment(assessment, requirements[assessment.requirement_id], ctx))
-        out.append(self._make(ActionType.WAIT, parameters={"duration_s": 5.0}))
+        unavailable = {
+            str(belief_id): status for belief_id, status in ctx.unavailable_information_targets.items()
+        }
+        out.append(
+            self._make(
+                ActionType.WAIT,
+                parameters={
+                    "duration_s": 5.0,
+                    **(
+                        {"reason": "INFORMATION_ACQUISITION_UNAVAILABLE", "targets": unavailable}
+                        if unavailable
+                        else {}
+                    ),
+                },
+            )
+        )
         out.append(
             self._make(
                 ActionType.ESCALATE_TO_OPERATOR,
@@ -222,6 +237,8 @@ class CandidateActionGenerator:
     def _exhausted(self, graph: ClaimGraph, ctx: DecisionContext) -> bool:
         for a in graph.assessments:
             if a.matters and not a.satisfied and a.target_belief_ids:
+                if ctx.information_in_flight(a.target_belief_ids):
+                    continue
                 tries = ctx.attempts_on(a.target_belief_ids, ActionType.REQUEST_INFORMATION)
                 if tries >= self.config.max_information_attempts:
                     return True

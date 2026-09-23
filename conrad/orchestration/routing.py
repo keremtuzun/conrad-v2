@@ -103,6 +103,8 @@ class DecisionRouting:
         self.view_attempts: dict[tuple[UUID, ...], int] = {}
         self.deferred_replans: list[dict[str, Any]] = []
         self._plan_need: dict[str, tuple[UUID, ...]] = {}
+        self._need_by_plan: dict[str, InformationNeed] = {}
+        self._unavailable_information_targets: dict[UUID, str] = {}
         self._calibration_coalesced: set[tuple[str, tuple[UUID, ...]]] = set()
         self._views_seen = 0
         self._time_remaining_s: float | None = None
@@ -245,7 +247,25 @@ class DecisionRouting:
         def decide() -> DecisionOutcome:
             route_notes, route_msgs = self.d.route_context(self.x.planned_route(), now)
             notes.update(route_notes)
-            return self.d.decide(now, state, resources, link, health, motion, notes, route_msgs)
+            current = self.x.active
+            active_needs: tuple[InformationNeed, ...] = ()
+            if current is not None and current.purpose in ("INSPECT", "REVISIT"):
+                plan_id = None if current.plan_id is None else str(current.plan_id)
+                need = self._need_by_plan.get(plan_id or "")
+                if need is not None:
+                    active_needs = (need,)
+            return self.d.decide(
+                now,
+                state,
+                resources,
+                link,
+                health,
+                motion,
+                notes,
+                route_msgs,
+                active_information_needs=active_needs,
+                unavailable_information_targets=dict(self._unavailable_information_targets),
+            )
 
         out: DecisionOutcome | None = self.runner.call("egdc", decide)
         if out is None:
@@ -366,6 +386,8 @@ class DecisionRouting:
             )
             return
         if self.plan_attempts.get(key, 0) >= self.cfg.max_plans_per_need:
+            for belief_id in key:
+                self._unavailable_information_targets[belief_id] = "PLAN_ATTEMPTS_EXHAUSTED"
             self.s.emit(
                 EventType.ACTION_REJECTED,
                 MODULE,
@@ -375,6 +397,8 @@ class DecisionRouting:
             return
         ve = self.cfg.view_execution
         if ve.enabled and self.view_attempts.get(key, 0) >= ve.max_view_attempts:
+            for belief_id in key:
+                self._unavailable_information_targets[belief_id] = "VIEW_ATTEMPTS_EXHAUSTED"
             self.s.emit(
                 EventType.ACTION_REJECTED,
                 MODULE,
@@ -395,12 +419,22 @@ class DecisionRouting:
         )
         if adopted is None or adopted.plan.status is not PlanStatus.PLAN:
             self._report_empty_plan(need, adopted, now)
+            information_limit = min(
+                self.cfg.max_plans_per_need, self.d.decision_config.max_information_attempts
+            )
+            if self.plan_attempts.get(key, 0) >= information_limit:
+                plan_status = "MODULE_UNAVAILABLE" if adopted is None else adopted.plan.status.value
+                status = f"{plan_status}:INFORMATION_ATTEMPT_BUDGET_EXHAUSTED"
+                for belief_id in key:
+                    self._unavailable_information_targets[belief_id] = status
             return
         plan = adopted.plan
         act = plan.primary_action
         assert act is not None
         inline = bool(act.sensor_configuration.get("calibration_inline"))
         if inline:
+            for belief_id in key:
+                self._unavailable_information_targets.pop(belief_id, None)
             self.view_attempts[key] = self.view_attempts.get(key, 0) + 1
             self.prior_views.append(
                 PriorView(position_m=act.pose.position_m, modality=self.d.sensor.modality)
@@ -466,8 +500,12 @@ class DecisionRouting:
             mount_yaw_rad=self.d.mount_yaw,
             predicted_visibility=act.predicted_visibility,
         )
-        self._plan_need[str(plan.plan_id)] = key
+        plan_key = str(plan.plan_id)
+        self._plan_need[plan_key] = key
         if self.x.set_goal(goal, "INSPECT", adopted.adoption_record, now, plan.plan_id, view=view):
+            for belief_id in key:
+                self._unavailable_information_targets.pop(belief_id, None)
+            self._need_by_plan[plan_key] = need
             self.view_attempts[key] = self.view_attempts.get(key, 0) + 1
             self.prior_views.append(
                 PriorView(position_m=act.pose.position_m, modality=self.d.sensor.modality)

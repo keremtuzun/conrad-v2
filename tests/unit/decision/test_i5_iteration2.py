@@ -9,7 +9,7 @@ from conrad.evaluation.decision_experiments.fixtures import (
     region,
     unc,
 )
-from conrad.schemas.decision import ActionType
+from conrad.schemas.decision import ActionType, InformationNeed, QuestionType
 from conrad.schemas.ids import IdFactory
 from conrad.schemas.world import Domain
 
@@ -26,6 +26,17 @@ def _requests(ids, target, n, executed, revision=0):
         )
         for _ in range(n)
     ]
+
+
+def _need(ids, target):
+    return InformationNeed(
+        need_id=ids.new(),
+        trace_id=ids.new(),
+        target_belief_ids=(target,),
+        question_type=QuestionType.EXTEND_COVERAGE,
+        target_properties=("condition",),
+        priority=0.8,
+    )
 
 
 def test_deferred_requests_are_not_attempts():
@@ -52,6 +63,52 @@ def test_escalate_never_outranks_an_untried_autonomous_path():
     out = EGDC(ids).decide(ctx).record
     ranks = [a.action_type for a in out.candidates]
     assert ranks.index(ActionType.REQUEST_INFORMATION) < ranks.index(ActionType.ESCALATE_TO_OPERATOR)
+
+
+def test_active_matching_information_need_postpones_attempts_exhausted_escalation():
+    ids = IdFactory(721)
+    b = make_belief(ids, uncertainty=unc(uo=0.9))
+    req = make_requirement(ids, belief_ids=[b.belief_id])
+    n = DecisionConfig().max_information_attempts
+    base = make_context(ids, [b], [req], previous=_requests(ids, b.belief_id, n, executed=True))
+    active = base.model_copy(update={"active_information_needs": (_need(ids, b.belief_id),)})
+
+    assert active.information_in_flight((b.belief_id,))
+    chosen = EGDC(ids).decide(active).record.chosen
+    assert chosen is not None and chosen.action_type is not ActionType.ESCALATE_TO_OPERATOR
+
+    chosen_after_goal_closes = EGDC(ids).decide(base).record.chosen
+    assert chosen_after_goal_closes is not None
+    assert chosen_after_goal_closes.action_type is ActionType.ESCALATE_TO_OPERATOR
+
+
+def test_in_flight_need_for_another_belief_does_not_suppress_escalation():
+    ids = IdFactory(722)
+    b = make_belief(ids, uncertainty=unc(uo=0.9))
+    other = make_belief(ids)
+    req = make_requirement(ids, belief_ids=[b.belief_id])
+    n = DecisionConfig().max_information_attempts
+    base = make_context(ids, [b, other], [req], previous=_requests(ids, b.belief_id, n, executed=True))
+    ctx = base.model_copy(update={"active_information_needs": (_need(ids, other.belief_id),)})
+
+    assert not ctx.information_in_flight((b.belief_id,))
+    chosen = EGDC(ids).decide(ctx).record.chosen
+    assert chosen is not None and chosen.action_type is ActionType.ESCALATE_TO_OPERATOR
+
+
+def test_explicit_acquisition_unavailable_waits_instead_of_livelocking_or_escalating():
+    ids = IdFactory(723)
+    b = make_belief(ids, uncertainty=unc(uo=0.9))
+    req = make_requirement(ids, belief_ids=[b.belief_id])
+    n = DecisionConfig().max_information_attempts
+    base = make_context(ids, [b], [req], previous=_requests(ids, b.belief_id, n, executed=True))
+    ctx = base.model_copy(
+        update={"unavailable_information_targets": {b.belief_id: "NO_FEASIBLE_OBSERVATION"}}
+    )
+
+    chosen = EGDC(ids).decide(ctx).record.chosen
+    assert chosen is not None and chosen.action_type is ActionType.WAIT
+    assert chosen.parameters["reason"] == "INFORMATION_ACQUISITION_UNAVAILABLE"
 
 
 def test_uncalibrated_gap_is_closed_by_a_newer_direct_revision_after_an_executed_request():

@@ -1,0 +1,18 @@
+# Development-only trace capture for the two remaining E008 full-matrix failure classes.
+experiment_id: M1-ACTION-E008-DEVELOPMENT-DIAG3
+hypothesis: >-
+  The remaining development failures are localized to readable-nominal acquisition closure and route-blocked
+  action latency, and their belief/decision/execution timelines can identify the responsible typed boundary
+  without reading or executing any final seed.
+partition: development
+partition_domain: i5_mission_v6
+seeds: [7740000, 7740001, 7740003]
+scenarios: [I5-NOMINAL-READABLE, I5-ROUTE-BLOCKED]
+arms: [egdc_structured]
+latency_budget_s: {default: 4.0, I5-NOMINAL: 20.0, I5-NOMINAL-READABLE: 20.0}
+success_floor: 0.9
+uir_max: 0.0
+contact_clearance_m: 0.3
+workers: 6
+keep_bundles: true
+limitations: [synthetic data only, python L1 kernel, development diagnosis only]

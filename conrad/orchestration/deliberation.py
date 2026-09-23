@@ -83,7 +83,8 @@ class Deliberation:
         self.s, self.ctx, self.cfg, self.bus, self.m2s = s, ctx, cfg, bus, m2s
         ids = s.ids.child("deliberation")
         self.ids = ids
-        self.egdc = EGDC(s.ids.child("egdc"), DecisionConfig(**cfg.decision))
+        self.decision_config = DecisionConfig(**cfg.decision)
+        self.egdc = EGDC(s.ids.child("egdc"), self.decision_config)
         mcbr_cfg = MCBRConfig(**cfg.mcbr)
         if cfg.planner == PRODUCTION:  # default: the frozen, validation-selected planner (configs/active)
             self.planner: MCBRPlanner = production_planner(s.ids.child("mcbr"), mcbr_cfg)
@@ -151,6 +152,8 @@ class Deliberation:
         motion_permitted: bool,
         notes: dict[str, Any],
         route_messages: Sequence[BeliefMessage] = (),
+        active_information_needs: tuple[InformationNeed, ...] = (),
+        unavailable_information_targets: dict[UUID, str] | None = None,
     ) -> DecisionOutcome:
         trace = self.ids.new()
         snapshot = self.query.retrieve(self.requirements, now.time_ns)
@@ -188,6 +191,8 @@ class Deliberation:
                 h for h in self.history if (now.time_ns - h.time_ns) / 1e9 <= self.cfg.decision_history_s
             ),
             answered_information_requests=self._answered_requests(),
+            active_information_needs=active_information_needs,
+            unavailable_information_targets=unavailable_information_targets or {},
             available_modalities=(self.sensor.modality,),
             motion_permitted=motion_permitted,
             operator_reachable=link is not None and link.status.value != "DOWN",

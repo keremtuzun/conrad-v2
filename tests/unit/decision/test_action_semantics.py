@@ -65,6 +65,18 @@ def test_grounded_obstacle_on_route_replans_and_blocks_continue():
     )
 
 
+def test_grounded_route_blocker_is_replanned_before_retrying_a_pending_report():
+    ids = IdFactory(311)
+    ctx = _route_ctx(ids, {})
+    target = ctx.snapshot.messages[0].belief_id
+    notes = {**ctx.mission.notes, "pending_report_belief_ids": [str(target)]}
+    ctx = ctx.model_copy(update={"mission": ctx.mission.model_copy(update={"notes": notes})})
+
+    chosen = EGDC(ids).decide(ctx).record.chosen
+    assert chosen is not None and chosen.action_type is ActionType.REPLAN
+    assert chosen.parameters["reason"] == "ROUTE_BLOCKED"
+
+
 @pytest.mark.parametrize(
     "obstacle_kw",
     [{"uncertainty": unc(uo=0.9)}, {"n_evidence": 0}, {"time_s": 10.0}],
