@@ -154,7 +154,9 @@ def receiver_credit(entry: QueueEntry, to_level: int, receiver: ReceiverKnowledg
     credit = 0.0
     known = receiver.known_revision(bid)
     if known is not None:
-        credit = cfg.information_retained[1] * (1.0 if known >= rev else cfg.stale_view_credit)
+        f1 = entry.content.option(1)
+        f1_retained = cfg.information_retained[1] if f1 is None else f1.information_retained
+        credit = f1_retained * (1.0 if known >= rev else cfg.stale_view_credit)
     if receiver.alerted.get(bid, -1) >= rev:
         credit = max(credit, cfg.information_retained[0])
     return credit
@@ -256,7 +258,20 @@ def schedule(
                     value *= confidence_adjustment(e, lv, cfg)
                 if policy.use_novelty and value <= 0:
                     continue
-                pick = _pick_link(remaining, e, budget, by_link, channel, now_ns, energy_left)
+                latest_arrival_ns = None
+                if policy.use_novelty and cfg.completion_feasibility and cfg.completion_horizon_s is not None:
+                    latest_arrival_ns = int(cfg.completion_horizon_s * 1e9)
+                pick = _pick_link(
+                    remaining,
+                    e,
+                    budget,
+                    by_link,
+                    channel,
+                    now_ns,
+                    dt_s,
+                    energy_left,
+                    latest_arrival_ns,
+                )
                 if pick is None and not strict:
                     continue
                 prio = value / remaining
@@ -308,7 +323,9 @@ def _pick_link(
     links: dict[str, LinkState],
     channel: ChannelSim,
     now_ns: int,
+    dt_s: float,
     energy_left: float | None,
+    latest_arrival_ns: int | None = None,
 ) -> tuple[str, int] | None:
     """Best link with capacity left this step, and the nominal chunk it can carry now."""
     feasible: list[tuple[LinkState, int]] = []
@@ -324,10 +341,15 @@ def _pick_link(
         if chunk < max(1, min(remaining, channel.profiles[name].packet_bits)):
             continue  # not even one packet fits: wait for carried credit
         deadline = entry.content.unit.deadline_ns
+        if latest_arrival_ns is not None:
+            deadline = latest_arrival_ns if deadline is None else min(deadline, latest_arrival_ns)
         if deadline is not None and ln.bandwidth_bps > 0:
-            arrival = now_ns + int(
-                (ln.latency_s + channel.expected_bits(name, remaining) / ln.bandwidth_bps) * 1e9
-            )
+            # ``budget`` includes capacity carried while a sub-packet was serialising in earlier steps.
+            # Those bits have already consumed link time (BAACSender applies the same credit to the actual
+            # delivery timestamp), so charging them again here can reject the only unit that can still finish.
+            carried_credit = max(0.0, budget[name] - ln.bandwidth_bps * dt_s)
+            serial_bits = max(0.0, channel.expected_bits(name, remaining) - carried_credit)
+            arrival = now_ns + int((ln.latency_s + serial_bits / ln.bandwidth_bps) * 1e9)
             if arrival > deadline:
                 continue
         feasible.append((ln, chunk))

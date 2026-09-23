@@ -35,6 +35,8 @@ IMPLEMENTATION_METADATA = {
         "BAACConfig.preempt_until_delivered",
         "BAACConfig.receiver_relative_value",
         "BAACConfig.stale_view_credit",
+        "BAACConfig.completion_feasibility",
+        "BAACConfig.completion_horizon_s",
     ],
     "assumptions": [
         "information_retained per fidelity level is an ENGINEERING_ESTIMATE",
@@ -45,6 +47,8 @@ IMPLEMENTATION_METADATA = {
         "a receiver holding an older revision of a belief still holds stale_view_credit of its F1 "
         "information (ENGINEERING_ESTIMATE); BAAC scores an increment by what the receiver GAINS",
         "ch19 Level 0/1 pre-emption by a critical unit ends once the receiver holds that belief",
+        "BAAC starts a semantic increment only when its remaining bits can arrive before the declared "
+        "mission horizon; the horizon is deployment config, not Twin or evaluation truth",
     ],
     "baselines": [
         "C-B0 send all",

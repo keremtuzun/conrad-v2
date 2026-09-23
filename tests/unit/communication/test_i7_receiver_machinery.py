@@ -237,6 +237,7 @@ def test_stale_revisions_are_coalesced_not_queued_twice():
     queued = [e for e in sender.queue.entries() if e.content.unit.belief_ids == (m.belief_id,)]
     assert len(queued) == 1, "only the freshest revision of a belief waits in the queue"
     assert sender.coalesced == 5
+    assert sender.coalesced_queued_bits > 0
     for t in range(50):
         sender.step(float(t), 1.0, store.receive)
     assert store.revision(m.belief_id) == 5 and store.duplicate_contributions() == 0
@@ -276,7 +277,13 @@ def test_fidelity_levels_are_cumulative_monotonic_and_measured():
     sizes = [(int(o.fidelity), o.size_bits, o.information_retained) for o in content.unit.fidelity_levels]
     assert [s[0] for s in sizes] == [0, 1, 2, 3, 4]
     assert [s[1] for s in sizes] == sorted(s[1] for s in sizes), "cumulative sizes are non-decreasing"
-    assert [s[2] for s in sizes] == list(cfg.information_retained)
+    assert [s[2] for s in sizes] == [
+        cfg.information_retained[0],
+        cfg.information_retained[2],
+        cfg.information_retained[2],
+        cfg.information_retained[3],
+        cfg.information_retained[4],
+    ]
     assert sizes[0][1] == increment_bits(content.increments[0]) == 8 * ALERT_FRAME.size
     assert len(alert_frame(content.increments[0])) == 23
     # F3 carries compressed evidence, F4 the raw bytes: the jump is the configured fraction of them
@@ -292,6 +299,23 @@ def test_a_routine_unit_has_no_f0_alert():
     assert built is not None
     assert 0 not in built[0].increments and built[0].levels[0] == 1
     assert not built[0].critical
+
+
+def test_f2_has_zero_declared_marginal_value_because_receiver_state_does_not_change():
+    ids = IdFactory(280)
+    builder = UnitBuilder(ids, BAACConfig())
+    with_evidence = builder.belief_unit(make_belief(ids, n_evidence=2), None, 0.5, _now(0))
+    without_evidence = builder.belief_unit(make_belief(ids, n_evidence=0), None, 0.5, _now(0))
+    assert with_evidence is not None and without_evidence is not None
+    for content, expected in (
+        (with_evidence[0], BAACConfig().information_retained[2]),
+        (without_evidence[0], BAACConfig().information_retained[1]),
+    ):
+        f1 = content.option(1)
+        f2 = content.option(2)
+        assert f1 is not None and f2 is not None
+        assert f1.information_retained == f2.information_retained == expected
+        assert f2.size_bits > f1.size_bits  # real wire cost, zero receiver-side state gain
 
 
 def test_progressive_fidelity_delivers_f0_before_f1_on_a_slow_link():

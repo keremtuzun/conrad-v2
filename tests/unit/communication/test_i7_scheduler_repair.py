@@ -145,8 +145,10 @@ def test_receiver_credit_is_zero_for_an_unseen_belief_and_partial_for_a_stale_vi
     m1 = make_belief(ids, belief_id=m0.belief_id, revision=m0.revision + 3)
     stale = _entry(builder, m1, receiver.known(m0.belief_id), 0.5)
     credit = receiver_credit(stale, 1, receiver, cfg)
-    assert credit == pytest.approx(cfg.information_retained[1] * cfg.stale_view_credit)
-    assert 0.0 < credit < cfg.information_retained[1]
+    f1 = stale.content.option(1)
+    assert f1 is not None
+    assert credit == pytest.approx(f1.information_retained * cfg.stale_view_credit)
+    assert 0.0 < credit < f1.information_retained
 
 
 def test_the_first_alert_about_a_belief_is_never_discounted_but_later_alerts_are():
@@ -185,6 +187,90 @@ def test_the_repair_flags_never_change_a_baseline_plan(policy):
     plans = []
     for on in (False, True):
         cfg = BAACConfig(preempt_until_delivered=on, receiver_relative_value=on)
+        entries, receiver, channel, _, _ = _setup(cfg)
+        plans.append(
+            [
+                (p.unit_id, p.from_level, p.to_level, p.chunk_bits, p.reserved_bits)
+                for p in schedule(
+                    entries, channel.link_states(0.0), channel, receiver, 0, 1.0, policy, cfg, None
+                )
+            ]
+        )
+    assert plans[0] == plans[1]
+
+
+def test_completion_feasibility_chooses_a_useful_unit_that_can_finish_before_horizon():
+    cfg = BAACConfig(completion_horizon_s=1.0)
+    ids = IdFactory(9)
+    builder = UnitBuilder(ids, cfg)
+    receiver = ReceiverKnowledge()
+    large = _entry(builder, make_belief(ids, n_evidence=3), None, 0.7)
+    small = _entry(builder, make_belief(ids), None, 0.3)
+    large_bits = large.content.option(1).size_bits
+    small_bits = small.content.option(1).size_bits
+    assert large_bits > small_bits
+    bandwidth = float(small_bits + 100)
+    channel = ChannelSim(
+        [LinkProfile(name="a", bandwidth_bps=bandwidth, latency_s=0.0, packet_loss=0.0, packet_bits=64)],
+        seed=0,
+    )
+    plan = schedule(
+        [large, small], channel.link_states(0.0), channel, receiver, 0, 1.0, BAAC_POLICY, cfg, None
+    )
+    assert plan
+    assert plan[0].unit_id == small.unit_id
+
+
+def test_completion_feasibility_protects_a_nearly_complete_increment():
+    cfg = BAACConfig(completion_horizon_s=1.0)
+    ids = IdFactory(10)
+    builder = UnitBuilder(ids, cfg)
+    receiver = ReceiverKnowledge()
+    large = _entry(builder, make_belief(ids, n_evidence=3), None, 0.7)
+    size = large.content.option(1).size_bits
+    nearly_done = large.model_copy(update={"partial_level": 1, "partial_bits": size - 128})
+    channel = ChannelSim(
+        [LinkProfile(name="a", bandwidth_bps=256.0, latency_s=0.0, packet_loss=0.0, packet_bits=64)],
+        seed=0,
+    )
+    plan = schedule(
+        [nearly_done], channel.link_states(0.0), channel, receiver, 0, 1.0, BAAC_POLICY, cfg, None
+    )
+    assert plan and plan[0].unit_id == nearly_done.unit_id and plan[0].completes
+
+
+def test_completion_feasibility_counts_pre_serialised_carry_once():
+    cfg = BAACConfig(completion_horizon_s=1.0)
+    ids = IdFactory(11)
+    builder = UnitBuilder(ids, cfg)
+    receiver = ReceiverKnowledge()
+    entry = _entry(builder, make_belief(ids, n_evidence=0), None, 0.5)
+    size = entry.content.option(1).size_bits
+    channel = ChannelSim(
+        [LinkProfile(name="a", bandwidth_bps=float(size), latency_s=0.0, packet_loss=0.0, packet_bits=64)],
+        seed=0,
+    )
+    # Only half a second of new capacity remains before the horizon, but the other half has already been
+    # serialised into carry. Counting the carry twice would incorrectly reject this completion.
+    plan = schedule(
+        [entry],
+        channel.link_states(0.5),
+        channel,
+        receiver,
+        int(0.5e9),
+        0.1,
+        BAAC_POLICY,
+        cfg,
+        {"a": size * 0.5},
+    )
+    assert plan
+
+
+@pytest.mark.parametrize("policy", list(BASELINE_POLICIES.values()))
+def test_completion_horizon_never_changes_a_baseline_plan(policy):
+    plans = []
+    for enabled in (False, True):
+        cfg = BAACConfig(completion_feasibility=enabled, completion_horizon_s=0.1)
         entries, receiver, channel, _, _ = _setup(cfg)
         plans.append(
             [

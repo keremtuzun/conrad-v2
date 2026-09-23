@@ -147,13 +147,22 @@ class UnitBuilder:
             evidence_bits[4] = sum(8 * b for b in raw_bytes)
         options = []
         cumulative = 0
+        retained = list(cfg.information_retained)
+        # F1's belief view already carries ``evidence_support`` and ReceiverStore records those IDs in
+        # ``known_evidence_ids``. F2 repeats the same IDs; its quantised embedding is not part of the receiver
+        # state. Therefore F2 has zero marginal receiver value in the current protocol. Reflect that in the
+        # unit offered to the scheduler instead of spending scarce bits on a nominal value the receiver does
+        # not acquire. With no evidence both levels stay at F1; with evidence F1 already earns the configured
+        # F2 credit, exactly as the receiver-side retention calculation does.
+        retained[1] = retained[2] if ev_ids else retained[1]
+        retained[2] = retained[1]
         for level in sorted(increments):
             cumulative += increment_bits(increments[level]) + evidence_bits.get(level, 0)
             options.append(
                 FidelityOption(
                     fidelity=Fidelity(level),
                     size_bits=cumulative,
-                    information_retained=cfg.information_retained[level],
+                    information_retained=retained[level],
                 )
             )
         provenance = ProvenanceRecord(

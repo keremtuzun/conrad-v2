@@ -34,6 +34,18 @@ class BAACConfig(ConradModel):
         "it already holds about that belief (``stale_view_credit``), instead of by the unit's absolute "
         "information content.",
     )
+    completion_feasibility: bool = Field(
+        default=True,
+        description="BAAC only: do not start an increment whose receiver-side remaining bits cannot arrive "
+        "before the deployment-known completion_horizon_s. Partially transmitted increments are judged "
+        "from their remaining bits, so a nearly complete useful unit keeps its completion advantage.",
+    )
+    completion_horizon_s: float | None = Field(
+        default=None,
+        gt=0,
+        description="absolute mission-time horizon for useful semantic completion; supplied by the mission "
+        "runtime from its declared duration, never from evaluation truth",
+    )
     stale_view_credit: float = Field(
         default=0.5,
         ge=0,

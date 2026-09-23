@@ -177,6 +177,10 @@ def _score_arm(
         "sync_critical": sync,
         "sync_critical_all_equal": bool(sync) and all(s["equal"] for s in sync),
         "duplicate_contributions": rep["duplicate_contributions"],
+        "useful_receiver_bits": rep.get("useful_receiver_bits", 0),
+        "obsolete_on_arrival_bits": rep.get("obsolete_on_arrival_bits", 0),
+        "unique_beliefs_advanced": rep.get("unique_beliefs_advanced", 0),
+        "coalesced_queued_bits": rep.get("coalesced_queued_bits", 0),
         "stale_ignored": rep["stale_ignored"],
         "coalesced": rep["coalesced"],
         "drop_reasons": rep["drop_reasons"],
@@ -343,8 +347,12 @@ SCALARS = (
     "queue_depth_end",
     "backlog_bits_end",
     "duplicate_contributions",
+    "useful_receiver_bits",
+    "obsolete_on_arrival_bits",
+    "unique_beliefs_advanced",
     "stale_ignored",
     "coalesced",
+    "coalesced_queued_bits",
     "energy_j",
 )
 

@@ -32,6 +32,7 @@ Sink = Callable[[dict[str, Any]], ResyncRequest | None]
 class _InFlight:
     arrive_ns: int
     increments: list[dict[str, Any]]
+    useful_completion_bits: int
 
 
 class BAACSender:
@@ -49,6 +50,7 @@ class BAACSender:
         self.policy = policy if policy is not None else policy_by_name(self.config.scheduler_policy)
         self.carry_bits: dict[str, float] = {}  # unused sub-packet capacity carried to the next step
         self.coalesced = 0  # queued units superseded by a fresher revision of the same belief
+        self.coalesced_queued_bits = 0  # unsent queued bits removed by those supersessions
         self._deferred: dict[UUID, float] = {}  # fresher revisions waiting for an in-progress increment
         self.builder = UnitBuilder(id_factory, self.config)
         self.queue = PersistentQueue(self.config.queue_capacity_bits, queue_path)
@@ -62,6 +64,7 @@ class BAACSender:
         self._link_was_up = False
         self.reevaluations = 0
         self.current_arrival_ns = 0  # arrival time of the increment currently handed to the sink
+        self.current_arrival_bits = 0  # semantic completion bits attributed once per delivered group
 
     # ------------------------------------------------------------------ intake
     def offer(
@@ -92,6 +95,7 @@ class BAACSender:
             for e in mine:
                 created = min(created, e.content.unit.created_time_ns)
                 mission_value = max(mission_value, e.content.unit.mission_value)
+                self.coalesced_queued_bits += e.remaining_bits()
                 self.queue.remove(e.unit_id, "SUPERSEDED_BY_NEWER_REVISION", now.time_ns, record=False)
                 self.coalesced += 1
         known = self.receiver_model.known(message.belief_id) if self.policy.use_receiver_knowledge else None
@@ -242,10 +246,11 @@ class BAACSender:
                 )
                 continue
             assert tx.delivered_time_ns is not None
+            prior_partial = entry.partial_bits if entry.partial_level == inc.to_level else 0
             for incr in increments:
                 self.receiver_model.acknowledge(incr)  # link-layer ACK (ARQ success)
             self.first_delivery.setdefault(inc.unit_id, tx.delivered_time_ns)
-            self.in_flight.append(_InFlight(tx.delivered_time_ns, increments))
+            self.in_flight.append(_InFlight(tx.delivered_time_ns, increments, prior_partial + inc.chunk_bits))
             updated = entry.model_copy(
                 update={
                     "level": inc.to_level,
@@ -299,7 +304,8 @@ class BAACSender:
         self.in_flight = [f for f in self.in_flight if f.arrive_ns > until_ns]
         for flight in ready:
             self.current_arrival_ns = flight.arrive_ns
-            for incr in flight.increments:
+            for index, incr in enumerate(flight.increments):
+                self.current_arrival_bits = flight.useful_completion_bits if index == 0 else 0
                 req = sink(incr)
                 if req is not None:
                     self.handle_resync(req, now)

@@ -74,15 +74,33 @@ class CommsArm:
         arrival = int(self.sender.current_arrival_ns)
         if key is not None:
             self.arrivals.setdefault(key, arrival)
-        before = None if key is None else self.receiver.revision(key[0])
+        before = (
+            None if key is None else self.receiver.revision(key[0]),
+            None
+            if key is None or key[0] not in self.receiver.alerts
+            else int(self.receiver.alerts[key[0]]["revision"]),
+            frozenset(self.receiver.known_evidence_ids),
+            tuple(sorted(self.receiver.evidence_available.items())),
+        )
         req = self.receiver.receive(increment)
+        after = (
+            None if key is None else self.receiver.revision(key[0]),
+            None
+            if key is None or key[0] not in self.receiver.alerts
+            else int(self.receiver.alerts[key[0]]["revision"]),
+            frozenset(self.receiver.known_evidence_ids),
+            tuple(sorted(self.receiver.evidence_available.items())),
+        )
+        contributed = after != before
         self.receipts.append(
             {
                 "t_ns": arrival,
                 "kind": str(kind),
                 "belief_id": None if key is None else str(key[0]),
                 "revision": None if key is None else key[1],
-                "applied": key is not None and kind == "deltas" and self.receiver.revision(key[0]) != before,
+                "applied": key is not None and kind == "deltas" and contributed,
+                "contributed": contributed,
+                "wire_bits": int(self.sender.current_arrival_bits),
             }
         )
         return req
@@ -103,6 +121,7 @@ class CommsArm:
             created = s.unit_created.get(t.unit_id)
             txs.append(
                 {
+                    "unit_id": str(t.unit_id),
                     "sent_ns": t.sent_time_ns,
                     "delivered_ns": t.delivered_time_ns,
                     "delivered": t.delivered,
@@ -111,6 +130,7 @@ class CommsArm:
                     "belief_id": None if created is None or created[2] is None else str(created[2]),
                     "critical": bool(created[1]) if created is not None else False,
                     "fragment": bool(t.payload.get("fragment", False)),
+                    "chunk_delivered": bool(t.payload.get("chunk_delivered", False)),
                 }
             )
         drops: dict[str, int] = {}
@@ -134,10 +154,33 @@ class CommsArm:
             },
             "receiver_applied": {str(k): list(v) for k, v in self.receiver.applied.items()},
             "duplicate_contributions": self.receiver.duplicate_contributions(),
+            "useful_receiver_bits": sum(int(r["wire_bits"]) for r in self.receipts if r["contributed"]),
+            "obsolete_on_arrival_bits": sum(
+                int(r["wire_bits"]) for r in self.receipts if not r["contributed"]
+            ),
+            "unique_beliefs_advanced": len(self.receiver.applied),
             "stale_ignored": self.receiver.stale_ignored,
             "resync_requests": len(self.receiver.resync_requests),
             "sender_latest_revisions": {str(k): v[0].revision for k, v in s.latest.items()},
             "coalesced": s.coalesced,
+            "coalesced_queued_bits": s.coalesced_queued_bits,
+            "pending_units": [
+                {
+                    "unit_id": str(e.unit_id),
+                    "belief_id": (str(e.content.unit.belief_ids[0]) if e.content.unit.belief_ids else None),
+                    "revision": e.content.new_revision,
+                    "mission_value": e.content.unit.mission_value,
+                    "critical": e.critical,
+                    "level": e.level,
+                    "partial_level": e.partial_level,
+                    "partial_bits": e.partial_bits,
+                    "remaining_bits": e.remaining_bits(),
+                    "fidelity_sizes_bits": {
+                        str(int(o.fidelity)): o.size_bits for o in e.content.unit.fidelity_levels
+                    },
+                }
+                for e in s.queue.entries()
+            ],
             "drop_reasons": drops,
             "reevaluations": s.reevaluations,
             "energy_j": float(s.energy_used_j),
@@ -165,6 +208,7 @@ class ShoreLink:
         )
         raw = dict(cfg.baac)
         shadows = [ShadowArm.model_validate(a) for a in raw.pop("shadow_arms", [])]
+        raw.setdefault("completion_horizon_s", cfg.duration_s)
         self.baac_config = BAACConfig(**raw)
         self.arms: dict[str, CommsArm] = {
             PRIMARY: CommsArm(PRIMARY, self.profile, seed, s.ids.child("baac"), self.baac_config)
