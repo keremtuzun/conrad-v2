@@ -1059,3 +1059,195 @@ remain untested, exactly as iteration 3 left them.
 - What is left is still not in Model 1: an MCBR candidate-supply failure (`NEED_SATISFIED` with zero candidates
   while a Model 1 requirement is open), a navigation policy that refuses the revisit pose, and a Model2T
   coverage limit.
+
+### 8. Final results (M1-ACTION-E005, 7720000-7720009, 8 scenarios x 10 seeds x 3 arms, 240 missions, 3904 s)
+
+The declared final run on the fresh split, on the code at HEAD, with the I5-NOMINAL exemption withdrawn.
+
+| scenario | warrant reached | correct | latency mean / max (s) | forbidden after onset | ESCALATE | over-escalations | violations |
+|---|---|---|---|---|---|---|---|
+| I5-NOMINAL | 0/10 | 0/10 | - | 0 | 0 | 0 | 0 |
+| I5-NOMINAL-READABLE | 9/10 | 9/10 | 0.44 / 2.0 | 0 | 2 | 2 | 0 |
+| I5-CRITICAL-FINDING | 10/10 | 10/10 | 0.0 / 0.0 | 0 | 14 | 0 | 0 |
+| I5-UNCERTAIN-BELIEF | 10/10 | 10/10 | 0.0 / 0.0 | 0 | 5 | 0 | 0 |
+| I5-ROUTE-BLOCKED | 10/10 | 10/10 | 0.2 / 2.0 | 0 | 12 | 0 | 0 |
+| I5-BATTERY-RESERVE | 10/10 | 10/10 | 0.0 / 0.0 | 0 | 0 | 0 | 0 |
+| I5-TIME-RESERVE | 10/10 | 10/10 | 0.0 / 0.0 | 0 | 0 | 0 | 0 |
+| I5-COMMS-OUTAGE | 10/10 | 10/10 | 0.0 / 0.0 | 0 | 6 | 0 | 0 |
+| all | 69/80 | 69/80 | 0.06 / 2.0 | 0 | 39 | 2 | 0 |
+
+**Correct given warrant is 69/69.** Every warrant that arose was answered with the warranted action class inside
+its budget, with no forbidden action in between. Hard-constraint violations 0. Traceable decisions 3910/3910.
+UIR 0.0 over 680 relied world claims. Mission outcomes: task success 66 against rule_fsm's 66 and
+naive_act_on_claims' 21; safety events 44 against 44 and 251; hard-constraint violations 0 against 0 and 32095.
+
+Against E004 on its own final split, two of the three iteration-3 failures are gone:
+
+1. **I5-ROUTE-BLOCKED is repaired: 8/10 to 10/10**, latency max 2.0 s against the 4 s budget. This is the MCBR
+   V4 routing repair reproducing on a final split it never saw, and it matches what section 1 measured on
+   development.
+2. **Nominal over-escalation fell from 43 to 2.** Both remaining ones are in `I5-NOMINAL-READABLE` seed
+   7720002, the single mission of that scenario whose warrant never arose.
+3. **I5-NOMINAL scores 0/10.** The continue warrant (critical component OBSERVED INTACT with nothing pending)
+   did not arise on any of the ten final seeds, so the scenario cannot reach the 0.9 floor. It is scored and
+   not exempt, because iteration 4 withdrew the exemption (section 4) on a development counterexample. On the
+   final split the warrant did not in fact arise, but the exemption stays withdrawn: "it did not arise on
+   these ten seeds" is a measurement, not the "cannot arise by construction" claim the exemption needed, and
+   the claim is false at HEAD.
+
+Verdict under both rules, as promised in section 4:
+
+- under iteration 3's rule (I5-NOMINAL exempt): the criterion fails on the 2 over-escalations alone.
+- under iteration 4's rule (I5-NOMINAL scored): it fails on those 2 AND on I5-NOMINAL at 0/10.
+
+So the gate verdict is unchanged in direction, and the margin is far smaller than E004's.
+
+**The residual cause is the OPEN Model 1 / MCBR interface gap, not a wrong action.** Model 1 asks for an
+independent confirming look at an uncalibrated critical source; MCBR only understands "reduce uncertainty below
+a target", so it answers `NEED_SATISFIED` on a raw epistemic 0.200 against its 0.250 default target while Model
+1's requirement stays open on the effective 0.450 that `uncalibrated_epistemic_floor` assigns. The two ends of
+the interface never meet: `conrad/decision/actions.py` sets `calibration_check` but never
+`desired_uncertainty_reduction`, and `conrad/decision/router.py::_payload` computes `calibration_check` into
+the constraints it builds and then drops it, copying only `require_alternate_modality`,
+`alternate_modalities` and `cross_domain_disagreement`. Closing it changes MCBR planning semantics for every
+critical requirement in every mission, which would invalidate the action matrix and the whole development grid,
+so it is left **OPEN** and is not touched in this iteration. The livelock fix of section 3 stays reverted.
+
+Gate status after E005 (`artifacts/gates/I5/evidence_surrogate.json`, recorded at commit `8f210f1`):
+
+| criterion | status |
+|---|---|
+| continue, request evidence, replan, change sensing, return, escalate | PASS (M1-ACTION-E001, belief fixtures, unchanged) |
+| hard constraints inviolable | PASS (violations 0, UIR 0) |
+| actions exercised correctly inside integrated missions | **FAIL** (I5-NOMINAL 0/10; 2 nominal over-escalations) |
+| traceable decisions with low measured UIR | PASS (3910/3910 traceable, UIR 0.0 over 680 relied claims) |
+| competitive mission outcomes vs decision baselines | PASS (not worse than either baseline on task success, safety events and violations) |
+
+`tests/acceptance/test_i5_integrated_missions.py` now reads the E005 artifact and its strict xfail quotes these
+measured numbers, so a silent improvement and a silent regression both fail the suite.
+
+### 9. The formal Unity harness has now been flown, and the debug is clean
+
+Iteration 3 and iteration 4 both ended with the Unity path unflown. It has now been flown on the DEVELOPMENT
+worlds of `configs/eval/partitions_i5_unity.yaml` (7710100-7710109), sequentially, one player at a time.
+
+`scripts/check_i5_unity_harness.py --unity --worlds 7710101` flew the full declared grid, 7 scenarios x 3 arms
+= 21 flights, with no bridge fault and no harness error. EGDC arm, world 7710101:
+
+| scenario | warrant onset (s) | correct | latency (s) | over-escalations | violations | task success |
+|---|---|---|---|---|---|---|
+| I5-NOMINAL | never | no | - | 0 | 0 | no |
+| I5-NOMINAL-READABLE | 64.0 | yes | 0.0 | 0 | 0 | yes |
+| I5-CRITICAL-FINDING | 16.0 | yes | 0.0 | 0 | 0 | yes |
+| I5-UNCERTAIN-BELIEF | 2.0 | yes | 0.0 | 0 | 0 | yes |
+| I5-ROUTE-BLOCKED | 16.0 | yes | 0.0 | 0 | 0 | yes |
+| I5-TIME-RESERVE | 32.0 | yes | 0.0 | 0 | 0 | yes |
+| I5-COMMS-OUTAGE | 16.0 | yes | 0.0 | 0 | 0 | yes |
+
+Six of seven scenarios score 1.0, over-escalations 0, violations 0, traceable 376/376, UIR 0.0 over 101 relied
+world claims, and the outcome comparison is not worse than either baseline (task success 6 against 6 and 2,
+safety events 0 against 0 and 12, violations 0 against 0 and 2965). The three things iteration 4 listed as
+untested are now tested: a full grid scores, the lane obstacle inside the converted Unity scene raises the
+replan warrant at 16.0 s, and an I5 bundle replays. Replay of the I5-NOMINAL EGDC bundle on world 7710100 is
+byte-identical (5484 events, 60 decisions, 1247 revisions, trajectory max difference 0.0 against a 1e-9
+tolerance, 297 files and 197 objects verified, same player binary), and the twin-truth leakage scan reads 6115
+runtime-side texts with 0 violations.
+
+`I5-NOMINAL` behaves on Unity exactly as it does on the python kernel: the continue warrant does not arise. The
+two paths agree, which is the point of the surrogate.
+
+**Host contention is a real failure mode, recorded because it cost a run.** A first attempt at this sweep was
+flown while M1-ACTION-E005 held six worker processes on the same machine. The Unity bridge has a 30 s command
+timeout, the player was starved past it, and the flight died at sim 104.3 s of a 120 s mission with
+`UnityBridgeError: Unity bridge unavailable (FAULTED: COMMAND failed: no reply from Unity within 30000 ms)`.
+Unity flights and the python-kernel grid must not share this host. The sweep above was flown on a quiet
+machine, where a flight costs 75 to 230 s.
+
+## Iteration 5: recovered-session semantic repair (development only, 2026-09-22)
+
+This iteration began by recovering the dead session rather than rerunning it. The detailed inventory is in
+`docs/audits/I5_DEAD_SESSION_RECOVERY.md`. In brief: local and `origin/main` were both
+`8f210f1288edb323d1f2eca83372482bd3f073c8`; E005 final seeds 7720000-7720009 had all executed and their
+results had been read, so that partition is SPENT; formal Unity worlds 7710002 and 7710003 had both been
+touched by an incomplete timed-out sweep, so neither remains eligible. The old formal Unity result is not a
+valid verdict. No E005 or Unity row was rerun in this development phase.
+
+### 10. Model 1 to MCBR interface repair
+
+The reproduced defect was the one recorded above: Model 1 required an independent confirming observation of
+an uncalibrated source, while MCBR returned `NEED_SATISFIED` from raw epistemic uncertainty alone. The repaired
+contract is belief-side and contains no Twin truth:
+
+- `InformationNeed` carries `minimum_belief_revisions` and
+  `minimum_independent_observation_counts`; `calibration_check` survives routing.
+- `BeliefMessage.independent_observation_count` is populated from the domain belief/observation ledger.
+- MCBR does not close a calibration need until both the required newer revision and independent-observation
+  count exist. A context-only revision does not close it.
+- Calibration planning may use an exact current robot pose only when the existing visibility, free-space,
+  route, risk and budget filters accept the actual pose and orientation. It may coalesce once with an active
+  MCBR view of the same target.
+- A feasible calibration view deferred behind a progressing non-preemptible goal is not charged as an
+  acquisition attempt only when the target belief is `OBSERVED INTACT`. This is the nominal-continuation case.
+  `DEGRADED`/`SEVERE`/`FAILED` findings retain conservative finite-attempt behavior; no scenario ID or truth
+  value is consulted.
+
+The last boundary is material. A broad refund fixed the nominal seed but launched unnecessary close-ins after
+already observed failures. DIAG8 retained one such bundle: the target was `OBSERVED FAILED` from 16 s, the
+finding was reported correctly, and the extra view then caused three real collision-envelope `HOLD`
+transitions. Restricting the refund to `OBSERVED INTACT` removed those motions while keeping the nominal repair.
+
+The harness verdict now reports both raw all-mission correctness and correctness given a belief-side warrant.
+The declared 0.9 action floor applies to `correct_given_warrant`, matching the handoff requirement and the
+metric the earlier audit already reported (69/69 in E005). Raw correctness and warrant counts remain explicit.
+A scored scenario with zero warrants still fails (`None` is treated as zero); this does not restore the
+withdrawn nominal exemption.
+
+### 11. Chronological development record
+
+All runs below use only shared development seeds 7500000-7500009 and are SURROGATE diagnostics, never gate
+evidence.
+
+| run | result | retained finding |
+|---|---|---|
+| R1 | FAIL | Initial semantic propagation removed the false `NEED_SATISFIED`, but readable nominal remained 7/10 because confirmation motion took 22-32 s. |
+| R2 | REJECTED after 4/240 rows | Stopped when revision freshness alone was shown closable by a context-only revision; partial rows remain preserved. |
+| R3 | FAIL, SHA256 `08763CE2BA3BBCA8F882BCFAEC4235FA75388ABB87B87119910258A4265242C5` | Broad calibration preemption reached readable 10/10 but regressed outcomes (EGDC success 66 vs rule-FSM 68; safety 118 vs 83). |
+| R4 | FAIL, SHA256 `F9B9AC853B50B1208D931BBFB20767E5C437157E4626812FEA41B480D8C94E16` | Non-preemptive exact-pose/coalescing restored outcomes, but readable seed 7500009 spent four attempts on feasible plans routing never launched: 2 over-escalations; EGDC success 67 vs 68. |
+| DIAG6 / DIAG7 | before / after | Same seed 7500009: before 0 correct, 2 over-escalations, task failure; after finite deferrals, an inspection accepted at 36 s, continue at 48 s, 1.0 correct, 0 over-escalations, task success. |
+| R5 | FAIL, SHA256 `5082DA5F419C67AAD219693B315FAA758A3281BFD3F09077B7B458BC3AD6D446` | Broad unflown-plan refund fixed actions and task success but added unsafe close-ins: safety 86 vs rule-FSM 83. |
+| DIAG8 / DIAG9 | boundary diagnosis | Failed belief: extra close-in caused 3 safety holds. Belief-side INTACT-only refund preserved readable seed 7500009 and restored critical seed 7500004 to 0 safety events. |
+| R6 | **DEVELOPMENT PASS**, SHA256 `D65096EA244DFF31A0ECE323E9944156B76AE1DB4832D7CFA11EF1BC58077051` | Full 240-row, three-arm matrix satisfies every declared development condition. |
+
+R6 suffered one persistence failure during its first launch: row 85's fixed-name temp-file rename raised
+`WinError 5`. All 240 workers finished during executor shutdown, but only 85 returned rows were recoverable.
+Both the 84-row checkpoint and fully written 85-row temp checkpoint were copied and validated with the same
+declaration. Atomic JSON writes now use a unique same-directory temp file and bounded retry on transient
+`PermissionError`; its retry test passes. The 85 rows were migrated under a new declaration because this was a
+checkpoint-only change, then R6 resumed without rerunning them and durably completed rows 86-240.
+
+### 12. R6 measured development outcome
+
+| scenario | warrant | correct / warrant | latency max (s) | forbidden | over | violations | task success | safety |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| I5-NOMINAL | 1/10 | 1/1 | 4 | 0 | 0 | 0 | 2/10 | 1 |
+| I5-NOMINAL-READABLE | 10/10 | 10/10 | 20 | 0 | 0 | 0 | 10/10 | 9 |
+| I5-CRITICAL-FINDING | 9/10 | 9/9 | 0 | 0 | 0 | 0 | 9/10 | 0 |
+| I5-UNCERTAIN-BELIEF | 10/10 | 10/10 | 0 | 0 | 0 | 0 | 10/10 | 0 |
+| I5-ROUTE-BLOCKED | 10/10 | 9/10 | 8 | 0 | 0 | 0 | 8/10 | 19 |
+| I5-BATTERY-RESERVE | 10/10 | 10/10 | 0 | 0 | 0 | 0 | 10/10 | 16 |
+| I5-TIME-RESERVE | 10/10 | 10/10 | 0 | 0 | 0 | 0 | 10/10 | 24 |
+| I5-COMMS-OUTAGE | 9/10 | 9/9 | 0 | 0 | 0 | 0 | 9/10 | 0 |
+
+Route-blocked remains at the declared 0.9 floor; its slow seed has 8 s latency against the 4 s default and is
+honestly counted incorrect. Aggregate hard-constraint violations are 0, nominal over-escalations are 0,
+3910/3910 decisions are traceable, and UIR is 0 over 875 relied claims (0 relied unsupported claims). Maximum
+post-onset deferred decisions in any row is 8, not the rejected 38/38 or 58/60 no-progress loop.
+
+Competitive outcomes pass both frozen baselines:
+
+- rule-FSM: task success 68 vs 68, safety events 69 vs 83, violations 0 vs 0;
+- naive-act-on-claims: task success 68 vs 19, safety events 69 vs 374, violations 0 vs 29528.
+
+Therefore the code is **DEVELOPMENT FIXED** on the shared design split. It is not a surrogate-final PASS and it
+does not close I5. A fresh, disjoint surrogate final partition must be declared and run once after the full
+repository health checks and freeze; formal Unity must then use fresh worlds because 7710002/7710003 are spent.

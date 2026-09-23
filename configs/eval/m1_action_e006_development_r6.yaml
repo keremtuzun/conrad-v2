@@ -1,0 +1,23 @@
+# Full I5 repair verification on the shared DEVELOPMENT split only. Never gate evidence.
+experiment_id: M1-ACTION-E006-DEVELOPMENT-R6
+hypothesis: >-
+  Model 1's calibration requirement is preserved as minimum belief revision plus independent observation count.
+  MCBR may use an exact-current-pose view, coalesce once onto an active matching view, or refund a feasible
+  unflown plan only when the target belief is OBSERVED INTACT and confirmation protects nominal continuation.
+  Failed/degraded findings retain conservative finite-attempt behavior, avoiding needless unsafe close-ins.
+  Correctness is thresholded given a warrant; raw action rate and warrant coverage remain explicit, and a
+  scored scenario with zero warrants fails. Ordinary V4 ranking, feasibility, constraints, and baselines remain
+  unchanged.
+partition: development
+partition_domain: i5_mission_v4
+seeds: [7500000, 7500001, 7500002, 7500003, 7500004, 7500005, 7500006, 7500007, 7500008, 7500009]
+scenarios: [I5-NOMINAL, I5-NOMINAL-READABLE, I5-CRITICAL-FINDING, I5-UNCERTAIN-BELIEF, I5-ROUTE-BLOCKED,
+            I5-BATTERY-RESERVE, I5-TIME-RESERVE, I5-COMMS-OUTAGE]
+arms: [egdc_structured, rule_fsm, naive_act_on_claims]
+latency_budget_s: {default: 4.0, I5-NOMINAL: 20.0, I5-NOMINAL-READABLE: 20.0}
+success_floor: 0.9
+uir_max: 0.0
+contact_clearance_m: 0.3
+workers: 6
+keep_bundles: false
+limitations: [synthetic data only, python L1 kernel, development evidence only]
