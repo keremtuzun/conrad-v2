@@ -69,7 +69,7 @@ VALIDATED stays 0: there is no physical evidence, and the only real-data run is 
 | 8 Active | INCOMPLETE | I4 formal FAIL |
 | 9 Model1 | INCOMPLETE | action matrix PASS; integrated missions FAIL |
 | 10 Ecological | 2E COMPLETE; CEFD killed; I6 not formally integrated | 2E PASS, 2E-CEFD FAIL, I6 surrogate PASS |
-| 11 BAAC | INCOMPLETE on the formal path | I7 surrogate PASS only |
+| 11 BAAC | INCOMPLETE | I7 surrogate FAIL (3 of 4); criterion 3 remains strict-fail and formal was not run |
 | 12 Hardware characterization | BLOCKED_EXTERNAL | software harness complete and rehearsed |
 | 13 Parameter identification | BLOCKED_EXTERNAL | protocol, intake, runner and a synthetic rehearsal exist |
 | 14 HIL | BLOCKED_EXTERNAL | host harness only |
@@ -97,6 +97,11 @@ L1 kernel; it never promotes a gate (ADR-0008).
 | I6 | BLOCKED_UPSTREAM | PASS (3 of 3, worlds 7800014-7800016) | PASS |
 | I7 | BLOCKED_UPSTREAM | not run | FAIL (3 of 4, seeds 5600000-5600004) |
 | I8, I9 | BLOCKED_EXTERNAL | | |
+
+I7's 2026-09-23 final software-gate verdict is **I7 FORMAL = FAIL**, fail-closed before Unity because the
+strict surrogate-development prerequisite for criterion 3 was not met. The evidence distinction remains
+important: formal Unity evidence is NOT_RUN and no `evidence_formal.json` exists; official status remains
+BLOCKED_UPSTREAM. See `docs/audits/I7_CRITERION3_FAILURE_ANALYSIS.md`.
 
 **I4, the gate that received the most work.** Three formal runs across two world families, the first of which
 rested on a generator defect that left the hidden defect visible from the lane. Final run: 4 of 5 criteria
@@ -167,8 +172,10 @@ the run. Spent partitions: MCBR seed 2026201, mission final 5300000-5300059, 2E 
 I2 NAV seeds 7300001-7300006 and the first I5 final seeds.
 
 Wins: Model2T direct inference (crack +5.81 mm [4.93, 6.72] over latest-observation at level 0, coverage
-0.950), Model2E fields and entities (all calibrated on FINAL-3), BAAC (more retained information than raw,
-FIFO and fixed priority at every non-zero bandwidth, on every seed), Model1 action matrix (1400/1400, UIR 0).
+0.950), Model2E fields and entities (all calibrated on FINAL-3), Model1 action matrix (1400/1400, UIR 0).
+BAAC is not a gate win: the current I7 surrogate record is 3 of 4 and criterion 3 fails its strict
+every-seed/every-nonzero-level rule. The 2026-09-23 development repair removes the genuine outage loss to
+FIFO without mid/high-bandwidth regression, but leaves all-policy zero-retention ties at 1 % and 0.1 %.
 
 Failures kept: TCDP, CEFD, RBP, learned association, MCBR against fixed views.
 

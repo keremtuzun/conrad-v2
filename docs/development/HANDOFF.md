@@ -51,7 +51,7 @@ project, and do not modify the legacy repository at `C:\Users\Kerem\OneDrive\Doc
 | I4 | FAIL | Unity, 12 worlds, 48 flights: beats random and coverage, not fixed views |
 | I5 | BLOCKED_UPSTREAM, surrogate FAIL | nominal "continue" unreachable: Model2T coverage 0.6-0.7 vs 0.8 needed |
 | I6 | BLOCKED_UPSTREAM, surrogate PASS | Unity harness written; needs a player rebuild and one command |
-| I7 | BLOCKED_UPSTREAM, surrogate PASS | all 4 criteria pass in the kernel; needs Unity missions |
+| I7 | BLOCKED_UPSTREAM, surrogate FAIL | 3 of 4; criterion 3 fails strict zero-tie cells and formal was not run |
 | I8, I9 | BLOCKED_EXTERNAL | onboard computer; physical vehicle. Not software-passable |
 
 Health at `df0dc78`: ruff, ruff format and `mypy conrad tests` clean; full suite 1139 passed, 1 skipped,
@@ -88,8 +88,9 @@ and the iteration-4 doc sections. It was held back only because Model2T was edit
    need Unity missions. Its fresh final seeds were 7900000-7900009 (SPENT: declare new ones).
 4. **I6 formal**: rebuild the player, then `record_unity_gate_evidence.py I6`. The harness exists.
 5. **I7 formal**: the same missions through Unity across 100/50/10/1/0.1 % bandwidth plus outage and
-   reconnection, against raw, FIFO, fixed priority and value-per-bit. A reduced sweep is acceptable only if
-   declared as reduced.
+   reconnection, against raw, FIFO, fixed priority and value-per-bit. Do not start it from the current I7
+   candidate: the 2026-09-23 development screen repaired the genuine outage loss but still failed the
+   predeclared every-seed rule at 1 % and 0.1 %. See `docs/audits/I7_CRITERION3_FAILURE_ANALYSIS.md`.
 6. **Finish the report**: `docs/reports/CONRAD_V2_REMEDIATION_REPORT.md` has three placeholders left,
    `PENDING_CI`, `PENDING_FLAGSHIP` and `PENDING_VERDICT`. Fill them from artifacts, not from memory.
    The flagship is done: see `docs/audits/FLAGSHIP_UNITY.md`.
@@ -102,6 +103,7 @@ and the iteration-4 doc sections. It was held back only because Model2T was edit
 | 5300000-5300059 | mission final_test | SPENT (2T-R2, MCBR-E003, COM-I7-E001/E002) |
 | 5500000-5500004 | I7 surrogate v2 (`configs/eval/partitions_i7_v2.yaml`) | SPENT (COM-I7-E003/E004) |
 | 5600000-5600004 | I7 surrogate v3 (`configs/eval/partitions_i7_v3.yaml`) | SPENT (COM-I7-E005/E006, the finding-following outage construction) |
+| 5100000-5100003, 5100007-5100008 | I7 criterion-3 development diagnosis | DEVELOPMENT ONLY; read repeatedly, never final evidence |
 | 6300000-6300011, 6400000-6400019, 6600000-6600019 | 2E | SPENT |
 | 6500000-6500059 | 2T FINAL-3 | SPENT |
 | 6700000-6700059 | 2T FINAL-4 | declared, check whether it was consumed |
@@ -162,3 +164,17 @@ Unity player build (only when the C# changed):
 - The ECMER quality head is untrained, so no reliability claim is allowed.
 - Real data: only smoke-level evidence (UVVID, SubPipe). No D6 anywhere.
 - External blockers: see section N of the report.
+
+## 9. I7 final software-gate addendum (2026-09-23)
+
+Work was isolated from the dirty main checkout on branch `kerem/i7-final`, starting from pushed commit
+`9422375`. Only I7 communication code, tests, development artifacts, and documentation changed.
+
+The completion-aware candidate fixes the genuine low-capacity outage loss to FIFO on six development
+worlds and does not regress 100%, 50%, or 10% bandwidth behavior. It was not frozen for a new surrogate
+final because five of six development worlds still tie every required baseline at 0.000 at 1% and 0.1%.
+Under the unchanged strict rule, criterion 3 therefore remains FAIL. No final seeds were consumed and no
+Unity process was launched. The authoritative stored state stays: I7 formal evidence NOT_RUN, surrogate
+FAIL (3/4), official BLOCKED_UPSTREAM. The final software-gate verdict is `I7 FORMAL = FAIL`, fail-closed
+on the uncleared surrogate prerequisite, not a claim that a Unity measurement ran and failed. See
+`docs/audits/I7_CRITERION3_FAILURE_ANALYSIS.md`.

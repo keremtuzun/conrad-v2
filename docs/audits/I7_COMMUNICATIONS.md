@@ -995,3 +995,17 @@ junit XML as `<skipped type="pytest.xfail">`. That hid a failing criterion behin
 opposite of what HANDOFF section 1 rule 3 asks for. It now reads `pytest.xfail` as FAIL and keeps real skips
 as NOT_RUN, and the artifact check can no longer upgrade a failed test node, only add its measured numbers.
 No other gate's recorded criteria point at an xfailed node, so only I7's record changes.
+
+## Final software-gate criterion-3 pass (2026-09-23)
+
+The genuine COM-I7-E006 outage loss was reproduced independently on development seeds 5100002, 5100003,
+and 5100007. Instrumentation showed BAAC ending a selected increment 216 bits short while smaller useful
+increments could have completed. A BAAC-only completion-feasibility filter and receiver-aligned F1/F2 value
+model remove that loss. Across six development worlds, BAAC is strictly above raw, FIFO, and fixed priority
+at outage 100% and 10%, and at bandwidth 100%, 50%, and 10%.
+
+The strict criterion still fails at bandwidth 1% and 0.1%: five of six development worlds tie all required
+baselines at 0.000. The physical budget is below the smallest current F1 and the 184-bit F0 becomes stale on
+fast-revising beliefs. The criteria, baselines, oracle, and thresholds were not changed. The candidate was
+therefore not frozen, no fresh final was consumed, and Unity was not launched. Full diagnosis, rejected
+prototype, instrumentation, and numeric evidence are in `I7_CRITERION3_FAILURE_ANALYSIS.md`.
