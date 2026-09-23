@@ -2,6 +2,7 @@
 
 import pathlib
 import re
+from dataclasses import replace
 
 import numpy as np
 import torch
@@ -112,6 +113,115 @@ def test_need_satisfied_and_not_worth_cost():
     pricey = lambda a, c: ResourceCost(time_s=500.0, energy_j=5000.0, risk=0.4, travel_m=300.0)  # noqa: E731
     r = MCBRPlanner(ids).plan(_request(ids, unc(uo=0.9), QuestionType.EXTEND_COVERAGE, cost=pricey))
     assert r.plan.status is PlanStatus.NOT_WORTH_COST
+
+
+def test_low_raw_uncertainty_does_not_close_unanswered_calibration_requirement():
+    ids = IdFactory(41)
+    request = _request(ids, unc(ue=0.2), QuestionType.CONFIRM_CONDITION)
+    belief = request.beliefs[0]
+    need = request.need.model_copy(
+        update={
+            "constraints": {"cause": "EPISTEMIC", "calibration_check": True},
+            "minimum_belief_revisions": {belief.belief_id: belief.revision + 1},
+            "minimum_independent_observation_counts": {
+                belief.belief_id: belief.independent_observation_count + 1
+            },
+        }
+    )
+    request = replace(request, need=need)
+    unresolved = MCBRPlanner(ids, value_gate=False).plan(request)
+    assert unresolved.plan.status is PlanStatus.PLAN
+
+    context_only = belief.model_copy(update={"revision": belief.revision + 1})
+    still_open = MCBRPlanner(ids, value_gate=False).plan(replace(request, beliefs=[context_only]))
+    assert still_open.plan.status is PlanStatus.PLAN
+
+    answered = belief.model_copy(
+        update={
+            "revision": belief.revision + 1,
+            "independent_observation_count": belief.independent_observation_count + 1,
+        }
+    )
+    closed = MCBRPlanner(ids, value_gate=False).plan(replace(request, beliefs=[answered]))
+    assert closed.plan.status is PlanStatus.NEED_SATISFIED
+
+
+def test_unanswered_calibration_requirement_with_no_feasible_view_terminates_explicitly():
+    ids = IdFactory(42)
+    request = _request(
+        ids,
+        unc(ue=0.2),
+        QuestionType.CONFIRM_CONDITION,
+        cost=lambda a, c: None,
+    )
+    belief = request.beliefs[0]
+    request = replace(
+        request,
+        need=request.need.model_copy(
+            update={
+                "constraints": {"cause": "EPISTEMIC", "calibration_check": True},
+                "minimum_belief_revisions": {belief.belief_id: belief.revision + 1},
+                "minimum_independent_observation_counts": {
+                    belief.belief_id: belief.independent_observation_count + 1
+                },
+            }
+        ),
+    )
+    result = MCBRPlanner(ids).plan(request)
+    assert result.plan.status is PlanStatus.NO_FEASIBLE_OBSERVATION
+    assert result.plan.primary_action is None
+
+
+def test_calibration_uses_valid_current_pose_and_shortest_completion_time():
+    ids = IdFactory(43)
+    request = _request(
+        ids,
+        unc(ue=0.2),
+        QuestionType.CONFIRM_CONDITION,
+        cost=lambda a, c: ResourceCost(
+            time_s=0.0 if a.position_m == c.position_m else 12.0,
+            energy_j=0.0 if a.position_m == c.position_m else 120.0,
+            risk=0.01,
+            travel_m=0.0 if a.position_m == c.position_m else 5.0,
+        ),
+    )
+    belief = request.beliefs[0]
+    # The target surface extends 0.5 m and the robot is 5 m from its centre: the 4.5 m surface standoff is
+    # valid for SONAR (1..8 m), but not RGB (0.5..4 m).
+    request = replace(
+        request,
+        need=request.need.model_copy(
+            update={
+                "constraints": {"cause": "EPISTEMIC", "calibration_check": True},
+                "minimum_belief_revisions": {belief.belief_id: belief.revision + 1},
+                "minimum_independent_observation_counts": {
+                    belief.belief_id: belief.independent_observation_count + 1
+                },
+            }
+        ),
+    )
+    result = MCBRPlanner(ids).plan(request)
+    action = result.plan.primary_action
+    assert result.plan.status is PlanStatus.PLAN and action is not None
+    assert action.pose.position_m == request.robot_pose.position_m
+    assert action.sensor_configuration["modality"] == "SONAR"
+    assert action.pose.orientation_wxyz == request.robot_pose.orientation_wxyz
+    assert action.sensor_configuration["calibration_inline"] is True
+    assert action.expected_cost.time_s == 2.0
+
+
+def test_non_calibration_request_does_not_add_or_prefer_station_keep_candidate():
+    ids = IdFactory(44)
+    request = _request(
+        ids,
+        unc(ue=0.9),
+        QuestionType.CONFIRM_CONDITION,
+        cost=lambda a, c: ResourceCost(time_s=0.0, energy_j=0.0, risk=0.0, travel_m=0.0),
+    )
+    result = MCBRPlanner(ids, value_gate=False).plan(request)
+    assert result.plan.primary_action is not None
+    assert result.plan.primary_action.pose.position_m != request.robot_pose.position_m
+    assert not any(row["position_m"] == list(request.robot_pose.position_m) for row in result.table)
 
 
 def test_contradiction_prefers_discriminating_sonar():

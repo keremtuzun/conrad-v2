@@ -175,6 +175,23 @@ class CandidateActionGenerator:
                 if a.calibration_only_epistemic:
                     # uncalibrated source, not OOD: an independent confirming look (any modality) closes it
                     params["calibration_check"] = True
+                    # Model 1 closes this gap only after an executed request is answered by a newer DIRECT
+                    # belief revision. Preserve the belief-side freshness requirement for MCBR: low raw U_E
+                    # alone cannot make an as-yet unanswered confirming look unnecessary.
+                    revisions = {m.belief_id: m.revision for m in ctx.snapshot.messages}
+                    observation_counts = {
+                        m.belief_id: m.independent_observation_count for m in ctx.snapshot.messages
+                    }
+                    params["minimum_belief_revisions"] = {
+                        str(belief_id): revisions[belief_id] + 1
+                        for belief_id in a.target_belief_ids
+                        if belief_id in revisions
+                    }
+                    params["minimum_independent_observation_counts"] = {
+                        str(belief_id): observation_counts[belief_id] + 1
+                        for belief_id in a.target_belief_ids
+                        if belief_id in observation_counts
+                    }
             if cause is UncertaintyType.ALEATORIC and len(ctx.available_modalities) > 1:
                 out.append(
                     self._make(

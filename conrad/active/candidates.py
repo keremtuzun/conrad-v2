@@ -134,6 +134,48 @@ class ViewpointGenerator:
             )
         return out
 
+    @staticmethod
+    def calibration_at_pose(
+        region: SpatialSupport,
+        sensors: tuple[SensorOption, ...],
+        robot_pose: Pose,
+        start_index: int,
+    ) -> list[RawCandidate]:
+        """Fresh inline observations that are valid from the actual current belief-side pose.
+
+        A calibration request needs a newer direct sample, not necessarily a novel viewpoint. The current
+        pose is therefore a candidate only when its distance from the target surface is inside the declared
+        sensor range. It still goes through the shared free-space, visibility, route, risk and budget filters.
+        Its orientation is not changed: predicted visibility must validate the view the sensor actually has.
+        """
+
+        if robot_pose.frame_id != region.frame_id:
+            return []
+        delta = tuple(robot_pose.position_m[i] - region.center_m[i] for i in range(3))
+        distance = math.sqrt(sum(v * v for v in delta))
+        standoff = distance - max(region.half_extent_m)
+        if distance <= 0.0:
+            return []
+        azimuth = math.atan2(delta[1], delta[0])
+        elevation = math.atan2(delta[2], math.hypot(delta[0], delta[1]))
+        out: list[RawCandidate] = []
+        for sensor in sensors:
+            if not (sensor.min_range_m <= standoff <= sensor.max_range_m):
+                continue
+            for configuration in sensor.configurations:
+                out.append(
+                    RawCandidate(
+                        pose=robot_pose,
+                        sensor=sensor,
+                        configuration={**configuration, "calibration_inline": True},
+                        standoff_m=standoff,
+                        azimuth_rad=azimuth,
+                        elevation_rad=elevation,
+                        index=start_index + len(out),
+                    )
+                )
+        return out
+
 
 class FeasibilityFilter:
     def __init__(self, config: MCBRConfig) -> None:

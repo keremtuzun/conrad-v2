@@ -60,6 +60,8 @@ class AbandonedView(ConradModel):
 class KnowledgeGap(ConradModel):
     need_id: UUID
     belief_id: UUID
+    belief_revision: int = Field(ge=0)
+    independent_observation_count: int = Field(ge=0)
     uncertainty: Uncertainty
     coverage: float = Field(ge=0, le=1, description="V_i: current observability/coverage")
     question: QuestionType
@@ -131,6 +133,8 @@ def build_knowledge_gaps(
             KnowledgeGap(
                 need_id=need.need_id,
                 belief_id=belief_id,
+                belief_revision=m.revision,
+                independent_observation_count=m.independent_observation_count,
                 uncertainty=u,
                 coverage=coverage,
                 question=need.question_type,
@@ -147,10 +151,16 @@ def build_knowledge_gaps(
 
 
 def need_satisfied(need: InformationNeed, gaps: Sequence[KnowledgeGap], config: MCBRConfig) -> bool:
-    """InformationNeedSatisfied: every targeted channel of every gap is at or below its target level."""
+    """Whether every explicit freshness requirement and targeted uncertainty bound is satisfied."""
     if not gaps:
         return False
     for gap in gaps:
+        minimum_revision = need.minimum_belief_revisions.get(gap.belief_id)
+        if minimum_revision is not None and gap.belief_revision < minimum_revision:
+            return False
+        minimum_observations = need.minimum_independent_observation_counts.get(gap.belief_id)
+        if minimum_observations is not None and gap.independent_observation_count < minimum_observations:
+            return False
         for channel in gap.targeted:
             name = CHANNEL_FIELD[channel]
             target = need.desired_uncertainty_reduction.get(

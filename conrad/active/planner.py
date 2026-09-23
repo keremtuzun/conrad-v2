@@ -168,6 +168,13 @@ class MCBRPlanner:
             return self._finish(request, PlanStatus.NEED_SATISFIED, [], [], targeted, gaps)
         gap = gaps[0]
         raws = self.generator.generate(gap.target_region, request.sensors)
+        calibration_check = bool(need.constraints.get("calibration_check"))
+        if calibration_check:
+            raws.extend(
+                self.generator.calibration_at_pose(
+                    gap.target_region, request.sensors, request.robot_pose, len(raws)
+                )
+            )
         free = (
             np.asarray(request.is_free(np.array([r.pose.position_m for r in raws])), dtype=bool)
             if raws
@@ -192,9 +199,27 @@ class MCBRPlanner:
             return self._finish(request, PlanStatus.NO_FEASIBLE_OBSERVATION, [], rejected, targeted, gaps)
         for c in feasible:
             c.score = float(self.scorer(gap, c, request))
-        feasible.sort(key=lambda c: (-c.score, c.raw.index))
+        if calibration_check:
+            # The open requirement is a fresh DIRECT revision, not a lower raw uncertainty value. Among
+            # safe, feasible observations, close that freshness gap with the shortest completion time.
+            feasible.sort(
+                key=lambda c: (
+                    c.action.expected_cost.time_s,
+                    c.action.expected_cost.energy_j,
+                    c.action.expected_cost.risk,
+                    c.action.expected_cost.travel_m,
+                    -c.action.predicted_visibility,
+                    c.raw.index,
+                )
+            )
+        else:
+            feasible.sort(key=lambda c: (-c.score, c.raw.index))
         best = feasible[0]
-        if self.stop is not None:
+        if calibration_check:
+            # A zero uncertainty-reduction score cannot close a revision-freshness requirement. Feasibility
+            # remains mandatory, but the ordinary value/gain stop is not the semantic stop for this request.
+            refuse = False
+        elif self.stop is not None:
             refuse = bool(self.stop(best, request))
         else:
             refuse = self.value_gate and (

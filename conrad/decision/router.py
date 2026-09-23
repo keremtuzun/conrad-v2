@@ -158,7 +158,12 @@ class ExecutionRouter:
             question = QuestionType(str(p["question_type"]))
             cause = str(p.get("cause", ""))
             constraints: dict[str, Any] = {"cause": cause}
-            for key in ("require_alternate_modality", "alternate_modalities", "cross_domain_disagreement"):
+            for key in (
+                "require_alternate_modality",
+                "alternate_modalities",
+                "cross_domain_disagreement",
+                "calibration_check",
+            ):
                 if key in p:
                     constraints[key] = p[key]
             if action.target_region is not None:
@@ -171,6 +176,14 @@ class ExecutionRouter:
                 target_properties=tuple(str(x) for x in p.get("properties", ())),
                 priority=action.priority,
                 desired_uncertainty_reduction=dict(p.get("desired_uncertainty_reduction", {})),
+                minimum_belief_revisions={
+                    UUID(str(belief_id)): int(revision)
+                    for belief_id, revision in dict(p.get("minimum_belief_revisions", {})).items()
+                },
+                minimum_independent_observation_counts={
+                    UUID(str(belief_id)): int(count)
+                    for belief_id, count in dict(p.get("minimum_independent_observation_counts", {})).items()
+                },
                 deadline_ns=p.get("deadline_ns"),
                 constraints=constraints,
                 originating_claim_ids=tuple(UUID(str(c)) for c in p.get("motivating_claims", ())),

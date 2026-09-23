@@ -51,6 +51,9 @@ def _message(
         message_id=m.ids.new(),
         belief_id=belief_id,
         revision=head.revision,
+        independent_observation_count=(
+            head.message.independent_observation_count if head.message is not None else 0
+        ),
         world_entity_id=head.registry_id,
         domain=Domain.ECOLOGICAL,
         timestamp=t,

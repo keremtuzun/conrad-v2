@@ -136,12 +136,16 @@ def test_critical_finding_on_down_link_is_stored_once_then_mission_continues():
 @pytest.mark.parametrize("modalities", [("SONAR",), ("SONAR", "RGB")])
 def test_uncalibrated_source_is_confirmed_not_escalated(modalities):
     ids = IdFactory(37)
-    b = make_belief(ids, uncertainty=unc(calibrated=False))
+    b = make_belief(ids, uncertainty=unc(calibrated=False), revision=7)
     req = make_requirement(ids, belief_ids=[b.belief_id], consequence=0.9)
     ctx = make_context(ids, [b], [req], modalities=modalities, notes={"modalities_used": ["SONAR"]})
     out = EGDC(ids).decide(ctx)
     assert action_label(out.record.chosen) == "REQUEST_INFORMATION:CONFIRM_CONDITION"
     assert out.record.chosen is not None and out.record.chosen.parameters["calibration_check"] is True
+    assert out.record.chosen.parameters["minimum_belief_revisions"] == {str(b.belief_id): 8}
+    assert out.record.chosen.parameters["minimum_independent_observation_counts"] == {
+        str(b.belief_id): b.independent_observation_count + 1
+    }
 
 
 def test_uncalibrated_source_escalates_once_attempts_are_exhausted():

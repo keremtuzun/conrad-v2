@@ -216,6 +216,11 @@ class BeliefMessage(VersionedModel):
     message_id: UUID
     belief_id: UUID
     revision: int = Field(ge=0)
+    independent_observation_count: int = Field(
+        default=0,
+        ge=0,
+        description="Cumulative independent DIRECT observations represented by this belief head.",
+    )
     world_entity_id: UUID | None = Field(default=None, description="registry identity when known; else None")
     domain: Domain
     timestamp: TimeStamp

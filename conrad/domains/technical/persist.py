@@ -76,6 +76,7 @@ def build_message(
         message_id=message_id,
         belief_id=cell.belief_id,
         revision=cell.revision,
+        independent_observation_count=cell.independent_observation_count,
         world_entity_id=cell.registry_entity_id,
         domain=Domain.TECHNICAL,
         timestamp=now,

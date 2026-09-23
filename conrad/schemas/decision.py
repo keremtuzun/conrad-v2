@@ -167,6 +167,16 @@ class InformationNeed(VersionedModel):
     target_properties: tuple[str, ...]
     priority: float = Field(ge=0, le=1)
     desired_uncertainty_reduction: dict[str, float] = Field(default_factory=dict)
+    minimum_belief_revisions: dict[UUID, int] = Field(
+        default_factory=dict,
+        description="Belief-derived freshness requirements. A listed belief does not satisfy this need "
+        "until its bus revision reaches the declared minimum.",
+    )
+    minimum_independent_observation_counts: dict[UUID, int] = Field(
+        default_factory=dict,
+        description="Belief-derived direct-observation freshness requirements. A listed belief does not "
+        "satisfy this need until its independent observation count reaches the declared minimum.",
+    )
     deadline_ns: int | None = None
     constraints: dict[str, Any] = Field(default_factory=dict)
     originating_claim_ids: tuple[UUID, ...] = ()

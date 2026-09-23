@@ -113,6 +113,25 @@ def test_uncertainty_cause_maps_to_need(u, question):
         assert need.constraints["require_alternate_modality"] is True
 
 
+def test_calibration_freshness_requirement_survives_routing_and_serialization():
+    ids = IdFactory(401)
+    b, ctx = _ctx(
+        ids,
+        unc(calibrated=False),
+        belief_kw={"revision": 7},
+        req_kw={"consequence": 0.9},
+        modalities=("SONAR",),
+        notes={"modalities_used": ["SONAR"]},
+    )
+    out = EGDC(ids).decide(ctx)
+    assert out.routed is not None and isinstance(out.routed.payload, InformationNeed)
+    need = out.routed.payload
+    assert need.constraints["calibration_check"] is True
+    assert need.minimum_belief_revisions == {b.belief_id: 8}
+    assert need.minimum_independent_observation_counts == {b.belief_id: b.independent_observation_count + 1}
+    assert InformationNeed.model_validate_json(need.model_dump_json()) == need
+
+
 def test_contradiction_with_conflicting_evidence_resolves_contradiction():
     ids = IdFactory(5)
     _, ctx = _ctx(ids, unc(uc=0.9), belief_kw={"n_conflicts": 2})

@@ -110,6 +110,11 @@ class BeliefLedger:
         t = spec.timestamp
         late = head is not None and spec.kind is UpdateKind.DIRECT and t.time_ns < head.time_ns
         status = summarize_status(spec.claims) if spec.claims else KnowledgeStatus.UNKNOWN
+        consumed = tuple(e.evidence_id for e in spec.evidence) if spec.kind is UpdateKind.DIRECT else ()
+        prior_observations = (
+            head.message.independent_observation_count if head is not None and head.message is not None else 0
+        )
+        observation_count = prior_observations + (1 if consumed else 0)
         cell = BeliefCell(
             belief_id=spec.belief_id,
             domain=Domain.ECOLOGICAL,
@@ -123,11 +128,10 @@ class BeliefLedger:
             knowledge_status=status,
             uncertainty=spec.uncertainty,
             spatial_support=spec.support,
-            independent_observation_count=0,
+            independent_observation_count=observation_count,
             provenance_root=root,
             model_version=self.model_version,
         )
-        consumed = tuple(e.evidence_id for e in spec.evidence) if spec.kind is UpdateKind.DIRECT else ()
         rev = BeliefRevision(
             belief_id=spec.belief_id,
             revision=revision,
@@ -157,6 +161,7 @@ class BeliefLedger:
             message_id=message_id,
             belief_id=spec.belief_id,
             revision=revision,
+            independent_observation_count=observation_count,
             world_entity_id=spec.registry_id,
             domain=Domain.ECOLOGICAL,
             timestamp=t,

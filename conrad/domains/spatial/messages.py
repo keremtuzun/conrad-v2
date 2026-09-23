@@ -211,6 +211,7 @@ def build(
         message_id=message_id,
         belief_id=spec.belief_id,
         revision=spec.revision,
+        independent_observation_count=s.observation_count,
         world_entity_id=spec.registry_id,
         domain=Domain.SPATIAL,
         timestamp=now,

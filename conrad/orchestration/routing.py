@@ -44,6 +44,36 @@ _UNSEEN_REVISION = object()
 """Sentinel: the condition of a revision this runtime never saw (then a newer revision is still reportable)."""
 
 
+def _is_calibration_request(target: RouteTarget, payload: Any) -> bool:
+    """Whether this routed payload is the explicit Model 1 calibration-freshness requirement."""
+
+    return (
+        target is RouteTarget.MCBR
+        and isinstance(payload, InformationNeed)
+        and bool(payload.constraints.get("calibration_check"))
+    )
+
+
+def _allows_calibration_deferral_refund(beliefs: list[BeliefMessage]) -> bool:
+    """Whether an unflown calibration view protects a nominal INTACT decision.
+
+    An independent confirming look is needed to authorize continued operation on an uncalibrated INTACT
+    assessment.  A DEGRADED/SEVERE/FAILED assessment already warrants the conservative finding path; giving
+    those confirmation views unlimited routing deferrals caused needless close-ins and safety holds.  This
+    predicate reads only the target belief message, never Twin truth or a scenario identifier.
+    """
+
+    for message in beliefs:
+        condition = next((claim for claim in message.state_summary if claim.name == "condition"), None)
+        if (
+            condition is not None
+            and condition.status is KnowledgeStatus.OBSERVED
+            and str(condition.value) == "INTACT"
+        ):
+            return True
+    return False
+
+
 class DecisionRouting:
     def __init__(
         self,
@@ -73,6 +103,7 @@ class DecisionRouting:
         self.view_attempts: dict[tuple[UUID, ...], int] = {}
         self.deferred_replans: list[dict[str, Any]] = []
         self._plan_need: dict[str, tuple[UUID, ...]] = {}
+        self._calibration_coalesced: set[tuple[str, tuple[UUID, ...]]] = set()
         self._views_seen = 0
         self._time_remaining_s: float | None = None
         self._energy_remaining_j: float | None = None
@@ -230,7 +261,8 @@ class DecisionRouting:
         payload = routed.payload
         busy = self.x.active is not None and self.x.active.purpose in ("INSPECT", "REVISIT", "SAFE_HOLD")
         surveying = not self.x.transit_done
-        if surveying and routed.target in (RouteTarget.MCBR, RouteTarget.NAVIGATION):
+        calibration = _is_calibration_request(routed.target, payload)
+        if surveying and routed.target in (RouteTarget.MCBR, RouteTarget.NAVIGATION) and not calibration:
             self.s.emit(
                 EventType.ACTION_REJECTED,
                 MODULE,
@@ -243,7 +275,7 @@ class DecisionRouting:
             )
             self.d.mark_not_executed(out.record.decision_id)  # never carried out: not an attempt
             return
-        if busy and routed.target in (RouteTarget.MCBR, RouteTarget.NAVIGATION):
+        if busy and routed.target in (RouteTarget.MCBR, RouteTarget.NAVIGATION) and not calibration:
             # an inspection / revisit is already running (it is the attempt); this request is dropped
             self.d.mark_not_executed(out.record.decision_id)
             return
@@ -312,6 +344,27 @@ class DecisionRouting:
             self.d.mark_not_executed(out.record.decision_id)  # deferred, not carried out: not an attempt
             return
         key = tuple(sorted(need.target_belief_ids, key=str))
+        calibration = bool(need.constraints.get("calibration_check"))
+        active = self.x.active
+        active_plan = None if active is None or active.plan_id is None else str(active.plan_id)
+        if calibration and active_plan is not None and self._plan_need.get(active_plan) == key:
+            token = (active_plan, key)
+            if token in self._calibration_coalesced:
+                self.d.mark_not_executed(out.record.decision_id)
+                return
+            self._calibration_coalesced.add(token)
+            self.s.emit(
+                EventType.PLAN_PROPOSED,
+                MODULE,
+                need.trace_id,
+                {
+                    "need_id": str(need.need_id),
+                    "execution": "CALIBRATION_COALESCED_WITH_ACTIVE_VIEW",
+                    "active_plan_id": active_plan,
+                    "target_belief_ids": [str(b) for b in key],
+                },
+            )
+            return
         if self.plan_attempts.get(key, 0) >= self.cfg.max_plans_per_need:
             self.s.emit(
                 EventType.ACTION_REJECTED,
@@ -346,6 +399,48 @@ class DecisionRouting:
         plan = adopted.plan
         act = plan.primary_action
         assert act is not None
+        inline = bool(act.sensor_configuration.get("calibration_inline"))
+        if inline:
+            self.view_attempts[key] = self.view_attempts.get(key, 0) + 1
+            self.prior_views.append(
+                PriorView(position_m=act.pose.position_m, modality=self.d.sensor.modality)
+            )
+            self.s.emit(
+                EventType.PLAN_PROPOSED,
+                MODULE,
+                need.trace_id,
+                {
+                    "need_id": str(need.need_id),
+                    "plan_id": str(plan.plan_id),
+                    "action_id": str(act.action_id),
+                    "execution": "CALIBRATION_INLINE_CURRENT_VIEW",
+                    "predicted_visibility": act.predicted_visibility,
+                },
+            )
+            return
+        if calibration and (
+            not self.x.transit_done
+            or (self.x.active is not None and self.x.active.purpose in ("INSPECT", "REVISIT", "SAFE_HOLD"))
+        ):
+            self.d.mark_not_executed(out.record.decision_id)
+            # The planner found a feasible view, but routing never launched it because the active goal is
+            # deliberately non-preemptible.  Under the frozen V4 accounting rule, an unflown view is not an
+            # information-acquisition attempt.  Refund only this routing deferral; empty/infeasible plans and
+            # views actually handed to the executive remain charged.  The active goal continues to make
+            # progress, so this cannot reproduce the old no-goal 58/60 unexecutable-request loop.
+            if ve.enabled and ve.refund_abandoned_attempt and _allows_calibration_deferral_refund(beliefs):
+                self.plan_attempts[key] = max(0, self.plan_attempts.get(key, 1) - 1)
+            self.s.emit(
+                EventType.ACTION_REJECTED,
+                MODULE,
+                need.trace_id,
+                {
+                    "need_id": str(need.need_id),
+                    "plan_id": str(plan.plan_id),
+                    "reason": "CALIBRATION_VIEW_REQUIRES_GOAL_PREEMPTION",
+                },
+            )
+            return
         target = view_pose(plan, self.d.mount_yaw)
         goal = NavigationGoal(
             goal_id=self.ids.new(),

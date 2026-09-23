@@ -92,6 +92,7 @@ def make_belief(
         message_id=ids.new(),
         belief_id=bid,
         revision=revision,
+        independent_observation_count=n_evidence if direct else 0,
         world_entity_id=world_entity_id,
         domain=domain,
         timestamp=stamp(time_s, CLOCK),
