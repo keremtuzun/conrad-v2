@@ -1,5 +1,7 @@
 """M1-ACTION-E002 harness pieces that do not need a mission: seed partition, labels, rule/FSM baseline."""
 
+from dataclasses import replace
+from pathlib import Path
 from typing import Any
 from unittest import mock
 
@@ -12,6 +14,9 @@ from conrad.evaluation.decision_experiments.m1_action_integrated import (
     PRIMARY,
     SPECS,
     RuleFSMPolicy,
+    _atomic_write_json,
+    _load_checkpoint,
+    _write_checkpoint,
     make_arm,
     matches,
     seeds_for,
@@ -45,6 +50,47 @@ from conrad.evaluation.partitions import (
 from conrad.schemas.decision import ActionType
 from conrad.schemas.ids import IdFactory
 from conrad.sim.mission.scenarios import SCENARIOS
+
+
+def test_completed_mission_rows_checkpoint_atomically_and_refuse_incompatible_resume(tmp_path):
+    path = tmp_path / "checkpoint.json"
+    declaration = {"sha256": "declaration-a", "experiment_id": "DEV"}
+    rows = {
+        "DEV-I5-NOMINAL-s7500000-egdc_structured": {
+            "run_id": "DEV-I5-NOMINAL-s7500000-egdc_structured",
+            "seed": 7500000,
+            "scenario": "I5-NOMINAL",
+            "arm": PRIMARY,
+        }
+    }
+    _write_checkpoint(path, declaration, rows)
+    assert not list(tmp_path.glob("*.tmp"))
+    assert _load_checkpoint(path, declaration) == rows
+    with pytest.raises(RuntimeError, match="incompatible checkpoint"):
+        _load_checkpoint(path, {"sha256": "declaration-b"})
+
+
+def test_atomic_json_write_retries_transient_windows_permission_error(tmp_path, monkeypatch):
+    path = tmp_path / "result.json"
+    original = Path.replace
+    attempts = 0
+
+    def flaky_replace(source: Path, target: Path) -> Path:
+        nonlocal attempts
+        attempts += 1
+        if attempts == 1:
+            raise PermissionError("transient scanner lock")
+        return original(source, target)
+
+    monkeypatch.setattr(Path, "replace", flaky_replace)
+    monkeypatch.setattr(
+        "conrad.evaluation.decision_experiments.m1_action_integrated.time.sleep", lambda _: None
+    )
+    _atomic_write_json(path, {"complete": True})
+
+    assert attempts == 2
+    assert path.read_text(encoding="utf-8").strip() == '{\n "complete": true\n}'
+    assert not list(tmp_path.glob("*.tmp"))
 
 
 def test_i5_seeds_are_pinned_disjoint_and_guarded():
@@ -150,8 +196,18 @@ def test_a_scenario_whose_warrant_cannot_arise_is_not_applicable_not_zero():
     summary: dict[str, Any] = {
         "closed_loop": {
             PRIMARY: {
-                "SCORED": {"correct_rate": 1.0, "over_escalations": 0},
-                "UNREACHABLE": {"correct_rate": 0.0, "over_escalations": 0},
+                "SCORED": {
+                    "warrant_reached": 1,
+                    "correct_rate": 1.0,
+                    "correct_given_warrant": 1.0,
+                    "over_escalations": 0,
+                },
+                "UNREACHABLE": {
+                    "warrant_reached": 0,
+                    "correct_rate": 0.0,
+                    "correct_given_warrant": None,
+                    "over_escalations": 0,
+                },
                 "ALL": {
                     "violations_total": 0,
                     "traceable_decisions": 10,
@@ -189,9 +245,17 @@ def test_a_scenario_whose_warrant_cannot_arise_is_not_applicable_not_zero():
     assert v["scenarios_not_applicable"] == {"UNREACHABLE": "measured: the onset never occurs"}
     assert v["scenarios_scored_for_actions"] == ["SCORED"]
     assert v["per_scenario_correct_rate"]["UNREACHABLE"] == 0.0  # still reported
+    assert v["per_scenario_correct_given_warrant_rate"]["UNREACHABLE"] is None
     assert v["actions_exercised_correctly"] is True
     # and a scored scenario below the floor still fails
-    summary["closed_loop"][PRIMARY]["SCORED"]["correct_rate"] = 0.5
+    summary["closed_loop"][PRIMARY]["SCORED"]["correct_given_warrant"] = 0.5
+    with mock.patch.dict(SPECS, specs, clear=False):
+        assert verdicts(summary, config, list(specs))["actions_exercised_correctly"] is False
+
+    # A scored scenario with no observed warrant is not silently exempted.
+    summary["closed_loop"][PRIMARY]["SCORED"]["correct_given_warrant"] = 1.0
+    summary["closed_loop"][PRIMARY]["UNREACHABLE"]["correct_given_warrant"] = None
+    specs["UNREACHABLE"] = replace(specs["UNREACHABLE"], warrant_by_construction=True)
     with mock.patch.dict(SPECS, specs, clear=False):
         assert verdicts(summary, config, list(specs))["actions_exercised_correctly"] is False
 

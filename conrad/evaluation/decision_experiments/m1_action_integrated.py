@@ -46,11 +46,15 @@ Evidence class: SURROGATE (python L1 kernel, not Unity). It never promotes the f
 
 from __future__ import annotations
 
+import hashlib
 import json
+import os
 import shutil
+import subprocess
+import time
 from collections import Counter
 from collections.abc import Callable, Sequence
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -625,6 +629,94 @@ def mission_job(job: dict[str, Any]) -> dict[str, Any]:
     return {"run_id": job["run_id"], **row}
 
 
+def _source_identity() -> dict[str, str]:
+    """Pin resumable rows to the exact tracked source/config state that produced them."""
+    try:
+        head = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=REPO_ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        diff = subprocess.run(
+            ["git", "diff", "--binary", "HEAD", "--", "conrad", "configs", "scripts"],
+            cwd=REPO_ROOT,
+            check=True,
+            capture_output=True,
+        ).stdout
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise RuntimeError("cannot establish source identity for the resumable I5 run") from exc
+    return {"git_commit": head, "source_diff_sha256": hashlib.sha256(diff).hexdigest()}
+
+
+def _checkpoint_declaration(
+    config: dict[str, Any],
+    seeds: Sequence[int],
+    partition: Partition,
+    domain: str,
+    scenarios: Sequence[str],
+    arms: Sequence[str],
+) -> dict[str, Any]:
+    declaration = {
+        "experiment_id": str(config["experiment_id"]),
+        "partition": partition.value,
+        "partition_domain": domain,
+        "seeds": [int(s) for s in seeds],
+        "scenarios": list(scenarios),
+        "arms": list(arms),
+        "config": config,
+        "source": _source_identity(),
+    }
+    canonical = json.dumps(declaration, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
+    return {"sha256": hashlib.sha256(canonical).hexdigest(), **declaration}
+
+
+def _load_checkpoint(path: Path, declaration: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    if not path.exists():
+        return {}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if payload.get("declaration_sha256") != declaration["sha256"]:
+        raise RuntimeError(f"refusing incompatible checkpoint {path}")
+    rows: dict[str, dict[str, Any]] = {}
+    for row in payload.get("completed_rows", []):
+        run_id = str(row["run_id"])
+        if run_id in rows:
+            raise RuntimeError(f"duplicate completed row {run_id} in {path}")
+        rows[run_id] = dict(row)
+    return rows
+
+
+def _atomic_write_json(path: Path, payload: dict[str, Any]) -> None:
+    """Write JSON atomically, tolerating transient Windows scanner/indexer locks.
+
+    A fixed ``.tmp`` name left the R6 coordinator vulnerable to a single ``WinError 5`` during ``replace``.
+    Use a unique same-directory temporary file (so rename stays atomic) and retry only the filesystem rename;
+    mission work is never retried here.  A terminal failure deliberately leaves the temp file for recovery.
+    """
+
+    tmp = path.with_name(f"{path.name}.{os.getpid()}.{time.time_ns()}.tmp")
+    tmp.write_text(json.dumps(payload, indent=1, default=str), encoding="utf-8")
+    for attempt in range(20):
+        try:
+            tmp.replace(path)
+            return
+        except PermissionError:
+            if attempt == 19:
+                raise
+            time.sleep(0.05 * (attempt + 1))
+
+
+def _write_checkpoint(path: Path, declaration: dict[str, Any], rows: dict[str, dict[str, Any]]) -> None:
+    """Atomically persist every completed (seed, scenario, arm) row on Windows."""
+    payload: dict[str, Any] = {
+        "declaration_sha256": declaration["sha256"],
+        "declaration": {k: v for k, v in declaration.items() if k != "sha256"},
+        "completed_rows": [rows[k] for k in sorted(rows)],
+    }
+    _atomic_write_json(path, payload)
+
+
 # ---------------------------------------------------------------------------------------------- experiment
 def seeds_for(partition: Partition, purpose: Purpose, domain: str = I5_DOMAIN) -> tuple[int, ...]:
     return split(domain, partition, purpose).world_seeds
@@ -733,6 +825,7 @@ def verdicts(summary: dict[str, Any], config: dict[str, Any], scenarios: Sequenc
     uir_max = float(config["uir_max"])
     e = summary["closed_loop"][PRIMARY]
     per_scenario = {sc: e[sc]["correct_rate"] for sc in scenarios}
+    per_scenario_given_warrant = {sc: e[sc]["correct_given_warrant"] for sc in scenarios}
     # A scenario whose warrant cannot arise by construction cannot exercise its action class: it is reported
     # as NOT APPLICABLE to this criterion (with its measured reason) rather than scored 0. Its
     # violations, over-escalations, traceability, UIR and mission outcome are still scored below.
@@ -742,7 +835,11 @@ def verdicts(summary: dict[str, Any], config: dict[str, Any], scenarios: Sequenc
     scored = [sc for sc in scenarios if sc not in not_applicable]
     actions_ok = (
         bool(scored)
-        and all((per_scenario[sc] or 0.0) >= floor for sc in scored)
+        # I5 evaluates whether Model 1 executes the required action once its belief-side warrant exists.
+        # Keep raw all-mission rates above for coverage, but do not count a mission in which the warrant never
+        # arose as a wrong action.  A scenario with zero warrants is still a hard failure (None -> 0), not an
+        # exemption; this preserves the withdrawn I5-NOMINAL exemption.
+        and all((per_scenario_given_warrant[sc] or 0.0) >= floor for sc in scored)
         and e["ALL"]["violations_total"] == 0
     )
     nominal_over = sum(e[sc]["over_escalations"] for sc in scenarios if SPECS[sc].check_over_escalation)
@@ -770,6 +867,8 @@ def verdicts(summary: dict[str, Any], config: dict[str, Any], scenarios: Sequenc
         "success_floor": floor,
         "floor_status": "ENGINEERING_ESTIMATE (ch25 leaves the I5 bound OPEN)",
         "per_scenario_correct_rate": per_scenario,
+        "per_scenario_correct_given_warrant_rate": per_scenario_given_warrant,
+        "per_scenario_warrant_reached": {sc: e[sc]["warrant_reached"] for sc in scenarios},
         "scenarios_scored_for_actions": scored,
         "scenarios_not_applicable": not_applicable,
         "nominal_over_escalations": nominal_over,
@@ -794,6 +893,10 @@ def run(config: dict[str, Any], seeds: list[int], out_dir: str | Path) -> dict[s
     arms = list(config.get("arms", [PRIMARY, *BASELINES]))
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
+    stem = str(config["experiment_id"]).lower().replace("-", "_")  # M1-ACTION-E002 -> m1_action_e002
+    checkpoint_path = out / f"{stem}_{partition.value}.checkpoint.json"
+    declaration = _checkpoint_declaration(config, seeds, partition, domain, scenarios, arms)
+    completed = _load_checkpoint(checkpoint_path, declaration)
     runs_root = REPO_ROOT / "artifacts" / "runs" / str(config["experiment_id"])
     jobs = [
         {
@@ -808,13 +911,22 @@ def run(config: dict[str, Any], seeds: list[int], out_dir: str | Path) -> dict[s
         for s in seeds
         for sc in scenarios
         for arm in arms
+        if f"{config['experiment_id']}-{sc}-s{s}-{arm}" not in completed
     ]
     workers = int(config.get("workers", 1))
     if workers > 1:
         with ProcessPoolExecutor(max_workers=workers) as pool:
-            rows = list(pool.map(mission_job, jobs))
+            futures = [pool.submit(mission_job, job) for job in jobs]
+            for future in as_completed(futures):
+                row = future.result()
+                completed[str(row["run_id"])] = row
+                _write_checkpoint(checkpoint_path, declaration, completed)
     else:
-        rows = [mission_job(j) for j in jobs]
+        for job in jobs:
+            row = mission_job(job)
+            completed[str(row["run_id"])] = row
+            _write_checkpoint(checkpoint_path, declaration, completed)
+    rows = list(completed.values())
     rows.sort(key=lambda r: r["run_id"])
     summary = summarize(rows, scenarios)
     result: dict[str, Any] = {
@@ -838,11 +950,16 @@ def run(config: dict[str, Any], seeds: list[int], out_dir: str | Path) -> dict[s
         },
         "arms": arms,
         "config": config,
+        "checkpoint": {
+            "path": str(checkpoint_path),
+            "declaration_sha256": declaration["sha256"],
+            "completed_rows": len(rows),
+        },
         **summary,
         "verdicts": verdicts(summary, config, scenarios),
         "per_run": rows,
     }
-    stem = str(config["experiment_id"]).lower().replace("-", "_")  # M1-ACTION-E002 -> m1_action_e002
     name = f"{stem}.json" if partition is Partition.FINAL_TEST else f"{stem}_{partition.value}.json"
-    (out / name).write_text(json.dumps(result, indent=1, default=str), encoding="utf-8")
+    result_path = out / name
+    _atomic_write_json(result_path, result)
     return result
