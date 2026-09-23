@@ -28,6 +28,7 @@ from conrad.evaluation.partitions import (
     I5_V3_DOMAIN,
     I5_V4_DOMAIN,
     I5_V5_DOMAIN,
+    I5_V6_DOMAIN,
     Partition,
     PartitionAccessError,
     PartitionIntegrityError,
@@ -39,6 +40,7 @@ from conrad.evaluation.partitions import (
     load_i5_v3,
     load_i5_v4,
     load_i5_v5,
+    load_i5_v6,
     load_nav,
     load_unity_gates,
     partition_of,
@@ -49,6 +51,7 @@ from conrad.evaluation.partitions import (
     validate_i5_v3,
     validate_i5_v4,
     validate_i5_v5,
+    validate_i5_v6,
 )
 from conrad.schemas.decision import ActionType
 from conrad.schemas.ids import IdFactory
@@ -216,6 +219,38 @@ def test_i5_v5_final_is_fresh_digest_pinned_and_guarded():
         bad = {**raw, "world_seeds": {**raw["world_seeds"], "final_test": {"explicit": [bad_seed]}}}
         with pytest.raises(PartitionIntegrityError, match=r"collide|overlap"):
             validate_i5_v5(bad, *args)
+
+
+def test_i5_v6_development_and_final_are_both_fresh_and_guarded():
+    """The post-E007 repair iteration gets new design seeds without opening its held-out final seeds."""
+    loaded = load_i5_v6()
+    raw = loaded["raw"]
+    development = set(split(I5_V6_DOMAIN, Partition.DEVELOPMENT, Purpose.DESIGN).world_seeds)
+    final = set(split(I5_V6_DOMAIN, Partition.FINAL_TEST, Purpose.FINAL_EVALUATION).world_seeds)
+    assert development == set(range(7740000, 7740010))
+    assert final == set(range(7750000, 7750010))
+    assert not development & final
+    with pytest.raises(PartitionAccessError):
+        split(I5_V6_DOMAIN, Partition.FINAL_TEST, Purpose.DESIGN)
+    older = [
+        load_i5()["raw"],
+        load_i5_v2()["raw"],
+        load_i5_v3()["raw"],
+        load_i5_v4()["raw"],
+        load_i5_v5()["raw"],
+    ]
+    args = (
+        load()["raw"],
+        load_nav()["raw"],
+        older,
+        load_i5_unity()["raw"],
+        load_unity_gates()["raw"],
+    )
+    for split_name in ("development", "final_test"):
+        for bad_seed in (7500001, 7600003, 7700005, 7710002, 7720002, 7730004, 7800005, 7900004):
+            bad = {**raw, "world_seeds": {**raw["world_seeds"], split_name: {"explicit": [bad_seed]}}}
+            with pytest.raises(PartitionIntegrityError, match=r"collide|disjoint"):
+                validate_i5_v6(bad, *args)
 
 
 def test_the_i5_nominal_exemption_is_withdrawn_at_head():

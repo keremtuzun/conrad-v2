@@ -1,0 +1,17 @@
+# Development-only reproduction of E007's nominal over-escalation class on fresh v6 design seeds.
+experiment_id: M1-ACTION-E008-DEVELOPMENT-DIAG1
+hypothesis: >-
+  The held-out failure class reproduces without using any v5 row: nominal missions on fresh development seeds
+  may exhaust calibration acquisition attempts and escalate before the continue warrant becomes available.
+partition: development
+partition_domain: i5_mission_v6
+seeds: [7740000, 7740001, 7740002, 7740003, 7740004, 7740005, 7740006, 7740007, 7740008, 7740009]
+scenarios: [I5-NOMINAL]
+arms: [egdc_structured]
+latency_budget_s: {default: 4.0, I5-NOMINAL: 20.0, I5-NOMINAL-READABLE: 20.0}
+success_floor: 0.9
+uir_max: 0.0
+contact_clearance_m: 0.3
+workers: 6
+keep_bundles: true
+limitations: [synthetic data only, python L1 kernel, development diagnosis only]
