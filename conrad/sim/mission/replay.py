@@ -19,15 +19,19 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
+from conrad.domains.technical.spatial_mission import MODEL_VERSION as SPATIAL_MODEL_VERSION
 from conrad.orchestration.mission_config import runtime_config
 from conrad.persistence.db import make_engine
 from conrad.persistence.object_store import ObjectStore
 from conrad.persistence.replay_store import ReplayIntegrityError, verify_bundle
 from conrad.persistence.repository import Repository
 from conrad.runtime.event_log import event_signature, read_events
+from conrad.schemas.structural_sensor import DETECTABILITY_VERSION, StructuralSensorModelV2
+from conrad.schemas.structural_support import STRUCTURAL_SUPPORT_VERSION
 from conrad.settings import ConradSettings
 from conrad.sim.mission.options import world_options
-from conrad.sim.mission.run import run_scenario
+from conrad.sim.mission.run import run_scenario, validate_spatial_mission_selection
+from conrad.twins.twin2t.spatial_field import EVOLUTION_VERSION, TRUTH_VERSION
 
 
 def _decisions(run_dir: Path) -> list[tuple[str, str | None, bool]]:
@@ -78,6 +82,44 @@ def compare(original: Path, replayed: Path) -> dict[str, Any]:
     return report
 
 
+def validate_spatial_replay_contract(inputs: dict[str, Any]) -> None:
+    """Reject edited or unsupported spatial declarations before launching replay."""
+    raw_world = inputs.get("mission_world_options")
+    raw_runtime = inputs.get("mission_runtime_config")
+    if not isinstance(raw_world, dict) or not isinstance(raw_runtime, dict):
+        if inputs.get("spatial_versions") is None:
+            return  # historical legacy bundles may predate stored resolved mission options
+        raise ReplayIntegrityError(["spatial replay requires stored mission options"])
+    try:
+        wopts, rcfg = world_options(raw_world), runtime_config(raw_runtime)
+        validate_spatial_mission_selection(wopts, rcfg)
+    except (ValueError, KeyError, TypeError) as exc:
+        raise ReplayIntegrityError([f"spatial mission selection mismatch: {exc}"]) from exc
+    if rcfg.model2t_backend != "spatial_v1":
+        if inputs.get("spatial_versions") is not None:
+            raise ReplayIntegrityError(["legacy replay has unexpected spatial versions"])
+        return
+    if rcfg.model2t_spatial is None:
+        raise ReplayIntegrityError(["spatial Model2T settings missing"])
+    sensor = StructuralSensorModelV2.model_validate(rcfg.model2t_spatial["sensor"])
+    expected = {
+        "truth": TRUTH_VERSION,
+        "evolution": EVOLUTION_VERSION,
+        "sensor": sensor.version,
+        "sensor_config_digest": sensor.digest,
+        "support": STRUCTURAL_SUPPORT_VERSION,
+        "model2t": SPATIAL_MODEL_VERSION,
+        "detectability": DETECTABILITY_VERSION,
+    }
+    if (
+        inputs.get("spatial_versions") != expected
+        or inputs.get("model_versions", {}).get("model2t") != SPATIAL_MODEL_VERSION
+    ):
+        raise ReplayIntegrityError(
+            ["spatial architecture, sensor configuration, or Model2T version mismatch"]
+        )
+
+
 def replay_run(run_dir: Path, scratch: Path | None = None) -> dict[str, Any]:
     """Raises ReplayIntegrityError when the bundle does not verify. Returns the comparison report."""
     manifest = verify_bundle(run_dir, ObjectStore(run_dir / "objects"))
@@ -88,6 +130,7 @@ def replay_run(run_dir: Path, scratch: Path | None = None) -> dict[str, Any]:
     settings = ConradSettings.model_validate(inputs["config_resolved"])
     if settings.config_digest() != inputs["config_digest"]:
         raise ReplayIntegrityError(["stored configuration does not match its recorded digest"])
+    validate_spatial_replay_contract(inputs)
     try:
         wopts = world_options(inputs["mission_world_options"]) if "mission_world_options" in inputs else None
         rcfg = (

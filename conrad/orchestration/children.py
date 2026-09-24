@@ -18,11 +18,15 @@ from conrad.domains.spatial.config import spatial_config
 from conrad.domains.spatial.model import Model2S
 from conrad.domains.spatial.queries import UnknownPolicy
 from conrad.domains.technical import Model2T, model2t_config_from_dict, production_propagation_mode
+from conrad.domains.technical.spatial_local import LocalThresholds
+from conrad.domains.technical.spatial_mission import SpatialMissionModel2T
 from conrad.orchestration.mission_config import MissionRuntimeConfig
 from conrad.orchestration.mission_context import MissionContext
 from conrad.persistence.object_store import ObjectStore
 from conrad.persistence.repository import Repository
+from conrad.schemas.capsule_surface import CapsuleSurfaceGrid
 from conrad.schemas.ids import IdFactory
+from conrad.schemas.structural_sensor import StructuralSensorModelV2
 from conrad.schemas.timebase import TimeStamp
 
 
@@ -80,7 +84,37 @@ def build_children(
     m2t_cfg = model2t_config_from_dict({**cfg.model2t, "clock_domain": clock})
     # ADR-0009: relational propagation is an EXPERIMENTAL arm; NONE unless model2t.tcdp.experimental_enabled.
     mode = production_propagation_mode(cfg.model2t_mode, m2t_cfg)
-    m2t = Model2T(ids.child("model2t"), m2t_cfg, repository=repo, run_id=run_id, mode=mode)
+    m2t: Model2T
+    if cfg.model2t_backend == "spatial_v1":
+        spatial = cfg.model2t_spatial
+        if spatial is None or len(ctx.critical_component_ids) != 1:
+            raise ValueError("spatial_v1 requires explicit settings and one critical component")
+        target = ctx.component(ctx.critical_component_ids[0])
+        if target.shape != "CAPSULE":
+            raise ValueError("spatial_v1 currently requires a surveyed capsule target")
+        allowed = {"axial_cells", "sectors", "sensor", "thresholds", "required_looks"}
+        if set(spatial) != allowed:
+            raise ValueError(f"spatial_v1 settings must contain exactly {sorted(allowed)}")
+        length = float(np.linalg.norm(np.asarray(target.p1_m) - np.asarray(target.p0_m)))
+        grid = CapsuleSurfaceGrid(
+            length, target.radius_m, int(spatial["axial_cells"]), int(spatial["sectors"])
+        )
+        m2t = SpatialMissionModel2T(
+            ids.child("model2t"),
+            m2t_cfg,
+            repository=repo,
+            run_id=run_id,
+            mode=mode,
+            registry_id=target.registry_id,
+            grid=grid,
+            sensor=StructuralSensorModelV2.model_validate(spatial["sensor"]),
+            thresholds=LocalThresholds(**spatial["thresholds"]),
+            required_looks=int(spatial["required_looks"]),
+        )
+    else:
+        if cfg.model2t_spatial is not None:
+            raise ValueError("spatial Model2T settings supplied to legacy backend")
+        m2t = Model2T(ids.child("model2t"), m2t_cfg, repository=repo, run_id=run_id, mode=mode)
     m2t.initialize(
         {
             "asset_registry": ctx.asset_registry,

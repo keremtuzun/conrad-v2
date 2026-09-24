@@ -186,6 +186,22 @@ class BeliefRevision(VersionedModel):
         return self
 
 
+class TechnicalLocalCell(VersionedModel):
+    """Belief-side structural surface cell; values are upper estimates, never truth."""
+
+    index: int = Field(ge=0)
+    condition: str | None = None
+    coverage: float = Field(ge=0, le=1)
+    corrosion_upper_m: float | None = Field(default=None, ge=0)
+    crack_length_upper_m: float | None = Field(default=None, ge=0)
+    crack_depth_upper_m: float | None = Field(default=None, ge=0)
+    observation_count: int = Field(ge=0)
+    independent_observation_count: int = Field(ge=0)
+    last_direct_observation_ns: int | None = Field(default=None, ge=0)
+    evidence_ids: tuple[UUID, ...] = ()
+    knowledge_status: KnowledgeStatus
+
+
 class TechnicalPayload(VersionedModel):
     condition: str | None = None
     degradation_type: str | None = None
@@ -194,6 +210,7 @@ class TechnicalPayload(VersionedModel):
     crack_length_m: float | None = Field(default=None, ge=0)
     direct_support: float = Field(default=0.0, ge=0, le=1)
     propagated_support: float = Field(default=0.0, ge=0, le=1)
+    local_cells: tuple[TechnicalLocalCell, ...] = ()
 
 
 class EcologicalPayload(VersionedModel):

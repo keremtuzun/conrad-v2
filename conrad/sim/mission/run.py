@@ -18,6 +18,7 @@ from typing import Any
 
 import yaml
 
+from conrad.domains.technical.spatial_mission import MODEL_VERSION as SPATIAL_MODEL_VERSION
 from conrad.orchestration.artifacts import write_mission_artifacts
 from conrad.orchestration.evaluation import evaluate_run_dir
 from conrad.orchestration.mission import MissionRuntime
@@ -29,12 +30,15 @@ from conrad.runtime.event_log import EventLog, RunContext
 from conrad.schemas.base import ARCHITECTURE_ID, STACK_ID
 from conrad.schemas.events import EventType
 from conrad.schemas.ids import IdFactory
+from conrad.schemas.structural_sensor import DETECTABILITY_VERSION, StructuralSensorModelV2
+from conrad.schemas.structural_support import STRUCTURAL_SUPPORT_VERSION
 from conrad.settings import REPO_ROOT, ConradSettings, load_settings, snapshot_yaml
 from conrad.sim.mission.capture import TAPE, RecordingHardware, Tape, record_driver_event, write_capture_files
 from conrad.sim.mission.obstacles import add_lane_obstacle
 from conrad.sim.mission.options import MissionWorldOptions, world_options
 from conrad.sim.mission.scenarios import resolve
 from conrad.sim.mission.world import MissionWorld
+from conrad.twins.twin2t.spatial_field import EVOLUTION_VERSION, TRUTH_VERSION
 
 PRODUCER = "conrad-mission-0.1"
 DRIVER = "conrad.sim.mission.driver"
@@ -42,13 +46,34 @@ DRIVER = "conrad.sim.mission.driver"
 
 def _git_commit() -> str:
     """Read-only lookup of the checked-out commit (no git command is executed)."""
-    head = REPO_ROOT / ".git" / "HEAD"
+    git_dir = REPO_ROOT / ".git"
+    if git_dir.is_file():
+        pointer = git_dir.read_text(encoding="utf-8").strip()
+        if not pointer.startswith("gitdir: "):
+            return "UNAVAILABLE_INVALID_GIT_POINTER"
+        named = Path(pointer[8:])
+        git_dir = named if named.is_absolute() else REPO_ROOT / named
+    head = git_dir / "HEAD"
     if not head.exists():
         return "UNAVAILABLE_NO_GIT_METADATA"
     ref = head.read_text(encoding="utf-8").strip()
     if ref.startswith("ref: "):
-        target = REPO_ROOT / ".git" / ref[5:]
-        return target.read_text(encoding="utf-8").strip() if target.exists() else "UNAVAILABLE_UNRESOLVED_REF"
+        common_file = git_dir / "commondir"
+        common = git_dir
+        if common_file.exists():
+            named = Path(common_file.read_text(encoding="utf-8").strip())
+            common = named if named.is_absolute() else git_dir / named
+        for base in (git_dir, common):
+            target = base / ref[5:]
+            if target.exists():
+                return target.read_text(encoding="utf-8").strip()
+        packed = common / "packed-refs"
+        if packed.exists():
+            for line in packed.read_text(encoding="utf-8").splitlines():
+                parts = line.split()
+                if len(parts) == 2 and parts[1] == ref[5:]:
+                    return parts[0]
+        return "UNAVAILABLE_UNRESOLVED_REF"
     return ref
 
 
@@ -154,6 +179,7 @@ def prepare(
     world_raw, runtime_raw = resolve(scenario_id, dict(settings.sim.get("mission", {})))
     wopts = stored_world or world_options(world_raw)
     rcfg = stored_runtime or runtime_config(runtime_raw)
+    validate_spatial_mission_selection(wopts, rcfg)
     ratio = rcfg.control_period_s / wopts.physics_dt_s
     if abs(ratio - round(ratio)) > 1e-9 or round(ratio) < 1:
         raise ValueError(
@@ -217,6 +243,27 @@ def prepare(
     )
 
 
+def validate_spatial_mission_selection(wopts: MissionWorldOptions, rcfg: MissionRuntimeConfig) -> None:
+    """Truth-side launch check; matching declarations are independently stored on both sides."""
+    spatial_truth = wopts.twin2t_truth_model == "spatial_v1"
+    spatial_belief = rcfg.model2t_backend == "spatial_v1"
+    if spatial_truth != spatial_belief:
+        raise ValueError("spatial mission requires matching Twin2T truth and Model2T backend selections")
+    if not spatial_truth:
+        return
+    assert wopts.spatial_truth is not None and wopts.spatial_sensor_model is not None
+    settings = rcfg.model2t_spatial
+    if settings is None:
+        raise ValueError("spatial Model2T settings missing")
+    if (
+        int(settings["axial_cells"]) != wopts.spatial_truth.axial_cells
+        or int(settings["sectors"]) != wopts.spatial_truth.sectors
+    ):
+        raise ValueError("spatial truth and belief grid declarations differ")
+    if StructuralSensorModelV2.model_validate(settings["sensor"]).digest != wopts.spatial_sensor_model.digest:
+        raise ValueError("spatial truth and belief sensor configurations differ")
+
+
 def run_scenario(
     scenario_id: str,
     config: str | Path | ConradSettings,
@@ -239,6 +286,20 @@ def replay_inputs(
     run_name: str,
 ) -> dict[str, Any]:
     sensors = [s.model_dump(mode="json") for s in world.context.sensors]
+    spatial = runtime_cfg["model2t_backend"] == "spatial_v1"
+    if spatial:
+        sensor = StructuralSensorModelV2.model_validate(runtime_cfg["model2t_spatial"]["sensor"])
+        spatial_versions = {
+            "truth": TRUTH_VERSION,
+            "evolution": EVOLUTION_VERSION,
+            "sensor": sensor.version,
+            "sensor_config_digest": sensor.digest,
+            "support": STRUCTURAL_SUPPORT_VERSION,
+            "model2t": SPATIAL_MODEL_VERSION,
+            "detectability": DETECTABILITY_VERSION,
+        }
+    else:
+        spatial_versions = None
     return {
         "scenario_id": scenario_id,
         "run_name": run_name,
@@ -250,7 +311,7 @@ def replay_inputs(
             "twin2e": "twin2e" if world.t2e is None else type(world.t2e).__name__,
         },
         "model_versions": {
-            "model2t": "model2t-analytic-0.1.0",
+            "model2t": SPATIAL_MODEL_VERSION if spatial else "model2t-analytic-0.1.0",
             "planner": runtime_cfg["planner"],
             "producer": PRODUCER,
         },
@@ -260,6 +321,7 @@ def replay_inputs(
         "config_resolved": json.loads(settings.canonical_json()),
         "mission_world_options": world_cfg,
         "mission_runtime_config": runtime_cfg,
+        "spatial_versions": spatial_versions,
         "git_commit": _git_commit(),
         "seeds": {"run": settings.run.seed},
         "architecture_id": ARCHITECTURE_ID,

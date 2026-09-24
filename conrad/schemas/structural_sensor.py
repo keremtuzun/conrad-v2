@@ -7,6 +7,8 @@ from pydantic import Field, model_validator
 from conrad.schemas.base import ConradModel
 from conrad.schemas.structural_support import ParameterAuthority
 
+DETECTABILITY_VERSION = "spatial-synthetic-detectability-v1"
+
 
 class StructuralSensorModel(ConradModel):
     version: str = "structural-sensor-v1"

@@ -9,7 +9,7 @@ implementation_status: EXPERIMENTAL_CANDIDATE
 from __future__ import annotations
 
 import math
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import Field
 
@@ -182,6 +182,11 @@ class MissionRuntimeConfig(ConradModel):
         }
     )
     model2t_mode: str = "NONE"  # ADR-0009: no relational propagation in production (2T-TCDP FAIL)
+    model2t_backend: Literal["legacy", "spatial_v1"] = "legacy"
+    model2t_spatial: dict[str, Any] | None = Field(
+        default=None,
+        description="Explicit deployment-side spatial grid, sensor, and threshold settings",
+    )
     model2e_enabled: bool = True
     model2e: dict[str, Any] = Field(default_factory=dict)
     baac: dict[str, Any] = Field(default_factory=dict)

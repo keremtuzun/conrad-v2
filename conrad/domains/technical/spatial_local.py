@@ -34,21 +34,27 @@ class LocalThresholds:
     crack_degraded_m: float
     crack_severe_m: float
     crack_failed_m: float
+    # Synthetic crack-depth bands; ENGINEERING_ESTIMATE until physical calibration.
+    crack_depth_degraded_m: float = 0.002
+    crack_depth_severe_m: float = 0.005
+    crack_depth_failed_m: float = 0.010
 
     def __post_init__(self) -> None:
-        for prefix in ("corrosion", "crack"):
+        for prefix in ("corrosion", "crack", "crack_depth"):
             a, b, c = (getattr(self, f"{prefix}_{level}_m") for level in ("degraded", "severe", "failed"))
             if not 0 < a < b < c:
                 raise ValueError(f"invalid {prefix} thresholds")
 
-    def condition(self, corrosion: float, crack: float) -> LocalCondition:
+    def condition(self, corrosion: float, crack: float, crack_depth: float = 0.0) -> LocalCondition:
         for level, result in (
             ("failed", LocalCondition.FAILED),
             ("severe", LocalCondition.SEVERE),
             ("degraded", LocalCondition.DEGRADED),
         ):
-            if corrosion >= getattr(self, f"corrosion_{level}_m") or crack >= getattr(
-                self, f"crack_{level}_m"
+            if (
+                corrosion >= getattr(self, f"corrosion_{level}_m")
+                or crack >= getattr(self, f"crack_{level}_m")
+                or crack_depth >= getattr(self, f"crack_depth_{level}_m")
             ):
                 return result
         return LocalCondition.OBSERVED_INTACT
@@ -58,6 +64,7 @@ class LocalThresholds:
 class LocalCellBelief:
     corrosion_upper_m: float | None = None
     crack_upper_m: float | None = None
+    crack_depth_upper_m: float | None = None
     supports: list[SurfaceRect] = field(default_factory=list)
     evidence_ids: list[UUID] = field(default_factory=list)
     independent_groups: set[str] = field(default_factory=set)
@@ -75,12 +82,14 @@ class SpatialModel2T:
         registry_id: UUID,
         *,
         required_looks: int = 1,
+        require_depth: bool = False,
     ) -> None:
         if required_looks < 1:
             raise ValueError("required_looks must be positive")
         self.grid, self.sensor, self.thresholds = grid, sensor, thresholds
         self.registry_id = registry_id
         self.required_looks = required_looks
+        self.require_depth = require_depth
         self.cells = [LocalCellBelief() for _ in range(grid.n_cells)]
         self.seen_evidence: set[UUID] = set()
         self.unresolved: list[UUID] = []
@@ -142,9 +151,17 @@ class SpatialModel2T:
             self.unresolved.append(evidence.evidence_id)
             return False
         cell = self.cells[matching[0]]
+        depth = evidence.measurements.get("crack_indication_depth")
+        if self.require_depth and (
+            evidence.measurement_units.get("crack_indication_depth") != "m" or depth is None or depth < 0
+        ):
+            self.unresolved.append(evidence.evidence_id)
+            return False
         uncertainty = 3 * self.sensor.noise_sigma_m * (1 + evidence.aleatoric_uncertainty)
         cell.corrosion_upper_m = max(cell.corrosion_upper_m or 0, corrosion + uncertainty)
         cell.crack_upper_m = max(cell.crack_upper_m or 0, crack + uncertainty)
+        if depth is not None and depth >= 0:
+            cell.crack_depth_upper_m = max(cell.crack_depth_upper_m or 0, depth + uncertainty)
         cell.supports.append(sure)
         cell.evidence_ids.append(evidence.evidence_id)
         cell.independent_groups.add(evidence.independence_group or str(evidence.source_observation_id))
@@ -156,18 +173,15 @@ class SpatialModel2T:
         clipped = [cell.intersection(r) for r in self.cells[index].supports]
         return min(1.0, union_area(clipped) / cell.area)
 
-    def condition(self) -> LocalCondition:
-        worst = LocalCondition.OBSERVED_INTACT
-        order = list(LocalCondition)
-        for cell in self.cells:
-            if cell.corrosion_upper_m is not None and cell.crack_upper_m is not None:
-                state = self.thresholds.condition(cell.corrosion_upper_m, cell.crack_upper_m)
-                if state is not LocalCondition.OBSERVED_INTACT and order.index(state) > order.index(worst):
-                    worst = state
-        if worst is not LocalCondition.OBSERVED_INTACT:
-            return worst
-        # An AREA_MEAN observation cannot rule out a local maximum.  The
-        # idealized LOCAL_MAX response remains SYNTHETIC_ONLY until calibrated.
+    def cell_condition(self, index: int) -> LocalCondition:
+        cell = self.cells[index]
+        if cell.corrosion_upper_m is None or cell.crack_upper_m is None:
+            return LocalCondition.UNKNOWN
+        state = self.thresholds.condition(
+            cell.corrosion_upper_m, cell.crack_upper_m, cell.crack_depth_upper_m or 0.0
+        )
+        if state is not LocalCondition.OBSERVED_INTACT:
+            return state
         if self.sensor.aggregation_kernel not in ("LOCAL_MAX", "RESOLUTION_CELL_SAMPLES"):
             return LocalCondition.UNKNOWN
         cell_width = min(
@@ -179,12 +193,27 @@ class SpatialModel2T:
             or self.sensor.minimum_resolvable_crack_m > cell_width
         ):
             return LocalCondition.UNKNOWN
-        if all(
-            self.coverage_fraction(i) >= 1 - 1e-9
-            and len(c.independent_groups) >= self.required_looks
-            and c.corrosion_upper_m is not None
-            and c.crack_upper_m is not None
-            for i, c in enumerate(self.cells)
-        ):
+        if self.coverage_fraction(index) < 1 - 1e-9 or len(cell.independent_groups) < self.required_looks:
+            return LocalCondition.UNKNOWN
+        if self.require_depth and cell.crack_depth_upper_m is None:
+            return LocalCondition.UNKNOWN
+        return LocalCondition.OBSERVED_INTACT
+
+    def condition(self) -> LocalCondition:
+        worst = LocalCondition.OBSERVED_INTACT
+        order = list(LocalCondition)
+        for i in range(self.grid.n_cells):
+            state = self.cell_condition(i)
+            if state not in (LocalCondition.UNKNOWN, LocalCondition.OBSERVED_INTACT) and order.index(
+                state
+            ) > order.index(worst):
+                worst = state
+        if worst is not LocalCondition.OBSERVED_INTACT:
+            return worst
+        # An AREA_MEAN observation cannot rule out a local maximum.  The
+        # idealized LOCAL_MAX response remains SYNTHETIC_ONLY until calibrated.
+        if self.sensor.aggregation_kernel not in ("LOCAL_MAX", "RESOLUTION_CELL_SAMPLES"):
+            return LocalCondition.UNKNOWN
+        if all(self.cell_condition(i) is LocalCondition.OBSERVED_INTACT for i in range(self.grid.n_cells)):
             return LocalCondition.OBSERVED_INTACT
         return LocalCondition.UNKNOWN

@@ -14,6 +14,8 @@ from pydantic import Field, model_validator
 
 from conrad.schemas.base import VersionedModel
 
+STRUCTURAL_SUPPORT_VERSION = "structural-observation-v2"
+
 
 class ParameterAuthority(str, Enum):
     SPECIFIED = "SPECIFIED"
@@ -25,7 +27,7 @@ class ParameterAuthority(str, Enum):
 class CapsuleSurfaceSupport(VersionedModel):
     """Physical surface contributing to one measurement, not credited belief cells."""
 
-    support_version: str = "structural-observation-v2"
+    support_version: str = STRUCTURAL_SUPPORT_VERSION
     sensor_model_version: str = Field(min_length=1)
     sensor_config_digest: str = Field(pattern="^[0-9a-f]{64}$")
     frame_id: str = Field(min_length=1)
