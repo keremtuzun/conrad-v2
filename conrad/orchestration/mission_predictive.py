@@ -308,7 +308,12 @@ class SpatialMissionPredictive:
             or local.sensor.minimum_resolvable_crack_m > cell_width
         ):
             return None
-        unresolved = np.asarray([1.0 - local.coverage_fraction(i) for i in range(grid.n_cells)])
+        unresolved = np.asarray(
+            [
+                0.0 if local.required_rect(i) is None else 1.0 - local.required_coverage_fraction(i)
+                for i in range(grid.n_cells)
+            ]
+        )
         total = float(unresolved.sum())
         if total <= 1e-12:
             return None
@@ -382,7 +387,9 @@ class SpatialCellWeightFn:
         hfov = math.radians(float(o.sensor.parameters["hfov_deg"])) / 2
         vfov = math.radians(float(o.sensor.parameters["vfov_deg"])) / 2
         for i in range(grid.n_cells):
-            cell = grid.cell(i)
+            cell = o.m2t.spatial.required_rect(i)
+            if cell is None:
+                continue
             x_overlap = max(
                 0.0,
                 min(cell.x1, xc + model.footprint_width_m / 2)

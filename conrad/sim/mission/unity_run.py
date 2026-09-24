@@ -53,8 +53,7 @@ from conrad.schemas.events import EventType
 from conrad.schemas.frames import WORLD, Pose
 from conrad.schemas.ids import IdFactory
 from conrad.schemas.robot import RobotConfig
-from conrad.schemas.structural_sensor import DETECTABILITY_VERSION, StructuralSensorModelV2
-from conrad.schemas.structural_support import STRUCTURAL_SUPPORT_VERSION
+from conrad.schemas.structural_sensor import StructuralSensorModelV2
 from conrad.schemas.timebase import TimeStamp
 from conrad.settings import (
     REPO_ROOT,
@@ -67,7 +66,7 @@ from conrad.settings import (
 from conrad.sim.mission.capture import TAPE, RecordingHardware, Tape, record_driver_event, write_capture_files
 from conrad.sim.mission.options import MissionWorldOptions, world_options
 from conrad.sim.mission.replay import compare, validate_spatial_replay_contract
-from conrad.sim.mission.run import settings_for, validate_spatial_mission_selection
+from conrad.sim.mission.run import settings_for, spatial_version_contract, validate_spatial_mission_selection
 from conrad.sim.mission.scenarios import resolve
 from conrad.sim.mission.unity_world import (
     UnityMissionWorld,
@@ -77,7 +76,6 @@ from conrad.sim.mission.unity_world import (
 )
 from conrad.sim.unity.player import UnityPlayerSession, find_player, scenario_document
 from conrad.sim.unity.scene import BoxPrimitive, CapsulePrimitive, SceneGeometry
-from conrad.twins.twin2t.spatial_field import EVOLUTION_VERSION, TRUTH_VERSION
 
 PRODUCER = "conrad-mission-unity-0.1"
 DRIVER = "conrad.sim.mission.unity_driver"
@@ -352,15 +350,7 @@ def unity_replay_inputs(s: UnitySession) -> dict[str, Any]:
     if spatial:
         assert s.rcfg.model2t_spatial is not None
         sensor = StructuralSensorModelV2.model_validate(s.rcfg.model2t_spatial["sensor"])
-        spatial_versions = {
-            "truth": TRUTH_VERSION,
-            "evolution": EVOLUTION_VERSION,
-            "sensor": sensor.version,
-            "sensor_config_digest": sensor.digest,
-            "support": STRUCTURAL_SUPPORT_VERSION,
-            "model2t": SPATIAL_MODEL_VERSION,
-            "detectability": DETECTABILITY_VERSION,
-        }
+        spatial_versions = spatial_version_contract(sensor)
     return {
         "backend": BACKEND,
         "scenario_id": s.scenario_id,

@@ -26,6 +26,19 @@ from conrad.schemas.world import Domain
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
+def pytest_addoption(parser: pytest.Parser) -> None:
+    parser.addoption(
+        "--run-unity-live",
+        action="store_true",
+        help="run explicitly selected Unity player tests",
+    )
+    parser.addoption(
+        "--run-formal-unity-gates",
+        action="store_true",
+        help="also run explicitly selected formal Unity gate tests and write gate measurements",
+    )
+
+
 @pytest.fixture
 def ids() -> IdFactory:
     return IdFactory(seed=7)

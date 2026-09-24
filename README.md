@@ -58,6 +58,12 @@ uv run conrad eval list
 uv run conrad train run --config configs/train/core_smoke.yaml
 ```
 
+The ordinary `pytest -q` suite excludes live Unity tests. Run a selected
+development player test with `pytest --run-unity-live
+tests/unity_live/test_spatial_unity_parity.py`. Historical formal Unity gate
+tests require both `--run-unity-live` and `--run-formal-unity-gates` plus an
+explicit test path; they launch player missions and write gate measurements.
+
 - `conrad doctor` checks Python 3.11, the lock file, identity, directories, disk, object store, migrations, the
   frame contract, the RobotConfig, the command mode, adapters, checkpoints, dataset manifests and required secret
   names. It exits nonzero on any FAIL. Before `conrad db migrate` it reports a WARN for the missing runtime

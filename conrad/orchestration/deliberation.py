@@ -10,6 +10,7 @@ implementation_status: EXPERIMENTAL_CANDIDATE
 
 from __future__ import annotations
 
+import json
 import math
 import time
 from collections.abc import Callable, Sequence
@@ -127,10 +128,17 @@ class Deliberation:
             if comp.component_type not in INSPECTED_TYPES:
                 continue
             critical = comp.registry_id in self.ctx.critical_component_ids
+            description = f"condition of registry component {comp.registry_id}"
+            if critical and self.cfg.model2t_backend == "spatial_v1":
+                spatial = self.cfg.model2t_spatial or {}
+                domain = spatial.get("required_domain", {"axial_fraction": [0.0, 1.0], "sectors": "ALL"})
+                description += (
+                    f" over declared capsule inspection domain {json.dumps(domain, sort_keys=True)}"
+                )
             out.append(
                 MissionRequirement(
                     requirement_id=self.ids.new(),
-                    description=f"condition of registry component {comp.registry_id}",
+                    description=description,
                     domain=Domain.TECHNICAL,
                     target_entity_ids=(comp.registry_id,),
                     region=comp.inspection_station(self.cfg.inspection_station_half_m, 0.2),

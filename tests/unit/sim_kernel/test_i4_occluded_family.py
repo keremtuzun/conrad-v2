@@ -153,7 +153,17 @@ def test_the_frozen_family_definition_still_describes_the_scenarios() -> None:
     from conrad.settings import REPO_ROOT
 
     doc = yaml.safe_load((REPO_ROOT / "configs" / "eval" / "i4_occluded_family.yaml").read_text("utf-8"))
-    live = {s: world_options(resolve(s, {})[0]).model_dump(mode="json") for s in doc["scenarios"]}
+    # Spatial V1 is opt-in. Its new default fields do not change the frozen
+    # legacy world declaration or the historical family digest.
+    live = {}
+    for scenario in doc["scenarios"]:
+        options = world_options(resolve(scenario, {})[0])
+        assert options.twin2t_truth_model == "legacy"
+        assert options.spatial_truth is None and options.spatial_sensor_model is None
+        live[scenario] = options.model_dump(
+            mode="json",
+            exclude={"twin2t_truth_model", "spatial_truth", "spatial_sensor_model"},
+        )
     assert live == doc["scenarios"]
     digest = hashlib.sha256(
         json.dumps(doc["scenarios"], sort_keys=True, separators=(",", ":")).encode()

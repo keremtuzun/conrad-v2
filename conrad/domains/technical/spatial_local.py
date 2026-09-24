@@ -83,6 +83,8 @@ class SpatialModel2T:
         *,
         required_looks: int = 1,
         require_depth: bool = False,
+        required_axial_fraction: tuple[float, float] = (0.0, 1.0),
+        required_sectors: tuple[int, ...] | None = None,
     ) -> None:
         if required_looks < 1:
             raise ValueError("required_looks must be positive")
@@ -90,6 +92,18 @@ class SpatialModel2T:
         self.registry_id = registry_id
         self.required_looks = required_looks
         self.require_depth = require_depth
+        start, end = required_axial_fraction
+        if not 0 <= start < end <= 1:
+            raise ValueError("invalid required axial inspection interval")
+        sectors = tuple(range(grid.sectors)) if required_sectors is None else required_sectors
+        if (
+            not sectors
+            or len(set(sectors)) != len(sectors)
+            or any(sector < 0 or sector >= grid.sectors for sector in sectors)
+        ):
+            raise ValueError("invalid required inspection sectors")
+        self.required_axial_fraction = required_axial_fraction
+        self.required_sectors = sectors
         self.cells = [LocalCellBelief() for _ in range(grid.n_cells)]
         self.seen_evidence: set[UUID] = set()
         self.unresolved: list[UUID] = []
@@ -173,6 +187,23 @@ class SpatialModel2T:
         clipped = [cell.intersection(r) for r in self.cells[index].supports]
         return min(1.0, union_area(clipped) / cell.area)
 
+    def required_rect(self, index: int) -> SurfaceRect | None:
+        if index % self.grid.sectors not in self.required_sectors:
+            return None
+        cell = self.grid.cell(index)
+        lo, hi = self.required_axial_fraction
+        required = cell.intersection(
+            SurfaceRect(lo * self.grid.length_m, hi * self.grid.length_m, cell.a0, cell.a1)
+        )
+        return required if required.area > 0 else None
+
+    def required_coverage_fraction(self, index: int) -> float:
+        required = self.required_rect(index)
+        if required is None:
+            return 0.0
+        clipped = [required.intersection(rect) for rect in self.cells[index].supports]
+        return min(1.0, union_area(clipped) / required.area)
+
     def cell_condition(self, index: int) -> LocalCondition:
         cell = self.cells[index]
         if cell.corrosion_upper_m is None or cell.crack_upper_m is None:
@@ -182,6 +213,8 @@ class SpatialModel2T:
         )
         if state is not LocalCondition.OBSERVED_INTACT:
             return state
+        if self.required_rect(index) is None:
+            return LocalCondition.UNKNOWN
         if self.sensor.aggregation_kernel not in ("LOCAL_MAX", "RESOLUTION_CELL_SAMPLES"):
             return LocalCondition.UNKNOWN
         cell_width = min(
@@ -193,7 +226,10 @@ class SpatialModel2T:
             or self.sensor.minimum_resolvable_crack_m > cell_width
         ):
             return LocalCondition.UNKNOWN
-        if self.coverage_fraction(index) < 1 - 1e-9 or len(cell.independent_groups) < self.required_looks:
+        if (
+            self.required_coverage_fraction(index) < 1 - 1e-9
+            or len(cell.independent_groups) < self.required_looks
+        ):
             return LocalCondition.UNKNOWN
         if self.require_depth and cell.crack_depth_upper_m is None:
             return LocalCondition.UNKNOWN
@@ -214,6 +250,10 @@ class SpatialModel2T:
         # idealized LOCAL_MAX response remains SYNTHETIC_ONLY until calibrated.
         if self.sensor.aggregation_kernel not in ("LOCAL_MAX", "RESOLUTION_CELL_SAMPLES"):
             return LocalCondition.UNKNOWN
-        if all(self.cell_condition(i) is LocalCondition.OBSERVED_INTACT for i in range(self.grid.n_cells)):
+        if all(
+            self.cell_condition(i) is LocalCondition.OBSERVED_INTACT
+            for i in range(self.grid.n_cells)
+            if self.required_rect(i) is not None
+        ):
             return LocalCondition.OBSERVED_INTACT
         return LocalCondition.UNKNOWN

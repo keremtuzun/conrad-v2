@@ -160,6 +160,35 @@ def test_continuous_certificate_refuses_narrow_unproven_occlusion():
     assert not capsule_visibility_certificate(occluded, *kwargs)(*rect)
 
 
+def test_subdivided_certificate_can_prove_visible_resolution_cell():
+    radius = 0.28
+    a, b = np.zeros(3), np.array([2.0, 0.0, 0.0])
+    angle = 3.5
+    normal = np.array([0.0, -math.cos(angle), -math.sin(angle)])
+    origin = np.array([1.0, 0.0, 0.0]) + (radius + 0.5) * normal
+    forward = -normal
+    side = np.cross(np.array([0.0, 0.0, 1.0]), forward)
+    side /= np.linalg.norm(side)
+    rotation = np.column_stack((forward, side, np.cross(forward, side)))
+    sensor = SensorSpec(
+        sensor_id=UUID(int=5),
+        modality="STRUCTURED",
+        frame_id="SENSOR",
+        mount_pose=Pose(frame_id="ROBOT", position_m=(0, 0, 0), orientation_wxyz=(1, 0, 0, 0)),
+        rate_hz=1.0,
+        parameters={"hfov_deg": 100.0, "vfov_deg": 80.0, "min_range_m": 0.3, "max_range_m": 4.0},
+    )
+    world = SpatialWorld(
+        [SpatialEntity(UUID(int=1), "pipeline_segment", Capsule((0, 0, 0), (2, 0, 0), radius))],
+        (-5, -5, -5),
+        (5, 5, 5),
+    )
+    certificate = capsule_visibility_certificate(
+        world, 0, a, b, radius, origin, rotation, sensor, Twin2SConfig()
+    )
+    assert certificate(0.9, 1.1, 3.14, 3.86)
+
+
 @pytest.mark.parametrize("angle", [-4 * math.pi, -0.01, 0.0, 0.01, math.pi, 2 * math.pi + 0.3])
 def test_world_surface_coordinates_round_trip_and_wrap(angle):
     a = np.array([1.0, 2.0, 3.0])

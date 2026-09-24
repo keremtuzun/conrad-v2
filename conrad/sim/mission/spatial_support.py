@@ -23,6 +23,7 @@ from conrad.twins.twin2s.world import SpatialWorld
 
 Visibility = Callable[[NDArray[np.float64], NDArray[np.float64]], NDArray[np.bool_]]
 Certificate = Callable[[float, float, float, float], bool]
+VISIBILITY_CERTIFICATE_VERSION = "capsule-sdf-recursive-v1"
 
 
 def pose_visible_capsule_supports(
@@ -73,20 +74,24 @@ def pose_visible_capsule_supports(
     normal = (point - a - x_center * d) / grid.radius_m
     angle_center = math.atan2(float(normal @ v), float(normal @ u)) % (2 * math.pi)
     half_angle = model.footprint_height_m / (2 * grid.radius_m)
-    all_visible = visible_capsule_supports(
-        grid, a, axis_end_m, model, visible, frame_id=frame_id, certify=certify
-    )
-    return tuple(
-        support
-        for support in all_visible
-        if support.axial_start_m >= x_center - model.footprint_width_m / 2 - 1e-12
-        and support.axial_end_m <= x_center + model.footprint_width_m / 2 + 1e-12
-        and abs(
-            ((support.angle_start_rad + support.angle_end_rad) / 2 - angle_center + math.pi) % (2 * math.pi)
-            - math.pi
+
+    def within_footprint(x0: float, x1: float, t0: float, t1: float) -> bool:
+        return (
+            x0 >= x_center - model.footprint_width_m / 2 - 1e-12
+            and x1 <= x_center + model.footprint_width_m / 2 + 1e-12
+            and abs(((t0 + t1) / 2 - angle_center + math.pi) % (2 * math.pi) - math.pi) + (t1 - t0) / 2
+            <= half_angle + 1e-12
         )
-        + (support.angle_end_rad - support.angle_start_rad) / 2
-        <= half_angle + 1e-12
+
+    return visible_capsule_supports(
+        grid,
+        a,
+        axis_end_m,
+        model,
+        visible,
+        frame_id=frame_id,
+        certify=certify,
+        select=within_footprint,
     )
 
 
@@ -99,6 +104,7 @@ def visible_capsule_supports(
     *,
     frame_id: str,
     certify: Certificate | None = None,
+    select: Certificate | None = None,
 ) -> tuple[CapsuleSurfaceSupport, ...]:
     """Return only resolution-sized rectangles admitted by the scene oracle.
 
@@ -128,7 +134,10 @@ def visible_capsule_supports(
                 for ia in range(na):
                     t0 = angle_base + ia * model.lateral_resolution_m / grid.radius_m
                     t1 = min(angle_limit, t0 + model.lateral_resolution_m / grid.radius_m)
-                    rects.append((x0, x1, t0, t1))
+                    if select is None or select(x0, x1, t0, t1):
+                        rects.append((x0, x1, t0, t1))
+    if not rects:
+        return ()
     # A corner exactly on a seam or cap can be ambiguous for ray casting;
     # probe just inside it while retaining the full declared support bounds.
     fractions = ((0.5, 0.5), (0.05, 0.05), (0.05, 0.95), (0.95, 0.05), (0.95, 0.95))
@@ -212,7 +221,7 @@ def capsule_visibility_certificate(
     active_other = [i for i, e in enumerate(world.entities) if i != target_index and e.active]
     fractions = np.linspace(0.0, 1.0, ray_intervals + 1)
 
-    def certify(x0: float, x1: float, t0: float, t1: float) -> bool:
+    def certify_box(x0: float, x1: float, t0: float, t1: float) -> bool:
         xc, tc = (x0 + x1) / 2, (t0 + t1) / 2
         half_angle = (t1 - t0) / 2
         displacement = math.hypot((x1 - x0) / 2, radius_m * half_angle)
@@ -252,5 +261,28 @@ def capsule_visibility_certificate(
             if float(np.min(world.entity_sdf(i, centre_ray))) <= displacement + half_step:
                 return False
         return True
+
+    def certify(x0: float, x1: float, t0: float, t1: float) -> bool:
+        # A single centre-ray bound can reject a wide resolution cell even
+        # when every point is visible. Subdivision tightens the bound without
+        # converting a few successful ray samples into a coverage claim: all
+        # child rectangles must each have a continuous certificate.
+        def cover(ax0: float, ax1: float, at0: float, at1: float, depth: int) -> bool:
+            if certify_box(ax0, ax1, at0, at1):
+                return True
+            if depth == 0:
+                return False
+            xm, tm = (ax0 + ax1) / 2, (at0 + at1) / 2
+            return all(
+                cover(*child, depth - 1)
+                for child in (
+                    (ax0, xm, at0, tm),
+                    (ax0, xm, tm, at1),
+                    (xm, ax1, at0, tm),
+                    (xm, ax1, tm, at1),
+                )
+            )
+
+        return cover(x0, x1, t0, t1, 2)
 
     return certify

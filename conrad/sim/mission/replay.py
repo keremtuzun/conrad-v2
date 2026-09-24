@@ -26,12 +26,10 @@ from conrad.persistence.object_store import ObjectStore
 from conrad.persistence.replay_store import ReplayIntegrityError, verify_bundle
 from conrad.persistence.repository import Repository
 from conrad.runtime.event_log import event_signature, read_events
-from conrad.schemas.structural_sensor import DETECTABILITY_VERSION, StructuralSensorModelV2
-from conrad.schemas.structural_support import STRUCTURAL_SUPPORT_VERSION
+from conrad.schemas.structural_sensor import StructuralSensorModelV2
 from conrad.settings import ConradSettings
 from conrad.sim.mission.options import world_options
-from conrad.sim.mission.run import run_scenario, validate_spatial_mission_selection
-from conrad.twins.twin2t.spatial_field import EVOLUTION_VERSION, TRUTH_VERSION
+from conrad.sim.mission.run import run_scenario, spatial_version_contract, validate_spatial_mission_selection
 
 
 def _decisions(run_dir: Path) -> list[tuple[str, str | None, bool]]:
@@ -102,15 +100,7 @@ def validate_spatial_replay_contract(inputs: dict[str, Any]) -> None:
     if rcfg.model2t_spatial is None:
         raise ReplayIntegrityError(["spatial Model2T settings missing"])
     sensor = StructuralSensorModelV2.model_validate(rcfg.model2t_spatial["sensor"])
-    expected = {
-        "truth": TRUTH_VERSION,
-        "evolution": EVOLUTION_VERSION,
-        "sensor": sensor.version,
-        "sensor_config_digest": sensor.digest,
-        "support": STRUCTURAL_SUPPORT_VERSION,
-        "model2t": SPATIAL_MODEL_VERSION,
-        "detectability": DETECTABILITY_VERSION,
-    }
+    expected = spatial_version_contract(sensor)
     if (
         inputs.get("spatial_versions") != expected
         or inputs.get("model_versions", {}).get("model2t") != SPATIAL_MODEL_VERSION

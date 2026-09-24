@@ -53,12 +53,21 @@ class SpatialMissionModel2T(Model2T):
         sensor: StructuralSensorModelV2,
         thresholds: LocalThresholds,
         required_looks: int = 1,
+        required_axial_fraction: tuple[float, float] = (0.0, 1.0),
+        required_sectors: tuple[int, ...] | None = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
         self.spatial_registry_id = registry_id
         self.spatial = SpatialModel2T(
-            grid, sensor, thresholds, registry_id, required_looks=required_looks, require_depth=True
+            grid,
+            sensor,
+            thresholds,
+            registry_id,
+            required_looks=required_looks,
+            require_depth=True,
+            required_axial_fraction=required_axial_fraction,
+            required_sectors=required_sectors,
         )
         self._spatial_pending: list[Evidence] = []
         self._spatial_root: UUID | None = None
@@ -165,10 +174,8 @@ class SpatialMissionModel2T(Model2T):
             subject_id=b.belief_id,
         )
         revision = b.revision + 1
-        coverage = (
-            sum(self.spatial.coverage_fraction(i) for i in range(self.spatial.grid.n_cells))
-            / self.spatial.grid.n_cells
-        )
+        required = [i for i in range(self.spatial.grid.n_cells) if self.spatial.required_rect(i) is not None]
+        coverage = sum(self.spatial.required_coverage_fraction(i) for i in required) / len(required)
         state = self.spatial.condition()
         condition = (
             None

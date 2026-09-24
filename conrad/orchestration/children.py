@@ -92,9 +92,13 @@ def build_children(
         target = ctx.component(ctx.critical_component_ids[0])
         if target.shape != "CAPSULE":
             raise ValueError("spatial_v1 currently requires a surveyed capsule target")
-        allowed = {"axial_cells", "sectors", "sensor", "thresholds", "required_looks"}
-        if set(spatial) != allowed:
-            raise ValueError(f"spatial_v1 settings must contain exactly {sorted(allowed)}")
+        required = {"axial_cells", "sectors", "sensor", "thresholds", "required_looks"}
+        allowed = required | {"required_domain"}
+        if not required <= set(spatial) or not set(spatial) <= allowed:
+            raise ValueError(f"spatial_v1 settings require {sorted(required)} with optional required_domain")
+        domain = spatial.get("required_domain") or {}
+        if set(domain) - {"axial_fraction", "sectors"}:
+            raise ValueError("invalid spatial required_domain keys")
         length = float(np.linalg.norm(np.asarray(target.p1_m) - np.asarray(target.p0_m)))
         grid = CapsuleSurfaceGrid(
             length, target.radius_m, int(spatial["axial_cells"]), int(spatial["sectors"])
@@ -110,6 +114,8 @@ def build_children(
             sensor=StructuralSensorModelV2.model_validate(spatial["sensor"]),
             thresholds=LocalThresholds(**spatial["thresholds"]),
             required_looks=int(spatial["required_looks"]),
+            required_axial_fraction=tuple(domain.get("axial_fraction", (0.0, 1.0))),
+            required_sectors=None if "sectors" not in domain else tuple(domain["sectors"]),
         )
     else:
         if cfg.model2t_spatial is not None:

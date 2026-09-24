@@ -9,9 +9,12 @@ from uuid import UUID
 import numpy as np
 import pytest
 
+from conrad.domains.technical.evidence import structured_evidence
+from conrad.domains.technical.spatial_local import LocalThresholds, SpatialModel2T
 from conrad.domains.technical.spatial_mission import MODEL_VERSION as SPATIAL_MODEL_VERSION
+from conrad.orchestration.association import StructuralAssociator, registry_of
 from conrad.orchestration.mission_config import MissionRuntimeConfig
-from conrad.schemas.capsule_surface import capsule_basis
+from conrad.schemas.capsule_surface import CapsuleSurfaceGrid, capsule_basis
 from conrad.schemas.frames import WORLD, Pose, quat_from_euler, quat_to_matrix
 from conrad.schemas.ids import IdFactory
 from conrad.schemas.timebase import TimeStamp
@@ -23,7 +26,8 @@ from conrad.twins.twin2s.raycast import sensor_world_pose
 from tests.integration.test_spatial_mission_truth import _options
 
 
-def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path):
+@pytest.mark.parametrize("occluded", [False, True], ids=["clear", "view-occluder"])
+def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path, occluded):
     player = find_player()
     if player is None:
         pytest.skip("rebuilt Unity player unavailable")
@@ -36,9 +40,20 @@ def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path):
             "footprint_uncertainty_m": 0.0,
         }
     )
-    opts = opts.model_copy(
-        update={"survey_sigma_m": 0.0, "ecological_enabled": False, "spatial_sensor_model": model}
-    )
+    changes = {"survey_sigma_m": 0.0, "ecological_enabled": False, "spatial_sensor_model": model}
+    if occluded:
+        changes["occlusion"] = opts.occlusion.model_copy(
+            update={
+                "enabled": True,
+                "azimuth_offset_deg": (0.0, 0.0),
+                "window_half_deg": (20.0, 20.0),
+                "standoff_m": (0.5, 0.5),
+                "half_width_m": (0.4, 0.4),
+                "half_length_fraction": (0.5, 0.5),
+                "axial_shift_fraction": (0.0, 0.0),
+            }
+        )
+    opts = opts.model_copy(update=changes)
     world = UnityMissionWorld.build(
         401,
         "SPATIAL-UNITY-PARITY-DEV",
@@ -53,6 +68,20 @@ def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path):
         radius = float(primitive.radius)  # type: ignore[attr-defined]
         _, normal, _ = capsule_basis(a, b)
         stamp = TimeStamp(time_ns=1_000_000_000, clock_domain="sim")
+        registry_id = world.context.critical_component_ids[0]
+        design = world.context.component(registry_id)
+        grid = CapsuleSurfaceGrid(
+            float(np.linalg.norm(np.asarray(design.p1_m) - np.asarray(design.p0_m))),
+            design.radius_m,
+            2,
+            4,
+        )
+        thresholds = LocalThresholds(0.002, 0.006, 0.012, 0.003, 0.01, 0.03)
+        kernel_belief = SpatialModel2T(grid, model, thresholds, registry_id, require_depth=True)
+        unity_belief = SpatialModel2T(grid, model, thresholds, registry_id, require_depth=True)
+        kernel_associator = StructuralAssociator(world.context, MissionRuntimeConfig().association)
+        unity_associator = StructuralAssociator(world.context, MissionRuntimeConfig().association)
+        kernel_evidence_ids, unity_evidence_ids = IdFactory(18), IdFactory(18)
         kernel = replace(
             world.suite,
             ids=IdFactory(15),
@@ -61,6 +90,7 @@ def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path):
             record=lambda _kind, _row: None,
         )
         parity_rows = []
+        support_counts = []
         unity = replace(
             world.suite,
             ids=IdFactory(15),
@@ -75,15 +105,42 @@ def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path):
             )
             rotation = quat_from_euler(0.0, 0.0, yaw)
             body = desired_origin - quat_to_matrix(rotation) @ np.asarray(opts.structural.mount_position_m)
-            pose = Pose(frame_id=WORLD, position_m=tuple(float(x) for x in body), orientation_wxyz=rotation)
+            pose = Pose(
+                frame_id=WORLD,
+                position_m=tuple(float(x) for x in body),
+                orientation_wxyz=rotation,
+                covariance_6x6=(0.0,) * 36,
+            )
             rot, origin = sensor_world_pose(pose, world.suite.sensors.structural.mount_pose)
             trace = IdFactory(17).new()
             left = kernel._spatial_structural(stamp, pose, pose, trace, rot, origin)
             right = unity._spatial_structural(stamp, pose, pose, trace, rot, origin)
-            assert left and right
+            support_counts.append(len(left))
             assert [o.structural_support for o in left] == [o.structural_support for o in right]
             assert [o.inline_values for o in left] == [o.inline_values for o in right]
-        assert parity_rows and all(r["kernel_visible_unity_hidden"] == 0 for r in parity_rows)
+            for observations, belief, associator, evidence_ids in (
+                (left, kernel_belief, kernel_associator, kernel_evidence_ids),
+                (right, unity_belief, unity_associator, unity_evidence_ids),
+            ):
+                for observation in observations:
+                    evidence, _ = structured_evidence(observation, evidence_ids, None)
+                    evidence, _ = associator.associate(observation, evidence)
+                    assert registry_of(evidence) == registry_id
+                    assert belief.ingest(evidence)
+            assert [kernel_belief.coverage_fraction(i) for i in range(grid.n_cells)] == pytest.approx(
+                [unity_belief.coverage_fraction(i) for i in range(grid.n_cells)], abs=1e-12
+            )
+            assert [kernel_belief.cell_condition(i) for i in range(grid.n_cells)] == [
+                unity_belief.cell_condition(i) for i in range(grid.n_cells)
+            ]
+            assert kernel_belief.condition() is unity_belief.condition()
+        assert parity_rows
+        assert sum(support_counts) > 0
+        if occluded:
+            assert 0 in support_counts
+        else:
+            assert all(support_counts)
+        assert all(r["kernel_visible_unity_hidden"] == 0 for r in parity_rows)
     finally:
         world.close()
 

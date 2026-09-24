@@ -48,6 +48,30 @@ def pytest_configure(config: pytest.Config) -> None:
 
 
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
+    run_live = config.getoption("--run-unity-live")
+    run_formal = config.getoption("--run-formal-unity-gates")
+    if run_formal:
+        explicitly_selected = any(
+            Path(str(arg).split("::", 1)[0]).parent.name == "unity_live"
+            and Path(str(arg).split("::", 1)[0]).name.startswith("test_")
+            for arg in config.args
+        )
+        if not run_live or not explicitly_selected:
+            raise pytest.UsageError(
+                "formal Unity gates require --run-unity-live and an explicit tests/unity_live/test_*.py path"
+            )
+    selected: list[pytest.Item] = []
+    deselected: list[pytest.Item] = []
+    for item in items:
+        is_live = "unity_live" in str(item.fspath)
+        is_formal = is_live and item.fspath.basename != "test_spatial_unity_parity.py"
+        if is_live and (not run_live or (is_formal and not run_formal)):
+            deselected.append(item)
+        else:
+            selected.append(item)
+    if deselected:
+        config.hook.pytest_deselected(items=deselected)
+        items[:] = selected
     player = find_player()
     for item in items:
         if "unity_live" in str(item.fspath):

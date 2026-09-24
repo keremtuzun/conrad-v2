@@ -124,6 +124,22 @@ def test_detected_defect_and_healthy_full_coverage():
         assert belief.condition() is expected
 
 
+def test_declared_inspection_domain_limits_healthy_warrant_but_not_defect_detection():
+    model = sensor("LOCAL_MAX")
+    belief = SpatialModel2T(GRID, model, THRESHOLDS, RID, required_axial_fraction=(0.1, 0.4))
+    required = SurfaceRect(0.2, 0.8, 0, 2 * math.pi)
+    assert belief.ingest(evidence(1, LocalStructuralState(), support(required, model)))
+    assert belief.required_coverage_fraction(0) == pytest.approx(1.0)
+    assert belief.required_rect(1) is None
+    assert belief.condition() is LocalCondition.OBSERVED_INTACT
+    assert belief.ingest(
+        evidence(2, LocalStructuralState(corrosion_depth_m=0.008), support(GRID.cell(1), model))
+    )
+    assert belief.condition() is LocalCondition.SEVERE
+    with pytest.raises(ValueError, match="invalid required inspection sectors"):
+        SpatialModel2T(GRID, model, THRESHOLDS, RID, required_sectors=(1,))
+
+
 def test_coarse_average_and_unknown_support_never_credit_cells():
     mean = sensor()
     belief = SpatialModel2T(GRID, mean, THRESHOLDS, RID)
