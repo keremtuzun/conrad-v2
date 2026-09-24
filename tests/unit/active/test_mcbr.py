@@ -9,6 +9,7 @@ import torch
 
 from conrad.active import MCBRConfig, MCBRPlanner, PlanningRequest, PriorView, SensorOption, make_planners
 from conrad.active.learned import MCBRBatch, MCBRRankerConfig, build_ranker, mcbr_loss, train_ranker
+from conrad.active.surface_predictive import QuantityChannel, SurfaceCellPredictive
 from conrad.evaluation.decision_experiments.fixtures import make_belief, region, unc
 from conrad.schemas.decision import InformationNeed, PlanStatus, QuestionType, ResourceCost
 from conrad.schemas.frames import WORLD, Pose
@@ -75,6 +76,29 @@ def test_candidates_bounded_and_plan_has_provenance():
     assert r.provenance.source_type is SourceType.PLAN and r.plan.provenance == r.provenance.record_id
     assert r.plan.primary_action is not None
     assert r.plan.primary_action.predicted_visibility > 0
+
+
+def test_spatial_predictive_candidate_regions_expand_views_without_exceeding_cap():
+    ids = IdFactory(401)
+    request = _request(ids, unc(uo=0.9), QuestionType.EXTEND_COVERAGE)
+    predictive = SurfaceCellPredictive(
+        cell_prior=np.array([1.0]),
+        channels=(QuantityChannel("corrosion_depth_m", 0.002, 1e-5, 0.001),),
+        cell_weights=lambda pose, sensor: np.array([1.0]),
+        candidate_regions=(region((0.0, 0.0, 0.0)), region((20.0, 0.0, 0.0))),
+    )
+    result = MCBRPlanner(ids).plan(replace(request, predictive=predictive))
+    positions = [row["position_m"][0] for row in result.table]
+    assert len(result.table) <= MCBRConfig().max_candidates
+    assert any(x < 10.0 for x in positions)
+    assert any(x > 10.0 for x in positions)
+    far_result = MCBRPlanner(
+        IdFactory(402),
+        scorer=lambda gap, candidate, req: candidate.action.pose.position_m[0],
+        value_gate=False,
+    ).plan(replace(request, predictive=predictive))
+    assert far_result.plan.primary_action is not None
+    assert far_result.plan.primary_action.target_region.center_m == (20.0, 0.0, 0.0)
 
 
 def test_feasibility_filter_runs_before_ranking():

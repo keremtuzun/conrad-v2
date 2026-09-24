@@ -27,7 +27,8 @@ from tests.integration.test_spatial_mission_truth import _options
 
 
 @pytest.mark.parametrize("occluded", [False, True], ids=["clear", "view-occluder"])
-def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path, occluded):
+@pytest.mark.parametrize("noisy", [False, True], ids=["deterministic", "sensor-noise"])
+def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path, occluded, noisy):
     player = find_player()
     if player is None:
         pytest.skip("rebuilt Unity player unavailable")
@@ -38,6 +39,7 @@ def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path, occlude
             "position_uncertainty_m": 0.0,
             "orientation_uncertainty_rad": 0.0,
             "footprint_uncertainty_m": 0.0,
+            "noise_sigma_m": 0.001 if noisy else 0.0,
         }
     )
     changes = {"survey_sigma_m": 0.0, "ecological_enabled": False, "spatial_sensor_model": model}
@@ -55,7 +57,7 @@ def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path, occlude
         )
     opts = opts.model_copy(update=changes)
     world = UnityMissionWorld.build(
-        401,
+        402 if noisy else 401,
         "SPATIAL-UNITY-PARITY-DEV",
         opts,
         UUID(int=810),

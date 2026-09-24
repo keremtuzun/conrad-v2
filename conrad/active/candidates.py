@@ -83,6 +83,7 @@ class RawCandidate:
     azimuth_rad: float
     elevation_rad: float
     index: int
+    aim_region: SpatialSupport | None = None
 
 
 @dataclass(frozen=True)
@@ -129,7 +130,14 @@ class ViewpointGenerator:
             )
             out.append(
                 RawCandidate(
-                    look_at(pos, region.center_m, region.frame_id), sensor, dict(cfg), standoff, az, el, i
+                    look_at(pos, region.center_m, region.frame_id),
+                    sensor,
+                    dict(cfg),
+                    standoff,
+                    az,
+                    el,
+                    i,
+                    region,
                 )
             )
         return out
@@ -172,6 +180,7 @@ class ViewpointGenerator:
                         azimuth_rad=azimuth,
                         elevation_rad=elevation,
                         index=start_index + len(out),
+                        aim_region=region,
                     )
                 )
         return out

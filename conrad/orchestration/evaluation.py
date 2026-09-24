@@ -86,6 +86,14 @@ def evaluate_run_dir(run_dir: Path) -> dict[str, Any]:
     prior_mean = dict(PriorConfig().mean)
     patch = truth["series"].get("patch_visibility", [])
     labels = truth["series"].get("structural_label", [])
+    spatial_labels = truth["series"].get("spatial_structural_label", [])
+    target_spatial_ids = {
+        row["observation_id"] for row in spatial_labels if row.get("world_id") == meta.get("target_world_id")
+    }
+    associations_path = run_dir / "mission" / "structural_associations.json"
+    associations = (
+        json.loads(associations_path.read_text(encoding="utf-8")) if associations_path.exists() else []
+    )
     return {
         "scenario_id": meta["scenario_id"],
         "seed": meta["seed"],
@@ -103,6 +111,13 @@ def evaluate_run_dir(run_dir: Path) -> dict[str, Any]:
         "patch_first_visible_t_s": next((p["t_s"] for p in patch if p["visible_fraction"] > 0.3), None),
         "target_structural_observations": sum(1 for x in labels if x.get("patch")),
         "structural_observations": len(labels),
+        "spatial_structural_observations": len(spatial_labels),
+        "spatial_target_structural_observations": len(target_spatial_ids),
+        "spatial_target_associated_evidence": sum(
+            1
+            for row in associations
+            if row.get("observation_id") in target_spatial_ids and row.get("registry_id") == str(target)
+        ),
         "vehicle": truth["vehicle"],
     }
 

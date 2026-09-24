@@ -160,7 +160,10 @@ class Perception:
                 geometric.append(obs)
             elif kind in ECO_KINDS:
                 ecological.append(obs)
-            elif obs.modality is Modality.STRUCTURED and "twin2t_fidelity" in obs.sensor_context:
+            elif obs.modality is Modality.STRUCTURED and (
+                "twin2t_fidelity" in obs.sensor_context
+                or (obs.structural_support is not None and "structural_sensor_version" in obs.sensor_context)
+            ):
                 structural.append(obs)
         out: list[BeliefMessage] = []
         out += self._spatial(geometric, now)

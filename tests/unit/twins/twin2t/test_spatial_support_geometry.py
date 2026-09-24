@@ -135,6 +135,39 @@ def test_pose_ray_limits_nominal_footprint_and_rejects_miss():
         )
 
 
+def test_off_axis_pipe_requires_continuous_field_of_view_certificate():
+    grid = CapsuleSurfaceGrid(2.0, 1.0, 2, 4)
+    a, b = np.zeros(3), np.array([2.0, 0.0, 0.0])
+    origin = np.array([1.0, -3.0, 1.2])
+    forward = np.array([0.0, 1.0, 0.0])
+    rotation = np.array([[0.0, -1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 1.0]])
+    sensor = SensorSpec(
+        sensor_id=UUID(int=6),
+        modality="STRUCTURED",
+        frame_id="SENSOR",
+        mount_pose=Pose(frame_id="ROBOT", position_m=(0, 0, 0), orientation_wxyz=(1, 0, 0, 0)),
+        rate_hz=1.0,
+        parameters={"hfov_deg": 100.0, "vfov_deg": 80.0, "min_range_m": 0.3, "max_range_m": 4.0},
+    )
+    world = SpatialWorld(
+        [SpatialEntity(UUID(int=1), "pipeline_segment", Capsule((0, 0, 0), (2, 0, 0), 1.0))],
+        (-5, -5, -5),
+        (5, 5, 5),
+    )
+    visible = lambda points, normals: np.ones(len(points), dtype=bool)  # noqa: E731
+    model = _model().model_copy(update={"axial_resolution_m": 0.2, "lateral_resolution_m": 0.2})
+    kwargs = (grid, a, b, origin, forward, model, visible)
+    assert not pose_visible_capsule_supports(*kwargs, frame_id="CAPSULE_DESIGN")
+    certificate = capsule_visibility_certificate(
+        world, 0, a, b, 1.0, origin, rotation, sensor, Twin2SConfig()
+    )
+    supports = pose_visible_capsule_supports(*kwargs, frame_id="CAPSULE_DESIGN", certify=certificate)
+    assert supports
+    assert all(
+        certificate(s.axial_start_m, s.axial_end_m, s.angle_start_rad, s.angle_end_rad) for s in supports
+    )
+
+
 def test_continuous_certificate_refuses_narrow_unproven_occlusion():
     axis_a, axis_b = np.zeros(3), np.array([2.0, 0.0, 0.0])
     origin = np.array([1.0, -3.0, 0.0])

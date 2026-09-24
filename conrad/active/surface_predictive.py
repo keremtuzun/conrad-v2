@@ -39,7 +39,7 @@ from pydantic import Field
 from conrad.active.candidates import SensorOption
 from conrad.active.predictive import HypothesisBelief, PredictedOutcome, ScalarBelief
 from conrad.schemas.base import ConradModel
-from conrad.schemas.frames import Pose
+from conrad.schemas.frames import Pose, SpatialSupport
 
 # (pose, sensor) -> per-cell observation weight in [0, 1] (clear-ray probability x incidence), shape (n_cells,)
 CellWeights = Callable[[Pose, SensorOption], np.ndarray]
@@ -141,6 +141,7 @@ class SurfaceCellPredictive:
     """P(the unread worst case lies in cell c); zero on cells already covered by readings; sums to 1"""
     channels: tuple[QuantityChannel, ...]
     cell_weights: CellWeights
+    candidate_regions: tuple[SpatialSupport, ...] = ()
     epistemic: float = 0.0
     used_modalities: frozenset[str] = frozenset()
     hypotheses: tuple[HypothesisBelief, ...] = ()

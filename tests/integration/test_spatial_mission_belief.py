@@ -39,6 +39,75 @@ from tests.integration.test_spatial_mission_truth import _options
 from tests.leakage.test_dynamic_leakage import TWIN_ONLY_KEYS, _keys, _runtime_texts
 
 
+def test_spatial_observation_reaches_model2t_through_mission_perception(tmp_path):
+    options = _options()
+    assert options.spatial_sensor_model is not None
+    sensor = options.spatial_sensor_model.model_copy(
+        update={
+            "position_uncertainty_m": 0.0,
+            "orientation_uncertainty_rad": 0.0,
+            "footprint_uncertainty_m": 0.0,
+        }
+    )
+    options = options.model_copy(
+        update={
+            "family": "pipeline_with_supports",
+            "survey_sigma_m": 0.0,
+            "ecological_enabled": False,
+            "spatial_sensor_model": sensor,
+        }
+    )
+    cfg = MissionRuntimeConfig(
+        duration_s=1.0,
+        model2e_enabled=False,
+        model2t_backend="spatial_v1",
+        model2t_spatial={
+            "axial_cells": 2,
+            "sectors": 4,
+            "sensor": sensor.model_dump(mode="json"),
+            "thresholds": {
+                "corrosion_degraded_m": 0.002,
+                "corrosion_severe_m": 0.006,
+                "corrosion_failed_m": 0.012,
+                "crack_degraded_m": 0.003,
+                "crack_severe_m": 0.01,
+                "crack_failed_m": 0.03,
+            },
+            "required_looks": 1,
+        },
+    )
+    session = prepare(
+        "GOLDEN-SMOKE",
+        load_settings("configs/sim/mission_test_small.yaml"),
+        run_id="SPATIAL-PERCEPTION-DEV",
+        runs_root=tmp_path,
+        stored_world=options,
+        stored_runtime=cfg,
+        capture=False,
+    )
+    try:
+        suite = session.world.hardware.suite
+        assert suite is not None
+        pose = Pose(
+            frame_id=WORLD,
+            position_m=(0.13, 2.52, 1.51),
+            orientation_wxyz=quat_from_euler(0.0, 0.0, math.pi),
+            covariance_6x6=(0.0,) * 36,
+        )
+        now = TimeStamp(time_ns=1_000_000_000, clock_domain="SIM")
+        observations = suite._structural(1.0, now, pose, pose, IdFactory(99).new())
+        spatial = [obs for obs in observations if obs.structural_support is not None]
+        assert spatial
+        session.runtime.perception.process(spatial, now)
+        target = session.world.context.critical_component_ids[0]
+        head = next(m for m in session.runtime.m2t.export_beliefs() if m.world_entity_id == target)
+        assert head.technical is not None
+        assert any(cell.observation_count > 0 for cell in head.technical.local_cells)
+        assert any(row["registry_id"] == str(target) for row in session.runtime.perception.structural_log)
+    finally:
+        session.finish()
+
+
 def test_spatial_model2t_child_initializes_and_persists_unknown_head(tmp_path):
     options = _options()
     assert options.spatial_sensor_model is not None
@@ -127,6 +196,7 @@ def test_spatial_model2t_child_initializes_and_persists_unknown_head(tmp_path):
     assert isinstance(provider, SpatialMissionPredictive)
     predictive = provider(children.m2t.export_beliefs())
     assert predictive is not None and len(predictive.cell_prior) == 8
+    assert len(predictive.candidate_regions) == 4
     center = (a + b) / 2
     candidate = look_at(
         (float(origin[0]), float(origin[1]), float(origin[2])),

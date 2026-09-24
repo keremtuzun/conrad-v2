@@ -56,22 +56,38 @@ def pose_visible_capsule_supports(
     qb = 2.0 * float(q_perp @ f_perp)
     qc = float(q_perp @ q_perp) - grid.radius_m**2
     disc = qb * qb - 4.0 * qa * qc
-    if qa <= 1e-12 or disc < 0:
+    hit = None
+    if qa > 1e-12 and disc >= 0:
+        roots = sorted(((-qb - math.sqrt(disc)) / (2 * qa), (-qb + math.sqrt(disc)) / (2 * qa)))
+        hit = next(
+            (
+                (t, origin + t * forward)
+                for t in roots
+                if t > 0 and grid.length_m >= float((origin + t * forward - a) @ d) >= 0.0
+            ),
+            None,
+        )
+    if hit is not None:
+        point = hit[1]
+        x_center = float((point - a) @ d)
+        normal = (point - a - x_center * d) / grid.radius_m
+        distance = hit[0]
+    else:
+        # A broad-FOV inspection payload can see the pipe while its centre ray
+        # passes above it. Centre the candidate footprint on the near surface
+        # at the closest ray/axis approach; the visibility oracle and continuous
+        # certificate below still decide whether any rectangle earns credit.
+        if certify is None:
+            return ()
+        if float(np.linalg.norm(q_perp)) <= grid.radius_m:
+            return ()
+        t_closest = max(0.0, -float(q_perp @ f_perp) / qa) if qa > 1e-12 else 0.0
+        x_center = float(np.clip((q + t_closest * forward) @ d, 0.0, grid.length_m))
+        normal = q_perp / float(np.linalg.norm(q_perp))
+        point = a + x_center * d + grid.radius_m * normal
+        distance = float(np.linalg.norm(point - origin))
+    if not model.range_min_m <= distance <= model.range_max_m:
         return ()
-    roots = sorted(((-qb - math.sqrt(disc)) / (2 * qa), (-qb + math.sqrt(disc)) / (2 * qa)))
-    hit = next(
-        (
-            (t, origin + t * forward)
-            for t in roots
-            if t > 0 and grid.length_m >= float((origin + t * forward - a) @ d) >= 0.0
-        ),
-        None,
-    )
-    if hit is None or not model.range_min_m <= hit[0] <= model.range_max_m:
-        return ()
-    point = hit[1]
-    x_center = float((point - a) @ d)
-    normal = (point - a - x_center * d) / grid.radius_m
     angle_center = math.atan2(float(normal @ v), float(normal @ u)) % (2 * math.pi)
     half_angle = model.footprint_height_m / (2 * grid.radius_m)
 

@@ -102,3 +102,25 @@ def test_mission_structural_sensor_derives_support_from_pose_and_scene(tmp_path)
     assert spatial
     assert all(o.sensor_context["structural_sensor_version"] == "structural-sensor-v2" for o in spatial)
     assert all("world_id" not in o.canonical_json() for o in spatial)
+
+
+def test_flown_off_axis_view_credits_only_certified_spatial_support(tmp_path):
+    opts = _options().model_copy(
+        update={"family": "pipeline_with_supports", "survey_sigma_m": 0.0, "ecological_enabled": False}
+    )
+    world = MissionWorld.build(2026201, "SPATIAL-OFF-AXIS-DEV", opts, UUID(int=987), tmp_path)
+    suite = world.hardware.suite
+    assert suite is not None
+    # The vehicle's inspection controller holds yaw, not pitch. Its boresight
+    # passes above the pipe while the upper surface remains inside the FOV.
+    pose = Pose(
+        frame_id=WORLD,
+        position_m=(0.13, 2.52, 1.51),
+        orientation_wxyz=quat_from_euler(0.0, 0.0, math.pi),
+        covariance_6x6=(0.0,) * 36,
+    )
+    observations = suite._structural(
+        65.0, TimeStamp(time_ns=65_000_000_000, clock_domain="sim"), pose, pose, IdFactory(99).new()
+    )
+    assert observations
+    assert all(o.structural_support is not None for o in observations)

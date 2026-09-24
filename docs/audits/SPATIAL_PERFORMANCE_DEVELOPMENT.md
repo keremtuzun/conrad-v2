@@ -1,0 +1,60 @@
+# Spatial V1 development performance
+
+This is a software profile, not gate evidence or physical calibration. Reproduce
+with `python -m uv run python scripts/profile_spatial_mission.py
+artifacts/software_completion/<new-directory> --duration-s 24`. The script
+refuses to overwrite a run, records one JSON row per completed mission, and
+keeps raw `cProfile` statistics beside the run bundles.
+
+The first 24-second comparison used seed 2026201, `pipeline_with_supports`,
+0.1-second control period, and the same legacy versus spatial mission setup
+except for the opt-in structural truth, sensor, and Model2T backends. Another
+clean-checkout `pytest -q` was running concurrently, so wall times are
+contended development observations rather than an unloaded performance claim.
+Python tracing and profiling were enabled for both runs.
+
+| Backend | Prepare wall s | Run wall s | Finish wall s | Peak traced Python MiB | Bundle MiB | Observations | Evidence | Belief revisions | Commands |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Legacy | 2.44 | 36.24 | 1.67 | 21.75 | 4.83 | 65 | 41 | 309 | 240 |
+| Spatial V1 | 2.15 | 34.88 | 1.85 | 20.85 | 4.75 | 64 | 40 | 302 | 240 |
+
+The spatial profile called `SpatialMissionModel2T.receive_context` 81 times
+(1.12 s cumulative) and `update_beliefs` 11 times (0.65 s cumulative).
+`capsule_visibility_certificate` and `pose_visible_capsule_supports` each ran
+24 times (about 0.02 s cumulative each). This mission did not invoke an MCBR
+planning cycle, so it does not measure spatial candidate scoring. A longer
+closed-loop inspection with actual planning requests is required before
+performance acceptance. No limit or pass threshold is inferred from these two
+runs.
+
+A 120-second spatial development mission on the same seed, run concurrently
+with the clean-checkout regression, generated 4 actual MCBR plans (48
+candidates each), 262 observations, 142 Evidence rows, 1,730 belief revisions,
+and 1,200 commands. The bundle was 23.55 MiB and peak traced Python allocation
+was 84.36 MiB. Profiled wall time was 200.20 s. The four planner calls took
+16.26 s cumulatively under `cProfile` plus `tracemalloc`; 192 surface
+predictive information calculations took 6.68 s. These times include profiler
+overhead and competing CPU load.
+
+The four plans were flown, but the target earned **zero** structural
+observations. An off-axis flight pose reproduced the cause: the old support
+producer returned immediately when the centre ray missed the cylinder, even
+when the pipe was inside the payload field of view. The producer now considers
+the near surface for such poses only when the continuous visibility certificate
+admits the resulting resolution rectangles. A unit and mission sensor
+regression pin this case. The 120-second profile is a **failed pre-repair
+development run**, not evidence of closed-loop spatial mission success. A
+post-repair mission and unloaded planner timing are still required.
+
+After the planner's local aim-region repair, a 180-second seed-2026201
+development profile ran without a competing test suite. Its 1,800 commands,
+637 observations, 457 Evidence rows, and 2,680 belief revisions produced a
+39.32 MiB bundle and 125.75 MiB peak traced Python allocation. Profiled
+mission wall time was 287.56 s, followed by 8.85 s to finish the bundle.
+Seven MCBR plans were made and all seven views were fully flown. Planner
+calls took 43.63 s cumulative under `cProfile` and `tracemalloc`; surface
+predictive `expected_information` took 23.00 s and spatial support production
+8.97 s cumulatively. The resulting target remained `UNKNOWN` because the
+selected views did not cover the required angular crown. This profile does
+not demonstrate mission completion or a performance PASS; it identifies the
+predictive computation as the largest measured spatial planning cost.

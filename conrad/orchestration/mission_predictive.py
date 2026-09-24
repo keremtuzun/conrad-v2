@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import math
 from collections.abc import Callable, Sequence
+from itertools import pairwise
 
 import numpy as np
 
@@ -34,8 +35,8 @@ from conrad.domains.technical.spatial_mission import MODEL_VERSION as SPATIAL_MO
 from conrad.domains.technical.spatial_mission import SpatialMissionModel2T
 from conrad.domains.technical.state import ComponentBelief
 from conrad.schemas.belief import BeliefMessage
-from conrad.schemas.capsule_surface import capsule_basis, surface_point
-from conrad.schemas.frames import WORLD, Pose, SpatialSupport, quat_to_matrix
+from conrad.schemas.capsule_surface import SurfaceRect, capsule_basis, surface_point, union_area
+from conrad.schemas.frames import WORLD, Pose, SpatialSupport, quat_from_euler, quat_to_matrix
 from conrad.schemas.world import SensorSpec
 
 QUANTITIES = (CORROSION_DEPTH, CRACK_LENGTH)
@@ -340,8 +341,50 @@ class SpatialMissionPredictive:
             cell_prior=unresolved / total,
             channels=channels,
             cell_weights=SpatialCellWeightFn(self, np.asarray(geometry.p0), np.asarray(geometry.p1)),
+            candidate_regions=self._candidate_regions(np.asarray(geometry.p0), np.asarray(geometry.p1)),
             epistemic=min(1.0, total / grid.n_cells),
         )
+
+    def _candidate_regions(self, a: np.ndarray, b: np.ndarray) -> tuple[SpatialSupport, ...]:
+        """Target the largest still-unseen rectangle in each required belief cell."""
+        local = self.m2t.spatial
+        ranked: list[tuple[float, int, SpatialSupport]] = []
+        for i in range(local.grid.n_cells):
+            required = local.required_rect(i)
+            if required is None:
+                continue
+            covered = [
+                clipped
+                for rect in local.cells[i].supports
+                if (clipped := required.intersection(rect)).area > 0
+            ]
+            xs = sorted({required.x0, required.x1, *(x for r in covered for x in (r.x0, r.x1))})
+            angles = sorted({required.a0, required.a1, *(x for r in covered for x in (r.a0, r.a1))})
+            unseen: list[SurfaceRect] = []
+            for x0, x1 in pairwise(xs):
+                for t0, t1 in pairwise(angles):
+                    atom = SurfaceRect(x0, x1, t0, t1)
+                    if atom.area > 1e-12 and not any(rect.contains(atom) for rect in covered):
+                        unseen.append(atom)
+            if not unseen:
+                continue
+            largest = max(unseen, key=lambda rect: rect.area)
+            point = surface_point(
+                a,
+                b,
+                local.grid.radius_m,
+                (largest.x0 + largest.x1) / 2,
+                (largest.a0 + largest.a1) / 2,
+            )
+            ranked.append(
+                (
+                    required.area - union_area(covered),
+                    i,
+                    SpatialSupport(frame_id=WORLD, center_m=tuple(float(v) for v in point)),
+                )
+            )
+        ranked.sort(key=lambda row: (-row[0], row[1]))
+        return tuple(row[2] for row in ranked[:4])
 
 
 class SpatialCellWeightFn:
@@ -354,7 +397,11 @@ class SpatialCellWeightFn:
         o = self.owner
         grid, model = o.m2t.spatial.grid, o.m2t.spatial.sensor
         origin = np.asarray(pose.position_m, dtype=np.float64)
-        rot = quat_to_matrix(pose.orientation_wxyz)
+        # View execution commands yaw while holding the vehicle level. The
+        # candidate's look-at pitch is not physically flown by this controller.
+        w, x, y, z = pose.orientation_wxyz
+        yaw = math.atan2(2 * (w * z + x * y), 1 - 2 * (y * y + z * z))
+        rot = quat_to_matrix(quat_from_euler(0.0, 0.0, yaw))
         forward = rot[:, 0]
         d, u, v = capsule_basis(self.a, self.b)
         q = origin - self.a
@@ -365,23 +412,33 @@ class SpatialCellWeightFn:
         cc = float(q_perp @ q_perp) - grid.radius_m**2
         disc = bb * bb - 4 * aa * cc
         weights = np.zeros(grid.n_cells)
-        if aa <= 1e-12 or disc < 0:
-            return weights
-        roots = sorted(((-bb - math.sqrt(disc)) / (2 * aa), (-bb + math.sqrt(disc)) / (2 * aa)))
-        hit = next(
-            (
-                origin + t * forward
-                for t in roots
-                if t > 0
-                and option.min_range_m <= t <= option.max_range_m
-                and 0 <= float((origin + t * forward - self.a) @ d) <= grid.length_m
-            ),
-            None,
-        )
+        hit = None
+        if aa > 1e-12 and disc >= 0:
+            roots = sorted(((-bb - math.sqrt(disc)) / (2 * aa), (-bb + math.sqrt(disc)) / (2 * aa)))
+            hit = next(
+                (
+                    origin + t * forward
+                    for t in roots
+                    if t > 0
+                    and option.min_range_m <= t <= option.max_range_m
+                    and 0 <= float((origin + t * forward - self.a) @ d) <= grid.length_m
+                ),
+                None,
+            )
         if hit is None:
-            return weights
-        xc = float((hit - self.a) @ d)
-        radial = hit - self.a - xc * d
+            # The real payload may see the near surface in its FOV while the
+            # level centre ray passes above the cylinder.
+            if float(np.linalg.norm(q_perp)) <= grid.radius_m:
+                return weights
+            t_closest = max(0.0, -float(q_perp @ f_perp) / aa) if aa > 1e-12 else 0.0
+            xc = float(np.clip((q + t_closest * forward) @ d, 0.0, grid.length_m))
+            radial = grid.radius_m * q_perp / float(np.linalg.norm(q_perp))
+            hit = self.a + xc * d + radial
+            if not option.min_range_m <= float(np.linalg.norm(hit - origin)) <= option.max_range_m:
+                return weights
+        else:
+            xc = float((hit - self.a) @ d)
+            radial = hit - self.a - xc * d
         ac = math.atan2(float(radial @ v), float(radial @ u)) % (2 * math.pi)
         half_angle = model.footprint_height_m / (2 * grid.radius_m)
         hfov = math.radians(float(o.sensor.parameters["hfov_deg"])) / 2
@@ -395,14 +452,28 @@ class SpatialCellWeightFn:
                 min(cell.x1, xc + model.footprint_width_m / 2)
                 - max(cell.x0, xc - model.footprint_width_m / 2),
             )
-            angular_overlap = max(
+            angle_bounds = max(
                 (
-                    max(0.0, min(cell.a1, ac + shift + half_angle) - max(cell.a0, ac + shift - half_angle))
+                    (max(cell.a0, ac + shift - half_angle), min(cell.a1, ac + shift + half_angle))
                     for shift in (-2 * math.pi, 0.0, 2 * math.pi)
                 ),
-                default=0.0,
+                key=lambda bounds: bounds[1] - bounds[0],
             )
-            overlap = x_overlap * angular_overlap / cell.area
+            angular_overlap = max(0.0, angle_bounds[1] - angle_bounds[0])
+            overlap_rect = SurfaceRect(
+                max(cell.x0, xc - model.footprint_width_m / 2),
+                min(cell.x1, xc + model.footprint_width_m / 2),
+                angle_bounds[0],
+                angle_bounds[1],
+            )
+            covered = [
+                clipped
+                for rect in o.m2t.spatial.cells[i].supports
+                if (clipped := cell.intersection(rect)).area > 0
+            ]
+            newly_covered = max(0.0, union_area([*covered, overlap_rect]) - union_area(covered))
+            unresolved_fraction = 1.0 - o.m2t.spatial.required_coverage_fraction(i)
+            overlap = newly_covered / max(cell.area * unresolved_fraction, 1e-12)
             if overlap <= 0:
                 continue
             if min(x_overlap, grid.radius_m * angular_overlap) < max(

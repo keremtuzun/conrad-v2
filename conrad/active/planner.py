@@ -10,7 +10,7 @@ implementation_status: EXPERIMENTAL_CANDIDATE (scoring) inside FROZEN_CONTRACT o
 from __future__ import annotations
 
 from collections.abc import Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any, Protocol
 
 import numpy as np
@@ -35,6 +35,7 @@ from conrad.active.gap import (
     need_satisfied,
 )
 from conrad.active.predictive import PredictiveBelief, predicted_coverage
+from conrad.active.surface_predictive import SurfaceCellPredictive
 from conrad.schemas.belief import BeliefMessage
 from conrad.schemas.decision import (
     InformationNeed,
@@ -167,7 +168,17 @@ class MCBRPlanner:
         if need_satisfied(need, gaps, self.config):
             return self._finish(request, PlanStatus.NEED_SATISFIED, [], [], targeted, gaps)
         gap = gaps[0]
-        raws = self.generator.generate(gap.target_region, request.sensors)
+        regions = (
+            request.predictive.candidate_regions
+            if isinstance(request.predictive, SurfaceCellPredictive) and request.predictive.candidate_regions
+            else (gap.target_region,)
+        )
+        raws = [raw for region in regions for raw in self.generator.generate(region, request.sensors)]
+        if len(regions) > 1:
+            raws = [replace(raw, index=i) for i, raw in enumerate(raws)]
+            if len(raws) > self.config.max_candidates:
+                step = len(raws) / self.config.max_candidates
+                raws = [raws[int(i * step)] for i in range(self.config.max_candidates)]
         calibration_check = bool(need.constraints.get("calibration_check"))
         if calibration_check:
             raws.extend(
@@ -183,7 +194,8 @@ class MCBRPlanner:
         feasible: list[ScoredCandidate] = []
         rejected: list[RejectedCandidate] = []
         for raw, ok in zip(raws, free, strict=True):
-            vis = float(np.clip(request.predicted_visibility(raw.pose, gap.target_region), 0.0, 1.0))
+            aim_region = raw.aim_region or gap.target_region
+            vis = float(np.clip(request.predicted_visibility(raw.pose, aim_region), 0.0, 1.0))
             if request.predictive is not None and self.config.sensor_aware_visibility:
                 vis = min(vis, predicted_coverage(request.predictive, raw.pose, raw.sensor))
             cost = request.navigation_cost(request.robot_pose, raw.pose)
@@ -255,7 +267,7 @@ class MCBRPlanner:
                 "standoff_m": raw.standoff_m,
                 **raw.configuration,
             },
-            target_region=gap.target_region,
+            target_region=raw.aim_region or gap.target_region,
             duration_s=raw.sensor.duration_s,
             expected_cost=expected,
             predicted_visibility=vis,
