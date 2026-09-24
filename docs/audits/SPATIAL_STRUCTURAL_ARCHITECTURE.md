@@ -25,7 +25,7 @@ identifiability.
 |---|---|---|
 | A. Truth expressiveness | DEVELOPMENT PARTIAL | Opt-in static capsule field and local patches. Mission Twin2T dynamics and local crack depth pending. |
 | B. Observation locality | DEVELOPMENT PARTIAL | Exact synthetic support integral; pose/visibility/occlusion driven footprint pending. |
-| C. Support provenance | DEVELOPMENT PARTIAL | Versioned Observation → Evidence support and config digest. Mission-side producer and complete audit chain pending. |
+| C. Support provenance | DEVELOPMENT PARTIAL | Versioned Observation → ECMER Evidence support and config digest tested. Pose-driven mission producer and complete audit chain pending. |
 | D. Local belief update | DEVELOPMENT PARTIAL | Opt-in `SpatialModel2T` refuses multi-cell averaged attribution; production Model2T path pending. |
 | E. Conservative status | DEVELOPMENT PARTIAL | Unknown edges/partial coverage refuse intact. Physical detectability model and thresholds pending. |
 | F. Identifiability | DEVELOPMENT PARTIAL | Synthetic same-mean pair and resolved local observations tested; mission-path test pending. |
@@ -45,6 +45,13 @@ tests/unit/twins/twin2t/test_t2t_observation.py -q` passed 96 tests, including
 the new same-mean, missed-defect, detected-defect, healthy coverage, edge,
 resolution, independent-look and compatibility tests. These are synthetic
 unit results. They do not measure a calibrated sensor or Unity parity.
+An additional opt-in test now exercises spatial truth → synthetic Observation
+→ ECMER Evidence → local belief without placing a truth ID in the Observation.
+The emission adapter requires the measured footprint and range/bearing to be
+supplied; it does not yet calculate them from a mission pose and visibility.
+The local belief additionally requires a registry association before crediting
+the support. With these tests included, the same targeted command passes
+98/98 tests. `ruff check` passes on the new and touched Python files.
 
 ## Impact and gate state
 

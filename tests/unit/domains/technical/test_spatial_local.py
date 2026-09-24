@@ -7,13 +7,14 @@ import pytest
 
 from conrad.domains.technical.spatial_local import LocalCondition, LocalThresholds, SpatialModel2T
 from conrad.schemas.capsule_surface import CapsuleSurfaceGrid, SurfaceRect
-from conrad.schemas.observation import Evidence, Modality, Observation
+from conrad.schemas.observation import EntityCandidate, Evidence, Modality, Observation
 from conrad.schemas.structural_sensor import StructuralSensorModel
 from conrad.schemas.structural_support import CapsuleSurfaceSupport, ParameterAuthority
 from conrad.schemas.timebase import TimeStamp
 from conrad.twins.twin2t.spatial_field import LocalStructuralState, SpatialStructuralTruth, TruthPatch
 
 GRID = CapsuleSurfaceGrid(length_m=2.0, radius_m=1.0, axial_cells=2, sectors=1)
+RID = UUID(int=42)
 THRESHOLDS = LocalThresholds(0.002, 0.006, 0.012, 0.003, 0.01, 0.03)
 
 
@@ -69,6 +70,7 @@ def evidence(i, value, sup, group=None):
         measurement_units={"apparent_wall_loss": "m", "crack_indication_length": "m"},
         structural_support=sup,
         independence_group=group,
+        entity_candidates=(EntityCandidate(registry_entity_id=RID, score=1.0),),
         provenance_id=UUID(int=300 + i),
         encoder_version="test-structural-v2",
     )
@@ -84,7 +86,7 @@ def test_same_global_mean_is_ambiguous_coarse_but_separable_resolved():
     resolved = sensor("LOCAL_MAX")
     first, second = (support(GRID.cell(i), resolved) for i in range(2))
     assert uniform.measure(second, resolved) != patchy.measure(second, resolved)
-    a, b = SpatialModel2T(GRID, resolved, THRESHOLDS), SpatialModel2T(GRID, resolved, THRESHOLDS)
+    a, b = SpatialModel2T(GRID, resolved, THRESHOLDS, RID), SpatialModel2T(GRID, resolved, THRESHOLDS, RID)
     for i, sup in enumerate((first, second)):
         a.ingest(evidence(i, uniform.measure(sup, resolved), sup))
         b.ingest(evidence(i, patchy.measure(sup, resolved), sup))
@@ -95,7 +97,7 @@ def test_same_global_mean_is_ambiguous_coarse_but_separable_resolved():
 def test_missed_defect_and_partial_healthy_cannot_be_intact():
     model = sensor("LOCAL_MAX")
     world = SpatialStructuralTruth(GRID, (LocalStructuralState(), LocalStructuralState(0.008)))
-    belief = SpatialModel2T(GRID, model, THRESHOLDS)
+    belief = SpatialModel2T(GRID, model, THRESHOLDS, RID)
     sup = support(GRID.cell(0), model)
     assert belief.ingest(evidence(1, world.measure(sup, model), sup))
     assert belief.condition() is LocalCondition.UNKNOWN
@@ -108,7 +110,7 @@ def test_detected_defect_and_healthy_full_coverage():
     defective = SpatialStructuralTruth(GRID, (LocalStructuralState(), LocalStructuralState(0.008)))
     healthy = SpatialStructuralTruth(GRID, (LocalStructuralState(),) * 2)
     for world, expected in ((defective, LocalCondition.SEVERE), (healthy, LocalCondition.OBSERVED_INTACT)):
-        belief = SpatialModel2T(GRID, model, THRESHOLDS)
+        belief = SpatialModel2T(GRID, model, THRESHOLDS, RID)
         for i in range(2):
             sup = support(GRID.cell(i), model)
             assert belief.ingest(evidence(i, world.measure(sup, model), sup))
@@ -117,12 +119,12 @@ def test_detected_defect_and_healthy_full_coverage():
 
 def test_coarse_average_and_unknown_support_never_credit_cells():
     mean = sensor()
-    belief = SpatialModel2T(GRID, mean, THRESHOLDS)
+    belief = SpatialModel2T(GRID, mean, THRESHOLDS, RID)
     whole = support(SurfaceRect(0, 2, 0, 2 * math.pi), mean)
     assert not belief.ingest(evidence(1, LocalStructuralState(0.001), whole))
     assert belief.condition() is LocalCondition.UNKNOWN
     resolved = sensor("LOCAL_MAX")
-    belief = SpatialModel2T(GRID, resolved, THRESHOLDS)
+    belief = SpatialModel2T(GRID, resolved, THRESHOLDS, RID)
     unknown = support(GRID.cell(0), resolved, ux=None)
     assert not belief.ingest(evidence(2, LocalStructuralState(), unknown))
     assert belief.coverage_fraction(0) == 0
@@ -135,7 +137,7 @@ def test_subresolution_and_edge_support_do_not_create_false_intact():
     first = support(GRID.cell(0), model)
     assert truth.worst_local().corrosion_depth_m == 0.01
     assert truth.measure(first, model).corrosion_depth_m == 0.0
-    belief = SpatialModel2T(GRID, model, THRESHOLDS)
+    belief = SpatialModel2T(GRID, model, THRESHOLDS, RID)
     for i in range(2):
         sup = support(GRID.cell(i), model, ux=0.01)
         belief.ingest(evidence(i, truth.measure(sup, model), sup))
@@ -145,7 +147,7 @@ def test_subresolution_and_edge_support_do_not_create_false_intact():
 
 def test_independence_groups_and_replay_deduplication():
     model = sensor("LOCAL_MAX")
-    belief = SpatialModel2T(GRID, model, THRESHOLDS, required_looks=2)
+    belief = SpatialModel2T(GRID, model, THRESHOLDS, RID, required_looks=2)
     for i in range(2):
         sup = support(GRID.cell(i), model)
         ev = evidence(i, LocalStructuralState(), sup, group="same-capture")
@@ -198,7 +200,7 @@ def test_observation_evidence_support_roundtrip_and_legacy_parse():
 
 def test_config_mismatch_fails_closed_before_local_credit():
     model = sensor("LOCAL_MAX")
-    belief = SpatialModel2T(GRID, model, THRESHOLDS)
+    belief = SpatialModel2T(GRID, model, THRESHOLDS, RID)
     altered = model.model_copy(update={"minimum_resolvable_corrosion_m": 0.2})
     sup = support(GRID.cell(0), altered)
     with pytest.raises(ValueError, match="architecture mismatch"):
@@ -206,9 +208,18 @@ def test_config_mismatch_fails_closed_before_local_credit():
     assert belief.coverage_fraction(0) == 0
 
 
+def test_unassociated_evidence_cannot_update_a_component():
+    model = sensor("LOCAL_MAX")
+    belief = SpatialModel2T(GRID, model, THRESHOLDS, RID)
+    sup = support(GRID.cell(0), model)
+    unassociated = evidence(1, LocalStructuralState(), sup).model_copy(update={"entity_candidates": ()})
+    assert not belief.ingest(unassociated)
+    assert belief.coverage_fraction(0) == 0
+
+
 def test_union_coverage_never_double_counts_duplicate_overlap():
     model = sensor("LOCAL_MAX")
-    belief = SpatialModel2T(GRID, model, THRESHOLDS)
+    belief = SpatialModel2T(GRID, model, THRESHOLDS, RID)
     half = support(SurfaceRect(0, 0.5, 0, 2 * math.pi), model)
     for i in range(4):
         belief.ingest(evidence(i, LocalStructuralState(), half, group=f"capture-{i}"))

@@ -55,7 +55,8 @@ must originate from the same sensor configuration.
 
 `SpatialModel2T` accepts only compatible v2 evidence. An unknown support edge,
 an average spanning several belief cells, or an uncertain edge crossing a
-cell boundary cannot supply healthy cell coverage. Coverage is computed from
+cell boundary cannot supply healthy cell coverage. Evidence must also carry
+an inference-side association to the component's registry identity. Coverage is computed from
 the union of guaranteed support inside each belief cell. A qualified
 `OBSERVED_INTACT` means no defect above the **declared detectability scale**
 was found in the covered domain under the idealized local-response model; it

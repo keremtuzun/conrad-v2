@@ -72,12 +72,14 @@ class SpatialModel2T:
         grid: CapsuleSurfaceGrid,
         sensor: StructuralSensorModel,
         thresholds: LocalThresholds,
+        registry_id: UUID,
         *,
         required_looks: int = 1,
     ) -> None:
         if required_looks < 1:
             raise ValueError("required_looks must be positive")
         self.grid, self.sensor, self.thresholds = grid, sensor, thresholds
+        self.registry_id = registry_id
         self.required_looks = required_looks
         self.cells = [LocalCellBelief() for _ in range(grid.n_cells)]
         self.seen_evidence: set[UUID] = set()
@@ -99,6 +101,9 @@ class SpatialModel2T:
         ):
             raise ValueError("structural architecture mismatch")
         if evidence.validity is EvidenceValidity.INVALID:
+            return False
+        if not any(c.registry_entity_id == self.registry_id for c in evidence.entity_candidates):
+            self.unresolved.append(evidence.evidence_id)
             return False
         measured = self.grid.support_rect(sup)
         if (

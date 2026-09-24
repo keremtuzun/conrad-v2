@@ -10,6 +10,11 @@ defects, and same-global-mean adversarial surfaces. `worst_local()` is
 computed from truth before any measurement. The sensor integrates only over
 the supplied support. Exact patch and cell boundaries are used in the
 synthetic integral so small patches are not accidentally erased by sampling.
+`emit_spatial_observation` is the opt-in adapter that turns a supplied measured
+footprint into a structured Observation with the sensor version and digest.
+It records a capture independence group and measured range/bearing/elevation,
+but it has no world-entity or belief-cell ID. The footprint producer remains
+to be implemented from pose, field of view, visibility and occlusion.
 
 The new field does **not** yet replace the historical rest-region
 `ComponentRuntime` in `MissionWorld.build`. Historical worlds, including

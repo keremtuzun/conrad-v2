@@ -1,6 +1,7 @@
 """ECMER: encoders, fusion with missing modalities, quality head, Observation -> Evidence service."""
 
 import hashlib
+import math
 
 import cv2
 import numpy as np
@@ -24,10 +25,23 @@ from conrad.core.ecmer import (
     stage_e4_correspondence,
 )
 from conrad.core.ecmer.encoders import ResNet18Encoder, ScalarSensorEncoder, VoxelPointEncoder
+from conrad.domains.technical.spatial_local import LocalCondition, LocalThresholds, SpatialModel2T
+from conrad.schemas.capsule_surface import CapsuleSurfaceGrid, SurfaceRect
 from conrad.schemas.frames import Pose
-from conrad.schemas.observation import EvidenceValidity, Modality, Observation, PayloadRef, SensorHealth
+from conrad.schemas.observation import (
+    EntityCandidate,
+    EvidenceValidity,
+    Modality,
+    Observation,
+    PayloadRef,
+    SensorHealth,
+)
 from conrad.schemas.provenance import SourceType
+from conrad.schemas.structural_sensor import StructuralSensorModel
+from conrad.schemas.structural_support import CapsuleSurfaceSupport, ParameterAuthority
 from conrad.schemas.timebase import stamp
+from conrad.twins.twin2t.spatial_emission import emit_spatial_observation
+from conrad.twins.twin2t.spatial_field import LocalStructuralState, SpatialStructuralTruth
 
 
 def _present(value: float | None) -> float:
@@ -203,3 +217,69 @@ def test_service_observation_to_evidence(cfg, ids):
     assert out[0].evidence.measurements == {}  # nothing is invented for image payloads
     with pytest.raises(ValueError):
         EcmerEncoder(cfg, ids).encode(observations[:1])  # payload_ref without an injected loader
+
+
+def test_spatial_truth_observation_evidence_local_belief(cfg, ids):
+    grid = CapsuleSurfaceGrid(1.0, 1.0, 1, 1)
+    sensor = StructuralSensorModel(
+        footprint_width_m=1.0,
+        footprint_height_m=2 * math.pi,
+        minimum_resolvable_corrosion_m=0.1,
+        minimum_resolvable_crack_m=0.1,
+        range_min_m=0.3,
+        range_max_m=4.0,
+        noise_sigma_m=0,
+        position_uncertainty_m=0,
+        orientation_uncertainty_rad=0,
+        footprint_uncertainty_m=0,
+        aggregation_kernel="LOCAL_MAX",
+        authority=ParameterAuthority.ENGINEERING_ESTIMATE,
+    )
+    truth = SpatialStructuralTruth(grid, (LocalStructuralState(),))
+    rect = SurfaceRect(0, 1, 0, 2 * math.pi)
+    support = CapsuleSurfaceSupport(
+        sensor_model_version=sensor.version,
+        sensor_config_digest=sensor.digest,
+        frame_id="CAPSULE_DESIGN",
+        axial_start_m=rect.x0,
+        axial_end_m=rect.x1,
+        angle_start_rad=rect.a0,
+        angle_end_rad=rect.a1,
+        axial_uncertainty_m=0,
+        angular_uncertainty_rad=0,
+        aggregation_kernel="LOCAL_MAX",
+    )
+    observation = emit_spatial_observation(
+        truth,
+        sensor,
+        support,
+        ids=ids,
+        rng=np.random.default_rng(1),
+        mission_id=ids.new(),
+        run_id=ids.new(),
+        trace_id=ids.new(),
+        sensor_id=ids.new(),
+        sensor_frame="SENSOR",
+        timestamp=stamp(2.0, "c"),
+        estimated_pose=Pose(frame_id="WORLD", position_m=(1, 2, 3)),
+        measured_range_m=1,
+        measured_bearing_rad=0,
+        measured_elevation_rad=0,
+        range_sigma_m=0,
+        angle_sigma_rad=0,
+        independence_group="capture-1",
+    )
+    assert observation.structural_support == support
+    assert "world_id" not in observation.canonical_json()
+    ev = EcmerEncoder(cfg, ids).encode([observation])[0].evidence
+    assert ev.structural_support == support
+    assert ev.measurements == {"apparent_wall_loss": 0.0, "crack_indication_length": 0.0}
+    assert ev.independence_group == "capture-1"
+    thresholds = LocalThresholds(0.002, 0.006, 0.012, 0.003, 0.01, 0.03)
+    rid = ids.new()
+    belief = SpatialModel2T(grid, sensor, thresholds, rid)
+    associated = ev.model_copy(
+        update={"entity_candidates": (EntityCandidate(registry_entity_id=rid, score=1),)}
+    )
+    assert belief.ingest(associated)
+    assert belief.condition() is LocalCondition.OBSERVED_INTACT
