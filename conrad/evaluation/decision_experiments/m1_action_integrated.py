@@ -74,6 +74,7 @@ from conrad.evaluation.partitions import (
     I5_V4_DOMAIN,
     I5_V5_DOMAIN,
     I5_V6_DOMAIN,
+    I5_V7_DOMAIN,
     Partition,
     Purpose,
     check_access,
@@ -103,6 +104,7 @@ PARTITION_FILES = {
     I5_V4_DOMAIN: "configs/eval/partitions_i5_v4.yaml",
     I5_V5_DOMAIN: "configs/eval/partitions_i5_v5.yaml",
     I5_V6_DOMAIN: "configs/eval/partitions_i5_v6.yaml",
+    I5_V7_DOMAIN: "configs/eval/partitions_i5_v7.yaml",
 }
 DEFAULT_CONFIG = "configs/sim/mission_default.yaml"
 EVIDENCE_CLASS = "SURROGATE (python L1 kernel mission, not Unity)"

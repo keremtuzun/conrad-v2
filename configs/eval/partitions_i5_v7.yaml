@@ -1,0 +1,14 @@
+# I5 nominal-warrant repair cycle, declared 2026-09-24 before building any world in these blocks.
+# All ranges are half-open. Development may be used for diagnosis and design; validation only for
+# selection; final_test stays sealed until a candidate has passed validation and been frozen.
+# Repository-wide search of configs, source, tests and audits found no prior use of 8300xxx.
+version: partitions-i5-missions-2026-09-24-v7
+scenarios: [I5-NOMINAL, I5-NOMINAL-READABLE, I5-CRITICAL-FINDING, I5-UNCERTAIN-BELIEF, I5-ROUTE-BLOCKED,
+            I5-BATTERY-RESERVE, I5-TIME-RESERVE, I5-COMMS-OUTAGE]
+world_seeds:
+  development: {explicit: [], range: [8300000, 8300010]}
+  validation: {explicit: [], range: [8300100, 8300110]}
+  final_test: {explicit: [], range: [8300200, 8300210]}
+reserved_elsewhere:
+  - {range: [5300000, 8100000], owner: historical declared gate and experiment partitions}
+  - {range: [8100000, 8200000], owner: other ongoing research reserved conservatively}
