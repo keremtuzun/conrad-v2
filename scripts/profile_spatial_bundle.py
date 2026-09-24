@@ -34,6 +34,7 @@ def main() -> None:
     parser.add_argument("--trace-memory", action="store_true", help="trace Python allocations (slows timing)")
     parser.add_argument("--survey-sigma-m", type=float, default=None)
     parser.add_argument("--survey-endpoint-bound-m", type=float, default=None)
+    parser.add_argument("--spatial-truth-json", type=Path, default=None)
     args = parser.parse_args()
     source, output = args.source.resolve(), args.output.resolve()
     if output.exists() or source == output or source in output.parents:
@@ -43,6 +44,13 @@ def main() -> None:
     manifest = json.loads((source / "bundle_manifest.json").read_text(encoding="utf-8"))
     inputs = manifest["replay_inputs"]
     options = MissionWorldOptions.model_validate(inputs["mission_world_options"])
+    if args.spatial_truth_json is not None:
+        options = MissionWorldOptions.model_validate(
+            {
+                **options.model_dump(mode="json"),
+                "spatial_truth": json.loads(args.spatial_truth_json.read_text(encoding="utf-8")),
+            }
+        )
     if args.survey_sigma_m is not None or args.survey_endpoint_bound_m is not None:
         if args.survey_sigma_m is None or args.survey_endpoint_bound_m is None:
             raise SystemExit("bounded survey requires both sigma and endpoint bound")
@@ -117,6 +125,9 @@ def main() -> None:
         ).fetchone()
     result = {
         "source": str(source),
+        "spatial_truth_json": None
+        if args.spatial_truth_json is None
+        else str(args.spatial_truth_json.resolve()),
         "run_dir": str(output),
         "duration_s": runtime.duration_s,
         "ticks": ticks,

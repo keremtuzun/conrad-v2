@@ -1,0 +1,5 @@
+{
+  "axial_cells": 2,
+  "sectors": 4,
+  "base": {"corrosion_depth_m": 0.001}
+}

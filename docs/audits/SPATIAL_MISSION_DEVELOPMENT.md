@@ -331,3 +331,16 @@ time to 159.52 s and MCBR time to 26.73 s; those traced timings are not used
 for throughput. These measurements are development, on this Windows host,
 with concurrent pytest; they are not a formal latency guarantee. Unity step
 overhead and longer-mission scaling still need measurement.
+
+## Declared closed-loop same-mean development pair
+
+Before these runs, the next development pair was declared with the same
+seed 2026201, exact survey, 480-second runtime, sensor, inspection domain,
+Model1/MCBR attempt budgets, and planner. The world truth overrides are
+`configs/sim/spatial_v1_same_mean_uniform.json` (all eight cells at 0.001 m
+corrosion) and `configs/sim/spatial_v1_same_mean_local.json` (one cell at
+0.008 m, seven at zero). Both whole-surface cell means are 0.001 m.
+The uniform world should earn qualified `INTACT` after enough coverage; the
+local world should report `SEVERE` without any target `INTACT` revision.
+This is a DEVELOPMENT pair, not validation or a gate. Its outcomes will be
+recorded without changing these files or expectations after inspection.

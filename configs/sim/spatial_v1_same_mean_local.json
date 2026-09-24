@@ -1,0 +1,9 @@
+{
+  "axial_cells": 2,
+  "sectors": 4,
+  "cell_states": [
+    {}, {}, {}, {}, {}, {},
+    {"corrosion_depth_m": 0.008},
+    {}
+  ]
+}
