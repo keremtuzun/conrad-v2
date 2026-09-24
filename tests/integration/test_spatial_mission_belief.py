@@ -339,6 +339,10 @@ def test_spatial_model2t_child_initializes_and_persists_unknown_head(tmp_path):
     ],
 )
 def test_required_surface_identifies_healthy_and_resolvable_defects(tmp_path, state, expected, full_sweep):
+    _exercise_required_surface(tmp_path, state, expected, full_sweep, 401)
+
+
+def _exercise_required_surface(tmp_path, state, expected, full_sweep, world_seed):
     base = _options()
     assert base.spatial_sensor_model is not None
     sensor = base.spatial_sensor_model.model_copy(
@@ -437,14 +441,16 @@ def test_required_surface_identifies_healthy_and_resolvable_defects(tmp_path, st
             }
         )
     options = base.model_copy(update=changes)
-    world = MissionWorld.build(401, "SPATIAL-HEALTHY-DEV", options, UUID(int=162), tmp_path / "objects")
+    world = MissionWorld.build(
+        world_seed, "SPATIAL-HEALTHY-DEV", options, UUID(int=162), tmp_path / "objects"
+    )
     clear_world = None
     if state == "occluded-defect":
         clear_options = options.model_copy(
             update={"occlusion": options.occlusion.model_copy(update={"enabled": False})}
         )
         clear_world = MissionWorld.build(
-            401, "SPATIAL-CLEAR-DEV", clear_options, UUID(int=164), tmp_path / "clear_objects"
+            world_seed, "SPATIAL-CLEAR-DEV", clear_options, UUID(int=164), tmp_path / "clear_objects"
         )
     if state in ("uniform-same-mean", "local-same-mean"):
         field = world.t2t.spatial_fields[world.target]
@@ -497,7 +503,7 @@ def test_required_surface_identifies_healthy_and_resolvable_defects(tmp_path, st
     migrate(db)
     repo = Repository(make_engine(db))
     children = build_children(
-        world.context, cfg, IdFactory(401), world.store, repo, UUID(int=162), "sim", 0, False
+        world.context, cfg, IdFactory(world_seed), world.store, repo, UUID(int=162), "sim", 0, False
     )
     assert isinstance(children.m2t, SpatialMissionModel2T)
     primitive = world.t2s.world.entities[world.t2s.world.index_of(world.target)].primitive
