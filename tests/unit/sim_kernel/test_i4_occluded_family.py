@@ -160,9 +160,15 @@ def test_the_frozen_family_definition_still_describes_the_scenarios() -> None:
         options = world_options(resolve(scenario, {})[0])
         assert options.twin2t_truth_model == "legacy"
         assert options.spatial_truth is None and options.spatial_sensor_model is None
+        assert options.survey_endpoint_bound_m is None
         live[scenario] = options.model_dump(
             mode="json",
-            exclude={"twin2t_truth_model", "spatial_truth", "spatial_sensor_model"},
+            exclude={
+                "twin2t_truth_model",
+                "spatial_truth",
+                "spatial_sensor_model",
+                "survey_endpoint_bound_m",
+            },
         )
     assert live == doc["scenarios"]
     digest = hashlib.sha256(

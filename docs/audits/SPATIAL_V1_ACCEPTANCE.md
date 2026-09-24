@@ -20,8 +20,13 @@ sensor parameters. No physical calibration or deployment claim follows.
 | J Replay/versioning | Full exact-survey 480 s replay at earlier policy; bounded 80 s exact payload replay under registration v2; mismatch mutation test | PARTIAL: full exact-survey replay at current HEAD pending |
 
 The ordinary clean-checkout suite passed at `68de752` (1,452 passed,
-14 skipped, 121 deselected, 3 historical xfailed). The final clean-checkout
-suite at the bounded registration HEAD `c5bfd5b` is running. The historical
+14 skipped, 121 deselected, 3 historical xfailed). A later clean checkout at
+`c5bfd5b` produced 1,457 passes and one ordinary regression: the new
+spatial-only `survey_endpoint_bound_m: null` appeared in a frozen legacy I4
+world snapshot comparison. The historical snapshot and digest were preserved;
+the test now explicitly verifies that legacy's bound is null and excludes
+that spatial-only field from the legacy comparison. Its focused rerun passed;
+a final broad clean-checkout rerun at the completed HEAD remains required. The historical
 gitignored I5 artifact is an explicit skip in the normal clean checkout,
 never regenerated from spent final seeds.
 
