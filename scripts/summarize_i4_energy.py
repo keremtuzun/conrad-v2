@@ -114,8 +114,7 @@ def summarize(
         },
         "view_outcomes": outcomes,
         "mission_metrics": {
-            key: {"n": len(value), "mean": statistics.mean(value)}
-            for key, value in mission_metrics.items()
+            key: {"n": len(value), "mean": statistics.mean(value)} for key, value in mission_metrics.items()
         },
         "post_first_direct_revision_energy_j": {
             "n": len(post_read),

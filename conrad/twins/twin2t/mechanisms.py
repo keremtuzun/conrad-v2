@@ -161,6 +161,7 @@ def fatigue_step(
     *,
     stochastic: bool,
     max_crack_length_m: float,
+    effective_wall_m: float | None = None,
 ) -> FatigueResult:
     """Paris-law growth with threshold. No growth when dK < dK_th or when there is no crack."""
     thr = p.value("delta_k_threshold")
@@ -175,6 +176,9 @@ def fatigue_step(
     a1 = paris_integrate(a0, cycles, p.value("paris_C"), p.value("paris_m"), y, stress_range_pa / 1e6)
     if stochastic:
         a1 += float(rng.normal(0.0, p.value("sigma_fatigue") * math.sqrt(dt_s / SECONDS_PER_YEAR)))
-    a1 = min(max(a1, a0), max_crack_length_m)
-    depth = min(p.wall_thickness_m, max(state.crack_depth_m, a1 / p.value("crack_aspect_ratio")))
+    a1 = max(a0, min(a1, max_crack_length_m))
+    wall = p.wall_thickness_m if effective_wall_m is None else effective_wall_m
+    if wall <= 0:
+        raise ValueError("effective wall thickness must be positive")
+    depth = min(wall, max(state.crack_depth_m, a1 / p.value("crack_aspect_ratio")))
     return FatigueResult(state.with_(crack_length_m=a1, crack_depth_m=depth), dk, thr, a1 > a0)

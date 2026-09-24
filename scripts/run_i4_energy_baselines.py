@@ -51,7 +51,9 @@ def run(out: Path, workers: int, max_worlds: int) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--out", type=Path, default=Path("artifacts/experiments/I4-ENERGY-ABLATIONS/development"))
+    parser.add_argument(
+        "--out", type=Path, default=Path("artifacts/experiments/I4-ENERGY-ABLATIONS/development")
+    )
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--max-worlds", type=int, default=10)
     args = parser.parse_args()

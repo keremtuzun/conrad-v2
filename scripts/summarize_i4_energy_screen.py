@@ -73,9 +73,7 @@ def summarize() -> dict[str, Any]:
     for arm, values in rows.items():
         if arm == "V4_full":
             continue
-        diffs = np.array(
-            [values[i]["info_per_kj"] - rows["V4_full"][i]["info_per_kj"] for i in range(10)]
-        )
+        diffs = np.array([values[i]["info_per_kj"] - rows["V4_full"][i]["info_per_kj"] for i in range(10)])
         rng = np.random.default_rng(20260919)
         boot = diffs[rng.integers(0, 10, size=(4000, 10))].mean(axis=1)
         paired[arm] = {

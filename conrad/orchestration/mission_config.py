@@ -131,7 +131,12 @@ class I4CostCalibration(ConradModel):
     energy_per_m_j: float = Field(default=40.0, ge=0, allow_inf_nan=False)
 
     def estimate(self, distance_m: float, cruise_speed_mps: float) -> tuple[float, float]:
-        if not math.isfinite(distance_m) or not math.isfinite(cruise_speed_mps) or distance_m < 0 or cruise_speed_mps <= 0:
+        if (
+            not math.isfinite(distance_m)
+            or not math.isfinite(cruise_speed_mps)
+            or distance_m < 0
+            or cruise_speed_mps <= 0
+        ):
             raise ValueError("invalid navigation geometry or cruise speed")
         time_s = self.time_offset_s + self.time_scale * distance_m / cruise_speed_mps
         energy_j = self.energy_offset_j + self.energy_per_m_j * distance_m

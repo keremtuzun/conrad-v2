@@ -2,6 +2,7 @@
 
 import math
 from types import SimpleNamespace
+from typing import Any, cast
 
 import numpy as np
 import pytest
@@ -37,7 +38,8 @@ def test_v4_runtime_keeps_new_switches_off_by_default():
 
 
 def test_belief_side_navigation_cost_feeds_calibrated_resource_cost():
-    deliberation = object.__new__(Deliberation)
+    # This test supplies only the two collaborators used by navigation_cost.
+    deliberation = cast(Any, object.__new__(Deliberation))
     deliberation.ctx = SimpleNamespace(design_distance=lambda points: np.full(len(points), 10.0))
     deliberation.is_free = lambda points: np.ones(len(points), dtype=bool)
     a = Pose(frame_id=WORLD, position_m=(0.0, 0.0, -5.0))

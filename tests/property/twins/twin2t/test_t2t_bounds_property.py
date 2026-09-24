@@ -48,6 +48,25 @@ def test_mechanistic_invariants_hold(seed, kind, dts, ev):
     assert rep.passed, rep.violations[:3]
 
 
+def test_reinforcement_then_impact_seed_401_preserves_crack_depth():
+    """The next fatigue tick must use the reinforced, effective wall bound."""
+    eng = _engine(401, GeneratorKind.CONFIGURED)
+    target = eng.order[0]
+    results = [
+        eng.step(
+            4919074.0,
+            [
+                StructuralEvent(StructuralEventType.REINFORCEMENT, target),
+                StructuralEvent(StructuralEventType.IMPACT, target),
+            ],
+        ),
+        eng.step(1.0),
+    ]
+    rec = results[1].records[target]
+    assert rec.after[4] >= rec.before[4]
+    assert validate_sequence(results, eng.runtimes).passed
+
+
 @settings(max_examples=15, deadline=None)
 @given(seed=st.integers(0, 10_000), kind=st.sampled_from(list(GeneratorKind)), n=st.integers(1, 6))
 def test_bounds_and_masks_for_every_generator(seed, kind, n):

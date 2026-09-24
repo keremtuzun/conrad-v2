@@ -158,6 +158,7 @@ class MCDE:
                 rng,
                 stochastic=cfg.stochastic,
                 max_crack_length_m=cfg.max_crack_length_m,
+                effective_wall_m=rt.effective_wall_m,
             )
             rt.state = fr.state
             r = recs[eid]
