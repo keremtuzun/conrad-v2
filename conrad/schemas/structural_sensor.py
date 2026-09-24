@@ -27,10 +27,33 @@ class StructuralSensorModel(ConradModel):
     def _valid(self) -> StructuralSensorModel:
         if self.range_max_m <= self.range_min_m:
             raise ValueError("range_max_m must exceed range_min_m")
-        if self.aggregation_kernel not in ("AREA_MEAN", "LOCAL_MAX"):
+        if self.aggregation_kernel not in ("AREA_MEAN", "LOCAL_MAX", "RESOLUTION_CELL_SAMPLES"):
             raise ValueError("unsupported structural aggregation kernel")
+        if self.aggregation_kernel == "RESOLUTION_CELL_SAMPLES" and not hasattr(self, "axial_resolution_m"):
+            raise ValueError("resolution-cell response requires the v2 sensor model")
         return self
 
     @property
     def digest(self) -> str:
         return self.content_digest()
+
+
+class StructuralSensorModelV2(StructuralSensorModel):
+    """Synthetic spatial response; all dimensions are declared in surface metres.
+
+    A resolution cell returns a detectable local peak. This is an explicit
+    engineering hypothesis, not a measured response of a physical payload.
+    """
+
+    version: str = "structural-sensor-v2"
+    aggregation_kernel: str = "RESOLUTION_CELL_SAMPLES"
+    axial_resolution_m: float = Field(gt=0)
+    lateral_resolution_m: float = Field(gt=0)
+
+    @model_validator(mode="after")
+    def _valid_v2(self) -> StructuralSensorModelV2:
+        if self.aggregation_kernel != "RESOLUTION_CELL_SAMPLES":
+            raise ValueError("v2 requires resolution-cell response")
+        if self.authority is ParameterAuthority.UNKNOWN:
+            raise ValueError("synthetic response requires declared parameter authority")
+        return self

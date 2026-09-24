@@ -11,10 +11,11 @@ from dataclasses import dataclass
 from itertools import pairwise
 
 from conrad.schemas.capsule_surface import CapsuleSurfaceGrid, SurfaceRect, union_area
-from conrad.schemas.structural_sensor import StructuralSensorModel
+from conrad.schemas.structural_sensor import StructuralSensorModel, StructuralSensorModelV2
 from conrad.schemas.structural_support import CapsuleSurfaceSupport
 
 TRUTH_VERSION = "twin2t-spatial-v1"
+EVOLUTION_VERSION = "twin2t-spatial-evolution-v1"
 
 
 @dataclass(frozen=True)
@@ -25,6 +26,31 @@ class LocalStructuralState:
     def __post_init__(self) -> None:
         if self.corrosion_depth_m < 0 or self.crack_length_m < 0:
             raise ValueError("negative structural defect")
+
+
+@dataclass(frozen=True)
+class LocalEvolutionRate:
+    """Optional synthetic local rate; empirical degradation is not implied."""
+
+    corrosion_m_per_s: float = 0.0
+    crack_m_per_s: float = 0.0
+
+    def __post_init__(self) -> None:
+        if self.corrosion_m_per_s < 0 or self.crack_m_per_s < 0:
+            raise ValueError("negative local degradation rate")
+
+    def apply(self, state: LocalStructuralState, duration_s: float) -> LocalStructuralState:
+        return LocalStructuralState(
+            state.corrosion_depth_m + duration_s * self.corrosion_m_per_s,
+            state.crack_length_m + duration_s * self.crack_m_per_s,
+        )
+
+
+@dataclass(frozen=True)
+class SpatialEvolutionV1:
+    base_rates: tuple[LocalEvolutionRate, ...]
+    patch_rates: tuple[LocalEvolutionRate, ...] = ()
+    version: str = EVOLUTION_VERSION
 
 
 @dataclass(frozen=True)
@@ -70,6 +96,23 @@ class SpatialStructuralTruth:
             max(s.corrosion_depth_m for s in states), max(s.crack_length_m for s in states)
         )
 
+    def evolve(self, duration_s: float, rates: SpatialEvolutionV1) -> SpatialStructuralTruth:
+        """Advance local values independently, retaining the spatial partition."""
+        if duration_s < 0 or rates.version != EVOLUTION_VERSION:
+            raise ValueError("invalid spatial evolution interval or version")
+        if len(rates.base_rates) != len(self.base) or len(rates.patch_rates) != len(self.patches):
+            raise ValueError("one evolution rate per base cell and patch required")
+        return SpatialStructuralTruth(
+            self.grid,
+            tuple(
+                rate.apply(state, duration_s) for rate, state in zip(rates.base_rates, self.base, strict=True)
+            ),
+            tuple(
+                TruthPatch(patch.rect, rate.apply(patch.state, duration_s))
+                for rate, patch in zip(rates.patch_rates, self.patches, strict=True)
+            ),
+        )
+
     def measure(self, support: CapsuleSurfaceSupport, sensor: StructuralSensorModel) -> LocalStructuralState:
         """Area mean of only truth within the declared measured support, before noise."""
         if (
@@ -84,6 +127,11 @@ class SpatialStructuralTruth:
             or self.grid.radius_m * (r.a1 - r.a0) > sensor.footprint_height_m + 1e-9
         ):
             raise ValueError("measured support exceeds sensor footprint")
+        if isinstance(sensor, StructuralSensorModelV2) and (
+            r.x1 - r.x0 > sensor.axial_resolution_m + 1e-9
+            or self.grid.radius_m * (r.a1 - r.a0) > sensor.lateral_resolution_m + 1e-9
+        ):
+            raise ValueError("resolution-cell support exceeds declared resolution")
         xs = {r.x0, r.x1}
         angles = {r.a0, r.a1}
         for i in range(self.grid.axial_cells + 1):
@@ -110,7 +158,7 @@ class SpatialStructuralTruth:
                 area = (x1 - x0) * (a1 - a0)
                 corrosion += area * state.corrosion_depth_m
                 crack += area * state.crack_length_m
-                if sensor.aggregation_kernel == "LOCAL_MAX":
+                if sensor.aggregation_kernel in ("LOCAL_MAX", "RESOLUTION_CELL_SAMPLES"):
                     # The optional idealized maximum-response model detects a patch only when
                     # its smaller physical dimension meets the declared resolution limit.
                     patch = next(
@@ -128,11 +176,15 @@ class SpatialStructuralTruth:
                         max_crack = max(max_crack, state.crack_length_m)
                     else:
                         overlap = patch.rect.intersection(r)
-                        size = min(overlap.x1 - overlap.x0, self.grid.radius_m * (overlap.a1 - overlap.a0))
-                        if size >= sensor.minimum_resolvable_corrosion_m:
+                        sized_rect = patch.rect if isinstance(sensor, StructuralSensorModelV2) else overlap
+                        size = min(
+                            sized_rect.x1 - sized_rect.x0,
+                            self.grid.radius_m * (sized_rect.a1 - sized_rect.a0),
+                        )
+                        if overlap.area > 0 and size >= sensor.minimum_resolvable_corrosion_m:
                             max_corrosion = max(max_corrosion, state.corrosion_depth_m)
-                        if size >= sensor.minimum_resolvable_crack_m:
+                        if overlap.area > 0 and size >= sensor.minimum_resolvable_crack_m:
                             max_crack = max(max_crack, state.crack_length_m)
-        if sensor.aggregation_kernel == "LOCAL_MAX":
+        if sensor.aggregation_kernel in ("LOCAL_MAX", "RESOLUTION_CELL_SAMPLES"):
             return LocalStructuralState(max_corrosion, max_crack)
         return LocalStructuralState(corrosion / r.area, crack / r.area)

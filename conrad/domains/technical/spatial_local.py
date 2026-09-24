@@ -13,7 +13,7 @@ from uuid import UUID
 
 from conrad.schemas.capsule_surface import CapsuleSurfaceGrid, SurfaceRect, union_area
 from conrad.schemas.observation import Evidence, EvidenceValidity
-from conrad.schemas.structural_sensor import StructuralSensorModel
+from conrad.schemas.structural_sensor import StructuralSensorModel, StructuralSensorModelV2
 
 MODEL_VERSION = "model2t-local-v1"
 
@@ -111,6 +111,11 @@ class SpatialModel2T:
             or self.grid.radius_m * (measured.a1 - measured.a0) > self.sensor.footprint_height_m + 1e-9
         ):
             raise ValueError("measured support exceeds sensor footprint")
+        if isinstance(self.sensor, StructuralSensorModelV2) and (
+            measured.x1 - measured.x0 > self.sensor.axial_resolution_m + 1e-9
+            or self.grid.radius_m * (measured.a1 - measured.a0) > self.sensor.lateral_resolution_m + 1e-9
+        ):
+            raise ValueError("resolution-cell support exceeds declared resolution")
         # UNKNOWN uncertainty is never silently zero.  Known edge uncertainty
         # erodes the guaranteed support and must also stay within one cell.
         if sup.axial_uncertainty_m is None or sup.angular_uncertainty_rad is None:
@@ -163,7 +168,7 @@ class SpatialModel2T:
             return worst
         # An AREA_MEAN observation cannot rule out a local maximum.  The
         # idealized LOCAL_MAX response remains SYNTHETIC_ONLY until calibrated.
-        if self.sensor.aggregation_kernel != "LOCAL_MAX":
+        if self.sensor.aggregation_kernel not in ("LOCAL_MAX", "RESOLUTION_CELL_SAMPLES"):
             return LocalCondition.UNKNOWN
         cell_width = min(
             self.grid.length_m / self.grid.axial_cells,

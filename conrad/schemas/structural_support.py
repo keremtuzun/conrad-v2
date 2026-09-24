@@ -44,6 +44,6 @@ class CapsuleSurfaceSupport(VersionedModel):
             raise ValueError("empty axial support")
         if self.angle_end_rad <= self.angle_start_rad:
             raise ValueError("angular seam must be split into separate supports")
-        if self.aggregation_kernel not in ("AREA_MEAN", "LOCAL_MAX"):
+        if self.aggregation_kernel not in ("AREA_MEAN", "LOCAL_MAX", "RESOLUTION_CELL_SAMPLES"):
             raise ValueError("unsupported structural aggregation kernel")
         return self

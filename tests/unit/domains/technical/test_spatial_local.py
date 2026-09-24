@@ -8,10 +8,17 @@ import pytest
 from conrad.domains.technical.spatial_local import LocalCondition, LocalThresholds, SpatialModel2T
 from conrad.schemas.capsule_surface import CapsuleSurfaceGrid, SurfaceRect
 from conrad.schemas.observation import EntityCandidate, Evidence, Modality, Observation
-from conrad.schemas.structural_sensor import StructuralSensorModel
+from conrad.schemas.structural_sensor import StructuralSensorModel, StructuralSensorModelV2
 from conrad.schemas.structural_support import CapsuleSurfaceSupport, ParameterAuthority
 from conrad.schemas.timebase import TimeStamp
-from conrad.twins.twin2t.spatial_field import LocalStructuralState, SpatialStructuralTruth, TruthPatch
+from conrad.twins.twin2t.spatial_emission import resolution_cell_supports
+from conrad.twins.twin2t.spatial_field import (
+    LocalEvolutionRate,
+    LocalStructuralState,
+    SpatialEvolutionV1,
+    SpatialStructuralTruth,
+    TruthPatch,
+)
 
 GRID = CapsuleSurfaceGrid(length_m=2.0, radius_m=1.0, axial_cells=2, sectors=1)
 RID = UUID(int=42)
@@ -225,3 +232,77 @@ def test_union_coverage_never_double_counts_duplicate_overlap():
         belief.ingest(evidence(i, LocalStructuralState(), half, group=f"capture-{i}"))
     assert belief.coverage_fraction(0) == pytest.approx(0.5)
     assert belief.condition() is LocalCondition.UNKNOWN
+
+
+def test_v2_resolution_cells_separate_same_mean_and_reject_coarse_credit():
+    model = StructuralSensorModelV2(
+        footprint_width_m=2.0,
+        footprint_height_m=2 * math.pi,
+        axial_resolution_m=1.0,
+        lateral_resolution_m=2 * math.pi,
+        minimum_resolvable_corrosion_m=0.1,
+        minimum_resolvable_crack_m=0.1,
+        range_min_m=0.3,
+        range_max_m=4.0,
+        noise_sigma_m=0,
+        position_uncertainty_m=0,
+        orientation_uncertainty_rad=0,
+        footprint_uncertainty_m=0,
+        authority=ParameterAuthority.ENGINEERING_ESTIMATE,
+    )
+    whole = support(SurfaceRect(0, 2, 0, 2 * math.pi), model)
+    cells = resolution_cell_supports(whole, model, GRID.radius_m)
+    assert len(cells) == 2
+    assert [(s.axial_start_m, s.axial_end_m) for s in cells] == [(0, 1), (1, 2)]
+    with pytest.raises(ValueError, match="resolution-cell"):
+        SpatialStructuralTruth(GRID, (LocalStructuralState(),) * 2).measure(whole, model)
+    uniform = SpatialStructuralTruth(GRID, (LocalStructuralState(0.001),) * 2)
+    patchy = SpatialStructuralTruth(GRID, (LocalStructuralState(), LocalStructuralState(0.002)))
+    coarse = sensor()
+    coarse_whole = support(SurfaceRect(0, 2, 0, 2 * math.pi), coarse)
+    assert uniform.measure(coarse_whole, coarse) == patchy.measure(coarse_whole, coarse)
+    assert [uniform.measure(s, model) for s in cells] != [patchy.measure(s, model) for s in cells]
+    belief = SpatialModel2T(GRID, model, THRESHOLDS, RID)
+    with pytest.raises(ValueError, match="resolution-cell"):
+        belief.ingest(evidence(20, LocalStructuralState(), whole))
+    for i, cell_support in enumerate(cells):
+        assert belief.ingest(evidence(30 + i, uniform.measure(cell_support, model), cell_support))
+    assert belief.condition() is LocalCondition.OBSERVED_INTACT
+
+
+def test_v2_subresolution_patch_does_not_appear_as_detected():
+    model = StructuralSensorModelV2(
+        footprint_width_m=1.0,
+        footprint_height_m=2 * math.pi,
+        axial_resolution_m=1.0,
+        lateral_resolution_m=2 * math.pi,
+        minimum_resolvable_corrosion_m=0.1,
+        minimum_resolvable_crack_m=0.1,
+        range_min_m=0.3,
+        range_max_m=4.0,
+        noise_sigma_m=0,
+        authority=ParameterAuthority.ENGINEERING_ESTIMATE,
+    )
+    tiny = TruthPatch(SurfaceRect(0.2, 0.24, 1.0, 1.04), LocalStructuralState(0.01))
+    truth = SpatialStructuralTruth(GRID, (LocalStructuralState(),) * 2, (tiny,))
+    assert truth.measure(support(GRID.cell(0), model), model).corrosion_depth_m == 0.0
+
+    straddling = TruthPatch(SurfaceRect(0.95, 1.05, 1.0, 1.2), LocalStructuralState(0.01))
+    truth = SpatialStructuralTruth(GRID, (LocalStructuralState(),) * 2, (straddling,))
+    assert truth.measure(support(GRID.cell(0), model), model).corrosion_depth_m == 0.01
+    assert truth.measure(support(GRID.cell(1), model), model).corrosion_depth_m == 0.01
+
+
+def test_optional_local_evolution_keeps_independent_cells_and_patches():
+    patch = TruthPatch(SurfaceRect(0.2, 0.4, 1.0, 1.2), LocalStructuralState(0.002))
+    initial = SpatialStructuralTruth(GRID, (LocalStructuralState(),) * 2, (patch,))
+    rates = SpatialEvolutionV1(
+        base_rates=(LocalEvolutionRate(0.001), LocalEvolutionRate()),
+        patch_rates=(LocalEvolutionRate(crack_m_per_s=0.002),),
+    )
+    evolved = initial.evolve(2.0, rates)
+    assert evolved.base == (LocalStructuralState(0.002), LocalStructuralState())
+    assert evolved.patches[0].state == LocalStructuralState(0.002, 0.004)
+    assert initial.base == (LocalStructuralState(),) * 2
+    with pytest.raises(ValueError, match="one evolution rate"):
+        initial.evolve(1.0, SpatialEvolutionV1(base_rates=()))

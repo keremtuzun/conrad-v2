@@ -22,9 +22,18 @@ The new field does **not** yet replace the historical rest-region
 semantics. That separation is necessary until truth evolution, mission
 sensor placement, Unity geometry, and replay are integrated and checked.
 
-The representation currently models local corrosion depth and crack length
-for static development counterexamples. Local crack depth, coating, dynamic
-mechanisms, occlusion clipping, actual pose-driven support construction, and
+The representation currently models local corrosion depth and crack length.
+An optional `SpatialEvolutionV1` applies separate nonnegative synthetic rates
+to every base cell and patch without collapsing them into a global scalar.
+It does not claim a physical degradation law and is not called by the mission
+Twin2T scheduler. Local crack depth, coating, mission-integrated dynamics,
+occlusion clipping, actual pose-driven support construction, and
 component threshold harmonization remain open. A versioned mission world
 family and digest-pinned development/validation/final/OOD partitions have
 not yet been declared. None of the old partitions is used by this module.
+
+The 2026-09-24 continuation adds a geometry-only capsule support producer and
+a synthetic resolution-cell response mode. Neither is wired into the mission
+Twin2T / Model2T path. The producer uses finite visibility probes and should
+not be treated as a continuous occlusion guarantee. Its output remains
+development evidence until mission integration and Unity parity are checked.

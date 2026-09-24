@@ -4,28 +4,60 @@ Version: `structural-observation-v2` / `structural-sensor-v1`. This is a
 synthetic architecture contract, **not a calibrated physical sensor**. The
 existing T0 and historical gate paths retain their old meaning. A later
 sensor specification or measurement campaign must replace the estimates
-below before physical or formal I5 claims.
+below before physical validation claims. A formal Unity I5 cycle can still
+produce software/simulation evidence after architecture and surrogate gates
+pass.
+
+`structural-sensor-v2` is an additional synthetic contract. It partitions an
+already visible and clipped surface rectangle into axial and lateral resolution
+cells. Each cell returns a peak only for local features meeting the declared
+minimum resolvable size. The cell geometry and detectability values are
+`ENGINEERING_ESTIMATE`; the peak response is an idealized model hypothesis.
+For v2 only, a resolvable patch that straddles a cell boundary produces a
+peak in each cell with nonzero overlap. This is deliberately conservative
+against false intact labels and is an uncalibrated response hypothesis.
+The partitioner does not calculate pose, visibility or occlusion, so it cannot
+yet be used as mission evidence or support an architecture freeze.
 
 ## Parameter authority
 
-| Parameter | Meaning and units | Repository source | Status |
-|---|---|---|---|
-| FOV, horizontal / vertical | Angular view limits, deg | `StructuralSensorOptions.hfov_deg=100`, `vfov_deg=80` | ENGINEERING_ESTIMATE |
-| Operating range | Standoff interval, m | `StructuralSensorOptions.min_range_m=0.3`, `max_range_m=4.0` | ENGINEERING_ESTIMATE |
-| Range noise | One-sigma range, m | `StructuralSensorOptions.range_sigma_m=0.05` | ENGINEERING_ESTIMATE |
-| Angle noise | One-sigma direction, rad | `StructuralSensorOptions.angle_sigma_rad=0.02` | ENGINEERING_ESTIMATE |
-| Declared old credit half-angle | Belief credit only, deg | `CoverageConfig.footprint_half_angle_deg=50` | ENGINEERING_ESTIMATE; **not measured support** |
-| Declared old axial credit | Belief credit only, m | `CoverageConfig.footprint_axial_m=1` | ENGINEERING_ESTIMATE; **not measured support** |
-| Footprint width / height | Actual surface patch measured, m | No calibrated value found; required explicit `StructuralSensorModel` parameters | UNKNOWN physically; ENGINEERING_ESTIMATE in synthetic tests |
-| Lateral / axial resolution | Smallest resolvable position separation, m | No calibrated value found | UNKNOWN |
-| Minimum corrosion-patch size | Smallest physical patch producing a local response, m | No calibrated value found; required explicit synthetic parameter | UNKNOWN physically; ENGINEERING_ESTIMATE in tests |
-| Minimum crack-patch size | Same for crack, m | No calibrated value found; required explicit synthetic parameter | UNKNOWN physically; ENGINEERING_ESTIMATE in tests |
-| Support shape | Capsule surface axial-angular rectangle | Development design in `CapsuleSurfaceSupport` | ENGINEERING_ESTIMATE |
-| Aggregation kernel | `AREA_MEAN` or idealized `LOCAL_MAX` | Development design in `StructuralSensorModel` | ENGINEERING_ESTIMATE; intended physical sensor response UNKNOWN |
-| Structural-value noise | One-sigma depth/length error, m | Required explicit synthetic parameter; old T0 has separate noise settings | UNKNOWN physically; ENGINEERING_ESTIMATE in tests |
-| Pose uncertainty | Position / orientation covariance | `Pose.covariance_6x6` may supply it, but may be absent | MEASURED only when a specific pose estimate supplies covariance; otherwise UNKNOWN |
-| Support uncertainty | Axial / angular edge bounds | `CapsuleSurfaceSupport` optional fields | UNKNOWN until supplied by measurement geometry |
-| Sensor datasheet | Calibrated modality, response, occlusion, and detectability | No authoritative payload document found in repository search | UNKNOWN |
+| Parameter | Units | Current value | Source | Status |
+|---|---|---|---|---|
+| Horizontal and vertical FOV | deg | 100, 80 | `StructuralSensorOptions` defaults | ENGINEERING_ESTIMATE |
+| Working range and standoff | m | 0.3 to 4.0 | `StructuralSensorOptions` defaults | ENGINEERING_ESTIMATE |
+| Range noise | m, one sigma | 0.05 | `StructuralSensorOptions` default | ENGINEERING_ESTIMATE |
+| Angle noise and orientation uncertainty | rad, one sigma | 0.02 | `StructuralSensorOptions` default | ENGINEERING_ESTIMATE |
+| Legacy credit half-angle | deg | 50 | `CoverageConfig` default, belief only | ENGINEERING_ESTIMATE |
+| Legacy axial credit | m | 1.0 | `CoverageConfig` default, belief only | ENGINEERING_ESTIMATE |
+| Physical footprint width and height | m | unavailable | No payload measurement | UNKNOWN |
+| Synthetic footprint width and height | m | explicit per configuration, no default | `StructuralSensorModel` | ENGINEERING_ESTIMATE |
+| Physical axial and lateral resolution | m | unavailable | No payload measurement | UNKNOWN |
+| Synthetic axial and lateral resolution | m | explicit per configuration, no default | `StructuralSensorModelV2` | ENGINEERING_ESTIMATE |
+| Physical minimum corrosion patch | m | unavailable | No payload measurement | UNKNOWN |
+| Synthetic minimum corrosion patch | m | explicit per configuration, no default | `StructuralSensorModel` | ENGINEERING_ESTIMATE |
+| Physical minimum crack length and depth | m | unavailable | No payload measurement | UNKNOWN |
+| Synthetic minimum crack size | m | explicit per configuration, no default | `StructuralSensorModel` | ENGINEERING_ESTIMATE |
+| Physical structural measurement noise | m, one sigma | unavailable | No payload measurement | UNKNOWN |
+| Synthetic structural measurement noise | m, one sigma | explicit per configuration, no default | `StructuralSensorModel` | ENGINEERING_ESTIMATE |
+| Pose position uncertainty | m | absent unless pose covariance supplied | `Pose.covariance_6x6` | UNKNOWN |
+| Support edge uncertainty | m axial, rad angular | absent unless geometry supplies bounds | `CapsuleSurfaceSupport` | UNKNOWN |
+| Synthetic support representation | m axial, rad circumferential | capsule rectangle | `CapsuleSurfaceSupport` | SPECIFIED |
+| Synthetic aggregation rule | enum | `AREA_MEAN`, `LOCAL_MAX`, `RESOLUTION_CELL_SAMPLES` | sensor model version | SPECIFIED |
+| Physical aggregation rule | response function | unavailable | No payload datasheet | UNKNOWN |
+
+For the v2 synthetic model, `axial_resolution_m` and `lateral_resolution_m`
+are required configuration values in metres. There is no default. Its
+`RESOLUTION_CELL_SAMPLES` mode is not a physical measurement claim. An
+`AREA_MEAN` response remains ambiguous for same-global-mean surfaces;
+`LOCAL_MAX` remains a diagnostic upper bound. All three names are versioned
+in the support and sensor configuration digest.
+
+`OBSERVED_INTACT` in the local model means that, under the declared synthetic
+peak-response and noise assumptions, no defect above the declared minimum
+resolvable scale was found over every required surface cell. It does not rule
+out smaller defects or establish a physical detection probability. Unknown
+support edges, association failure, insufficient coverage, or a coarse area
+mean prohibit that status.
 
 Sources reviewed include `conrad/sim/mission/options.py`, `conrad/domains/technical/config.py`,
 `conrad/twins/twin2t/config.py`, `docs/audits/STRUCTURAL_LINEAGE_AUDIT.md`,

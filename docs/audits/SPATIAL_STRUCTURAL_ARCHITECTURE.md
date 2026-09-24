@@ -34,6 +34,43 @@ identifiability.
 | I. Truth boundary | PARTIAL | Opt-in belief module imports only schemas and Evidence; full runtime leak audit pending. |
 | J. Replay | PARTIAL | Digest mismatch fails local ingestion; deterministic mission replay and version migration pending. |
 
+## 2026-09-24 software continuation
+
+The clean spatial branch was used; the dirty main checkout was left untouched.
+`StructuralSensorModelV2` adds an explicit `RESOLUTION_CELL_SAMPLES` synthetic
+mode with mandatory axial and lateral resolution values and a configuration
+digest. A geometry-only producer now partitions a surveyed capsule surface
+into resolution-sized candidates and admits each candidate only when the
+Twin2S-style visibility oracle reports its centre and four interior probes
+visible. Far-side and partially occluded candidates are omitted. The producer
+does not read Twin2T truth. Local ingestion rejects a claimed resolution cell
+larger than its configured resolution. Unit tests cover same-mean separation,
+subresolution non-detection, near/far visibility, partial occlusion and
+malformed geometry/oracle output.
+An optional versioned local evolution interface now advances each base cell
+and patch independently under declared synthetic rates. It is not yet called
+by the mission Twin2T scheduler.
+
+This is **not** mission integration or continuous geometric proof. The finite
+probe rule needs conservative uncertainty treatment and matched kernel/Unity
+parity before it can support healthy coverage in a mission. The mission still
+uses the legacy T0 structural sensor and Model2T path. Criteria A-J remain
+incomplete; **SPATIAL STRUCTURAL ARCHITECTURE = FAIL**. I5 is NOT REOPENED.
+I4 and I7 impact remain unmeasured for spatial_v1. The historical gate
+results above remain unchanged. The physical-only measurement inventory is
+in `docs/hardware/PENDING_PHYSICAL_CALIBRATION.md`.
+
+Targeted continuation verification: 104 tests passed in the technical, ECMER,
+Twin2T observation, and support-geometry suites; Ruff and mypy passed for
+the touched Python files. A broad non-Unity run was interrupted after 30%
+because it was progressing slowly with known errors. The isolated rerun of
+the reported failures found 11 I5 acceptance setup errors from the missing
+gitignored `M1-ACTION-E008` artifact and one property failure in the untouched
+legacy Twin2T mechanism: `test_mechanistic_invariants_hold` reported a
+`crack_depth_m decreased without intervention` case for seed 401. Neither is
+counted as a passing regression. No I5 artifact was regenerated or gate
+partition run for this check.
+
 **SPATIAL STRUCTURAL ARCHITECTURE = FAIL (not accepted).** This is an
 implementation milestone, not an architecture freeze. No validation/final
 or formal world has been opened. The `LOCAL_MAX` development sensor is an
