@@ -42,6 +42,12 @@ from conrad.twins.twin2t.observation import (
     surface_appearance_of,
     visibility_of,
 )
+from conrad.twins.twin2t.spatial_field import (
+    SpatialEvolutionV1,
+    SpatialStructuralTruth,
+    spatial_truth_from_record,
+    spatial_truth_record,
+)
 from conrad.twins.twin2t.state import STATE_DIMENSIONS, ComponentRuntime, status_of
 
 TWIN2T_VERSION = "twin2t-0.1.0"
@@ -71,6 +77,8 @@ class Twin2T(Twin):
         self.truth_sequence: list[dict[str, Any]] = []
         self.observation_masks: list[dict[str, Any]] = []
         self.event_log: list[dict[str, Any]] = []
+        self.spatial_fields: dict[UUID, SpatialStructuralTruth] = {}
+        self.spatial_rates: dict[UUID, SpatialEvolutionV1] = {}
 
     # ------------------------------------------------------------------ lifecycle
     def initialize(self, scenario: Scenario) -> None:
@@ -93,6 +101,13 @@ class Twin2T(Twin):
         self._obs_rng = np.random.default_rng(np.random.SeedSequence([seed & 0xFFFFFFFF, 0x0B5]))
         self._pending, self._seen_events, self._last = [], set(), None
         self.truth_sequence, self.observation_masks, self.event_log = [], [], []
+        self.spatial_fields, self.spatial_rates = {}, {}
+        for raw_id, raw in self._source.structural_state.get("spatial_fields", {}).items():
+            eid = UUID(raw_id)
+            if eid not in self._asm.runtimes:
+                raise ValueError("spatial truth names a non-technical component")
+            truth, rates = spatial_truth_from_record(raw)
+            self.spatial_fields[eid], self.spatial_rates[eid] = truth, rates
         for ev in self._source.events:
             se = self._convert(ev)
             if se is not None:
@@ -134,6 +149,8 @@ class Twin2T(Twin):
                 self._seen_events.add(se.event_id)
             batch.append(se)
         self._last = mcde.step(dt_s, batch)
+        for eid, truth in self.spatial_fields.items():
+            self.spatial_fields[eid] = truth.evolve(dt_s, self.spatial_rates[eid])
         for eid, rec in self._last.records.items():
             for e in rec.events:
                 self.event_log.append({"time_s": mcde.time_s, "entity_id": str(eid), **e})
@@ -150,6 +167,10 @@ class Twin2T(Twin):
                 "entity_ids": [str(e) for e in mcde.order],
                 "state": arr.tolist(),
                 "mask": mask.tolist(),
+                "spatial_fields": {
+                    str(eid): spatial_truth_record(truth, self.spatial_rates[eid])
+                    for eid, truth in sorted(self.spatial_fields.items(), key=lambda item: str(item[0]))
+                },
             }
         )
 
@@ -162,6 +183,14 @@ class Twin2T(Twin):
 
     def _component_truth(self, rt: ComponentRuntime) -> dict[str, Any]:
         s = rt.state
+        spatial = self.spatial_fields.get(rt.component.entity_id)
+        if spatial is not None:
+            worst = spatial.worst_local()
+            s = s.with_(
+                corrosion_depth_m=worst.corrosion_depth_m,
+                crack_length_m=worst.crack_length_m,
+                crack_depth_m=worst.crack_depth_m,
+            )
         rec = None if self._last is None else self._last.records.get(rt.component.entity_id)
         return {
             **{d: getattr(s, d) for d in STATE_DIMENSIONS},
@@ -171,6 +200,9 @@ class Twin2T(Twin):
             "material": None if rt.component.material is None else rt.component.material.name,
             "wall_thickness_m": rt.params.wall_thickness_m,
             "effective_wall_thickness_m": rt.effective_wall_m,
+            "spatial_field": None
+            if spatial is None
+            else spatial_truth_record(spatial, self.spatial_rates[rt.component.entity_id]),
             "environment": asdict(rt.environment),
             "loading": asdict(rt.loading),
             "mechanism_state": {}

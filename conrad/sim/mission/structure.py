@@ -23,6 +23,7 @@ from uuid import UUID
 
 import numpy as np
 
+from conrad.schemas.capsule_surface import CapsuleSurfaceGrid, SurfaceRect
 from conrad.schemas.ids import IdFactory
 from conrad.schemas.world import DomainOwnership, Scenario, WorldEntity
 from conrad.sim.mission.options import MissionWorldOptions
@@ -30,6 +31,14 @@ from conrad.twins.twin2e import Twin2EConfig, populate_ecological_state
 from conrad.twins.twin2e.config import GridConfig
 from conrad.twins.twin2s.world import SpatialWorld
 from conrad.twins.twin2t import populate_structural_state
+from conrad.twins.twin2t.spatial_field import (
+    LocalEvolutionRate,
+    LocalStructuralState,
+    SpatialEvolutionV1,
+    SpatialStructuralTruth,
+    TruthPatch,
+    spatial_truth_record,
+)
 
 TYPE_MAP = {
     "pipeline": "PIPELINE",
@@ -71,9 +80,15 @@ def structural_scenario(scenario: Scenario, target: UUID, opts: MissionWorldOpti
     )
     sc = populate_structural_state(sc, np.random.default_rng([seed, 0x2E7]))
     struct = {k: dict(v) for k, v in sc.structural_state["entities"].items()}
-    struct[str(target)]["initial_corrosion_depth_m"] = opts.defect.corrosion_depth_m
-    struct[str(target)]["initial_crack_length_m"] = opts.defect.crack_length_m
+    struct[str(target)]["initial_corrosion_depth_m"] = (
+        0.0 if opts.twin2t_truth_model == "spatial_v1" else opts.defect.corrosion_depth_m
+    )
+    struct[str(target)]["initial_crack_length_m"] = (
+        0.0 if opts.twin2t_truth_model == "spatial_v1" else opts.defect.crack_length_m
+    )
     sc = sc.model_copy(update={"structural_state": {**sc.structural_state, "entities": struct}})
+    if opts.twin2t_truth_model == "spatial_v1":
+        return sc
     sc = _with_rest_region(sc, target, seed)
     if opts.defect.pristine_rest:  # I5-NOMINAL-READABLE only: a truly intact target surface
         region = rest_region_of(sc, target)
@@ -82,6 +97,43 @@ def structural_scenario(scenario: Scenario, target: UUID, opts: MissionWorldOpti
             ents[str(region)].update(initial_corrosion_depth_m=0.0, initial_crack_length_m=0.0)
             sc = sc.model_copy(update={"structural_state": {**sc.structural_state, "entities": ents}})
     return sc
+
+
+def with_spatial_truth(
+    scenario: Scenario, target: UUID, opts: MissionWorldOptions, length_m: float, radius_m: float
+) -> Scenario:
+    """Install explicit local truth and rates in the Twin2T scenario, not the mission context."""
+    spec = opts.spatial_truth
+    if opts.twin2t_truth_model != "spatial_v1" or spec is None:
+        raise ValueError("spatial_v1 truth configuration required")
+    grid = CapsuleSurfaceGrid(length_m, radius_m, spec.axial_cells, spec.sectors)
+    base = tuple(
+        LocalStructuralState(**value.model_dump())
+        for value in (spec.cell_states or (spec.base,) * grid.n_cells)
+    )
+    patches = tuple(
+        TruthPatch(
+            SurfaceRect(
+                patch.axial_start_fraction * length_m,
+                patch.axial_end_fraction * length_m,
+                patch.angle_start_rad,
+                patch.angle_end_rad,
+            ),
+            LocalStructuralState(**patch.state.model_dump()),
+        )
+        for patch in spec.patches
+    )
+    truth = SpatialStructuralTruth(grid, base, patches)
+    rates = SpatialEvolutionV1(
+        tuple(
+            LocalEvolutionRate(**value.model_dump())
+            for value in (spec.cell_rates or (spec.base_rate,) * grid.n_cells)
+        ),
+        tuple(LocalEvolutionRate(**patch.rate.model_dump()) for patch in spec.patches),
+    )
+    structural = dict(scenario.structural_state)
+    structural["spatial_fields"] = {str(target): spatial_truth_record(truth, rates)}
+    return scenario.model_copy(update={"structural_state": structural})
 
 
 REGION_OF = "surface_region_of"

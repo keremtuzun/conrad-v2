@@ -37,6 +37,7 @@ from conrad.sim.mission.structure import (
     rest_region_of,
     structural_scenario,
     twin2e_config,
+    with_spatial_truth,
 )
 from conrad.sim.mission.truth import MissionTruthRecorder
 from conrad.sim.scenarios.pipeline_inspection import build_pipeline_inspection_scenario
@@ -240,6 +241,16 @@ class MissionWorld:
         segments = [UUID(u) for u in groups["segments"]]
         target = segments[min(opts.target_segment_index, len(segments) - 1)]
         t2t_scenario = structural_scenario(scenario, target, opts, seed)
+        if opts.twin2t_truth_model == "spatial_v1":
+            _, target_a, target_b = _ends(t2s.world, target)
+            target_primitive = t2s.world.entities[t2s.world.index_of(target)].primitive
+            t2t_scenario = with_spatial_truth(
+                t2t_scenario,
+                target,
+                opts,
+                float(np.linalg.norm(target_b - target_a)),
+                float(target_primitive.radius),  # type: ignore[attr-defined]
+            )
         t2t = Twin2T(root.child("twin2t"), store)
         t2t.initialize(t2t_scenario)
         t2e: Twin2E | None = None
@@ -326,8 +337,16 @@ class MissionWorld:
         )
         left = patch_left(axis, opts, lane)
         surf_rng = np.random.default_rng([seed, 0x5F])
-        targets = [_patch(t2s.world, target, left, opts, surf_rng)]
-        region = rest_region_of(t2t_scenario, target) if REGION_READINGS else None
+        targets = (
+            []
+            if opts.twin2t_truth_model == "spatial_v1"
+            else [_patch(t2s.world, target, left, opts, surf_rng)]
+        )
+        region = (
+            rest_region_of(t2t_scenario, target)
+            if REGION_READINGS and opts.twin2t_truth_model == "legacy"
+            else None
+        )
         tiles = opts.structural.region_tiles
         if region is not None and tiles is not None:
             targets += _rest_tiles(t2s.world, target, region, left, opts, seed, tiles)
@@ -381,7 +400,10 @@ class MissionWorld:
                 "registry_to_world": {str(r): str(w) for r, w in mapping.to_world.items()},
                 "world_entity_ids": sorted(str(e.id) for e in scenario.world_entities),
                 "defect": opts.defect.model_dump(mode="json"),
-                "patch_centre_m": [float(v) for v in targets[0].points.mean(axis=0)],
+                "patch_centre_m": None
+                if opts.twin2t_truth_model == "spatial_v1"
+                else [float(v) for v in targets[0].points.mean(axis=0)],
+                "twin2t_truth_model": opts.twin2t_truth_model,
                 "patch_direction": [float(v) for v in tilted(left, opts.defect.patch_tilt_deg)],
                 "view_occlusion": occlusion,
             },
@@ -398,6 +420,7 @@ class MissionWorld:
             ctx.mission_id,
             run_id,
             recorder.record,
+            spatial_target=target if opts.twin2t_truth_model == "spatial_v1" else None,
         )
         hw.attach_suite(suite)
         world = cls(

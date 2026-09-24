@@ -273,7 +273,11 @@ def test_spatial_truth_observation_evidence_local_belief(cfg, ids):
     assert "world_id" not in observation.canonical_json()
     ev = EcmerEncoder(cfg, ids).encode([observation])[0].evidence
     assert ev.structural_support == support
-    assert ev.measurements == {"apparent_wall_loss": 0.0, "crack_indication_length": 0.0}
+    assert ev.measurements == {
+        "apparent_wall_loss": 0.0,
+        "crack_indication_length": 0.0,
+        "crack_indication_depth": 0.0,
+    }
     assert ev.independence_group == "capture-1"
     thresholds = LocalThresholds(0.002, 0.006, 0.012, 0.003, 0.01, 0.03)
     rid = ids.new()

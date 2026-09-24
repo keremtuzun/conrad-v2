@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from itertools import pairwise
+from typing import Any
 
 from conrad.schemas.capsule_surface import CapsuleSurfaceGrid, SurfaceRect, union_area
 from conrad.schemas.structural_sensor import StructuralSensorModel, StructuralSensorModelV2
@@ -22,9 +23,10 @@ EVOLUTION_VERSION = "twin2t-spatial-evolution-v1"
 class LocalStructuralState:
     corrosion_depth_m: float = 0.0
     crack_length_m: float = 0.0
+    crack_depth_m: float = 0.0
 
     def __post_init__(self) -> None:
-        if self.corrosion_depth_m < 0 or self.crack_length_m < 0:
+        if min(self.corrosion_depth_m, self.crack_length_m, self.crack_depth_m) < 0:
             raise ValueError("negative structural defect")
 
 
@@ -34,15 +36,17 @@ class LocalEvolutionRate:
 
     corrosion_m_per_s: float = 0.0
     crack_m_per_s: float = 0.0
+    crack_depth_m_per_s: float = 0.0
 
     def __post_init__(self) -> None:
-        if self.corrosion_m_per_s < 0 or self.crack_m_per_s < 0:
+        if min(self.corrosion_m_per_s, self.crack_m_per_s, self.crack_depth_m_per_s) < 0:
             raise ValueError("negative local degradation rate")
 
     def apply(self, state: LocalStructuralState, duration_s: float) -> LocalStructuralState:
         return LocalStructuralState(
             state.corrosion_depth_m + duration_s * self.corrosion_m_per_s,
             state.crack_length_m + duration_s * self.crack_m_per_s,
+            state.crack_depth_m + duration_s * self.crack_depth_m_per_s,
         )
 
 
@@ -93,7 +97,9 @@ class SpatialStructuralTruth:
             if covered < cell.area - 1e-12:
                 states.append(base)
         return LocalStructuralState(
-            max(s.corrosion_depth_m for s in states), max(s.crack_length_m for s in states)
+            max(s.corrosion_depth_m for s in states),
+            max(s.crack_length_m for s in states),
+            max(s.crack_depth_m for s in states),
         )
 
     def evolve(self, duration_s: float, rates: SpatialEvolutionV1) -> SpatialStructuralTruth:
@@ -150,14 +156,15 @@ class SpatialStructuralTruth:
                 if r.a0 < a < r.a1:
                     angles.add(a)
         sx, sa = sorted(xs), sorted(angles)
-        corrosion = crack = 0.0
-        max_corrosion = max_crack = 0.0
+        corrosion = crack = crack_depth = 0.0
+        max_corrosion = max_crack = max_crack_depth = 0.0
         for x0, x1 in pairwise(sx):
             for a0, a1 in pairwise(sa):
                 state = self.state_at((x0 + x1) / 2, (a0 + a1) / 2)
                 area = (x1 - x0) * (a1 - a0)
                 corrosion += area * state.corrosion_depth_m
                 crack += area * state.crack_length_m
+                crack_depth += area * state.crack_depth_m
                 if sensor.aggregation_kernel in ("LOCAL_MAX", "RESOLUTION_CELL_SAMPLES"):
                     # The optional idealized maximum-response model detects a patch only when
                     # its smaller physical dimension meets the declared resolution limit.
@@ -174,6 +181,7 @@ class SpatialStructuralTruth:
                     if patch is None:
                         max_corrosion = max(max_corrosion, state.corrosion_depth_m)
                         max_crack = max(max_crack, state.crack_length_m)
+                        max_crack_depth = max(max_crack_depth, state.crack_depth_m)
                     else:
                         overlap = patch.rect.intersection(r)
                         sized_rect = patch.rect if isinstance(sensor, StructuralSensorModelV2) else overlap
@@ -185,6 +193,48 @@ class SpatialStructuralTruth:
                             max_corrosion = max(max_corrosion, state.corrosion_depth_m)
                         if overlap.area > 0 and size >= sensor.minimum_resolvable_crack_m:
                             max_crack = max(max_crack, state.crack_length_m)
+                            max_crack_depth = max(max_crack_depth, state.crack_depth_m)
         if sensor.aggregation_kernel in ("LOCAL_MAX", "RESOLUTION_CELL_SAMPLES"):
-            return LocalStructuralState(max_corrosion, max_crack)
-        return LocalStructuralState(corrosion / r.area, crack / r.area)
+            return LocalStructuralState(max_corrosion, max_crack, max_crack_depth)
+        return LocalStructuralState(corrosion / r.area, crack / r.area, crack_depth / r.area)
+
+
+def spatial_truth_record(truth: SpatialStructuralTruth, rates: SpatialEvolutionV1) -> dict[str, Any]:
+    """Versioned truth-plane serialization for mission construction and replay."""
+    if len(rates.base_rates) != len(truth.base) or len(rates.patch_rates) != len(truth.patches):
+        raise ValueError("one evolution rate per base cell and patch required")
+    return {
+        "truth_version": TRUTH_VERSION,
+        "evolution_version": rates.version,
+        "grid": {
+            "length_m": truth.grid.length_m,
+            "radius_m": truth.grid.radius_m,
+            "axial_cells": truth.grid.axial_cells,
+            "sectors": truth.grid.sectors,
+        },
+        "base": [vars(state) for state in truth.base],
+        "patches": [{"rect": vars(patch.rect), "state": vars(patch.state)} for patch in truth.patches],
+        "base_rates": [vars(rate) for rate in rates.base_rates],
+        "patch_rates": [vars(rate) for rate in rates.patch_rates],
+    }
+
+
+def spatial_truth_from_record(raw: dict[str, Any]) -> tuple[SpatialStructuralTruth, SpatialEvolutionV1]:
+    if raw.get("truth_version") != TRUTH_VERSION or raw.get("evolution_version") != EVOLUTION_VERSION:
+        raise ValueError("incompatible spatial Twin2T truth/evolution version")
+    grid = CapsuleSurfaceGrid(**raw["grid"])
+    truth = SpatialStructuralTruth(
+        grid,
+        tuple(LocalStructuralState(**state) for state in raw["base"]),
+        tuple(
+            TruthPatch(SurfaceRect(**patch["rect"]), LocalStructuralState(**patch["state"]))
+            for patch in raw["patches"]
+        ),
+    )
+    rates = SpatialEvolutionV1(
+        tuple(LocalEvolutionRate(**rate) for rate in raw["base_rates"]),
+        tuple(LocalEvolutionRate(**rate) for rate in raw["patch_rates"]),
+    )
+    if len(rates.base_rates) != len(truth.base) or len(rates.patch_rates) != len(truth.patches):
+        raise ValueError("spatial truth/evolution length mismatch")
+    return truth, rates

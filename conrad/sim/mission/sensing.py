@@ -28,10 +28,16 @@ from conrad.schemas.observation import Modality, Observation
 from conrad.schemas.timebase import TimeStamp
 from conrad.schemas.world import SensorSpec
 from conrad.sim.mission.options import MissionWorldOptions
+from conrad.sim.mission.spatial_support import (
+    capsule_visibility_certificate,
+    pose_visible_capsule_supports,
+    surface_point,
+)
 from conrad.twins.base import SensingContext
 from conrad.twins.twin2e import Twin2E
 from conrad.twins.twin2s.twin import Twin2S
 from conrad.twins.twin2t import Twin2T
+from conrad.twins.twin2t.spatial_emission import emit_spatial_observation
 
 Recorder = Callable[[str, dict[str, Any]], None]
 
@@ -87,6 +93,7 @@ class MissionSensorSuite:
     mission_id: UUID
     run_id: UUID
     record: Recorder
+    spatial_target: UUID | None = None
     _due: dict[str, _Due] = field(default_factory=dict)
     dynamic_fix_outages: list[tuple[float, float]] = field(default_factory=list)
 
@@ -197,6 +204,8 @@ class MissionSensorSuite:
         rot, origin = _sensor_pose(true, spec)
         out: list[Observation] = []
         contra = self.opts.contradiction
+        if self.spatial_target is not None:
+            out.extend(self._spatial_structural(stamp, true, est, trace, rot, origin))
         for tgt in self.targets:
             vis = self.t2s.visibility(spec, true, tgt.points, tgt.normals)
             mask = np.asarray(vis.visible, dtype=bool)
@@ -241,6 +250,104 @@ class MissionSensorSuite:
                         },
                     )
                     out.append(obs)
+        return out
+
+    def _spatial_structural(
+        self,
+        stamp: TimeStamp,
+        true: Pose,
+        est: Pose | None,
+        trace: UUID,
+        rot: np.ndarray,
+        origin: np.ndarray,
+    ) -> list[Observation]:
+        target = self.spatial_target
+        model = self.opts.spatial_sensor_model
+        if target is None or model is None:
+            raise ValueError("spatial mission sensor is not configured")
+        truth = self.t2t.spatial_fields[target]
+        primitive = self.t2s.world.entities[self.t2s.world.index_of(target)].primitive
+        a = np.asarray(primitive.a, dtype=np.float64)  # type: ignore[attr-defined]
+        b = np.asarray(primitive.b, dtype=np.float64)  # type: ignore[attr-defined]
+        offset = self.t2s.world.entity_offset(self.t2s.world.index_of(target))
+        a, b = a + offset, b + offset
+
+        def visible(points: np.ndarray, normals: np.ndarray) -> np.ndarray:
+            return np.asarray(self.t2s.visibility(self.sensors.structural, true, points, normals).visible)
+
+        certificate = capsule_visibility_certificate(
+            self.t2s.world,
+            self.t2s.world.index_of(target),
+            a,
+            b,
+            truth.grid.radius_m,
+            origin,
+            rot,
+            self.sensors.structural,
+            self.t2s.cfg,
+        )
+        supports = pose_visible_capsule_supports(
+            truth.grid,
+            a,
+            b,
+            origin,
+            rot[:, 0],
+            model,
+            visible,
+            frame_id="CAPSULE_DESIGN",
+            certify=certificate,
+        )
+        out: list[Observation] = []
+        for support in supports:
+            if est is None:
+                support = support.model_copy(
+                    update={"axial_uncertainty_m": None, "angular_uncertainty_rad": None}
+                )
+            point = surface_point(
+                a,
+                b,
+                truth.grid.radius_m,
+                (support.axial_start_m + support.axial_end_m) / 2,
+                (support.angle_start_rad + support.angle_end_rad) / 2,
+            )
+            local = rot.T @ (point - origin)
+            geom = self.opts.structural
+            measured_range = float(np.linalg.norm(local)) + geom.range_sigma_m * float(
+                self.rng.standard_normal()
+            )
+            if not model.range_min_m <= measured_range <= model.range_max_m:
+                continue
+            obs = emit_spatial_observation(
+                truth,
+                model,
+                support,
+                ids=self.ids,
+                rng=self.rng,
+                mission_id=self.mission_id,
+                run_id=self.run_id,
+                trace_id=trace,
+                sensor_id=self.sensors.structural.sensor_id,
+                sensor_frame=self.sensors.structural.frame_id,
+                timestamp=stamp,
+                estimated_pose=est,
+                measured_range_m=measured_range,
+                measured_bearing_rad=math.atan2(local[1], local[0])
+                + geom.angle_sigma_rad * float(self.rng.standard_normal()),
+                measured_elevation_rad=math.atan2(local[2], math.hypot(local[0], local[1]))
+                + geom.angle_sigma_rad * float(self.rng.standard_normal()),
+                range_sigma_m=geom.range_sigma_m,
+                angle_sigma_rad=geom.angle_sigma_rad,
+                independence_group=str(trace),
+            )
+            self.record(
+                "spatial_structural_label",
+                {
+                    "observation_id": str(obs.observation_id),
+                    "world_id": str(target),
+                    "support": support.model_dump(mode="json"),
+                },
+            )
+            out.append(obs)
         return out
 
     def _quality(self, point: np.ndarray) -> dict[str, float]:

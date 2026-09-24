@@ -54,7 +54,8 @@ def structured_evidence(
     if len(names) != len(obs.inline_values) or len(units) != len(names):
         raise NotStructuredObservation("measurement names/units do not match inline values")
     rel, ua, validity = HEALTH_RELIABILITY[obs.sensor_health]
-    group = f"sensor:{obs.sensor_id}|{independence_group or f'obs:{obs.observation_id}'}"
+    capture = obs.sensor_context.get("independence_group")
+    group = f"sensor:{obs.sensor_id}|{capture or independence_group or f'obs:{obs.observation_id}'}"
     pid, eid = ids.new(), ids.new()
     prov = ProvenanceRecord(
         record_id=pid,
@@ -86,6 +87,7 @@ def structured_evidence(
         aleatoric_uncertainty=ua,
         validity=validity,
         sensor_context=QualityContext(sensor_health=obs.sensor_health),
+        structural_support=obs.structural_support,
         measurements=dict(zip(names, (float(v) for v in obs.inline_values), strict=True)),
         measurement_units=dict(zip(names, units, strict=True)),
         independence_group=group,

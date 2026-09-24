@@ -8,11 +8,58 @@ implementation_status: EXPERIMENTAL_CANDIDATE
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from conrad.schemas.base import ConradModel
+from conrad.schemas.structural_sensor import StructuralSensorModelV2
+
+
+class SpatialCellOptions(ConradModel):
+    corrosion_depth_m: float = Field(default=0.0, ge=0)
+    crack_length_m: float = Field(default=0.0, ge=0)
+    crack_depth_m: float = Field(default=0.0, ge=0)
+
+
+class SpatialRateOptions(ConradModel):
+    corrosion_m_per_s: float = Field(default=0.0, ge=0)
+    crack_m_per_s: float = Field(default=0.0, ge=0)
+    crack_depth_m_per_s: float = Field(default=0.0, ge=0)
+
+
+class SpatialPatchOptions(ConradModel):
+    axial_start_fraction: float = Field(ge=0, lt=1)
+    axial_end_fraction: float = Field(gt=0, le=1)
+    angle_start_rad: float = Field(ge=0, lt=6.283185307179586)
+    angle_end_rad: float = Field(gt=0, le=6.283185307179586)
+    state: SpatialCellOptions
+    rate: SpatialRateOptions = SpatialRateOptions()
+
+    @model_validator(mode="after")
+    def _valid(self) -> SpatialPatchOptions:
+        if self.axial_end_fraction <= self.axial_start_fraction or self.angle_end_rad <= self.angle_start_rad:
+            raise ValueError("spatial patch must have positive non-wrapping extent")
+        return self
+
+
+class SpatialTruthOptions(ConradModel):
+    axial_cells: int = Field(gt=0)
+    sectors: int = Field(gt=0)
+    base: SpatialCellOptions = SpatialCellOptions()
+    cell_states: tuple[SpatialCellOptions, ...] | None = None
+    base_rate: SpatialRateOptions = SpatialRateOptions()
+    cell_rates: tuple[SpatialRateOptions, ...] | None = None
+    patches: tuple[SpatialPatchOptions, ...] = ()
+
+    @model_validator(mode="after")
+    def _valid(self) -> SpatialTruthOptions:
+        n = self.axial_cells * self.sectors
+        if self.cell_states is not None and len(self.cell_states) != n:
+            raise ValueError("spatial cell_states length must match grid")
+        if self.cell_rates is not None and len(self.cell_rates) != n:
+            raise ValueError("spatial cell_rates length must match grid")
+        return self
 
 
 class DefectOptions(ConradModel):
@@ -174,6 +221,9 @@ class ViewOcclusionOptions(ConradModel):
 
 
 class MissionWorldOptions(ConradModel):
+    twin2t_truth_model: Literal["legacy", "spatial_v1"] = "legacy"
+    spatial_truth: SpatialTruthOptions | None = None
+    spatial_sensor_model: StructuralSensorModelV2 | None = None
     family: str = "straight_pipeline"
     target_segment_index: int = Field(default=1, ge=0)
     lane_offset_m: float = Field(default=2.0, gt=0, description="-Y transit lane distance from the pipe axis")
@@ -215,6 +265,17 @@ class MissionWorldOptions(ConradModel):
     physics_dt_s: float = Field(default=0.025, gt=0)
     lane_obstacle: LaneObstacleOptions | None = None
     current_mps: tuple[float, float, float] = (0.0, 0.0, 0.0)
+
+    @model_validator(mode="after")
+    def _spatial_contract(self) -> MissionWorldOptions:
+        if self.twin2t_truth_model == "spatial_v1":
+            if self.spatial_truth is None or self.spatial_sensor_model is None:
+                raise ValueError("spatial_v1 requires spatial_truth and spatial_sensor_model")
+            if self.defect.pristine_rest or self.structural.region_tiles is not None:
+                raise ValueError("spatial_v1 cannot use legacy pristine-rest or region tiles")
+        elif self.spatial_truth is not None or self.spatial_sensor_model is not None:
+            raise ValueError("spatial configuration requires twin2t_truth_model=spatial_v1")
+        return self
 
 
 def world_options(raw: dict[str, Any] | None) -> MissionWorldOptions:

@@ -68,7 +68,7 @@ def emit_spatial_observation(
     sensor_id: UUID,
     sensor_frame: str,
     timestamp: TimeStamp,
-    estimated_pose: Pose,
+    estimated_pose: Pose | None,
     measured_range_m: float,
     measured_bearing_rad: float,
     measured_elevation_rad: float,
@@ -83,7 +83,7 @@ def emit_spatial_observation(
     if range_sigma_m < 0 or angle_sigma_rad < 0:
         raise ValueError("negative geometry uncertainty")
     value = truth.measure(support, model)
-    noise = model.noise_sigma_m * rng.standard_normal(2)
+    noise = model.noise_sigma_m * rng.standard_normal(3)
     return Observation(
         observation_id=ids.new(),
         mission_id=mission_id,
@@ -97,11 +97,14 @@ def emit_spatial_observation(
         inline_values=(
             max(0.0, value.corrosion_depth_m + float(noise[0])),
             max(0.0, value.crack_length_m + float(noise[1])),
+            max(0.0, value.crack_depth_m + float(noise[2])),
         ),
         inline_units="m",
         structural_support=support,
         sensor_context={
-            "measurement_names": ["apparent_wall_loss", "crack_indication_length"],
+            "measurement_names": ["apparent_wall_loss", "crack_indication_length", "crack_indication_depth"],
+            "measurements": ["apparent_wall_loss", "crack_indication_length", "crack_indication_depth"],
+            "units": ["m", "m", "m"],
             "independence_group": independence_group,
             "structural_sensor_version": model.version,
             "structural_sensor_digest": model.digest,

@@ -1,14 +1,24 @@
 """Visibility clipping checks for pose-derived synthetic support geometry."""
 
 import math
+from uuid import UUID
 
 import numpy as np
 import pytest
 
 from conrad.schemas.capsule_surface import CapsuleSurfaceGrid
+from conrad.schemas.frames import Pose
 from conrad.schemas.structural_sensor import StructuralSensorModelV2
 from conrad.schemas.structural_support import ParameterAuthority
-from conrad.sim.mission.spatial_support import visible_capsule_supports
+from conrad.schemas.world import SensorSpec
+from conrad.sim.mission.spatial_support import (
+    capsule_visibility_certificate,
+    pose_visible_capsule_supports,
+    visible_capsule_supports,
+)
+from conrad.twins.twin2s.config import Twin2SConfig
+from conrad.twins.twin2s.sdf import Capsule, Sphere
+from conrad.twins.twin2s.world import SpatialEntity, SpatialWorld
 
 
 def _model() -> StructuralSensorModelV2:
@@ -78,6 +88,42 @@ def test_geometry_oracle_shape_and_axis_mismatch_fail_closed():
             lambda p, n: np.ones(len(p), dtype=bool),
             frame_id="CAPSULE_DESIGN",
         )
+
+
+def test_pose_ray_limits_nominal_footprint_and_rejects_miss():
+    grid = CapsuleSurfaceGrid(2.0, 1.0, 2, 4)
+    a, b = np.zeros(3), np.array([2.0, 0.0, 0.0])
+    origin = np.array([0.5, -3.0, 0.0])
+
+    def visible(points, normals):
+        del points
+        return normals[:, 1] < 0
+
+    supports = pose_visible_capsule_supports(
+        grid,
+        a,
+        b,
+        origin,
+        np.array([0.0, 1.0, 0.0]),
+        _model(),
+        visible,
+        frame_id="CAPSULE_DESIGN",
+    )
+    assert supports
+    assert all(s.axial_end_m <= 1.0 for s in supports)
+    assert (
+        pose_visible_capsule_supports(
+            grid,
+            a,
+            b,
+            origin,
+            np.array([1.0, 0.0, 0.0]),
+            _model(),
+            visible,
+            frame_id="CAPSULE_DESIGN",
+        )
+        == ()
+    )
     with pytest.raises(ValueError, match="wrong shape"):
         visible_capsule_supports(
             grid,
@@ -87,3 +133,28 @@ def test_geometry_oracle_shape_and_axis_mismatch_fail_closed():
             lambda p, n: np.ones(1, dtype=bool),
             frame_id="CAPSULE_DESIGN",
         )
+
+
+def test_continuous_certificate_refuses_narrow_unproven_occlusion():
+    axis_a, axis_b = np.zeros(3), np.array([2.0, 0.0, 0.0])
+    origin = np.array([1.0, -3.0, 0.0])
+    rotation = np.array([[0.0, -1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 1.0]])
+    sensor = SensorSpec(
+        sensor_id=UUID(int=4),
+        modality="STRUCTURED",
+        frame_id="SENSOR",
+        mount_pose=Pose(frame_id="ROBOT", position_m=(0, 0, 0), orientation_wxyz=(1, 0, 0, 0)),
+        rate_hz=1.0,
+        parameters={"hfov_deg": 100.0, "vfov_deg": 80.0, "min_range_m": 0.3, "max_range_m": 4.0},
+    )
+    target = SpatialEntity(UUID(int=1), "pipeline_segment", Capsule((0, 0, 0), (2, 0, 0), 1.0))
+    clear = SpatialWorld([target], (-5, -5, -5), (5, 5, 5))
+    occluded = SpatialWorld(
+        [target, SpatialEntity(UUID(int=2), "rock", Sphere((1.07, -2.0, 0.0), 0.03))],
+        (-5, -5, -5),
+        (5, 5, 5),
+    )
+    kwargs = (0, axis_a, axis_b, 1.0, origin, rotation, sensor, Twin2SConfig())
+    rect = (0.9, 1.1, 0.0, 0.1)
+    assert capsule_visibility_certificate(clear, *kwargs)(*rect)
+    assert not capsule_visibility_certificate(occluded, *kwargs)(*rect)
