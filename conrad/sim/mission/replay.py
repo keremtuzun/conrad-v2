@@ -6,15 +6,18 @@
    world options and runtime configuration are taken from the bundle (``mission_world_options`` /
    ``mission_runtime_config``), not re-resolved from the current scenario table: a changed code default must show
    up as a replay mismatch of the recorded run, not silently re-define it.
-3. Event signatures (order, type, module, payload digest), decision sequences and belief revision headers
-   must be identical. Any mismatch is reported with its first differing index.
+3. Event signatures, decisions, belief revisions, persisted Observation/Evidence/command payloads,
+   trajectories, view execution, associations and transmissions must be identical. A mismatch reports
+   its first differing index.
 
 implementation_status: EXPERIMENTAL_CANDIDATE
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
+import sqlite3
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -57,18 +60,59 @@ def _first_diff(a: list[Any], b: list[Any]) -> int | None:
     return None if len(a) == len(b) else min(len(a), len(b))
 
 
+def _payloads(run_dir: Path, table: str, key: str) -> list[tuple[str, str]]:
+    """Compare persisted content, including structural supports, not only row counts or headers."""
+    if (table, key) not in {
+        ("observations", "observation_id"),
+        ("evidence", "evidence_id"),
+        ("commands", "command_id"),
+        ("belief_revisions", "id"),
+    }:
+        raise ValueError("unsupported replay payload table")
+    with sqlite3.connect(run_dir / "conrad.sqlite") as con:
+        return [
+            (str(row_id), hashlib.sha256(payload.encode("utf-8")).hexdigest())
+            for row_id, payload in con.execute(f"SELECT {key}, payload_json FROM {table} ORDER BY {key}")
+        ]
+
+
+def _json_rows(run_dir: Path, relative: str) -> list[str]:
+    path = run_dir / relative
+    value = json.loads(path.read_text(encoding="utf-8"))
+    rows = value if isinstance(value, list) else [value]
+    return [
+        hashlib.sha256(json.dumps(row, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+        for row in rows
+    ]
+
+
+def _jsonl_rows(run_dir: Path, relative: str) -> list[str]:
+    return [
+        hashlib.sha256(line.encode("utf-8")).hexdigest()
+        for line in (run_dir / relative).read_text(encoding="utf-8").splitlines()
+    ]
+
+
 def fingerprint(run_dir: Path) -> dict[str, Any]:
     return {
         "events": event_signature(list(read_events(run_dir / "events.jsonl"))),
         "decisions": _decisions(run_dir),
         "revisions": _revisions(run_dir),
+        "observation_payloads": _payloads(run_dir, "observations", "observation_id"),
+        "evidence_payloads": _payloads(run_dir, "evidence", "evidence_id"),
+        "command_payloads": _payloads(run_dir, "commands", "command_id"),
+        "belief_payloads": _payloads(run_dir, "belief_revisions", "id"),
+        "trajectories": _json_rows(run_dir, "mission/trajectories.json"),
+        "view_execution": _json_rows(run_dir, "mission/view_execution.json"),
+        "structural_associations": _json_rows(run_dir, "mission/structural_associations.json"),
+        "baac_transmissions": _jsonl_rows(run_dir, "mission/baac_transmissions.jsonl"),
     }
 
 
 def compare(original: Path, replayed: Path) -> dict[str, Any]:
     a, b = fingerprint(original), fingerprint(replayed)
     report: dict[str, Any] = {}
-    for key in ("events", "decisions", "revisions"):
+    for key in a:
         idx = _first_diff(a[key], b[key])
         report[key] = {
             "original": len(a[key]),

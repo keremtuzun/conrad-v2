@@ -2,6 +2,7 @@
 
 import json
 import math
+import sqlite3
 from copy import deepcopy
 from typing import Any
 from uuid import UUID
@@ -31,7 +32,7 @@ from conrad.schemas.timebase import TimeStamp
 from conrad.schemas.world import Domain
 from conrad.settings import load_settings
 from conrad.sim.mission.options import SpatialTruthOptions
-from conrad.sim.mission.replay import replay_run, validate_spatial_replay_contract
+from conrad.sim.mission.replay import compare, replay_run, validate_spatial_replay_contract
 from conrad.sim.mission.run import prepare, replay_inputs, validate_spatial_mission_selection
 from conrad.sim.mission.spatial_support import capsule_basis
 from conrad.sim.mission.world import MissionWorld
@@ -251,6 +252,25 @@ def test_spatial_model2t_child_initializes_and_persists_unknown_head(tmp_path):
     replay = replay_run(tmp_path / "runs" / "SPATIAL-DEV-SMOKE", tmp_path / "replayed")
     assert result["run_id"] == "SPATIAL-DEV-SMOKE"
     assert replay["equal"]
+    assert replay["observation_payloads"]["equal"]
+    assert replay["evidence_payloads"]["equal"]
+    assert replay["trajectories"]["equal"]
+
+    replayed = tmp_path / "replayed" / "SPATIAL-DEV-SMOKE"
+    with sqlite3.connect(replayed / "conrad.sqlite") as con:
+        observation_id, payload = con.execute(
+            "SELECT observation_id, payload_json FROM observations ORDER BY observation_id LIMIT 1"
+        ).fetchone()
+        edited = json.loads(payload)
+        edited["replay_mutation"] = True
+        con.execute(
+            "UPDATE observations SET payload_json = ? WHERE observation_id = ?",
+            (json.dumps(edited), observation_id),
+        )
+    comparison = compare(tmp_path / "runs" / "SPATIAL-DEV-SMOKE", replayed)
+    assert comparison["events"]["equal"]
+    assert not comparison["observation_payloads"]["equal"]
+    assert not comparison["equal"]
 
     run_dir = tmp_path / "runs" / "SPATIAL-DEV-SMOKE"
     truth = json.loads((run_dir / "truth" / "truth_record.json").read_text(encoding="utf-8"))

@@ -241,3 +241,34 @@ synthetic DEVELOPMENT result. The bundle's full deterministic replay and a
 fresh clean-checkout regression are still pending at this entry; no
 architecture freeze or I5 gate result is inferred. Historical I5 FORMAL
 remains FAIL 9/10.
+
+Full deterministic replay of that 480-second bundle completed equal. The
+original and replay each have 27,671 event signatures, 240 decisions, and
+8,001 belief revision headers. The replay comparator was extended to check
+persisted payloads and mission artifacts as well: all 2,402 Observations,
+1,922 Evidence rows, 4,800 commands, 8,001 belief payloads, 15 view execution
+records, 1,442 structural association records, 504 BAAC transmission rows,
+and the trajectory artifact matched exactly. Observation payload equality
+includes the structural support geometry. The original manifest verified
+1,623 files and 478 objects before replay. A mutation test now checks that
+changing a replayed Observation payload is detected even when event
+signatures still match. This replay does not replace a fresh clean-checkout
+regression or a prospective architecture validation partition.
+
+A paired 320-second DEVELOPMENT mission used the same seed and runtime but
+placed a resolvable 0.008 m corrosion defect in required local cell 6. Five
+views were `FLOWN`; 725 target Evidence records associated. The first
+spatial target `SEVERE` revision occurred at 52.3 s, and the final condition
+was `SEVERE`. Across all target spatial revisions, zero were `INTACT`.
+This supports the false-intact guard for this one covered defect case; it is
+not a false-intact rate estimate across worlds. Model1 later selected
+`CONTINUE_MISSION` after a known severe condition, which continues the
+inspection mission rather than issuing an asset-safety clearance. Gate I5's
+nominal continue warrant remains a separate explicit test.
+
+A second paired 320-second DEVELOPMENT mission placed a resolvable 0.020 m
+crack with 0.006 m depth in required cell 3. The first target `SEVERE`
+revision occurred at 10.3 s; five views were `FLOWN`, 725 target Evidence
+records associated, and the final condition was `SEVERE`. Zero target
+spatial revisions were `INTACT`. These two paired defect runs are deterministic
+development checks, not a prospective false-intact rate estimate.
