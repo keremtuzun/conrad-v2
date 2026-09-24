@@ -571,6 +571,17 @@ class UnityMissionWorld:
             }
             hw.ecological = base.t2e is not None
             neutral = _neutral_suite(suite, keep_t2e=hw.ecological)
+            if options.twin2t_truth_model == "spatial_v1":
+
+                def unity_visibility(origin: np.ndarray, points: np.ndarray) -> np.ndarray:
+                    tolerance = base.t2s.cfg.observed.visibility_tolerance_m
+                    result: list[bool] = []
+                    for start in range(0, len(points), 4096):
+                        batch = points[start : start + 4096]
+                        result.extend(truth.surface_visibility(origin.tolist(), batch.tolist(), tolerance))
+                    return np.asarray(result, dtype=bool)
+
+                neutral.spatial_visibility = unity_visibility
             hw.attach(neutral, truth, specs, base.store, ids.child("unity_payload"))
             tracker = UnityTruthTracker(base.t2s, 0.5 * max(robot.dimensions_m.value))  # type: ignore[arg-type]
             base.recorder.meta.update(

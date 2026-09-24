@@ -1,5 +1,6 @@
 """The mission constructs and updates a persisted spatial Model2T child."""
 
+import json
 import math
 from copy import deepcopy
 from uuid import UUID
@@ -22,10 +23,11 @@ from conrad.schemas.ids import IdFactory
 from conrad.schemas.timebase import TimeStamp
 from conrad.settings import load_settings
 from conrad.sim.mission.replay import replay_run, validate_spatial_replay_contract
-from conrad.sim.mission.run import prepare, replay_inputs
+from conrad.sim.mission.run import prepare, replay_inputs, validate_spatial_mission_selection
 from conrad.sim.mission.spatial_support import capsule_basis
 from conrad.sim.mission.world import MissionWorld
 from tests.integration.test_spatial_mission_truth import _options
+from tests.leakage.test_dynamic_leakage import TWIN_ONLY_KEYS, _keys, _runtime_texts
 
 
 def test_spatial_model2t_child_initializes_and_persists_unknown_head(tmp_path):
@@ -60,6 +62,8 @@ def test_spatial_model2t_child_initializes_and_persists_unknown_head(tmp_path):
             "required_looks": 1,
         },
     )
+    with pytest.raises(ValueError, match="exact surveyed design axis"):
+        validate_spatial_mission_selection(_options(), cfg)
     children = build_children(
         world.context, cfg, IdFactory(401), world.store, repo, UUID(int=61), "sim", 0, False
     )
@@ -163,3 +167,20 @@ def test_spatial_model2t_child_initializes_and_persists_unknown_head(tmp_path):
     replay = replay_run(tmp_path / "runs" / "SPATIAL-DEV-SMOKE", tmp_path / "replayed")
     assert result["run_id"] == "SPATIAL-DEV-SMOKE"
     assert replay["equal"]
+
+    run_dir = tmp_path / "runs" / "SPATIAL-DEV-SMOKE"
+    truth = json.loads((run_dir / "truth" / "truth_record.json").read_text(encoding="utf-8"))
+    world_ids = set(truth["meta"]["world_entity_ids"])
+    assert world_ids
+    scanned = 0
+    for where, payload in _runtime_texts(run_dir):
+        scanned += 1
+        assert not any(world_id in payload for world_id in world_ids), where
+        assert "visibility:" not in payload, where
+        for line in payload.splitlines() or [payload]:
+            try:
+                keys = _keys(json.loads(line), set())
+            except json.JSONDecodeError:
+                continue
+            assert not keys.intersection(TWIN_ONLY_KEYS), where
+    assert scanned > 100

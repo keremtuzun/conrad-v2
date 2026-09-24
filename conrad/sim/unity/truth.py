@@ -9,6 +9,8 @@ implementation_status: EXPERIMENTAL_CANDIDATE
 
 from __future__ import annotations
 
+from collections.abc import Sequence
+
 from pydantic import Field
 
 from conrad.adapters.unity.frames import UNITY_FRAME_CONVENTION, UnityFrameMapper
@@ -47,6 +49,17 @@ class GroundTruthReply(WireModel):
     active_faults: tuple[str, ...] = ()
 
 
+class SurfaceVisibilityRequest(WireModel):
+    origin_m: Vec3
+    points_m: tuple[Vec3, ...] = Field(min_length=1, max_length=4096)
+    tolerance_m: float = Field(ge=0, le=0.5)
+
+
+class SurfaceVisibilityReply(WireModel):
+    visible: tuple[bool, ...]
+    first_hit_distance_m: tuple[float, ...]
+
+
 class TruthVehicleState(WireModel):
     """Conrad-convention truth. Never an input to estimation, Model 2 or Model 1."""
 
@@ -61,6 +74,7 @@ class TruthVehicleState(WireModel):
 TRUTH_BODIES: BodyRegistry = {
     **{k: v for k, v in CONTROL_BODIES.items() if k in (MessageKind.HANDSHAKE_ACK, MessageKind.ERROR)},
     MessageKind.GROUND_TRUTH: GroundTruthReply,
+    MessageKind.SURFACE_VISIBILITY_REPLY: SurfaceVisibilityReply,
 }
 
 
@@ -118,3 +132,19 @@ class UnityTruthClient:
             water_current_world_mps=m.vector_to_conrad(r.water_current_mps),
             active_faults=r.active_faults,
         )
+
+    def surface_visibility(
+        self, origin_m: Sequence[float], points_m: Sequence[Sequence[float]], tolerance_m: float
+    ) -> tuple[bool, ...]:
+        """Unity collider LOS for a truth-side simulated payload, in Conrad WORLD."""
+        if len(origin_m) != 3 or not 1 <= len(points_m) <= 4096 or any(len(p) != 3 for p in points_m):
+            raise ValueError("invalid structural visibility point batch")
+        req = SurfaceVisibilityRequest(
+            origin_m=(float(origin_m[0]), float(origin_m[1]), float(origin_m[2])),
+            points_m=tuple((float(p[0]), float(p[1]), float(p[2])) for p in points_m),
+            tolerance_m=tolerance_m,
+        )
+        reply = self._ask(MessageKind.SURFACE_VISIBILITY, req)
+        if not isinstance(reply, SurfaceVisibilityReply) or len(reply.visible) != len(points_m):
+            raise UnityProtocolError("structural visibility reply length mismatch")
+        return reply.visible

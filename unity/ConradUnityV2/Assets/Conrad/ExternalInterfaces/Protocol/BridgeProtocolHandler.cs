@@ -69,8 +69,10 @@ namespace Conrad.UnityV2.ExternalInterfaces
                 if (!HasSession || J.Str(env, "session_id") != _sessionId) return Error("NO_SESSION", "handshake first", seq);
                 if (_role == EndpointRole.TRUTH)
                 {
-                    if (kind != "GET_GROUND_TRUTH") return Error("ROLE_FORBIDDEN", kind + " is not served on the truth endpoint", seq);
-                    return Encode("GROUND_TRUTH", _rt.CurrentTruthWire(), _sessionId, seq);
+                    if (kind == "GET_GROUND_TRUTH") return Encode("GROUND_TRUTH", _rt.CurrentTruthWire(), _sessionId, seq);
+                    if (kind == "SURFACE_VISIBILITY")
+                        return Encode("SURFACE_VISIBILITY_REPLY", SurfaceVisibility.Run(body), _sessionId, seq);
+                    return Error("ROLE_FORBIDDEN", kind + " is not served on the truth endpoint", seq);
                 }
                 switch (kind)
                 {

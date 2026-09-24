@@ -33,7 +33,13 @@ from conrad.sim.unity import (
     robot_config_to_unity,
     write_unity_robot_config,
 )
-from conrad.sim.unity.truth import GroundTruthReply, GroundTruthRequest, UnityTruthClient
+from conrad.sim.unity.truth import (
+    GroundTruthReply,
+    GroundTruthRequest,
+    SurfaceVisibilityReply,
+    SurfaceVisibilityRequest,
+    UnityTruthClient,
+)
 
 CONFIG = sim_robot_config()
 
@@ -131,7 +137,7 @@ def _truth_server(ctx: zmq.Context, digest: str, stop: threading.Event) -> tuple
     port = rep.bind_to_random_port("tcp://127.0.0.1")
 
     def serve() -> None:
-        for _ in range(2):
+        for _ in range(3):
             if stop.is_set():
                 break
             try:
@@ -141,6 +147,7 @@ def _truth_server(ctx: zmq.Context, digest: str, stop: threading.Event) -> tuple
             registry = {
                 MessageKind.HANDSHAKE: HandshakeRequest,
                 MessageKind.GET_GROUND_TRUTH: GroundTruthRequest,
+                MessageKind.SURFACE_VISIBILITY: SurfaceVisibilityRequest,
             }
             env, body = decode_message(raw, registry)
             if env.kind is MessageKind.HANDSHAKE:
@@ -161,7 +168,7 @@ def _truth_server(ctx: zmq.Context, digest: str, stop: threading.Event) -> tuple
                     capabilities=WireCapabilities(capability_version="t"),
                 )
                 rep.send(encode_message(MessageKind.HANDSHAKE_ACK, reply, session_id="truth-1", seq=env.seq))
-            else:
+            elif env.kind is MessageKind.GET_GROUND_TRUTH:
                 truth = GroundTruthReply(
                     sim_time_ns=7,
                     position_m=(-2.0, -5.0, 1.0),
@@ -170,6 +177,15 @@ def _truth_server(ctx: zmq.Context, digest: str, stop: threading.Event) -> tuple
                     angular_velocity_rps=(0.0, -0.2, 0.0),
                 )
                 rep.send(encode_message(MessageKind.GROUND_TRUTH, truth, session_id="truth-1", seq=env.seq))
+            else:
+                assert isinstance(body, SurfaceVisibilityRequest)
+                assert body.origin_m == (1.0, 2.0, 3.0)
+                reply = SurfaceVisibilityReply(visible=(True, False), first_hit_distance_m=(-1.0, 0.5))
+                rep.send(
+                    encode_message(
+                        MessageKind.SURFACE_VISIBILITY_REPLY, reply, session_id="truth-1", seq=env.seq
+                    )
+                )
         rep.close(linger=0)
 
     t = threading.Thread(target=serve, daemon=True)
@@ -190,6 +206,7 @@ def test_truth_client_converts_frames_on_its_own_endpoint() -> None:
         assert truth.pose.position_m == pytest.approx((1.0, 2.0, -5.0))
         assert truth.linear_velocity_world_mps == pytest.approx((0.5, 0.0, 0.0))
         assert truth.angular_velocity_world_rps == pytest.approx((0.0, 0.0, 0.2))
+        assert client.surface_visibility((1, 2, 3), ((2, 2, 3), (3, 2, 3)), 0.05) == (True, False)
     finally:
         stop.set()
         transport.close()

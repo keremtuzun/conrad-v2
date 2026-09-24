@@ -129,6 +129,18 @@ def test_ground_truth_keys_match() -> None:
     assert _keys(body) == set(GroundTruthReply.model_fields) - {"schema_version"}
 
 
+def test_structural_visibility_is_truth_only_geometry() -> None:
+    from conrad.sim.unity.truth import SurfaceVisibilityReply
+
+    source = _src("ExternalInterfaces/Protocol/SurfaceVisibility.cs")
+    assert _keys(source) == set(SurfaceVisibilityReply.model_fields) - {"schema_version"}
+    assert "Physics.Raycast" in source
+    assert "corrosion" not in source.lower() and "crack" not in source.lower()
+    handler = _src("ExternalInterfaces/Protocol/BridgeProtocolHandler.cs")
+    assert 'if (kind == "SURFACE_VISIBILITY")' in handler
+    assert 'Encode("SURFACE_VISIBILITY_REPLY"' in handler
+
+
 def test_message_kinds_and_layouts_and_formats() -> None:
     handler = _src("ExternalInterfaces/Protocol/BridgeProtocolHandler.cs") + _src(
         "ExternalInterfaces/Transport/TcpBridgeServer.cs"
@@ -156,6 +168,8 @@ def test_message_kinds_and_layouts_and_formats() -> None:
         "SCENE_ACK",
         "FRAME_PROBE",
         "FRAME_PROBE_ACK",
+        "SURFACE_VISIBILITY",
+        "SURFACE_VISIBILITY_REPLY",
     }
     sensors = _src("SensorSimulation/NavigationSensors.cs") + _src("SensorSimulation/ImagingSensors.cs")
     for layout in (IMU_LAYOUT, DEPTH_LAYOUT, CAMERA_LAYOUT, SONAR_LAYOUT):

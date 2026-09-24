@@ -38,6 +38,8 @@ class MessageKind(str, Enum):
     SENSOR = "SENSOR"  # PUB stream
     GET_GROUND_TRUTH = "GET_GROUND_TRUTH"  # truth endpoint only
     GROUND_TRUTH = "GROUND_TRUTH"  # truth endpoint only
+    SURFACE_VISIBILITY = "SURFACE_VISIBILITY"  # truth endpoint synthetic sensor geometry only
+    SURFACE_VISIBILITY_REPLY = "SURFACE_VISIBILITY_REPLY"
     ERROR = "ERROR"
 
 

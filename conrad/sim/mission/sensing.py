@@ -94,6 +94,7 @@ class MissionSensorSuite:
     run_id: UUID
     record: Recorder
     spatial_target: UUID | None = None
+    spatial_visibility: Callable[[np.ndarray, np.ndarray], np.ndarray] | None = None
     _due: dict[str, _Due] = field(default_factory=dict)
     dynamic_fix_outages: list[tuple[float, float]] = field(default_factory=list)
 
@@ -273,7 +274,23 @@ class MissionSensorSuite:
         a, b = a + offset, b + offset
 
         def visible(points: np.ndarray, normals: np.ndarray) -> np.ndarray:
-            return np.asarray(self.t2s.visibility(self.sensors.structural, true, points, normals).visible)
+            kernel = np.asarray(self.t2s.visibility(self.sensors.structural, true, points, normals).visible)
+            if self.spatial_visibility is None:
+                return kernel
+            unity_los = np.asarray(self.spatial_visibility(origin, points), dtype=bool)
+            if unity_los.shape != kernel.shape:
+                raise ValueError("Unity structural visibility reply shape mismatch")
+            self.record(
+                "spatial_visibility_parity",
+                {
+                    "time_ns": stamp.time_ns,
+                    "points": len(points),
+                    "kernel_visible": int(kernel.sum()),
+                    "unity_line_of_sight": int(unity_los.sum()),
+                    "kernel_visible_unity_hidden": int(np.count_nonzero(kernel & ~unity_los)),
+                },
+            )
+            return kernel & unity_los
 
         certificate = capsule_visibility_certificate(
             self.t2s.world,

@@ -27,6 +27,7 @@ import numpy as np
 
 from conrad.adapters.unity import FaultInjectionRequest
 from conrad.adapters.unity import FaultType as UnityFaultType
+from conrad.domains.technical.spatial_mission import MODEL_VERSION as SPATIAL_MODEL_VERSION
 from conrad.evaluation.nav_benchmarks.runner import ROBOT_CONFIG as NAV_ROBOT_CONFIG
 from conrad.evaluation.nav_benchmarks.runner import _goal, _metrics
 from conrad.evaluation.nav_benchmarks.scenarios import (
@@ -52,6 +53,8 @@ from conrad.schemas.events import EventType
 from conrad.schemas.frames import WORLD, Pose
 from conrad.schemas.ids import IdFactory
 from conrad.schemas.robot import RobotConfig
+from conrad.schemas.structural_sensor import DETECTABILITY_VERSION, StructuralSensorModelV2
+from conrad.schemas.structural_support import STRUCTURAL_SUPPORT_VERSION
 from conrad.schemas.timebase import TimeStamp
 from conrad.settings import (
     REPO_ROOT,
@@ -63,8 +66,8 @@ from conrad.settings import (
 )
 from conrad.sim.mission.capture import TAPE, RecordingHardware, Tape, record_driver_event, write_capture_files
 from conrad.sim.mission.options import MissionWorldOptions, world_options
-from conrad.sim.mission.replay import compare
-from conrad.sim.mission.run import settings_for
+from conrad.sim.mission.replay import compare, validate_spatial_replay_contract
+from conrad.sim.mission.run import settings_for, validate_spatial_mission_selection
 from conrad.sim.mission.scenarios import resolve
 from conrad.sim.mission.unity_world import (
     UnityMissionWorld,
@@ -74,6 +77,7 @@ from conrad.sim.mission.unity_world import (
 )
 from conrad.sim.unity.player import UnityPlayerSession, find_player, scenario_document
 from conrad.sim.unity.scene import BoxPrimitive, CapsulePrimitive, SceneGeometry
+from conrad.twins.twin2t.spatial_field import EVOLUTION_VERSION, TRUTH_VERSION
 
 PRODUCER = "conrad-mission-unity-0.1"
 DRIVER = "conrad.sim.mission.unity_driver"
@@ -343,6 +347,20 @@ class UnitySession:
 def unity_replay_inputs(s: UnitySession) -> dict[str, Any]:
     world = s.world
     sensors = [x.model_dump(mode="json") for x in world.context.sensors]
+    spatial = s.rcfg.model2t_backend == "spatial_v1"
+    spatial_versions = None
+    if spatial:
+        assert s.rcfg.model2t_spatial is not None
+        sensor = StructuralSensorModelV2.model_validate(s.rcfg.model2t_spatial["sensor"])
+        spatial_versions = {
+            "truth": TRUTH_VERSION,
+            "evolution": EVOLUTION_VERSION,
+            "sensor": sensor.version,
+            "sensor_config_digest": sensor.digest,
+            "support": STRUCTURAL_SUPPORT_VERSION,
+            "model2t": SPATIAL_MODEL_VERSION,
+            "detectability": DETECTABILITY_VERSION,
+        }
     return {
         "backend": BACKEND,
         "scenario_id": s.scenario_id,
@@ -355,7 +373,7 @@ def unity_replay_inputs(s: UnitySession) -> dict[str, Any]:
             "twin2e": None if world.t2e is None else world.scenario.scenario_version,
         },
         "model_versions": {
-            "model2t": "model2t-analytic-0.1.0",
+            "model2t": SPATIAL_MODEL_VERSION if spatial else "model2t-analytic-0.1.0",
             "planner": s.rcfg.planner,
             "producer": PRODUCER,
         },
@@ -365,12 +383,14 @@ def unity_replay_inputs(s: UnitySession) -> dict[str, Any]:
         "config_resolved": json.loads(s.settings.canonical_json()),
         "mission_world_options": s.wopts.model_dump(mode="json"),
         "mission_runtime_config": s.rcfg.model_dump(mode="json"),
+        "spatial_versions": spatial_versions,
         "unity_world_options": s.uopts.model_dump(mode="json"),
         "unity": {
             **player_identity(),
             "scene_digest": world.scene_digest,
             "robot_config_path": world.robot_config_path,
             "validity_level": "L1_APPROXIMATE_PHYSICS",
+            "structural_visibility_version": "unity-collider-los-v1" if spatial else None,
         },
         "git_commit": git_commit(),
         "seeds": {"run": s.settings.run.seed},
@@ -397,6 +417,7 @@ def prepare_unity(
     world_raw, runtime_raw = resolve_unity(scenario_id, dict(settings.sim.get("mission", {})))
     wopts = stored_world or world_options(world_raw)
     rcfg = stored_runtime or runtime_config(runtime_raw)
+    validate_spatial_mission_selection(wopts, rcfg)
     steps = rcfg.control_period_s * 1e9 / u.physics_dt_ns
     if abs(steps - round(steps)) > 1e-9 or round(steps) < 1:
         raise ValueError(
@@ -517,6 +538,12 @@ def replay_unity_run(run_dir: Path, scratch: Path | None = None) -> dict[str, An
     settings = ConradSettings.model_validate(inputs["config_resolved"])
     if settings.config_digest() != inputs["config_digest"]:
         raise ReplayIntegrityError(["stored configuration does not match its recorded digest"])
+    validate_spatial_replay_contract(inputs)
+    if (
+        inputs.get("spatial_versions") is not None
+        and inputs.get("unity", {}).get("structural_visibility_version") != "unity-collider-los-v1"
+    ):
+        raise ReplayIntegrityError(["Unity structural visibility version mismatch"])
     try:
         wopts = world_options(inputs["mission_world_options"]) if "mission_world_options" in inputs else None
         rcfg = (
@@ -525,6 +552,8 @@ def replay_unity_run(run_dir: Path, scratch: Path | None = None) -> dict[str, An
     except ValueError as exc:
         raise ReplayIntegrityError([f"stored mission options no longer validate: {exc}"]) from exc
     now = player_identity()["player_exe_sha256"]
+    if inputs.get("spatial_versions") is not None and now != inputs.get("unity", {}).get("player_exe_sha256"):
+        raise ReplayIntegrityError(["Unity player binary differs from spatial run"])
     root = scratch or Path(tempfile.mkdtemp(prefix="conrad-unity-replay-"))
     out = run_unity_scenario(
         str(inputs["scenario_id"]),

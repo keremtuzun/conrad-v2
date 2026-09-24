@@ -252,6 +252,11 @@ def validate_spatial_mission_selection(wopts: MissionWorldOptions, rcfg: Mission
     if not spatial_truth:
         return
     assert wopts.spatial_truth is not None and wopts.spatial_sensor_model is not None
+    if wopts.survey_sigma_m != 0:
+        raise ValueError(
+            "spatial_v1 requires an exact surveyed design axis; nonzero survey noise "
+            "needs a conservative truth-to-design support transform"
+        )
     settings = rcfg.model2t_spatial
     if settings is None:
         raise ValueError("spatial Model2T settings missing")
