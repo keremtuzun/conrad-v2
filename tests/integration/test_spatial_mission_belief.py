@@ -40,8 +40,13 @@ from tests.integration.test_spatial_mission_truth import _options
 from tests.leakage.test_dynamic_leakage import TWIN_ONLY_KEYS, _keys, _runtime_texts
 
 
-@pytest.mark.parametrize(("survey_sigma_m", "credited"), [(0.0, True), (0.02, False)])
-def test_spatial_observation_reaches_model2t_through_mission_perception(tmp_path, survey_sigma_m, credited):
+@pytest.mark.parametrize(
+    ("survey_sigma_m", "endpoint_bound_m", "credited"),
+    [(0.0, None, True), (0.02, None, False), (0.001, 0.002, True)],
+)
+def test_spatial_observation_reaches_model2t_through_mission_perception(
+    tmp_path, survey_sigma_m, endpoint_bound_m, credited
+):
     options = _options()
     assert options.spatial_sensor_model is not None
     sensor = options.spatial_sensor_model.model_copy(
@@ -55,6 +60,7 @@ def test_spatial_observation_reaches_model2t_through_mission_perception(tmp_path
         update={
             "family": "pipeline_with_supports",
             "survey_sigma_m": survey_sigma_m,
+            "survey_endpoint_bound_m": endpoint_bound_m,
             "ecological_enabled": False,
             "spatial_sensor_model": sensor,
         }
@@ -100,6 +106,13 @@ def test_spatial_observation_reaches_model2t_through_mission_perception(tmp_path
         observations = suite._structural(1.0, now, pose, pose, IdFactory(99).new())
         spatial = [obs for obs in observations if obs.structural_support is not None]
         assert spatial
+        if endpoint_bound_m is not None:
+            assert any(
+                obs.structural_support is not None
+                and obs.structural_support.axial_uncertainty_m is not None
+                and obs.structural_support.axial_uncertainty_m > 0
+                for obs in spatial
+            )
         if not credited:
             assert all(
                 obs.structural_support is not None

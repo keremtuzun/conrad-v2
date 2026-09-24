@@ -16,6 +16,7 @@ be tested, but a physical detection or endurance claim requires measurements.
 | Noise versus turbidity | T0 degradation and 20 NTU full scale; ENGINEERING_ESTIMATE | Response and uncertainty across turbidity | `StructuralSensorOptions.degradation`, `turbidity_ntu_full_scale` |
 | Orientation sensitivity | 0.02 rad angular noise; ENGINEERING_ESTIMATE | Detection and geometry error versus incidence angle | `StructuralSensorOptions.angle_sigma_rad`; later response parameters |
 | Pose and support uncertainty | Optional; UNKNOWN when absent | Localization covariance and footprint-edge error in water | Pose covariance and `CapsuleSurfaceSupport` uncertainty fields |
+| Capsule survey endpoint registration | Exact axis or clipped synthetic endpoint bound; ENGINEERING_ESTIMATE | Measure or independently certify the maximum endpoint registration error for a surveyed asset; a Gaussian sigma alone cannot supply a hard bound | `MissionWorldOptions.survey_endpoint_bound_m`, `DesignComponent.survey_endpoint_bound_m`, `spatial_registration.py` |
 | Measurement latency | No calibrated value; UNKNOWN | Capture-to-observation delay distribution | Sensor scheduling and timestamp configuration |
 | Sensor power | 5 W candidate placeholder; ENGINEERING_ESTIMATE | Measure draw by active mode and duty cycle | `CandidateSensor.power_w` and hardware sensor configuration |
 | Thruster power | Synthetic coefficient 6 W/N^1.5; ENGINEERING_ESTIMATE | Thrust-to-power curve and battery voltage/current | `conrad/sim/kernel/params.py` |

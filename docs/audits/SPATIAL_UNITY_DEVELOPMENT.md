@@ -30,10 +30,15 @@ The matched views and short mission do not establish parity across the full
 occlusion, geometry, defect, and noise regimes. Broader prospective parity and mission
 identifiability evaluations remain required before a Spatial V1 freeze.
 
-Qualified healthy support currently requires an exact surveyed design axis.
-For nonzero Gaussian `survey_sigma_m`, the mission runs but labels truth-frame
-surface support `CAPSULE_UNREGISTERED` with unknown registration uncertainty;
-Spatial Model2T refuses coverage credit. This avoids a false healthy claim
-without treating an unbounded Gaussian standard deviation as a hard spatial
-bound. A useful finite-error registration model remains software work before
-Spatial V1 can be accepted for noisy-axis missions.
+Nonzero Gaussian `survey_sigma_m` without a hard endpoint bound remains
+`CAPSULE_UNREGISTERED` with unknown registration uncertainty and no healthy
+coverage credit. A separately declared clipped synthetic survey now provides
+a conservative finite-error design-frame certificate; see
+`SPATIAL_REGISTRATION_V2.md`. Matched Unity parity for the bounded mode is
+now checked in the opt-in live suite. The same four matched viewpoints per
+clear/occluded and deterministic/noisy sensor case were run under exact and
+bounded synthetic surveys; all nine tests passed, including the short Unity
+mission/replay test. Supports, values, association, local coverage, and
+condition matched across kernel and Unity. No C# changed, so the verified
+player SHA above remains the tested binary. Neither mode turns a Gaussian
+standard deviation into a hard bound or establishes physical survey accuracy.

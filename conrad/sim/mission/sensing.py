@@ -29,6 +29,7 @@ from conrad.schemas.observation import Modality, Observation
 from conrad.schemas.timebase import TimeStamp
 from conrad.schemas.world import SensorSpec
 from conrad.sim.mission.options import MissionWorldOptions
+from conrad.sim.mission.spatial_registration import capsule_registration_uncertainty
 from conrad.sim.mission.spatial_support import (
     capsule_visibility_certificate,
     pose_visible_capsule_supports,
@@ -94,6 +95,7 @@ class MissionSensorSuite:
     run_id: UUID
     record: Recorder
     spatial_target: UUID | None = None
+    spatial_design_axis: tuple[tuple[float, float, float], tuple[float, float, float]] | None = None
     spatial_visibility: Callable[[np.ndarray, np.ndarray], np.ndarray] | None = None
     _due: dict[str, _Due] = field(default_factory=dict)
     dynamic_fix_outages: list[tuple[float, float]] = field(default_factory=list)
@@ -303,6 +305,16 @@ class MissionSensorSuite:
             self.sensors.structural,
             self.t2s.cfg,
         )
+        registration: tuple[float, float] | None = None
+        if self.opts.survey_sigma_m > 0 and self.opts.survey_endpoint_bound_m is not None:
+            if self.spatial_design_axis is None:
+                raise ValueError("bounded spatial survey requires design axis")
+            registration = capsule_registration_uncertainty(
+                *self.spatial_design_axis,
+                truth.grid.radius_m,
+                self.opts.survey_endpoint_bound_m,
+            )
+        registered = self.opts.survey_sigma_m == 0 or registration is not None
         supports = pose_visible_capsule_supports(
             truth.grid,
             a,
@@ -311,14 +323,25 @@ class MissionSensorSuite:
             rot[:, 0],
             model,
             visible,
-            frame_id=("CAPSULE_DESIGN" if self.opts.survey_sigma_m == 0 else "CAPSULE_UNREGISTERED"),
+            frame_id="CAPSULE_DESIGN" if registered else "CAPSULE_UNREGISTERED",
             certify=certificate,
         )
         out: list[Observation] = []
         for support in supports:
-            if est is None or self.opts.survey_sigma_m > 0:
+            if est is None or not registered:
                 support = support.model_copy(
                     update={"axial_uncertainty_m": None, "angular_uncertainty_rad": None}
+                )
+            elif (
+                registration is not None
+                and support.axial_uncertainty_m is not None
+                and support.angular_uncertainty_rad is not None
+            ):
+                support = support.model_copy(
+                    update={
+                        "axial_uncertainty_m": support.axial_uncertainty_m + registration[0],
+                        "angular_uncertainty_rad": support.angular_uncertainty_rad + registration[1],
+                    }
                 )
             point = surface_point(
                 a,

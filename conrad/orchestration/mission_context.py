@@ -33,6 +33,7 @@ class DesignComponent(ConradModel):
     radius_m: float = 0.0
     half_extent_m: Vec3 = (0.0, 0.0, 0.0)
     survey_sigma_m: float = Field(default=0.0, ge=0)
+    survey_endpoint_bound_m: float | None = Field(default=None, gt=0)
 
     def region(self, margin_m: float = 0.0) -> SpatialSupport:
         lo, hi = self.bounds()

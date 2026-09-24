@@ -37,6 +37,7 @@ from conrad.sim.mission.capture import TAPE, RecordingHardware, Tape, record_dri
 from conrad.sim.mission.obstacles import add_lane_obstacle
 from conrad.sim.mission.options import MissionWorldOptions, world_options
 from conrad.sim.mission.scenarios import resolve
+from conrad.sim.mission.spatial_registration import REGISTRATION_VERSION
 from conrad.sim.mission.spatial_support import VISIBILITY_CERTIFICATE_VERSION
 from conrad.sim.mission.world import MissionWorld
 from conrad.twins.twin2t.spatial_field import EVOLUTION_VERSION, TRUTH_VERSION
@@ -53,7 +54,7 @@ def spatial_version_contract(sensor: StructuralSensorModelV2) -> dict[str, str]:
         "sensor": sensor.version,
         "sensor_config_digest": sensor.digest,
         "support": STRUCTURAL_SUPPORT_VERSION,
-        "registration": "exact-or-unregistered-v1",
+        "registration": REGISTRATION_VERSION,
         "visibility_certificate": VISIBILITY_CERTIFICATE_VERSION,
         "model2t": SPATIAL_MODEL_VERSION,
         "detectability": DETECTABILITY_VERSION,

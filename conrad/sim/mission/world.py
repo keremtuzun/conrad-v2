@@ -342,6 +342,7 @@ class MissionWorld:
             seabed_z,
             opts.survey_sigma_m,
             opts.launch_sigma_m,
+            opts.survey_endpoint_bound_m,
         )
         left = patch_left(axis, opts, lane)
         surf_rng = np.random.default_rng([seed, 0x5F])
@@ -429,6 +430,14 @@ class MissionWorld:
             run_id,
             recorder.record,
             spatial_target=target if opts.twin2t_truth_model == "spatial_v1" else None,
+            spatial_design_axis=(
+                (
+                    ctx.component(mapping.to_registry[target]).p0_m,
+                    ctx.component(mapping.to_registry[target]).p1_m,
+                )
+                if opts.twin2t_truth_model == "spatial_v1"
+                else None
+            ),
         )
         hw.attach_suite(suite)
         world = cls(

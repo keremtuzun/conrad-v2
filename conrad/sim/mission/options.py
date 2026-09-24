@@ -230,6 +230,11 @@ class MissionWorldOptions(ConradModel):
     lane_height_m: float = Field(default=0.6, description="lane height above the pipe axis")
     lane_margin_m: float = Field(default=1.0, ge=0, description="lane extension past the pipe ends")
     survey_sigma_m: float = Field(default=0.05, ge=0, description="registry design-geometry survey noise")
+    survey_endpoint_bound_m: float | None = Field(
+        default=None,
+        gt=0,
+        description="optional hard endpoint error bound for a clipped synthetic design survey",
+    )
     seabed_chart_sigma_m: float = Field(default=0.05, ge=0)
     launch_sigma_m: float = Field(default=0.05, ge=0)
     sensor_overrides: dict[str, dict[str, Any]] = Field(

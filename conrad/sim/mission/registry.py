@@ -34,13 +34,23 @@ class RegistryMapping:
         return {w: r for r, w in self.to_world.items()}
 
 
-def _noisy(v: Any, sigma: float, rng: np.random.Generator) -> tuple[float, float, float]:
-    x = np.asarray(v, dtype=np.float64) + sigma * rng.standard_normal(3)
+def _noisy(
+    v: Any, sigma: float, rng: np.random.Generator, bound: float | None = None
+) -> tuple[float, float, float]:
+    noise = sigma * rng.standard_normal(3)
+    if bound is not None and (magnitude := float(np.linalg.norm(noise))) > bound:
+        noise *= bound / magnitude
+    x = np.asarray(v, dtype=np.float64) + noise
     return (float(x[0]), float(x[1]), float(x[2]))
 
 
 def _design(
-    rid: UUID, ctype: str, prim: dict[str, Any], sigma: float, rng: np.random.Generator
+    rid: UUID,
+    ctype: str,
+    prim: dict[str, Any],
+    sigma: float,
+    rng: np.random.Generator,
+    endpoint_bound_m: float | None = None,
 ) -> DesignComponent:
     kind = prim["kind"]
     if kind == "polycapsule":  # surveyed as its chord; the bend sagitta is folded into the radius
@@ -56,10 +66,11 @@ def _design(
             registry_id=rid,
             component_type=ctype,
             shape="CAPSULE",
-            p0_m=_noisy(prim["a"], sigma, rng),
-            p1_m=_noisy(prim["b"], sigma, rng),
+            p0_m=_noisy(prim["a"], sigma, rng, endpoint_bound_m),
+            p1_m=_noisy(prim["b"], sigma, rng, endpoint_bound_m),
             radius_m=float(prim["radius"]),
             survey_sigma_m=sigma,
+            survey_endpoint_bound_m=endpoint_bound_m,
         )
     if kind == "torus":
         r = float(prim["major_radius"]) + float(prim["minor_radius"])
@@ -67,18 +78,20 @@ def _design(
             registry_id=rid,
             component_type=ctype,
             shape="SPHERE",
-            p0_m=_noisy(prim["center"], sigma, rng),
+            p0_m=_noisy(prim["center"], sigma, rng, endpoint_bound_m),
             radius_m=r,
             survey_sigma_m=sigma,
+            survey_endpoint_bound_m=endpoint_bound_m,
         )
     half = np.asarray(prim.get("half_extents", (0.2, 0.2, 0.2)), dtype=np.float64)
     return DesignComponent(
         registry_id=rid,
         component_type=ctype,
         shape="BOX",
-        p0_m=_noisy(prim["center"], sigma, rng),
+        p0_m=_noisy(prim["center"], sigma, rng, endpoint_bound_m),
         half_extent_m=(float(half.max()), float(half.max()), float(half[2])),
         survey_sigma_m=sigma,
+        survey_endpoint_bound_m=endpoint_bound_m,
     )
 
 
@@ -106,6 +119,7 @@ def build_mission_context(
     seabed_z_m: float,
     survey_sigma_m: float,
     launch_sigma_m: float,
+    survey_endpoint_bound_m: float | None = None,
 ) -> tuple[MissionContext, RegistryMapping]:
     struct = t2t_scenario.structural_state["entities"]
     prims = scenario.spatial_state["entities"]
@@ -125,7 +139,9 @@ def build_mission_context(
         comps.append(item)
         prim = prims.get(str(wid), {}).get("primitive")
         if prim:
-            design.append(_design(rid, str(entry["component_type"]), prim, survey_sigma_m, rng))
+            design.append(
+                _design(rid, str(entry["component_type"]), prim, survey_sigma_m, rng, survey_endpoint_bound_m)
+            )
     rels = [
         {"source": to_reg[UUID(r["source"])], "target": to_reg[UUID(r["target"])], "type": r["type"]}
         for r in t2t_scenario.structural_state.get("relationships", [])

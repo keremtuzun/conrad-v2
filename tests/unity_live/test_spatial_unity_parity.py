@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
+from typing import Any
 from uuid import UUID
 
 import numpy as np
@@ -28,7 +29,8 @@ from tests.integration.test_spatial_mission_truth import _options
 
 @pytest.mark.parametrize("occluded", [False, True], ids=["clear", "view-occluder"])
 @pytest.mark.parametrize("noisy", [False, True], ids=["deterministic", "sensor-noise"])
-def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path, occluded, noisy):
+@pytest.mark.parametrize("bounded_survey", [False, True], ids=["exact-survey", "bounded-survey"])
+def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path, occluded, noisy, bounded_survey):
     player = find_player()
     if player is None:
         pytest.skip("rebuilt Unity player unavailable")
@@ -42,7 +44,12 @@ def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path, occlude
             "noise_sigma_m": 0.001 if noisy else 0.0,
         }
     )
-    changes = {"survey_sigma_m": 0.0, "ecological_enabled": False, "spatial_sensor_model": model}
+    changes: dict[str, Any] = {
+        "survey_sigma_m": 0.001 if bounded_survey else 0.0,
+        "survey_endpoint_bound_m": 0.002 if bounded_survey else None,
+        "ecological_enabled": False,
+        "spatial_sensor_model": model,
+    }
     if occluded:
         changes["occlusion"] = opts.occlusion.model_copy(
             update={
@@ -128,6 +135,13 @@ def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path, occlude
             support_counts.append(len(left))
             assert [o.structural_support for o in left] == [o.structural_support for o in right]
             assert [o.inline_values for o in left] == [o.inline_values for o in right]
+            if bounded_survey and left:
+                assert all(
+                    o.structural_support is not None
+                    and o.structural_support.axial_uncertainty_m is not None
+                    and o.structural_support.axial_uncertainty_m > 0
+                    for o in left
+                )
             for observations, belief, associator, evidence_ids in (
                 (left, kernel_belief, kernel_associator, kernel_evidence_ids),
                 (right, unity_belief, unity_associator, unity_evidence_ids),
@@ -136,7 +150,9 @@ def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path, occlude
                     evidence, _ = structured_evidence(observation, evidence_ids, None)
                     evidence, _ = associator.associate(observation, evidence)
                     assert registry_of(evidence) == registry_id
-                    assert belief.ingest(evidence)
+                    accepted = belief.ingest(evidence)
+                    if not bounded_survey:
+                        assert accepted
             assert [kernel_belief.coverage_fraction(i) for i in range(grid.n_cells)] == pytest.approx(
                 [unity_belief.coverage_fraction(i) for i in range(grid.n_cells)], abs=1e-12
             )
@@ -146,6 +162,8 @@ def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path, occlude
             assert kernel_belief.condition() is unity_belief.condition()
         assert parity_rows
         assert sum(support_counts) > 0
+        if bounded_survey:
+            assert sum(kernel_belief.coverage_fraction(i) for i in range(grid.n_cells)) > 0
         if occluded:
             assert 0 in support_counts
         else:

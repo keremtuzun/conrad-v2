@@ -136,6 +136,9 @@ class SpatialModel2T:
         if sup.axial_uncertainty_m is None or sup.angular_uncertainty_rad is None:
             self.unresolved.append(evidence.evidence_id)
             return False
+        if sup.axial_end_m > self.grid.length_m + 1e-12:
+            self.unresolved.append(evidence.evidence_id)
+            return False
         measured = self.grid.support_rect(sup)
         if (
             measured.x1 - measured.x0 > self.sensor.footprint_width_m + 1e-9

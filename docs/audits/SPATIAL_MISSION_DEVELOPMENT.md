@@ -59,9 +59,10 @@ case; any gate configuration must pin it before validation.
   sensor, support schema, detectability, and Model2T versions.
 
 At this stage these were controlled development views; later closed-loop and
-Unity results are recorded below. Nonzero design survey noise lacks a finite
-registration bound, so its surface support is explicitly unregistered and
-earns no healthy coverage. A complete prospective case matrix and gate impact
+Unity results are recorded below. Nonzero Gaussian survey noise without a
+hard endpoint bound is explicitly unregistered and earns no healthy coverage.
+`SPATIAL_REGISTRATION_V2.md` describes a separately declared bounded
+synthetic survey mode. A complete prospective case matrix and gate impact
 evaluations remain open software work.
 
 ## Closed-loop integration diagnosis
@@ -286,8 +287,25 @@ observational uncertainty 1.0 and no direct target revision. The survey
 sigma is a distribution parameter, not a hard registration-error bound, so
 the sensor labels these observations `CAPSULE_UNREGISTERED` with unknown
 axial/angular registration uncertainty. The replay contract now pins this
-registration policy as `exact-or-unregistered-v1`. No noisy-survey intact
-warrant or useful finite-error registration is claimed.
+registration policy as `exact-or-unregistered-v1` in that bundle. The later
+`exact-bounded-or-unregistered-v2` contract adds a distinct finite-error
+synthetic mode. This historical unbounded run stays `UNKNOWN` and is not a
+noisy-survey intact warrant.
+
+A fresh bounded synthetic survey run, `SPATIAL-BOUNDED-SURVEY-80S-DEV`, used
+Gaussian scale 0.001 m with a declared 0.002 m **hard endpoint bound**. All
+120 target spatial Observations carried `CAPSULE_DESIGN` support with finite
+nonzero axial uncertainty; 114 associated to the target. Spatial Model2T
+consumed three for guaranteed support and reported observed surface coverage
+0.1189, with final condition `UNKNOWN` and observational uncertainty 1.0.
+This demonstrates partial conservative credit instead of either treating
+Gaussian sigma as a bound or giving a false intact warrant. Full noisy-axis
+coverage was not achieved in this 80-second run. Full deterministic replay
+verified 295 files and 81 objects, then reproduced all 309 Observation
+payloads, 229 Evidence payloads, 1,091 belief payloads, and the trajectory
+artifact exactly. The expanded opt-in Unity suite subsequently passed 9/9
+matched tests across exact/bounded surveys, clear/occluded worlds, and
+deterministic/noisy synthetic sensor cases.
 
 A clean checkout at `73e2cf6` ran the ordinary non-Unity regression suite:
 1,450 passed, 14 explicitly skipped, 121 deselected, 3 historical expected

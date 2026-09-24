@@ -32,6 +32,8 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True, help="new, absent output directory")
     parser.add_argument("--duration-s", type=float, default=80.0)
     parser.add_argument("--trace-memory", action="store_true", help="trace Python allocations (slows timing)")
+    parser.add_argument("--survey-sigma-m", type=float, default=None)
+    parser.add_argument("--survey-endpoint-bound-m", type=float, default=None)
     args = parser.parse_args()
     source, output = args.source.resolve(), args.output.resolve()
     if output.exists() or source == output or source in output.parents:
@@ -41,6 +43,16 @@ def main() -> None:
     manifest = json.loads((source / "bundle_manifest.json").read_text(encoding="utf-8"))
     inputs = manifest["replay_inputs"]
     options = MissionWorldOptions.model_validate(inputs["mission_world_options"])
+    if args.survey_sigma_m is not None or args.survey_endpoint_bound_m is not None:
+        if args.survey_sigma_m is None or args.survey_endpoint_bound_m is None:
+            raise SystemExit("bounded survey requires both sigma and endpoint bound")
+        options = MissionWorldOptions.model_validate(
+            {
+                **options.model_dump(mode="json"),
+                "survey_sigma_m": args.survey_sigma_m,
+                "survey_endpoint_bound_m": args.survey_endpoint_bound_m,
+            }
+        )
     runtime = MissionRuntimeConfig.model_validate(inputs["mission_runtime_config"])
     runtime = runtime.model_copy(update={"duration_s": args.duration_s})
     if options.twin2t_truth_model != "spatial_v1" or runtime.model2t_backend != "spatial_v1":
