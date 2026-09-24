@@ -495,7 +495,7 @@ def test_required_surface_identifies_healthy_and_resolvable_defects(tmp_path, st
     assert target.technical.condition == expected
     if not full_sweep:
         assert target.uncertainty.epistemic == 0.0
-        assert target.uncertainty.observational > 0.4
+        assert target.uncertainty.observational == 1.0
     if state == "occluded-defect":
         assert target.independent_observation_count == 0
     else:
@@ -531,4 +531,11 @@ def test_required_surface_identifies_healthy_and_resolvable_defects(tmp_path, st
         available_modalities=(spec.modality,),
     )
     assert context.beliefs(Domain.TECHNICAL)[0].technical is not None
-    assert EGDC(ids).decide(context).record is not None
+    decision = EGDC(ids)
+    assert decision.decide(context).record is not None
+    if not full_sweep:
+        assert decision.last_graph is not None
+        assessment = next(
+            a for a in decision.last_graph.assessments if a.requirement_id == requirement.requirement_id
+        )
+        assert assessment.causes[0].value == "OBSERVATIONAL"

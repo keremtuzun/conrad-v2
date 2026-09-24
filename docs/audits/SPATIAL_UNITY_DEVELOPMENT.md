@@ -20,6 +20,11 @@ replace historical I4, I5, or I7 gate evidence.
   certificate and Unity line of sight before crediting support.
 - The spatial runtime smoke test scans events, mission artifacts, and persisted
   runtime rows for world identifiers and truth-only keys.
+- A follow-up matched run included four views per case, adding two pitched,
+  off-centre viewpoints at different axial positions and standoffs. All five
+  opt-in live tests passed for clear/occluded and deterministic/noisy sensor
+  cases against the same player SHA. Support, values, association, local
+  coverage, cell status, and component status still matched.
 
 The matched views and short mission do not establish parity across the full
 occlusion, geometry, defect, and noise regimes. Broader prospective parity and mission

@@ -2,20 +2,20 @@
 
 from __future__ import annotations
 
-import math
 from dataclasses import replace
 from uuid import UUID
 
 import numpy as np
 import pytest
 
+from conrad.active.candidates import look_at
 from conrad.domains.technical.evidence import structured_evidence
 from conrad.domains.technical.spatial_local import LocalThresholds, SpatialModel2T
 from conrad.domains.technical.spatial_mission import MODEL_VERSION as SPATIAL_MODEL_VERSION
 from conrad.orchestration.association import StructuralAssociator, registry_of
 from conrad.orchestration.mission_config import MissionRuntimeConfig
 from conrad.schemas.capsule_surface import CapsuleSurfaceGrid, capsule_basis
-from conrad.schemas.frames import WORLD, Pose, quat_from_euler, quat_to_matrix
+from conrad.schemas.frames import WORLD, Pose, matrix_to_quat, quat_to_matrix
 from conrad.schemas.ids import IdFactory
 from conrad.schemas.timebase import TimeStamp
 from conrad.settings import load_settings
@@ -99,14 +99,22 @@ def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path, occlude
             rng=np.random.default_rng(16),
             record=lambda kind, row: parity_rows.append(row) if kind == "spatial_visibility_parity" else None,
         )
-        for side in (1.0, -1.0):
-            desired_origin = (a + b) / 2 + side * (radius + 2.0) * normal
-            forward = -side * normal
-            yaw = math.atan2(float(forward[1]), float(forward[0])) - math.radians(
-                opts.structural.mount_yaw_deg
+        views = (
+            (1.0, 0.50, 2.0, 0.0),
+            (-1.0, 0.50, 2.0, 0.0),
+            (1.0, 0.25, 1.5, 0.5),
+            (-1.0, 0.75, 2.5, 0.5),
+        )
+        mount = world.suite.sensors.structural.mount_pose
+        for side, axial_fraction, standoff, height in views:
+            target = a + axial_fraction * (b - a) + side * radius * normal
+            desired_origin = target + side * standoff * normal + np.array([0.0, 0.0, height])
+            sensor_rotation = quat_to_matrix(
+                look_at(tuple(desired_origin), tuple(target), WORLD).orientation_wxyz
             )
-            rotation = quat_from_euler(0.0, 0.0, yaw)
-            body = desired_origin - quat_to_matrix(rotation) @ np.asarray(opts.structural.mount_position_m)
+            body_rotation = sensor_rotation @ quat_to_matrix(mount.orientation_wxyz).T
+            rotation = matrix_to_quat(body_rotation)
+            body = desired_origin - body_rotation @ np.asarray(mount.position_m)
             pose = Pose(
                 frame_id=WORLD,
                 position_m=tuple(float(x) for x in body),

@@ -176,15 +176,6 @@ class SpatialMissionModel2T(Model2T):
         revision = b.revision + 1
         required = [i for i in range(self.spatial.grid.n_cells) if self.spatial.required_rect(i) is not None]
         coverage = sum(self.spatial.required_coverage_fraction(i) for i in required) / len(required)
-        least_covered = min(self.spatial.required_coverage_fraction(i) for i in required)
-        missing_looks = max(
-            1.0 - min(1.0, len(self.spatial.cells[i].independent_groups) / self.spatial.required_looks)
-            for i in required
-        )
-        missing_depth = float(
-            self.spatial.require_depth
-            and any(self.spatial.cells[i].crack_depth_upper_m is None for i in required)
-        )
         state = self.spatial.condition()
         condition = (
             None
@@ -224,15 +215,14 @@ class SpatialMissionModel2T(Model2T):
         u = Uncertainty(
             aleatoric=self.spatial.sensor.noise_sigma_m,
             # A declared surface that has not been inspected is an observation gap,
-            # not uncertainty about the spatial model itself.  EGDC supplies its
+            # not uncertainty about the spatial model itself. EGDC supplies its
             # separate uncalibrated-source epistemic floor when applicable.
             epistemic=0.0,
             contradiction=0.0,
-            observational=(
-                max(1.0 - least_covered, missing_looks, missing_depth)
-                if state is LocalCondition.UNKNOWN
-                else max(0.0, 1.0 - coverage)
-            ),
+            # Component condition is a worst-case claim: even a small unresolved
+            # required patch can hide a defect. Keep that claim above the generic
+            # information threshold until every local intact warrant is met.
+            observational=1.0 if state is LocalCondition.UNKNOWN else max(0.0, 1.0 - coverage),
         )
         cond_status = KnowledgeStatus.UNKNOWN if condition is None else KnowledgeStatus.OBSERVED
         claims = (

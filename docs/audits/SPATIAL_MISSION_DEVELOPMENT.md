@@ -206,7 +206,38 @@ failure is an inspection-planning and mission-budget problem: the selected
 views did not certify the uncovered areas in two required cells. No nominal
 continue warrant or architecture PASS follows from this run.
 
-A fresh 720-second development run declares twenty-four Model1 and MCBR
-information attempts before launch. It is testing whether more viewpoints
-can cover the two remaining cells; its outcome must be recorded separately
-from the completed twelve-attempt run.
+A fresh 720-second development run declared twenty-four Model1 and MCBR
+information attempts before launch. It executed seventeen views, all `FLOWN`,
+with 431 associated target readings. Required-cell coverage reached 1.000,
+0.775, 0.716, and 1.000; the component remained `UNKNOWN` (raw epistemic 0,
+observational 0.284). The last target Evidence arrived at mission time
+352.3 s. After the last inspection plan at 378 s, the remaining mission time
+produced repeated belief queries and revisits, not additional certified
+target support. More time and attempts alone did not close the contiguous
+uncovered strips. This is a completed failed development run, not an
+interrupted run or an intact warrant.
+
+An evaluation-only viewpoint sweep on the same seed found sensor-certified,
+design-clearance-feasible poses for representative uncovered rectangles in
+both cells, including poses on MCBR's eight-azimuth, three-standoff,
+four-elevation candidate grid. This rules out simple geometric impossibility
+for those sampled patches; it does not prove that the full remaining union is
+reachable in one mission. The candidate tables show a second decision error:
+as fractional observational uncertainty fell below EGDC's generic 0.4
+threshold, the still-`UNKNOWN` worst-case condition was handled chiefly as
+an uncalibrated epistemic issue. For this qualified condition claim, any
+required unresolved local cell now keeps raw observational uncertainty at
+1.0. The separate numeric coverage claim continues to report partial area.
+The next closed-loop run must verify that this change leads to certified
+coverage, not merely more information requests.
+
+The fresh 480-second categorical-gap run did close the required domain. It
+flew all fifteen selected views and associated 1,238 target Evidence records.
+The first spatial target `INTACT` revision was direct at 298.3 s, with required
+coverage 1.0 and 168 independent target observations; Model1's first
+`CONTINUE_MISSION` followed at 302 s. The final target was observed `INTACT`
+with raw observational uncertainty 0.0. This is a healthy, exact-survey,
+synthetic DEVELOPMENT result. The bundle's full deterministic replay and a
+fresh clean-checkout regression are still pending at this entry; no
+architecture freeze or I5 gate result is inferred. Historical I5 FORMAL
+remains FAIL 9/10.
