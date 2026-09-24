@@ -7,6 +7,9 @@ for 24 cases. The required inspection domain remains axial fraction
 `[0.05, 0.95]`, sectors `[2, 3]`, with the same versioned sensor,
 detectability, and condition thresholds used in development. The runner
 records each result immediately and refuses an existing output directory.
+After an interrupted process, `--resume` verifies the identical protocol,
+skips recorded cases, and marks any created case directory without a result
+`INTERRUPTED`; it never reruns that case or turns it into PASS.
 
 Expected result by case: fully covered healthy, heterogeneous healthy,
 uniform same-mean, and subresolution yield **qualified synthetic INTACT**;

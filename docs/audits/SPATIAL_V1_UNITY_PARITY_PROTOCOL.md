@@ -18,6 +18,9 @@ emit spatial support; clear worlds must emit support at every tested view,
 occluded worlds must hide at least one view, and bounded worlds must earn
 some guaranteed local coverage. All 16 cases must pass. Results are written
 after each case; failed cases cannot be rerun or reclassified as passing.
+After a process interruption, `--resume` verifies the same protocol and player
+hash, skips recorded cases, and marks a started case with no result
+`INTERRUPTED` rather than flying it again.
 
 This is synthetic development architecture validation, not an I5 formal
 world or a calibrated real-world parity claim. It does not open any historical
