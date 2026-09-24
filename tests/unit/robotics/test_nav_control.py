@@ -3,6 +3,7 @@ import numpy as np
 from conrad.robotics.allocation import ThrusterAllocator
 from conrad.robotics.control import CascadedPidController, ControlReference
 from conrad.robotics.hardware.config import load_robot_config
+from conrad.schemas.frames import quat_from_euler
 from conrad.schemas.ids import IdFactory
 from conrad.schemas.robot import HealthLevel, RobotState
 from conrad.schemas.timebase import stamp
@@ -58,6 +59,13 @@ def test_yaw_step_uses_quaternion_error():
     _, hw = run_step([0.0, 0.0, 0.0], yaw_quat=q, seconds=15.0)
     qt = hw.truth_access().true_state().orientation_wxyz
     assert abs(abs(qt[3]) - 1.0) < 0.01
+
+
+def test_pitch_hold_compensates_synthetic_buoyancy_restoring_moment():
+    target = np.asarray(quat_from_euler(0.0, 1.0, 0.0))
+    _, hw = run_step([0.0, 0.0, 0.0], yaw_quat=target, seconds=25.0)
+    actual = hw.truth_access().true_state().orientation_wxyz
+    assert abs(float(actual @ target)) > 0.999
 
 
 def test_anti_windup_limits_integral_under_saturation():

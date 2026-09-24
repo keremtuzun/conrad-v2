@@ -116,3 +116,97 @@ overstates new conservative support for some views. This is a development
 failure, not an intact warrant or A–J acceptance. A belief-side prediction
 that agrees with the sensor's conservative FOV/incidence certificate, and a
 reachability check for the uncovered crown, remain software work.
+
+A following 180-second development run used the sensor's declared synthetic
+incidence, quality, and water attenuation limits in belief-side scoring. It
+fully flew seven views and associated 248 target readings, but required-cell
+coverage stayed at 0.434–0.455. The controller had been restricted to level
+yaw views while the candidate generator could propose elevation. The spatial
+path now retains the proposed sensor pitch through the mount transform,
+navigation, and the execution ledger. It also offers higher elevation
+candidates while leaving legacy candidate generation unchanged.
+
+The first pitched development run was **interrupted** after 579/1,800 control
+commands. It has no bundle manifest. Its second accepted view was only about
+0.15 m from the vehicle, yet the navigation stack generated a 98,387-second,
+491,936-point trajectory. The trajectory path used yaw-only waypoints and a
+near-degenerate translational speed profile. Spatial station-keeping now
+rotates in place when already at the requested position, applies the full
+target attitude at the end of moving routes, waits for attitude tolerance
+before starting dwell, and rejects extreme route durations before allocating
+their samples. A fresh pitched development mission must verify the fix.
+
+The completed 120-second pitched mission after that navigation repair emitted
+certified support in the formerly missed 3.95–4.71 rad crown interval.
+However, its two views ended `ABANDONED_TIMEOUT` and
+`ABANDONED_MISSION_END`. The vehicle approached their positions but held
+about 0.35 rad less pitch than commanded, so it never accumulated the
+required aim dwell. The synthetic kernel applies a buoyancy restoring moment
+about pitch; the control law compensated the net vertical force but omitted
+that moment. The controller now applies the corresponding model-based moment
+feedforward, and an isolated simulated 1.0-rad pitch hold reaches its target.
+The new 120-second closed-loop development run flew three pitched views with
+full dwell and boresight errors below 0.02 rad; a fourth view reached the
+mission end before dwell. It associated 185 spatial target readings. Required
+cell coverage became 0.434, 0.491, 0.434, and 0.659, so component condition
+correctly remained `UNKNOWN`. A 360-second run using the same twelve-view
+development configuration is testing whether the remaining area is reachable
+without changing the intact criterion or sensor quality limit.
+
+The 360-second run completed with all twelve inspection views `FLOWN` and
+1,145 associated target readings. Nine views reused the same commanded
+vehicle position. Required-cell coverage was only 0.488, 0.491, 0.434, and
+0.659; condition remained `UNKNOWN`. The current coarse predictor still
+assigned high gain to already repeated support. More readings at one pose do
+not replace spatial coverage. The next planner repair must exclude genuinely
+duplicate pose/boresight combinations and score novel support using the same
+resolution-cell geometry limits as the runtime certificate.
+
+That repair now shares the continuous FOV/incidence/quality rectangle
+certificate between the runtime sensor and the belief-side predictor. The
+predictor scores only resolution tiles outside the already credited support,
+discounted by Model2S's predicted visibility; it cannot read structural
+truth. Prior view records retain optional boresight orientation, and the
+spatial planner rejects a pose/boresight combination already accepted. A
+fresh 120-second development mission selected four distinct views, of which
+three were `FLOWN` and the fourth was cut off by mission end. The four
+required-cell coverages were 0.163, 0.775, 0.434, and 1.000. The last cell
+became `OBSERVED_INTACT`; the component remained `UNKNOWN`, as it must. A
+360-second run of this unchanged configuration is in progress to test whether
+the remaining cells can be completed.
+
+The completed 360-second run flew four distinct views and then stopped
+requesting information, leaving the target `UNKNOWN` with observational
+uncertainty 0.379. The development runtime had declared twelve MCBR plan
+attempts, but Model1's separate `max_information_attempts` remained at its
+default of three. Its decision policy therefore exhausted the autonomous
+information path before the spatial inspection could use the declared view
+budget. The development configuration now sets both attempt budgets to
+twelve, with the same sensor, detectability, coverage, and intact criteria.
+This is a fresh software-development budget declaration, not a change to any
+historical gate or final partition.
+
+The fresh twelve-attempt Model1/MCBR 360-second development run still selected
+only four views. It associated 1,153 target structural readings and ended with
+the target `UNKNOWN` and observational uncertainty 0.379. The separate attempt
+budget was therefore not the sole cause. Spatial Model2T had assigned raw
+epistemic uncertainty 1.0 whenever its aggregate condition was `UNKNOWN`, even
+when required surface simply lacked certified observations. Model1 treated that
+as a model dead end. The belief now reports this uncovered required surface
+as observational uncertainty, using the least-covered required cell rather
+than hiding a local gap in the mean. A fresh closed-loop development run is
+required to determine whether the remaining surface can actually be reached.
+
+That fresh 360-second run selected twelve plans and executed eleven views.
+It associated 364 target readings. Required-cell coverage was 1.000, 0.775,
+0.661, and 1.000; two cells became `OBSERVED_INTACT`, but the component
+correctly remained `UNKNOWN` (raw epistemic 0, observational 0.339). The
+uncertainty correction removed the early Model1 dead end. The remaining
+failure is an inspection-planning and mission-budget problem: the selected
+views did not certify the uncovered areas in two required cells. No nominal
+continue warrant or architecture PASS follows from this run.
+
+A fresh 720-second development run declares twenty-four Model1 and MCBR
+information attempts before launch. It is testing whether more viewpoints
+can cover the two remaining cells; its outcome must be recorded separately
+from the completed twelve-attempt run.

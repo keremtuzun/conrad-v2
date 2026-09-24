@@ -59,6 +59,10 @@ class CascadedPidController:
         mass = float(robot_config.mass_kg.require("mass_kg"))
         volume = float(robot_config.displaced_volume_m3.require("displaced_volume_m3"))
         self._net_buoyancy_n = (c.water_density_kgm3 * volume - mass) * c.gravity_mps2
+        self._weight_n = mass * c.gravity_mps2
+        self._buoyancy_n = c.water_density_kgm3 * volume * c.gravity_mps2
+        self._r_g = np.asarray(robot_config.center_of_mass_body_m.require("center_of_mass_body_m"))
+        self._r_b = np.asarray(robot_config.center_of_buoyancy_body_m.require("center_of_buoyancy_body_m"))
         self._d_lin = np.asarray(robot_config.linear_drag.require("linear_drag"), dtype=np.float64)[:3]
         self._d_quad = np.asarray(robot_config.quadratic_drag.require("quadratic_drag"), dtype=np.float64)[:3]
         self._integral = np.zeros(3)
@@ -127,8 +131,15 @@ class CascadedPidController:
         # attitude PD on the quaternion error (rotation vector in the body frame)
         e_rot = quat_error_body(reference.orientation_wxyz, q)
         t_lim = np.asarray(c.torque_limit_nm)
+        restoring = np.zeros(3)
+        if c.buoyancy_feedforward:
+            weight_body = rot.T @ np.array([0.0, 0.0, -self._weight_n])
+            buoyancy_body = rot.T @ np.array([0.0, 0.0, self._buoyancy_n])
+            restoring = np.cross(self._r_g, weight_body) + np.cross(self._r_b, buoyancy_body)
         torque = np.clip(
-            np.asarray(c.kp_attitude) * e_rot - np.asarray(c.kd_attitude) * w_body, -t_lim, t_lim
+            np.asarray(c.kp_attitude) * e_rot - np.asarray(c.kd_attitude) * w_body - restoring,
+            -t_lim,
+            t_lim,
         )
 
         return WrenchCommand(

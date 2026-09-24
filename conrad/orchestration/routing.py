@@ -437,7 +437,13 @@ class DecisionRouting:
                 self._unavailable_information_targets.pop(belief_id, None)
             self.view_attempts[key] = self.view_attempts.get(key, 0) + 1
             self.prior_views.append(
-                PriorView(position_m=act.pose.position_m, modality=self.d.sensor.modality)
+                PriorView(
+                    position_m=act.pose.position_m,
+                    modality=self.d.sensor.modality,
+                    orientation_wxyz=(
+                        act.pose.orientation_wxyz if self.cfg.model2t_backend == "spatial_v1" else None
+                    ),
+                )
             )
             self.s.emit(
                 EventType.PLAN_PROPOSED,
@@ -475,14 +481,24 @@ class DecisionRouting:
                 },
             )
             return
-        target = view_pose(plan, self.d.mount_yaw)
+        spatial_view = self.cfg.model2t_backend == "spatial_v1"
+        target = view_pose(
+            plan,
+            self.d.mount_yaw,
+            preserve_pitch=spatial_view,
+            mount_position_m=self.d.sensor.mount_pose.position_m if spatial_view else (0.0, 0.0, 0.0),
+        )
         goal = NavigationGoal(
             goal_id=self.ids.new(),
             trace_id=plan.trace_id,
             target_pose=target,
             position_tolerance_m=self.cfg.view_position_tolerance_m,
             orientation_tolerance_rad=self.cfg.view_orientation_tolerance_rad,
-            observation_constraints={"primitive": "STATION_KEEP", "duration_s": self.cfg.inspection_dwell_s},
+            observation_constraints={
+                "primitive": "STATION_KEEP",
+                "duration_s": self.cfg.inspection_dwell_s,
+                "full_attitude_hold": spatial_view,
+            },
             risk_limit=0.3,
             source_plan_id=plan.plan_id,
             source_action_id=act.action_id,
@@ -491,13 +507,16 @@ class DecisionRouting:
             plan_id=plan.plan_id,
             action_id=act.action_id,
             need_id=need.need_id,
-            position_m=act.pose.position_m,
+            position_m=target.position_m,
             yaw_rad=yaw_of_quat(target.orientation_wxyz),
             aim_point_m=act.target_region.center_m,
             position_tolerance_m=goal.position_tolerance_m,
             orientation_tolerance_rad=goal.orientation_tolerance_rad,
             dwell_s=self.cfg.inspection_dwell_s,
             mount_yaw_rad=self.d.mount_yaw,
+            mount_orientation_wxyz=(self.d.sensor.mount_pose.orientation_wxyz if spatial_view else None),
+            mount_position_m=(self.d.sensor.mount_pose.position_m if spatial_view else None),
+            commanded_orientation_wxyz=(target.orientation_wxyz if spatial_view else None),
             predicted_visibility=act.predicted_visibility,
         )
         plan_key = str(plan.plan_id)
@@ -508,7 +527,11 @@ class DecisionRouting:
             self._need_by_plan[plan_key] = need
             self.view_attempts[key] = self.view_attempts.get(key, 0) + 1
             self.prior_views.append(
-                PriorView(position_m=act.pose.position_m, modality=self.d.sensor.modality)
+                PriorView(
+                    position_m=act.pose.position_m,
+                    modality=self.d.sensor.modality,
+                    orientation_wxyz=act.pose.orientation_wxyz if spatial_view else None,
+                )
             )
 
     def _report_empty_plan(self, need: InformationNeed, adopted: Any, now: TimeStamp) -> None:

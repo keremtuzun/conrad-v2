@@ -99,7 +99,13 @@ class GoalManager:
         if kind is ObjectiveKind.STATION_KEEP:
             duration = float(oc.get("duration_s", 0.0))
             return NavigationObjective(
-                kind, goal, target[None, :], YawMode.FIXED, q, hold_duration_s=duration
+                kind,
+                goal,
+                target[None, :],
+                YawMode.FIXED,
+                q,
+                hold_duration_s=duration,
+                params={"full_attitude_hold": bool(oc.get("full_attitude_hold", False))},
             )
         via = [_vec3(v, "via") for v in oc.get("via", [])]
         return NavigationObjective(kind, goal, np.stack([*via, target]), YawMode.FACE_TRAVEL, q)

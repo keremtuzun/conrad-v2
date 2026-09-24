@@ -37,6 +37,7 @@ class PriorView(ConradModel):
 
     position_m: Vec3
     modality: str
+    orientation_wxyz: tuple[float, float, float, float] | None = None
 
 
 class AbandonedView(ConradModel):

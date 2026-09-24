@@ -14,6 +14,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from conrad.schemas.capsule_surface import CapsuleSurfaceGrid, capsule_basis
+from conrad.schemas.capsule_visibility import capsule_geometry_certificate
 from conrad.schemas.structural_sensor import StructuralSensorModelV2
 from conrad.schemas.structural_support import CapsuleSurfaceSupport
 from conrad.schemas.world import SensorSpec
@@ -227,50 +228,14 @@ def capsule_visibility_certificate(
     """
     if ray_intervals < 2 or radius_m <= 0:
         raise ValueError("invalid certificate resolution or radius")
-    a = np.asarray(axis_start_m, dtype=np.float64)
     origin = np.asarray(sensor_origin_m, dtype=np.float64)
     rot = np.asarray(sensor_rotation_world, dtype=np.float64)
-    d, u, v = capsule_basis(a, axis_end_m)
     geo = sensor_geometry(sensor)
-    tan_h = math.tan(geo.hfov_rad / 2)
-    tan_v = math.tan(geo.vfov_rad / 2)
     active_other = [i for i, e in enumerate(world.entities) if i != target_index and e.active]
     fractions = np.linspace(0.0, 1.0, ray_intervals + 1)
 
-    def certify_box(x0: float, x1: float, t0: float, t1: float) -> bool:
-        xc, tc = (x0 + x1) / 2, (t0 + t1) / 2
-        half_angle = (t1 - t0) / 2
-        displacement = math.hypot((x1 - x0) / 2, radius_m * half_angle)
-        n = math.cos(tc) * u + math.sin(tc) * v
-        point = a + xc * d + radius_m * n
+    def clear(point: NDArray[np.float64], displacement: float, distance: float) -> bool:
         delta = point - origin
-        distance = float(np.linalg.norm(delta))
-        if distance <= displacement or distance - displacement < geo.min_range_m:
-            return False
-        if distance + displacement > geo.max_range_m:
-            return False
-        local = rot.T @ delta
-        forward_min = local[0] - displacement
-        if forward_min <= 0:
-            return False
-        if abs(local[1]) + displacement > forward_min * tan_h:
-            return False
-        if abs(local[2]) + displacement > forward_min * tan_v:
-            return False
-        # Numerator of incidence over the rectangle; normal rotation is
-        # bounded by half_angle and every surface point by displacement.
-        incidence_num = float((origin - point) @ n) - distance * half_angle - displacement
-        incidence_min = incidence_num / (distance + displacement)
-        if incidence_min < config.observed.min_incidence_cos:
-            return False
-        far = distance + displacement
-        quality_min = (
-            math.sqrt(max(0.0, 1.0 - far / geo.max_range_m))
-            * math.exp(-config.water_attenuation_per_m * far)
-            * incidence_min
-        )
-        if quality_min < config.observed.min_quality:
-            return False
         centre_ray = origin + fractions[:, None] * delta
         half_step = distance / (2 * ray_intervals)
         for i in active_other:
@@ -278,27 +243,18 @@ def capsule_visibility_certificate(
                 return False
         return True
 
-    def certify(x0: float, x1: float, t0: float, t1: float) -> bool:
-        # A single centre-ray bound can reject a wide resolution cell even
-        # when every point is visible. Subdivision tightens the bound without
-        # converting a few successful ray samples into a coverage claim: all
-        # child rectangles must each have a continuous certificate.
-        def cover(ax0: float, ax1: float, at0: float, at1: float, depth: int) -> bool:
-            if certify_box(ax0, ax1, at0, at1):
-                return True
-            if depth == 0:
-                return False
-            xm, tm = (ax0 + ax1) / 2, (at0 + at1) / 2
-            return all(
-                cover(*child, depth - 1)
-                for child in (
-                    (ax0, xm, at0, tm),
-                    (ax0, xm, tm, at1),
-                    (xm, ax1, at0, tm),
-                    (xm, ax1, tm, at1),
-                )
-            )
-
-        return cover(x0, x1, t0, t1, 2)
-
-    return certify
+    return capsule_geometry_certificate(
+        axis_start_m,
+        axis_end_m,
+        radius_m,
+        origin,
+        rot,
+        min_range_m=geo.min_range_m,
+        max_range_m=geo.max_range_m,
+        hfov_rad=geo.hfov_rad,
+        vfov_rad=geo.vfov_rad,
+        min_incidence_cos=config.observed.min_incidence_cos,
+        min_quality=config.observed.min_quality,
+        water_attenuation_per_m=config.water_attenuation_per_m,
+        clearance=clear,
+    )

@@ -1,5 +1,6 @@
 """MCBR: filter-before-rank, stop statuses, cause-specific gain, baselines, learned ranker, no motion."""
 
+import math
 import pathlib
 import re
 from dataclasses import replace
@@ -11,8 +12,9 @@ from conrad.active import MCBRConfig, MCBRPlanner, PlanningRequest, PriorView, S
 from conrad.active.learned import MCBRBatch, MCBRRankerConfig, build_ranker, mcbr_loss, train_ranker
 from conrad.active.surface_predictive import QuantityChannel, SurfaceCellPredictive
 from conrad.evaluation.decision_experiments.fixtures import make_belief, region, unc
+from conrad.orchestration.deliberation import view_pose
 from conrad.schemas.decision import InformationNeed, PlanStatus, QuestionType, ResourceCost
-from conrad.schemas.frames import WORLD, Pose
+from conrad.schemas.frames import WORLD, Pose, quat_from_euler, quat_to_matrix
 from conrad.schemas.ids import IdFactory
 from conrad.schemas.provenance import SourceType
 from conrad.schemas.timebase import stamp
@@ -99,6 +101,38 @@ def test_spatial_predictive_candidate_regions_expand_views_without_exceeding_cap
     ).plan(replace(request, predictive=predictive))
     assert far_result.plan.primary_action is not None
     assert far_result.plan.primary_action.target_region.center_m == (20.0, 0.0, 0.0)
+
+    pitched = replace(predictive, candidate_elevations_rad=(1.0,))
+    pitched_result = MCBRPlanner(
+        IdFactory(403),
+        scorer=lambda gap, candidate, req: candidate.action.pose.position_m[2],
+        value_gate=False,
+    ).plan(replace(request, predictive=pitched))
+    assert pitched_result.plan.primary_action is not None
+    action = pitched_result.plan.primary_action
+    mount = (0.0, 0.15, 0.0)
+    vehicle = view_pose(pitched_result.plan, math.pi / 2, preserve_pitch=True, mount_position_m=mount)
+    body_rotation = quat_to_matrix(vehicle.orientation_wxyz)
+    sensor_origin = np.asarray(vehicle.position_m) + body_rotation @ np.asarray(mount)
+    sensor_forward = body_rotation @ quat_to_matrix(quat_from_euler(0.0, 0.0, math.pi / 2))[:, 0]
+    expected = np.asarray(action.target_region.center_m) - sensor_origin
+    expected /= np.linalg.norm(expected)
+    assert np.allclose(sensor_origin, action.pose.position_m)
+    assert float(sensor_forward @ expected) > 1 - 1e-12
+
+    prior = PriorView(
+        position_m=action.pose.position_m,
+        modality="STRUCTURED",
+        orientation_wxyz=action.pose.orientation_wxyz,
+    )
+    next_result = MCBRPlanner(
+        IdFactory(404),
+        scorer=lambda gap, candidate, req: candidate.action.pose.position_m[2],
+        value_gate=False,
+    ).plan(replace(request, predictive=pitched, prior_views=(prior,)))
+    assert any("DUPLICATE_SPATIAL_VIEW" in rejected.reason_codes for rejected in next_result.plan.rejected)
+    assert next_result.plan.primary_action is not None
+    assert next_result.plan.primary_action.pose.position_m != action.pose.position_m
 
 
 def test_feasibility_filter_runs_before_ranking():

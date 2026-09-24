@@ -142,6 +142,7 @@ class SurfaceCellPredictive:
     channels: tuple[QuantityChannel, ...]
     cell_weights: CellWeights
     candidate_regions: tuple[SpatialSupport, ...] = ()
+    candidate_elevations_rad: tuple[float, ...] = ()
     epistemic: float = 0.0
     used_modalities: frozenset[str] = frozenset()
     hypotheses: tuple[HypothesisBelief, ...] = ()

@@ -35,6 +35,7 @@ class TrajectoryConfig(ConradModel):
     corner_floor_fraction: float = Field(default=0.15, gt=0, le=1)
     max_yaw_rate_rps: float = Field(default=0.5, gt=0)
     short_leg_fix: bool = False
+    max_duration_s: float = Field(default=3600.0, gt=0)
 
 
 def derive_accel_limit(robot_config: RobotConfig, fraction: float) -> float:
@@ -87,6 +88,7 @@ class TrajectoryGenerator:
         final_orientation_wxyz: np.ndarray | None = None,
         look_at: np.ndarray | None = None,
         speed_limit_mps: float | None = None,
+        preserve_final_attitude: bool = False,
     ) -> Trajectory:
         c = self.config
         pts = _dedupe(np.asarray(waypoints, dtype=np.float64))
@@ -109,6 +111,8 @@ class TrajectoryGenerator:
         for i in range(len(v) - 2, -1, -1):
             v[i] = min(v[i], math.sqrt(v[i + 1] ** 2 + 2 * self.accel_limit * ds[i]))
         t = np.concatenate([[0.0], np.cumsum(2 * ds / np.maximum(v[:-1] + v[1:], 1e-6))])
+        if not np.isfinite(t[-1]) or t[-1] > c.max_duration_s:
+            raise ValueError("trajectory duration exceeds configured limit")
         ts = np.append(np.arange(0.0, t[-1], c.sample_dt_s), t[-1])
         pos = np.stack([np.interp(ts, t, path[:, k]) for k in range(3)], axis=1)
         speed = np.interp(ts, t, v)
@@ -128,6 +132,24 @@ class TrajectoryGenerator:
                     linear_velocity_mps=(float(vel[i, 0]), float(vel[i, 1]), float(vel[i, 2])),
                 )
             )
+        if preserve_final_attitude and final_orientation_wxyz is not None:
+            initial = np.asarray(points[-1].pose.orientation_wxyz, dtype=np.float64)
+            final = quat_normalize(np.asarray(final_orientation_wxyz, dtype=np.float64))
+            if float(initial @ final) < 0:
+                final = -final
+            angle = 2.0 * math.acos(float(np.clip(initial @ final, -1.0, 1.0)))
+            if angle > 1e-6:
+                duration = max(angle / c.max_yaw_rate_rps, c.sample_dt_s)
+                for elapsed in np.append(np.arange(c.sample_dt_s, duration, c.sample_dt_s), duration):
+                    fraction = float(elapsed / duration)
+                    q = quat_normalize((1.0 - fraction) * initial + fraction * final)
+                    points.append(
+                        TrajectoryPoint(
+                            t_s=float(ts[-1] + elapsed),
+                            pose=_pose(pos[-1], q),
+                            linear_velocity_mps=(0.0, 0.0, 0.0),
+                        )
+                    )
         return Trajectory(
             trajectory_id=self._ids.new(),
             goal_id=goal_id,

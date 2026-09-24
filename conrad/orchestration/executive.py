@@ -386,7 +386,13 @@ class MissionExecutive:
         )
         self._last_tick_ns = now_ns
         pose = res.state.pose
-        self.views.update(now_ns, pose.position_m, yaw_of(np.asarray(pose.orientation_wxyz)), dt_s)
+        self.views.update(
+            now_ns,
+            pose.position_m,
+            yaw_of(np.asarray(pose.orientation_wxyz)),
+            dt_s,
+            pose.orientation_wxyz,
+        )
         new_reasons = set(res.assessment.reason_codes) - self._seen_reasons
         self._seen_reasons |= new_reasons
         if state != self.safety_state or new_reasons:

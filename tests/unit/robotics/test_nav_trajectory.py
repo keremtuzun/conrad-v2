@@ -3,6 +3,7 @@ import pytest
 
 from conrad.robotics.hardware.config import load_robot_config
 from conrad.robotics.trajectory import TrajectoryConfig, TrajectoryGenerator, TrajectorySampler, YawMode
+from conrad.schemas.frames import quat_from_euler
 from conrad.schemas.ids import IdFactory
 
 CFG = load_robot_config("configs/robot/sim_reference.yaml")
@@ -67,3 +68,26 @@ def test_short_leg_opt_in_uses_finite_triangular_profile():
     assert speeds[0] == 0 and speeds[-1] == 0
     assert speeds.max() > 0
     assert traj.points[-1].pose.position_m == pytest.approx((0.03, 0, -5))
+
+
+def test_spatial_view_ends_at_declared_full_attitude_after_rotation_segment():
+    g, ids = gen(short_leg_fix=True)
+    target = np.asarray(quat_from_euler(0.0, 0.8, 0.3))
+    traj = g.generate(
+        np.array([[0.0, 0.0, -5.0], [2.0, 0.0, -5.0]]),
+        ids.new(),
+        ids.new(),
+        start_yaw=0.0,
+        final_orientation_wxyz=target,
+        preserve_final_attitude=True,
+    )
+    final = np.asarray(traj.points[-1].pose.orientation_wxyz)
+    assert abs(float(final @ target)) == pytest.approx(1.0)
+    assert traj.points[-1].t_s > traj.points[-2].t_s
+    assert traj.points[-1].pose.position_m == pytest.approx((2.0, 0.0, -5.0))
+
+
+def test_degenerate_route_fails_closed_before_allocating_huge_trajectory():
+    g, ids = gen(max_duration_s=10.0)
+    with pytest.raises(ValueError, match="trajectory duration exceeds configured limit"):
+        g.generate(np.array([[0.0, 0.0, -5.0], [0.03, 0.0, -5.0]]), ids.new(), ids.new(), start_yaw=0.0)

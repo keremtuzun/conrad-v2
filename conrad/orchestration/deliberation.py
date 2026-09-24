@@ -51,7 +51,7 @@ from conrad.schemas.decision import (
     ResourceState,
 )
 from conrad.schemas.events import EventType
-from conrad.schemas.frames import Pose, SpatialSupport
+from conrad.schemas.frames import Pose, SpatialSupport, matrix_to_quat, quat_from_euler, quat_to_matrix
 from conrad.schemas.provenance import ProvenanceRecord, SourceType
 from conrad.schemas.robot import RobotState, SystemHealth
 from conrad.schemas.timebase import TimeStamp
@@ -521,10 +521,26 @@ def yaw_of_quat(q: tuple[float, float, float, float]) -> float:
 _yaw = yaw_of_quat
 
 
-def view_pose(plan: ObservationPlan, mount_yaw: float = 0.0) -> Pose:
-    """Vehicle pose that points the (level, yaw-mounted) payload along the candidate's boresight."""
+def view_pose(
+    plan: ObservationPlan,
+    mount_yaw: float = 0.0,
+    *,
+    preserve_pitch: bool = False,
+    mount_position_m: tuple[float, float, float] = (0.0, 0.0, 0.0),
+) -> Pose:
+    """Vehicle pose that points the payload along the candidate's boresight."""
     assert plan.primary_action is not None
     pose = plan.primary_action.pose
+    if preserve_pitch:
+        rotation = quat_to_matrix(pose.orientation_wxyz) @ quat_to_matrix(
+            quat_from_euler(0.0, 0.0, -mount_yaw)
+        )
+        position = np.asarray(pose.position_m) - rotation @ np.asarray(mount_position_m)
+        return Pose(
+            frame_id=pose.frame_id,
+            position_m=tuple(float(x) for x in position),
+            orientation_wxyz=matrix_to_quat(rotation),
+        )
     yaw = _yaw(pose.orientation_wxyz) - mount_yaw
     return Pose(
         frame_id=pose.frame_id,

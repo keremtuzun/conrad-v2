@@ -189,6 +189,9 @@ def test_spatial_model2t_child_initializes_and_persists_unknown_head(tmp_path):
     assert repo.head(spatial.belief_id) is not None
 
     spec = world.context.sensor(world.context.structural_sensor_ids[0])
+    assert spec.parameters["min_incidence_cos"] == world.t2s.cfg.observed.min_incidence_cos
+    assert spec.parameters["min_quality"] == world.t2s.cfg.observed.min_quality
+    assert spec.parameters["water_attenuation_per_m"] == world.t2s.cfg.water_attenuation_per_m
     boresight = spec.model_copy(
         update={"mount_pose": Pose(frame_id=spec.mount_pose.frame_id, position_m=(0, 0, 0))}
     )
@@ -205,8 +208,9 @@ def test_spatial_model2t_child_initializes_and_persists_unknown_head(tmp_path):
     )
     option = SensorOption(sensor_id=spec.sensor_id, modality=spec.modality, min_range_m=0.3, max_range_m=4.0)
     predicted_weights = predictive.cell_weights(candidate, option)
-    assert np.any(predicted_weights > 0)
-    assert np.any(predicted_weights == 0)
+    # This exact pose has already supplied its certifiable tiles. More looks
+    # there must not be mistaken for new spatial coverage.
+    assert not np.any(predicted_weights > 0)
     no_map = SpatialMissionPredictive(children.m2t, None, boresight, 0.3, provider.cfg)
     no_map_predictive = no_map(children.m2t.export_beliefs())
     assert no_map_predictive is not None
@@ -489,6 +493,9 @@ def test_required_surface_identifies_healthy_and_resolvable_defects(tmp_path, st
     else:
         assert target.technical.direct_support < 1.0
     assert target.technical.condition == expected
+    if not full_sweep:
+        assert target.uncertainty.epistemic == 0.0
+        assert target.uncertainty.observational > 0.4
     if state == "occluded-defect":
         assert target.independent_observation_count == 0
     else:

@@ -5,7 +5,7 @@ from conrad.robotics.navigation import GoalStatus, NavigationStack, NavRecordTyp
 from conrad.robotics.safety import SafetyState
 from conrad.runtime.command_gateway import CommandGateway
 from conrad.schemas.decision import NavigationGoal
-from conrad.schemas.frames import Pose
+from conrad.schemas.frames import Pose, quat_from_euler
 from conrad.schemas.ids import IdFactory
 from conrad.settings import CommandMode, ExecutionLane, RuntimeSettings
 from conrad.sim.kernel import FaultType, build_sim_hardware
@@ -70,6 +70,26 @@ def test_causal_trace_chain_and_gateway_acceptance():
     assert all(r.goal_id == g.goal_id and r.trajectory_id == traj.trajectory_id for r in alloc)
     assert all(r.wrench_id in wrench_ids for r in alloc)
     assert hw.truth_access().true_state().position_world_m[0] > 1.5  # evaluation-only check
+
+
+def test_spatial_station_keeping_rotates_in_place_and_waits_for_attitude_dwell():
+    ids, hw, stack, gw = setup()
+    desired = quat_from_euler(0.0, 1.0, 0.0)
+    g = NavigationGoal(
+        goal_id=ids.new(),
+        trace_id=ids.new(),
+        target_pose=Pose(frame_id="WORLD", position_m=(0.0, 0.0, -4.0), orientation_wxyz=desired),
+        position_tolerance_m=0.4,
+        orientation_tolerance_rad=0.3,
+        observation_constraints={"primitive": "STATION_KEEP", "duration_s": 2.0, "full_attitude_hold": True},
+        risk_limit=0.1,
+    )
+    traj = stack.set_goal(g)
+    assert traj is not None and len(traj.points) == 1
+    run(hw, stack, gw, 12.0)
+    assert stack.status is GoalStatus.COMPLETE
+    actual = hw.truth_access().true_state().orientation_wxyz
+    assert abs(float(np.asarray(actual) @ np.asarray(desired))) > 0.99
 
 
 def test_goal_below_max_depth_is_rejected_and_vehicle_holds():

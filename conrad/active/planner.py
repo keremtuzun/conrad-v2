@@ -173,7 +173,15 @@ class MCBRPlanner:
             if isinstance(request.predictive, SurfaceCellPredictive) and request.predictive.candidate_regions
             else (gap.target_region,)
         )
-        raws = [raw for region in regions for raw in self.generator.generate(region, request.sensors)]
+        generator = self.generator
+        if (
+            isinstance(request.predictive, SurfaceCellPredictive)
+            and request.predictive.candidate_elevations_rad
+        ):
+            generator = ViewpointGenerator(
+                self.config.model_copy(update={"elevations_rad": request.predictive.candidate_elevations_rad})
+            )
+        raws = [raw for region in regions for raw in generator.generate(region, request.sensors)]
         if len(regions) > 1:
             raws = [replace(raw, index=i) for i, raw in enumerate(raws)]
             if len(raws) > self.config.max_candidates:
@@ -200,6 +208,17 @@ class MCBRPlanner:
                 vis = min(vis, predicted_coverage(request.predictive, raw.pose, raw.sensor))
             cost = request.navigation_cost(request.robot_pose, raw.pose)
             reasons = self.filter.reasons(raw, bool(ok), vis, cost, need, request.bounds)
+            if isinstance(request.predictive, SurfaceCellPredictive) and request.predictive.candidate_regions:
+                for prior in request.prior_views:
+                    if prior.orientation_wxyz is None:
+                        continue
+                    separation = float(
+                        np.linalg.norm(np.asarray(raw.pose.position_m) - np.asarray(prior.position_m))
+                    )
+                    attitude_dot = abs(float(np.dot(raw.pose.orientation_wxyz, prior.orientation_wxyz)))
+                    if separation < 0.25 and attitude_dot > 0.995:
+                        reasons += ("DUPLICATE_SPATIAL_VIEW",)
+                        break
             if self.extra_filter is not None:
                 reasons = reasons + self.extra_filter(raw, vis, cost, request, gap)
             scored = self._score(gap, raw, vis, cost, need)

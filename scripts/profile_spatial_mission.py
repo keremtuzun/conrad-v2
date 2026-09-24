@@ -58,7 +58,8 @@ def _settings(spatial: bool, duration_s: float) -> tuple[MissionWorldOptions, Mi
         )
         runtime.update(
             model2t_backend="spatial_v1",
-            max_plans_per_need=12,
+            max_plans_per_need=24,
+            decision={"max_information_attempts": 24},
             model2t_spatial={
                 "axial_cells": 2,
                 "sectors": 4,

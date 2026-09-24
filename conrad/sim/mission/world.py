@@ -287,6 +287,14 @@ class MissionWorld:
             "min_range_m": so.min_range_m,
             "t2t_fidelity": "T0",
         }
+        if opts.twin2t_truth_model == "spatial_v1":
+            # Declared synthetic visibility limits are available to the
+            # belief-side planner without exposing scene or defect truth.
+            sparams.update(
+                min_incidence_cos=t2s.cfg.observed.min_incidence_cos,
+                min_quality=t2s.cfg.observed.min_quality,
+                water_attenuation_per_m=t2s.cfg.water_attenuation_per_m,
+            )
         sensors = SuiteSensors(
             geometric=geometric,
             structural=_spec(

@@ -36,7 +36,9 @@ from conrad.domains.technical.spatial_mission import SpatialMissionModel2T
 from conrad.domains.technical.state import ComponentBelief
 from conrad.schemas.belief import BeliefMessage
 from conrad.schemas.capsule_surface import SurfaceRect, capsule_basis, surface_point, union_area
-from conrad.schemas.frames import WORLD, Pose, SpatialSupport, quat_from_euler, quat_to_matrix
+from conrad.schemas.capsule_visibility import capsule_geometry_certificate
+from conrad.schemas.frames import WORLD, Pose, SpatialSupport, quat_to_matrix
+from conrad.schemas.structural_sensor import StructuralSensorModelV2
 from conrad.schemas.world import SensorSpec
 
 QUANTITIES = (CORROSION_DEPTH, CRACK_LENGTH)
@@ -296,6 +298,9 @@ class SpatialMissionPredictive:
     ) -> None:
         self.m2t, self.m2s, self.sensor = m2t, m2s, sensor
         self.p_block, self.cfg = unknown_block_probability, cfg
+        required = {"min_incidence_cos", "min_quality", "water_attenuation_per_m"}
+        if not required.issubset(sensor.parameters):
+            raise ValueError("spatial predictive sensor is missing declared synthetic visibility limits")
 
     def __call__(self, beliefs: Sequence[BeliefMessage]) -> SurfaceCellPredictive | None:
         target = self.m2t.spatial_registry_id
@@ -342,6 +347,7 @@ class SpatialMissionPredictive:
             channels=channels,
             cell_weights=SpatialCellWeightFn(self, np.asarray(geometry.p0), np.asarray(geometry.p1)),
             candidate_regions=self._candidate_regions(np.asarray(geometry.p0), np.asarray(geometry.p1)),
+            candidate_elevations_rad=(0.0, 0.5, 1.0, 1.2),
             epistemic=min(1.0, total / grid.n_cells),
         )
 
@@ -388,7 +394,7 @@ class SpatialMissionPredictive:
 
 
 class SpatialCellWeightFn:
-    """Predicted footprint overlap times worst probe visibility in the belief map."""
+    """Novel certified geometric support times belief-map visibility."""
 
     def __init__(self, owner: SpatialMissionPredictive, axis_start: np.ndarray, axis_end: np.ndarray) -> None:
         self.owner, self.a, self.b = owner, axis_start, axis_end
@@ -396,12 +402,12 @@ class SpatialCellWeightFn:
     def __call__(self, pose: Pose, option: SensorOption) -> np.ndarray:
         o = self.owner
         grid, model = o.m2t.spatial.grid, o.m2t.spatial.sensor
+        if not isinstance(model, StructuralSensorModelV2):
+            raise ValueError("spatial predictive requires the resolution-cell sensor model")
         origin = np.asarray(pose.position_m, dtype=np.float64)
-        # View execution commands yaw while holding the vehicle level. The
-        # candidate's look-at pitch is not physically flown by this controller.
-        w, x, y, z = pose.orientation_wxyz
-        yaw = math.atan2(2 * (w * z + x * y), 1 - 2 * (y * y + z * z))
-        rot = quat_to_matrix(quat_from_euler(0.0, 0.0, yaw))
+        # Spatial views carry the candidate's full sensor attitude through to
+        # the six-axis controller; score the same boresight here.
+        rot = quat_to_matrix(pose.orientation_wxyz)
         forward = rot[:, 0]
         d, u, v = capsule_basis(self.a, self.b)
         q = origin - self.a
@@ -441,75 +447,70 @@ class SpatialCellWeightFn:
             radial = hit - self.a - xc * d
         ac = math.atan2(float(radial @ v), float(radial @ u)) % (2 * math.pi)
         half_angle = model.footprint_height_m / (2 * grid.radius_m)
-        hfov = math.radians(float(o.sensor.parameters["hfov_deg"])) / 2
-        vfov = math.radians(float(o.sensor.parameters["vfov_deg"])) / 2
+        if o.m2s is None:
+            return weights
+        certifies = capsule_geometry_certificate(
+            self.a,
+            self.b,
+            grid.radius_m,
+            origin,
+            rot,
+            min_range_m=float(o.sensor.parameters["min_range_m"]),
+            max_range_m=float(o.sensor.parameters["max_range_m"]),
+            hfov_rad=math.radians(float(o.sensor.parameters["hfov_deg"])),
+            vfov_rad=math.radians(float(o.sensor.parameters["vfov_deg"])),
+            min_incidence_cos=float(o.sensor.parameters["min_incidence_cos"]),
+            min_quality=float(o.sensor.parameters["min_quality"]),
+            water_attenuation_per_m=float(o.sensor.parameters["water_attenuation_per_m"]),
+        )
         for i in range(grid.n_cells):
-            cell = o.m2t.spatial.required_rect(i)
-            if cell is None:
+            required = o.m2t.spatial.required_rect(i)
+            if required is None:
                 continue
-            x_overlap = max(
-                0.0,
-                min(cell.x1, xc + model.footprint_width_m / 2)
-                - max(cell.x0, xc - model.footprint_width_m / 2),
+            base = grid.cell(i)
+            covered = list(
+                dict.fromkeys(
+                    clipped
+                    for rect in o.m2t.spatial.cells[i].supports
+                    if (clipped := required.intersection(rect)).area > 0
+                )
             )
-            angle_bounds = max(
-                (
-                    (max(cell.a0, ac + shift - half_angle), min(cell.a1, ac + shift + half_angle))
-                    for shift in (-2 * math.pi, 0.0, 2 * math.pi)
-                ),
-                key=lambda bounds: bounds[1] - bounds[0],
-            )
-            angular_overlap = max(0.0, angle_bounds[1] - angle_bounds[0])
-            overlap_rect = SurfaceRect(
-                max(cell.x0, xc - model.footprint_width_m / 2),
-                min(cell.x1, xc + model.footprint_width_m / 2),
-                angle_bounds[0],
-                angle_bounds[1],
-            )
-            covered = [
-                clipped
-                for rect in o.m2t.spatial.cells[i].supports
-                if (clipped := cell.intersection(rect)).area > 0
-            ]
-            newly_covered = max(0.0, union_area([*covered, overlap_rect]) - union_area(covered))
-            unresolved_fraction = 1.0 - o.m2t.spatial.required_coverage_fraction(i)
-            overlap = newly_covered / max(cell.area * unresolved_fraction, 1e-12)
-            if overlap <= 0:
+            remaining = required.area - union_area(covered)
+            if remaining <= 1e-12:
                 continue
-            if min(x_overlap, grid.radius_m * angular_overlap) < max(
-                model.minimum_resolvable_corrosion_m, model.minimum_resolvable_crack_m
-            ):
-                continue
-            samples = ((0.2, 0.2), (0.2, 0.8), (0.8, 0.2), (0.8, 0.8), (0.5, 0.5))
-            visible = []
-            for fx, fa in samples:
-                x = cell.x0 + fx * (cell.x1 - cell.x0)
-                angle = cell.a0 + fa * (cell.a1 - cell.a0)
-                point = surface_point(self.a, self.b, grid.radius_m, x, angle)
-                normal = math.cos(angle) * u + math.sin(angle) * v
-                ray = point - origin
-                distance = float(np.linalg.norm(ray))
-                local = rot.T @ ray
-                incidence = float((origin - point) @ normal) / max(distance, 1e-12)
-                az = math.atan2(float(local[1]), float(local[0]))
-                el = math.atan2(float(local[2]), math.hypot(float(local[0]), float(local[1])))
-                if (
-                    distance < option.min_range_m
-                    or distance > option.max_range_m
-                    or incidence <= 0
-                    or local[0] <= 0
-                    or abs(az) > hfov
-                    or abs(el) > vfov
-                ):
-                    visible.append(0.0)
-                    continue
-                if o.m2s is None:
-                    visible.append(0.0)  # no belief-side map can justify a clear path
-                else:
+            nx = math.ceil((base.x1 - base.x0) / model.axial_resolution_m)
+            na = math.ceil(grid.radius_m * (base.a1 - base.a0) / model.lateral_resolution_m)
+            expected_new = 0.0
+            for ix in range(nx):
+                x0 = base.x0 + ix * model.axial_resolution_m
+                x1 = min(base.x1, x0 + model.axial_resolution_m)
+                for ia in range(na):
+                    t0 = base.a0 + ia * model.lateral_resolution_m / grid.radius_m
+                    t1 = min(base.a1, t0 + model.lateral_resolution_m / grid.radius_m)
+                    tile = SurfaceRect(x0, x1, t0, t1)
+                    clipped = required.intersection(tile)
+                    if clipped.area <= 0:
+                        continue
+                    angle_delta = abs(((t0 + t1) / 2 - ac + math.pi) % (2 * math.pi) - math.pi)
+                    if (
+                        x0 < xc - model.footprint_width_m / 2 - 1e-12
+                        or x1 > xc + model.footprint_width_m / 2 + 1e-12
+                        or angle_delta + (t1 - t0) / 2 > half_angle + 1e-12
+                        or not certifies(x0, x1, t0, t1)
+                    ):
+                        continue
+                    old_area = union_area([clipped.intersection(rect) for rect in covered])
+                    novel = max(0.0, clipped.area - old_area)
+                    if novel <= 1e-12:
+                        continue
+                    angle = (t0 + t1) / 2
+                    point = surface_point(self.a, self.b, grid.radius_m, (x0 + x1) / 2, angle)
+                    normal = math.cos(angle) * u + math.sin(angle) * v
                     probe = point + o.cfg.probe_offset_m * normal
                     region = SpatialSupport(frame_id=WORLD, center_m=tuple(float(z) for z in probe))
-                    visible.append(float(o.m2s.predicted_visibility(pose, region, o.sensor, o.p_block).mean))
-            weights[i] = overlap * min(visible)
+                    visibility = float(o.m2s.predicted_visibility(pose, region, o.sensor, o.p_block).mean)
+                    expected_new += novel * visibility
+            weights[i] = min(1.0, expected_new / remaining)
         return weights
 
 

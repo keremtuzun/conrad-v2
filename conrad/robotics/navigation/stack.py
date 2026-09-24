@@ -114,10 +114,29 @@ class NavigationStack:
         try:
             obj = self.goals.to_objective(goal, p)
             self._check_envelope(obj)
-            route = np.vstack([p[None, :], obj.waypoints])
-            if self.planner is not None and not obj.route_is_prescribed:
-                legs = [self.planner.plan(route[i], route[i + 1]) for i in range(len(route) - 1)]
-                route = np.vstack([legs[0]] + [leg[1:] for leg in legs[1:]])
+            if (
+                obj.params.get("full_attitude_hold")
+                and float(np.linalg.norm(p - obj.final_position)) <= goal.position_tolerance_m
+            ):
+                # Already at the inspection station: rotate in place.  A
+                # near-zero route can otherwise explode into a huge sampled
+                # trajectory under the translational speed profile.
+                route = obj.waypoints
+            else:
+                route = np.vstack([p[None, :], obj.waypoints])
+                if self.planner is not None and not obj.route_is_prescribed:
+                    legs = [self.planner.plan(route[i], route[i + 1]) for i in range(len(route) - 1)]
+                    route = np.vstack([legs[0]] + [leg[1:] for leg in legs[1:]])
+            traj = self.trajectories.generate(
+                route,
+                goal.goal_id,
+                goal.trace_id,
+                start_yaw=yaw_of(np.asarray(est.pose.orientation_wxyz)),
+                yaw_mode=obj.yaw_mode,
+                final_orientation_wxyz=obj.final_orientation_wxyz,
+                look_at=obj.look_at,
+                preserve_final_attitude=bool(obj.params.get("full_attitude_hold")),
+            )
         except (GoalRejectedError, PlanningError, ValueError) as exc:
             code = getattr(exc, "reason_code", type(exc).__name__)
             self._record(
@@ -128,15 +147,6 @@ class NavigationStack:
             )
             self.status, self.objective, self._sampler = GoalStatus.REJECTED, None, None
             return None
-        traj = self.trajectories.generate(
-            route,
-            goal.goal_id,
-            goal.trace_id,
-            start_yaw=yaw_of(np.asarray(est.pose.orientation_wxyz)),
-            yaw_mode=obj.yaw_mode,
-            final_orientation_wxyz=obj.final_orientation_wxyz,
-            look_at=obj.look_at,
-        )
         self.objective, self.trajectory, self._sampler = obj, traj, TrajectorySampler(traj)
         self._traj_clock_s, self._arrived_at_ns, self._hold_pose = 0.0, None, None
         self.status = GoalStatus.EXECUTING
@@ -216,10 +226,10 @@ class NavigationStack:
                 ref.velocity_world_mps * a.speed_scale,
                 ref.speed_limit_mps,
             )
-        self._update_status(p, now)
+        self._update_status(p, q, now)
         return ref
 
-    def _update_status(self, p: np.ndarray, now: int) -> None:
+    def _update_status(self, p: np.ndarray, q: np.ndarray, now: int) -> None:
         if self.objective is None or self._sampler is None or self.status is GoalStatus.COMPLETE:
             return
         done = self._traj_clock_s >= self._sampler.duration_s
@@ -227,6 +237,15 @@ class NavigationStack:
             float(np.linalg.norm(p - self.objective.final_position))
             <= self.objective.goal.position_tolerance_m
         )
+        if (
+            self.objective.params.get("full_attitude_hold")
+            and self.objective.final_orientation_wxyz is not None
+        ):
+            desired = self.objective.final_orientation_wxyz
+            attitude_error = 2.0 * np.arccos(float(np.clip(abs(np.dot(q, desired)), -1.0, 1.0)))
+            close = close and attitude_error <= self.objective.goal.orientation_tolerance_rad
+            if not close:
+                self._arrived_at_ns = None
         if done and close and self._arrived_at_ns is None:
             self._arrived_at_ns, self.status = now, GoalStatus.ARRIVED
         if (

@@ -25,6 +25,7 @@ from uuid import UUID
 import numpy as np
 
 from conrad.active.gap import AbandonedView
+from conrad.schemas.frames import quat_to_matrix
 
 # ---------------------------------------------------------------------------------------- reason codes
 FLOWN = "FLOWN"
@@ -80,6 +81,9 @@ class ViewCommand:
     dwell_s: float
     mount_yaw_rad: float = 0.0
     predicted_visibility: float | None = None
+    mount_orientation_wxyz: tuple[float, float, float, float] | None = None
+    mount_position_m: tuple[float, float, float] | None = None
+    commanded_orientation_wxyz: tuple[float, float, float, float] | None = None
 
 
 @dataclass
@@ -97,11 +101,13 @@ class ViewExecutionRecord:
     dwell_s: float
     start_distance_m: float
     predicted_visibility: float | None = None
+    commanded_orientation_wxyz: list[float] | None = None
     t_end_s: float | None = None
     outcome: str | None = None
     closest_approach_m: float = float("inf")
     t_closest_s: float | None = None
     realised_position_m: list[float] | None = None
+    realised_orientation_wxyz: list[float] | None = None
     """Estimated position at the point of closest approach to the commanded pose."""
     yaw_error_rad: float | None = None
     """|realised vehicle yaw - commanded vehicle yaw| at the closest approach."""
@@ -167,9 +173,21 @@ class ViewLedger:
             dwell_s=float(command.dwell_s),
             start_distance_m=float(np.linalg.norm(p - np.asarray(command.position_m, dtype=np.float64))),
             predicted_visibility=command.predicted_visibility,
+            commanded_orientation_wxyz=(
+                None
+                if command.commanded_orientation_wxyz is None
+                else [float(x) for x in command.commanded_orientation_wxyz]
+            ),
         )
 
-    def update(self, now_ns: int, position: Any, yaw_rad: float, dt_s: float) -> None:
+    def update(
+        self,
+        now_ns: int,
+        position: Any,
+        yaw_rad: float,
+        dt_s: float,
+        orientation_wxyz: tuple[float, float, float, float] | None = None,
+    ) -> None:
         rec, cmd = self.open_record, self._command
         if rec is None or cmd is None:
             return
@@ -177,11 +195,27 @@ class ViewLedger:
         p = np.asarray(position, dtype=np.float64)
         target = np.asarray(cmd.position_m, dtype=np.float64)
         d = float(np.linalg.norm(p - target))
-        boresight = _boresight_error(cmd.aim_point_m, p, yaw_rad + cmd.mount_yaw_rad)
+        if cmd.mount_orientation_wxyz is not None:
+            boresight = (
+                _full_boresight_error(
+                    cmd.aim_point_m,
+                    p,
+                    orientation_wxyz,
+                    cmd.mount_orientation_wxyz,
+                    cmd.mount_position_m or (0.0, 0.0, 0.0),
+                )
+                if orientation_wxyz is not None
+                else math.pi
+            )
+        else:
+            boresight = _boresight_error(cmd.aim_point_m, p, yaw_rad + cmd.mount_yaw_rad)
         if d < rec.closest_approach_m:
             rec.closest_approach_m = d
             rec.t_closest_s = now_ns / 1e9
             rec.realised_position_m = [float(x) for x in p]
+            rec.realised_orientation_wxyz = (
+                None if orientation_wxyz is None else [float(x) for x in orientation_wxyz]
+            )
             rec.yaw_error_rad = abs(wrap_angle(float(yaw_rad) - float(cmd.yaw_rad)))
             rec.view_direction_error_rad = _direction_error(cmd.aim_point_m, cmd.position_m, p)
             rec.boresight_error_rad = boresight
@@ -289,6 +323,23 @@ def _boresight_error(aim: tuple[float, float, float], realised: Any, sensor_yaw_
     if float(np.linalg.norm(d[:2])) < 1e-9:
         return 0.0
     return abs(wrap_angle(float(math.atan2(d[1], d[0])) - float(sensor_yaw_rad)))
+
+
+def _full_boresight_error(
+    aim: tuple[float, float, float],
+    vehicle_position: np.ndarray,
+    vehicle_orientation: tuple[float, float, float, float],
+    mount_orientation: tuple[float, float, float, float],
+    mount_position: tuple[float, float, float],
+) -> float:
+    vehicle_rot = quat_to_matrix(vehicle_orientation)
+    sensor_origin = vehicle_position + vehicle_rot @ np.asarray(mount_position)
+    direction = np.asarray(aim) - sensor_origin
+    norm = float(np.linalg.norm(direction))
+    if norm < 1e-9:
+        return math.pi
+    forward = vehicle_rot @ quat_to_matrix(mount_orientation)[:, 0]
+    return math.acos(float(np.clip(forward @ direction / norm, -1.0, 1.0)))
 
 
 __all__ = [

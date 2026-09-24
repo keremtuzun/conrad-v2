@@ -1,10 +1,12 @@
 """The view execution ledger: a view is credited only when it was flown, and abandonment is visible."""
 
 import math
+from dataclasses import replace
 from uuid import uuid4
 
 import pytest
 
+from conrad.active.candidates import look_at
 from conrad.orchestration.view_execution import (
     ABANDONED_ROUTE_BLOCKED,
     FLOWN,
@@ -12,6 +14,7 @@ from conrad.orchestration.view_execution import (
     ViewLedger,
     summarize,
 )
+from conrad.schemas.frames import WORLD, quat_from_euler
 
 AIM = (0.0, 0.0, 0.0)
 
@@ -76,6 +79,20 @@ def test_a_view_flown_to_the_declared_pose_and_aim_accumulates_dwell():
     led.close(int(6e9), FLOWN, "COMPLETE")
     assert summarize(led.records)["fraction_flown"] == 1.0
     assert led.abandoned() == ()
+
+
+def test_spatial_view_requires_the_full_sensor_boresight_including_pitch():
+    position = (2.0, 0.0, 2.0)
+    aimed = look_at(position, AIM, WORLD).orientation_wxyz
+    level = quat_from_euler(0.0, 0.0, math.pi)
+    command = replace(_command(position=position), mount_orientation_wxyz=(1.0, 0.0, 0.0, 0.0))
+    led = ViewLedger()
+    led.open(command, uuid4(), "INSPECT", 0, position)
+    led.update(int(1e9), position, math.pi, 1.0, level)
+    assert led.open_record is not None and not led.open_record.aimed
+    assert led.open_record.min_boresight_error_in_position_rad == pytest.approx(math.pi / 4)
+    led.update(int(2e9), position, math.pi, 1.0, aimed)
+    assert led.open_record.aimed
 
 
 def test_pose_inside_tolerance_but_outside_aim_is_not_counted_as_flown_by_the_summary():
