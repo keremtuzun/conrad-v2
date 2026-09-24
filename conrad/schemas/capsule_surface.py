@@ -6,7 +6,61 @@ import math
 from dataclasses import dataclass
 from itertools import pairwise
 
+import numpy as np
+from numpy.typing import NDArray
+
 from conrad.schemas.structural_support import CapsuleSurfaceSupport
+
+
+def capsule_basis(
+    axis_start_m: NDArray[np.float64], axis_end_m: NDArray[np.float64]
+) -> tuple[NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
+    """Stable right-handed axial and angular basis for a surveyed capsule."""
+    a, b = np.asarray(axis_start_m, dtype=np.float64), np.asarray(axis_end_m, dtype=np.float64)
+    d = b - a
+    length = float(np.linalg.norm(d))
+    if a.shape != (3,) or b.shape != (3,) or length <= 0:
+        raise ValueError("invalid capsule axis")
+    d /= length
+    u = np.cross(d, np.array([0.0, 0.0, 1.0]))
+    if np.linalg.norm(u) < 1e-9:
+        u = np.cross(d, np.array([0.0, 1.0, 0.0]))
+    u /= np.linalg.norm(u)
+    return d, u, np.cross(d, u)
+
+
+def surface_point(
+    axis_start_m: NDArray[np.float64],
+    axis_end_m: NDArray[np.float64],
+    radius_m: float,
+    axial_m: float,
+    angle_rad: float,
+) -> NDArray[np.float64]:
+    if radius_m <= 0:
+        raise ValueError("invalid capsule radius")
+    d, u, v = capsule_basis(axis_start_m, axis_end_m)
+    return (
+        np.asarray(axis_start_m)
+        + axial_m * d
+        + radius_m * (math.cos(angle_rad) * u + math.sin(angle_rad) * v)
+    )
+
+
+def surface_coordinates(
+    axis_start_m: NDArray[np.float64],
+    axis_end_m: NDArray[np.float64],
+    point_m: NDArray[np.float64],
+) -> tuple[float, float, float]:
+    """Axial position, wrapped angle, and radial distance of a WORLD point."""
+    a = np.asarray(axis_start_m, dtype=np.float64)
+    p = np.asarray(point_m, dtype=np.float64)
+    if p.shape != (3,):
+        raise ValueError("invalid surface point")
+    d, u, v = capsule_basis(a, axis_end_m)
+    q = p - a
+    x = float(q @ d)
+    radial = q - x * d
+    return x, math.atan2(float(radial @ v), float(radial @ u)) % (2 * math.pi), float(np.linalg.norm(radial))
 
 
 @dataclass(frozen=True)

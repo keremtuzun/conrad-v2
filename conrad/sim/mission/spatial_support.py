@@ -13,7 +13,7 @@ from collections.abc import Callable
 import numpy as np
 from numpy.typing import NDArray
 
-from conrad.schemas.capsule_surface import CapsuleSurfaceGrid
+from conrad.schemas.capsule_surface import CapsuleSurfaceGrid, capsule_basis
 from conrad.schemas.structural_sensor import StructuralSensorModelV2
 from conrad.schemas.structural_support import CapsuleSurfaceSupport
 from conrad.schemas.world import SensorSpec
@@ -23,38 +23,6 @@ from conrad.twins.twin2s.world import SpatialWorld
 
 Visibility = Callable[[NDArray[np.float64], NDArray[np.float64]], NDArray[np.bool_]]
 Certificate = Callable[[float, float, float, float], bool]
-
-
-def capsule_basis(
-    axis_start_m: NDArray[np.float64], axis_end_m: NDArray[np.float64]
-) -> tuple[NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
-    """Axial and angular basis shared by support construction and sensor geometry."""
-    a, b = np.asarray(axis_start_m, dtype=np.float64), np.asarray(axis_end_m, dtype=np.float64)
-    d = b - a
-    length = float(np.linalg.norm(d))
-    if a.shape != (3,) or b.shape != (3,) or length <= 0:
-        raise ValueError("invalid capsule axis")
-    d /= length
-    u = np.cross(d, np.array([0.0, 0.0, 1.0]))
-    if np.linalg.norm(u) < 1e-9:
-        u = np.cross(d, np.array([0.0, 1.0, 0.0]))
-    u /= np.linalg.norm(u)
-    return d, u, np.cross(d, u)
-
-
-def surface_point(
-    axis_start_m: NDArray[np.float64],
-    axis_end_m: NDArray[np.float64],
-    radius_m: float,
-    axial_m: float,
-    angle_rad: float,
-) -> NDArray[np.float64]:
-    d, u, v = capsule_basis(axis_start_m, axis_end_m)
-    return (
-        np.asarray(axis_start_m)
-        + axial_m * d
-        + radius_m * (math.cos(angle_rad) * u + math.sin(angle_rad) * v)
-    )
 
 
 def pose_visible_capsule_supports(

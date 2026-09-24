@@ -6,7 +6,7 @@ from uuid import UUID
 import numpy as np
 import pytest
 
-from conrad.schemas.capsule_surface import CapsuleSurfaceGrid
+from conrad.schemas.capsule_surface import CapsuleSurfaceGrid, surface_coordinates, surface_point
 from conrad.schemas.frames import Pose
 from conrad.schemas.structural_sensor import StructuralSensorModelV2
 from conrad.schemas.structural_support import ParameterAuthority
@@ -158,3 +158,14 @@ def test_continuous_certificate_refuses_narrow_unproven_occlusion():
     rect = (0.9, 1.1, 0.0, 0.1)
     assert capsule_visibility_certificate(clear, *kwargs)(*rect)
     assert not capsule_visibility_certificate(occluded, *kwargs)(*rect)
+
+
+@pytest.mark.parametrize("angle", [-4 * math.pi, -0.01, 0.0, 0.01, math.pi, 2 * math.pi + 0.3])
+def test_world_surface_coordinates_round_trip_and_wrap(angle):
+    a = np.array([1.0, 2.0, 3.0])
+    b = np.array([3.0, 4.0, 5.0])
+    point = surface_point(a, b, 0.4, 1.2, angle)
+    x, wrapped, radial = surface_coordinates(a, b, point)
+    assert x == pytest.approx(1.2)
+    assert wrapped == pytest.approx(angle % (2 * math.pi), abs=1e-12)
+    assert radial == pytest.approx(0.4)

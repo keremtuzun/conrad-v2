@@ -7,11 +7,13 @@ from uuid import UUID
 import numpy as np
 import pytest
 
+from conrad.active.candidates import SensorOption, look_at
 from conrad.domains.technical.evidence import structured_evidence
 from conrad.domains.technical.spatial_mission import MODEL_VERSION, SpatialMissionModel2T
 from conrad.orchestration.association import StructuralAssociator, registry_of
 from conrad.orchestration.children import build_children
 from conrad.orchestration.mission_config import MissionRuntimeConfig
+from conrad.orchestration.mission_predictive import SpatialMissionPredictive, mission_predictive_provider
 from conrad.persistence.db import make_engine, migrate
 from conrad.persistence.replay_store import ReplayIntegrityError
 from conrad.persistence.repository import Repository
@@ -104,6 +106,29 @@ def test_spatial_model2t_child_initializes_and_persists_unknown_head(tmp_path):
     assert spatial.technical.condition != "INTACT"
     assert repo.head(spatial.belief_id) is not None
 
+    spec = world.context.sensor(world.context.structural_sensor_ids[0])
+    boresight = spec.model_copy(
+        update={"mount_pose": Pose(frame_id=spec.mount_pose.frame_id, position_m=(0, 0, 0))}
+    )
+    provider = mission_predictive_provider(children.m2t, children.m2s, boresight, 0.3)
+    assert isinstance(provider, SpatialMissionPredictive)
+    predictive = provider(children.m2t.export_beliefs())
+    assert predictive is not None and len(predictive.cell_prior) == 8
+    center = (a + b) / 2
+    candidate = look_at(
+        (float(origin[0]), float(origin[1]), float(origin[2])),
+        (float(center[0]), float(center[1]), float(center[2])),
+        WORLD,
+    )
+    option = SensorOption(sensor_id=spec.sensor_id, modality=spec.modality, min_range_m=0.3, max_range_m=4.0)
+    predicted_weights = predictive.cell_weights(candidate, option)
+    assert np.any(predicted_weights > 0)
+    assert np.any(predicted_weights == 0)
+    no_map = SpatialMissionPredictive(children.m2t, None, boresight, 0.3, provider.cfg)
+    no_map_predictive = no_map(children.m2t.export_beliefs())
+    assert no_map_predictive is not None
+    assert not np.any(no_map_predictive.cell_weights(candidate, option) > 0)
+
     inputs = replay_inputs(
         "SPATIAL-BELIEF-DEV",
         load_settings("configs/sim/mission_test_small.yaml"),
@@ -124,7 +149,7 @@ def test_spatial_model2t_child_initializes_and_persists_unknown_head(tmp_path):
         with pytest.raises(ReplayIntegrityError, match="version mismatch"):
             validate_spatial_replay_contract(edited)
 
-    short_cfg = cfg.model_copy(update={"duration_s": 1.0, "control_period_s": 0.1, "model2e_enabled": False})
+    short_cfg = cfg.model_copy(update={"duration_s": 4.0, "control_period_s": 0.1, "model2e_enabled": False})
     session = prepare(
         "GOLDEN-SMOKE",
         load_settings("configs/sim/mission_test_small.yaml"),

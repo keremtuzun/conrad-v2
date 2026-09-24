@@ -22,6 +22,7 @@ from uuid import UUID
 import numpy as np
 
 from conrad.robotics.estimation.interface import POSITION_FIX_KIND
+from conrad.schemas.capsule_surface import surface_point
 from conrad.schemas.frames import WORLD, FramedPoint, Pose, quat_to_matrix
 from conrad.schemas.ids import IdFactory
 from conrad.schemas.observation import Modality, Observation
@@ -31,7 +32,6 @@ from conrad.sim.mission.options import MissionWorldOptions
 from conrad.sim.mission.spatial_support import (
     capsule_visibility_certificate,
     pose_visible_capsule_supports,
-    surface_point,
 )
 from conrad.twins.base import SensingContext
 from conrad.twins.twin2e import Twin2E

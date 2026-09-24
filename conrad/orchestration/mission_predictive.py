@@ -30,9 +30,12 @@ from conrad.domains.technical.config import SensorCharacteristics
 from conrad.domains.technical.coverage import SurfaceGeometry
 from conrad.domains.technical.measurement import scatter_sigmas, view_mixture
 from conrad.domains.technical.registry import CORROSION_DEPTH, CRACK_LENGTH
+from conrad.domains.technical.spatial_mission import MODEL_VERSION as SPATIAL_MODEL_VERSION
+from conrad.domains.technical.spatial_mission import SpatialMissionModel2T
 from conrad.domains.technical.state import ComponentBelief
 from conrad.schemas.belief import BeliefMessage
-from conrad.schemas.frames import WORLD, Pose, SpatialSupport
+from conrad.schemas.capsule_surface import capsule_basis, surface_point
+from conrad.schemas.frames import WORLD, Pose, SpatialSupport, quat_to_matrix
 from conrad.schemas.world import SensorSpec
 
 QUANTITIES = (CORROSION_DEPTH, CRACK_LENGTH)
@@ -270,11 +273,166 @@ def mission_predictive_provider(
     boresight_sensor: SensorSpec,
     unknown_block_probability: float,
     track: Callable[[], Sequence[Sequence[float]]] | None = None,
-) -> MissionPredictive | None:
+) -> MissionPredictive | SpatialMissionPredictive | None:
     cfg = production_predictive_config()
     if cfg is None or not cfg.enabled:
         return None
+    if isinstance(m2t, SpatialMissionModel2T):
+        return SpatialMissionPredictive(m2t, m2s, boresight_sensor, unknown_block_probability, cfg)
     return MissionPredictive(m2t, m2s, boresight_sensor, unknown_block_probability, cfg, track)
+
+
+class SpatialMissionPredictive:
+    """MCBR predictive from unresolved local belief support, never legacy target state."""
+
+    def __init__(
+        self,
+        m2t: SpatialMissionModel2T,
+        m2s: Model2S | None,
+        sensor: SensorSpec,
+        unknown_block_probability: float,
+        cfg: SurfacePredictiveConfig,
+    ) -> None:
+        self.m2t, self.m2s, self.sensor = m2t, m2s, sensor
+        self.p_block, self.cfg = unknown_block_probability, cfg
+
+    def __call__(self, beliefs: Sequence[BeliefMessage]) -> SurfaceCellPredictive | None:
+        target = self.m2t.spatial_registry_id
+        if not any(m.world_entity_id == target and m.model_version == SPATIAL_MODEL_VERSION for m in beliefs):
+            return None
+        local = self.m2t.spatial
+        grid = local.grid
+        cell_width = min(grid.length_m / grid.axial_cells, grid.radius_m * 2 * math.pi / grid.sectors)
+        if (
+            local.sensor.minimum_resolvable_corrosion_m > cell_width
+            or local.sensor.minimum_resolvable_crack_m > cell_width
+        ):
+            return None
+        unresolved = np.asarray([1.0 - local.coverage_fraction(i) for i in range(grid.n_cells)])
+        total = float(unresolved.sum())
+        if total <= 1e-12:
+            return None
+        t = local.thresholds
+        noise = max(local.sensor.noise_sigma_m, 1e-6)
+        channels = (
+            QuantityChannel(
+                quantity=CORROSION_DEPTH,
+                unread_mean=t.corrosion_severe_m,
+                unread_var=((t.corrosion_failed_m - t.corrosion_degraded_m) / 2) ** 2,
+                look_std_unread=max(noise, t.corrosion_severe_m * 0.25),
+            ),
+            QuantityChannel(
+                quantity=CRACK_LENGTH,
+                unread_mean=t.crack_severe_m,
+                unread_var=((t.crack_failed_m - t.crack_degraded_m) / 2) ** 2,
+                look_std_unread=max(noise, t.crack_severe_m * 0.25),
+            ),
+        )
+        geometry = self.m2t.beliefs[target].geometry
+        if geometry is None or geometry.shape != "CAPSULE":
+            return None
+        return SurfaceCellPredictive(
+            cell_prior=unresolved / total,
+            channels=channels,
+            cell_weights=SpatialCellWeightFn(self, np.asarray(geometry.p0), np.asarray(geometry.p1)),
+            epistemic=min(1.0, total / grid.n_cells),
+        )
+
+
+class SpatialCellWeightFn:
+    """Predicted footprint overlap times worst probe visibility in the belief map."""
+
+    def __init__(self, owner: SpatialMissionPredictive, axis_start: np.ndarray, axis_end: np.ndarray) -> None:
+        self.owner, self.a, self.b = owner, axis_start, axis_end
+
+    def __call__(self, pose: Pose, option: SensorOption) -> np.ndarray:
+        o = self.owner
+        grid, model = o.m2t.spatial.grid, o.m2t.spatial.sensor
+        origin = np.asarray(pose.position_m, dtype=np.float64)
+        rot = quat_to_matrix(pose.orientation_wxyz)
+        forward = rot[:, 0]
+        d, u, v = capsule_basis(self.a, self.b)
+        q = origin - self.a
+        q_perp = q - (q @ d) * d
+        f_perp = forward - (forward @ d) * d
+        aa = float(f_perp @ f_perp)
+        bb = 2 * float(q_perp @ f_perp)
+        cc = float(q_perp @ q_perp) - grid.radius_m**2
+        disc = bb * bb - 4 * aa * cc
+        weights = np.zeros(grid.n_cells)
+        if aa <= 1e-12 or disc < 0:
+            return weights
+        roots = sorted(((-bb - math.sqrt(disc)) / (2 * aa), (-bb + math.sqrt(disc)) / (2 * aa)))
+        hit = next(
+            (
+                origin + t * forward
+                for t in roots
+                if t > 0
+                and option.min_range_m <= t <= option.max_range_m
+                and 0 <= float((origin + t * forward - self.a) @ d) <= grid.length_m
+            ),
+            None,
+        )
+        if hit is None:
+            return weights
+        xc = float((hit - self.a) @ d)
+        radial = hit - self.a - xc * d
+        ac = math.atan2(float(radial @ v), float(radial @ u)) % (2 * math.pi)
+        half_angle = model.footprint_height_m / (2 * grid.radius_m)
+        hfov = math.radians(float(o.sensor.parameters["hfov_deg"])) / 2
+        vfov = math.radians(float(o.sensor.parameters["vfov_deg"])) / 2
+        for i in range(grid.n_cells):
+            cell = grid.cell(i)
+            x_overlap = max(
+                0.0,
+                min(cell.x1, xc + model.footprint_width_m / 2)
+                - max(cell.x0, xc - model.footprint_width_m / 2),
+            )
+            angular_overlap = max(
+                (
+                    max(0.0, min(cell.a1, ac + shift + half_angle) - max(cell.a0, ac + shift - half_angle))
+                    for shift in (-2 * math.pi, 0.0, 2 * math.pi)
+                ),
+                default=0.0,
+            )
+            overlap = x_overlap * angular_overlap / cell.area
+            if overlap <= 0:
+                continue
+            if min(x_overlap, grid.radius_m * angular_overlap) < max(
+                model.minimum_resolvable_corrosion_m, model.minimum_resolvable_crack_m
+            ):
+                continue
+            samples = ((0.2, 0.2), (0.2, 0.8), (0.8, 0.2), (0.8, 0.8), (0.5, 0.5))
+            visible = []
+            for fx, fa in samples:
+                x = cell.x0 + fx * (cell.x1 - cell.x0)
+                angle = cell.a0 + fa * (cell.a1 - cell.a0)
+                point = surface_point(self.a, self.b, grid.radius_m, x, angle)
+                normal = math.cos(angle) * u + math.sin(angle) * v
+                ray = point - origin
+                distance = float(np.linalg.norm(ray))
+                local = rot.T @ ray
+                incidence = float((origin - point) @ normal) / max(distance, 1e-12)
+                az = math.atan2(float(local[1]), float(local[0]))
+                el = math.atan2(float(local[2]), math.hypot(float(local[0]), float(local[1])))
+                if (
+                    distance < option.min_range_m
+                    or distance > option.max_range_m
+                    or incidence <= 0
+                    or local[0] <= 0
+                    or abs(az) > hfov
+                    or abs(el) > vfov
+                ):
+                    visible.append(0.0)
+                    continue
+                if o.m2s is None:
+                    visible.append(0.0)  # no belief-side map can justify a clear path
+                else:
+                    probe = point + o.cfg.probe_offset_m * normal
+                    region = SpatialSupport(frame_id=WORLD, center_m=tuple(float(z) for z in probe))
+                    visible.append(float(o.m2s.predicted_visibility(pose, region, o.sensor, o.p_block).mean))
+            weights[i] = overlap * min(visible)
+        return weights
 
 
 class CellWeightFn:
