@@ -293,3 +293,19 @@ was 2.9013 m against its unchanged `<4.0 m` guard. This followed the revised
 navigation trajectory by one 20 ms control step; the assertion now allows
 `<30.1 s`, still far ahead of the historical 39.1 s failure. A final clean
 checkout regression at the completed branch HEAD remains required.
+
+## Development performance profile
+
+`scripts/profile_spatial_mission.py` reconstructs a fresh run from the
+recorded 480-second healthy development configuration. Its 80-second timing
+run (`SPATIAL-PROFILE-TIMING-80S-DEV`) used 800 ticks and 42.81 process CPU
+seconds (49.78 wall seconds while the broad test suite also ran). The 80
+spatial sensor support/response calls took 1.40 s total; 51 spatial Model2T
+ingests took 0.030 s, and 51 updates took 1.01 s. Three MCBR plans took
+5.42 s total. It persisted 1,096 belief revisions (3,474,536 payload bytes)
+and a 17,347,658-byte bundle. A separate allocation-traced 80-second run
+reported a 40,482,797-byte Python allocation peak, but tracing inflated wall
+time to 159.52 s and MCBR time to 26.73 s; those traced timings are not used
+for throughput. These measurements are development, on this Windows host,
+with concurrent pytest; they are not a formal latency guarantee. Unity step
+overhead and longer-mission scaling still need measurement.

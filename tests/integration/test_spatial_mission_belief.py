@@ -119,6 +119,9 @@ def test_spatial_observation_reaches_model2t_through_mission_perception(tmp_path
             assert any(row["registry_id"] == str(target) for row in session.runtime.perception.structural_log)
         else:
             assert head.technical.condition is None
+            assert isinstance(session.runtime.m2t, SpatialMissionModel2T)
+            unresolved = session.runtime.m2t.spatial.unresolved
+            assert unresolved and len(unresolved) == len(set(unresolved))
     finally:
         session.finish()
 

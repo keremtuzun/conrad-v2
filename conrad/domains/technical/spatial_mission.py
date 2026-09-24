@@ -85,10 +85,10 @@ class SpatialMissionModel2T(Model2T):
         for ev in evidence:
             target = any(c.registry_entity_id == self.spatial_registry_id for c in ev.entity_candidates)
             if target:
-                if ev.structural_support is not None and self.spatial.ingest(ev):
-                    self._spatial_pending.append(ev)
-                else:
+                if ev.structural_support is None:
                     self.spatial.unresolved.append(ev.evidence_id)
+                elif self.spatial.ingest(ev):
+                    self._spatial_pending.append(ev)
             elif ev.structural_support is not None:
                 raise ValueError("spatial structural evidence associated with an unconfigured component")
             else:
