@@ -22,6 +22,8 @@ CASES: tuple[tuple[str, Any, str | None, bool], ...] = (
     ("occluded_defect", "occluded-defect", None, False),
     ("covered_corrosion", {"corrosion_depth_m": 0.008}, "SEVERE", True),
     ("covered_crack", {"crack_length_m": 0.02, "crack_depth_m": 0.006}, "SEVERE", True),
+    ("subthreshold_crack_length", {"crack_length_m": 0.009, "crack_depth_m": 0.006}, "INTACT", True),
+    ("subthreshold_crack_depth", {"crack_length_m": 0.02, "crack_depth_m": 0.0009}, "INTACT", True),
     ("subresolution", "subresolution", "INTACT", True),
     ("heterogeneous_healthy", "heterogeneous-healthy", "INTACT", True),
     ("multiple_defects", "multiple-defects", "SEVERE", True),

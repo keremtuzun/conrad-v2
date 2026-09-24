@@ -258,6 +258,8 @@ def test_v2_resolution_cells_separate_same_mean_and_reject_coarse_credit():
         lateral_resolution_m=2 * math.pi,
         minimum_resolvable_corrosion_m=0.1,
         minimum_resolvable_crack_m=0.1,
+        minimum_detectable_crack_length_m=0.01,
+        minimum_detectable_crack_depth_m=0.001,
         range_min_m=0.3,
         range_max_m=4.0,
         noise_sigma_m=0,
@@ -294,6 +296,8 @@ def test_v2_subresolution_patch_does_not_appear_as_detected():
         lateral_resolution_m=2 * math.pi,
         minimum_resolvable_corrosion_m=0.1,
         minimum_resolvable_crack_m=0.1,
+        minimum_detectable_crack_length_m=0.01,
+        minimum_detectable_crack_depth_m=0.001,
         range_min_m=0.3,
         range_max_m=4.0,
         noise_sigma_m=0,
@@ -307,6 +311,45 @@ def test_v2_subresolution_patch_does_not_appear_as_detected():
     truth = SpatialStructuralTruth(GRID, (LocalStructuralState(),) * 2, (straddling,))
     assert truth.measure(support(GRID.cell(0), model), model).corrosion_depth_m == 0.01
     assert truth.measure(support(GRID.cell(1), model), model).corrosion_depth_m == 0.01
+
+
+@pytest.mark.parametrize(
+    ("length", "depth", "detected"),
+    [
+        (0.009, 0.002, False),
+        (0.02, 0.0009, False),
+        (0.01, 0.001, True),
+        (0.02, 0.006, True),
+    ],
+)
+@pytest.mark.parametrize("use_patch", [False, True])
+def test_v2_crack_requires_both_declared_state_thresholds(length, depth, detected, use_patch):
+    model = StructuralSensorModelV2(
+        footprint_width_m=1.0,
+        footprint_height_m=2 * math.pi,
+        axial_resolution_m=1.0,
+        lateral_resolution_m=2 * math.pi,
+        minimum_resolvable_corrosion_m=0.1,
+        minimum_resolvable_crack_m=0.1,
+        minimum_detectable_crack_length_m=0.01,
+        minimum_detectable_crack_depth_m=0.001,
+        range_min_m=0.3,
+        range_max_m=4.0,
+        noise_sigma_m=0,
+        authority=ParameterAuthority.ENGINEERING_ESTIMATE,
+    )
+    defect = LocalStructuralState(crack_length_m=length, crack_depth_m=depth)
+    truth = (
+        SpatialStructuralTruth(
+            GRID,
+            (LocalStructuralState(),) * 2,
+            (TruthPatch(SurfaceRect(0.2, 0.4, 1.0, 1.2), defect),),
+        )
+        if use_patch
+        else SpatialStructuralTruth(GRID, (defect, LocalStructuralState()))
+    )
+    measured = truth.measure(support(GRID.cell(0), model), model)
+    assert measured == (defect if detected else LocalStructuralState())
 
 
 def test_optional_local_evolution_keeps_independent_cells_and_patches():

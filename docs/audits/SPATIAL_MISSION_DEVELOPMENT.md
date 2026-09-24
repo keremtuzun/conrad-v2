@@ -345,6 +345,17 @@ local world should report `SEVERE` without any target `INTACT` revision.
 This is a DEVELOPMENT pair, not validation or a gate. Its outcomes will be
 recorded without changing these files or expectations after inspection.
 
+The uniform half, `SPATIAL-SAMEMEAN-UNIFORM-480S-DEV`, completed with
+1,238 associated target Evidence records, first direct `INTACT` at 298.3 s,
+full required coverage, final `OBSERVED INTACT`, and zero severe target
+revisions. The local half, `SPATIAL-SAMEMEAN-LOCAL-480S-DEV`, completed. Its
+398 spatial target revisions contained 386 `SEVERE`, 12 not-yet-observed,
+and **zero `INTACT`** conditions. The final target condition was `SEVERE`
+at 479.3 s, with observed surface coverage 0.6336. Thus the equal global
+means led to different component decisions in the declared closed-loop pair.
+This pair used the earlier crack detectability contract; its corrosion-only
+result remains development evidence, not validation for the new contract.
+
 The fresh current-contract exact-survey healthy mission
 `SPATIAL-V2-HEALTHY-480S-DEV` completed before that pair. It again consumed
 1,238 associated target Evidence records and first reached direct qualified
@@ -353,4 +364,12 @@ coverage was 1.0, condition `OBSERVED INTACT`, and raw observational
 uncertainty 0.0. There were 350 spatial target revisions and no `SEVERE`
 revision. The 480-second run consumed 488.23 process CPU seconds on this
 contended host and wrote a 119,730,638-byte bundle. Full current-contract
-replay is still pending at this entry; no validation or gate result is implied.
+replay verified 1,619 files and 478 objects, then reproduced all 2,402
+Observation payloads, 1,922 Evidence payloads, 8,001 belief payloads, and
+the trajectory artifact exactly. No validation or gate result is implied.
+That replay also used the earlier crack detectability contract. The later
+`spatial-synthetic-detectability-v2` adds independent configurable positive
+crack length and depth thresholds, while retaining a separate patch-size
+limit. Development seed 401 passed both subthreshold crack mission negative
+controls and the covered crack positive control. A fresh current-contract
+closed-loop mission and replay remain pending.

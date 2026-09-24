@@ -14,10 +14,10 @@ sensor parameters. No physical calibration or deployment claim follows.
 | D Local belief update | Spatial mission Model2T updates only associated supported cells; partial and uncertain support fail closed | DEVELOPMENT VERIFIED; prospective validation pending |
 | E Conservative condition | Required-domain complete coverage and independent looks for qualified intact; severe local finding overrides incomplete coverage | DEVELOPMENT VERIFIED; prospective validation pending |
 | F Identifiability | Controlled mission sensor/Evidence/Model2T sweep separates same-mean worlds; one closed-loop healthy and two defect development missions | PARTIAL: independent closed-loop case matrix pending |
-| G Synthetic detectability | Versioned engineering-estimate resolution and peak-response semantics, subresolution negative control | DEVELOPMENT VERIFIED; prospective validation pending |
+| G Synthetic detectability | Detectability v2: independent explicit crack length/depth thresholds plus patch size; unit boundary and mission-path negative controls passed | DEVELOPMENT VERIFIED; prospective validation pending |
 | H Kernel/Unity parity | Rebuilt player SHA pinned; 9 opt-in live tests across clear/occluded, exact/bounded, deterministic/noisy cases | DEVELOPMENT VERIFIED; prospective parity partition pending |
 | I Truth boundary | Static import guards and runtime artifact scan passed on spatial mission development path | DEVELOPMENT VERIFIED; current-HEAD sweep pending |
-| J Replay/versioning | Full exact-survey 480 s replay at earlier policy; bounded 80 s exact payload replay under registration v2; mismatch mutation test | PARTIAL: full exact-survey replay at current HEAD pending |
+| J Replay/versioning | Full registration-v2 exact-survey 480 s replay (2,402 Observation, 1,922 Evidence, 8,001 belief payloads equal); bounded 80 s exact payload replay; mismatch mutation test. These predate detectability-v2 | PARTIAL: new-contract full replay pending |
 
 The ordinary clean-checkout suite passed at `68de752` (1,452 passed,
 14 skipped, 121 deselected, 3 historical xfailed). A later clean checkout at
@@ -34,7 +34,10 @@ Architecture A-J cannot be marked PASS from this development ledger. Before
 freeze, a declared prospective validation partition must test the case
 matrix and matched Unity semantics without changing criteria after seeing
 results. The full healthy closed-loop run and replay at the current
-registration contract must complete. Performance evidence includes 80-second
+registration contract completed in development under the earlier detectability
+contract. The declared 480-second same-mean development pair completed: the
+uniform world reached qualified `INTACT`, and the local world had 386 `SEVERE`
+revisions and zero `INTACT` revisions. Performance evidence includes 80-second
 untraced kernel timing with actual MCBR plans; Unity step overhead still needs
 a measured development comparison. I4/I7 impact, I5 reopening, and I6
 freshness remain ordered after architecture freeze.

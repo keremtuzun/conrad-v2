@@ -7,7 +7,7 @@ from pydantic import Field, model_validator
 from conrad.schemas.base import ConradModel
 from conrad.schemas.structural_support import ParameterAuthority
 
-DETECTABILITY_VERSION = "spatial-synthetic-detectability-v1"
+DETECTABILITY_VERSION = "spatial-synthetic-detectability-v2"
 
 
 class StructuralSensorModel(ConradModel):
@@ -51,6 +51,8 @@ class StructuralSensorModelV2(StructuralSensorModel):
     aggregation_kernel: str = "RESOLUTION_CELL_SAMPLES"
     axial_resolution_m: float = Field(gt=0)
     lateral_resolution_m: float = Field(gt=0)
+    minimum_detectable_crack_length_m: float = Field(gt=0)
+    minimum_detectable_crack_depth_m: float = Field(gt=0)
 
     @model_validator(mode="after")
     def _valid_v2(self) -> StructuralSensorModelV2:

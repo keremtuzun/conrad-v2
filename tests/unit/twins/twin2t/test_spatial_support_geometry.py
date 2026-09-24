@@ -29,6 +29,8 @@ def _model() -> StructuralSensorModelV2:
         lateral_resolution_m=math.pi / 2,
         minimum_resolvable_corrosion_m=0.1,
         minimum_resolvable_crack_m=0.1,
+        minimum_detectable_crack_length_m=0.01,
+        minimum_detectable_crack_depth_m=0.001,
         range_min_m=0.3,
         range_max_m=4.0,
         noise_sigma_m=0,

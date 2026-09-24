@@ -180,8 +180,12 @@ class SpatialStructuralTruth:
                     )
                     if patch is None:
                         max_corrosion = max(max_corrosion, state.corrosion_depth_m)
-                        max_crack = max(max_crack, state.crack_length_m)
-                        max_crack_depth = max(max_crack_depth, state.crack_depth_m)
+                        if not isinstance(sensor, StructuralSensorModelV2) or (
+                            state.crack_length_m >= sensor.minimum_detectable_crack_length_m
+                            and state.crack_depth_m >= sensor.minimum_detectable_crack_depth_m
+                        ):
+                            max_crack = max(max_crack, state.crack_length_m)
+                            max_crack_depth = max(max_crack_depth, state.crack_depth_m)
                     else:
                         overlap = patch.rect.intersection(r)
                         sized_rect = patch.rect if isinstance(sensor, StructuralSensorModelV2) else overlap
@@ -191,7 +195,17 @@ class SpatialStructuralTruth:
                         )
                         if overlap.area > 0 and size >= sensor.minimum_resolvable_corrosion_m:
                             max_corrosion = max(max_corrosion, state.corrosion_depth_m)
-                        if overlap.area > 0 and size >= sensor.minimum_resolvable_crack_m:
+                        if (
+                            overlap.area > 0
+                            and size >= sensor.minimum_resolvable_crack_m
+                            and (
+                                not isinstance(sensor, StructuralSensorModelV2)
+                                or (
+                                    state.crack_length_m >= sensor.minimum_detectable_crack_length_m
+                                    and state.crack_depth_m >= sensor.minimum_detectable_crack_depth_m
+                                )
+                            )
+                        ):
                             max_crack = max(max_crack, state.crack_length_m)
                             max_crack_depth = max(max_crack_depth, state.crack_depth_m)
         if sensor.aggregation_kernel in ("LOCAL_MAX", "RESOLUTION_CELL_SAMPLES"):

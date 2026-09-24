@@ -330,6 +330,18 @@ def test_spatial_model2t_child_initializes_and_persists_unknown_head(tmp_path):
         pytest.param("occluded-defect", None, False, id="occluded-local-defect"),
         pytest.param({"corrosion_depth_m": 0.008}, "SEVERE", True, id="covered-corrosion"),
         pytest.param({"crack_length_m": 0.02, "crack_depth_m": 0.006}, "SEVERE", True, id="covered-crack"),
+        pytest.param(
+            {"crack_length_m": 0.009, "crack_depth_m": 0.006},
+            "INTACT",
+            True,
+            id="subthreshold-crack-length",
+        ),
+        pytest.param(
+            {"crack_length_m": 0.02, "crack_depth_m": 0.0009},
+            "INTACT",
+            True,
+            id="subthreshold-crack-depth",
+        ),
         pytest.param("subresolution", "INTACT", True, id="subresolution-qualified-intact"),
         pytest.param("heterogeneous-healthy", "INTACT", True, id="heterogeneous-healthy"),
         pytest.param("multiple-defects", "SEVERE", True, id="separated-corrosion-and-crack"),

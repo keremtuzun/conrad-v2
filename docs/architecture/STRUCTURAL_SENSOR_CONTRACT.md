@@ -11,13 +11,21 @@ pass.
 `structural-sensor-v2` is an additional synthetic contract. It partitions an
 already visible and clipped surface rectangle into axial and lateral resolution
 cells. Each cell returns a peak only for local features meeting the declared
-minimum resolvable size. The cell geometry and detectability values are
+minimum resolvable size. From detectability contract
+`spatial-synthetic-detectability-v2`, a crack also needs both its local length
+and depth to meet separate, explicit positive thresholds. Patch footprint size
+is a separate test; it does not stand in for crack length or depth. The cell
+geometry and detectability values are
 `ENGINEERING_ESTIMATE`; the peak response is an idealized model hypothesis.
 For v2 only, a resolvable patch that straddles a cell boundary produces a
 peak in each cell with nonzero overlap. This is deliberately conservative
 against false intact labels and is an uncalibrated response hypothesis.
-The partitioner does not calculate pose, visibility or occlusion, so it cannot
-yet be used as mission evidence or support an architecture freeze.
+The mission response first uses the pose-derived support and continuous
+visibility certificate. Range and orientation dependence are deterministic
+step responses at the declared working-range and field-of-view/incidence
+limits. The response uses only truth under the visible support, then applies
+the declared synthetic measurement noise. These are software hypotheses,
+not measured detection curves.
 
 ## Parameter authority
 
@@ -36,7 +44,8 @@ yet be used as mission evidence or support an architecture freeze.
 | Physical minimum corrosion patch | m | unavailable | No payload measurement | UNKNOWN |
 | Synthetic minimum corrosion patch | m | explicit per configuration, no default | `StructuralSensorModel` | ENGINEERING_ESTIMATE |
 | Physical minimum crack length and depth | m | unavailable | No payload measurement | UNKNOWN |
-| Synthetic minimum crack size | m | explicit per configuration, no default | `StructuralSensorModel` | ENGINEERING_ESTIMATE |
+| Synthetic minimum crack patch size | m | explicit per configuration, no default | `StructuralSensorModel.minimum_resolvable_crack_m` | ENGINEERING_ESTIMATE |
+| Synthetic minimum crack length and depth | m | explicit per configuration, no default | `StructuralSensorModelV2.minimum_detectable_crack_length_m`, `minimum_detectable_crack_depth_m` | ENGINEERING_ESTIMATE |
 | Physical structural measurement noise | m, one sigma | unavailable | No payload measurement | UNKNOWN |
 | Synthetic structural measurement noise | m, one sigma | explicit per configuration, no default | `StructuralSensorModel` | ENGINEERING_ESTIMATE |
 | Pose position uncertainty | m | absent unless pose covariance supplied | `Pose.covariance_6x6` | UNKNOWN |
@@ -45,7 +54,8 @@ yet be used as mission evidence or support an architecture freeze.
 | Synthetic aggregation rule | enum | `AREA_MEAN`, `LOCAL_MAX`, `RESOLUTION_CELL_SAMPLES` | sensor model version | SPECIFIED |
 | Physical aggregation rule | response function | unavailable | No payload datasheet | UNKNOWN |
 
-For the v2 synthetic model, `axial_resolution_m` and `lateral_resolution_m`
+For the v2 synthetic model, `axial_resolution_m`, `lateral_resolution_m`,
+`minimum_detectable_crack_length_m`, and `minimum_detectable_crack_depth_m`
 are required configuration values in metres. There is no default. Its
 `RESOLUTION_CELL_SAMPLES` mode is not a physical measurement claim. An
 `AREA_MEAN` response remains ambiguous for same-global-mean surfaces;
@@ -53,8 +63,9 @@ are required configuration values in metres. There is no default. Its
 in the support and sensor configuration digest.
 
 `OBSERVED_INTACT` in the local model means that, under the declared synthetic
-peak-response and noise assumptions, no defect above the declared minimum
-resolvable scale was found over every required surface cell. It does not rule
+peak-response and noise assumptions, no defect above all applicable declared
+detectability limits was found over every required surface cell. Crack length
+and depth must both clear their limits to count as detectable. It does not rule
 out smaller defects or establish a physical detection probability. Unknown
 support edges, association failure, insufficient coverage, or a coarse area
 mean prohibit that status.

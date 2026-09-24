@@ -9,7 +9,7 @@ be tested, but a physical detection or endurance claim requires measurements.
 | Footprint versus standoff | `StructuralSensorModelV2.footprint_width_m`, `footprint_height_m`; ENGINEERING_ESTIMATE in tests | Measure visible surface width and height across the operating range | Structural sensor model, then mission sensor options |
 | Field of view | 100 by 80 deg; ENGINEERING_ESTIMATE | Measure usable horizontal and vertical FOV | `StructuralSensorOptions.hfov_deg`, `vfov_deg` |
 | Working range and standoff | 0.3 to 4.0 m; ENGINEERING_ESTIMATE | Establish detection quality versus standoff | `StructuralSensorOptions.min_range_m`, `max_range_m`; structural sensor model |
-| Crack detectability | `minimum_resolvable_crack_m`; ENGINEERING_ESTIMATE in tests | Detection probability versus crack length, depth, orientation and surface | `StructuralSensorModelV2` detectability settings |
+| Crack detectability | Patch size, crack length, and crack depth limits are separate `ENGINEERING_ESTIMATE` fields | Detection probability versus crack length, depth, orientation and surface | `StructuralSensorModelV2.minimum_resolvable_crack_m`, `minimum_detectable_crack_length_m`, `minimum_detectable_crack_depth_m` |
 | Corrosion spatial resolution | `minimum_resolvable_corrosion_m`, `axial_resolution_m`, `lateral_resolution_m`; ENGINEERING_ESTIMATE in tests | Minimum resolvable patch and pixel footprint across range | `StructuralSensorModelV2` |
 | Structural measurement noise | `noise_sigma_m`; ENGINEERING_ESTIMATE in tests | Repeatability and bias by condition and material | Structural sensor model |
 | Range noise versus range | 0.05 m constant; ENGINEERING_ESTIMATE | Range error curve across standoff | `StructuralSensorOptions.range_sigma_m` |

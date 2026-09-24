@@ -35,6 +35,9 @@ def main() -> None:
     parser.add_argument("--survey-sigma-m", type=float, default=None)
     parser.add_argument("--survey-endpoint-bound-m", type=float, default=None)
     parser.add_argument("--spatial-truth-json", type=Path, default=None)
+    parser.add_argument(
+        "--sensor-json", type=Path, default=None, help="explicit replacement synthetic sensor"
+    )
     args = parser.parse_args()
     source, output = args.source.resolve(), args.output.resolve()
     if output.exists() or source == output or source in output.parents:
@@ -43,7 +46,16 @@ def main() -> None:
         raise SystemExit("--duration-s must be positive")
     manifest = json.loads((source / "bundle_manifest.json").read_text(encoding="utf-8"))
     inputs = manifest["replay_inputs"]
-    options = MissionWorldOptions.model_validate(inputs["mission_world_options"])
+    world_raw = inputs["mission_world_options"]
+    runtime_raw = inputs["mission_runtime_config"]
+    if args.sensor_json is not None:
+        sensor_raw = json.loads(args.sensor_json.read_text(encoding="utf-8"))
+        world_raw = {**world_raw, "spatial_sensor_model": sensor_raw}
+        runtime_raw = {
+            **runtime_raw,
+            "model2t_spatial": {**runtime_raw["model2t_spatial"], "sensor": sensor_raw},
+        }
+    options = MissionWorldOptions.model_validate(world_raw)
     if args.spatial_truth_json is not None:
         options = MissionWorldOptions.model_validate(
             {
@@ -61,7 +73,7 @@ def main() -> None:
                 "survey_endpoint_bound_m": args.survey_endpoint_bound_m,
             }
         )
-    runtime = MissionRuntimeConfig.model_validate(inputs["mission_runtime_config"])
+    runtime = MissionRuntimeConfig.model_validate(runtime_raw)
     runtime = runtime.model_copy(update={"duration_s": args.duration_s})
     if options.twin2t_truth_model != "spatial_v1" or runtime.model2t_backend != "spatial_v1":
         raise SystemExit("source must use spatial_v1 truth and belief")
@@ -128,6 +140,7 @@ def main() -> None:
         "spatial_truth_json": None
         if args.spatial_truth_json is None
         else str(args.spatial_truth_json.resolve()),
+        "sensor_json": None if args.sensor_json is None else str(args.sensor_json.resolve()),
         "run_dir": str(output),
         "duration_s": runtime.duration_s,
         "ticks": ticks,

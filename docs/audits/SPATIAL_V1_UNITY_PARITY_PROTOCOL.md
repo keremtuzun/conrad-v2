@@ -7,6 +7,8 @@ clear/view-occluder, deterministic/noisy synthetic structural response, and
 exact/bounded design survey, for 16 matched cases. The bounded survey uses
 Gaussian scale 0.001 m with an explicit 0.002 m hard endpoint bound; it does
 not claim a measured physical survey. One Unity player runs at a time.
+This validation uses `spatial-synthetic-detectability-v2` and the same
+explicit crack length and depth limits as the controlled-view matrix.
 
 Pinned player: Unity 6000.5.9f1, SHA-256
 `36c5c9f13481406382a8e9ef8fc0ea7cdf055c43bb12fc8fd545b07c199cd277`.
