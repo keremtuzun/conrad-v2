@@ -344,3 +344,13 @@ The uniform world should earn qualified `INTACT` after enough coverage; the
 local world should report `SEVERE` without any target `INTACT` revision.
 This is a DEVELOPMENT pair, not validation or a gate. Its outcomes will be
 recorded without changing these files or expectations after inspection.
+
+The fresh current-contract exact-survey healthy mission
+`SPATIAL-V2-HEALTHY-480S-DEV` completed before that pair. It again consumed
+1,238 associated target Evidence records and first reached direct qualified
+`INTACT` at 298.3 s, with 168 independent observations; final required
+coverage was 1.0, condition `OBSERVED INTACT`, and raw observational
+uncertainty 0.0. There were 350 spatial target revisions and no `SEVERE`
+revision. The 480-second run consumed 488.23 process CPU seconds on this
+contended host and wrote a 119,730,638-byte bundle. Full current-contract
+replay is still pending at this entry; no validation or gate result is implied.

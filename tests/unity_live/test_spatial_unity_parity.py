@@ -31,6 +31,10 @@ from tests.integration.test_spatial_mission_truth import _options
 @pytest.mark.parametrize("noisy", [False, True], ids=["deterministic", "sensor-noise"])
 @pytest.mark.parametrize("bounded_survey", [False, True], ids=["exact-survey", "bounded-survey"])
 def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path, occluded, noisy, bounded_survey):
+    _exercise_kernel_unity_parity(tmp_path, occluded, noisy, bounded_survey, 402 if noisy else 401)
+
+
+def _exercise_kernel_unity_parity(tmp_path, occluded, noisy, bounded_survey, world_seed):
     player = find_player()
     if player is None:
         pytest.skip("rebuilt Unity player unavailable")
@@ -64,7 +68,7 @@ def test_matched_kernel_unity_spatial_support_and_measurements(tmp_path, occlude
         )
     opts = opts.model_copy(update=changes)
     world = UnityMissionWorld.build(
-        402 if noisy else 401,
+        world_seed,
         "SPATIAL-UNITY-PARITY-DEV",
         opts,
         UUID(int=810),
