@@ -1,125 +1,188 @@
-"""Profile a fresh spatial development mission from a recorded configuration.
-
-This tool creates a new run under --output and never modifies the source bundle.
-Its timings include Python call overhead but exclude final bundle serialization.
-"""
+"""Development-only kernel mission profile; never records gate evidence."""
 
 from __future__ import annotations
 
 import argparse
+import cProfile
 import json
+import pstats
 import sqlite3
 import time
 import tracemalloc
-from collections import defaultdict
-from functools import wraps
 from pathlib import Path
 from typing import Any
-from unittest.mock import patch
 
-from conrad.active.planner import MCBRPlanner
-from conrad.domains.technical.spatial_mission import SpatialMissionModel2T
 from conrad.orchestration.mission_config import MissionRuntimeConfig
-from conrad.settings import ConradSettings
-from conrad.sim.mission.options import MissionWorldOptions
+from conrad.schemas.structural_sensor import StructuralSensorModelV2
+from conrad.schemas.structural_support import ParameterAuthority
+from conrad.settings import load_settings
+from conrad.sim.mission.options import MissionWorldOptions, SpatialTruthOptions
 from conrad.sim.mission.run import prepare
-from conrad.sim.mission.sensing import MissionSensorSuite
+
+
+def _sensor() -> StructuralSensorModelV2:
+    return StructuralSensorModelV2(
+        footprint_width_m=1.0,
+        footprint_height_m=1.0,
+        axial_resolution_m=0.2,
+        lateral_resolution_m=0.2,
+        minimum_resolvable_corrosion_m=0.05,
+        minimum_resolvable_crack_m=0.05,
+        range_min_m=0.3,
+        range_max_m=4.0,
+        noise_sigma_m=0.0,
+        position_uncertainty_m=0.0,
+        orientation_uncertainty_rad=0.0,
+        footprint_uncertainty_m=0.0,
+        authority=ParameterAuthority.ENGINEERING_ESTIMATE,
+    )
+
+
+def _settings(spatial: bool, duration_s: float) -> tuple[MissionWorldOptions, MissionRuntimeConfig]:
+    base: dict[str, Any] = {
+        "family": "pipeline_with_supports",
+        "survey_sigma_m": 0.0,
+        "ecological_enabled": False,
+    }
+    runtime: dict[str, Any] = {
+        "duration_s": duration_s,
+        "control_period_s": 0.1,
+        "model2e_enabled": False,
+    }
+    if spatial:
+        sensor = _sensor()
+        base.update(
+            twin2t_truth_model="spatial_v1",
+            spatial_truth=SpatialTruthOptions(axial_cells=2, sectors=4),
+            spatial_sensor_model=sensor,
+        )
+        runtime.update(
+            model2t_backend="spatial_v1",
+            max_plans_per_need=24,
+            decision={"max_information_attempts": 24},
+            model2t_spatial={
+                "axial_cells": 2,
+                "sectors": 4,
+                "sensor": sensor.model_dump(mode="json"),
+                "thresholds": {
+                    "corrosion_degraded_m": 0.002,
+                    "corrosion_severe_m": 0.006,
+                    "corrosion_failed_m": 0.012,
+                    "crack_degraded_m": 0.003,
+                    "crack_severe_m": 0.01,
+                    "crack_failed_m": 0.03,
+                },
+                "required_looks": 1,
+                "required_domain": {"axial_fraction": [0.05, 0.95], "sectors": [2, 3]},
+            },
+        )
+    return MissionWorldOptions.model_validate(base), MissionRuntimeConfig.model_validate(runtime)
+
+
+def _counts(run_dir: Path) -> dict[str, int]:
+    con = sqlite3.connect(str(run_dir / "conrad.sqlite"))
+    try:
+        return {
+            table: int(con.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0])
+            for table in ("observations", "evidence", "belief_revisions", "commands")
+        }
+    finally:
+        con.close()
+
+
+def profile(out: Path, label: str, *, spatial: bool, duration_s: float) -> dict[str, Any]:
+    run_dir = out / label
+    if run_dir.exists():
+        raise FileExistsError(f"refusing to replace profile run {run_dir}")
+    world, runtime = _settings(spatial, duration_s)
+    settings = load_settings("configs/sim/mission_test_small.yaml")
+    tracemalloc.start()
+    started = time.perf_counter()
+    session = prepare(
+        "GOLDEN-SMOKE",
+        settings,
+        run_id=label,
+        runs_root=out,
+        stored_world=world,
+        stored_runtime=runtime,
+    )
+    prepared = time.perf_counter()
+    cpu = cProfile.Profile()
+    cpu.enable()
+    try:
+        session.run()
+    finally:
+        cpu.disable()
+    ran = time.perf_counter()
+    session.finish()
+    finished = time.perf_counter()
+    _, peak = tracemalloc.get_traced_memory()
+    tracemalloc.stop()
+    cpu.dump_stats(str(out / f"{label}.pstats"))
+    stats: Any = pstats.Stats(cpu)
+    selected = (
+        "spatial_mission.py",
+        "spatial_local.py",
+        "spatial_support.py",
+        "spatial_sensing.py",
+        "active/planner.py",
+        "active/surface_predictive.py",
+        "active/gap.py",
+        "active/eig.py",
+    )
+    cpu_functions = [
+        {
+            "file": Path(key[0]).name,
+            "line": key[1],
+            "function": key[2],
+            "calls": values[1],
+            "self_cpu_s": values[2],
+            "cumulative_cpu_s": values[3],
+        }
+        for key, values in stats.stats.items()
+        if any(name in key[0].lower().replace("\\", "/") for name in selected)
+    ]
+    cpu_functions.sort(key=lambda row: row["cumulative_cpu_s"], reverse=True)
+    return {
+        "backend": "spatial_v1" if spatial else "legacy",
+        "run_dir": str(run_dir),
+        "seed": settings.run.seed,
+        "duration_s": runtime.duration_s,
+        "prepare_wall_s": prepared - started,
+        "run_wall_s": ran - prepared,
+        "finish_wall_s": finished - ran,
+        "peak_traced_python_bytes": peak,
+        "bundle_bytes": sum(path.stat().st_size for path in run_dir.rglob("*") if path.is_file()),
+        "rows": _counts(run_dir),
+        "cpu_functions": cpu_functions[:30],
+    }
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", type=Path, required=True, help="completed development bundle")
-    parser.add_argument("--output", type=Path, required=True, help="new, absent output directory")
-    parser.add_argument("--duration-s", type=float, default=80.0)
-    parser.add_argument("--trace-memory", action="store_true", help="trace Python allocations (slows timing)")
+    parser.add_argument("output", type=Path, help="new profile directory")
+    parser.add_argument("--duration-s", type=float, default=24.0, help="simulated mission duration")
+    parser.add_argument("--spatial-only", action="store_true", help="profile only spatial_v1")
     args = parser.parse_args()
-    source, output = args.source.resolve(), args.output.resolve()
-    if output.exists() or source == output or source in output.parents:
-        raise SystemExit("--output must be a new directory outside the source bundle")
     if args.duration_s <= 0:
-        raise SystemExit("--duration-s must be positive")
-    manifest = json.loads((source / "bundle_manifest.json").read_text(encoding="utf-8"))
-    inputs = manifest["replay_inputs"]
-    options = MissionWorldOptions.model_validate(inputs["mission_world_options"])
-    runtime = MissionRuntimeConfig.model_validate(inputs["mission_runtime_config"])
-    runtime = runtime.model_copy(update={"duration_s": args.duration_s})
-    if options.twin2t_truth_model != "spatial_v1" or runtime.model2t_backend != "spatial_v1":
-        raise SystemExit("source must use spatial_v1 truth and belief")
-
-    totals: dict[str, dict[str, float]] = defaultdict(lambda: {"calls": 0, "seconds": 0.0})
-
-    def timed(name: str, original: Any) -> Any:
-        @wraps(original)
-        def wrapper(*args: Any, **kwargs: Any) -> Any:
-            start = time.perf_counter()
-            try:
-                return original(*args, **kwargs)
-            finally:
-                totals[name]["calls"] += 1
-                totals[name]["seconds"] += time.perf_counter() - start
-
-        return wrapper
-
-    hooks = (
-        (MissionSensorSuite, "_spatial_structural", "sensor_support_and_response"),
-        (SpatialMissionModel2T, "ingest", "model2t_ingest"),
-        (SpatialMissionModel2T, "update_beliefs", "model2t_update"),
-        (MCBRPlanner, "plan", "mcbr_plan"),
-    )
-    from contextlib import ExitStack
-
-    with ExitStack() as stack:
-        for cls, attr, name in hooks:
-            stack.enter_context(patch.object(cls, attr, timed(name, getattr(cls, attr))))
-        session = prepare(
-            inputs["scenario_id"],
-            ConradSettings.model_validate(inputs["config_resolved"]),
-            run_id=output.name,
-            runs_root=output.parent,
-            stored_world=options,
-            stored_runtime=runtime,
-            capture=False,
+        parser.error("--duration-s must be positive")
+    out: Path = args.output.resolve()
+    if out.exists():
+        raise FileExistsError(f"refusing to reuse profile directory {out}")
+    out.mkdir(parents=True)
+    rows = []
+    modes = (
+        (("PROFILE-SPATIAL-DEV", True),)
+        if args.spatial_only
+        else (
+            ("PROFILE-LEGACY-DEV", False),
+            ("PROFILE-SPATIAL-DEV", True),
         )
-        traced_start = traced_peak = None
-        if args.trace_memory:
-            tracemalloc.start()
-            traced_start, _ = tracemalloc.get_traced_memory()
-        ticks = round(runtime.duration_s / runtime.control_period_s)
-        start = time.perf_counter()
-        cpu_start = time.process_time()
-        progress_ticks = max(1, round(10.0 / runtime.control_period_s))
-        for tick in range(ticks):
-            session.step()
-            if (tick + 1) % progress_ticks == 0:
-                print(f"profiled {(tick + 1) * runtime.control_period_s:.1f} simulated seconds", flush=True)
-        step_seconds = time.perf_counter() - start
-        step_cpu_seconds = time.process_time() - cpu_start
-        if args.trace_memory:
-            _, traced_peak = tracemalloc.get_traced_memory()
-            tracemalloc.stop()
-        session.finish()
-    db = output / "conrad.sqlite"
-    with sqlite3.connect(db) as connection:
-        belief_count, belief_bytes = connection.execute(
-            "SELECT COUNT(*), COALESCE(SUM(LENGTH(payload_json)), 0) FROM belief_revisions"
-        ).fetchone()
-    result = {
-        "source": str(source),
-        "run_dir": str(output),
-        "duration_s": runtime.duration_s,
-        "ticks": ticks,
-        "step_wall_seconds": step_seconds,
-        "step_cpu_seconds": step_cpu_seconds,
-        "seconds_per_simulated_second": step_seconds / runtime.duration_s,
-        "profiled_calls": totals,
-        "belief_revisions": belief_count,
-        "belief_payload_bytes": belief_bytes,
-        "python_traced_start_bytes": traced_start,
-        "python_traced_peak_bytes": traced_peak,
-        "bundle_bytes": sum(p.stat().st_size for p in output.rglob("*") if p.is_file()),
-    }
-    (output / "reports" / "spatial_profile.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
-    print(json.dumps(result, indent=2))
+    )
+    for label, spatial in modes:
+        rows.append(profile(out, label, spatial=spatial, duration_s=args.duration_s))
+        (out / "profile.json").write_text(json.dumps(rows, indent=2), encoding="utf-8")
+    print(json.dumps(rows, indent=2))
 
 
 if __name__ == "__main__":

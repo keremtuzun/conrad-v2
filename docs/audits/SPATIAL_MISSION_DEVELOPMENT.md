@@ -296,7 +296,7 @@ checkout regression at the completed branch HEAD remains required.
 
 ## Development performance profile
 
-`scripts/profile_spatial_mission.py` reconstructs a fresh run from the
+`scripts/profile_spatial_bundle.py` reconstructs a fresh run from the
 recorded 480-second healthy development configuration. Its 80-second timing
 run (`SPATIAL-PROFILE-TIMING-80S-DEV`) used 800 ticks and 42.81 process CPU
 seconds (49.78 wall seconds while the broad test suite also ran). The 80
