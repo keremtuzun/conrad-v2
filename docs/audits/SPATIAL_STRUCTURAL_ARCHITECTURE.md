@@ -1,5 +1,11 @@
 # Spatial structural architecture development audit
 
+This is the starting development audit, retained as a historical record.
+Current mission integration, closed-loop runs, replay, and Unity development
+evidence are in `SPATIAL_MISSION_DEVELOPMENT.md`,
+`SPATIAL_UNITY_DEVELOPMENT.md`, and `SPATIAL_PERFORMANCE_DEVELOPMENT.md`.
+The A-J architecture acceptance verdict has not been changed to PASS.
+
 Base `ae41e467c30afc2be2efa090e3f9a90dce09641d` from
 `origin/kerem/i4-i5-full-closure`. The dirty main checkout and the legacy
 repository at `6bf01ee` were left untouched. This is a new architectural

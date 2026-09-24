@@ -58,3 +58,17 @@ predictive `expected_information` took 23.00 s and spatial support production
 selected views did not cover the required angular crown. This profile does
 not demonstrate mission completion or a performance PASS; it identifies the
 predictive computation as the largest measured spatial planning cost.
+
+A later 80-second profile used the completed healthy mission configuration
+and `scripts/profile_spatial_bundle.py` at branch `6ddff15` (the run itself
+preceded that commit, with the same runtime implementation). Without
+allocation tracing, 800 mission ticks took 42.81 process CPU seconds and
+49.78 wall seconds while pytest also ran. Three actual MCBR plans took 5.42 s
+total; 80 spatial sensor support/response calls took 1.40 s, 51 spatial
+Model2T ingests 0.030 s, and 51 updates 1.01 s. There were 1,096 belief
+revisions occupying 3,474,536 JSON payload bytes; the bundle was 17,347,658
+bytes. An otherwise matched allocation-traced run peaked at 40,482,797
+traced Python bytes but inflated wall time to 159.52 s and planner time to
+26.73 s. The untraced result replaces those traced timings for development
+cost assessment. Unity step overhead and scaling beyond this 80-second window
+are still unmeasured.

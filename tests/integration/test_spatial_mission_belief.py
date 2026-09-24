@@ -318,6 +318,9 @@ def test_spatial_model2t_child_initializes_and_persists_unknown_head(tmp_path):
         pytest.param({"corrosion_depth_m": 0.008}, "SEVERE", True, id="covered-corrosion"),
         pytest.param({"crack_length_m": 0.02, "crack_depth_m": 0.006}, "SEVERE", True, id="covered-crack"),
         pytest.param("subresolution", "INTACT", True, id="subresolution-qualified-intact"),
+        pytest.param("heterogeneous-healthy", "INTACT", True, id="heterogeneous-healthy"),
+        pytest.param("multiple-defects", "SEVERE", True, id="separated-corrosion-and-crack"),
+        pytest.param("edge-defect", "SEVERE", True, id="required-domain-edge-defect"),
         pytest.param("uniform-same-mean", "INTACT", True, id="uniform-same-mean"),
         pytest.param("local-same-mean", "SEVERE", True, id="local-same-mean"),
     ],
@@ -335,6 +338,27 @@ def test_required_surface_identifies_healthy_and_resolvable_defects(tmp_path, st
     truth_config: dict[str, Any] = {"axial_cells": 2, "sectors": 4}
     if state == "uniform-same-mean":
         truth_config["base"] = {"corrosion_depth_m": 0.001}
+    elif state == "heterogeneous-healthy":
+        truth_config["cell_states"] = [{"corrosion_depth_m": 0.0002 * (index % 4)} for index in range(8)]
+    elif state == "multiple-defects":
+        truth_config["cell_states"] = [
+            {"corrosion_depth_m": 0.008}
+            if index == 3
+            else {"crack_length_m": 0.02, "crack_depth_m": 0.006}
+            if index == 6
+            else {}
+            for index in range(8)
+        ]
+    elif state == "edge-defect":
+        truth_config["patches"] = [
+            {
+                "axial_start_fraction": 0.055,
+                "axial_end_fraction": 0.12,
+                "angle_start_rad": 3.7,
+                "angle_end_rad": 4.2,
+                "state": {"corrosion_depth_m": 0.008},
+            }
+        ]
     elif state == "local-same-mean":
         truth_config["cell_states"] = [
             {"corrosion_depth_m": 0.008} if index == 6 else {} for index in range(8)

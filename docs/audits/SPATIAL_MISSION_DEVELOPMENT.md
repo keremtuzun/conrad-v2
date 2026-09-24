@@ -38,6 +38,11 @@ case; any gate configuration must pin it before validation.
 - Two seed-401 worlds with the same 0.001 m whole-surface corrosion mean
   separate after the sweep: uniform 0.001 m yields qualified `INTACT`, while
   one 0.008 m local cell and seven healthy cells yields `SEVERE`.
+- The same real sensor/Evidence/association/Model2T sweep now also covers
+  heterogeneous healthy cells (`INTACT`), separated corrosion and crack cells
+  (`SEVERE`), and a resolvable defect at the required-domain axial edge
+  (`SEVERE`). These three additions passed at development seed 401. They are
+  not independent prospective validation worlds.
 - A patch smaller than the declared synthetic spatial resolution is not
   detected in the sweep; the resulting intact label remains qualified to the
   resolution threshold and does not claim microscopic defect absence.
@@ -53,11 +58,10 @@ case; any gate configuration must pin it before validation.
   `capsule-sdf-recursive-v1`. Spatial run bundles pin it alongside truth,
   sensor, support schema, detectability, and Model2T versions.
 
-These are controlled development views, not closed-loop Model1 mission success
-or a complete case matrix. Nonzero design survey noise lacks a finite
+At this stage these were controlled development views; later closed-loop and
+Unity results are recorded below. Nonzero design survey noise lacks a finite
 registration bound, so its surface support is explicitly unregistered and
-earns no healthy coverage. Broader Unity parity,
-closed-loop Model1 decisions, performance profiling, and gate impact
+earns no healthy coverage. A complete prospective case matrix and gate impact
 evaluations remain open software work.
 
 ## Closed-loop integration diagnosis
