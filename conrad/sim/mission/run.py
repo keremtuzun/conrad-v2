@@ -53,6 +53,7 @@ def spatial_version_contract(sensor: StructuralSensorModelV2) -> dict[str, str]:
         "sensor": sensor.version,
         "sensor_config_digest": sensor.digest,
         "support": STRUCTURAL_SUPPORT_VERSION,
+        "registration": "exact-or-unregistered-v1",
         "visibility_certificate": VISIBILITY_CERTIFICATE_VERSION,
         "model2t": SPATIAL_MODEL_VERSION,
         "detectability": DETECTABILITY_VERSION,
@@ -267,11 +268,6 @@ def validate_spatial_mission_selection(wopts: MissionWorldOptions, rcfg: Mission
     if not spatial_truth:
         return
     assert wopts.spatial_truth is not None and wopts.spatial_sensor_model is not None
-    if wopts.survey_sigma_m != 0:
-        raise ValueError(
-            "spatial_v1 requires an exact surveyed design axis; nonzero survey noise "
-            "needs a conservative truth-to-design support transform"
-        )
     settings = rcfg.model2t_spatial
     if settings is None:
         raise ValueError("spatial Model2T settings missing")

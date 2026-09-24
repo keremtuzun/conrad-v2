@@ -311,12 +311,12 @@ class MissionSensorSuite:
             rot[:, 0],
             model,
             visible,
-            frame_id="CAPSULE_DESIGN",
+            frame_id=("CAPSULE_DESIGN" if self.opts.survey_sigma_m == 0 else "CAPSULE_UNREGISTERED"),
             certify=certificate,
         )
         out: list[Observation] = []
         for support in supports:
-            if est is None:
+            if est is None or self.opts.survey_sigma_m > 0:
                 support = support.model_copy(
                     update={"axial_uncertainty_m": None, "angular_uncertainty_rad": None}
                 )

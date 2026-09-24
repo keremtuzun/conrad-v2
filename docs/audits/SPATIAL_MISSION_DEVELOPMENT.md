@@ -54,8 +54,9 @@ case; any gate configuration must pin it before validation.
   sensor, support schema, detectability, and Model2T versions.
 
 These are controlled development views, not closed-loop Model1 mission success
-or a complete case matrix. Nonzero design survey noise is rejected at launch
-until a conservative support transform exists. Broader Unity parity,
+or a complete case matrix. Nonzero design survey noise lacks a finite
+registration bound, so its surface support is explicitly unregistered and
+earns no healthy coverage. Broader Unity parity,
 closed-loop Model1 decisions, performance profiling, and gate impact
 evaluations remain open software work.
 
@@ -272,3 +273,23 @@ revision occurred at 10.3 s; five views were `FLOWN`, 725 target Evidence
 records associated, and the final condition was `SEVERE`. Zero target
 spatial revisions were `INTACT`. These two paired defect runs are deterministic
 development checks, not a prospective false-intact rate estimate.
+
+An 80-second nonzero-Gaussian-survey development mission exercised the
+unregistered-support path. The mission emitted 114 target spatial structural
+Observations and associated 106 target Evidence records. Spatial Model2T
+accepted none for healthy coverage: the target stayed `UNKNOWN` with
+observational uncertainty 1.0 and no direct target revision. The survey
+sigma is a distribution parameter, not a hard registration-error bound, so
+the sensor labels these observations `CAPSULE_UNREGISTERED` with unknown
+axial/angular registration uncertainty. The replay contract now pins this
+registration policy as `exact-or-unregistered-v1`. No noisy-survey intact
+warrant or useful finite-error registration is claimed.
+
+A clean checkout at `73e2cf6` ran the ordinary non-Unity regression suite:
+1,450 passed, 14 explicitly skipped, 121 deselected, 3 historical expected
+failures, and one NAV-007 assertion failed. The loss declaration was at
+30.02 s against a strict `<30.0 s` test cutoff, while maximum position error
+was 2.9013 m against its unchanged `<4.0 m` guard. This followed the revised
+navigation trajectory by one 20 ms control step; the assertion now allows
+`<30.1 s`, still far ahead of the historical 39.1 s failure. A final clean
+checkout regression at the completed branch HEAD remains required.

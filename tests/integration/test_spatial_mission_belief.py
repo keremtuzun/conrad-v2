@@ -40,7 +40,8 @@ from tests.integration.test_spatial_mission_truth import _options
 from tests.leakage.test_dynamic_leakage import TWIN_ONLY_KEYS, _keys, _runtime_texts
 
 
-def test_spatial_observation_reaches_model2t_through_mission_perception(tmp_path):
+@pytest.mark.parametrize(("survey_sigma_m", "credited"), [(0.0, True), (0.02, False)])
+def test_spatial_observation_reaches_model2t_through_mission_perception(tmp_path, survey_sigma_m, credited):
     options = _options()
     assert options.spatial_sensor_model is not None
     sensor = options.spatial_sensor_model.model_copy(
@@ -53,7 +54,7 @@ def test_spatial_observation_reaches_model2t_through_mission_perception(tmp_path
     options = options.model_copy(
         update={
             "family": "pipeline_with_supports",
-            "survey_sigma_m": 0.0,
+            "survey_sigma_m": survey_sigma_m,
             "ecological_enabled": False,
             "spatial_sensor_model": sensor,
         }
@@ -99,12 +100,25 @@ def test_spatial_observation_reaches_model2t_through_mission_perception(tmp_path
         observations = suite._structural(1.0, now, pose, pose, IdFactory(99).new())
         spatial = [obs for obs in observations if obs.structural_support is not None]
         assert spatial
+        if not credited:
+            assert all(
+                obs.structural_support is not None
+                and obs.structural_support.frame_id == "CAPSULE_UNREGISTERED"
+                for obs in spatial
+            )
+            assert all(
+                obs.structural_support is not None and obs.structural_support.axial_uncertainty_m is None
+                for obs in spatial
+            )
         session.runtime.perception.process(spatial, now)
         target = session.world.context.critical_component_ids[0]
         head = next(m for m in session.runtime.m2t.export_beliefs() if m.world_entity_id == target)
         assert head.technical is not None
-        assert any(cell.observation_count > 0 for cell in head.technical.local_cells)
-        assert any(row["registry_id"] == str(target) for row in session.runtime.perception.structural_log)
+        assert any(cell.observation_count > 0 for cell in head.technical.local_cells) is credited
+        if credited:
+            assert any(row["registry_id"] == str(target) for row in session.runtime.perception.structural_log)
+        else:
+            assert head.technical.condition is None
     finally:
         session.finish()
 
@@ -141,8 +155,7 @@ def test_spatial_model2t_child_initializes_and_persists_unknown_head(tmp_path):
             "required_looks": 1,
         },
     )
-    with pytest.raises(ValueError, match="exact surveyed design axis"):
-        validate_spatial_mission_selection(_options(), cfg)
+    validate_spatial_mission_selection(options, cfg)
     children = build_children(
         world.context, cfg, IdFactory(401), world.store, repo, UUID(int=61), "sim", 0, False
     )
@@ -230,6 +243,7 @@ def test_spatial_model2t_child_initializes_and_persists_unknown_head(tmp_path):
     for key, value in (
         ("sensor_config_digest", "0" * 64),
         ("support", "structural-observation-v3"),
+        ("registration", "unsafe-assumed-exact-v0"),
         ("visibility_certificate", "capsule-sdf-old-v0"),
         ("model2t", "model2t-spatial-v2"),
     ):

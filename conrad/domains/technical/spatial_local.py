@@ -128,6 +128,14 @@ class SpatialModel2T:
         if not any(c.registry_entity_id == self.registry_id for c in evidence.entity_candidates):
             self.unresolved.append(evidence.evidence_id)
             return False
+        if sup.frame_id != "CAPSULE_DESIGN":
+            self.unresolved.append(evidence.evidence_id)
+            return False
+        # Unknown registration must be rejected before interpreting truth-frame
+        # coordinates against the surveyed design grid (whose length may differ).
+        if sup.axial_uncertainty_m is None or sup.angular_uncertainty_rad is None:
+            self.unresolved.append(evidence.evidence_id)
+            return False
         measured = self.grid.support_rect(sup)
         if (
             measured.x1 - measured.x0 > self.sensor.footprint_width_m + 1e-9
@@ -141,9 +149,6 @@ class SpatialModel2T:
             raise ValueError("resolution-cell support exceeds declared resolution")
         # UNKNOWN uncertainty is never silently zero.  Known edge uncertainty
         # erodes the guaranteed support and must also stay within one cell.
-        if sup.axial_uncertainty_m is None or sup.angular_uncertainty_rad is None:
-            self.unresolved.append(evidence.evidence_id)
-            return False
         dx, da = sup.axial_uncertainty_m, sup.angular_uncertainty_rad
         sure = SurfaceRect(measured.x0 + dx, measured.x1 - dx, measured.a0 + da, measured.a1 - da)
         if sure.area <= 0:

@@ -30,7 +30,10 @@ The matched views and short mission do not establish parity across the full
 occlusion, geometry, defect, and noise regimes. Broader prospective parity and mission
 identifiability evaluations remain required before a Spatial V1 freeze.
 
-The current spatial support coordinates assume an exact surveyed design axis.
-Mission launch rejects nonzero `survey_sigma_m` until a conservative
-truth-to-design support transform is implemented and validated. This is a
-software boundary, not a physical calibration dependency.
+Qualified healthy support currently requires an exact surveyed design axis.
+For nonzero Gaussian `survey_sigma_m`, the mission runs but labels truth-frame
+surface support `CAPSULE_UNREGISTERED` with unknown registration uncertainty;
+Spatial Model2T refuses coverage credit. This avoids a false healthy claim
+without treating an unbounded Gaussian standard deviation as a hard spatial
+bound. A useful finite-error registration model remains software work before
+Spatial V1 can be accepted for noisy-axis missions.
