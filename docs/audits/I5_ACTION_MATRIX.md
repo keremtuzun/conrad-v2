@@ -1369,3 +1369,23 @@ versus rule-FSM 11 and naive 3; safety events 12 versus 16 and 12; violations 0 
 coverage, runtime truth-leakage scan and deterministic bundle replay passed. The six action classes and hard
 constraints from the held-out action-matrix artifact also passed. No formal world will be rerun, no threshold
 will be changed, and this FAIL is retained rather than converted into a PASS from the surrogate result.
+
+## 2026-09-24 — nominal CONTINUE repair cycle: development stop
+
+A new branch from `kerem/i4-energy-repair` declared digest-pinned v7 development `8300000..8300009`,
+validation `8300100..8300109`, and final `8300200..8300209`. Only development seeds 8300000 and 8300001
+were run. Kernel and Unity nominal traces all failed to reach OBSERVED INTACT: final coverage was
+50/72 and 47/72 on 8300000, then 38/64 and 45/64 on 8300001. The two backends first differ in
+physical trajectory and target-acquisition time; neither drops the structural observation stream.
+READABLE produced hundreds of tiled observations; kernel reached a warrant on 8300000, while Unity
+reached full coverage but had no report-free OBSERVED INTACT decision.
+
+On 8300001 the production planner accepted an identical position twice for EXTEND_COVERAGE. A
+belief-side duplicate-view filter was developed and tested, but after it made four distinct views
+fly the kernel gained only one cell (39/64) and still had no warrant. On 8300000 it gained no cells
+(50/72). The candidate was withdrawn. The ordinary scalar observation remains spatially too coarse
+for the predictor's cellwise view value; copying the READABLE per-tile world/sensor overrides or
+crediting unsupported cells is not a legitimate repair. The full causal trace, candidate rejection,
+and power illustration are in `I5_NOMINAL_WARRANT_ANALYSIS.md` and
+`I5_NOMINAL_CONTINUE_REPAIR.md`. Validation and final splits remain unopened; no new surrogate or
+formal evaluation ran. Historical **I5 FORMAL = FAIL (9/10)** remains authoritative.

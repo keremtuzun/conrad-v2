@@ -726,12 +726,8 @@ def load_i5_v7(path: Path = I5_V7_PARTITIONS_PATH, *, verify_digest: bool = True
     if sum(map(len, blocks.values())) != len(set().union(*blocks.values())):
         raise PartitionIntegrityError("i5_v7 splits overlap")
     taken = set().union(*(set(_seeds(item)) for item in raw.get("reserved_elsewhere", [])))
-    taken |= set().union(
-        *(set(_seeds(spec)) for spec in load_i5_v6()["raw"]["world_seeds"].values())
-    )
-    taken |= set().union(
-        *(set(_seeds(spec)) for spec in load_i5_unity_v2()["raw"]["world_seeds"].values())
-    )
+    taken |= set().union(*(set(_seeds(spec)) for spec in load_i5_v6()["raw"]["world_seeds"].values()))
+    taken |= set().union(*(set(_seeds(spec)) for spec in load_i5_unity_v2()["raw"]["world_seeds"].values()))
     if set().union(*blocks.values()) & taken:
         raise PartitionIntegrityError("i5_v7 collides with historical or reserved seeds")
     return {"raw": raw, "digest": digest}

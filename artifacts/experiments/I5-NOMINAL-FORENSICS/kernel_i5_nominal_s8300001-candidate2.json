@@ -1,0 +1,8584 @@
+{
+ "evidence_class": "DEVELOPMENT DIAGNOSTIC; not gate evidence",
+ "partition": "i5_mission_v7/development",
+ "partition_digest": "bda2a696da495ce23403cb54c31aa31bfacc48a0fd425be332a57b24046be153",
+ "backend": "kernel",
+ "seed": 8300001,
+ "scenario": "I5-NOMINAL",
+ "tag": "candidate2",
+ "target_registry_id": "018bcfe5-6803-763f-abea-97e48aba267e",
+ "truth_initial_evaluation_only": {
+  "target": {
+   "component_type": "SEGMENT",
+   "material": "carbon_steel",
+   "coating": "fbe",
+   "wall_thickness_m": 0.023948247848510924,
+   "initial_corrosion_depth_m": 0.0,
+   "initial_crack_length_m": 0.0,
+   "load_cycles_per_s": 0.04460198480301078,
+   "stress_range_pa": 43808539.83365904,
+   "environment": {
+    "temperature_c": 6.775613175349573,
+    "dissolved_oxygen_mg_l": 5.244217126635084
+   }
+  },
+  "rest_region": {
+   "component_type": "SEGMENT",
+   "material": "carbon_steel",
+   "coating": "fbe",
+   "wall_thickness_m": 0.023948247848510924,
+   "load_cycles_per_s": 0.04460198480301078,
+   "stress_range_pa": 43808539.83365904,
+   "environment": {
+    "temperature_c": 6.775613175349573,
+    "dissolved_oxygen_mg_l": 5.244217126635084
+   },
+   "initial_corrosion_depth_m": 0.0008906180523621982,
+   "initial_crack_length_m": 0.0002641417023204994
+  }
+ },
+ "player": null,
+ "score": {
+  "driving": {
+   "n_decisions": 60,
+   "onset_t_s": null,
+   "warrant_reached": false,
+   "first_expected_t_s": null,
+   "latency_s": null,
+   "latency_budget_s": 20.0,
+   "issued_within_budget": false,
+   "decisions_after_onset": 0,
+   "executed_decisions_after_onset": 0,
+   "deferred_decisions_after_onset": 0,
+   "chosen_at_onset": null,
+   "forbidden_after_onset": [],
+   "violations": {},
+   "violations_total": 0,
+   "over_escalations": 0,
+   "correct": false,
+   "actions": {
+    "REQUEST_INFORMATION": 54,
+    "QUERY_BELIEF": 1,
+    "WAIT": 5
+   },
+   "escalations": 0,
+   "uir": {
+    "world_claims": 597,
+    "unsupported_world_claims": 302,
+    "relied_world_claims": 0,
+    "relied_unsupported_claims": 0,
+    "unsupported_inference_rate": 0.0,
+    "unsupported_claim_fraction": 0.5058626465661642
+   },
+   "traceable_decisions": 60,
+   "untraceable_reasons": {},
+   "timeline": [
+    [
+     2.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     4.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     6.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     8.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     10.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     12.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     14.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     16.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     18.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     20.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     22.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     24.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     26.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     28.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     30.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     32.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     34.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     36.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     38.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     40.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     42.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     44.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     46.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     48.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     50.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     52.0,
+     "QUERY_BELIEF:"
+    ],
+    [
+     54.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     56.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     58.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     60.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     62.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     64.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     66.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     68.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     70.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     72.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     74.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     76.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     78.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     80.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     82.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     84.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     86.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     88.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     90.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     92.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     94.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     96.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     98.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     100.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     102.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     104.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     106.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     108.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     110.0,
+     "REQUEST_INFORMATION:EXTEND_COVERAGE"
+    ],
+    [
+     112.0,
+     "WAIT:INFORMATION_ACQUISITION_UNAVAILABLE"
+    ],
+    [
+     114.0,
+     "WAIT:INFORMATION_ACQUISITION_UNAVAILABLE"
+    ],
+    [
+     116.0,
+     "WAIT:INFORMATION_ACQUISITION_UNAVAILABLE"
+    ],
+    [
+     118.0,
+     "WAIT:INFORMATION_ACQUISITION_UNAVAILABLE"
+    ],
+    [
+     120.0,
+     "WAIT:INFORMATION_ACQUISITION_UNAVAILABLE"
+    ]
+   ]
+  },
+  "outcome": {
+   "energy_j": 22715.67543321102,
+   "distance_m": 34.373719108372654,
+   "safety_events": 2,
+   "degraded_episodes": 31,
+   "supervisor_refusals": 0,
+   "operator_escalations": 0,
+   "findings_reported": 0,
+   "first_finding_delivered_t_s": null,
+   "critical_observed_end": false,
+   "safe_hold": false,
+   "last_decision_t_s": 120.0,
+   "replans_executed": 0,
+   "replan_holds": 0,
+   "task_success": false
+  }
+ },
+ "observations": [
+  {
+   "t_s": 5.25,
+   "technical_observations": 1,
+   "target_associated": 0,
+   "target_readings": [],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [],
+    "coverage": 0.0,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.1956688379277484,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 1.0,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0005,
+    "crack": 0.0018589300693492967
+   }
+  },
+  {
+   "t_s": 6.25,
+   "technical_observations": 1,
+   "target_associated": 0,
+   "target_readings": [],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [],
+    "coverage": 0.0,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.19218076381046797,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 1.0,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0005,
+    "crack": 0.0018589300693492967
+   }
+  },
+  {
+   "t_s": 7.25,
+   "technical_observations": 1,
+   "target_associated": 0,
+   "target_readings": [],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [],
+    "coverage": 0.0,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.37689426433005735,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 1.0,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0005,
+    "crack": 0.0018589300693492967
+   }
+  },
+  {
+   "t_s": 8.25,
+   "technical_observations": 1,
+   "target_associated": 0,
+   "target_readings": [],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [],
+    "coverage": 0.0,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.19218076474550558,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 1.0,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0005,
+    "crack": 0.0018589300693492967
+   }
+  },
+  {
+   "t_s": 9.25,
+   "technical_observations": 1,
+   "target_associated": 0,
+   "target_readings": [],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [],
+    "coverage": 0.0,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.19218076474550558,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 1.0,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0005,
+    "crack": 0.0018589300693492967
+   }
+  },
+  {
+   "t_s": 10.25,
+   "technical_observations": 1,
+   "target_associated": 0,
+   "target_readings": [],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [],
+    "coverage": 0.0,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.19218076568054326,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 1.0,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0005,
+    "crack": 0.0018589300693492967
+   }
+  },
+  {
+   "t_s": 11.25,
+   "technical_observations": 1,
+   "target_associated": 0,
+   "target_readings": [],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [],
+    "coverage": 0.0,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.19218076568054326,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 1.0,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0005,
+    "crack": 0.0018589300693492967
+   }
+  },
+  {
+   "t_s": 12.25,
+   "technical_observations": 1,
+   "target_associated": 0,
+   "target_readings": [],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [],
+    "coverage": 0.0,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.19016198440953624,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 1.0,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0005,
+    "crack": 0.0018589300693492967
+   }
+  },
+  {
+   "t_s": 13.25,
+   "technical_observations": 1,
+   "target_associated": 0,
+   "target_readings": [],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [],
+    "coverage": 0.0,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.28850190966482364,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 1.0,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0005,
+    "crack": 0.0018589300693492967
+   }
+  },
+  {
+   "t_s": 16.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-680a-7b36-b2b5-be371ea018a7",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 0.001000358509091621,
+      "surface_anomaly_score": 0.15540785874011986,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.18105251528289296,
+       -0.11026693822899447,
+       0.5263014667539687
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09210585087398973
+     }
+    }
+   ],
+   "new_cells": [
+    21,
+    22,
+    29,
+    30,
+    31,
+    37,
+    38,
+    39,
+    45,
+    46,
+    47,
+    53,
+    54,
+    55
+   ],
+   "belief": {
+    "covered_cells": [
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.21875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.239062944329115,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.976080479947459,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0009335729161168751,
+    "crack": 0.0010111097378892805
+   }
+  },
+  {
+   "t_s": 17.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-680b-7f7b-92c2-ad995357fc05",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 0.0007076278980194021,
+      "surface_anomaly_score": 0.0,
+      "crack_indication_length": 0.0004127428242533349
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       -0.14018819751074788,
+       -0.09381428564157401,
+       0.4921551680068279
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09445457725127193
+     }
+    }
+   ],
+   "new_cells": [
+    13,
+    14
+   ],
+   "belief": {
+    "covered_cells": [
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.25,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.26406294432911503,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9744157000042684,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0009335729161168751,
+    "crack": 0.0010111097521592234
+   }
+  },
+  {
+   "t_s": 18.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-680c-720e-ab5f-7983496089fc",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 0.0014401357156192227,
+      "surface_anomaly_score": 0.1487043391319594,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       -0.5523152509180042,
+       -0.17797599028017586,
+       0.5354879712743756
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09371761038551156
+     }
+    }
+   ],
+   "new_cells": [
+    5,
+    6,
+    7
+   ],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2765629734335161,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9705823406970396,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0012874337801316018,
+    "crack": 0.0010111097664291663
+   }
+  },
+  {
+   "t_s": 19.25,
+   "technical_observations": 2,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-680d-73bb-a7c8-730b84ff33fc",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 0.00123406387087936,
+      "surface_anomaly_score": 0.015462204752295636,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       -0.6101520438361938,
+       -0.17377242498751433,
+       0.5068666447309109
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09209551791241204
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.26034906602097685,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9710464698343139,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0012923842781900124,
+    "crack": 0.0010111097521592234
+   }
+  },
+  {
+   "t_s": 20.25,
+   "technical_observations": 2,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-680f-77f3-856b-3d8cefbd9291",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 0.0011579681212871042,
+      "surface_anomaly_score": 0.0680331726103484,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       -0.8752863380379061,
+       -0.06833460140734204,
+       0.5053348901098798
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09197363470667357
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2859380025363522,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   }
+  },
+  {
+   "t_s": 21.25,
+   "technical_observations": 1,
+   "target_associated": 0,
+   "target_readings": [],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2859380025363522,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   }
+  },
+  {
+   "t_s": 27.25,
+   "technical_observations": 1,
+   "target_associated": 0,
+   "target_readings": [],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2874400339151603,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   }
+  },
+  {
+   "t_s": 28.25,
+   "technical_observations": 1,
+   "target_associated": 0,
+   "target_readings": [],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2874400622181768,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   }
+  },
+  {
+   "t_s": 29.25,
+   "technical_observations": 1,
+   "target_associated": 0,
+   "target_readings": [],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2874400622181768,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   }
+  },
+  {
+   "t_s": 30.25,
+   "technical_observations": 1,
+   "target_associated": 0,
+   "target_readings": [],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2874400905194799,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   }
+  },
+  {
+   "t_s": 53.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6816-70ab-867b-5d6acb0c379a",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 5.134122047636168e-05,
+      "surface_anomaly_score": 0.0,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       -0.17808205182270553,
+       -0.5454488918609881,
+       0.532988648623639
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09656387262249899
+     }
+    }
+   ],
+   "new_cells": [
+    8,
+    9,
+    10,
+    16,
+    17,
+    18,
+    24,
+    25,
+    26,
+    32,
+    33,
+    34,
+    40,
+    41,
+    42
+   ],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.53125,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2901756792403537,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9487980231428738,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102658773333
+   }
+  },
+  {
+   "t_s": 54.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6817-78f0-84d7-9ffb8fb73e80",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": -0.00015525159371280686,
+      "surface_anomaly_score": 0.08190812909112541,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       -0.06922360567050267,
+       -0.5487869595712316,
+       0.4518775244299733
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09776343684738617
+     }
+    }
+   ],
+   "new_cells": [
+    11
+   ],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.546875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2909569798128011,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9473955532784677,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 55.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6818-777f-badc-cfb6ba9de348",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 0.0004121514380588646,
+      "surface_anomaly_score": 0.0,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.11251540947715949,
+       -0.5693570405991855,
+       0.5496701298188236
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09764425521920127
+     }
+    }
+   ],
+   "new_cells": [
+    48,
+    49,
+    50
+   ],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.1550804748240829,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429426417274882,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102944172373
+   }
+  },
+  {
+   "t_s": 56.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6819-7db5-8657-b4ff07f8a669",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": -0.00034281620875088297,
+      "surface_anomaly_score": 0.05892173005285367,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.02493040657511951,
+       -0.6635020906706983,
+       0.5334075350397637
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09920430328873782
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2909416963530038,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429706301303119,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 57.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-681a-7473-9cac-a07964de2e70",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 0.00010661894170465901,
+      "surface_anomaly_score": 0.0,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.059351286929938726,
+       -0.5870598538258136,
+       0.4912703350345451
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09810344903993677
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29103935260300384,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429846163138618,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 58.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-681b-77db-a703-4af2d6f20b43",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": -0.00023992471694681377,
+      "surface_anomaly_score": 0.005333998137508369,
+      "crack_indication_length": 0.0011962964770269868
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.035692804721100306,
+       -0.5578662700025707,
+       0.525821555346321
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.0963933659213946
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29108821650841843,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429916074023669,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 59.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-681c-75d7-8a79-4c4dc4a96037",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": -0.00014137077078072674,
+      "surface_anomaly_score": 0.02354506623072186,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       -0.02243425081753886,
+       -0.5592969376467192,
+       0.5630584500409539
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09455799740140883
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2911126305709184,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429951024459513,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 60.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-681d-76f1-951b-bdec6544a2f8",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 0.00014464990252315376,
+      "surface_anomaly_score": 0.014297918104896987,
+      "crack_indication_length": 0.0007575482525191622
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       -0.07484311312675662,
+       -0.6385097092264265,
+       0.4912021555233206
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09473830450797492
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29112487337927484,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429968498425951,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 61.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-681e-7e50-934f-c43baec957ef",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 0.0001635210485971604,
+      "surface_anomaly_score": 0.041573483981456785,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.06942418132502062,
+       -0.6004624746439307,
+       0.5264625508495487
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09455742137975744
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.10986007657233496,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429977235096323,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 62.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-681f-7a13-bf40-d1024d467cb8",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": -0.00041285664088284513,
+      "surface_anomaly_score": 0.046199082865140836,
+      "crack_indication_length": 0.0017185530556460534
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.0775789181185585,
+       -0.6434691714014096,
+       0.5145193456769641
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.0930713608582086
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29120777431627143,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.94299816033533,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 63.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6820-798c-94e9-bd1cb7132c83",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": -0.0007625819583481887,
+      "surface_anomaly_score": 0.04154873647576179,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.059473610852625876,
+       -0.658742400508189,
+       0.46590477567958977
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09339510205496505
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29120930019517766,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429983787462237,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111104085768663
+   }
+  },
+  {
+   "t_s": 64.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6821-794d-a3ff-4315e2e42038",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": -0.0003179094846675457,
+      "surface_anomaly_score": 0.05937186147054765,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.008390614750305808,
+       -0.5251739393488566,
+       0.47290343132566726
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09399256765532908
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29121011058683394,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429984879511817,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 65.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6822-74e5-89d8-73633d5e37cb",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 2.216956827998322e-05,
+      "surface_anomaly_score": 0.0,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.06639996948595095,
+       -0.7013025006424116,
+       0.4751758269494162
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09414829236021756
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2912104920565605,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985425535385,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 66.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6823-795b-849e-ed7e02ca79d9",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 0.00033601797444186854,
+      "surface_anomaly_score": 0.027950226963322968,
+      "crack_indication_length": 0.0012095205750566518
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.08593278442891983,
+       -0.6150763478006287,
+       0.6061488322695567
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09336741808300042
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29098672016366733,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985698546863,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 67.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6824-7335-82dc-d4178fe181e4",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": -0.000126807472044983,
+      "surface_anomaly_score": 0.0,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.038243187497684406,
+       -0.761873042102573,
+       0.43231570816967946
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.0942560766913018
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.10783960890632041,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985835052527,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 68.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6825-775b-b45f-a9bd6db4154d",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": -9.809450591525417e-05,
+      "surface_anomaly_score": 0.04025027518671696,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.1084170701162509,
+       -0.6871350255165638,
+       0.5306697539837062
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09257435161400548
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2909869140033857,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985903305339,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 69.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6826-72c5-8502-49405f6309bb",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 0.0001562124619866258,
+      "surface_anomaly_score": 0.09149543595025912,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.18451964282799838,
+       -0.7454724788060878,
+       0.49360168310806496
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09039187010792629
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29098693784524365,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985937431741,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 70.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6827-7d4a-8e1d-d086d0ebd1ac",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": -4.1179536559673245e-05,
+      "surface_anomaly_score": 0.0,
+      "crack_indication_length": 0.00010977427250899978
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.2353490525773254,
+       -0.6820407725162774,
+       0.5545942803967429
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.08838917717424521
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29098700055079785,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.942998595449494,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 71.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6828-78c9-9f79-54b3eb194fd8",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 0.00014354482857824912,
+      "surface_anomaly_score": 0.0,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.2069971756050104,
+       -0.6206789327589202,
+       0.6191777988047383
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.08745350155849244
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2909870065112623,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985963026539,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 72.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6829-7a13-a7fe-fcdb0400c83b",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 0.00025200267445576996,
+      "surface_anomaly_score": 0.0,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.20386479947108982,
+       -0.5922298503626671,
+       0.4938098907595072
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.08835960522849211
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2913840624906495,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985967292339,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 73.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-682a-753b-bf9d-0a0c0c1adf64",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": -0.0002520892896808505,
+      "surface_anomaly_score": 0.05911371035496535,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.22287192508928833,
+       -0.5322541189871419,
+       0.4946643263554018
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.08794288302139529
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.10725055490459293,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985969425239,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 74.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-682b-7312-9451-cb909c5f9720",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 0.00025070292906061555,
+      "surface_anomaly_score": 0.0,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.35232743831743374,
+       -0.6862148397174406,
+       0.5628412681715355
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.08483292241919797
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2913840647258237,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985970491689,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 75.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-682c-7e9e-bfbd-b2f3dead6184",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": -0.00014020349786498756,
+      "surface_anomaly_score": 0.0,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.3318190200720035,
+       -0.6788851073212994,
+       0.4894379380484738
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.08391566306987228
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2913840650983527,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985971024915,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 76.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-682d-7598-93a1-190451156940",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": -0.00037891026473656453,
+      "surface_anomaly_score": 0.06353444096889264,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.32581350289828537,
+       -0.5803246953501964,
+       0.5634909741224964
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.08319012914218024
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29167500059030754,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985971291526,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 77.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-682e-79c8-90c2-0797cd0462c4",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 7.866515213039166e-05,
+      "surface_anomaly_score": 0.00968784542489247,
+      "crack_indication_length": 0.0005915796914523658
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.2605751832896379,
+       -0.5145949636308189,
+       0.49707119100427555
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.08384050031056925
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2916750006834398,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985971424832,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 78.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-682f-793c-a681-b24738c5ca84",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": -0.0004463301855626789,
+      "surface_anomaly_score": 0.0,
+      "crack_indication_length": 0.0002694189223150246
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.19042670873267853,
+       -0.5139476746536471,
+       0.47157953417212184
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.08606066277193859
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2916750509875221,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985971491486,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 79.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6830-7e41-a804-ef80395e9c22",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 9.324946581041013e-05,
+      "surface_anomaly_score": 0.08244755125418893,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.30585043930728206,
+       -0.568644653746593,
+       0.5375424421178389
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.0856533245854022
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.10711046354302974,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985971524811,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 87.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6831-723c-a925-09eec1d4c412",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 0.0013865878096813158,
+      "surface_anomaly_score": 0.10503278187828505,
+      "crack_indication_length": 0.0005402497593532906
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       0.3385566702029228,
+       -0.10544017498735259,
+       0.5452559672493289
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09290119381055667
+     }
+    }
+   ],
+   "new_cells": [
+    23
+   ],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2917175439941561,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9414985602371514,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 88.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6832-7699-9f15-e610d7ebddcf",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 0.0005313025926631262,
+      "surface_anomaly_score": 0.0,
+      "crack_indication_length": 0.0002552832465229457
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       -0.2030139165638799,
+       -0.18546514574419137,
+       0.5062774073112194
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09592808930585604
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29171765302655794,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9414985602380065,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 90.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6833-7f97-95df-c5b893844784",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 0.0012023527747678695,
+      "surface_anomaly_score": 0.0,
+      "crack_indication_length": 0.0
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       -0.1871697851808617,
+       -0.00040356599064583776,
+       0.5603394640194738
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.0960975816808013
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29171776203732197,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.941498560238434,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  },
+  {
+   "t_s": 97.25,
+   "technical_observations": 1,
+   "target_associated": 1,
+   "target_readings": [
+    {
+     "observation_id": "018bcfe5-6834-7db9-a982-26e4c98e16fd",
+     "sensor_id": "018bcfe5-6801-7079-a026-dc3571390889",
+     "measurements": {
+      "apparent_wall_loss": 0.0008150173512545897,
+      "surface_anomaly_score": 0.17481994270325554,
+      "crack_indication_length": 0.00021904623027797359
+     },
+     "spatial_support": {
+      "frame_id": "WORLD",
+      "center_m": [
+       -0.18353951006586,
+       -0.05149176382020526,
+       0.5205099672490123
+      ],
+      "half_extent_m": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "position_sigma_m": 0.09287895077006104
+     }
+    }
+   ],
+   "new_cells": [],
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.10119673055379233,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9414985602386479,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   }
+  }
+ ],
+ "decisions": [
+  {
+   "t_s": 2.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9996791403803111,
+   "time_remaining_s": 1798.1,
+   "route_legs": 6,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [],
+    "coverage": 0.0,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.19566883625915846,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 1.0,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0005,
+    "crack": 0.0018589300693492967
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 0,
+   "active_goal": "TRANSIT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 4.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.999242992954675,
+   "time_remaining_s": 1796.1,
+   "route_legs": 6,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [],
+    "coverage": 0.0,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.1956688379277484,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 1.0,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0005,
+    "crack": 0.0018589300693492967
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 0,
+   "active_goal": "TRANSIT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 6.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9986630813851309,
+   "time_remaining_s": 1794.1,
+   "route_legs": 6,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [],
+    "coverage": 0.0,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.19218076381046797,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 1.0,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0005,
+    "crack": 0.0018589300693492967
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 0,
+   "active_goal": "TRANSIT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 8.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9981360836966641,
+   "time_remaining_s": 1792.1,
+   "route_legs": 6,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [],
+    "coverage": 0.0,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.19218076474550558,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 1.0,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0005,
+    "crack": 0.0018589300693492967
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 0,
+   "active_goal": "TRANSIT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 10.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9977898174643193,
+   "time_remaining_s": 1790.1,
+   "route_legs": 6,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [],
+    "coverage": 0.0,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.19218076568054326,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 1.0,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0005,
+    "crack": 0.0018589300693492967
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 0,
+   "active_goal": "TRANSIT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 12.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9971560167470415,
+   "time_remaining_s": 1788.1,
+   "route_legs": 6,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [],
+    "coverage": 0.0,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.19016198440953624,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 1.0,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0005,
+    "crack": 0.0018589300693492967
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 0,
+   "active_goal": "TRANSIT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 14.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9967015092070098,
+   "time_remaining_s": 1786.1,
+   "route_legs": 6,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [],
+    "coverage": 0.0,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.19016198503750825,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 1.0,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0005,
+    "crack": 0.0018589300693492967
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 0,
+   "active_goal": "TRANSIT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 16.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9957399827623277,
+   "time_remaining_s": 1784.1,
+   "route_legs": 6,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [],
+    "coverage": 0.0,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.18906294432911502,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 1.0,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0005,
+    "crack": 0.0018589300693492967
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 0,
+   "active_goal": "TRANSIT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 18.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9951290580329601,
+   "time_remaining_s": 1782.1,
+   "route_legs": 6,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.25,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2640629734335161,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9744157000042684,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0009335729161168751,
+    "crack": 0.0010111097521592234
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 0,
+   "active_goal": "TRANSIT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 20.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9947343273523477,
+   "time_remaining_s": 1780.1,
+   "route_legs": 6,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2828130025363522,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9710464698343139,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.0012923842781900124,
+    "crack": 0.0010111097521592234
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 0,
+   "active_goal": "TRANSIT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 22.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9943590738259446,
+   "time_remaining_s": 1778.1,
+   "route_legs": 5,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.28621921600821915,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 0,
+   "active_goal": "TRANSIT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 24.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9940466831176762,
+   "time_remaining_s": 1776.1,
+   "route_legs": 4,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2862192412641782,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 0,
+   "active_goal": "TRANSIT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 26.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.993492248659655,
+   "time_remaining_s": 1774.1,
+   "route_legs": 3,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2874400339151603,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 0,
+   "active_goal": "TRANSIT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 28.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9932453085627062,
+   "time_remaining_s": 1772.1,
+   "route_legs": 2,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2874400622181768,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 0,
+   "active_goal": "TRANSIT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 30.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9928909072462478,
+   "time_remaining_s": 1770.1,
+   "route_legs": 2,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2874400905194799,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 0,
+   "active_goal": "TRANSIT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 32.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9924040588122169,
+   "time_remaining_s": 1768.1,
+   "route_legs": 1,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.287148073832529,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 0,
+   "active_goal": "TRANSIT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 34.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9919759951118962,
+   "time_remaining_s": 1766.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2871480968748193,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 0,
+   "active_goal": "TRANSIT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 36.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9917533757886795,
+   "time_remaining_s": 1764.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.28725698540435757,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 0,
+   "active_goal": "HOLD",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 38.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9912679608403537,
+   "time_remaining_s": 1762.1,
+   "route_legs": 6,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.28725700924166214,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 1,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 40.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9907433381210339,
+   "time_remaining_s": 1760.1,
+   "route_legs": 6,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.28725703307762174,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 1,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 42.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9899949928595851,
+   "time_remaining_s": 1758.1,
+   "route_legs": 6,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2873124362809671,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 1,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 44.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9895596774338801,
+   "time_remaining_s": 1756.1,
+   "route_legs": 6,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2873124680988707,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 1,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 46.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.989062931630076,
+   "time_remaining_s": 1754.1,
+   "route_legs": 5,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2878697683114197,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 1,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 48.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9883756320403859,
+   "time_remaining_s": 1752.1,
+   "route_legs": 4,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2878698085163614,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 1,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 50.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9876632322523287,
+   "time_remaining_s": 1750.1,
+   "route_legs": 3,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2878698487179622,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 1,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 52.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9869673905468358,
+   "time_remaining_s": 1748.1,
+   "route_legs": 2,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     13,
+     14,
+     21,
+     22,
+     29,
+     30,
+     31,
+     37,
+     38,
+     39,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.296875,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2886131792403537,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9712742735834492,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111097521592234
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 1,
+   "active_goal": "INSPECT",
+   "action": "QUERY_BELIEF:"
+  },
+  {
+   "t_s": 54.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9864986616463561,
+   "time_remaining_s": 1746.1,
+   "route_legs": 1,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.53125,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29017572981280115,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9487980231428738,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102658773333
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 1,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 56.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9860773763616035,
+   "time_remaining_s": 1744.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29074638385300383,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429426417274882,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102944172373
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 1,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 58.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9858729553863554,
+   "time_remaining_s": 1742.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2910393883834184,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429846163138618,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 1,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 60.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9857728750375133,
+   "time_remaining_s": 1740.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29111266634802485,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429951024459513,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 1,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 62.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9856409443856401,
+   "time_remaining_s": 1738.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2912047225584589,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429977235096323,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 1,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 64.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9855283800335832,
+   "time_remaining_s": 1736.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2912093476473808,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429983787462237,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111104085768663
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 1,
+   "active_goal": "HOLD",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 66.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9850987145662504,
+   "time_remaining_s": 1734.1,
+   "route_legs": 1,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29098652942880404,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985425535385,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 2,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 68.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9843895261208239,
+   "time_remaining_s": 1732.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29098686631966986,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985835052527,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 2,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 70.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9841051498388328,
+   "time_remaining_s": 1730.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2909869886298689,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985937431741,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 2,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 72.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9838014755630922,
+   "time_remaining_s": 1728.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29138405951041724,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985963026539,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 2,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 74.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9836927082835327,
+   "time_remaining_s": 1726.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29138406398076566,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985969425239,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 2,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 76.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.983606486777817,
+   "time_remaining_s": 1724.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29167500040404304,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985971024915,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 2,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 78.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9834655145478126,
+   "time_remaining_s": 1722.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29167505094095597,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985971424832,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 2,
+   "active_goal": "HOLD",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 80.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9825409037737329,
+   "time_remaining_s": 1720.1,
+   "route_legs": 4,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2916751012646541,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985971524811,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 3,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 82.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9817268525303954,
+   "time_remaining_s": 1718.1,
+   "route_legs": 4,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29155168884645716,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985971524811,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 3,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 84.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9809860266673289,
+   "time_remaining_s": 1716.1,
+   "route_legs": 2,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2915517857465535,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985971524811,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 3,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 86.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9803516265015216,
+   "time_remaining_s": 1714.1,
+   "route_legs": 1,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.59375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2917175439825146,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9429985971524811,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 3,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 88.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9798063635518093,
+   "time_remaining_s": 1712.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29171765302073716,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9414985602371514,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 3,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 90.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9790231163930391,
+   "time_remaining_s": 1710.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2917177620344116,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9414985602380065,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 3,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 92.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9786801070172837,
+   "time_remaining_s": 1708.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2914117240451298,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.941498560238434,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 3,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 94.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.97854999469386,
+   "time_remaining_s": 1706.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2914117240451298,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.941498560238434,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 3,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 96.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9784287082998971,
+   "time_remaining_s": 1704.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29098376553168753,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.941498560238434,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 3,
+   "active_goal": "HOLD",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 98.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9780720082760941,
+   "time_remaining_s": 1702.1,
+   "route_legs": 1,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2909843213176209,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9414985602386479,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 4,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 100.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9775367463387545,
+   "time_remaining_s": 1700.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29098487678383966,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9414985602386479,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 4,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 102.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.977241683943535,
+   "time_remaining_s": 1698.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2906839615378136,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9414985602386479,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 4,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 104.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9770999141024856,
+   "time_remaining_s": 1696.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2906847118407621,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9414985602386479,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 4,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 106.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9769608731591907,
+   "time_remaining_s": 1694.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2908270579497339,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9414985602386479,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 4,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 108.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9768656552131592,
+   "time_remaining_s": 1692.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29082827633636243,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9414985602386479,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 1,
+   "unavailable_information_targets": 0,
+   "plans": 4,
+   "active_goal": "INSPECT",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 110.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9767756186550423,
+   "time_remaining_s": 1690.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29082949291158355,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9414985602386479,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 0,
+   "plans": 4,
+   "active_goal": "HOLD",
+   "action": "REQUEST_INFORMATION:EXTEND_COVERAGE"
+  },
+  {
+   "t_s": 112.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9766872543306242,
+   "time_remaining_s": 1688.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2908697105212771,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9414985602386479,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 1,
+   "plans": 4,
+   "active_goal": "HOLD",
+   "action": "WAIT:INFORMATION_ACQUISITION_UNAVAILABLE"
+  },
+  {
+   "t_s": 114.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9766009061589441,
+   "time_remaining_s": 1686.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2908715920097956,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9414985602386479,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 1,
+   "plans": 4,
+   "active_goal": "HOLD",
+   "action": "WAIT:INFORMATION_ACQUISITION_UNAVAILABLE"
+  },
+  {
+   "t_s": 116.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9765124800175911,
+   "time_remaining_s": 1684.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2909184130868755,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9414985602386479,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 1,
+   "plans": 4,
+   "active_goal": "HOLD",
+   "action": "WAIT:INFORMATION_ACQUISITION_UNAVAILABLE"
+  },
+  {
+   "t_s": 118.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.9764228964794271,
+   "time_remaining_s": 1682.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.29092053197062345,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9414985602386479,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 1,
+   "plans": 4,
+   "active_goal": "HOLD",
+   "action": "WAIT:INFORMATION_ACQUISITION_UNAVAILABLE"
+  },
+  {
+   "t_s": 120.0,
+   "critical_condition": null,
+   "critical_observed": false,
+   "link_down": false,
+   "report_pending": false,
+   "battery": 0.976341149747258,
+   "time_remaining_s": 1680.1,
+   "route_legs": 0,
+   "route_occupied_legs": 0,
+   "onsets": {
+    "critical_intact": false,
+    "finding_link_up": false,
+    "finding_link_down": false,
+    "critical_open": true,
+    "route_blocked": false,
+    "battery_below_reserve": false,
+    "time_below_reserve": false
+   },
+   "belief": {
+    "covered_cells": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     13,
+     14,
+     16,
+     17,
+     18,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     53,
+     54,
+     55
+    ],
+    "coverage": 0.609375,
+    "complete_fraction": 0.8,
+    "condition_open": true,
+    "uncertainty": {
+     "aleatoric": 0.2909226447763154,
+     "epistemic": 0.2,
+     "contradiction": 0.0,
+     "observational": 0.9414985602386479,
+     "representation_type": "SCALAR_CHANNELS",
+     "calibration_metadata": {
+      "calibrated": false,
+      "method": null,
+      "calibration_run_id": null,
+      "units": "unitless_nonnegative"
+     }
+    },
+    "corrosion": 0.001263585868154237,
+    "crack": 0.0010111102801472855
+   },
+   "active_information_needs": 0,
+   "unavailable_information_targets": 1,
+   "plans": 4,
+   "active_goal": "HOLD",
+   "action": "WAIT:INFORMATION_ACQUISITION_UNAVAILABLE"
+  }
+ ],
+ "final_belief": {
+  "covered_cells": [
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   13,
+   14,
+   16,
+   17,
+   18,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   29,
+   30,
+   31,
+   32,
+   33,
+   34,
+   37,
+   38,
+   39,
+   40,
+   41,
+   42,
+   45,
+   46,
+   47,
+   48,
+   49,
+   50,
+   53,
+   54,
+   55
+  ],
+  "coverage": 0.609375,
+  "complete_fraction": 0.8,
+  "condition_open": true,
+  "uncertainty": {
+   "aleatoric": 0.2909226447763154,
+   "epistemic": 0.2,
+   "contradiction": 0.0,
+   "observational": 0.9414985602386479,
+   "representation_type": "SCALAR_CHANNELS",
+   "calibration_metadata": {
+    "calibrated": false,
+    "method": null,
+    "calibration_run_id": null,
+    "units": "unitless_nonnegative"
+   }
+  },
+  "corrosion": 0.001263585868154237,
+  "crack": 0.0010111102801472855
+ },
+ "structural_stats": {
+  "received": 392,
+  "duplicates": 0,
+  "late": 0,
+  "corrupt": 0,
+  "fixes_accepted": 120,
+  "fixes_rejected": 0,
+  "structural_matched": 48,
+  "structural_no_match": 4,
+  "by_kind": {
+   "POSITION_FIX": 120,
+   "DEPTH_RANGE": 40,
+   "POINT_CLOUD": 40,
+   "SONAR": 40,
+   "field_sample": 96,
+   "STRUCTURED": 52,
+   "ecological_survey": 4
+  }
+ },
+ "run_dir": "C:\\Users\\Kerem\\.codex\\worktrees\\i5-final-repair\\conrad-v2\\artifacts\\experiments\\I5-NOMINAL-FORENSICS\\runs\\I5-TRACE-kernel-I5-NOMINAL-s8300001-candidate2"
+}
