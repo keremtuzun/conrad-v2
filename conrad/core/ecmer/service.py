@@ -129,6 +129,7 @@ class EcmerEncoder:
             created_time_ns=max(created, obs.timestamp.time_ns),
             embedding=tuple(float(v) for v in out.event[i].tolist()),
             spatial_support=support,
+            structural_support=obs.structural_support,
             reliability=min(max(reliability, 0.0), 1.0),
             aleatoric_uncertainty=float(torch.exp(out.log_var_a[i])),
             validity=validity,

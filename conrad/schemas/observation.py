@@ -15,6 +15,7 @@ from pydantic import Field, field_validator, model_validator
 
 from conrad.schemas.base import VersionedModel
 from conrad.schemas.frames import Pose, SpatialSupport
+from conrad.schemas.structural_support import CapsuleSurfaceSupport
 from conrad.schemas.timebase import TimeStamp
 
 MAX_INLINE_VALUES = 4096
@@ -69,6 +70,7 @@ class Observation(VersionedModel):
     sensor_health: SensorHealth = SensorHealth.OK
     calibration_ref: str | None = None
     sensor_context: dict[str, Any] = Field(default_factory=dict)
+    structural_support: CapsuleSurfaceSupport | None = None
 
     @model_validator(mode="after")
     def _payload(self) -> Observation:
@@ -126,6 +128,7 @@ class Evidence(VersionedModel):
     embedding: tuple[float, ...]
     embedding_ref: PayloadRef | None = None
     spatial_support: SpatialSupport | None = None
+    structural_support: CapsuleSurfaceSupport | None = None
     entity_candidates: tuple[EntityCandidate, ...] = ()
     reliability: float = Field(
         ge=0, le=1, description="sensing reliability; distinct from semantic confidence"
