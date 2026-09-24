@@ -1,0 +1,2745 @@
+{
+ "summary": {
+  "evidence_class": "DEVELOPMENT_DIAGNOSTIC; Python kernel, no gate promotion",
+  "worlds": 40,
+  "actions": 70,
+  "repeated_pose_actions": 24,
+  "zero_predicted_mission_gain_actions": 24,
+  "repeated_pose_energy_j": 33819.979025701345,
+  "zero_predicted_mission_gain_energy_j": 33819.979025701345,
+  "actions_with_target_revision": 26,
+  "repeated_pose_actions_with_target_revision": 4
+ },
+ "actions": [
+  {
+   "seed": 8100000,
+   "arm": "V4_full",
+   "source_report_sha256": "9020deec800057e88913c00925d8624abaf652c064da1ac5936af8eb54b63903",
+   "plan_id": "018bcfe5-6832-7843-9f8a-688bb64e2c45",
+   "action_id": "018bcfe5-680b-7a30-9129-fc2fccd40cce",
+   "need_id": "018bcfe5-69c6-7eb2-94ff-43104cad8b83",
+   "target_beliefs": [
+    "018bcfe5-6808-7b0f-88f7-1ea372b151e2"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.04742507531388538,
+    2.5746178722482487,
+    1.694635006089916
+   ],
+   "accepted_s": 34.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.18219472330007647,
+   "predicted_information_gain": 0.3000049009137732,
+   "selected_score": 0.09133745760505962,
+   "selected_observational_gain": 0.23739600210295797,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 11.909043015065457,
+    "predicted_distance_m": 7.145425809039274,
+    "predicted_energy_j": 315.81703236157097,
+    "predicted_navigation_energy_j": 285.81703236157097,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 17.909043015065457
+   },
+   "realized_energy_j": 4521.892668105258,
+   "realized_approach_energy_j": 3512.823464297757,
+   "realized_elapsed_s": 24.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100000,
+   "arm": "V4_full",
+   "source_report_sha256": "9020deec800057e88913c00925d8624abaf652c064da1ac5936af8eb54b63903",
+   "plan_id": "018bcfe5-6864-7188-ae3d-ac159bee3f7e",
+   "action_id": "018bcfe5-683d-7a0b-a176-aba427959158",
+   "need_id": "018bcfe5-6b15-7ee7-b16b-0a858dd278ba",
+   "target_beliefs": [
+    "018bcfe5-6808-7b0f-88f7-1ea372b151e2"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.04742507531388538,
+    2.5746178722482487,
+    1.694635006089916
+   ],
+   "accepted_s": 58.0,
+   "outcome": "ABANDONED_MISSION_END",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.23582651630715637,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.037567287282087136,
+    "predicted_distance_m": 0.02254037236925223,
+    "predicted_energy_j": 30.901614894770088,
+    "predicted_navigation_energy_j": 0.9016148947700877,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.037567287282087
+   },
+   "realized_energy_j": 2491.9084506591535,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 42.099999999999994,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100001,
+   "arm": "V4_full",
+   "source_report_sha256": "f630c0090a64134642d7742603ecb3278a14798ccfb60536543c2b04a85b2a2b",
+   "plan_id": "018bcfe5-6832-7afb-bb76-abe4cbcdf447",
+   "action_id": "018bcfe5-681f-7d04-abb8-6fc6c4755941",
+   "need_id": "018bcfe5-69c8-78fd-ad9b-4c6dcc129b8d",
+   "target_beliefs": [
+    "018bcfe5-6808-7e9b-9936-61c4bbc1b2f2"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.09042176667897468,
+    -3.488834727815439,
+    2.2136818255011192
+   ],
+   "accepted_s": 34.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.14957182479076994,
+   "predicted_information_gain": 0.23689705291829147,
+   "selected_score": 0.3849556110346663,
+   "selected_observational_gain": 0.19801917641755087,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 13.676442030533313,
+    "predicted_distance_m": 8.205865218319987,
+    "predicted_energy_j": 358.2346087327995,
+    "predicted_navigation_energy_j": 328.2346087327995,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 19.676442030533313
+   },
+   "realized_energy_j": 6245.592722137722,
+   "realized_approach_energy_j": 4912.989358359902,
+   "realized_elapsed_s": 28.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100001,
+   "arm": "V4_full",
+   "source_report_sha256": "f630c0090a64134642d7742603ecb3278a14798ccfb60536543c2b04a85b2a2b",
+   "plan_id": "018bcfe5-6864-7d02-ae74-ededf5b3ca8e",
+   "action_id": "018bcfe5-6841-712e-adad-7d4ba1debf87",
+   "need_id": "018bcfe5-6b5c-7a13-8750-e9777a4f8e06",
+   "target_beliefs": [
+    "018bcfe5-6808-7e9b-9936-61c4bbc1b2f2"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.09042176667897456,
+    -2.7843051931799043,
+    1.9565084699095305
+   ],
+   "accepted_s": 62.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.037780639155727824,
+   "predicted_information_gain": 0.05549855195901551,
+   "selected_score": 0.7775874748551495,
+   "selected_observational_gain": 0.05146462926500931,
+   "selected_redundancy": 0.7548396019890071,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 1.2177793335665852,
+    "predicted_distance_m": 0.7306676001399511,
+    "predicted_energy_j": 59.226704005598044,
+    "predicted_navigation_energy_j": 29.226704005598044,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 7.217779333566585
+   },
+   "realized_energy_j": 1085.4974232407403,
+   "realized_approach_energy_j": 345.03855688452677,
+   "realized_elapsed_s": 10.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100001,
+   "arm": "V4_full",
+   "source_report_sha256": "f630c0090a64134642d7742603ecb3278a14798ccfb60536543c2b04a85b2a2b",
+   "plan_id": "018bcfe5-6896-76d4-a007-e84fee3b4521",
+   "action_id": "018bcfe5-6873-7e46-9dc8-37007dae797e",
+   "need_id": "018bcfe5-6be7-7b3c-9372-5ceca2dbcd99",
+   "target_beliefs": [
+    "018bcfe5-6808-7e9b-9936-61c4bbc1b2f2"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.09042176667897456,
+    -2.7843051931799043,
+    1.9565084699095305
+   ],
+   "accepted_s": 72.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.8699169711020243,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.14963623184257457,
+    "predicted_distance_m": 0.08978173910554484,
+    "predicted_energy_j": 33.59126956422179,
+    "predicted_navigation_energy_j": 3.59126956422179,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.149636231842575
+   },
+   "realized_energy_j": 488.1074353745371,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 8.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100001,
+   "arm": "V4_full",
+   "source_report_sha256": "f630c0090a64134642d7742603ecb3278a14798ccfb60536543c2b04a85b2a2b",
+   "plan_id": "018bcfe5-68c8-7852-8f0d-01f3fbbee313",
+   "action_id": "018bcfe5-68a5-77c6-b458-c108af98b032",
+   "need_id": "018bcfe5-6c56-7c0c-a2c9-5d13e414584f",
+   "target_beliefs": [
+    "018bcfe5-6808-7e9b-9936-61c4bbc1b2f2"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.09042176667897456,
+    -2.7843051931799043,
+    1.9565084699095305
+   ],
+   "accepted_s": 80.0,
+   "outcome": "ABANDONED_MISSION_END",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.8674411288529805,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.036752255927313016,
+    "predicted_distance_m": 0.022051353556387952,
+    "predicted_energy_j": 30.88205414225552,
+    "predicted_navigation_energy_j": 0.8820541422555195,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.036752255927313
+   },
+   "realized_energy_j": 1206.6840994342856,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 20.099999999999994,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100002,
+   "arm": "V4_full",
+   "source_report_sha256": "6a1ed2468d73c1121e84ec5fede47aa13205478719259ca04fa456522c2e9ab0",
+   "plan_id": "018bcfe5-6832-7fae-8453-02cff848d33c",
+   "action_id": "018bcfe5-681f-7fa1-a7d6-225615e48c7c",
+   "need_id": "018bcfe5-69c8-70d4-9815-1d357a2c9f23",
+   "target_beliefs": [
+    "018bcfe5-6808-7c70-97b6-5b257ab72a5e"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.004265668837759213,
+    -3.178924985253321,
+    1.8262628993018397
+   ],
+   "accepted_s": 34.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.41951535146369545,
+   "predicted_information_gain": 0.6696827615035432,
+   "selected_score": 0.5425796824563597,
+   "selected_observational_gain": 0.5536526933204771,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 13.60536615812676,
+    "predicted_distance_m": 8.163219694876055,
+    "predicted_energy_j": 356.5287877950422,
+    "predicted_navigation_energy_j": 326.5287877950422,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 19.60536615812676
+   },
+   "realized_energy_j": 6031.264787120394,
+   "realized_approach_energy_j": 5429.398680522973,
+   "realized_elapsed_s": 26.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 10
+  },
+  {
+   "seed": 8100003,
+   "arm": "V4_full",
+   "source_report_sha256": "a6bbf23a16823ca5ac59e9c17eb11f0d7718e64405bf757bf1b853f1ba5a592c",
+   "plan_id": "018bcfe5-6832-7f9e-8cd8-20df87ddaead",
+   "action_id": "018bcfe5-681b-7e0b-b161-6613937281d6",
+   "need_id": "018bcfe5-69e3-763b-9bb9-7a72261dc6c3",
+   "target_beliefs": [
+    "018bcfe5-6808-72e8-81e1-57cc630dcbed"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.012912338883555202,
+    2.5886120576929414,
+    1.9583823693591145
+   ],
+   "accepted_s": 36.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.3992960626545831,
+   "predicted_information_gain": 0.6626841529063872,
+   "selected_score": 0.5393816888200333,
+   "selected_observational_gain": 0.5185424354285804,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 14.261297387267177,
+    "predicted_distance_m": 8.556778432360307,
+    "predicted_energy_j": 372.27113729441226,
+    "predicted_navigation_energy_j": 342.27113729441226,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 20.261297387267177
+   },
+   "realized_energy_j": 7637.799925474565,
+   "realized_approach_energy_j": 6828.535360245925,
+   "realized_elapsed_s": 28.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 10
+  },
+  {
+   "seed": 8100005,
+   "arm": "V4_full",
+   "source_report_sha256": "d89f8dd16e4f7127d61fa80a4145192cdc534445aca42f86fbc60e8a9b8e2146",
+   "plan_id": "018bcfe5-6832-7384-b1ae-c88e00bae335",
+   "action_id": "018bcfe5-680b-7136-84f1-ea4228b32076",
+   "need_id": "018bcfe5-69c6-7d89-966e-f1b6b50c1da0",
+   "target_beliefs": [
+    "018bcfe5-6808-7dd8-bd8c-ee19c1b07946"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.012786281001978003,
+    1.596548142804938,
+    1.6488985149187712
+   ],
+   "accepted_s": 34.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.11645567442426381,
+   "predicted_information_gain": 0.1918652918419081,
+   "selected_score": 0.19397695862913053,
+   "selected_observational_gain": 0.15170355906059324,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 21.788070366832,
+    "predicted_distance_m": 13.072842220099199,
+    "predicted_energy_j": 552.913688803968,
+    "predicted_navigation_energy_j": 522.913688803968,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 27.788070366832
+   },
+   "realized_energy_j": 6349.1719897746925,
+   "realized_approach_energy_j": 5132.869885936038,
+   "realized_elapsed_s": 28.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 11
+  },
+  {
+   "seed": 8100005,
+   "arm": "V4_full",
+   "source_report_sha256": "d89f8dd16e4f7127d61fa80a4145192cdc534445aca42f86fbc60e8a9b8e2146",
+   "plan_id": "018bcfe5-6865-7ff9-bcc7-ab2ce945496c",
+   "action_id": "018bcfe5-683d-7378-b703-a7257c5fcb4d",
+   "need_id": "018bcfe5-6b5b-70c1-a83e-2c5f1cef69ab",
+   "target_beliefs": [
+    "018bcfe5-6808-7dd8-bd8c-ee19c1b07946"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.012786281001978003,
+    1.596548142804938,
+    1.6488985149187712
+   ],
+   "accepted_s": 62.0,
+   "outcome": "ABANDONED_MISSION_END",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.3534693995235525,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.02732099044962233,
+    "predicted_distance_m": 0.016392594269773377,
+    "predicted_energy_j": 30.655703770790936,
+    "predicted_navigation_energy_j": 0.6557037707909359,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.027320990449622
+   },
+   "realized_energy_j": 2852.2678354652926,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 38.099999999999994,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 38
+  },
+  {
+   "seed": 8100006,
+   "arm": "V4_full",
+   "source_report_sha256": "ca36af6ba66b66c4ed2a8a531592c294ed15ecece9b751f8aa05f36593a74f3a",
+   "plan_id": "018bcfe5-6832-764f-8361-7c82c473c234",
+   "action_id": "018bcfe5-681b-780a-8971-66097e7ac039",
+   "need_id": "018bcfe5-69e3-7237-869e-26f335fbc0b4",
+   "target_beliefs": [
+    "018bcfe5-6808-7343-b076-c26ee0e6b00c"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.02249970260983953,
+    2.757454219080665,
+    1.7011858279230658
+   ],
+   "accepted_s": 36.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.38353799908300334,
+   "predicted_information_gain": 0.6009822091121644,
+   "selected_score": 0.36682465464179204,
+   "selected_observational_gain": 0.5099281508200254,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 14.85176889606442,
+    "predicted_distance_m": 8.911061337638651,
+    "predicted_energy_j": 386.44245350554604,
+    "predicted_navigation_energy_j": 356.44245350554604,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 20.85176889606442
+   },
+   "realized_energy_j": 6855.870754712047,
+   "realized_approach_energy_j": 6068.914024135778,
+   "realized_elapsed_s": 30.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 13
+  },
+  {
+   "seed": 8100007,
+   "arm": "V4_full",
+   "source_report_sha256": "812adeac11dd71b93340c0b911277edde0adaba98c434ca47bc430d6063a0308",
+   "plan_id": "018bcfe5-6832-77ea-b128-f707a482da51",
+   "action_id": "018bcfe5-682f-7c46-b159-e86d54979fa0",
+   "need_id": "018bcfe5-69c8-78f2-b9b4-4ec3b7721456",
+   "target_beliefs": [
+    "018bcfe5-6808-73e6-885f-0657a3332d56"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.04321093044782455,
+    -4.307145244027659,
+    2.2298809260589425
+   ],
+   "accepted_s": 34.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.36651638801792896,
+   "predicted_information_gain": 0.5788422113724456,
+   "selected_score": 0.3192236149574537,
+   "selected_observational_gain": 0.4857866480942383,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 14.290160274535388,
+    "predicted_distance_m": 8.574096164721233,
+    "predicted_energy_j": 372.9638465888493,
+    "predicted_navigation_energy_j": 342.9638465888493,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 20.29016027453539
+   },
+   "realized_energy_j": 6642.248382555817,
+   "realized_approach_energy_j": 5908.036027499089,
+   "realized_elapsed_s": 28.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100007,
+   "arm": "V4_full",
+   "source_report_sha256": "812adeac11dd71b93340c0b911277edde0adaba98c434ca47bc430d6063a0308",
+   "plan_id": "018bcfe5-6864-7cd3-90eb-556fd8e419e3",
+   "action_id": "018bcfe5-6851-7333-b381-4167253daa6d",
+   "need_id": "018bcfe5-6b5b-7506-bf60-ba0c8f401637",
+   "target_beliefs": [
+    "018bcfe5-6808-73e6-885f-0657a3332d56"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.04321093044782439,
+    -3.4617098024650175,
+    1.9212728993490362
+   ],
+   "accepted_s": 62.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.06016418274051081,
+   "predicted_information_gain": 0.09335894399583114,
+   "selected_score": 0.6903607584171021,
+   "selected_observational_gain": 0.08029550522455778,
+   "selected_redundancy": 0.6669768108584743,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 1.548876913319547,
+    "predicted_distance_m": 0.9293261479917282,
+    "predicted_energy_j": 67.17304591966914,
+    "predicted_navigation_energy_j": 37.173045919669136,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 7.548876913319547
+   },
+   "realized_energy_j": 1004.0117059000604,
+   "realized_approach_energy_j": 352.1558004549606,
+   "realized_elapsed_s": 10.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 7
+  },
+  {
+   "seed": 8100008,
+   "arm": "V4_full",
+   "source_report_sha256": "c6cebc8a1f81af24854b49b10d47d569e363f86033d34790442340cf39d2242b",
+   "plan_id": "018bcfe5-6832-7848-8b6b-b8efc5837dd5",
+   "action_id": "018bcfe5-6803-71a3-9cc5-210d355fcb6f",
+   "need_id": "018bcfe5-69ab-7120-9470-17e1737dd15a",
+   "target_beliefs": [
+    "018bcfe5-6808-74a0-98f2-345f7632f18b"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.004950342657816882,
+    3.0013851115496637,
+    0.6993558807611777
+   ],
+   "accepted_s": 32.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.19903697158300823,
+   "predicted_information_gain": 0.31686649642179066,
+   "selected_score": 0.17093016521164578,
+   "selected_observational_gain": 0.262964818939048,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 11.924874180380648,
+    "predicted_distance_m": 7.154924508228388,
+    "predicted_energy_j": 316.1969803291355,
+    "predicted_navigation_energy_j": 286.1969803291355,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 17.924874180380648
+   },
+   "realized_energy_j": 5870.3765009811705,
+   "realized_approach_energy_j": 4418.476734721597,
+   "realized_elapsed_s": 26.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100008,
+   "arm": "V4_full",
+   "source_report_sha256": "c6cebc8a1f81af24854b49b10d47d569e363f86033d34790442340cf39d2242b",
+   "plan_id": "018bcfe5-6864-7109-b1b3-d7debabcdc94",
+   "action_id": "018bcfe5-6835-73fa-9d8e-eaac63a53434",
+   "need_id": "018bcfe5-6b18-7836-becc-4b154315eae6",
+   "target_beliefs": [
+    "018bcfe5-6808-74a0-98f2-345f7632f18b"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.004950342657816882,
+    3.0013851115496637,
+    0.6993558807611777
+   ],
+   "accepted_s": 58.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.3508191598905961,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.3099977152593141,
+    "predicted_distance_m": 0.1859986291555884,
+    "predicted_energy_j": 37.43994516622354,
+    "predicted_navigation_energy_j": 7.439945166223538,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.309997715259314
+   },
+   "realized_energy_j": 1040.8134338148757,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 8.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100008,
+   "arm": "V4_full",
+   "source_report_sha256": "c6cebc8a1f81af24854b49b10d47d569e363f86033d34790442340cf39d2242b",
+   "plan_id": "018bcfe5-6896-704c-8f0f-6a86f6930a63",
+   "action_id": "018bcfe5-6867-7d86-9ac1-f377646ada03",
+   "need_id": "018bcfe5-6b87-75f9-87dc-ff64f260d66d",
+   "target_beliefs": [
+    "018bcfe5-6808-74a0-98f2-345f7632f18b"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.004950342657816882,
+    3.0013851115496637,
+    0.6993558807611777
+   ],
+   "accepted_s": 66.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.35920503144335636,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.3473655517793812,
+    "predicted_distance_m": 0.20841933106762867,
+    "predicted_energy_j": 38.33677324270515,
+    "predicted_navigation_energy_j": 8.33677324270515,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.347365551779381
+   },
+   "realized_energy_j": 985.247379915947,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 8.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100008,
+   "arm": "V4_full",
+   "source_report_sha256": "c6cebc8a1f81af24854b49b10d47d569e363f86033d34790442340cf39d2242b",
+   "plan_id": "018bcfe5-68c8-702f-a03b-a7fb36687984",
+   "action_id": "018bcfe5-6899-75ed-a147-c9056d36681b",
+   "need_id": "018bcfe5-6bf6-726f-8e97-69f19402f318",
+   "target_beliefs": [
+    "018bcfe5-6808-74a0-98f2-345f7632f18b"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.004950342657816882,
+    3.0013851115496637,
+    0.6993558807611777
+   ],
+   "accepted_s": 74.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.33866426535433314,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.33019612472410387,
+    "predicted_distance_m": 0.19811767483446255,
+    "predicted_energy_j": 37.9247069933785,
+    "predicted_navigation_energy_j": 7.9247069933785,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.330196124724104
+   },
+   "realized_energy_j": 875.0801307730471,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 8.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100009,
+   "arm": "V4_full",
+   "source_report_sha256": "06338563a0feec9209bd66567fa03e776ac41b0016ad1decdddafee87f91c25e",
+   "plan_id": "018bcfe5-6832-7f85-ae2b-dc37bec24b23",
+   "action_id": "018bcfe5-682f-771f-b367-2e3f153d5e93",
+   "need_id": "018bcfe5-69c8-7bcc-9ba0-f133930ed7e6",
+   "target_beliefs": [
+    "018bcfe5-6808-70ce-a176-213b12b322a0"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.044858280486408816,
+    -4.078752508471221,
+    2.1951568676553954
+   ],
+   "accepted_s": 34.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.25602032346171455,
+   "predicted_information_gain": 0.398985277471258,
+   "selected_score": 0.3579326389419036,
+   "selected_observational_gain": 0.3411166176238668,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 15.016295123339887,
+    "predicted_distance_m": 9.009777074003933,
+    "predicted_energy_j": 390.39108296015735,
+    "predicted_navigation_energy_j": 360.39108296015735,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 21.016295123339887
+   },
+   "realized_energy_j": 8839.834284469345,
+   "realized_approach_energy_j": 7952.742806414926,
+   "realized_elapsed_s": 28.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100009,
+   "arm": "V4_full",
+   "source_report_sha256": "06338563a0feec9209bd66567fa03e776ac41b0016ad1decdddafee87f91c25e",
+   "plan_id": "018bcfe5-6864-77d8-89b8-5bf438103315",
+   "action_id": "018bcfe5-6841-70c8-8cb8-8d189ffab641",
+   "need_id": "018bcfe5-6b5d-7642-a3ff-75a14fc3d174",
+   "target_beliefs": [
+    "018bcfe5-6808-70ce-a176-213b12b322a0"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.0448582804864091,
+    -2.5287875322730455,
+    1.6293754853539006
+   ],
+   "accepted_s": 62.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.1487090819554021,
+   "predicted_information_gain": 0.22997695190557083,
+   "selected_score": 0.806682256027342,
+   "selected_observational_gain": 0.19872820483777656,
+   "selected_redundancy": 0.2563401514150734,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 2.7856757943956545,
+    "predicted_distance_m": 1.671405476637392,
+    "predicted_energy_j": 96.85621906549568,
+    "predicted_navigation_energy_j": 66.85621906549568,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 8.785675794395654
+   },
+   "realized_energy_j": 2847.4210143876226,
+   "realized_approach_energy_j": 1784.163849416378,
+   "realized_elapsed_s": 12.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 9
+  },
+  {
+   "seed": 8100010,
+   "arm": "V4_full",
+   "source_report_sha256": "778aefac3633d67b8b10cb69ccb0d58ea627b5e6f41396c7e676126b05fd73aa",
+   "plan_id": "018bcfe5-6832-7d2f-9d0b-c959a6ca7439",
+   "action_id": "018bcfe5-6803-72bf-90ad-e3d33bbffc16",
+   "need_id": "018bcfe5-69ab-7282-8716-fbb08a8bd37d",
+   "target_beliefs": [
+    "018bcfe5-6808-7d99-8ed2-f99be5197a93"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.03573602451762761,
+    2.9506332599417635,
+    0.9644052767135056
+   ],
+   "accepted_s": 32.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.14938409210049702,
+   "predicted_information_gain": 0.23735315583001534,
+   "selected_score": 0.20636214762745195,
+   "selected_observational_gain": 0.19751948898350785,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 12.2096190014793,
+    "predicted_distance_m": 7.32577140088758,
+    "predicted_energy_j": 323.0308560355032,
+    "predicted_navigation_energy_j": 293.0308560355032,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 18.2096190014793
+   },
+   "realized_energy_j": 6088.642155158477,
+   "realized_approach_energy_j": 3950.2599055145474,
+   "realized_elapsed_s": 26.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100010,
+   "arm": "V4_full",
+   "source_report_sha256": "778aefac3633d67b8b10cb69ccb0d58ea627b5e6f41396c7e676126b05fd73aa",
+   "plan_id": "018bcfe5-6864-7c88-a065-4d9c2993a545",
+   "action_id": "018bcfe5-6835-7f76-9465-3de30d2456fa",
+   "need_id": "018bcfe5-6b16-7761-b7e8-3fd76e937d0c",
+   "target_beliefs": [
+    "018bcfe5-6808-7d99-8ed2-f99be5197a93"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.03573602451762761,
+    2.9506332599417635,
+    0.9644052767135056
+   ],
+   "accepted_s": 58.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.413372948587463,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.305531149074306,
+    "predicted_distance_m": 0.18331868944458352,
+    "predicted_energy_j": 37.33274757778334,
+    "predicted_navigation_energy_j": 7.332747577783337,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.305531149074306
+   },
+   "realized_energy_j": 1283.7620838698167,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 8.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100010,
+   "arm": "V4_full",
+   "source_report_sha256": "778aefac3633d67b8b10cb69ccb0d58ea627b5e6f41396c7e676126b05fd73aa",
+   "plan_id": "018bcfe5-6896-7e53-a5e9-c9bced3201ec",
+   "action_id": "018bcfe5-6867-7a31-abec-74cf5ac58fc1",
+   "need_id": "018bcfe5-6b85-7e23-aaf2-84e2f5b469e3",
+   "target_beliefs": [
+    "018bcfe5-6808-7d99-8ed2-f99be5197a93"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.03573602451762761,
+    2.9506332599417635,
+    0.9644052767135056
+   ],
+   "accepted_s": 66.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.42425748502176536,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.2855484063056597,
+    "predicted_distance_m": 0.17132904378339572,
+    "predicted_energy_j": 36.85316175133583,
+    "predicted_navigation_energy_j": 6.853161751335833,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.28554840630566
+   },
+   "realized_energy_j": 862.6287971243964,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 8.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100010,
+   "arm": "V4_full",
+   "source_report_sha256": "778aefac3633d67b8b10cb69ccb0d58ea627b5e6f41396c7e676126b05fd73aa",
+   "plan_id": "018bcfe5-68c8-73cc-8226-c6ebb76f45b1",
+   "action_id": "018bcfe5-6899-72f1-af92-c06a41b96e75",
+   "need_id": "018bcfe5-6bf4-7c87-a219-196dd4a30269",
+   "target_beliefs": [
+    "018bcfe5-6808-7d99-8ed2-f99be5197a93"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.03573602451762761,
+    2.9506332599417635,
+    0.9644052767135056
+   ],
+   "accepted_s": 74.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.41198359901862436,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.3183274548485757,
+    "predicted_distance_m": 0.19099647290914526,
+    "predicted_energy_j": 37.63985891636581,
+    "predicted_navigation_energy_j": 7.63985891636581,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.318327454848576
+   },
+   "realized_energy_j": 748.0955023012139,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 8.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100011,
+   "arm": "V4_full",
+   "source_report_sha256": "e5d9eae047a3c892c16ecd3ca54222ec4b16b52b2990bf0eb2d2f7637f1f6e98",
+   "plan_id": "018bcfe5-6832-70c3-930f-84a9c34153f0",
+   "action_id": "018bcfe5-6803-729b-b84c-5a3931339c3a",
+   "need_id": "018bcfe5-69af-7759-97d2-549d64b95afd",
+   "target_beliefs": [
+    "018bcfe5-6808-7f06-8d66-b58dbc30231c"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.04463204281325009,
+    2.9081636031765203,
+    0.9975193245919445
+   ],
+   "accepted_s": 32.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.1176548765747452,
+   "predicted_information_gain": 0.17065430920803215,
+   "selected_score": 0.21363011261142092,
+   "selected_observational_gain": 0.16099463132833222,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 12.505384739035321,
+    "predicted_distance_m": 7.503230843421193,
+    "predicted_energy_j": 330.1292337368477,
+    "predicted_navigation_energy_j": 300.1292337368477,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 18.50538473903532
+   },
+   "realized_energy_j": 5616.801584452478,
+   "realized_approach_energy_j": 3810.101660416887,
+   "realized_elapsed_s": 26.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100011,
+   "arm": "V4_full",
+   "source_report_sha256": "e5d9eae047a3c892c16ecd3ca54222ec4b16b52b2990bf0eb2d2f7637f1f6e98",
+   "plan_id": "018bcfe5-6864-78bf-a428-90ce3cec07fd",
+   "action_id": "018bcfe5-6845-77b9-841a-09cb6553cbce",
+   "need_id": "018bcfe5-6b2c-78cb-9f24-15d3298b560d",
+   "target_beliefs": [
+    "018bcfe5-6808-7f06-8d66-b58dbc30231c"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.04463204281325013,
+    3.6581636031765203,
+    0.9975193245919445
+   ],
+   "accepted_s": 58.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.03417954825401812,
+   "predicted_information_gain": 0.04995981322042054,
+   "selected_score": 0.2799544163965705,
+   "selected_observational_gain": 0.046642188656189666,
+   "selected_redundancy": 0.7548396019890073,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 1.2328591029127525,
+    "predicted_distance_m": 0.7397154617476513,
+    "predicted_energy_j": 59.58861846990605,
+    "predicted_navigation_energy_j": 29.588618469906052,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 7.2328591029127525
+   },
+   "realized_energy_j": 1565.4649726087482,
+   "realized_approach_energy_j": 563.6789927849914,
+   "realized_elapsed_s": 10.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100011,
+   "arm": "V4_full",
+   "source_report_sha256": "e5d9eae047a3c892c16ecd3ca54222ec4b16b52b2990bf0eb2d2f7637f1f6e98",
+   "plan_id": "018bcfe5-6896-70f1-b8c9-73126151fdda",
+   "action_id": "018bcfe5-6877-7af4-98f7-655762ec15bb",
+   "need_id": "018bcfe5-6bb7-7862-a91b-b94ae9806986",
+   "target_beliefs": [
+    "018bcfe5-6808-7f06-8d66-b58dbc30231c"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.04463204281325013,
+    3.6581636031765203,
+    0.9975193245919445
+   ],
+   "accepted_s": 68.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.35704217112151615,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.1907006545016987,
+    "predicted_distance_m": 0.11442039270101938,
+    "predicted_energy_j": 34.576815708040776,
+    "predicted_navigation_energy_j": 4.576815708040776,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.190700654501699
+   },
+   "realized_energy_j": 876.6669391267496,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 8.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100011,
+   "arm": "V4_full",
+   "source_report_sha256": "e5d9eae047a3c892c16ecd3ca54222ec4b16b52b2990bf0eb2d2f7637f1f6e98",
+   "plan_id": "018bcfe5-68c8-7ed8-8403-064041efdc7f",
+   "action_id": "018bcfe5-68a9-7aa9-8c84-5ad623332ba0",
+   "need_id": "018bcfe5-6c26-7cc2-b62c-2a377ce7091a",
+   "target_beliefs": [
+    "018bcfe5-6808-7f06-8d66-b58dbc30231c"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.04463204281325013,
+    3.6581636031765203,
+    0.9975193245919445
+   ],
+   "accepted_s": 76.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.4317968291800121,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.24082278521569833,
+    "predicted_distance_m": 0.14449367112941874,
+    "predicted_energy_j": 35.779746845176746,
+    "predicted_navigation_energy_j": 5.779746845176746,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.240822785215698
+   },
+   "realized_energy_j": 1039.3808362740638,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 8.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100012,
+   "arm": "V4_full",
+   "source_report_sha256": "381a833201624e5ea578e9037435b3b807586fe21f5f7a305cfdef4bdeff0452",
+   "plan_id": "018bcfe5-6832-7c8f-a298-7d81ca5a3ed7",
+   "action_id": "018bcfe5-682f-75da-8937-585e42c8e4c5",
+   "need_id": "018bcfe5-69ab-78d8-9249-862119c356f2",
+   "target_beliefs": [
+    "018bcfe5-6808-74e5-bd55-bbe08482403a"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.0036093250442832494,
+    -3.264891942216195,
+    2.516200457612425
+   ],
+   "accepted_s": 32.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.3608998238095666,
+   "predicted_information_gain": 0.5704991707801994,
+   "selected_score": 0.23749912678680382,
+   "selected_observational_gain": 0.4781666167946863,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 14.911631466193832,
+    "predicted_distance_m": 8.946978879716298,
+    "predicted_energy_j": 387.8791551886519,
+    "predicted_navigation_energy_j": 357.8791551886519,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 20.911631466193832
+   },
+   "realized_energy_j": 7733.713654695207,
+   "realized_approach_energy_j": 6714.446891160681,
+   "realized_elapsed_s": 26.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100012,
+   "arm": "V4_full",
+   "source_report_sha256": "381a833201624e5ea578e9037435b3b807586fe21f5f7a305cfdef4bdeff0452",
+   "plan_id": "018bcfe5-6864-70d4-9a05-d94406238204",
+   "action_id": "018bcfe5-6841-7128-b30e-df618e8604e4",
+   "need_id": "018bcfe5-6b24-7582-b87f-14deb9429e07",
+   "target_beliefs": [
+    "018bcfe5-6808-74e5-bd55-bbe08482403a"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.0036093250442829645,
+    -1.714926966018019,
+    1.95041907531093
+   ],
+   "accepted_s": 58.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.15609796633509673,
+   "predicted_information_gain": 0.24664238483726564,
+   "selected_score": 0.692902041072582,
+   "selected_observational_gain": 0.2068561797488683,
+   "selected_redundancy": 0.2563401514150734,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 2.7478397712071274,
+    "predicted_distance_m": 1.6487038627242767,
+    "predicted_energy_j": 95.94815450897107,
+    "predicted_navigation_energy_j": 65.94815450897107,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 8.747839771207127
+   },
+   "realized_energy_j": 1896.5618201203051,
+   "realized_approach_energy_j": 1018.1582499214874,
+   "realized_elapsed_s": 12.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 10
+  },
+  {
+   "seed": 8100014,
+   "arm": "V4_full",
+   "source_report_sha256": "8193ace568e9a3094a3a83d213d605dd08af1690f6f7cc5cda93e9a229b7a1ab",
+   "plan_id": "018bcfe5-6832-7482-82a5-ea96708001e3",
+   "action_id": "018bcfe5-682f-75a4-877c-977b75f0ab5e",
+   "need_id": "018bcfe5-69ad-7981-9f5c-faf6cd73027a",
+   "target_beliefs": [
+    "018bcfe5-6808-71d7-a875-5c4ffcae854b"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.049039041307222246,
+    -4.030922190702288,
+    2.428980921697451
+   ],
+   "accepted_s": 32.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.25466553868380304,
+   "predicted_information_gain": 0.3992738892807095,
+   "selected_score": 0.3598267844777172,
+   "selected_observational_gain": 0.33851155298754687,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 15.048902613522813,
+    "predicted_distance_m": 9.029341568113686,
+    "predicted_energy_j": 391.17366272454746,
+    "predicted_navigation_energy_j": 361.17366272454746,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 21.048902613522813
+   },
+   "realized_energy_j": 7425.785856367712,
+   "realized_approach_energy_j": 6579.25976091672,
+   "realized_elapsed_s": 28.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100014,
+   "arm": "V4_full",
+   "source_report_sha256": "8193ace568e9a3094a3a83d213d605dd08af1690f6f7cc5cda93e9a229b7a1ab",
+   "plan_id": "018bcfe5-6864-7ef9-ad99-f3bd49660200",
+   "action_id": "018bcfe5-6851-71d8-8d67-d6f54251d550",
+   "need_id": "018bcfe5-6b42-7c75-a0e9-eb946bf80a22",
+   "target_beliefs": [
+    "018bcfe5-6808-71d7-a875-5c4ffcae854b"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.0490390413072224,
+    -3.1854867491396464,
+    2.120372894987544
+   ],
+   "accepted_s": 60.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.042310208629640286,
+   "predicted_information_gain": 0.06507575083906597,
+   "selected_score": 0.7703086540475165,
+   "selected_observational_gain": 0.05666032125668224,
+   "selected_redundancy": 0.6669768108584739,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 1.4640483877757635,
+    "predicted_distance_m": 0.8784290326654584,
+    "predicted_energy_j": 65.13716130661834,
+    "predicted_navigation_energy_j": 35.13716130661834,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 7.4640483877757635
+   },
+   "realized_energy_j": 1349.2201336097496,
+   "realized_approach_energy_j": 664.2035312906992,
+   "realized_elapsed_s": 10.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 8
+  },
+  {
+   "seed": 8100015,
+   "arm": "V4_full",
+   "source_report_sha256": "739b285cee45486d756fe16aa31506daaeddc4004c1651e98e105e17aac5a113",
+   "plan_id": "018bcfe5-6832-79d2-87d4-ded5e67ca117",
+   "action_id": "018bcfe5-681f-7ff8-9f5a-6b34b50417d5",
+   "need_id": "018bcfe5-69c6-7bc9-8a71-b3614a834f13",
+   "target_beliefs": [
+    "018bcfe5-6808-7d6f-a7e4-2bcbc871a38c"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.069927798851006,
+    -3.662972061772919,
+    1.9084158054902072
+   ],
+   "accepted_s": 34.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.16192613614262122,
+   "predicted_information_gain": 0.2606208105694701,
+   "selected_score": 0.1035287423258521,
+   "selected_observational_gain": 0.21298961155577145,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 10.985285946740785,
+    "predicted_distance_m": 6.59117156804447,
+    "predicted_energy_j": 293.6468627217788,
+    "predicted_navigation_energy_j": 263.6468627217788,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 16.985285946740785
+   },
+   "realized_energy_j": 4760.863935964804,
+   "realized_approach_energy_j": 4154.859632978321,
+   "realized_elapsed_s": 22.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100015,
+   "arm": "V4_full",
+   "source_report_sha256": "739b285cee45486d756fe16aa31506daaeddc4004c1651e98e105e17aac5a113",
+   "plan_id": "018bcfe5-6864-77f2-95f1-9a188415f18e",
+   "action_id": "018bcfe5-6851-72a8-af33-7ab001e0e9ce",
+   "need_id": "018bcfe5-6b03-7b17-bdd4-d44996601a1e",
+   "target_beliefs": [
+    "018bcfe5-6808-7d6f-a7e4-2bcbc871a38c"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.069927798851006,
+    -3.662972061772919,
+    1.9084158054902072
+   ],
+   "accepted_s": 56.0,
+   "outcome": "ABANDONED_MISSION_END",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.21838668577846734,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.04622968322292387,
+    "predicted_distance_m": 0.027737809933754142,
+    "predicted_energy_j": 31.109512397350166,
+    "predicted_navigation_energy_j": 1.1095123973501657,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.046229683222924
+   },
+   "realized_energy_j": 2806.8203923265537,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 44.099999999999994,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100016,
+   "arm": "V4_full",
+   "source_report_sha256": "d4e047082eb27e827a477c3a59b7b31a2f154300c548f158684a2d3a0d758efc",
+   "plan_id": "018bcfe5-6832-7673-86bd-993fdc3432a9",
+   "action_id": "018bcfe5-681f-77a1-b0db-043f7abecfa1",
+   "need_id": "018bcfe5-69e3-7819-9167-1165bdb26ec3",
+   "target_beliefs": [
+    "018bcfe5-6808-7490-8feb-566d5a439a4a"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.014345313882215976,
+    -1.9129205927110986,
+    1.677648841079359
+   ],
+   "accepted_s": 36.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.12243127114021157,
+   "predicted_information_gain": 0.203528192144857,
+   "selected_score": 0.39307853840074297,
+   "selected_observational_gain": 0.15888184547062462,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 13.99002715096227,
+    "predicted_distance_m": 8.39401629057736,
+    "predicted_energy_j": 365.7606516230944,
+    "predicted_navigation_energy_j": 335.7606516230944,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 19.99002715096227
+   },
+   "realized_energy_j": 6257.13526106651,
+   "realized_approach_energy_j": 5387.598679967085,
+   "realized_elapsed_s": 28.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 11
+  },
+  {
+   "seed": 8100017,
+   "arm": "V4_full",
+   "source_report_sha256": "302af905f33af7bd54e0cee3c057a45c6c81146a43d48b6f4b244442f1a4af57",
+   "plan_id": "018bcfe5-6832-7190-88ff-35220956521b",
+   "action_id": "018bcfe5-681b-7f1d-95de-0c68d3a17425",
+   "need_id": "018bcfe5-69c6-753d-a97b-0ebe74b59a81",
+   "target_beliefs": [
+    "018bcfe5-6808-720a-9b57-79a6b8f5e1b7"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.03550634675727043,
+    3.182827918585908,
+    1.7583016665698428
+   ],
+   "accepted_s": 34.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.18921109504664316,
+   "predicted_information_gain": 0.2923295005095483,
+   "selected_score": 0.0749476217395975,
+   "selected_observational_gain": 0.2529477499165268,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 11.866411763248678,
+    "predicted_distance_m": 7.119847057949206,
+    "predicted_energy_j": 314.79388231796827,
+    "predicted_navigation_energy_j": 284.79388231796827,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 17.866411763248678
+   },
+   "realized_energy_j": 5246.496630731768,
+   "realized_approach_energy_j": 4345.547012646031,
+   "realized_elapsed_s": 24.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100017,
+   "arm": "V4_full",
+   "source_report_sha256": "302af905f33af7bd54e0cee3c057a45c6c81146a43d48b6f4b244442f1a4af57",
+   "plan_id": "018bcfe5-6864-743e-93e2-9464ee0ac8c7",
+   "action_id": "018bcfe5-684d-7642-bc86-d3befe6b1148",
+   "need_id": "018bcfe5-6b1f-74cb-ba48-42c7e08935e9",
+   "target_beliefs": [
+    "018bcfe5-6808-720a-9b57-79a6b8f5e1b7"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.03550634675727043,
+    3.182827918585908,
+    1.7583016665698428
+   ],
+   "accepted_s": 58.0,
+   "outcome": "ABANDONED_MISSION_END",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.19286812047463162,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.04595056250544882,
+    "predicted_distance_m": 0.02757033750326916,
+    "predicted_energy_j": 31.102813500130765,
+    "predicted_navigation_energy_j": 1.1028135001307646,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.045950562505449
+   },
+   "realized_energy_j": 2451.102932196789,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 42.099999999999994,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100018,
+   "arm": "V4_full",
+   "source_report_sha256": "3b9527f5da708548ca41f074263b6252b146556f9565722de1c168bd2a131721",
+   "plan_id": "018bcfe5-6832-7e2f-9172-3f3f900ed744",
+   "action_id": "018bcfe5-681e-7695-8528-1905a60407d5",
+   "need_id": "018bcfe5-69c6-748c-8e57-ae6f8006d1f9",
+   "target_beliefs": [
+    "018bcfe5-6808-7bd8-b5db-cdbbc76c3c41"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -1.9858262705898586,
+    -1.1592330592588314,
+    2.2462449403516853
+   ],
+   "accepted_s": 34.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.2842948170145171,
+   "predicted_information_gain": 0.4656918935369116,
+   "selected_score": 0.4797106292608661,
+   "selected_observational_gain": 0.3712412521812462,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 10.698378481879317,
+    "predicted_distance_m": 6.4190270891275905,
+    "predicted_energy_j": 286.7610835651036,
+    "predicted_navigation_energy_j": 256.7610835651036,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 16.698378481879317
+   },
+   "realized_energy_j": 5849.141470606641,
+   "realized_approach_energy_j": 5004.895059649056,
+   "realized_elapsed_s": 24.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100018,
+   "arm": "V4_full",
+   "source_report_sha256": "3b9527f5da708548ca41f074263b6252b146556f9565722de1c168bd2a131721",
+   "plan_id": "018bcfe5-6864-701a-ad29-6aa308b162cb",
+   "action_id": "018bcfe5-6851-73d4-8c0f-e5ea4c18c03e",
+   "need_id": "018bcfe5-6b19-779c-9d41-b615bc2c3f78",
+   "target_beliefs": [
+    "018bcfe5-6808-7bd8-b5db-cdbbc76c3c41"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.022713991785861566,
+    -1.9911976765072696,
+    2.2462449403516853
+   ],
+   "accepted_s": 58.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.10224093990967685,
+   "predicted_information_gain": 0.15105604296269481,
+   "selected_score": 0.533454445565028,
+   "selected_observational_gain": 0.1389830595859107,
+   "selected_redundancy": 0.09411860328407134,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 3.621700915754605,
+    "predicted_distance_m": 2.173020549452763,
+    "predicted_energy_j": 116.92082197811052,
+    "predicted_navigation_energy_j": 86.92082197811052,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 9.621700915754605
+   },
+   "realized_energy_j": 2342.6926564105797,
+   "realized_approach_energy_j": 1457.6484344720193,
+   "realized_elapsed_s": 14.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 12
+  },
+  {
+   "seed": 8100020,
+   "arm": "V4_full",
+   "source_report_sha256": "65d0bade10277c913ba549a87658d5db4da246175f65cb1050b86c4b4701d832",
+   "plan_id": "018bcfe5-6832-73c9-a7b7-1f527c3890da",
+   "action_id": "018bcfe5-6817-7cfc-811a-cb80f002d944",
+   "need_id": "018bcfe5-69ad-7826-b50d-ff15efc1a289",
+   "target_beliefs": [
+    "018bcfe5-6808-768b-b653-9c95c3d76eb4"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.07208178300229573,
+    -3.611475743635589,
+    1.276440035622889
+   ],
+   "accepted_s": 32.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.16116151291453967,
+   "predicted_information_gain": 0.257378169031705,
+   "selected_score": 0.0816438582754819,
+   "selected_observational_gain": 0.21265452312746805,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 10.471225441749045,
+    "predicted_distance_m": 6.282735265049427,
+    "predicted_energy_j": 281.30941060197705,
+    "predicted_navigation_energy_j": 251.30941060197705,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 16.471225441749045
+   },
+   "realized_energy_j": 4387.995159295555,
+   "realized_approach_energy_j": 3357.6824083600095,
+   "realized_elapsed_s": 24.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100020,
+   "arm": "V4_full",
+   "source_report_sha256": "65d0bade10277c913ba549a87658d5db4da246175f65cb1050b86c4b4701d832",
+   "plan_id": "018bcfe5-6864-7984-8d55-be97ffd545e8",
+   "action_id": "018bcfe5-6849-7ac3-b4c9-b458ebb416b9",
+   "need_id": "018bcfe5-6afe-768a-a4b1-61efab2ef9e8",
+   "target_beliefs": [
+    "018bcfe5-6808-768b-b653-9c95c3d76eb4"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.07208178300229573,
+    -3.611475743635589,
+    1.276440035622889
+   ],
+   "accepted_s": 56.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.12347725137867907,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.09872475611708342,
+    "predicted_distance_m": 0.059234853670250054,
+    "predicted_energy_j": 32.36939414681,
+    "predicted_navigation_energy_j": 2.369394146810002,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.098724756117083
+   },
+   "realized_energy_j": 801.2701255535867,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 8.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100020,
+   "arm": "V4_full",
+   "source_report_sha256": "65d0bade10277c913ba549a87658d5db4da246175f65cb1050b86c4b4701d832",
+   "plan_id": "018bcfe5-6896-7eb8-a14c-3bade0a69a5d",
+   "action_id": "018bcfe5-687b-75a7-b9b5-9b1f70198ace",
+   "need_id": "018bcfe5-6b6d-7525-a301-071892ee3c26",
+   "target_beliefs": [
+    "018bcfe5-6808-768b-b653-9c95c3d76eb4"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.07208178300229573,
+    -3.611475743635589,
+    1.276440035622889
+   ],
+   "accepted_s": 64.0,
+   "outcome": "ABANDONED_MISSION_END",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.1274554292673457,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.07784327063064378,
+    "predicted_distance_m": 0.046705962378386236,
+    "predicted_energy_j": 31.86823849513545,
+    "predicted_navigation_energy_j": 1.8682384951354507,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.077843270630644
+   },
+   "realized_energy_j": 2395.25524698116,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 36.099999999999994,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100021,
+   "arm": "V4_full",
+   "source_report_sha256": "4897d9c1ecc87636a636f0aaf48dee111222f756ee23fe233474a5338ad645d3",
+   "plan_id": "018bcfe5-6832-7f4b-96c5-802b6cf4cc05",
+   "action_id": "018bcfe5-681b-716f-90ea-71f3c27376f5",
+   "need_id": "018bcfe5-69c8-7ae8-bd49-6df887e0e512",
+   "target_beliefs": [
+    "018bcfe5-6808-7fab-8ec9-2fb94ab30dc6"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.03713514233115762,
+    2.5354215653545347,
+    2.0241944184803047
+   ],
+   "accepted_s": 34.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.41226063805222934,
+   "predicted_information_gain": 0.6451643327566298,
+   "selected_score": 0.39671342597564413,
+   "selected_observational_gain": 0.5483908484371035,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 14.508076750846037,
+    "predicted_distance_m": 8.704846050507623,
+    "predicted_energy_j": 378.19384202030494,
+    "predicted_navigation_energy_j": 348.19384202030494,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 20.508076750846037
+   },
+   "realized_energy_j": 7490.125785879549,
+   "realized_approach_energy_j": 6558.478514246637,
+   "realized_elapsed_s": 28.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100023,
+   "arm": "V4_full",
+   "source_report_sha256": "32898ef63e5d01c04d495724bba3854ae7fe4f42564a3e48fa061669cd509e14",
+   "plan_id": "018bcfe5-6832-7606-be00-509c8bfa4601",
+   "action_id": "018bcfe5-680f-7d20-bb6b-94217430e240",
+   "need_id": "018bcfe5-69c8-7efc-9a56-23219b8c15c7",
+   "target_beliefs": [
+    "018bcfe5-6808-751d-be94-229f9fefaf43"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.0031458317847276587,
+    -3.113187033850722,
+    1.5637684422430747
+   ],
+   "accepted_s": 34.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.31006142819133187,
+   "predicted_information_gain": 0.49974127556107706,
+   "selected_score": 0.728685746966349,
+   "selected_observational_gain": 0.4076074047969221,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 12.91716868332442,
+    "predicted_distance_m": 7.75030120999465,
+    "predicted_energy_j": 340.012048399786,
+    "predicted_navigation_energy_j": 310.012048399786,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 18.91716868332442
+   },
+   "realized_energy_j": 5778.852744620835,
+   "realized_approach_energy_j": 5080.661464114806,
+   "realized_elapsed_s": 26.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 9
+  },
+  {
+   "seed": 8100026,
+   "arm": "V4_full",
+   "source_report_sha256": "3bfdc3feeb63c85534f59bdff04ef76e96486c8a5756119a335f4901f51a89ad",
+   "plan_id": "018bcfe5-6832-7af6-be91-8803c26a222c",
+   "action_id": "018bcfe5-681b-7ec7-9352-e16f8d708e0a",
+   "need_id": "018bcfe5-69e1-7980-992b-d7a7a704358f",
+   "target_beliefs": [
+    "018bcfe5-6808-7535-9e2e-ae4f4f868a25"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.10718796910086842,
+    2.7385671390567015,
+    1.915192491756982
+   ],
+   "accepted_s": 36.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.12393493844200008,
+   "predicted_information_gain": 0.19121290206666303,
+   "selected_score": 0.1248033333273258,
+   "selected_observational_gain": 0.1657715112407421,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 14.321214916069188,
+    "predicted_distance_m": 8.592728949641511,
+    "predicted_energy_j": 373.70915798566045,
+    "predicted_navigation_energy_j": 343.70915798566045,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 20.321214916069188
+   },
+   "realized_energy_j": 6187.710075638891,
+   "realized_approach_energy_j": 5322.066467173409,
+   "realized_elapsed_s": 28.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 11
+  },
+  {
+   "seed": 8100027,
+   "arm": "V4_full",
+   "source_report_sha256": "1e73278cde3df7abfa0718552b6c66703c07df38889adc235193e8ebab4318fe",
+   "plan_id": "018bcfe5-6832-71c6-bf83-41fbaa51e757",
+   "action_id": "018bcfe5-680b-7750-8331-f6563ca5f8b9",
+   "need_id": "018bcfe5-69c8-7230-bcde-09beaefb7abb",
+   "target_beliefs": [
+    "018bcfe5-6808-75b2-85c7-538d6ab09012"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.0017561170173594671,
+    1.2968336848168904,
+    1.3797239226450024
+   ],
+   "accepted_s": 34.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.14950669128993826,
+   "predicted_information_gain": 0.25087686573439144,
+   "selected_score": 0.14150471523544506,
+   "selected_observational_gain": 0.19323862121805147,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 12.030178909414335,
+    "predicted_distance_m": 7.218107345648601,
+    "predicted_energy_j": 318.7242938259441,
+    "predicted_navigation_energy_j": 288.7242938259441,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 18.030178909414335
+   },
+   "realized_energy_j": 4036.9822636065846,
+   "realized_approach_energy_j": 3299.6957155301798,
+   "realized_elapsed_s": 24.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100027,
+   "arm": "V4_full",
+   "source_report_sha256": "1e73278cde3df7abfa0718552b6c66703c07df38889adc235193e8ebab4318fe",
+   "plan_id": "018bcfe5-6864-7080-bbf4-88f609f0ec6b",
+   "action_id": "018bcfe5-683d-7e52-958c-ddcaf41666b4",
+   "need_id": "018bcfe5-6b19-700e-a489-08ee490bc54c",
+   "target_beliefs": [
+    "018bcfe5-6808-75b2-85c7-538d6ab09012"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.0017561170173594671,
+    1.2968336848168904,
+    1.3797239226450024
+   ],
+   "accepted_s": 58.0,
+   "outcome": "ABANDONED_MISSION_END",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.2957815954344774,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.0691696592010036,
+    "predicted_distance_m": 0.0415017955206019,
+    "predicted_energy_j": 31.660071820824076,
+    "predicted_navigation_energy_j": 1.6600718208240757,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.069169659201004
+   },
+   "realized_energy_j": 2596.281032663923,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 42.099999999999994,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100028,
+   "arm": "V4_full",
+   "source_report_sha256": "9f89ce5eadc9978c4bec4e9f6631c2609e7976952f41506b5b12ac3e9096539d",
+   "plan_id": "018bcfe5-6832-7c05-aff0-86fc9b630fbb",
+   "action_id": "018bcfe5-681f-7d2f-9dc6-dafcd3da0083",
+   "need_id": "018bcfe5-69c8-7bae-898a-da57e2c11ae6",
+   "target_beliefs": [
+    "018bcfe5-6808-76d2-989d-1e908bcecc4c"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.028278273966220364,
+    -3.296874591254313,
+    1.8090206709724912
+   ],
+   "accepted_s": 34.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.2842013106025042,
+   "predicted_information_gain": 0.4524764309932521,
+   "selected_score": 0.6039196999035006,
+   "selected_observational_gain": 0.37547324634022,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 13.426340631067347,
+    "predicted_distance_m": 8.055804378640408,
+    "predicted_energy_j": 352.23217514561634,
+    "predicted_navigation_energy_j": 322.23217514561634,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 19.426340631067347
+   },
+   "realized_energy_j": 7922.051145221873,
+   "realized_approach_energy_j": 7079.593297752165,
+   "realized_elapsed_s": 28.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 11
+  },
+  {
+   "seed": 8100030,
+   "arm": "V4_full",
+   "source_report_sha256": "4a0b753bb5dd028db5d9ac8ed052f71db5c6baa56e22095f4584ff283b5f3091",
+   "plan_id": "018bcfe5-6832-7b28-ad18-9612d03a90e8",
+   "action_id": "018bcfe5-682b-79d1-8e68-7851946324b5",
+   "need_id": "018bcfe5-69c6-7c2f-90fe-7568827e21c5",
+   "target_beliefs": [
+    "018bcfe5-6808-7ccf-ab5f-ddee428c589e"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.06518700655037601,
+    4.316385325376565,
+    2.0681260742776653
+   ],
+   "accepted_s": 34.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.36435541615596534,
+   "predicted_information_gain": 0.5696060255405833,
+   "selected_score": 0.387436007121218,
+   "selected_observational_gain": 0.48486357696048205,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 15.357644756753075,
+    "predicted_distance_m": 9.214586854051845,
+    "predicted_energy_j": 398.5834741620738,
+    "predicted_navigation_energy_j": 368.5834741620738,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 21.357644756753075
+   },
+   "realized_energy_j": 7821.977430860653,
+   "realized_approach_energy_j": 6807.390018798621,
+   "realized_elapsed_s": 28.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100030,
+   "arm": "V4_full",
+   "source_report_sha256": "4a0b753bb5dd028db5d9ac8ed052f71db5c6baa56e22095f4584ff283b5f3091",
+   "plan_id": "018bcfe5-6864-7bb9-8d54-f1d91ae0368e",
+   "action_id": "018bcfe5-684d-7dd2-b9c9-492bac5f98be",
+   "need_id": "018bcfe5-6b5d-768f-bd7d-344b9ebacb6b",
+   "target_beliefs": [
+    "018bcfe5-6808-7ccf-ab5f-ddee428c589e"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.06518700655037597,
+    3.4709498838139243,
+    1.759518047567759
+   ],
+   "accepted_s": 62.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.057216345439759564,
+   "predicted_information_gain": 0.08761605250189791,
+   "selected_score": 1.0242665921071654,
+   "selected_observational_gain": 0.07675084442484803,
+   "selected_redundancy": 0.6669768108584745,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 1.4885235618622197,
+    "predicted_distance_m": 0.8931141371173318,
+    "predicted_energy_j": 65.72456548469327,
+    "predicted_navigation_energy_j": 35.72456548469327,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 7.48852356186222
+   },
+   "realized_energy_j": 1457.491139132373,
+   "realized_approach_energy_j": 526.7993841131392,
+   "realized_elapsed_s": 10.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 8
+  },
+  {
+   "seed": 8100031,
+   "arm": "V4_full",
+   "source_report_sha256": "a3765a374adec58b461a5f8d4d270c7ce5ecfc370dc9644cb428b2e7df8f9ae4",
+   "plan_id": "018bcfe5-6832-789f-a85e-c531cdd15f91",
+   "action_id": "018bcfe5-682b-76d8-be61-6688366b135c",
+   "need_id": "018bcfe5-69ad-710d-9174-4cabb90ab6bd",
+   "target_beliefs": [
+    "018bcfe5-6808-79cb-99aa-c170ea9b4c36"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.004803269389720202,
+    2.6861591193300316,
+    2.7531031492231572
+   ],
+   "accepted_s": 32.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.2971595952227062,
+   "predicted_information_gain": 0.4713987731668072,
+   "selected_score": 0.35715330100504916,
+   "selected_observational_gain": 0.3931626223197794,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 16.02445355927258,
+    "predicted_distance_m": 9.614672135563547,
+    "predicted_energy_j": 414.58688542254185,
+    "predicted_navigation_energy_j": 384.58688542254185,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 22.02445355927258
+   },
+   "realized_energy_j": 8721.953310224235,
+   "realized_approach_energy_j": 7880.193560754262,
+   "realized_elapsed_s": 28.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100031,
+   "arm": "V4_full",
+   "source_report_sha256": "a3765a374adec58b461a5f8d4d270c7ce5ecfc370dc9644cb428b2e7df8f9ae4",
+   "plan_id": "018bcfe5-6864-7d9f-af2d-339f04b0065c",
+   "action_id": "018bcfe5-683d-72f6-b26d-232cace99f5f",
+   "need_id": "018bcfe5-6b34-79cf-b060-4ac5c290b5d6",
+   "target_beliefs": [
+    "018bcfe5-6808-79cb-99aa-c170ea9b4c36"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.004803269389720107,
+    1.1361941431318558,
+    2.1873217669216625
+   ],
+   "accepted_s": 60.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.10279930518075078,
+   "predicted_information_gain": 0.1621129599167221,
+   "selected_score": 0.6157786657793198,
+   "selected_observational_gain": 0.13633143036248294,
+   "selected_redundancy": 0.2563401514150734,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 2.7200700923715857,
+    "predicted_distance_m": 1.6320420554229518,
+    "predicted_energy_j": 95.28168221691807,
+    "predicted_navigation_energy_j": 65.28168221691807,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 8.720070092371586
+   },
+   "realized_energy_j": 2339.2805882099783,
+   "realized_approach_energy_j": 1369.6277316277447,
+   "realized_elapsed_s": 12.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 10
+  },
+  {
+   "seed": 8100031,
+   "arm": "V4_full",
+   "source_report_sha256": "a3765a374adec58b461a5f8d4d270c7ce5ecfc370dc9644cb428b2e7df8f9ae4",
+   "plan_id": "018bcfe5-6897-7f13-9109-90ae1228b250",
+   "action_id": "018bcfe5-686f-7724-964f-18d558ef26e7",
+   "need_id": "018bcfe5-6c64-73cd-8a34-69da87cf7353",
+   "target_beliefs": [
+    "018bcfe5-6808-79cb-99aa-c170ea9b4c36"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.004803269389720107,
+    1.1361941431318558,
+    2.1873217669216625
+   ],
+   "accepted_s": 82.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.0998145755900381,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.14938640346201737,
+    "predicted_distance_m": 0.08963184207721021,
+    "predicted_energy_j": 33.58527368308841,
+    "predicted_navigation_energy_j": 3.5852736830884098,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.149386403462017
+   },
+   "realized_energy_j": 538.0331930395841,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 8.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 8
+  },
+  {
+   "seed": 8100032,
+   "arm": "V4_full",
+   "source_report_sha256": "b764d6a96713ac44897036334e3e6e0dca575aa9449532aa3016ae1a56064ca5",
+   "plan_id": "018bcfe5-6832-79f9-a982-156a0ca7c49a",
+   "action_id": "018bcfe5-682b-7b20-a162-79c1ff87fce2",
+   "need_id": "018bcfe5-6992-75a0-8b59-cfd6ee9ef36f",
+   "target_beliefs": [
+    "018bcfe5-6808-7040-a358-9caea04dec8e"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.009975946546300069,
+    4.617178931410525,
+    2.424360308283175
+   ],
+   "accepted_s": 30.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.34672302864390986,
+   "predicted_information_gain": 0.5594954967297128,
+   "selected_score": 0.3734261857282178,
+   "selected_observational_gain": 0.4555811837640028,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 15.399044783627236,
+    "predicted_distance_m": 9.239426870176342,
+    "predicted_energy_j": 399.5770748070537,
+    "predicted_navigation_energy_j": 369.5770748070537,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 21.399044783627236
+   },
+   "realized_energy_j": 6715.159504873889,
+   "realized_approach_energy_j": 5711.772686661325,
+   "realized_elapsed_s": 26.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100032,
+   "arm": "V4_full",
+   "source_report_sha256": "b764d6a96713ac44897036334e3e6e0dca575aa9449532aa3016ae1a56064ca5",
+   "plan_id": "018bcfe5-6864-78a1-a02d-37857162f15d",
+   "action_id": "018bcfe5-684d-74c7-8bc5-3c4193c79a0c",
+   "need_id": "018bcfe5-6b10-75e4-80e4-120342d05cd1",
+   "target_beliefs": [
+    "018bcfe5-6808-7040-a358-9caea04dec8e"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.009975946546300121,
+    3.771743489847883,
+    2.115752281573269
+   ],
+   "accepted_s": 56.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.062295768992203265,
+   "predicted_information_gain": 0.09936090906403505,
+   "selected_score": 0.9242783360168932,
+   "selected_observational_gain": 0.08224223214940175,
+   "selected_redundancy": 0.6669768108584739,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 1.5271967111532687,
+    "predicted_distance_m": 0.9163180266919614,
+    "predicted_energy_j": 66.65272106767846,
+    "predicted_navigation_energy_j": 36.652721067678456,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 7.527196711153269
+   },
+   "realized_energy_j": 1071.0172788932905,
+   "realized_approach_energy_j": 390.9105852426401,
+   "realized_elapsed_s": 10.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 7
+  },
+  {
+   "seed": 8100033,
+   "arm": "V4_full",
+   "source_report_sha256": "a83a32db21236c0ba36eb95e105e810a3ee210f8016fe27efd5516802706bd8e",
+   "plan_id": "018bcfe5-6832-7ee4-bd08-2ad8687b18c5",
+   "action_id": "018bcfe5-681f-7cde-9a3f-92c1d796178a",
+   "need_id": "018bcfe5-69ad-7b58-91aa-20469d990bd3",
+   "target_beliefs": [
+    "018bcfe5-6808-779f-90cc-97f46634a845"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.035802034884705604,
+    -2.0963580100243915,
+    2.141305068724738
+   ],
+   "accepted_s": 32.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.30192470450484,
+   "predicted_information_gain": 0.48379411731766797,
+   "selected_score": 0.4951389130737501,
+   "selected_observational_gain": 0.3978551173845551,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 13.65065642102104,
+    "predicted_distance_m": 8.190393852612623,
+    "predicted_energy_j": 357.6157541045049,
+    "predicted_navigation_energy_j": 327.6157541045049,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 19.65065642102104
+   },
+   "realized_energy_j": 10245.454750173072,
+   "realized_approach_energy_j": 9130.903677213877,
+   "realized_elapsed_s": 28.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 9
+  },
+  {
+   "seed": 8100034,
+   "arm": "V4_full",
+   "source_report_sha256": "a510aab57f5c2ead1125a1234aca26073bc0b9dd5394fb22310b5b9be8af5b56",
+   "plan_id": "018bcfe5-6832-7e91-be36-021242886730",
+   "action_id": "018bcfe5-682b-77f0-9bc5-ed7d09b8348d",
+   "need_id": "018bcfe5-69ad-7add-a03f-8b985a159d70",
+   "target_beliefs": [
+    "018bcfe5-6808-78dd-8824-2130392de050"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.021990621641538758,
+    3.5801526056275117,
+    2.243895966925617
+   ],
+   "accepted_s": 32.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.23087413261525347,
+   "predicted_information_gain": 0.3711145258435631,
+   "selected_score": 0.2906741179852028,
+   "selected_observational_gain": 0.30383984808039277,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 16.13566533408081,
+    "predicted_distance_m": 9.681399200448485,
+    "predicted_energy_j": 417.2559680179394,
+    "predicted_navigation_energy_j": 387.2559680179394,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 22.13566533408081
+   },
+   "realized_energy_j": 7405.736741691351,
+   "realized_approach_energy_j": 6894.985499054703,
+   "realized_elapsed_s": 28.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 2
+  },
+  {
+   "seed": 8100035,
+   "arm": "V4_full",
+   "source_report_sha256": "4c2726b7f5ef09b4222207d5265dee33d376203186ff2454bc4a0d4e9e9ce46d",
+   "plan_id": "018bcfe5-6832-7c9b-ac63-c1c3a5712c14",
+   "action_id": "018bcfe5-681b-7df5-9400-5a1279b00bf1",
+   "need_id": "018bcfe5-69c6-711e-81f8-b08dbccadeb2",
+   "target_beliefs": [
+    "018bcfe5-6808-7d52-bd5c-73c4de2adc08"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.02402605891661485,
+    3.406296186700433,
+    2.166534414570825
+   ],
+   "accepted_s": 34.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.2116357288829973,
+   "predicted_information_gain": 0.342072993757527,
+   "selected_score": 0.36409940455810447,
+   "selected_observational_gain": 0.27789368519748603,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 14.379518498286465,
+    "predicted_distance_m": 8.627711098971877,
+    "predicted_energy_j": 375.1084439588751,
+    "predicted_navigation_energy_j": 345.1084439588751,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 20.379518498286465
+   },
+   "realized_energy_j": 6106.70660533507,
+   "realized_approach_energy_j": 5235.057074665168,
+   "realized_elapsed_s": 28.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 12
+  },
+  {
+   "seed": 8100036,
+   "arm": "V4_full",
+   "source_report_sha256": "e5dae2089b62ccdc6eb6e33372256b60ed11508e0d3fa204f313f3298dcac633",
+   "plan_id": "018bcfe5-6832-72a0-a09c-2901b97a721c",
+   "action_id": "018bcfe5-681f-7a95-843a-18a7c89e25c0",
+   "need_id": "018bcfe5-69c6-797e-a0b2-b11085b088a0",
+   "target_beliefs": [
+    "018bcfe5-6808-72d7-9b3c-20301ffd4b6a"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.030554638372382554,
+    -2.2916187446085416,
+    2.2156649596067437
+   ],
+   "accepted_s": 34.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.396131115954279,
+   "predicted_information_gain": 0.6369213271769157,
+   "selected_score": 0.5566993041081032,
+   "selected_observational_gain": 0.5212690315971003,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 13.723142237292329,
+    "predicted_distance_m": 8.233885342375398,
+    "predicted_energy_j": 359.35541369501595,
+    "predicted_navigation_energy_j": 329.35541369501595,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 19.72314223729233
+   },
+   "realized_energy_j": 7495.231451228523,
+   "realized_approach_energy_j": 6274.295121106068,
+   "realized_elapsed_s": 28.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 2
+  },
+  {
+   "seed": 8100036,
+   "arm": "V4_full",
+   "source_report_sha256": "e5dae2089b62ccdc6eb6e33372256b60ed11508e0d3fa204f313f3298dcac633",
+   "plan_id": "018bcfe5-6864-7cba-a5ec-2605f17c422a",
+   "action_id": "018bcfe5-6851-7070-a605-6093481a400c",
+   "need_id": "018bcfe5-6b5e-731c-b44a-7669b7c2950e",
+   "target_beliefs": [
+    "018bcfe5-6808-72d7-9b3c-20301ffd4b6a"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.030554638372382554,
+    -2.2916187446085416,
+    2.2156649596067437
+   ],
+   "accepted_s": 62.0,
+   "outcome": "ABANDONED_MISSION_END",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 1.0360178089633416,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.06411603002497657,
+    "predicted_distance_m": 0.038469618014986114,
+    "predicted_energy_j": 31.538784720599445,
+    "predicted_navigation_energy_j": 1.5387847205994447,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.064116030024977
+   },
+   "realized_energy_j": 2143.4739767479914,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 38.099999999999994,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100037,
+   "arm": "V4_full",
+   "source_report_sha256": "fdd57e9f1443a247e98f173f03233b4cf048b5d10a9925c81c2cf0013561f0d6",
+   "plan_id": "018bcfe5-6832-708a-b326-e8668d20a259",
+   "action_id": "018bcfe5-681a-7eef-825c-1d41cf708c24",
+   "need_id": "018bcfe5-69c8-76fc-ac64-b99db19be2cc",
+   "target_beliefs": [
+    "018bcfe5-6808-725f-80b2-8de93a443f44"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    2.0162863346155318,
+    1.9425838212152562,
+    2.205865937970291
+   ],
+   "accepted_s": 34.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.3308396525772373,
+   "predicted_information_gain": 0.5400010429370804,
+   "selected_score": 0.6646832336164105,
+   "selected_observational_gain": 0.43266567564548664,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 11.822576865333033,
+    "predicted_distance_m": 7.09354611919982,
+    "predicted_energy_j": 313.7418447679928,
+    "predicted_navigation_energy_j": 283.7418447679928,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 17.822576865333033
+   },
+   "realized_energy_j": 5069.2135076194045,
+   "realized_approach_energy_j": 4209.952452831672,
+   "realized_elapsed_s": 26.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100037,
+   "arm": "V4_full",
+   "source_report_sha256": "fdd57e9f1443a247e98f173f03233b4cf048b5d10a9925c81c2cf0013561f0d6",
+   "plan_id": "018bcfe5-6864-72af-bf0b-381ebee4307f",
+   "action_id": "018bcfe5-683d-7edc-b7f7-8b0559f76b16",
+   "need_id": "018bcfe5-6b35-7545-b21d-7306c98b5105",
+   "target_beliefs": [
+    "018bcfe5-6808-725f-80b2-8de93a443f44"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.02358454060242689,
+    2.063458395425147,
+    1.9486925823787025
+   ],
+   "accepted_s": 60.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.11084773503401744,
+   "predicted_information_gain": 0.16502456089040876,
+   "selected_score": 0.8255819629370841,
+   "selected_observational_gain": 0.150265396432859,
+   "selected_redundancy": 0.13188768119034694,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 3.3805954908022358,
+    "predicted_distance_m": 2.028357294481341,
+    "predicted_energy_j": 111.13429177925363,
+    "predicted_navigation_energy_j": 81.13429177925363,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 9.380595490802236
+   },
+   "realized_energy_j": 2223.002980997775,
+   "realized_approach_energy_j": 1225.9608269686814,
+   "realized_elapsed_s": 14.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 2
+  },
+  {
+   "seed": 8100037,
+   "arm": "V4_full",
+   "source_report_sha256": "fdd57e9f1443a247e98f173f03233b4cf048b5d10a9925c81c2cf0013561f0d6",
+   "plan_id": "018bcfe5-6896-706e-a912-16a341c925ef",
+   "action_id": "018bcfe5-687f-7007-a520-e7393eedfdb1",
+   "need_id": "018bcfe5-6bfd-7c84-b04b-8a5c417797a4",
+   "target_beliefs": [
+    "018bcfe5-6808-725f-80b2-8de93a443f44"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.023584540602426936,
+    2.7679879300606816,
+    2.205865937970291
+   ],
+   "accepted_s": 74.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.014102919767653908,
+   "predicted_information_gain": 0.041375881736392964,
+   "selected_score": 0.6950208301247218,
+   "selected_observational_gain": 0.03844107559769829,
+   "selected_redundancy": 0.7548396019890072,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 1.2927108671563783,
+    "predicted_distance_m": 0.7756265202938272,
+    "predicted_energy_j": 61.025060811753086,
+    "predicted_navigation_energy_j": 31.025060811753086,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 7.292710867156378
+   },
+   "realized_energy_j": 1444.5409035010016,
+   "realized_approach_energy_j": 487.4808454058111,
+   "realized_elapsed_s": 10.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100037,
+   "arm": "V4_full",
+   "source_report_sha256": "fdd57e9f1443a247e98f173f03233b4cf048b5d10a9925c81c2cf0013561f0d6",
+   "plan_id": "018bcfe5-68c8-79d4-9b02-2402c421be3b",
+   "action_id": "018bcfe5-68b1-7420-b68b-f4b235790cbe",
+   "need_id": "018bcfe5-6c8d-7f9f-85e2-cd30e0004d19",
+   "target_beliefs": [
+    "018bcfe5-6808-725f-80b2-8de93a443f44"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.023584540602426936,
+    2.7679879300606816,
+    2.205865937970291
+   ],
+   "accepted_s": 84.0,
+   "outcome": "ABANDONED_MISSION_END",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.8830523565053225,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.03605043069498404,
+    "predicted_distance_m": 0.02163025841699061,
+    "predicted_energy_j": 30.865210336679624,
+    "predicted_navigation_energy_j": 0.865210336679624,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.036050430694984
+   },
+   "realized_energy_j": 1120.334261525306,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 16.099999999999994,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100038,
+   "arm": "V4_full",
+   "source_report_sha256": "856697e5d5409c5b36661015bf7074703ffb55c2fd230798d7374b749c4ca26e",
+   "plan_id": "018bcfe5-6832-7d62-8a94-daf9bb107c62",
+   "action_id": "018bcfe5-6807-71c3-a5f7-e8a6ed75a4aa",
+   "need_id": "018bcfe5-69ad-705c-a913-7559cbe7d9bd",
+   "target_beliefs": [
+    "018bcfe5-6808-7c80-942f-f42973d7426b"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.0041072812733315665,
+    -2.9477405222269435,
+    0.9006706124219547
+   ],
+   "accepted_s": 32.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.18574915889671434,
+   "predicted_information_gain": 0.30020242879748105,
+   "selected_score": 0.16009288445974204,
+   "selected_observational_gain": 0.2439124476169773,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 11.369308467455987,
+    "predicted_distance_m": 6.821585080473592,
+    "predicted_energy_j": 302.8634032189437,
+    "predicted_navigation_energy_j": 272.8634032189437,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 17.369308467455987
+   },
+   "realized_energy_j": 4196.69155697775,
+   "realized_approach_energy_j": 3389.507743913169,
+   "realized_elapsed_s": 24.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100038,
+   "arm": "V4_full",
+   "source_report_sha256": "856697e5d5409c5b36661015bf7074703ffb55c2fd230798d7374b749c4ca26e",
+   "plan_id": "018bcfe5-6864-7455-802b-d927761e6faa",
+   "action_id": "018bcfe5-6835-732e-acd9-7fb4078b6419",
+   "need_id": "018bcfe5-6afc-7f98-af04-5b2687710451",
+   "target_beliefs": [
+    "018bcfe5-6808-7c80-942f-f42973d7426b"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.004107281273331016,
+    1.5511210721343551,
+    0.9006706124219547
+   ],
+   "accepted_s": 56.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.15861283366742293,
+   "predicted_information_gain": 0.24174804255136484,
+   "selected_score": 0.5152425588005881,
+   "selected_observational_gain": 0.2131447889040319,
+   "selected_redundancy": 4.027104544255748e-05,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 11.919964455156919,
+    "predicted_distance_m": 7.151978673094151,
+    "predicted_energy_j": 316.079146923766,
+    "predicted_navigation_energy_j": 286.079146923766,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 17.91996445515692
+   },
+   "realized_energy_j": 6511.13924557614,
+   "realized_approach_energy_j": 5095.741956683227,
+   "realized_elapsed_s": 22.0,
+   "first_target_revision_during_view": true,
+   "target_direct_revisions_during_view": 10
+  },
+  {
+   "seed": 8100038,
+   "arm": "V4_full",
+   "source_report_sha256": "856697e5d5409c5b36661015bf7074703ffb55c2fd230798d7374b749c4ca26e",
+   "plan_id": "018bcfe5-6897-7062-a5b0-525b864f17e5",
+   "action_id": "018bcfe5-6867-7073-bede-56f33e8e70f7",
+   "need_id": "018bcfe5-6c45-7192-a649-c9241a5a875c",
+   "target_beliefs": [
+    "018bcfe5-6808-7c80-942f-f42973d7426b"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.004107281273331016,
+    1.5511210721343551,
+    0.9006706124219547
+   ],
+   "accepted_s": 78.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 1.1822876178448003,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.1471180159640202,
+    "predicted_distance_m": 0.08827080957841218,
+    "predicted_energy_j": 33.530832383136485,
+    "predicted_navigation_energy_j": 3.5308323831364845,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.14711801596402
+   },
+   "realized_energy_j": 790.881795068497,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 8.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 8
+  },
+  {
+   "seed": 8100038,
+   "arm": "V4_full",
+   "source_report_sha256": "856697e5d5409c5b36661015bf7074703ffb55c2fd230798d7374b749c4ca26e",
+   "plan_id": "018bcfe5-68ca-795b-ae8a-20d633a6ad57",
+   "action_id": "018bcfe5-689a-735e-9aff-385c47ec8d6d",
+   "need_id": "018bcfe5-6d27-7fbd-8ac5-2277915510c8",
+   "target_beliefs": [
+    "018bcfe5-6808-7c80-942f-f42973d7426b"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    -0.004107281273331016,
+    1.5511210721343551,
+    0.9006706124219547
+   ],
+   "accepted_s": 94.0,
+   "outcome": "ABANDONED_MISSION_END",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 1.1214549522762316,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.17005498953027676,
+    "predicted_distance_m": 0.10203299371816589,
+    "predicted_energy_j": 34.081319748726635,
+    "predicted_navigation_energy_j": 4.081319748726635,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.170054989530277
+   },
+   "realized_energy_j": 350.8467173549434,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 6.099999999999994,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 6
+  },
+  {
+   "seed": 8100039,
+   "arm": "V4_full",
+   "source_report_sha256": "5e8ecaaa29b05fb07ed70e76655b4f542bbf05403132a9fb75344b958667dd94",
+   "plan_id": "018bcfe5-6832-7e65-a534-93ebdb03e565",
+   "action_id": "018bcfe5-680f-702c-9b85-b4c1214879f4",
+   "need_id": "018bcfe5-69ab-727a-bcfc-bc8077dd4a08",
+   "target_beliefs": [
+    "018bcfe5-6808-7ef1-8f51-8047dc283e7f"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.0406393805840603,
+    -1.1223564100835368,
+    1.6202199036728937
+   ],
+   "accepted_s": 32.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": false,
+   "predicted_mission_gain": 0.21610119132216155,
+   "predicted_information_gain": 0.35041147228930036,
+   "selected_score": 0.1339603507064642,
+   "selected_observational_gain": 0.28338356724090275,
+   "selected_redundancy": 0.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 11.21259055126701,
+    "predicted_distance_m": 6.7275543307602055,
+    "predicted_energy_j": 299.1021732304082,
+    "predicted_navigation_energy_j": 269.1021732304082,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 17.21259055126701
+   },
+   "realized_energy_j": 5077.463997174721,
+   "realized_approach_energy_j": 4421.652017246529,
+   "realized_elapsed_s": 22.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100039,
+   "arm": "V4_full",
+   "source_report_sha256": "5e8ecaaa29b05fb07ed70e76655b4f542bbf05403132a9fb75344b958667dd94",
+   "plan_id": "018bcfe5-6864-7c94-8181-538a8b1adfd4",
+   "action_id": "018bcfe5-6841-78cc-8ba9-a584aad587f0",
+   "need_id": "018bcfe5-6ade-79f4-afd1-f32bc4b1867d",
+   "target_beliefs": [
+    "018bcfe5-6808-7ef1-8f51-8047dc283e7f"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.0406393805840603,
+    -1.1223564100835368,
+    1.6202199036728937
+   ],
+   "accepted_s": 54.0,
+   "outcome": "FLOWN",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.32612651746524507,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.09160034938127914,
+    "predicted_distance_m": 0.05496020962876742,
+    "predicted_energy_j": 32.1984083851507,
+    "predicted_navigation_energy_j": 2.1984083851506995,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.091600349381279
+   },
+   "realized_energy_j": 447.6069787853867,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 8.0,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  },
+  {
+   "seed": 8100039,
+   "arm": "V4_full",
+   "source_report_sha256": "5e8ecaaa29b05fb07ed70e76655b4f542bbf05403132a9fb75344b958667dd94",
+   "plan_id": "018bcfe5-6896-713b-999a-3ae70b4bb029",
+   "action_id": "018bcfe5-6873-7cb5-9b52-55ab8e89ec98",
+   "need_id": "018bcfe5-6b4d-7094-9bce-5f558ca3b57d",
+   "target_beliefs": [
+    "018bcfe5-6808-7ef1-8f51-8047dc283e7f"
+   ],
+   "modality": "STRUCTURED",
+   "commanded_position_m": [
+    0.0406393805840603,
+    -1.1223564100835368,
+    1.6202199036728937
+   ],
+   "accepted_s": 62.0,
+   "outcome": "ABANDONED_MISSION_END",
+   "repeated_pose_within_0_1m": true,
+   "predicted_mission_gain": 0.0,
+   "predicted_information_gain": 0.0,
+   "selected_score": 0.3664404763206791,
+   "selected_observational_gain": 0.0,
+   "selected_redundancy": 1.0,
+   "predicted_cost": {
+    "dwell_s": 6.0,
+    "predicted_approach_time_s": 0.03882485644446909,
+    "predicted_distance_m": 0.02329491386668153,
+    "predicted_energy_j": 30.93179655466726,
+    "predicted_navigation_energy_j": 0.9317965546672617,
+    "predicted_sensor_energy_j": 30.0,
+    "predicted_time_s": 6.038824856444469
+   },
+   "realized_energy_j": 2627.4294493242396,
+   "realized_approach_energy_j": 0,
+   "realized_elapsed_s": 38.099999999999994,
+   "first_target_revision_during_view": false,
+   "target_direct_revisions_during_view": 0
+  }
+ ]
+}

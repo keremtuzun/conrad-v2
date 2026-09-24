@@ -1120,7 +1120,7 @@ def _i4_mcbr_v4_split(part: Partition) -> Split:
 def load_i4_energy_v1(
     path: Path = I4_ENERGY_V1_PARTITIONS_PATH, *, verify_digest: bool = True
 ) -> dict[str, Any]:
-    """Digest-pinned new I4 cycle; reject collisions with every existing partition YAML."""
+    """Digest-pinned I4 cycle; reject collisions with other allocated world seeds."""
     digest = canonical_digest(path)
     if verify_digest and digest != I4_ENERGY_V1_PARTITIONS_SHA256:
         raise PartitionIntegrityError(
@@ -1154,7 +1154,15 @@ def load_i4_energy_v1(
         other = yaml.safe_load(other_path.read_text(encoding="utf-8"))
         if not isinstance(other, dict):
             continue
-        for spec in specs(other):
+        # Exclusion metadata describes seeds the other file deliberately does
+        # not own. Actual allocations use several names (world_seeds, mission,
+        # abstract, noise_seeds), so inspect all other roots.
+        allocations = {
+            key: value
+            for key, value in other.items()
+            if key not in {"reserved_elsewhere", "historical_exclusions", "contaminated"}
+        }
+        for spec in specs(allocations):
             lo, hi = map(int, spec["range"])
             if any(lo <= seed < hi for seed in mine) or mine & {int(s) for s in spec.get("explicit", [])}:
                 raise PartitionIntegrityError(f"i4_energy_v1 seed collides with {other_path}")
