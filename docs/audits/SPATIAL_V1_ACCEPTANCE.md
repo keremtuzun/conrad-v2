@@ -55,6 +55,23 @@ feasibility failure, not evidence of a backend mismatch. Seeds 1701/1702
 are spent and will not be rerun. Clear-view poses with shorter standoff
 are being checked on fresh development seeds before any new declaration.
 
+Cycle 4 is **FAIL: controlled-view 16/28, Unity parity 12/16**. Seed 1802
+passed the partial and outside-support controls, but its healthy and ten
+other full-sweep cases lacked full required support. The occluded negative
+control also lacked its required clear-world detectable observation. Four
+bounded-survey Unity cases on seed 1802 earned zero credited coverage.
+Read-only inspection of the healthy case found 240 supported observations,
+31 unassociated observations, and final target direct support about 0.43;
+the emitted wide angular cells covered only narrow axial strips around the
+four fixed sweep positions. No required threshold is lowered. Seeds
+1801/1802 are spent and will not be rerun.
+The cycle-5 fixture has passed fresh development: complete controlled-view
+matrix 28/28 on 565/566, 20/20 extra healthy full sweeps on 567–586,
+20/20 bounded clear Unity on 587–606, 20/20 bounded occluded Unity on
+535–554, full Unity parity 16/16 on 607/608, focused integration 19/19,
+and opt-in live Unity tests 9/9. Cycle 5 remains unopened at this entry;
+architecture A–J is still **NOT FROZEN**.
+
 The ordinary clean-checkout suite passed at `68de752` (1,452 passed,
 14 skipped, 121 deselected, 3 historical xfailed). A later clean checkout at
 `c5bfd5b` produced 1,457 passes and one ordinary regression: the new

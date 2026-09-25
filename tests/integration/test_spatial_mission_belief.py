@@ -413,8 +413,8 @@ def _exercise_required_surface(tmp_path, state, expected, full_sweep, world_seed
             {
                 "axial_start_fraction": 0.3,
                 "axial_end_fraction": 0.38,
-                "angle_start_rad": 3.9,
-                "angle_end_rad": 4.2,
+                "angle_start_rad": 3.0,
+                "angle_end_rad": 5.0,
                 "state": {"corrosion_depth_m": 0.008},
             }
         ]
@@ -537,11 +537,26 @@ def _exercise_required_surface(tmp_path, state, expected, full_sweep, world_seed
     ids = IdFactory(163)
     now = TimeStamp(time_ns=1_000_000_000, clock_domain="sim")
     accepted = 0
-    xs = (0.5, 1.5, 2.5, 3.5) if full_sweep else (1.5,)
+    # Large circumferential resolution cells can certify a shorter axial
+    # strip from one pose. Dense, declared view stations must span the
+    # required domain; the coverage threshold itself remains 1.0.
+    xs = (
+        tuple(np.arange(0.2, 3.81, 0.4))
+        if full_sweep
+        else ((1.35,) if state == "occluded-defect" else (1.5,))
+    )
+    occluded_angle = None
+    if state == "occluded-defect":
+        # Truth-side fixture geometry is used only to aim the negative-control
+        # test pose through a rack panel, never as a deployment input.
+        panel = world.recorder.meta["view_occlusion"]["panels"][1]
+        panel_normal = np.asarray(panel["normal"], dtype=float)
+        occluded_angle = math.atan2(float(panel_normal @ v), float(panel_normal @ u)) % (2 * math.pi)
+        assert 3.0 < occluded_angle < 5.0
     angles = (
         np.arange(0, 2 * math.pi, math.pi / 8)
         if full_sweep
-        else (4.05 if state == "occluded-defect" else math.pi,)
+        else (occluded_angle if occluded_angle is not None else math.pi,)
     )
     for x in xs:
         for angle in angles:

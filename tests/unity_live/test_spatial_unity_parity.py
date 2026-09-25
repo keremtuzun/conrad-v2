@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import replace
 from typing import Any
 from uuid import UUID
@@ -80,7 +81,7 @@ def _exercise_kernel_unity_parity(tmp_path, occluded, noisy, bounded_survey, wor
         primitive = world.t2s.world.entities[world.t2s.world.index_of(world.target)].primitive
         a, b = np.asarray(primitive.a), np.asarray(primitive.b)  # type: ignore[attr-defined]
         radius = float(primitive.radius)  # type: ignore[attr-defined]
-        _, normal, _ = capsule_basis(a, b)
+        _, normal, angular = capsule_basis(a, b)
         stamp = TimeStamp(time_ns=1_000_000_000, clock_domain="sim")
         registry_id = world.context.critical_component_ids[0]
         design = world.context.component(registry_id)
@@ -111,11 +112,21 @@ def _exercise_kernel_unity_parity(tmp_path, occluded, noisy, bounded_survey, wor
             rng=np.random.default_rng(16),
             record=lambda kind, row: parity_rows.append(row) if kind == "spatial_visibility_parity" else None,
         )
+        # The first circumferential resolution cell in sector 2 is wider
+        # than the conservative bounded-registration erosion across this
+        # fixture's declared radius range. Include a view centred on it to
+        # test that a hard-bounded survey can earn nonzero coverage.
+        broad_angle = math.pi + 0.5 * model.lateral_resolution_m / radius
+        broad_direction = math.cos(broad_angle) * normal + math.sin(broad_angle) * angular
+        alternate_angle = 1.5 * math.pi + 0.5 * model.lateral_resolution_m / radius
+        alternate_direction = math.cos(alternate_angle) * normal + math.sin(alternate_angle) * angular
         views = [
-            (1.0, 0.50, 0.75, 0.0),
-            (-1.0, 0.50, 0.75, 0.0),
-            (1.0, 0.25, 1.0, 0.25),
-            (-1.0, 0.75, 1.0, 0.25),
+            (normal, 0.50, 0.75, 0.0),
+            (-normal, 0.50, 0.75, 0.0),
+            (normal, 0.25, 1.0, 0.25),
+            (-normal, 0.75, 1.0, 0.25),
+            (broad_direction, 0.50, 0.75, 0.0),
+            (alternate_direction, 0.50, 0.75, 0.0),
         ]
         if occluded:
             # Construct a blocked test ray from truth geometry; neither
@@ -125,10 +136,9 @@ def _exercise_kernel_unity_parity(tmp_path, occluded, noisy, bounded_survey, wor
             panel_normal = np.asarray(panel["normal"], dtype=float)
             axis = (b - a) / np.linalg.norm(b - a)
             axial_fraction = float(np.dot(panel_center - a, axis) / np.linalg.norm(b - a))
-            views.append((0.0, axial_fraction, 2.0, 0.0))
+            views.append((panel_normal, axial_fraction, 2.0, 0.0))
         mount = world.suite.sensors.structural.mount_pose
-        for side, axial_fraction, standoff, height in views:
-            direction = panel_normal if occluded and side == 0.0 else side * normal
+        for direction, axial_fraction, standoff, height in views:
             target = a + axial_fraction * (b - a) + radius * direction
             desired_origin = target + standoff * direction + np.array([0.0, 0.0, height])
             sensor_rotation = quat_to_matrix(

@@ -505,3 +505,39 @@ exact cases on fresh seeds 430–445, and the full parity matrix passed
 fresh seeds. A second full parity development pair on seeds 480/481 passed
 16/16. These results support the separately declared cycle-4 fixture;
 they do not repair cycle 3.
+
+Cycle 4 **FAILED** its controlled-view partition 16/28 and Unity parity
+12/16. Read-only SQLite analysis of the spent seed-1802 healthy case found
+271 observations, 240 with capsule support, 31 unassociated, and target
+direct support 0.4297. Each of four large angular cells spanned about
+1.152 rad but had only two 0.2 m axial resolution supports per 1 m-spaced
+view station, leaving gaps. The deterministic 16-angle sweep had views at
+all 64 stations, so the missing direct support was a station-density issue,
+not permission to credit unseen surface. The occluded negative control's
+clear counterpart also failed to see the declared defect from the one
+fixed 2 m standoff. Four bounded Unity cases on seed 1802 had zero credited
+coverage. These are immutable validation failures. Denser, independently
+specified development view geometry will be evaluated before another cycle.
+
+The development repair uses ten 0.4 m-spaced axial view stations for a
+full-surface sweep while retaining all 16 angular directions, unchanged
+sensor thresholds, and required direct support 1.0. The occlusion negative
+control now places a resolvable 2 rad synthetic corrosion patch in the
+predeclared inspection domain and directs its one test ray through an
+evaluation-only rack panel; its clear counterpart must detect the patch.
+The original 0.3 rad patch could be narrower than the 0.05 m declared
+corrosion resolution on small-radius worlds. Fresh seeds 485–490 passed
+12/12 targeted healthy and occluded cases; 555–564 passed 20/20 more;
+565/566 passed the complete unchanged-condition case matrix **28/28**;
+and 567–586 passed 20/20 additional full-surface healthy cases.
+
+The Unity parity fixture now includes two clear views centred on broad
+circumferential resolution cells, chosen from the declared radius and sensor
+lateral resolution. Those cells can retain positive coverage after the
+declared hard registration erosion. The prior four-view bounded fixture
+failed 5/20 fresh development seeds 491–510. With one broad view, clear
+bounded cases passed 20/20 on 511–530, but the view was rack-occluded in
+seed 531. A second broad view in a different sector passed full parity
+16/16 on 533/534, occluded bounded screening 20/20 on 535–554, clear
+bounded screening 20/20 on 587–606, and full parity 16/16 on 607/608.
+These are fixture changes and development evidence, not a repair of cycle 4.
