@@ -18,6 +18,8 @@ artifacts/*
 !artifacts/gates/
 !artifacts/gates/
 !artifacts/experiments/
+artifacts/experiments/*/*.checkpoint.json
+artifacts/experiments/M1-ACTION-SPATIAL-V1-DEV/diagnostic_*.json
 !artifacts/registry/
 # truth-removal falsification reports (small JSON, scripts/falsify_truth_removal.py)
 !artifacts/falsification/

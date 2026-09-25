@@ -56,3 +56,35 @@ Validation, its selection rule, the warrant-incidence power calculation, final
 N, minimum warrant count, and all final thresholds will be committed before
 validation or final worlds are opened. If validation fails, final remains
 sealed. If the one-shot surrogate final fails, no formal Unity run is allowed.
+
+## Development iteration 1: failed attempt-budget reproduction
+
+Seeds 8500000 and 8500001 completed all 42 missions (seven scenarios, three
+arms) in 537.5 wall seconds. Spatial truth/backend selection and the frozen
+sensor digest matched in every row. The six non-nominal action scenarios were
+2/2 correct given warrant, hard violations were zero, traceability was 1.0,
+UIR was 0, nominal over-escalation was zero, and every covered resolvable
+defect stayed non-intact. Ordinary nominal nevertheless reached zero intact
+warrants: both 480 s worlds ended `UNKNOWN` with incomplete required-cell
+coverage. This is a **failed development hypothesis**, not gate evidence.
+
+Fresh diagnostic development seed 8500002 reproduced the cause. It executed
+only four views, then the default `max_plans_per_need=4` marked acquisition
+unavailable while required cells remained incomplete. The architecture's
+recorded successful 480 s development mission used fifteen views after its
+earlier investigation had declared a larger Model1/MCBR attempt budget. The
+I5 profile had accidentally inherited the generic four-plan default instead
+of carrying that known spatial mission requirement forward.
+
+Iteration 2 therefore changes only finite software acquisition capacity:
+`max_plans_per_need`, Model1 `max_information_attempts`, and
+`max_view_attempts` are each prospectively set to 24. Sensor, support,
+detectability, truth maps, required inspection domain, condition thresholds,
+warrant, baselines, mission durations, and scoring are unchanged. Fresh
+development seeds 8500003 and 8500004 are used; iteration-1 seeds are not
+rerun. Validation and final remain unopened.
+
+The immutable R1 result is
+`artifacts/experiments/M1-ACTION-SPATIAL-V1-DEV/m1_action_spatial_v1_dev_development.json`
+with SHA-256
+`5bf6b83bf80e1b6fc0bd645174246d24fc9c3f2bdd9c47c035844ae82a534b0b`.

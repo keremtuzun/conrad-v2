@@ -55,6 +55,10 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
         "conrad.evaluation.decision_experiments.m1_action_integrated",
         "configs/eval/m1_action_spatial_v1_development.yaml",
     ),
+    "M1-ACTION-SPATIAL-V1-DEV-R2": (
+        "conrad.evaluation.decision_experiments.m1_action_integrated",
+        "configs/eval/m1_action_spatial_v1_development_r2.yaml",
+    ),
     "ACTIVE-MCBR-E001": (
         "conrad.evaluation.decision_experiments.active_mcbr",
         "configs/eval/active_mcbr_e001.yaml",

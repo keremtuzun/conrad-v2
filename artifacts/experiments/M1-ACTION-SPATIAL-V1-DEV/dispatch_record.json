@@ -1,0 +1,11 @@
+{
+  "experiment_id": "M1-ACTION-SPATIAL-V1-DEV",
+  "module": "conrad.evaluation.decision_experiments.m1_action_integrated",
+  "config": "configs/eval/m1_action_spatial_v1_development.yaml",
+  "seeds": [
+    8500000,
+    8500001
+  ],
+  "wall_s": 537.5,
+  "out_dir": "/Users/kerem/Documents/ChatGPT/conrad v2/artifacts/experiments/M1-ACTION-SPATIAL-V1-DEV"
+}
