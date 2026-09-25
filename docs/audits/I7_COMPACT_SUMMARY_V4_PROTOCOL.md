@@ -1,7 +1,7 @@
 # I7 compact critical summary v4 protocol
 
-Status: **VALIDATION DECLARED; FINAL UNOPENED**. Historical I7 surrogate
-FAIL 3/4 and formal NOT_RUN remain immutable.
+Status: **VALIDATION FAIL; FINAL UNOPENED**. Historical I7 surrogate FAIL 3/4
+and formal NOT_RUN remain immutable.
 
 ## Frozen candidate
 
@@ -46,7 +46,9 @@ only if all of the following hold without dropping a seed or level:
    delivery of at least the revision found during the outage because later
    revisions can be younger than link latency at mission end.
 
-Any failure stops the cycle. No final seed may then be opened.
+Any failure stops the cycle. No final seed may then be opened. The validation
+did fail; the immutable result is recorded in
+`I7_COMPACT_SUMMARY_V4_VALIDATION.md`.
 
 ## Surrogate-final rule
 

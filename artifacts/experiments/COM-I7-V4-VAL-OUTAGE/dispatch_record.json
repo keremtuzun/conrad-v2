@@ -1,0 +1,14 @@
+{
+  "experiment_id": "COM-I7-V4-VAL-OUTAGE",
+  "module": "conrad.evaluation.decision_experiments.com_i7",
+  "config": "configs/eval/com_i7_v4_validation_outage.yaml",
+  "seeds": [
+    8400000,
+    8400001,
+    8400002,
+    8400003,
+    8400004
+  ],
+  "wall_s": 428.4,
+  "out_dir": "/Users/kerem/Documents/ChatGPT/conrad v2/artifacts/experiments/COM-I7-V4-VAL-OUTAGE"
+}

@@ -68,3 +68,8 @@ cycle; it is not surrogate gate evidence. The fresh validation/final partition,
 unchanged decision rule, and unopened-final constraint are frozen in
 `I7_COMPACT_SUMMARY_V4_PROTOCOL.md`. No validation, surrogate-final, or
 Unity-formal seed had been opened when that protocol was declared.
+
+The subsequently opened validation partition failed the unchanged strict
+retention criterion. The complete negative result and stop decision are in
+`I7_COMPACT_SUMMARY_V4_VALIDATION.md`; no surrogate-final or formal seed was
+opened.

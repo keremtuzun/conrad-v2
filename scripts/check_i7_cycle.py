@@ -16,6 +16,7 @@ def main() -> None:
     parser.add_argument("--partition", choices=("validation", "final_test"), required=True)
     parser.add_argument("--partition-domain", required=True)
     parser.add_argument("--seeds", nargs="+", type=int, required=True)
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     result = assess_cycle(
         json.loads(args.bandwidth.read_text(encoding="utf-8")),
@@ -24,7 +25,11 @@ def main() -> None:
         expected_domain=args.partition_domain,
         expected_seeds=args.seeds,
     )
-    print(json.dumps(result, indent=2))
+    rendered = json.dumps(result, indent=2)
+    if args.output is not None:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(rendered + "\n", encoding="utf-8")
+    print(rendered)
     raise SystemExit(0 if result["ok"] else 1)
 
 

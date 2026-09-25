@@ -1,0 +1,17 @@
+{
+  "ok": false,
+  "criteria": {
+    "full_mission_matrices_and_no_duplicates": true,
+    "outage_delivery": true,
+    "strict_retention": false,
+    "latency_and_sync_reported": true
+  },
+  "failures": [
+    "COM-I7-V4-VAL-BW-s8400004-bw0.001-shadow: baac retention 0.0 is not above raw 0.0",
+    "COM-I7-V4-VAL-BW-s8400004-bw0.001-shadow: baac retention 0.0 is not above fifo 0.0",
+    "COM-I7-V4-VAL-BW-s8400004-bw0.001-shadow: baac retention 0.0 is not above fixed_priority 0.0",
+    "COM-I7-V4-VAL-OUTAGE-s8400000-bw0.1-shadow: baac retention 0.10813008130081304 is not above fifo 0.11382113821138214",
+    "COM-I7-V4-VAL-OUTAGE-s8400004-bw0.1-shadow: baac retention 0.10813008130081304 is not above raw 0.14227642276422767",
+    "COM-I7-V4-VAL-OUTAGE-s8400004-bw0.1-shadow: baac retention 0.10813008130081304 is not above fifo 0.11382113821138214"
+  ]
+}
