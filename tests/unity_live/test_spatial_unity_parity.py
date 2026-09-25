@@ -49,6 +49,7 @@ def _exercise_kernel_unity_parity(tmp_path, occluded, noisy, bounded_survey, wor
         }
     )
     changes: dict[str, Any] = {
+        "family": "inspectable_pipeline",
         "survey_sigma_m": 0.001 if bounded_survey else 0.0,
         "survey_endpoint_bound_m": 0.002 if bounded_survey else None,
         "ecological_enabled": False,
@@ -110,16 +111,26 @@ def _exercise_kernel_unity_parity(tmp_path, occluded, noisy, bounded_survey, wor
             rng=np.random.default_rng(16),
             record=lambda kind, row: parity_rows.append(row) if kind == "spatial_visibility_parity" else None,
         )
-        views = (
+        views = [
             (1.0, 0.50, 2.0, 0.0),
             (-1.0, 0.50, 2.0, 0.0),
             (1.0, 0.25, 1.5, 0.5),
-            (-1.0, 0.75, 2.5, 0.5),
-        )
+            (-1.0, 0.75, 1.5, 0.0),
+        ]
+        if occluded:
+            # Construct a blocked test ray from truth geometry; neither
+            # associator nor belief receives the occluder placement.
+            panel = world.recorder.meta["view_occlusion"]["panels"][0]
+            panel_center = np.asarray(panel["center_m"], dtype=float)
+            panel_normal = np.asarray(panel["normal"], dtype=float)
+            axis = (b - a) / np.linalg.norm(b - a)
+            axial_fraction = float(np.dot(panel_center - a, axis) / np.linalg.norm(b - a))
+            views.append((0.0, axial_fraction, 2.0, 0.0))
         mount = world.suite.sensors.structural.mount_pose
         for side, axial_fraction, standoff, height in views:
-            target = a + axial_fraction * (b - a) + side * radius * normal
-            desired_origin = target + side * standoff * normal + np.array([0.0, 0.0, height])
+            direction = panel_normal if occluded and side == 0.0 else side * normal
+            target = a + axial_fraction * (b - a) + radius * direction
+            desired_origin = target + standoff * direction + np.array([0.0, 0.0, height])
             sensor_rotation = quat_to_matrix(
                 look_at(tuple(desired_origin), tuple(target), WORLD).orientation_wxyz
             )
@@ -146,17 +157,24 @@ def _exercise_kernel_unity_parity(tmp_path, occluded, noisy, bounded_survey, wor
                     and o.structural_support.axial_uncertainty_m > 0
                     for o in left
                 )
+            associated_by_backend = []
             for observations, belief, associator, evidence_ids in (
                 (left, kernel_belief, kernel_associator, kernel_evidence_ids),
                 (right, unity_belief, unity_associator, unity_evidence_ids),
             ):
+                associated = []
                 for observation in observations:
                     evidence, _ = structured_evidence(observation, evidence_ids, None)
                     evidence, _ = associator.associate(observation, evidence)
-                    assert registry_of(evidence) == registry_id
-                    accepted = belief.ingest(evidence)
-                    if not bounded_survey:
-                        assert accepted
+                    matched_id = registry_of(evidence)
+                    associated.append(matched_id)
+                    assert matched_id in (None, registry_id)
+                    if matched_id is not None:
+                        accepted = belief.ingest(evidence)
+                        if not bounded_survey:
+                            assert accepted
+                associated_by_backend.append(associated)
+            assert associated_by_backend[0] == associated_by_backend[1]
             assert [kernel_belief.coverage_fraction(i) for i in range(grid.n_cells)] == pytest.approx(
                 [unity_belief.coverage_fraction(i) for i in range(grid.n_cells)], abs=1e-12
             )
@@ -171,7 +189,7 @@ def _exercise_kernel_unity_parity(tmp_path, occluded, noisy, bounded_survey, wor
         if occluded:
             assert 0 in support_counts
         else:
-            assert all(support_counts)
+            assert all(support_counts), support_counts
         assert all(r["kernel_visible_unity_hidden"] == 0 for r in parity_rows)
     finally:
         world.close()

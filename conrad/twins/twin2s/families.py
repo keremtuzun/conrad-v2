@@ -31,7 +31,8 @@ from conrad.twins.twin2s.sensor_specs import default_robot_spec
 GENERATOR_VERSION = "twin2s-ocpwe-0.1.0"
 TRAIN_FAMILIES = ("straight_pipeline", "bent_pipeline", "pipeline_with_supports", "cluttered_field")
 OOD_FAMILIES = ("ood_unseen_geometry",)
-WORLD_FAMILIES = TRAIN_FAMILIES + OOD_FAMILIES
+FIXTURE_FAMILIES = ("inspectable_pipeline",)
+WORLD_FAMILIES = TRAIN_FAMILIES + OOD_FAMILIES + FIXTURE_FAMILIES
 
 
 def family_split(family: str) -> str:
@@ -84,6 +85,11 @@ def generate_world(
         bend = (0, float(rng.choice([-1.0, 1.0]) * rng.uniform(0.5, 1.2)))
     elif family == "pipeline_with_supports":
         clearance, supports = float(rng.uniform(0.35, 0.7)), True
+    elif family == "inspectable_pipeline":
+        # Positive control for full-surface sensor semantics: no permanently
+        # covering support hardware or random clutter, with room below pipe.
+        clearance, supports = 1.0, False
+        clutter = (0, 0, 0, 0)
     elif family == "cluttered_field":
         clearance, clutter = float(rng.uniform(-0.15, 0.1)), (9, 5, 4, 2)
     if family != "ood_unseen_geometry":

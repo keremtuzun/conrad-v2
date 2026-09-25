@@ -13,11 +13,11 @@ sensor parameters. No physical calibration or deployment claim follows.
 | C Support provenance | Versioned support and sensor digest through Observation, ECMER Evidence, association; exact, bounded and unregistered survey modes | DEVELOPMENT VERIFIED; prospective validation pending |
 | D Local belief update | Spatial mission Model2T updates only associated supported cells; partial and uncertain support fail closed | DEVELOPMENT VERIFIED; prospective validation pending |
 | E Conservative condition | Required-domain complete coverage and independent looks for qualified intact; severe local finding overrides incomplete coverage | DEVELOPMENT VERIFIED; prospective validation pending |
-| F Identifiability | Controlled mission sensor/Evidence/Model2T sweep separates same-mean worlds; one closed-loop healthy and two defect development missions | PARTIAL: independent closed-loop case matrix pending |
+| F Identifiability | Controlled mission sensor/Evidence/Model2T sweep separates same-mean worlds; one closed-loop healthy and two defect development missions; current fixture development matrix 28/28 | DEVELOPMENT VERIFIED; prospective validation pending |
 | G Synthetic detectability | Detectability v2: independent explicit crack length/depth thresholds plus patch size; unit boundary and mission-path negative controls passed | DEVELOPMENT VERIFIED; prospective validation pending |
-| H Kernel/Unity parity | Pinned player; 9/9 opt-in live development tests at current association/detectability-v2 across clear/occluded, exact/bounded, deterministic/noisy cases | DEVELOPMENT VERIFIED; cycle-2 parity partition pending |
+| H Kernel/Unity parity | Pinned player; 16/16 fresh development cases at association-v3 across clear/occluded, exact/bounded, deterministic/noisy cases | DEVELOPMENT VERIFIED; prospective validation pending |
 | I Truth boundary | Static import guards and runtime artifact scan passed on spatial mission development path | DEVELOPMENT VERIFIED; current-HEAD sweep pending |
-| J Replay/versioning | Full association-v2/detectability-v2 480 s replay (1,822 Observation, 1,155 Evidence, 7,801 belief payloads equal), plus explicit old-contract rejection | DEVELOPMENT VERIFIED; cycle-2 validation pending |
+| J Replay/versioning | Full association-v2/detectability-v2 480 s replay (1,822 Observation, 1,155 Evidence, 7,801 belief payloads equal), plus explicit old-contract rejection | PARTIAL: current association-v3 full replay pending |
 
 The first prospectively declared controlled-view validation on seeds 1401
 and 1402 is **FAIL (6/28)**. All 22 failures stopped at the unchanged
@@ -27,9 +27,25 @@ segment boundary with no registry association; the local condition correctly
 remained `UNKNOWN`. Those seeds are spent and will not be rerun. Architecture
 A-J remains **NOT FROZEN**. A unique-axial-segment association rule passed
 the full 28/28 case matrix on fresh development seeds 407/408, with
-near-joint/overlap/uncertain-survey abstention checks. Current-association
-closed-loop replay passed exactly. Unity parity and the separately
-predeclared cycle-2 validation are still required.
+near-joint/overlap/uncertain-survey abstention checks. The association-v2
+closed-loop replay passed exactly before cycle 2 was opened.
+
+Cycle 2 is now **FAIL: controlled-view 17/28, Unity parity 6/16**.
+Seed 1501 passed all 14 controlled-view cases. On seed 1502 the three
+partial/outside/occluded controls passed; 11 full-sweep cases stopped at
+required coverage 0.7924. All emitted spatial supports were associated, but
+the support-family geometry physically hid strips of the required surface.
+Unity parity's exact kernel/Unity comparisons passed before its failed
+fixture assertions: four seed-1501 occluded cases did not hide a fixed test
+view, and seed 1502's clear/bounded cases lacked the predeclared support or
+positive bounded coverage. These partitions are immutable and the seeds
+will not be rerun. The inspectable no-support/no-clutter fixture and
+association-v3 then passed the unchanged 14-case matrix on development
+seeds 418/419 (**28/28**). The strengthened Unity parity fixture, including
+a deliberately blocked ray and positive bounded-survey coverage, passed
+development seeds 426/427 (**16/16**). Earlier Unity development seeds 420
+and 425 exposed the fixture and bounded-association gaps and remain recorded
+as failures.
 
 The ordinary clean-checkout suite passed at `68de752` (1,452 passed,
 14 skipped, 121 deselected, 3 historical xfailed). A later clean checkout at
@@ -51,10 +67,9 @@ gitignored I5 artifact is an explicit skip in the normal clean checkout,
 never regenerated from spent final seeds.
 
 Architecture A-J cannot be marked PASS from this development ledger. Before
-freeze, the separately declared cycle-2 partition must test the unchanged
-case matrix and matched Unity semantics. The healthy closed-loop run and
-replay at the current association/detectability/registration contract
-completed in development with exact full replay. The declared 480-second
+freeze, a fresh, prospectively declared partition must test the unchanged
+case matrix and matched Unity semantics. A healthy closed-loop run and
+replay at the current association-v3 contract are pending. The declared 480-second
 same-mean development pair under the earlier association contract completed: the
 uniform world reached qualified `INTACT`, and the local world had 386 `SEVERE`
 revisions and zero `INTACT` revisions. Performance evidence includes 80-second

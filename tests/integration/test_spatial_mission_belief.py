@@ -441,12 +441,15 @@ def _exercise_required_surface(tmp_path, state, expected, full_sweep, world_seed
     truth = SpatialTruthOptions.model_validate(truth_config)
     changes: dict[str, Any] = {
         "survey_sigma_m": 0.0,
-        "family": "pipeline_with_supports",
+        # Full-surface positive controls require an inspectable asset.
+        # The support family can permanently conceal pipe surface, which
+        # correctly remains UNKNOWN in an occlusion negative control.
+        "family": "inspectable_pipeline" if full_sweep else "pipeline_with_supports",
         "spatial_truth": truth,
         "spatial_sensor_model": sensor,
     }
     if state == "occluded-defect":
-        changes["family"] = "straight_pipeline"
+        changes["family"] = "inspectable_pipeline"
         changes["occlusion"] = base.occlusion.model_copy(
             update={
                 "enabled": True,

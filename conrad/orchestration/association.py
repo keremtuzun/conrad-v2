@@ -29,7 +29,7 @@ from conrad.schemas.world import Domain
 
 MEASUREMENT_KEYS = ("measured_range_m", "measured_bearing_rad", "measured_elevation_rad")
 ASSOCIATION_VERSION = "orchestration.structural_association-0.1"
-SPATIAL_ASSOCIATION_VERSION = "spatial-structural-association-axial-v2"
+SPATIAL_ASSOCIATION_VERSION = "spatial-structural-association-axial-v3"
 
 
 @dataclass(frozen=True)
@@ -66,28 +66,39 @@ def unique_axial_segment(
     candidates: list[DesignComponent],
     sigma_multiplier: float,
 ) -> UUID | None:
-    """Resolve a joint only when one exact-survey axis contains the noisy point well inside it.
+    """Resolve a joint only when one bounded-survey axis contains the point.
 
     A Gaussian scale is used as an association confidence margin, not a hard
-    registration bound or a coverage certificate. Overlapping axial intervals,
-    a point near a joint, or an uncertain survey keeps NO_MATCH.
+    registration bound or a coverage certificate. A declared endpoint bound
+    widens each axial guard by a conservative axis-direction perturbation.
+    Unbounded surveys, overlaps, and points near joints keep NO_MATCH.
     """
     if not candidates or any(
-        c.shape != "CAPSULE" or c.component_type != "SEGMENT" or c.survey_sigma_m for c in candidates
+        c.shape != "CAPSULE"
+        or c.component_type != "SEGMENT"
+        or (c.survey_sigma_m and c.survey_endpoint_bound_m is None)
+        for c in candidates
     ):
         return None
-    guard = sigma_multiplier * sigma_m
     inside: list[UUID] = []
     for comp in candidates:
         a, b = np.asarray(comp.p0_m), np.asarray(comp.p1_m)
         axis = b - a
         length = float(np.linalg.norm(axis))
-        if length <= 2 * guard:
+        endpoint_bound = comp.survey_endpoint_bound_m or 0.0
+        if length <= 2 * endpoint_bound:
             return None
-        coordinate = float((point - a) @ axis / length)
-        if guard < coordinate < length - guard:
+        unit_axis = axis / length
+        # Endpoint displacement <= bound implies axis displacement <= 2*bound.
+        # The unit-axis change is bounded by 4*bound/(length-2*bound).
+        direction_guard = 4 * endpoint_bound / (length - 2 * endpoint_bound)
+        start_guard = sigma_multiplier * sigma_m + endpoint_bound + float(np.linalg.norm(point - a)) * direction_guard
+        end_guard = sigma_multiplier * sigma_m + endpoint_bound + float(np.linalg.norm(point - b)) * direction_guard
+        start = float((point - a) @ unit_axis)
+        end = float((point - b) @ unit_axis)
+        if start > start_guard and end < -end_guard:
             inside.append(comp.registry_id)
-        elif -guard <= coordinate <= length + guard:
+        elif start >= -start_guard and end <= end_guard:
             return None
     return inside[0] if len(inside) == 1 else None
 
@@ -165,11 +176,7 @@ class StructuralAssociator:
                 decision.candidate_ids,
                 "ambiguous",
             )
-        if (
-            decision.belief_id is None
-            and decision.method == "ambiguous"
-            and ev.structural_support is not None
-        ):
+        if ev.structural_support is not None and len(decision.candidate_ids) > 1 and decision.method != "registry_identity":
             axial_id = unique_axial_segment(
                 p,
                 proj.sigma_m,
@@ -184,6 +191,15 @@ class StructuralAssociator:
                     1.0,
                     decision.candidate_ids,
                     "unique_axial_segment",
+                )
+            else:
+                decision = AssociationDecision(
+                    ev.evidence_id,
+                    None,
+                    decision.probability,
+                    decision.margin,
+                    decision.candidate_ids,
+                    "axial_not_unique",
                 )
         if decision.belief_id is None:
             self.no_match += 1

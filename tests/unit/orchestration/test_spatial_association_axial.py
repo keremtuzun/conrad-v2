@@ -8,7 +8,7 @@ from conrad.orchestration.association import unique_axial_segment
 from conrad.orchestration.mission_context import DesignComponent
 
 
-def segment(identity: int, x0: float, x1: float, survey_sigma_m: float = 0.0) -> DesignComponent:
+def segment(identity: int, x0: float, x1: float, survey_sigma_m: float = 0.0, bound: float | None = None) -> DesignComponent:
     return DesignComponent(
         registry_id=UUID(int=identity),
         component_type="SEGMENT",
@@ -17,6 +17,7 @@ def segment(identity: int, x0: float, x1: float, survey_sigma_m: float = 0.0) ->
         p1_m=(x1, 0.0, 0.0),
         radius_m=0.3,
         survey_sigma_m=survey_sigma_m,
+        survey_endpoint_bound_m=bound,
     )
 
 
@@ -35,3 +36,10 @@ def test_overlapping_or_uncertain_designs_remain_unassociated():
     point = np.array([0.28, 0.3, 0.0])
     assert unique_axial_segment(point, 0.05, [target, overlapping], 3.0) is None
     assert unique_axial_segment(point, 0.05, [target, segment(5, -4.0, 0.0, 0.001)], 3.0) is None
+
+
+def test_hard_bounded_endpoint_survey_can_resolve_but_does_not_claim_joint():
+    left = segment(1, -4.0, 0.0, 0.001, 0.002)
+    target = segment(2, 0.0, 4.0, 0.001, 0.002)
+    assert unique_axial_segment(np.array([0.28, 0.3, 0.0]), 0.05, [left, target], 3.0) == target.registry_id
+    assert unique_axial_segment(np.array([0.04, 0.3, 0.0]), 0.05, [left, target], 3.0) is None

@@ -438,3 +438,36 @@ The nine opt-in Unity development parity tests then passed under this
 same axial-association/detectability contract, across clear/occluded,
 exact/bounded-survey, and deterministic/noisy cases. Cycle-2 validation
 seeds remained unopened at this entry.
+
+## Cycle-2 failures and association-v3 development
+
+The separately declared cycle-2 controlled-view partition **FAILED 17/28**
+and its Unity parity partition **FAILED 6/16**. Neither seed 1501 nor 1502
+will be rerun. Read-only diagnostics found all 208 emitted supports associated
+on seed 1502, while permanent support hardware physically hid about 20.76%
+of the required surface. This was a world-fixture feasibility failure, not a
+reason to lower the unchanged full-support threshold. The Unity comparison
+assertions themselves matched before test-fixture assertions failed: fixed
+views were not guaranteed clear or blocked, and one bounded-survey case had
+no credited coverage.
+
+Fresh development seed 412 also exposed a confident wrong-neighbor point
+association near a joint. Association-v3 applies unique axial separation to
+every multi-candidate supported reading, including confident point matches.
+An exact survey or an explicit hard endpoint bound is required; a Gaussian
+survey sigma alone still abstains. The bounded axial guard includes the
+endpoint and axis-direction perturbation. Overlap and near-joint cases
+remain unassociated. The inspectable full-surface positive-control family
+has no permanent support hardware or clutter and 1 m pipe clearance; the
+occluded negative control adds an explicit truth-side rack. No domain,
+condition, sensor detectability, or support threshold was reduced.
+
+The unchanged 14-case controlled-view matrix passed **28/28** on fresh
+development seeds 418/419. Unity development seed 420 found a fixed clear
+pose with no support. Seed 425 found that the exact-only axial rule could
+starve a bounded survey of all credited coverage. Both failed development
+runs remain recorded. After fixing the pose and bounded rule, fresh Unity
+development seeds 426/427 passed **16/16** with exact support/measurement,
+association, condition, and coverage parity, all clear views supported,
+one deliberately blocked occluded view, and positive bounded coverage.
+These are development results, not prospective validation or formal gates.
