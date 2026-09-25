@@ -168,3 +168,23 @@ vehicle goal was filtered, maximum commanded z was 4.643 m, every one of 24
 selected views completed, and scored HOLD entries fell from 208 to 2. The
 world still did not reach intact, so no success is inferred from this reused
 seed. A fresh partition is required for candidate assessment.
+
+## Version 9 prospective corrected-candidate cycle
+
+Before opening any corrected-candidate world,
+`configs/eval/partitions_i5_v9.yaml` declares development
+8600000..8600009, validation 8600100..8600109, and a sealed 40-world final
+pool 8600200..8600239. Its canonical digest is
+`c5b890be75e80872d3ccc8c6f730b567bba6449d0f7ba3f743cf41e1c97ff8fc`.
+The future formal Unity range 8601000..8601999 is separately reserved.
+
+R4 will open only the first five development worlds, 8600000..8600004. The
+candidate advances only if every covered resolvable defect remains non-intact,
+every non-nominal action class is correct given warrant, decision violations
+and nominal over-escalations are zero, traceability is 1.0, UIR is 0, at least
+three of five nominal worlds reach a legitimate intact warrant, and aggregate
+task success, safety entries, and decision violations are no worse than both
+frozen baselines. Any safety outlier is inspected before validation. Sensor,
+truth, support, Model2T, warrant, thresholds, scenarios, arms, durations,
+attempt bounds, and scoring remain identical to R3. Validation and final stay
+sealed during R4.
