@@ -112,3 +112,41 @@ duration or decision rule changes. It must retain zero false intact and the
 complete action/grounding results while determining whether nominal warrant
 incidence and the R2 safety comparison generalize. Validation and final remain
 unopened.
+
+## Development iteration 3: mechanism retained, boundary-feasibility defect found
+
+Seeds 8500005..8500009 completed all 105 missions in 757.6 wall seconds. Four
+of five primary nominal missions reached a legitimate intact warrant and were
+correct given warrant. Every non-nominal action scenario was 5/5 correct,
+violations and nominal over-escalations were zero, traceability was 1.0, UIR
+was 0, and covered resolvable defect cells again produced zero false intact.
+
+The unchanged candidate nevertheless failed the competitive criterion. EGDC
+and the rule baseline each recorded 216 safety-state entries, versus 166 for
+the naive baseline. Seed 8500008 contributed 208 entries in the nominal
+mission and never reached an intact warrant; all other primary nominal worlds
+recorded at most one safety entry and reached intact. The immutable R3 result
+is
+`artifacts/experiments/M1-ACTION-SPATIAL-V1-DEV-R3/m1_action_spatial_v1_dev_r3_development.json`
+with SHA-256
+`971ac50f503a1e8a0e06e2dc5848b6c66d0afa553f0346b4af5ceb4c3bcda942`.
+
+A retained diagnostic rerun of seed 8500008 established that this was not a
+collision: truth recorded zero vehicle collisions and minimum clearance was
+0.969 m. The eleventh selected MCBR candidate placed the sensor boresight at
+z=4.825 m, but routing applied the declared payload mount transform and
+commanded the vehicle at z=4.965 m inside a mission whose upper boundary is
+z=5.0 m. The planner's feasibility checks considered the sensor pose, did not
+declare the mission bounds on the `PlanningRequest`, and did not reserve the
+safety supervisor's uncertainty margin for the transformed vehicle goal. As
+the estimator covariance changed, the supervisor correctly alternated between
+motion and `MISSION_BOUNDARY_RISK` HOLD; the view timed out and the required
+cell remained incomplete.
+
+R3 is therefore a failed development hypothesis and exposes a software
+contract gap between active-view feasibility and navigation safety. The next
+candidate must reject any sensor pose whose corresponding vehicle pose and
+current uncertainty ball do not fit inside the declared mission boundary.
+That correction must be covered by a focused regression and evaluated on a
+new prospectively declared partition. No v8 validation or final seed has been
+opened.
