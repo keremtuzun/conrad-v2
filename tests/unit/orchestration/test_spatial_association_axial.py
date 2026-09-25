@@ -24,6 +24,7 @@ def test_exact_adjacent_segments_resolve_only_with_axial_separation():
     left, target, right = segment(1, -4.0, 0.0), segment(2, 0.0, 4.0), segment(3, 4.0, 8.0)
     candidates = [left, target, right]
     assert unique_axial_segment(np.array([0.28, 0.3, 0.0]), 0.05, candidates, 3.0) == target.registry_id
+    assert unique_axial_segment(np.array([-0.28, 0.3, 0.0]), 0.05, candidates, 3.0) == left.registry_id
     assert unique_axial_segment(np.array([3.72, 0.3, 0.0]), 0.05, candidates, 3.0) == target.registry_id
     assert unique_axial_segment(np.array([0.04, 0.3, 0.0]), 0.05, candidates, 3.0) is None
     assert unique_axial_segment(np.array([4.0, 0.3, 0.0]), 0.05, candidates, 3.0) is None

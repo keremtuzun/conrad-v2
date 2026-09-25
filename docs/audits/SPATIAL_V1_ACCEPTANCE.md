@@ -40,7 +40,10 @@ the test now explicitly verifies that legacy's bound is null and excludes
 that spatial-only field from the legacy comparison. Its focused rerun passed;
 a later clean checkout at `6b082e7` passed 1,454 tests, with 14 documented
 skips, 139 slow tests deselected, and 3 historical xfails. The full suite at
-the final HEAD remains required. The historical
+`2611851` passed 1,468 tests, with 14 documented skips, 125 opt-in Unity
+tests deselected, and 3 historical xfails. That full run preceded the
+axial-association repair; a full suite at the final HEAD remains required.
+The historical
 gitignored I5 artifact is an explicit skip in the normal clean checkout,
 never regenerated from spent final seeds.
 
