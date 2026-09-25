@@ -1066,7 +1066,7 @@ def verdicts(
         nominal = [
             r["spatial_v1"]
             for r in rows or ()
-            if r["scenario"] == "I5-NOMINAL" and r.get("spatial_v1") is not None
+            if r["arm"] == PRIMARY and r["scenario"] == "I5-NOMINAL" and r.get("spatial_v1") is not None
         ]
         result["spatial_nominal_intact_incidence"] = (
             sum(row["first_intact_t_s"] is not None for row in nominal) / len(nominal) if nominal else None

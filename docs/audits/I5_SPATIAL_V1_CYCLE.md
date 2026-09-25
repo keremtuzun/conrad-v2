@@ -88,3 +88,27 @@ The immutable R1 result is
 `artifacts/experiments/M1-ACTION-SPATIAL-V1-DEV/m1_action_spatial_v1_dev_development.json`
 with SHA-256
 `5bf6b83bf80e1b6fc0bd645174246d24fc9c3f2bdd9c47c035844ae82a534b0b`.
+
+## Development iteration 2: mixed reachability, competitiveness fail
+
+Seeds 8500003 and 8500004 completed all 42 missions in 537.4 wall seconds.
+One of two primary nominal missions reached qualified `OBSERVED INTACT` at
+254 s with all four required cells at coverage 1.0 and selected CONTINUE
+within budget. The other ended `UNKNOWN`: three required cells were complete,
+but one remained at 0.841 coverage. Every non-nominal action was 2/2 correct
+given warrant, violations and nominal over-escalations were zero, traceability
+was 1.0, UIR was 0, and covered resolvable defects again had zero false intact.
+
+The frozen competitiveness criterion nevertheless failed: EGDC had 8 safety
+events versus the rule baseline's 6. The largest path-specific differences
+were one extra nominal event and one extra outage event; no hard decision
+constraint was violated. R2 is therefore development evidence, not a selected
+candidate or gate result. Its result SHA-256 is
+`d531d8ab84e82b63d9fc76453f8d54703a27e07e6db5814acb2a2225107a65eb`.
+
+Iteration 3 is an unchanged-candidate replication on the five remaining fresh
+development seeds 8500005..8500009. No parameter, threshold, scenario, arm,
+duration or decision rule changes. It must retain zero false intact and the
+complete action/grounding results while determining whether nominal warrant
+incidence and the R2 safety comparison generalize. Validation and final remain
+unopened.
