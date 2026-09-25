@@ -47,6 +47,14 @@ development seeds 426/427 (**16/16**). Earlier Unity development seeds 420
 and 425 exposed the fixture and bounded-association gaps and remain recorded
 as failures.
 
+Cycle 3 is **FAIL: controlled-view 28/28, Unity parity 12/16**. The four
+seed-1702 clear-view parity cases stopped at the predeclared requirement
+that every clear test view emit support: support counts were `[0, 0, 4, 4]`.
+Kernel and Unity agreed on the zero supports, so this is a test-view
+feasibility failure, not evidence of a backend mismatch. Seeds 1701/1702
+are spent and will not be rerun. Clear-view poses with shorter standoff
+are being checked on fresh development seeds before any new declaration.
+
 The ordinary clean-checkout suite passed at `68de752` (1,452 passed,
 14 skipped, 121 deselected, 3 historical xfailed). A later clean checkout at
 `c5bfd5b` produced 1,457 passes and one ordinary regression: the new

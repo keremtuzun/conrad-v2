@@ -112,10 +112,10 @@ def _exercise_kernel_unity_parity(tmp_path, occluded, noisy, bounded_survey, wor
             record=lambda kind, row: parity_rows.append(row) if kind == "spatial_visibility_parity" else None,
         )
         views = [
-            (1.0, 0.50, 2.0, 0.0),
-            (-1.0, 0.50, 2.0, 0.0),
-            (1.0, 0.25, 1.5, 0.5),
-            (-1.0, 0.75, 1.5, 0.0),
+            (1.0, 0.50, 0.75, 0.0),
+            (-1.0, 0.50, 0.75, 0.0),
+            (1.0, 0.25, 1.0, 0.25),
+            (-1.0, 0.75, 1.0, 0.25),
         ]
         if occluded:
             # Construct a blocked test ray from truth geometry; neither

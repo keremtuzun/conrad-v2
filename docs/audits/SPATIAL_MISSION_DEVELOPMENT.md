@@ -489,3 +489,19 @@ structural associations, and 505 BAAC transmissions. A runtime scan of
 boundary suite passed 22/22. This remains development evidence.
 The formatted association-v3 source subsequently passed the unchanged
 controlled-view matrix on fresh development seeds 428/429 (**28/28**).
+
+Cycle 3 then passed the prospectively declared controlled-view partition
+**28/28** but failed Unity parity **12/16**. All four failures were the clear
+cases on seed 1702; the first two predeclared fixed views emitted zero
+support in both kernel and Unity, while the other two emitted four each.
+The seed is spent; the parity failure is not relabeled as PASS. The old
+views used 2 m standoff. A narrower pipe can project too little visible
+surface into a fully certified resolution cell at that distance, although
+this is an inference from the support counts rather than a physical sensor
+measurement. Shorter, still in-range development views passed 16/16 clear
+exact cases on fresh seeds 430–445, and the full parity matrix passed
+16/16 on seeds 446/447. Wider fresh development pose screening passed
+32/32 on seeds 448–479, bringing clear exact positive controls to 48/48
+fresh seeds. A second full parity development pair on seeds 480/481 passed
+16/16. These results support the separately declared cycle-4 fixture;
+they do not repair cycle 3.
