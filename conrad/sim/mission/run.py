@@ -20,6 +20,7 @@ import yaml
 
 from conrad.domains.technical.spatial_mission import MODEL_VERSION as SPATIAL_MODEL_VERSION
 from conrad.orchestration.artifacts import write_mission_artifacts
+from conrad.orchestration.association import SPATIAL_ASSOCIATION_VERSION
 from conrad.orchestration.evaluation import evaluate_run_dir
 from conrad.orchestration.mission import MissionRuntime
 from conrad.orchestration.mission_config import MissionRuntimeConfig, runtime_config
@@ -58,6 +59,7 @@ def spatial_version_contract(sensor: StructuralSensorModelV2) -> dict[str, str]:
         "visibility_certificate": VISIBILITY_CERTIFICATE_VERSION,
         "model2t": SPATIAL_MODEL_VERSION,
         "detectability": DETECTABILITY_VERSION,
+        "spatial_association": SPATIAL_ASSOCIATION_VERSION,
     }
 
 

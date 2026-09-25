@@ -19,6 +19,18 @@ sensor parameters. No physical calibration or deployment claim follows.
 | I Truth boundary | Static import guards and runtime artifact scan passed on spatial mission development path | DEVELOPMENT VERIFIED; current-HEAD sweep pending |
 | J Replay/versioning | Full detectability-v2 exact-survey 480 s replay (2,402 Observation, 1,922 Evidence, 8,001 belief payloads equal); bounded 80 s earlier-contract replay; old-contract rejection | DEVELOPMENT VERIFIED; prospective validation pending |
 
+The first prospectively declared controlled-view validation on seeds 1401
+and 1402 is **FAIL (6/28)**. All 22 failures stopped at the unchanged
+full-required-coverage assertion. Healthy coverage was 0.9884 and 0.9778,
+respectively. Read-only artifact inspection found emitted supports near a
+segment boundary with no registry association; the local condition correctly
+remained `UNKNOWN`. Those seeds are spent and will not be rerun. Architecture
+A-J remains **NOT FROZEN**. A unique-axial-segment association rule passed
+the full 28/28 case matrix on fresh development seeds 407/408, with
+near-joint/overlap/uncertain-survey abstention checks. Current-association
+closed-loop replay, Unity parity, and a separate, predeclared validation
+cycle are still required.
+
 The ordinary clean-checkout suite passed at `68de752` (1,452 passed,
 14 skipped, 121 deselected, 3 historical xfailed). A later clean checkout at
 `c5bfd5b` produced 1,457 passes and one ordinary regression: the new

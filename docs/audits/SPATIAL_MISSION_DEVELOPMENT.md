@@ -387,3 +387,38 @@ view execution, associations, and BAAC transmissions. This is development
 evidence under detectability v2; the declared validation seeds remain unopened.
 The earlier detectability-v1 healthy bundle is rejected by the current
 replay contract because it lacks the two required crack thresholds.
+
+## First prospective controlled-view matrix and association diagnosis
+
+The committed 14-case by two-seed controlled-view matrix was run once on
+seeds 1401 and 1402. It **FAILED 22/28** cases: every failed case reached
+the same full-coverage assertion with target direct support below 1.0.
+The two healthy cases ended at 0.9883863 and 0.9778138 observed support,
+and correctly stayed `UNKNOWN`; the partial/outside/occluded negative
+controls passed on both seeds. This is a failed validation partition, not
+an excuse to relax the required domain or count partial coverage as intact.
+The stored `results.jsonl` records every case and traceback. These seeds
+will not be rerun.
+
+Read-only inspection of seed 1401's stored observations and Evidence found
+full emitted raw support over the required cells but three near-joint
+resolution supports with no registry association. One cell's associated
+surface union was only 0.9535. Fresh development seed 403 reproduced
+98.79% coverage. Filtering capsule-surface readings away from nearby
+non-segment geometry alone was insufficient on development seeds 404/405.
+Instrumentation of development seed 406 found genuine ambiguity between
+adjacent segment surfaces at the joint: a projected reading was about
+0.28 m inside one surveyed segment and about 0.28 m beyond its neighbor's
+axis endpoint, with projected sigma about 0.052 m. An exact-survey axial
+interval rule now resolves only a unique interior segment separated by the
+existing three-sigma gate; near-joint, overlapping, and uncertain-survey
+cases remain unassociated. Development seeds 404/405 reached qualified
+`INTACT` after this repair. The fresh 14-case by two-seed development matrix
+on seeds 407 and 408 then passed **28/28**, including full healthy and
+heterogeneous healthy coverage, covered corrosion and crack, each
+subthreshold crack control, occlusion, required-domain edge defect,
+separated defects, and the equal-global-mean pair. Results were appended
+case by case under `SPATIAL-ASSOC-DEV-407-408/results.jsonl`. These are
+development seeds and do not repair or reclassify validation seeds 1401/1402.
+Current-association closed-loop replay and Unity parity remain required
+before a separately declared validation cycle.

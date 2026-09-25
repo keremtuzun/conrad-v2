@@ -262,6 +262,7 @@ def test_spatial_model2t_child_initializes_and_persists_unknown_head(tmp_path):
         ("registration", "unsafe-assumed-exact-v0"),
         ("visibility_certificate", "capsule-sdf-old-v0"),
         ("model2t", "model2t-spatial-v2"),
+        ("spatial_association", "spatial-structural-association-point-only-v1"),
     ):
         edited = deepcopy(inputs)
         edited["spatial_versions"][key] = value
@@ -352,6 +353,11 @@ def test_spatial_model2t_child_initializes_and_persists_unknown_head(tmp_path):
 )
 def test_required_surface_identifies_healthy_and_resolvable_defects(tmp_path, state, expected, full_sweep):
     _exercise_required_surface(tmp_path, state, expected, full_sweep, 401)
+
+
+@pytest.mark.slow
+def test_required_surface_remains_identifiable_at_segment_joints(tmp_path):
+    _exercise_required_surface(tmp_path, None, "INTACT", True, 404)
 
 
 def _exercise_required_surface(tmp_path, state, expected, full_sweep, world_seed):

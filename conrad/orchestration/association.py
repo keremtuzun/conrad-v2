@@ -20,7 +20,7 @@ import numpy as np
 from conrad.core.association import AssociationDecision, nearest_neighbour_decision, retrieve_candidates
 from conrad.core.config import AssociationConfig
 from conrad.orchestration.mission_config import AssociationSettings
-from conrad.orchestration.mission_context import MissionContext
+from conrad.orchestration.mission_context import DesignComponent, MissionContext
 from conrad.schemas.belief import BeliefCell, KnowledgeStatus, Lifecycle
 from conrad.schemas.frames import WORLD, SpatialSupport, quat_to_matrix
 from conrad.schemas.observation import EntityCandidate, Evidence, Observation
@@ -29,6 +29,7 @@ from conrad.schemas.world import Domain
 
 MEASUREMENT_KEYS = ("measured_range_m", "measured_bearing_rad", "measured_elevation_rad")
 ASSOCIATION_VERSION = "orchestration.structural_association-0.1"
+SPATIAL_ASSOCIATION_VERSION = "spatial-structural-association-axial-v2"
 
 
 @dataclass(frozen=True)
@@ -59,6 +60,38 @@ def project(obs: Observation, ctx: MissionContext) -> ProjectedMeasurement | Non
     return ProjectedMeasurement(point, math.sqrt(pose_sigma**2 + rs**2 + (r * as_) ** 2))
 
 
+def unique_axial_segment(
+    point: np.ndarray,
+    sigma_m: float,
+    candidates: list[DesignComponent],
+    sigma_multiplier: float,
+) -> UUID | None:
+    """Resolve a joint only when one exact-survey axis contains the noisy point well inside it.
+
+    A Gaussian scale is used as an association confidence margin, not a hard
+    registration bound or a coverage certificate. Overlapping axial intervals,
+    a point near a joint, or an uncertain survey keeps NO_MATCH.
+    """
+    if not candidates or any(
+        c.shape != "CAPSULE" or c.component_type != "SEGMENT" or c.survey_sigma_m for c in candidates
+    ):
+        return None
+    guard = sigma_multiplier * sigma_m
+    inside: list[UUID] = []
+    for comp in candidates:
+        a, b = np.asarray(comp.p0_m), np.asarray(comp.p1_m)
+        axis = b - a
+        length = float(np.linalg.norm(axis))
+        if length <= 2 * guard:
+            return None
+        coordinate = float((point - a) @ axis / length)
+        if guard < coordinate < length - guard:
+            inside.append(comp.registry_id)
+        elif -guard <= coordinate <= length + guard:
+            return None
+    return inside[0] if len(inside) == 1 else None
+
+
 class StructuralAssociator:
     def __init__(self, ctx: MissionContext, settings: AssociationSettings) -> None:
         self.ctx = ctx
@@ -73,6 +106,13 @@ class StructuralAssociator:
     def _cells(self, ev: Evidence, point: np.ndarray) -> list[BeliefCell]:
         cells = []
         for comp in self.ctx.design:
+            # Spatial structural support is the inspected segment's capsule
+            # surface, not a generic point on nearby supports or joint welds.
+            # This filters by declared measurement type, never a truth ID.
+            if ev.structural_support is not None and (
+                comp.shape != "CAPSULE" or comp.component_type != "SEGMENT"
+            ):
+                continue
             q = comp.closest_surface_point(point)
             cells.append(
                 BeliefCell(
@@ -125,6 +165,26 @@ class StructuralAssociator:
                 decision.candidate_ids,
                 "ambiguous",
             )
+        if (
+            decision.belief_id is None
+            and decision.method == "ambiguous"
+            and ev.structural_support is not None
+        ):
+            axial_id = unique_axial_segment(
+                p,
+                proj.sigma_m,
+                [self.ctx.component(cid) for cid in decision.candidate_ids],
+                self.cfg.gate_sigma_multiplier,
+            )
+            if axial_id is not None:
+                decision = AssociationDecision(
+                    ev.evidence_id,
+                    axial_id,
+                    decision.probability,
+                    1.0,
+                    decision.candidate_ids,
+                    "unique_axial_segment",
+                )
         if decision.belief_id is None:
             self.no_match += 1
             return located, decision
