@@ -20,7 +20,7 @@ from uuid import UUID
 
 import numpy as np
 
-from conrad.active import MCBRConfig, MCBRPlanner, PlanningRequest, SensorOption, make_planners
+from conrad.active import MCBRConfig, MCBRPlanner, MissionBounds, PlanningRequest, SensorOption, make_planners
 from conrad.active.gap import AbandonedView
 from conrad.active.planner import PlanResult
 from conrad.active.predictive import PredictiveBelief
@@ -80,8 +80,10 @@ class Deliberation:
         cfg: MissionRuntimeConfig,
         bus: BeliefBus,
         m2s: Model2S | None,
+        boundary_sigma_k: float = 0.0,
     ) -> None:
         self.s, self.ctx, self.cfg, self.bus, self.m2s = s, ctx, cfg, bus, m2s
+        self.boundary_sigma_k = boundary_sigma_k
         ids = s.ids.child("deliberation")
         self.ids = ids
         self.decision_config = DecisionConfig(**cfg.decision)
@@ -326,6 +328,16 @@ class Deliberation:
         time_remaining_s: float | None = None,
         energy_remaining_j: float | None = None,
     ) -> AdoptedPlan:
+        lo, hi = self.ctx.spec.boundary_min_m, self.ctx.spec.boundary_max_m
+        sigma = robot_pose.position_sigma_m()
+        bounds = None
+        if lo is not None and hi is not None:
+            bounds = MissionBounds(
+                min_m=lo,
+                max_m=hi,
+                now_ns=now.time_ns,
+                position_margin_m=None if sigma is None else self.boundary_sigma_k * sigma,
+            )
         req = PlanningRequest(
             need=need,
             beliefs=list(beliefs),
@@ -336,6 +348,8 @@ class Deliberation:
             navigation_cost=self.navigation_cost,
             now=now,
             prior_views=tuple(prior_views),
+            bounds=bounds,
+            execution_pose=self.execution_pose,
             rng=np.random.default_rng(now.time_ns % (2**32)),
             predictive=None if self.predictive_provider is None else self.predictive_provider(beliefs),
             abandoned_views=tuple(abandoned_views),
@@ -380,6 +394,16 @@ class Deliberation:
         adopted = AdoptedPlan(plan, adoption.record_id, decision.record.decision_id, result.table, latency_ms)
         self.plans.append(adopted)
         return adopted
+
+    def execution_pose(self, sensor_pose: Pose) -> Pose:
+        """Vehicle pose routing will execute for one sensor-boresight candidate."""
+        spatial_view = self.cfg.model2t_backend == "spatial_v1"
+        return vehicle_pose_from_sensor_pose(
+            sensor_pose,
+            self.mount_yaw,
+            preserve_pitch=spatial_view,
+            mount_position_m=self.sensor.mount_pose.position_m if spatial_view else (0.0, 0.0, 0.0),
+        )
 
     # ------------------------------------------------------------------ belief-derived callables
     def is_free(self, pts: np.ndarray) -> np.ndarray:
@@ -530,7 +554,22 @@ def view_pose(
 ) -> Pose:
     """Vehicle pose that points the payload along the candidate's boresight."""
     assert plan.primary_action is not None
-    pose = plan.primary_action.pose
+    return vehicle_pose_from_sensor_pose(
+        plan.primary_action.pose,
+        mount_yaw,
+        preserve_pitch=preserve_pitch,
+        mount_position_m=mount_position_m,
+    )
+
+
+def vehicle_pose_from_sensor_pose(
+    pose: Pose,
+    mount_yaw: float = 0.0,
+    *,
+    preserve_pitch: bool = False,
+    mount_position_m: tuple[float, float, float] = (0.0, 0.0, 0.0),
+) -> Pose:
+    """Convert a sensor-boresight pose to the corresponding vehicle pose."""
     if preserve_pitch:
         rotation = quat_to_matrix(pose.orientation_wxyz) @ quat_to_matrix(
             quat_from_euler(0.0, 0.0, -mount_yaw)

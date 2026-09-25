@@ -150,3 +150,21 @@ current uncertainty ball do not fit inside the declared mission boundary.
 That correction must be covered by a focused regression and evaluated on a
 new prospectively declared partition. No v8 validation or final seed has been
 opened.
+
+## Boundary-feasibility correction
+
+The active-planning request now carries the declared mission bounds and the
+current EKF position uncertainty. Candidate filtering applies the navigation
+safety supervisor's configured `boundary_sigma_k` margin to the vehicle pose
+that routing will actually execute after the payload mount transform. Missing
+pose uncertainty fails closed. Navigation independently refuses every planned
+route whose waypoints do not contain that same uncertainty ball, including
+belief-map detours created after goal admission.
+
+Focused active-planning, navigation, orchestration, and decision tests pass
+(252 tests). A diagnostic replay of the already-spent seed 8500008 is not new
+selection evidence, but confirms the repaired mechanism: the former z=4.965 m
+vehicle goal was filtered, maximum commanded z was 4.643 m, every one of 24
+selected views completed, and scored HOLD entries fell from 208 to 2. The
+world still did not reach intact, so no success is inferred from this reused
+seed. A fresh partition is required for candidate assessment.

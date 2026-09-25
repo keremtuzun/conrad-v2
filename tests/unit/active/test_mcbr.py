@@ -8,7 +8,15 @@ from dataclasses import replace
 import numpy as np
 import torch
 
-from conrad.active import MCBRConfig, MCBRPlanner, PlanningRequest, PriorView, SensorOption, make_planners
+from conrad.active import (
+    MCBRConfig,
+    MCBRPlanner,
+    MissionBounds,
+    PlanningRequest,
+    PriorView,
+    SensorOption,
+    make_planners,
+)
 from conrad.active.learned import MCBRBatch, MCBRRankerConfig, build_ranker, mcbr_loss, train_ranker
 from conrad.active.surface_predictive import QuantityChannel, SurfaceCellPredictive
 from conrad.evaluation.decision_experiments.fixtures import make_belief, region, unc
@@ -151,6 +159,29 @@ def test_feasibility_filter_runs_before_ranking():
         "POSE_NOT_FREE" in c.reason_codes for c in r.plan.rejected if c.action.pose.position_m[0] <= 0
     )
     assert scored and all(p[0] > 0 for p in scored)  # rejected candidates were never ranked
+
+
+def test_boundary_filter_checks_executed_vehicle_pose_and_uncertainty_margin():
+    ids = IdFactory(201)
+    request = _request(ids, unc(uo=0.9), QuestionType.EXTEND_COVERAGE)
+    bounds = MissionBounds(min_m=(-5.0, -5.0, -5.0), max_m=(5.0, 5.0, 5.0), position_margin_m=0.3)
+    shifted = replace(
+        request,
+        bounds=bounds,
+        execution_pose=lambda sensor: sensor.model_copy(
+            update={"position_m": (sensor.position_m[0], sensor.position_m[1], sensor.position_m[2] + 10.0)}
+        ),
+    )
+    result = MCBRPlanner(ids, value_gate=False).plan(shifted)
+    assert result.plan.status is PlanStatus.NO_FEASIBLE_OBSERVATION
+    assert result.plan.rejected
+    assert all("OUTSIDE_MISSION_BOUNDARY" in item.reason_codes for item in result.plan.rejected)
+
+    unknown_margin = MCBRPlanner(IdFactory(202), value_gate=False).plan(
+        replace(request, bounds=replace(bounds, position_margin_m=None))
+    )
+    assert unknown_margin.plan.status is PlanStatus.NO_FEASIBLE_OBSERVATION
+    assert all("OUTSIDE_MISSION_BOUNDARY" in item.reason_codes for item in unknown_margin.plan.rejected)
 
 
 def test_no_feasible_observation_status():

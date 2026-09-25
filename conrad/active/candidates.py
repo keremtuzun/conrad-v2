@@ -92,6 +92,13 @@ class MissionBounds:
     max_m: Vec3
     energy_budget_j: float | None = None
     now_ns: int = 0
+    position_margin_m: float | None = 0.0
+    """Required clearance from every boundary face.
+
+    ``None`` means the position uncertainty needed to establish the margin is
+    unavailable.  A motion candidate then fails closed instead of treating
+    unknown uncertainty as zero.
+    """
 
 
 def look_at(position: Vec3, target: Vec3, frame_id: str) -> Pose:
@@ -198,16 +205,21 @@ class FeasibilityFilter:
         cost: ResourceCost | None,
         need: InformationNeed,
         bounds: MissionBounds | None,
+        execution_pose: Pose | None = None,
     ) -> tuple[str, ...]:
         out: list[str] = []
         if not candidate.sensor.available:
             out.append(R_SENSOR_UNAVAILABLE)
         if not free:
             out.append(R_POSE_NOT_FREE)
-        if bounds is not None and any(
-            not (bounds.min_m[i] <= candidate.pose.position_m[i] <= bounds.max_m[i]) for i in range(3)
-        ):
-            out.append(R_BOUNDARY)
+        if bounds is not None:
+            margin = bounds.position_margin_m
+            position = (execution_pose or candidate.pose).position_m
+            if margin is None or any(
+                not (bounds.min_m[i] + margin <= position[i] <= bounds.max_m[i] - margin)
+                for i in range(3)
+            ):
+                out.append(R_BOUNDARY)
         if cost is None:
             out.append(R_UNREACHABLE)
         else:

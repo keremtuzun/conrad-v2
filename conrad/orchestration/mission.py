@@ -153,7 +153,14 @@ class MissionRuntime:
             settings.runtime.late_evidence_policy,
             clock,
         )
-        self.deliberation = Deliberation(self.s, context, config, self.bus, self.m2s)
+        self.deliberation = Deliberation(
+            self.s,
+            context,
+            config,
+            self.bus,
+            self.m2s,
+            boundary_sigma_k=nav_cfg.safety.boundary_sigma_k,
+        )
         # MCBR belief-side predictive model (I4 repair; frozen with the production planner). Same request for
         # every planner, so baselines see identical feasible sets.
         self.deliberation.predictive_provider = mission_predictive_provider(

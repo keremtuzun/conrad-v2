@@ -9,7 +9,7 @@ implementation_status: EXPERIMENTAL_CANDIDATE (scoring) inside FROZEN_CONTRACT o
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field, replace
 from typing import Any, Protocol
 
@@ -65,6 +65,12 @@ class PlanningRequest:
     now: TimeStamp
     prior_views: tuple[PriorView, ...] = ()
     bounds: MissionBounds | None = None
+    execution_pose: Callable[[Pose], Pose] | None = None
+    """Convert a sensor candidate pose to the pose navigation will execute.
+
+    Bounds are checked on this pose.  ``None`` preserves the historical
+    identity transform for callers whose candidate and vehicle poses coincide.
+    """
     rng: np.random.Generator | None = None
     # Optional belief-side predictive model (conrad.active.predictive). Planners that need it fall back to
     # the analytic channel estimate when it is absent; it is computed from BELIEF, never from twin truth.
@@ -207,7 +213,10 @@ class MCBRPlanner:
             if request.predictive is not None and self.config.sensor_aware_visibility:
                 vis = min(vis, predicted_coverage(request.predictive, raw.pose, raw.sensor))
             cost = request.navigation_cost(request.robot_pose, raw.pose)
-            reasons = self.filter.reasons(raw, bool(ok), vis, cost, need, request.bounds)
+            execution_pose = raw.pose if request.execution_pose is None else request.execution_pose(raw.pose)
+            reasons = self.filter.reasons(
+                raw, bool(ok), vis, cost, need, request.bounds, execution_pose=execution_pose
+            )
             if isinstance(request.predictive, SurfaceCellPredictive) and request.predictive.candidate_regions:
                 for prior in request.prior_views:
                     if prior.orientation_wxyz is None:

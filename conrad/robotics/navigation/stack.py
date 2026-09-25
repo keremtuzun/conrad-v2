@@ -127,6 +127,7 @@ class NavigationStack:
                 if self.planner is not None and not obj.route_is_prescribed:
                     legs = [self.planner.plan(route[i], route[i + 1]) for i in range(len(route) - 1)]
                     route = np.vstack([legs[0]] + [leg[1:] for leg in legs[1:]])
+            self._check_route_boundary(route, est.pose.position_sigma_m())
             traj = self.trajectories.generate(
                 route,
                 goal.goal_id,
@@ -166,6 +167,22 @@ class NavigationStack:
         boundary = self.config.safety.boundary
         if boundary is not None and not all(boundary.contains(w) for w in obj.waypoints):
             raise GoalRejectedError("GOAL_OUTSIDE_ENVELOPE", "waypoint outside the mission boundary")
+
+    def _check_route_boundary(self, route: np.ndarray, sigma_m: float | None) -> None:
+        """Reject routes the safety supervisor's uncertainty ball cannot contain."""
+        boundary = self.config.safety.boundary
+        if boundary is None:
+            return
+        if sigma_m is None:
+            raise GoalRejectedError(
+                "GOAL_OUTSIDE_ENVELOPE", "route boundary clearance cannot be established without pose sigma"
+            )
+        margin = self.config.safety.boundary_sigma_k * sigma_m
+        if not all(boundary.contains_ball(point, margin) for point in route):
+            raise GoalRejectedError(
+                "GOAL_OUTSIDE_ENVELOPE",
+                "route enters the uncertainty-inflated mission boundary margin",
+            )
 
     # -- external evidence -------------------------------------------------------------------------------
     def add_position_fix(self, observation: Observation) -> bool:

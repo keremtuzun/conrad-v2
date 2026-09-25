@@ -1,8 +1,8 @@
 import numpy as np
 
 from conrad.robotics.hardware.config import load_robot_config
-from conrad.robotics.navigation import GoalStatus, NavigationStack, NavRecordType
-from conrad.robotics.safety import SafetyState
+from conrad.robotics.navigation import GoalStatus, NavigationStack, NavigationStackConfig, NavRecordType
+from conrad.robotics.safety import MissionBoundary, SafetyConfig, SafetyState
 from conrad.runtime.command_gateway import CommandGateway
 from conrad.schemas.decision import NavigationGoal
 from conrad.schemas.frames import Pose, quat_from_euler
@@ -99,6 +99,29 @@ def test_goal_below_max_depth_is_rejected_and_vehicle_holds():
     assert stack.records[-1].payload["reason"] == "GOAL_OUTSIDE_ENVELOPE"
     run(hw, stack, gw, 3.0)
     assert np.linalg.norm(hw.truth_access().true_state().position_world_m - [0, 0, -4]) < 0.3
+
+
+def test_goal_inside_raw_boundary_but_outside_uncertainty_margin_is_rejected():
+    ids = IdFactory(seed=22)
+    mission, run_id = ids.new(), ids.new()
+    hw = build_sim_hardware(CFG, 22)
+    hw.kernel.reset(np.array([0.0, 0.0, -4.0]))
+    boundary = MissionBoundary(min_xyz_m=(-5.0, -5.0, -10.0), max_xyz_m=(5.0, 5.0, 0.0))
+    stack = NavigationStack(
+        hw,
+        CFG,
+        ids,
+        mission,
+        run_id,
+        Pose(frame_id="WORLD", position_m=(0.0, 0.0, -4.0)),
+        config=NavigationStackConfig(safety=SafetyConfig(boundary=boundary, boundary_sigma_k=3.0)),
+    )
+    hw.advance(0.1)
+    # The EKF starts at sigma=0.1 m, so x=4.8 is inside the raw box but its 3-sigma ball is not.
+    assert stack.set_goal(goal(ids, (4.8, 0.0, -4.0))) is None
+    assert stack.status is GoalStatus.REJECTED
+    assert stack.records[-1].payload["reason"] == "GOAL_OUTSIDE_ENVELOPE"
+    assert "uncertainty-inflated" in stack.records[-1].payload["detail"]
 
 
 def test_leak_overrides_autonomy_and_only_explicit_stop_is_authorized():
