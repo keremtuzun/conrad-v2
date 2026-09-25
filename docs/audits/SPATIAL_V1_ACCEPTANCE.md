@@ -2,22 +2,23 @@
 
 This ledger is for the new `kerem/software-completion` branch. It does not
 change the historical I4 FORMAL FAIL 4/5, I5 FORMAL FAIL 9/10, or I7
-SURROGATE FAIL 3/4 / FORMAL NOT_RUN records. The architecture is **NOT FROZEN**.
+SURROGATE FAIL 3/4 / FORMAL NOT_RUN records. The architecture is **PASS A–J;
+SOFTWARE FROZEN** under `../architecture/SPATIAL_V1_FREEZE.md`.
 All evidence below is synthetic software evidence with engineering-estimate
 sensor parameters. No physical calibration or deployment claim follows.
 
 | Criterion | Development evidence | Acceptance state |
 |---|---|---|
-| A Truth expressiveness | Versioned mission spatial truth, independent local evolution, healthy, heterogeneous, corrosion, crack, separated, edge, occluded and subresolution cases | DEVELOPMENT VERIFIED; prospective validation pending |
-| B Observation locality | Pose-derived resolution supports, visibility certificate, measured local response, full mission Observation path | DEVELOPMENT VERIFIED; prospective validation pending |
-| C Support provenance | Versioned support and sensor digest through Observation, ECMER Evidence, association; exact, bounded and unregistered survey modes | DEVELOPMENT VERIFIED; prospective validation pending |
-| D Local belief update | Spatial mission Model2T updates only associated supported cells; partial and uncertain support fail closed | DEVELOPMENT VERIFIED; prospective validation pending |
-| E Conservative condition | Required-domain complete coverage and independent looks for qualified intact; severe local finding overrides incomplete coverage | DEVELOPMENT VERIFIED; prospective validation pending |
-| F Identifiability | Controlled mission sensor/Evidence/Model2T sweep separates same-mean worlds; one closed-loop healthy and two defect development missions; current fixture development matrix 28/28 | DEVELOPMENT VERIFIED; prospective validation pending |
-| G Synthetic detectability | Detectability v2: independent explicit crack length/depth thresholds plus patch size; unit boundary and mission-path negative controls passed | DEVELOPMENT VERIFIED; prospective validation pending |
-| H Kernel/Unity parity | Pinned player; 16/16 fresh development cases at association-v3 across clear/occluded, exact/bounded, deterministic/noisy cases | DEVELOPMENT VERIFIED; prospective validation pending |
-| I Truth boundary | Static boundary tests 22/22; association-v3 bundle scan of 31,785 runtime records against 18 world IDs found zero leaks | DEVELOPMENT VERIFIED; prospective validation pending |
-| J Replay/versioning | Association-v3/detectability-v2 480 s replay: 1,703 files, 478 objects, 2,174 Observation, 1,694 Evidence, 8,166 belief payloads equal; old-contract rejection | DEVELOPMENT VERIFIED; prospective validation pending |
+| A Truth expressiveness | Versioned mission spatial truth, independent local evolution; cycle-5 healthy, heterogeneous, corrosion, crack, separated, edge, occluded and subresolution cases | PASS, synthetic |
+| B Observation locality | Pose-derived resolution supports, visibility certificate, measured local response; cycle-5 full mission Observation path | PASS, synthetic |
+| C Support provenance | Versioned support and sensor digest through Observation, ECMER Evidence and association; exact, bounded and unregistered survey controls | PASS, synthetic |
+| D Local belief update | Mission SpatialModel2T updates associated supported cells; cycle-5 partial and uncertain controls fail closed | PASS, synthetic |
+| E Conservative condition | Full required-domain coverage and independent looks for qualified intact; severe local finding overrides incomplete coverage; cycle-5 false intact zero | PASS, synthetic |
+| F Identifiability | Cycle-5 mission-path same-mean controls and current-contract autonomous 480 s uniform/local pair distinguish equal means | PASS, synthetic |
+| G Synthetic detectability | Detectability v2 separate crack length/depth and patch-size thresholds; unit boundaries and cycle-5 negative controls | PASS, software model; physical calibration pending |
+| H Kernel/Unity parity | Pinned player; prospective cycle-5 16/16 across clear/occluded, exact/bounded, deterministic/noisy cases | PASS, synthetic |
+| I Truth boundary | Static boundary tests 22/22; association-v3 bundle scan of 31,785 runtime records against 18 world IDs found zero leaks | PASS |
+| J Replay/versioning | Association-v3/detectability-v2 480 s replay: 1,703 files, 478 objects, 2,174 Observation, 1,694 Evidence, 8,166 belief payloads equal; old-contract rejection | PASS |
 
 The first prospectively declared controlled-view validation on seeds 1401
 and 1402 is **FAIL (6/28)**. All 22 failures stopped at the unchanged
@@ -72,6 +73,23 @@ matrix 28/28 on 565/566, 20/20 extra healthy full sweeps on 567–586,
 and opt-in live Unity tests 9/9. Cycle 5 remains unopened at this entry;
 architecture A–J is still **NOT FROZEN**.
 
+Cycle 5 passed both prospectively declared partitions: controlled-view
+**28/28** and Unity parity **16/16**, with the pinned player and unchanged
+coverage, condition, registration, and parity thresholds. Seeds 1901/1902
+are spent. The current association-v3 autonomous 480-second same-mean pair
+also completed. Both evaluation truth maps have global corrosion mean
+0.001 m. The uniform world reached its first qualified `INTACT` at 291.3 s
+with required coverage 1.0 and 149 independent observations, ending at
+coverage 1.0 with 189 `INTACT` revisions and zero `SEVERE`. The local-defect
+world produced 387 `SEVERE` revisions, zero `INTACT`, and final severe
+coverage 0.6336. Both bundles passed manifest/object verification at
+`8c79b7127dc1424fc093e9c0814e41ca64e66b00`. These are development
+autonomous missions alongside cycle 5's independent controlled mission-path
+validation; they do not constitute an I4/I5/I6/I7 formal gate.
+With the clean-checkout regression below, architecture A–J is **PASS and
+SOFTWARE FROZEN** at the pinned contract in
+`../architecture/SPATIAL_V1_FREEZE.md`.
+
 The ordinary clean-checkout suite passed at `68de752` (1,452 passed,
 14 skipped, 121 deselected, 3 historical xfailed). A later clean checkout at
 `c5bfd5b` produced 1,457 passes and one ordinary regression: the new
@@ -87,20 +105,22 @@ axial-association repair. The clean checkout at `af53152` passed the full
 suite with 1,471 passes, 14 documented skips, 125 opt-in Unity tests
 deselected, and 3 historical xfails. The association-v3 preflight full suite
 passed 1,473 tests with 14 explicit skips, 125 opt-in Unity cases deselected,
-and 3 historical xfails. A final full suite at the frozen HEAD remains
-required.
+and 3 historical xfails. A fresh no-artifact worktree at source commit
+`8c79b7127dc1424fc093e9c0814e41ca64e66b00` then passed the full
+ordinary suite: **1,473 passed, 14 explicit skips, 125 opt-in Unity tests
+deselected, 3 historical xfails**, and no setup errors in 33:04. Ruff
+format and lint passed, mypy passed 643 source files, and the secret scan
+found zero problems in 1,594 tracked files. The freeze commit changes
+documentation only; no runtime source or fixture changed after this run.
 The historical
 gitignored I5 artifact is an explicit skip in the normal clean checkout,
 never regenerated from spent final seeds.
 
-Architecture A-J cannot be marked PASS from this development ledger. Before
-freeze, a fresh, prospectively declared partition must test the unchanged
-case matrix and matched Unity semantics. A healthy closed-loop run and
-replay at the current association-v3 contract completed in development with
-exact full replay. The declared 480-second
-same-mean development pair under the earlier association contract completed: the
-uniform world reached qualified `INTACT`, and the local world had 386 `SEVERE`
-revisions and zero `INTACT` revisions. Performance evidence includes 80-second
-untraced kernel timing with actual MCBR plans; a 40-step matched development
-probe measured Unity step cost and startup separately. I4/I7 impact, I5 reopening, and I6
-freshness remain ordered after architecture freeze.
+The earlier association-contract same-mean development pair remains recorded:
+the uniform world reached qualified `INTACT`, while the local world had 386
+`SEVERE` revisions and zero `INTACT`. The current-contract pair above
+supersedes that pair as current development evidence. Performance evidence
+includes 80-second untraced kernel timing with actual MCBR plans; a 40-step
+matched development probe measured Unity step cost and startup separately.
+I4/I7 impact, I5 reopening, and I6 freshness remain ordered after architecture
+freeze.

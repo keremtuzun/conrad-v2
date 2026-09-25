@@ -541,3 +541,25 @@ seed 531. A second broad view in a different sector passed full parity
 16/16 on 533/534, occluded bounded screening 20/20 on 535–554, clear
 bounded screening 20/20 on 587–606, and full parity 16/16 on 607/608.
 These are fixture changes and development evidence, not a repair of cycle 4.
+
+## Cycle 5 and current-contract autonomous pair
+
+Cycle 5 passed its prospectively declared controlled-view partition **28/28**
+and matched Unity partition **16/16** on fresh seeds 1901/1902. The player
+SHA-256 was
+`36c5c9f13481406382a8e9ef8fc0ea7cdf055c43bb12fc8fd545b07c199cd277`.
+The case matrix retained direct required coverage 1.0 for full-sweep cases,
+false intact zero for covered resolvable defects, and the same local condition
+expectations. All earlier failed cycles remain failed and their seeds spent.
+
+At source commit `8c79b7127dc1424fc093e9c0814e41ca64e66b00`, the
+480-second autonomous equal-global-mean pair used association-v3 and the
+versioned spatial runtime. Both truth maps had mean corrosion depth 0.001 m.
+`SPATIAL-V3-SAMEMEAN-UNIFORM-480S-DEV` reached first qualified `INTACT`
+at 291.3 s with required coverage 1.0 and 149 independent observations;
+it ended with 189 intact revisions, zero severe revisions, and coverage 1.0.
+`SPATIAL-V3-SAMEMEAN-LOCAL-480S-DEV` ended with 387 severe revisions,
+zero intact revisions, and severe coverage 0.6336. Both bundle manifests
+and objects passed `verify_bundle`. This is development closed-loop evidence
+for identifiability under the frozen candidate contract, not a formal gate
+or a claim about physical detection performance.

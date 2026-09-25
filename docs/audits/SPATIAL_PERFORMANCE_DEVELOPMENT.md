@@ -101,3 +101,12 @@ bytes, including 24,282,590 bytes of belief-revision JSON. This is the
 current association contract's development cost evidence; the earlier
 detectability-v2 timing above had a different association policy and mission
 trajectory, so its counts are not a matched performance comparison.
+
+The subsequently committed association-v3 480-second healthy mission
+`SPATIAL-V3-BOUNDAXIAL-480S-DEV-COMMITTED` completed 4,800 ticks and
+13 MCBR plans in 495.05 wall seconds for stepping. Sensor response took
+10.74 s, Model2T updates 21.54 s, and MCBR planning 21.99 s; 8,166
+belief revisions and a 117,526,574-byte bundle were persisted. It reached
+qualified target `INTACT` at 291.3 s. Exact replay checked 1,703 files,
+478 objects, and 8,166 belief payloads. These are measured host timings,
+not physical latency guarantees.

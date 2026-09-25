@@ -37,3 +37,21 @@ a synthetic resolution-cell response mode. Neither is wired into the mission
 Twin2T / Model2T path. The producer uses finite visibility probes and should
 not be treated as a continuous occlusion guarantee. Its output remains
 development evidence until mission integration and Unity parity are checked.
+
+## Current implementation after the development design
+
+The paragraphs above describe the initial development slice and are retained
+as its historical design record. The opt-in mission `spatial_v1` now wires
+local truth and evolution into Twin2T, computes pose-derived resolution-cell
+support with a recursive signed-distance visibility certificate, emits local
+sensor responses through Observation and ECMER Evidence, and updates the
+mission SpatialModel2T and MCBR paths. Historical `legacy` missions remain
+explicitly selectable. The current version contract is returned by
+`conrad.sim.mission.run.spatial_version_contract` and is pinned in replay.
+The association and bounded-survey rules are documented in
+`SPATIAL_ASSOCIATION_V3.md` and `SPATIAL_REGISTRATION_V2.md`.
+
+Prospective acceptance results and the freeze decision are recorded in
+`../audits/SPATIAL_V1_ACCEPTANCE.md`. The synthetic detectability parameters
+remain engineering estimates; a qualified `INTACT` is bounded by those
+parameters and the declared inspected domain, not a physical absence claim.
