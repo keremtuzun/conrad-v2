@@ -77,6 +77,12 @@ I5_V6_DOMAIN = "i5_mission_v6"
 I5_V7_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_i5_v7.yaml"
 I5_V7_PARTITIONS_SHA256 = "bda2a696da495ce23403cb54c31aa31bfacc48a0fd425be332a57b24046be153"
 I5_V7_DOMAIN = "i5_mission_v7"
+# I5 Spatial V1 cycle: fresh development, validation and final blocks. The final
+# block is deliberately larger so the prospective warrant-incidence power rule
+# can select N without allocating or inspecting another seed family.
+I5_V8_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_i5_v8.yaml"
+I5_V8_PARTITIONS_SHA256 = "f0a7007deda3470a742a13427ab3618a1c237d1712fcc11df48d55aa15752d29"
+I5_V8_DOMAIN = "i5_mission_v8"
 # Held-out worlds of the FORMAL Unity gate I5 integrated missions. The unity_gate final_test split is fully
 # allocated and every I5 python-kernel final split is spent by its surrogate, so formal I5 gets its own worlds.
 # Pinned on 2026-09-20 before any run on them.
@@ -753,6 +759,52 @@ def _i5_v7_split(part: Partition) -> Split:
     )
 
 
+def load_i5_v8(path: Path = I5_V8_PARTITIONS_PATH, *, verify_digest: bool = True) -> dict[str, Any]:
+    """Fresh I5 Spatial V1 cycle with a sealed, power-sized final pool."""
+    digest = canonical_digest(path)
+    if verify_digest and digest != I5_V8_PARTITIONS_SHA256:
+        raise PartitionIntegrityError(
+            f"{path} changed after freezing: digest {digest} != pinned {I5_V8_PARTITIONS_SHA256}"
+        )
+    raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+    blocks = {name: set(_seeds(spec)) for name, spec in raw["world_seeds"].items()}
+    if set(blocks) != {"development", "validation", "final_test"} or any(not b for b in blocks.values()):
+        raise PartitionIntegrityError("i5_v8 requires nonempty development, validation, final_test")
+    if sum(map(len, blocks.values())) != len(set().union(*blocks.values())):
+        raise PartitionIntegrityError("i5_v8 splits overlap")
+    taken = set().union(*(set(_seeds(item)) for item in raw.get("reserved_elsewhere", [])))
+    taken |= set().union(*(set(_seeds(spec)) for spec in load_i5_v7()["raw"]["world_seeds"].values()))
+    taken |= set().union(*(set(_seeds(spec)) for spec in load_i5_unity_v2()["raw"]["world_seeds"].values()))
+    if set().union(*blocks.values()) & taken:
+        raise PartitionIntegrityError("i5_v8 collides with historical or reserved seeds")
+    if tuple(raw["scenarios"]) != (
+        "I5-NOMINAL",
+        "I5-CRITICAL-FINDING",
+        "I5-UNCERTAIN-BELIEF",
+        "I5-ROUTE-BLOCKED",
+        "I5-BATTERY-RESERVE",
+        "I5-TIME-RESERVE",
+        "I5-COMMS-OUTAGE",
+    ):
+        raise PartitionIntegrityError("i5_v8 must exclude the legacy fake-tile nominal scenario")
+    return {"raw": raw, "digest": digest}
+
+
+def _i5_v8_split(part: Partition) -> Split:
+    loaded = load_i5_v8()
+    raw = loaded["raw"]
+    if part.value not in raw["world_seeds"]:
+        raise KeyError(f"i5_v8 partition has no {part.value!r} split")
+    return Split(
+        domain=I5_V8_DOMAIN,
+        partition=part,
+        world_seeds=_seeds(raw["world_seeds"][part.value]),
+        families=tuple(raw["scenarios"]),
+        replicates_per_world=1,
+        digest=loaded["digest"],
+    )
+
+
 def _i5_v3_split(part: Partition) -> Split:
     loaded = load_i5_v3()
     raw = loaded["raw"]
@@ -1310,6 +1362,8 @@ def split(domain: str, partition: str | Partition, purpose: str | Purpose) -> Sp
         return _i5_v6_split(part)
     if domain == I5_V7_DOMAIN:
         return _i5_v7_split(part)
+    if domain == I5_V8_DOMAIN:
+        return _i5_v8_split(part)
     if domain == I5_UNITY_DOMAIN:
         return _i5_unity_split(part)
     if domain == I5_UNITY_V2_DOMAIN:
@@ -1373,6 +1427,9 @@ def partition_of(domain: str, seed: int) -> Partition | None:
     if domain == I5_V7_DOMAIN:
         v7 = load_i5_v7()["raw"]["world_seeds"]
         return next((Partition(p) for p, spec in v7.items() if int(seed) in _seeds(spec)), None)
+    if domain == I5_V8_DOMAIN:
+        v8 = load_i5_v8()["raw"]["world_seeds"]
+        return next((Partition(p) for p, spec in v8.items() if int(seed) in _seeds(spec)), None)
     if domain == I5_UNITY_DOMAIN:
         unity_i5 = load_i5_unity()["raw"]["world_seeds"]
         return next((Partition(p) for p, spec in unity_i5.items() if int(seed) in _seeds(spec)), None)

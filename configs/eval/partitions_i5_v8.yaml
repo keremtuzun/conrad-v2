@@ -1,0 +1,15 @@
+# Spatial V1 I5 cycle, declared 2026-09-26 before any world in these blocks was built.
+# All ranges are half-open. Development is for mechanism verification, validation is
+# for candidate selection and warrant-incidence measurement, and final_test remains
+# sealed until validation passes and the final sample-size rule is frozen.
+version: partitions-i5-spatial-v1-2026-09-26-v8
+scenarios: [I5-NOMINAL, I5-CRITICAL-FINDING, I5-UNCERTAIN-BELIEF, I5-ROUTE-BLOCKED,
+            I5-BATTERY-RESERVE, I5-TIME-RESERVE, I5-COMMS-OUTAGE]
+world_seeds:
+  development: {explicit: [], range: [8500000, 8500010]}
+  validation: {explicit: [], range: [8500100, 8500110]}
+  final_test: {explicit: [], range: [8500200, 8500240]}
+reserved_elsewhere:
+  - {range: [5300000, 8500000], owner: historical declared gate and experiment partitions}
+  - {range: [8400000, 8400200], owner: I7 compact-summary v4 cycle}
+  - {range: [8501000, 8502000], owner: reserved for a future I5 Spatial V1 Unity cycle if earned}

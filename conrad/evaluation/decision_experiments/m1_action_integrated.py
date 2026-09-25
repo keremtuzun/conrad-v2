@@ -75,12 +75,14 @@ from conrad.evaluation.partitions import (
     I5_V5_DOMAIN,
     I5_V6_DOMAIN,
     I5_V7_DOMAIN,
+    I5_V8_DOMAIN,
     Partition,
     Purpose,
     check_access,
     partition_of,
     split,
 )
+from conrad.orchestration.mission_config import MissionRuntimeConfig, runtime_config
 from conrad.schemas.belief import KnowledgeStatus
 from conrad.schemas.comms import LinkStatus
 from conrad.schemas.decision import (
@@ -92,7 +94,9 @@ from conrad.schemas.decision import (
 from conrad.schemas.ids import IdFactory
 from conrad.schemas.world import Domain
 from conrad.settings import REPO_ROOT, ConradSettings, load_settings
+from conrad.sim.mission.options import MissionWorldOptions, world_options
 from conrad.sim.mission.run import prepare
+from conrad.sim.mission.scenarios import resolve
 from conrad.twins.twin2s.sdf import Box
 
 EXPERIMENT_ID = "M1-ACTION-E002"
@@ -105,6 +109,7 @@ PARTITION_FILES = {
     I5_V5_DOMAIN: "configs/eval/partitions_i5_v5.yaml",
     I5_V6_DOMAIN: "configs/eval/partitions_i5_v6.yaml",
     I5_V7_DOMAIN: "configs/eval/partitions_i5_v7.yaml",
+    I5_V8_DOMAIN: "configs/eval/partitions_i5_v8.yaml",
 }
 DEFAULT_CONFIG = "configs/sim/mission_default.yaml"
 EVIDENCE_CLASS = "SURROGATE (python L1 kernel mission, not Unity)"
@@ -555,11 +560,148 @@ def _outcomes(
 
 
 # ---------------------------------------------------------------------------------------------- one mission
-def _settings(seed: int) -> ConradSettings:
+def _merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
+    out = dict(base)
+    for key, value in override.items():
+        out[key] = (
+            _merge(out[key], value) if isinstance(value, dict) and isinstance(out.get(key), dict) else value
+        )
+    return out
+
+
+def _spatial_profile(config: dict[str, Any], scenario: str) -> dict[str, Any]:
+    """Resolve an I5-only Spatial V1 launch profile without mutating global scenarios.
+
+    The complete resolved world/runtime is persisted by the mission bundle. The
+    evaluation config additionally pins the external sensor file digest so a
+    changed engineering estimate fails before any world is built.
+    """
+    profile = dict(config.get("spatial_v1") or {})
+    if not profile:
+        return {}
+    if scenario == "I5-NOMINAL-READABLE":
+        raise ValueError("Spatial V1 I5 refuses the legacy pristine-rest/fake-tile nominal scenario")
+    sensor_path = REPO_ROOT / str(profile["sensor_config"])
+    sensor_bytes = sensor_path.read_bytes()
+    digest = hashlib.sha256(sensor_bytes).hexdigest()
+    if digest != str(profile["sensor_file_sha256"]):
+        raise ValueError(f"Spatial V1 sensor file changed: {digest}")
+    sensor = json.loads(sensor_bytes)
+    truth = dict(profile["truth_by_scenario"].get(scenario, profile["default_truth"]))
+    model2t = _merge(dict(profile["model2t"]), {"sensor": sensor})
+    return {
+        "world": _merge(
+            dict(profile.get("world", {})),
+            {
+                "twin2t_truth_model": "spatial_v1",
+                "spatial_truth": truth,
+                "spatial_sensor_model": sensor,
+            },
+        ),
+        "runtime": _merge(
+            dict(profile.get("runtime", {})),
+            {"model2t_backend": "spatial_v1", "model2t_spatial": model2t},
+        ),
+    }
+
+
+def _settings(seed: int, config: dict[str, Any] | None = None, scenario: str | None = None) -> ConradSettings:
     base = load_settings(REPO_ROOT / DEFAULT_CONFIG)
-    settings = base.model_copy(update={"run": base.run.model_copy(update={"seed": int(seed)})})
+    sim = dict(base.sim)
+    if config is not None and scenario is not None:
+        profile = _spatial_profile(config, scenario)
+        if profile:
+            mission = _merge(dict(sim.get("mission", {})), profile)
+            per_scenario = dict(config["spatial_v1"].get("runtime_by_scenario", {})).get(scenario, {})
+            mission["runtime"] = _merge(dict(mission.get("runtime", {})), dict(per_scenario))
+            sim["mission"] = mission
+    settings = base.model_copy(update={"run": base.run.model_copy(update={"seed": int(seed)}), "sim": sim})
     assert isinstance(settings, ConradSettings)
     return settings
+
+
+def _spatial_diagnostics(session: Any, states: Sequence[dict[str, Any]]) -> dict[str, Any] | None:
+    """Evaluation-only local-truth/support/belief measurements for a Spatial V1 I5 mission."""
+    from conrad.domains.technical.spatial_mission import SpatialMissionModel2T
+
+    m2t = session.runtime.m2t
+    if not isinstance(m2t, SpatialMissionModel2T):
+        return None
+    truth = session.world.t2t.spatial_fields[session.world.target]
+    support_rows = session.world.recorder.series.get("spatial_structural_label", [])
+    canonical_supports = [
+        json.dumps(row["support"], sort_keys=True, separators=(",", ":")) for row in support_rows
+    ]
+    unique_supports = sorted(set(canonical_supports))
+    truth_cells = [
+        {
+            "index": index,
+            "corrosion_depth_m": cell.corrosion_depth_m,
+            "crack_length_m": cell.crack_length_m,
+            "crack_depth_m": cell.crack_depth_m,
+        }
+        for index, cell in enumerate(truth.base)
+    ]
+    defect_cells = [
+        row["index"]
+        for row, cell in zip(truth_cells, truth.base, strict=True)
+        if m2t.spatial.thresholds.condition(
+            cell.corrosion_depth_m, cell.crack_length_m, cell.crack_depth_m
+        ).value
+        != "OBSERVED_INTACT"
+    ]
+    defect_coverage = {str(i): m2t.spatial.coverage_fraction(i) for i in defect_cells}
+    condition = m2t.spatial.condition().value
+    intact_states = [s for s in states if s["critical_observed"] and s["critical_condition"] == "INTACT"]
+    return {
+        "evaluation_only": True,
+        "truth_model": session.wopts.twin2t_truth_model,
+        "model2t_backend": session.rcfg.model2t_backend,
+        "sensor_digest": session.wopts.spatial_sensor_model.digest,
+        "truth_map": truth_cells,
+        "truth_patches": [
+            {
+                "rect": {
+                    "x0": patch.rect.x0,
+                    "x1": patch.rect.x1,
+                    "a0": patch.rect.a0,
+                    "a1": patch.rect.a1,
+                },
+                "state": {
+                    "corrosion_depth_m": patch.state.corrosion_depth_m,
+                    "crack_length_m": patch.state.crack_length_m,
+                    "crack_depth_m": patch.state.crack_depth_m,
+                },
+            }
+            for patch in truth.patches
+        ],
+        "support_observation_count": len(support_rows),
+        "unique_support_count": len(unique_supports),
+        "support_digest": hashlib.sha256("\n".join(canonical_supports).encode()).hexdigest(),
+        "unique_supports": [json.loads(row) for row in unique_supports],
+        "local_beliefs": [
+            {
+                "index": i,
+                "coverage": m2t.spatial.coverage_fraction(i),
+                "required_coverage": m2t.spatial.required_coverage_fraction(i),
+                "condition": m2t.spatial.cell_condition(i).value,
+                "corrosion_upper_m": cell.corrosion_upper_m,
+                "crack_length_upper_m": cell.crack_upper_m,
+                "crack_depth_upper_m": cell.crack_depth_upper_m,
+                "observation_count": len(cell.evidence_ids),
+                "independent_observation_count": len(cell.independent_groups),
+            }
+            for i, cell in enumerate(m2t.spatial.cells)
+        ],
+        "component_condition": condition,
+        "knowledge_status": None if m2t._spatial_head is None else m2t._spatial_head.knowledge_status.value,
+        "first_intact_t_s": None if not intact_states else intact_states[0]["t_s"],
+        "defect_cells": defect_cells,
+        "resolvable_defect_coverage": defect_coverage,
+        "false_intact_on_covered_resolvable_defect": bool(
+            condition == "OBSERVED_INTACT" and any(value > 0 for value in defect_coverage.values())
+        ),
+    }
 
 
 def drive_and_score(session: Any, seed: int, scenario: str, arm: str, cfg: dict[str, Any]) -> dict[str, Any]:
@@ -623,11 +765,26 @@ def drive_and_score(session: Any, seed: int, scenario: str, arm: str, cfg: dict[
 def mission_job(job: dict[str, Any]) -> dict[str, Any]:
     """Run one python-kernel integrated mission driven by ``job['arm']`` (shadow arms on the EGDC-driven one)."""
     seed, scenario, arm = int(job["seed"]), str(job["scenario"]), str(job["arm"])
+    settings = _settings(seed, job["cfg"], scenario)
+    stored_world: MissionWorldOptions | None = None
+    stored_runtime: MissionRuntimeConfig | None = None
+    if job["cfg"].get("spatial_v1"):
+        world_raw, runtime_raw = resolve(scenario, dict(settings.sim.get("mission", {})))
+        per_scenario = dict(job["cfg"]["spatial_v1"].get("runtime_by_scenario", {})).get(scenario, {})
+        stored_world = world_options(world_raw)
+        stored_runtime = runtime_config(_merge(runtime_raw, dict(per_scenario)))
     # capture=False: no replay tape (bundles are scored in-process and deleted unless keep_bundles)
     session = prepare(
-        scenario, _settings(seed), run_id=job["run_id"], runs_root=Path(job["runs_root"]), capture=False
+        scenario,
+        settings,
+        run_id=job["run_id"],
+        runs_root=Path(job["runs_root"]),
+        stored_world=stored_world,
+        stored_runtime=stored_runtime,
+        capture=False,
     )
     row = drive_and_score(session, seed, scenario, arm, job["cfg"])
+    row["spatial_v1"] = _spatial_diagnostics(session, row["decision_states"])
     session.finish()
     if not job.get("keep_bundle", False):
         shutil.rmtree(session.run_dir, ignore_errors=True)
@@ -731,7 +888,11 @@ def seeds_for(partition: Partition, purpose: Purpose, domain: str = I5_DOMAIN) -
 def _check_seeds(seeds: Sequence[int], partition: Partition, domain: str = I5_DOMAIN) -> None:
     if domain not in PARTITION_FILES:
         raise KeyError(f"unknown I5 partition domain {domain!r}")
-    purpose = Purpose.FINAL_EVALUATION if partition is Partition.FINAL_TEST else Purpose.DESIGN
+    purpose = {
+        Partition.DEVELOPMENT: Purpose.DESIGN,
+        Partition.VALIDATION: Purpose.SELECTION,
+        Partition.FINAL_TEST: Purpose.FINAL_EVALUATION,
+    }[partition]
     check_access(partition, purpose)
     for s in seeds:
         got = partition_of(domain, s)
@@ -826,7 +987,12 @@ def summarize(rows: list[dict[str, Any]], scenarios: Sequence[str]) -> dict[str,
     return {"closed_loop": closed, "shadow_same_context": shadow, "mission_outcomes": outcomes}
 
 
-def verdicts(summary: dict[str, Any], config: dict[str, Any], scenarios: Sequence[str]) -> dict[str, Any]:
+def verdicts(
+    summary: dict[str, Any],
+    config: dict[str, Any],
+    scenarios: Sequence[str],
+    rows: Sequence[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     floor = float(config["success_floor"])
     uir_max = float(config["uir_max"])
     e = summary["closed_loop"][PRIMARY]
@@ -869,7 +1035,7 @@ def verdicts(summary: dict[str, Any], config: dict[str, Any], scenarios: Sequenc
             and oc[PRIMARY]["ALL"]["safety_events_total"] <= oc[name]["ALL"]["safety_events_total"]
             and e["ALL"]["violations_total"] <= summary["closed_loop"][name]["ALL"]["violations_total"],
         }
-    return {
+    result = {
         "success_floor": floor,
         "floor_status": "ENGINEERING_ESTIMATE (ch25 leaves the I5 bound OPEN)",
         "per_scenario_correct_rate": per_scenario,
@@ -889,6 +1055,23 @@ def verdicts(summary: dict[str, Any], config: dict[str, Any], scenarios: Sequenc
             all(c["not_worse"] for c in comp.values()) and e["ALL"]["violations_total"] == 0
         ),
     }
+    spatial = [r["spatial_v1"] for r in rows or () if r.get("spatial_v1") is not None]
+    if spatial:
+        result["spatial_v1_runtime_selected"] = all(
+            row["truth_model"] == "spatial_v1" and row["model2t_backend"] == "spatial_v1" for row in spatial
+        )
+        result["spatial_false_intact_zero"] = not any(
+            row["false_intact_on_covered_resolvable_defect"] for row in spatial
+        )
+        nominal = [
+            r["spatial_v1"]
+            for r in rows or ()
+            if r["scenario"] == "I5-NOMINAL" and r.get("spatial_v1") is not None
+        ]
+        result["spatial_nominal_intact_incidence"] = (
+            sum(row["first_intact_t_s"] is not None for row in nominal) / len(nominal) if nominal else None
+        )
+    return result
 
 
 def run(config: dict[str, Any], seeds: list[int], out_dir: str | Path) -> dict[str, Any]:
@@ -962,7 +1145,7 @@ def run(config: dict[str, Any], seeds: list[int], out_dir: str | Path) -> dict[s
             "completed_rows": len(rows),
         },
         **summary,
-        "verdicts": verdicts(summary, config, scenarios),
+        "verdicts": verdicts(summary, config, scenarios, rows),
         "per_run": rows,
     }
     name = f"{stem}.json" if partition is Partition.FINAL_TEST else f"{stem}_{partition.value}.json"
