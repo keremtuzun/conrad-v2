@@ -72,3 +72,22 @@ traced Python bytes but inflated wall time to 159.52 s and planner time to
 26.73 s. The untraced result replaces those traced timings for development
 cost assessment. Unity step overhead and scaling beyond this 80-second window
 are still unmeasured.
+
+The later detectability-v2 healthy closed-loop mission ran 4,800 kernel
+steps over 480 simulated seconds on this Windows host while the ordinary
+clean-checkout suite also ran. Its steps used 480.55 process CPU seconds and
+553.05 wall seconds. The 480 sensor support/response calls took 13.39 s;
+387 spatial Model2T ingests took 0.14 s and 387 updates took 25.83 s; 15
+actual MCBR plans took 25.83 s. It persisted 8,001 belief revisions with
+24,767,104 payload bytes, and the replay bundle used 119,730,814 bytes.
+These are development cost measurements under host contention, not formal
+latency bounds.
+
+The matched 40-step development probe at seed 401 used the same stored
+spatial world/runtime options for kernel and Unity. The kernel's measured
+step wall time was 1.899 s total (47.5 ms mean, 398.7 ms p95), and Unity's
+was 1.554 s total (38.8 ms mean, 122.2 ms p95). Unity startup/prepare took
+3.689 s versus 0.773 s for kernel. The probe is short and includes a
+different backend startup cost; the lower Unity step mean in this sample is
+not a general throughput guarantee. It shows no catastrophic Unity step
+overhead in this controlled development slice.

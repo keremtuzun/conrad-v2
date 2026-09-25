@@ -372,4 +372,18 @@ That replay also used the earlier crack detectability contract. The later
 crack length and depth thresholds, while retaining a separate patch-size
 limit. Development seed 401 passed both subthreshold crack mission negative
 controls and the covered crack positive control. A fresh current-contract
-closed-loop mission and replay remain pending.
+closed-loop mission and replay were then run. `SPATIAL-V2-DETECTABILITY-480S-DEV`
+used the committed engineering-estimate sensor config with independent crack
+length 0.01 m and depth 0.001 m limits. Its 350 spatial target revisions
+contained 182 `INTACT`, 168 not-yet-observed, and zero `SEVERE` conditions;
+the final target condition was qualified `INTACT` with required coverage 1.0.
+The run used 4,800 control ticks, 15 MCBR plans, 480 sensor responses, and
+387 spatial Model2T ingests/updates. It consumed 480.55 process CPU seconds
+and produced a 119,730,814-byte bundle with 24,767,104 bytes of belief
+payloads. Full replay verified 1,619 files and 478 objects, then exactly
+reproduced 27,671 events, 2,402 Observation payloads, 1,922 Evidence
+payloads, 8,001 belief payloads, 4,800 command payloads, trajectory,
+view execution, associations, and BAAC transmissions. This is development
+evidence under detectability v2; the declared validation seeds remain unopened.
+The earlier detectability-v1 healthy bundle is rejected by the current
+replay contract because it lacks the two required crack thresholds.

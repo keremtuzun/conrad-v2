@@ -15,9 +15,9 @@ sensor parameters. No physical calibration or deployment claim follows.
 | E Conservative condition | Required-domain complete coverage and independent looks for qualified intact; severe local finding overrides incomplete coverage | DEVELOPMENT VERIFIED; prospective validation pending |
 | F Identifiability | Controlled mission sensor/Evidence/Model2T sweep separates same-mean worlds; one closed-loop healthy and two defect development missions | PARTIAL: independent closed-loop case matrix pending |
 | G Synthetic detectability | Detectability v2: independent explicit crack length/depth thresholds plus patch size; unit boundary and mission-path negative controls passed | DEVELOPMENT VERIFIED; prospective validation pending |
-| H Kernel/Unity parity | Rebuilt player SHA pinned; 9 opt-in live tests across clear/occluded, exact/bounded, deterministic/noisy cases | DEVELOPMENT VERIFIED; prospective parity partition pending |
+| H Kernel/Unity parity | Pinned player; 9/9 opt-in live development tests at detectability-v2 across clear/occluded, exact/bounded, deterministic/noisy cases | DEVELOPMENT VERIFIED; prospective parity partition pending |
 | I Truth boundary | Static import guards and runtime artifact scan passed on spatial mission development path | DEVELOPMENT VERIFIED; current-HEAD sweep pending |
-| J Replay/versioning | Full registration-v2 exact-survey 480 s replay (2,402 Observation, 1,922 Evidence, 8,001 belief payloads equal); bounded 80 s exact payload replay; mismatch mutation test. These predate detectability-v2 | PARTIAL: new-contract full replay pending |
+| J Replay/versioning | Full detectability-v2 exact-survey 480 s replay (2,402 Observation, 1,922 Evidence, 8,001 belief payloads equal); bounded 80 s earlier-contract replay; old-contract rejection | DEVELOPMENT VERIFIED; prospective validation pending |
 
 The ordinary clean-checkout suite passed at `68de752` (1,452 passed,
 14 skipped, 121 deselected, 3 historical xfailed). A later clean checkout at
@@ -26,7 +26,9 @@ spatial-only `survey_endpoint_bound_m: null` appeared in a frozen legacy I4
 world snapshot comparison. The historical snapshot and digest were preserved;
 the test now explicitly verifies that legacy's bound is null and excludes
 that spatial-only field from the legacy comparison. Its focused rerun passed;
-a final broad clean-checkout rerun at the completed HEAD remains required. The historical
+a later clean checkout at `6b082e7` passed 1,454 tests, with 14 documented
+skips, 139 slow tests deselected, and 3 historical xfails. The full suite at
+the final HEAD remains required. The historical
 gitignored I5 artifact is an explicit skip in the normal clean checkout,
 never regenerated from spent final seeds.
 
@@ -34,10 +36,10 @@ Architecture A-J cannot be marked PASS from this development ledger. Before
 freeze, a declared prospective validation partition must test the case
 matrix and matched Unity semantics without changing criteria after seeing
 results. The full healthy closed-loop run and replay at the current
-registration contract completed in development under the earlier detectability
-contract. The declared 480-second same-mean development pair completed: the
+registration and detectability-v2 contract completed in development with
+exact full replay. The declared 480-second same-mean development pair completed: the
 uniform world reached qualified `INTACT`, and the local world had 386 `SEVERE`
 revisions and zero `INTACT` revisions. Performance evidence includes 80-second
-untraced kernel timing with actual MCBR plans; Unity step overhead still needs
-a measured development comparison. I4/I7 impact, I5 reopening, and I6
+untraced kernel timing with actual MCBR plans; a 40-step matched development
+probe measured Unity step cost and startup separately. I4/I7 impact, I5 reopening, and I6
 freshness remain ordered after architecture freeze.
