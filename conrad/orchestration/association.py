@@ -92,8 +92,12 @@ def unique_axial_segment(
         # Endpoint displacement <= bound implies axis displacement <= 2*bound.
         # The unit-axis change is bounded by 4*bound/(length-2*bound).
         direction_guard = 4 * endpoint_bound / (length - 2 * endpoint_bound)
-        start_guard = sigma_multiplier * sigma_m + endpoint_bound + float(np.linalg.norm(point - a)) * direction_guard
-        end_guard = sigma_multiplier * sigma_m + endpoint_bound + float(np.linalg.norm(point - b)) * direction_guard
+        start_guard = (
+            sigma_multiplier * sigma_m + endpoint_bound + float(np.linalg.norm(point - a)) * direction_guard
+        )
+        end_guard = (
+            sigma_multiplier * sigma_m + endpoint_bound + float(np.linalg.norm(point - b)) * direction_guard
+        )
         start = float((point - a) @ unit_axis)
         end = float((point - b) @ unit_axis)
         if start > start_guard and end < -end_guard:
@@ -176,7 +180,11 @@ class StructuralAssociator:
                 decision.candidate_ids,
                 "ambiguous",
             )
-        if ev.structural_support is not None and len(decision.candidate_ids) > 1 and decision.method != "registry_identity":
+        if (
+            ev.structural_support is not None
+            and len(decision.candidate_ids) > 1
+            and decision.method != "registry_identity"
+        ):
             axial_id = unique_axial_segment(
                 p,
                 proj.sigma_m,

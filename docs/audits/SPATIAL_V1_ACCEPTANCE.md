@@ -16,8 +16,8 @@ sensor parameters. No physical calibration or deployment claim follows.
 | F Identifiability | Controlled mission sensor/Evidence/Model2T sweep separates same-mean worlds; one closed-loop healthy and two defect development missions; current fixture development matrix 28/28 | DEVELOPMENT VERIFIED; prospective validation pending |
 | G Synthetic detectability | Detectability v2: independent explicit crack length/depth thresholds plus patch size; unit boundary and mission-path negative controls passed | DEVELOPMENT VERIFIED; prospective validation pending |
 | H Kernel/Unity parity | Pinned player; 16/16 fresh development cases at association-v3 across clear/occluded, exact/bounded, deterministic/noisy cases | DEVELOPMENT VERIFIED; prospective validation pending |
-| I Truth boundary | Static import guards and runtime artifact scan passed on spatial mission development path | DEVELOPMENT VERIFIED; current-HEAD sweep pending |
-| J Replay/versioning | Full association-v2/detectability-v2 480 s replay (1,822 Observation, 1,155 Evidence, 7,801 belief payloads equal), plus explicit old-contract rejection | PARTIAL: current association-v3 full replay pending |
+| I Truth boundary | Static boundary tests 22/22; association-v3 bundle scan of 31,785 runtime records against 18 world IDs found zero leaks | DEVELOPMENT VERIFIED; prospective validation pending |
+| J Replay/versioning | Association-v3/detectability-v2 480 s replay: 1,703 files, 478 objects, 2,174 Observation, 1,694 Evidence, 8,166 belief payloads equal; old-contract rejection | DEVELOPMENT VERIFIED; prospective validation pending |
 
 The first prospectively declared controlled-view validation on seeds 1401
 and 1402 is **FAIL (6/28)**. All 22 failures stopped at the unchanged
@@ -60,8 +60,10 @@ skips, 139 slow tests deselected, and 3 historical xfails. The full suite at
 tests deselected, and 3 historical xfails. That full run preceded the
 axial-association repair. The clean checkout at `af53152` passed the full
 suite with 1,471 passes, 14 documented skips, 125 opt-in Unity tests
-deselected, and 3 historical xfails. A final full suite at the frozen HEAD
-remains required.
+deselected, and 3 historical xfails. The association-v3 preflight full suite
+passed 1,473 tests with 14 explicit skips, 125 opt-in Unity cases deselected,
+and 3 historical xfails. A final full suite at the frozen HEAD remains
+required.
 The historical
 gitignored I5 artifact is an explicit skip in the normal clean checkout,
 never regenerated from spent final seeds.
@@ -69,7 +71,8 @@ never regenerated from spent final seeds.
 Architecture A-J cannot be marked PASS from this development ledger. Before
 freeze, a fresh, prospectively declared partition must test the unchanged
 case matrix and matched Unity semantics. A healthy closed-loop run and
-replay at the current association-v3 contract are pending. The declared 480-second
+replay at the current association-v3 contract completed in development with
+exact full replay. The declared 480-second
 same-mean development pair under the earlier association contract completed: the
 uniform world reached qualified `INTACT`, and the local world had 386 `SEVERE`
 revisions and zero `INTACT` revisions. Performance evidence includes 80-second

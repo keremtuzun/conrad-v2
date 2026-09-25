@@ -8,7 +8,9 @@ from conrad.orchestration.association import unique_axial_segment
 from conrad.orchestration.mission_context import DesignComponent
 
 
-def segment(identity: int, x0: float, x1: float, survey_sigma_m: float = 0.0, bound: float | None = None) -> DesignComponent:
+def segment(
+    identity: int, x0: float, x1: float, survey_sigma_m: float = 0.0, bound: float | None = None
+) -> DesignComponent:
     return DesignComponent(
         registry_id=UUID(int=identity),
         component_type="SEGMENT",

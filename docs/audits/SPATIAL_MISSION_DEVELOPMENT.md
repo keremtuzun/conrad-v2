@@ -471,3 +471,21 @@ development seeds 426/427 passed **16/16** with exact support/measurement,
 association, condition, and coverage parity, all clear views supported,
 one deliberately blocked occluded view, and positive bounded coverage.
 These are development results, not prospective validation or formal gates.
+
+The committed association-v3 `SPATIAL-V3-BOUNDAXIAL-480S-DEV-COMMITTED`
+mission completed 4,800 ticks, 13 MCBR plans, 480 spatial sensor calls,
+369 spatial ingests/updates, 8,166 belief revisions (25,390,907 JSON payload
+bytes), and a 117,526,574-byte bundle. Its 499 target revisions contained
+189 direct `INTACT`, 310 unresolved, and zero `SEVERE`. The first qualified
+`INTACT` was at 291.3 s with required coverage 1.0 and 149 independent
+observations; final required coverage stayed 1.0. The run took 495.05 wall
+seconds for stepping, including 10.74 s sensor response, 21.54 s Model2T
+updates, and 21.99 s MCBR planning. Full current-contract replay verified
+1,703 files and 478 objects, then exactly reproduced 27,161 events, 240
+decisions, 2,174 Observation payloads, 1,694 Evidence payloads, 8,166
+belief payloads, 4,800 commands, trajectory, 13 view executions, 1,214
+structural associations, and 505 BAAC transmissions. A runtime scan of
+31,785 records against 18 truth-side world IDs found zero leaks; the static
+boundary suite passed 22/22. This remains development evidence.
+The formatted association-v3 source subsequently passed the unchanged
+controlled-view matrix on fresh development seeds 428/429 (**28/28**).
