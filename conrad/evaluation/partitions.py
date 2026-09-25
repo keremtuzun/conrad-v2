@@ -123,6 +123,11 @@ I7_V2_DOMAIN = "i7_mission_v2"
 I7_V3_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_i7_v3.yaml"
 I7_V3_PARTITIONS_SHA256 = "4ac2982c26ea64aba6e6d950bedde8b2de0c11991975bc3376a5768d1b80b3a9"
 I7_V3_DOMAIN = "i7_mission_v3"
+# Gate I7 compact critical-summary cycle. Both validation and final_test are fresh;
+# final_test stays unread until validation selects the frozen candidate.
+I7_V4_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_i7_v4.yaml"
+I7_V4_PARTITIONS_SHA256 = "5216bd9be0de40ff3eb91fe3cc8588bd78688267dadc696fdbf808028312fef1"
+I7_V4_DOMAIN = "i7_mission_v4"
 
 
 class Partition(StrEnum):
@@ -1221,6 +1226,68 @@ def _i7_v3_split(part: Partition) -> Split:
     )
 
 
+def load_i7_v4(path: Path = I7_V4_PARTITIONS_PATH, *, verify_digest: bool = True) -> dict[str, Any]:
+    """Fresh validation/final split for the versioned compact-summary I7 candidate."""
+    digest = canonical_digest(path)
+    if verify_digest and digest != I7_V4_PARTITIONS_SHA256:
+        raise PartitionIntegrityError(
+            f"{path} changed after freezing: digest {digest} != pinned {I7_V4_PARTITIONS_SHA256}"
+        )
+    raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+    blocks = {name: set(_seeds(spec)) for name, spec in raw["world_seeds"].items()}
+    if set(blocks) != {Partition.VALIDATION.value, Partition.FINAL_TEST.value}:
+        raise PartitionIntegrityError("i7_v4 requires exactly validation and final_test splits")
+    if any(not block for block in blocks.values()) or blocks["validation"] & blocks["final_test"]:
+        raise PartitionIntegrityError("i7_v4 splits must be nonempty and disjoint")
+    if set(raw["scenarios"]) != {"I7-BANDWIDTH", "I7-OUTAGE-CRITICAL"}:
+        raise PartitionIntegrityError("i7_v4 must preserve both declared I7 scenarios")
+
+    mine = set().union(*blocks.values())
+    taken = set().union(*(set(_seeds(spec)) for spec in raw.get("reserved_elsewhere", [])))
+
+    def allocation_specs(value: Any) -> Iterator[dict[str, Any]]:
+        if isinstance(value, dict):
+            if "range" in value and isinstance(value["range"], list):
+                yield value
+            else:
+                for child in value.values():
+                    yield from allocation_specs(child)
+        elif isinstance(value, list):
+            for child in value:
+                yield from allocation_specs(child)
+
+    for other_path in sorted((REPO_ROOT / "configs" / "eval").glob("partitions*.yaml")):
+        if other_path.resolve() == path.resolve():
+            continue
+        other = yaml.safe_load(other_path.read_text(encoding="utf-8"))
+        if not isinstance(other, dict):
+            continue
+        allocations = {
+            key: value
+            for key, value in other.items()
+            if key not in {"reserved_elsewhere", "historical_exclusions", "contaminated"}
+        }
+        taken |= {seed for spec in allocation_specs(allocations) for seed in _seeds(spec)}
+    if mine & taken:
+        raise PartitionIntegrityError("i7_v4 seeds collide with a declared or reserved partition")
+    return {"raw": raw, "digest": digest}
+
+
+def _i7_v4_split(part: Partition) -> Split:
+    loaded = load_i7_v4()
+    raw = loaded["raw"]
+    if part.value not in raw["world_seeds"]:
+        raise KeyError(f"i7_v4 partition has no {part.value!r} split")
+    return Split(
+        domain=I7_V4_DOMAIN,
+        partition=part,
+        world_seeds=_seeds(raw["world_seeds"][part.value]),
+        families=tuple(raw["scenarios"]),
+        replicates_per_world=1,
+        digest=loaded["digest"],
+    )
+
+
 def split(domain: str, partition: str | Partition, purpose: str | Purpose) -> Split:
     """The only sanctioned way to obtain evaluation seeds. Raises on a forbidden (purpose, partition)."""
     part = Partition(partition)
@@ -1259,6 +1326,8 @@ def split(domain: str, partition: str | Partition, purpose: str | Purpose) -> Sp
         return _i7_v2_split(part)
     if domain == I7_V3_DOMAIN:
         return _i7_v3_split(part)
+    if domain == I7_V4_DOMAIN:
+        return _i7_v4_split(part)
     loaded = load()
     raw = loaded["raw"]
     if domain not in ("abstract", "mission"):
@@ -1316,6 +1385,9 @@ def partition_of(domain: str, seed: int) -> Partition | None:
     if domain == I7_V3_DOMAIN:
         i7v3 = load_i7_v3()["raw"]["world_seeds"]
         return next((Partition(p) for p, spec in i7v3.items() if int(seed) in _seeds(spec)), None)
+    if domain == I7_V4_DOMAIN:
+        i7v4 = load_i7_v4()["raw"]["world_seeds"]
+        return next((Partition(p) for p, spec in i7v4.items() if int(seed) in _seeds(spec)), None)
     raw = load()["raw"]
     for p in Partition:
         if int(seed) in _seeds(raw[domain]["world_seeds"][p.value]):

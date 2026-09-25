@@ -1,8 +1,9 @@
-"""Run a declared I7 criterion-3 screen on mission DEVELOPMENT worlds only.
+"""Run a declared I7 criterion-3 screen on an authorized non-final partition.
 
-This is diagnostic evidence, never gate evidence.  Keeping the entry point in a real
-module is also required for Windows ``multiprocessing`` spawn; an inline stdin script
-cannot be imported by worker processes.
+Development runs are diagnostic evidence. Validation runs select a frozen candidate
+but are not final gate evidence. Keeping the entry point in a real module is also
+required for Windows ``multiprocessing`` spawn; an inline stdin script cannot be
+imported by worker processes.
 """
 
 from __future__ import annotations
@@ -21,6 +22,9 @@ def main() -> None:
     parser.add_argument("--levels", nargs="+", type=float, default=[0.1])
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--compact-summary", action="store_true")
+    parser.add_argument("--partition", choices=("development", "validation"), default="development")
+    parser.add_argument("--partition-domain", default="mission")
+    parser.add_argument("--closed-loop-levels", nargs="+", type=float, default=[])
     args = parser.parse_args()
 
     config = {
@@ -36,11 +40,11 @@ def main() -> None:
             "C-B2_fixed_priority",
             "C-B4_value_per_bit",
         ],
-        "partition": "development",
-        "partition_domain": "mission",
+        "partition": args.partition,
+        "partition_domain": args.partition_domain,
         "scenario": args.scenario,
         "bandwidth_levels": args.levels,
-        "closed_loop_levels": [],
+        "closed_loop_levels": args.closed_loop_levels,
         "deadline_linkup_s": {"critical": 30.0, "routine": 120.0},
         "queue_trace_every_s": 5,
         "workers": args.workers,

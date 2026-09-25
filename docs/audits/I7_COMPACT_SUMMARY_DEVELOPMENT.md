@@ -48,6 +48,23 @@ retained exactly 0 on every run. Thus the unchanged strict required
 comparison passed **12/12 low-bandwidth development cases**, with zero
 duplicate receiver contributions. This is still DEVELOPMENT evidence.
 
-No new I7 validation, surrogate-final, or Unity-formal partition has been
-declared or opened. The original criterion-3 development candidate's
-completion-feasibility and receiver-relative value behavior remain active.
+The remaining 100%/50%/10% sweep then passed 18/18 strict per-seed comparisons
+against raw, FIFO, and fixed priority. Mean BAAC retention was 0.59851, 0.58496,
+and 0.26119, respectively; the strongest required-baseline means were 0.21478,
+0.21478, and 0.21478. Duplicate receiver contributions were zero.
+
+The finding-following outage matrix passed the required comparison 12/12 at
+100% and 10%. Mean BAAC retention was 0.59851 and 0.17212 versus required
+baseline maxima 0.21478 and 0.11168. Every critical finding occurred while the
+link was down, the critical delta arrived after reconnection, and duplicate
+receiver contributions were zero. A same-code control with the historical bare
+alert matched candidate bits sent, alert and delta latency, full-delta
+retention, and exact-sync state in all 12 cells. The semantic frame therefore
+did not regress scheduling or receiver behavior.
+
+Across low bandwidth, mid/high bandwidth, and outage, the candidate passed all
+42 declared DEVELOPMENT cells. This selects it for an independent validation
+cycle; it is not surrogate gate evidence. The fresh validation/final partition,
+unchanged decision rule, and unopened-final constraint are frozen in
+`I7_COMPACT_SUMMARY_V4_PROTOCOL.md`. No validation, surrogate-final, or
+Unity-formal seed had been opened when that protocol was declared.

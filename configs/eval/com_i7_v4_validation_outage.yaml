@@ -1,0 +1,18 @@
+experiment_id: COM-I7-V4-VAL-OUTAGE
+hypothesis: baac-critical-summary-v1 preserves finding-following outage delivery while retaining more mission information than the required baselines
+primary_metric: critical_delta_latency_s
+direction: lower
+baselines: [C-B0_send_all, C-B1_fifo, C-B2_fixed_priority, C-B4_value_per_bit]
+partition: validation
+partition_domain: i7_mission_v4
+seeds: [8400000, 8400001, 8400002, 8400003, 8400004]
+scenario: I7-OUTAGE-CRITICAL
+bandwidth_levels: [1.0, 0.1]
+closed_loop_levels: [1.0]
+deadline_linkup_s: {critical: 30.0, routine: 120.0}
+queue_trace_every_s: 5
+workers: 4
+keep_bundles: false
+baac_override:
+  model_version: baac-critical-summary-v1
+  compact_critical_summary: true

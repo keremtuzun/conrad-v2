@@ -1,0 +1,23 @@
+# One-shot I7 v4 surrogate-final outage run. Do not run unless both v4 validation experiments PASS.
+experiment_id: COM-I7-E008
+hypothesis: baac-critical-summary-v1 preserves finding-following outage delivery while retaining more mission information than the required baselines
+primary_metric: critical_delta_latency_s
+direction: lower
+baselines: [C-B0_send_all, C-B1_fifo, C-B2_fixed_priority, C-B4_value_per_bit]
+partition: final_test
+partition_domain: i7_mission_v4
+seeds: [8400100, 8400101, 8400102, 8400103, 8400104]
+scenario: I7-OUTAGE-CRITICAL
+bandwidth_levels: [1.0, 0.1]
+closed_loop_levels: [1.0]
+deadline_linkup_s: {critical: 30.0, routine: 120.0}
+queue_trace_every_s: 5
+workers: 4
+keep_bundles: true
+baac_override:
+  model_version: baac-critical-summary-v1
+  compact_critical_summary: true
+validation_seeds: [8400000, 8400001, 8400002, 8400003, 8400004]
+required_validation_artifacts:
+  bandwidth: artifacts/experiments/COM-I7-V4-VAL-BW/com_i7_v4_val_bw.json
+  outage: artifacts/experiments/COM-I7-V4-VAL-OUTAGE/com_i7_v4_val_outage.json

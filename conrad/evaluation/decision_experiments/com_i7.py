@@ -289,7 +289,11 @@ def _check_seeds(seeds: list[int], partition: str, domain: str = "mission") -> N
     """
     part = Partition(partition)
     purpose = (
-        Purpose.FINAL_EVALUATION if part in (Partition.FINAL_TEST, Partition.OOD_TEST) else Purpose.DESIGN
+        Purpose.FINAL_EVALUATION
+        if part in (Partition.FINAL_TEST, Partition.OOD_TEST)
+        else Purpose.SELECTION
+        if part is Partition.VALIDATION
+        else Purpose.DESIGN
     )
     check_access(part, purpose)
     for s in seeds:
@@ -404,7 +408,124 @@ def summarize(rows: list[dict[str, Any]], levels: list[float]) -> dict[str, Any]
     return {"summary": summary, "comparisons": comparisons}
 
 
+def assess_cycle(
+    bandwidth: dict[str, Any],
+    outage: dict[str, Any],
+    *,
+    expected_partition: str,
+    expected_domain: str,
+    expected_seeds: list[int],
+) -> dict[str, Any]:
+    """Apply the frozen I7 v4 surrogate criteria to a bandwidth/outage artifact pair."""
+    failures: list[str] = []
+    expected = set(expected_seeds)
+    for name, artifact, scenario in (
+        ("bandwidth", bandwidth, "I7-BANDWIDTH"),
+        ("outage", outage, "I7-OUTAGE-CRITICAL"),
+    ):
+        if artifact.get("partition") != expected_partition:
+            failures.append(f"{name}: partition {artifact.get('partition')!r} != {expected_partition!r}")
+        if artifact.get("partition_domain") != expected_domain:
+            failures.append(f"{name}: domain {artifact.get('partition_domain')!r} != {expected_domain!r}")
+        if set(artifact.get("seeds", [])) != expected:
+            failures.append(f"{name}: seeds do not match the declared split")
+        if artifact.get("scenario") != scenario:
+            failures.append(f"{name}: scenario {artifact.get('scenario')!r} != {scenario!r}")
+
+    bandwidth_rows = [r for r in bandwidth.get("per_run", []) if r["run_id"].endswith("-shadow")]
+    outage_rows = [r for r in outage.get("per_run", []) if r["run_id"].endswith("-shadow")]
+    expected_bandwidth_levels = {1.0, 0.5, 0.1, 0.01, 0.001, 0.0}
+    expected_outage_levels = {1.0, 0.1}
+    if {(int(r["seed"]), float(r["bandwidth_factor"])) for r in bandwidth_rows} != {
+        (seed, level) for seed in expected for level in expected_bandwidth_levels
+    }:
+        failures.append("bandwidth: incomplete seed/level matrix")
+    if {(int(r["seed"]), float(r["bandwidth_factor"])) for r in outage_rows} != {
+        (seed, level) for seed in expected for level in expected_outage_levels
+    }:
+        failures.append("outage: incomplete seed/level matrix")
+
+    all_rows = bandwidth_rows + outage_rows
+    for row in all_rows:
+        if set(row.get("arms", {})) != set(POLICIES):
+            failures.append(f"{row['run_id']}: missing policy arm")
+            continue
+        if not row.get("critical_offers") or int(row.get("offers", 0)) <= 0:
+            failures.append(f"{row['run_id']}: missing offers or critical finding")
+        for policy, arm in row["arms"].items():
+            if int(arm.get("duplicate_contributions", -1)) != 0:
+                failures.append(f"{row['run_id']}: {policy} duplicate receiver contribution")
+            if "critical_alert_latency_s" not in arm or "sync_critical_all_equal" not in arm:
+                failures.append(f"{row['run_id']}: {policy} missing latency/sync comparison")
+        if float(row["bandwidth_factor"]) > 0:
+            retained = float(row["arms"]["baac"]["mission_information_retained"])
+            for policy in SPEC_COMPARISON:
+                other = float(row["arms"][policy]["mission_information_retained"])
+                if not retained > other:
+                    failures.append(
+                        f"{row['run_id']}: baac retention {retained} is not above {policy} {other}"
+                    )
+
+    for row in outage_rows:
+        arm = row["arms"]["baac"]
+        critical = arm.get("critical", [])
+        if not critical or not all(bool(item.get("link_down_at_finding")) for item in critical):
+            failures.append(f"{row['run_id']}: critical finding was not made during outage")
+            continue
+        reconnect = row.get("reconnection", {}).get("baac", [])
+        if not reconnect or not all(bool(item.get("critical_delivered_first")) for item in reconnect):
+            failures.append(f"{row['run_id']}: critical delta was not delivered first")
+        if arm.get("critical_delta_latency_s") is None:
+            failures.append(f"{row['run_id']}: critical delta was not delivered")
+        if int(arm.get("coalesced", 0)) <= 0 or int(arm.get("resync_requests", 0)) != 0:
+            failures.append(f"{row['run_id']}: outage coalescing/resync invariant failed")
+        found = {item["belief_id"]: int(item["revision"]) for item in critical}
+        received = {item["belief_id"]: item.get("receiver_revision") for item in arm.get("sync_critical", [])}
+        if not all(
+            received.get(bid) is not None and int(received[bid]) >= revision
+            for bid, revision in found.items()
+        ):
+            failures.append(f"{row['run_id']}: receiver lacks the critical finding revision")
+
+    criteria = {
+        "full_mission_matrices_and_no_duplicates": not any(
+            "matrix" in failure or "missing" in failure or "duplicate" in failure for failure in failures
+        ),
+        "outage_delivery": not any(
+            "during outage" in failure
+            or "delivered" in failure
+            or "coalescing" in failure
+            or "lacks" in failure
+            for failure in failures
+        ),
+        "strict_retention": not any("retention" in failure for failure in failures),
+        "latency_and_sync_reported": not any("latency/sync" in failure for failure in failures),
+    }
+    return {"ok": all(criteria.values()) and not failures, "criteria": criteria, "failures": failures}
+
+
+def _require_validation(config: dict[str, Any]) -> None:
+    paths = config.get("required_validation_artifacts")
+    if not paths:
+        return
+    if not isinstance(paths, dict) or set(paths) != {"bandwidth", "outage"}:
+        raise ValueError("required_validation_artifacts must name bandwidth and outage")
+    artifacts = {
+        key: json.loads((REPO_ROOT / str(value)).read_text(encoding="utf-8")) for key, value in paths.items()
+    }
+    assessment = assess_cycle(
+        artifacts["bandwidth"],
+        artifacts["outage"],
+        expected_partition="validation",
+        expected_domain=str(config["partition_domain"]),
+        expected_seeds=[int(seed) for seed in config["validation_seeds"]],
+    )
+    if not assessment["ok"]:
+        raise RuntimeError(f"I7 v4 validation prerequisite failed: {assessment['failures']}")
+
+
 def run(config: dict[str, Any], seeds: list[int], out_dir: str | Path) -> dict[str, Any]:
+    _require_validation(config)
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     partition = str(config.get("partition", "final_test"))

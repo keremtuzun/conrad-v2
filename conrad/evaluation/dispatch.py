@@ -119,6 +119,18 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
     # Third run: fresh partitions_i7_v3.yaml final seeds, with the finding-following outage construction.
     "COM-I7-E005": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e005.yaml"),
     "COM-I7-E006": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e006.yaml"),
+    # Fourth cycle: versioned compact critical summaries. Validation must select the candidate before the
+    # one-shot E007/E008 final split is opened.
+    "COM-I7-V4-VAL-BW": (
+        "conrad.evaluation.decision_experiments.com_i7",
+        "configs/eval/com_i7_v4_validation_bandwidth.yaml",
+    ),
+    "COM-I7-V4-VAL-OUTAGE": (
+        "conrad.evaluation.decision_experiments.com_i7",
+        "configs/eval/com_i7_v4_validation_outage.yaml",
+    ),
+    "COM-I7-E007": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e007.yaml"),
+    "COM-I7-E008": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e008.yaml"),
     "2S-E001": ("conrad.evaluation.spatial_experiments.e001_coverage", "configs/eval/2s_e001.yaml"),
     "2S-E002": ("conrad.evaluation.spatial_experiments.e002_counterfactual", "configs/eval/2s_e002.yaml"),
     "2S-E003": ("conrad.evaluation.spatial_experiments.e003_pose", "configs/eval/2s_e003.yaml"),

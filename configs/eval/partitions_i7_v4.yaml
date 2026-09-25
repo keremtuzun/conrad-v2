@@ -1,0 +1,20 @@
+# Immutable gate I7 compact-summary seed partition, version 4. SYNTHETIC_ONLY.
+# Created 2026-09-26 after baac-critical-summary-v1 passed its complete DEVELOPMENT matrix.
+# DO NOT EDIT after freezing: conrad.evaluation.partitions pins the canonical digest.
+#
+# The historical v1/v2/v3 final seeds are SPENT. This version adds an untouched
+# validation split for mechanism selection and a disjoint final_test split for a
+# one-shot surrogate final. No seed in either block was read before this declaration.
+version: partitions-i7-comms-2026-09-26-v4
+scenarios: [I7-BANDWIDTH, I7-OUTAGE-CRITICAL]
+world_seeds:
+  validation: {explicit: [], range: [8400000, 8400005]}
+  final_test: {explicit: [], range: [8400100, 8400105]}
+reserved_elsewhere:
+  - {range: [5000000, 5000001], owner: scratch timing seed}
+  - {range: [5100000, 5700000], owner: historical mission and I7 development/final partitions}
+  - {range: [6100000, 6800000], owner: historical 2E and 2T experiment partitions}
+  - {range: [6900000, 7000001], owner: reserved for another workstream}
+  - {range: [7100000, 8100000], owner: historical NAV, I4, I5, and Unity gate partitions}
+  - {range: [8100000, 8200000], owner: I4 energy cycle and reserved research range}
+  - {range: [8300000, 8300210], owner: I5 v7 development, validation, and final partitions}
