@@ -63,6 +63,9 @@ class UnitContent(ConradModel):
 _DOMAIN_CODES = {d: i for i, d in enumerate(Domain)}
 _DELTA_BITS = {d.value: 1 << i for i, d in enumerate(DeltaType)}
 ALERT_FRAME = struct.Struct(">16sIBH")  # belief UUID, revision, domain code, delta-type bitmask
+SUMMARY_FRAME = struct.Struct(">16sIBBB")  # belief UUID, revision, domain, condition, claim status
+_CONDITION_CODES = {"INTACT": 1, "DEGRADED": 2, "SEVERE": 3, "FAILED": 4}
+_STATUS_CODES = {"OBSERVED": 1}
 
 
 def _alert(m: BeliefMessage, delta_types: Sequence[str]) -> dict[str, Any]:
@@ -89,10 +92,43 @@ def alert_frame(increment: dict[str, Any]) -> bytes:
     )
 
 
+def critical_summary(message: BeliefMessage) -> dict[str, Any] | None:
+    """A bounded semantic state, never an unqualified alert or an evidence claim."""
+    if message.domain is not Domain.TECHNICAL:
+        return None
+    claim = next((c for c in message.state_summary if c.name == "condition"), None)
+    if claim is None or str(claim.status.value) not in _STATUS_CODES:
+        return None
+    condition = str(claim.value)
+    if condition not in ("DEGRADED", "SEVERE", "FAILED"):
+        return None
+    return {
+        "kind": "critical_summary",
+        "belief_id": str(message.belief_id),
+        "revision": message.revision,
+        "domain": message.domain.value,
+        "condition": condition,
+        "status": claim.status.value,
+    }
+
+
+def critical_summary_frame(increment: dict[str, Any]) -> bytes:
+    """Exactly 23 bytes; the receiver can identify a critical condition and revision."""
+    return SUMMARY_FRAME.pack(
+        UUID(str(increment["belief_id"])).bytes,
+        int(increment["revision"]),
+        _DOMAIN_CODES[Domain(increment["domain"])],
+        _CONDITION_CODES[str(increment["condition"])],
+        _STATUS_CODES[str(increment["status"])],
+    )
+
+
 def increment_bits(increment: dict[str, Any]) -> int:
     """Measured wire size of one increment: the packed frame for alerts, DEFLATE(canonical JSON) otherwise."""
     if increment.get("kind") == "alert":
         return 8 * len(alert_frame(increment))
+    if increment.get("kind") == "critical_summary":
+        return 8 * len(critical_summary_frame(increment))
     raw = json.dumps(increment, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
     return 8 * len(zlib.compress(raw, 9))
 
@@ -124,7 +160,8 @@ class UnitBuilder:
         increments: dict[int, dict[str, Any]] = {}
         evidence_bits: dict[int, int] = {}
         if critical:
-            increments[0] = _alert(message, [d.delta_type.value for d in deltas])
+            summary = critical_summary(message) if cfg.compact_critical_summary else None
+            increments[0] = summary or _alert(message, [d.delta_type.value for d in deltas])
         increments[1] = {"kind": "deltas", "deltas": [d.model_dump(mode="json") for d in deltas]}
         emb = message.state_embedding[: cfg.embedding_summary_dims]
         increments[2] = {

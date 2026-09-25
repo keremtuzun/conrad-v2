@@ -2,13 +2,24 @@
 
 from __future__ import annotations
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from conrad.schemas.base import ConradModel
 
 
 class BAACConfig(ConradModel):
     model_version: str = "baac-greedy-0.3"
+    compact_critical_summary: bool = Field(
+        default=False,
+        description="versioned 23-byte condition summary for a critical observed technical finding",
+    )
+
+    @model_validator(mode="after")
+    def _summary_version(self) -> BAACConfig:
+        if self.compact_critical_summary and self.model_version != "baac-critical-summary-v1":
+            raise ValueError("compact_critical_summary requires model_version=baac-critical-summary-v1")
+        return self
+
     scheduler_policy: str = Field(
         default="C-B10_baac",
         description="SchedulingPolicy name: C-B10_baac or a baseline C-B0..C-B4 (scheduler.ALL_POLICIES)",

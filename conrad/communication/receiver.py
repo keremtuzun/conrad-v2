@@ -41,7 +41,7 @@ class ReceiverKnowledge:
     def acknowledge(self, increment: dict[str, Any]) -> None:
         """Mirror what the receiver now holds after an ACKed increment."""
         kind = increment.get("kind")
-        if kind == "alert":
+        if kind in ("alert", "critical_summary"):
             bid = UUID(str(increment["belief_id"]))
             self.alerted[bid] = max(self.alerted.get(bid, -1), int(increment["revision"]))
         elif kind == "deltas":
@@ -64,6 +64,7 @@ class ReceiverStore:
     def __init__(self) -> None:
         self.views: dict[UUID, View] = {}
         self.alerts: dict[UUID, dict[str, Any]] = {}
+        self.critical_summaries: dict[UUID, dict[str, Any]] = {}
         self.evidence_available: dict[str, str] = {}  # evidence id -> best codec received
         self.known_evidence_ids: set[str] = set()
         self.resync_requests: list[ResyncRequest] = []
@@ -77,6 +78,16 @@ class ReceiverStore:
             bid = UUID(str(increment["belief_id"]))
             prev = self.alerts.get(bid)
             if prev is None or int(prev["revision"]) <= int(increment["revision"]):
+                self.alerts[bid] = dict(increment)
+            return None
+        if kind == "critical_summary":
+            bid = UUID(str(increment["belief_id"]))
+            revision = int(increment["revision"])
+            prev = self.critical_summaries.get(bid)
+            if prev is None or int(prev["revision"]) <= revision:
+                self.critical_summaries[bid] = dict(increment)
+            alert = self.alerts.get(bid)
+            if alert is None or int(alert["revision"]) <= revision:
                 self.alerts[bid] = dict(increment)
             return None
         if kind == "deltas":

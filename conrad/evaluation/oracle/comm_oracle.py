@@ -34,6 +34,15 @@ def belief_score(store: ReceiverStore, latest: BeliefMessage, retained: tuple[fl
         score = level if view_rev >= latest.revision else STALE_CREDIT * level
     if alert_rev >= latest.revision:
         score = max(score, retained[0])
+    # A versioned compact summary includes the observed condition and status,
+    # so an older one still conveys some state. A historical bare alert has
+    # no such state and retains its unchanged current-only rule above.
+    summary = store.critical_summaries.get(bid)
+    if summary is not None:
+        summary_level = (
+            retained[0] if int(summary["revision"]) >= latest.revision else STALE_CREDIT * retained[0]
+        )
+        score = max(score, summary_level)
     return score
 
 

@@ -66,7 +66,7 @@ class CommsArm:
     def sink(self, increment: dict[str, Any]) -> ResyncRequest | None:
         kind = increment.get("kind")
         key: tuple[UUID, int] | None = None
-        if kind == "alert":
+        if kind in ("alert", "critical_summary"):
             key = (UUID(str(increment["belief_id"])), int(increment["revision"]))
         elif kind == "deltas" and increment.get("deltas"):
             d = increment["deltas"][0]

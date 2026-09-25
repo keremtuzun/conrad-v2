@@ -1,0 +1,3934 @@
+{
+ "experiment_id": "I7-COMPACT-SUMMARY-DEV-LOW-5100001",
+ "evidence_class": "SURROGATE (python L1 kernel mission, not Unity)",
+ "data_status": "SYNTHETIC_ONLY",
+ "partition": "development",
+ "partition_domain": "mission",
+ "seeds": [
+  5100001
+ ],
+ "scenario": "I7-BANDWIDTH",
+ "policies": {
+  "baac": "C-B10_baac",
+  "raw": "C-B0_send_all",
+  "fifo": "C-B1_fifo",
+  "fixed_priority": "C-B2_fixed_priority",
+  "value_per_bit": "C-B4_value_per_bit"
+ },
+ "spec_comparison_set": [
+  "raw",
+  "fifo",
+  "fixed_priority"
+ ],
+ "config": {
+  "experiment_id": "I7-COMPACT-SUMMARY-DEV-LOW-5100001",
+  "hypothesis": "screen development worlds for low-bandwidth criterion-3 failure classes before repair",
+  "primary_metric": "mission_information_retained",
+  "direction": "higher",
+  "baselines": [
+   "C-B0_send_all",
+   "C-B1_fifo",
+   "C-B2_fixed_priority",
+   "C-B4_value_per_bit"
+  ],
+  "partition": "development",
+  "partition_domain": "mission",
+  "scenario": "I7-BANDWIDTH",
+  "bandwidth_levels": [
+   0.001,
+   0.01
+  ],
+  "closed_loop_levels": [],
+  "deadline_linkup_s": {
+   "critical": 30.0,
+   "routine": 120.0
+  },
+  "queue_trace_every_s": 5,
+  "workers": 1,
+  "keep_bundles": false,
+  "baac_override": {
+   "model_version": "baac-critical-summary-v1",
+   "compact_critical_summary": true
+  }
+ },
+ "summary": {
+  "bw_0.1pct": {
+   "baac": {
+    "mission_information_retained": 0.021951219512195128,
+    "critical_information_retained": 0.15,
+    "bits_sent": 184.0,
+    "retained_per_mbit": 119.30010604453874,
+    "critical_alert_latency_s": 105.0,
+    "critical_delta_latency_s": null,
+    "queue_depth_max": 18.0,
+    "backlog_bits_max": 28680880.0,
+    "queue_depth_end": 18.0,
+    "backlog_bits_end": 25327496.0,
+    "duplicate_contributions": 0.0,
+    "useful_receiver_bits": 184.0,
+    "obsolete_on_arrival_bits": 0.0,
+    "unique_beliefs_advanced": 0.0,
+    "stale_ignored": 0.0,
+    "coalesced": 169.0,
+    "coalesced_queued_bits": 295212920.0,
+    "energy_j": 0.0184,
+    "deadline_success_critical": 0.18181818181818182,
+    "deadline_success_routine": 0.0,
+    "sync_critical_all_equal_fraction": 0.0,
+    "critical_delivered_fraction": 1.0,
+    "n_seeds": 1
+   },
+   "raw": {
+    "mission_information_retained": 0.0,
+    "critical_information_retained": 0.0,
+    "bits_sent": 0.0,
+    "retained_per_mbit": null,
+    "critical_alert_latency_s": null,
+    "critical_delta_latency_s": null,
+    "queue_depth_max": 187.0,
+    "backlog_bits_max": 320540600.0,
+    "queue_depth_end": 187.0,
+    "backlog_bits_end": 320540600.0,
+    "duplicate_contributions": 0.0,
+    "useful_receiver_bits": 0.0,
+    "obsolete_on_arrival_bits": 0.0,
+    "unique_beliefs_advanced": 0.0,
+    "stale_ignored": 0.0,
+    "coalesced": 0.0,
+    "coalesced_queued_bits": 0.0,
+    "energy_j": 0.0,
+    "deadline_success_critical": 0.0,
+    "deadline_success_routine": 0.0,
+    "sync_critical_all_equal_fraction": 0.0,
+    "critical_delivered_fraction": 0.0,
+    "n_seeds": 1
+   },
+   "fifo": {
+    "mission_information_retained": 0.0,
+    "critical_information_retained": 0.0,
+    "bits_sent": 0.0,
+    "retained_per_mbit": null,
+    "critical_alert_latency_s": null,
+    "critical_delta_latency_s": null,
+    "queue_depth_max": 187.0,
+    "backlog_bits_max": 320540600.0,
+    "queue_depth_end": 187.0,
+    "backlog_bits_end": 320540600.0,
+    "duplicate_contributions": 0.0,
+    "useful_receiver_bits": 0.0,
+    "obsolete_on_arrival_bits": 0.0,
+    "unique_beliefs_advanced": 0.0,
+    "stale_ignored": 0.0,
+    "coalesced": 0.0,
+    "coalesced_queued_bits": 0.0,
+    "energy_j": 0.0,
+    "deadline_success_critical": 0.0,
+    "deadline_success_routine": 0.0,
+    "sync_critical_all_equal_fraction": 0.0,
+    "critical_delivered_fraction": 0.0,
+    "n_seeds": 1
+   },
+   "fixed_priority": {
+    "mission_information_retained": 0.0,
+    "critical_information_retained": 0.0,
+    "bits_sent": 0.0,
+    "retained_per_mbit": null,
+    "critical_alert_latency_s": null,
+    "critical_delta_latency_s": null,
+    "queue_depth_max": 187.0,
+    "backlog_bits_max": 320540600.0,
+    "queue_depth_end": 187.0,
+    "backlog_bits_end": 320540600.0,
+    "duplicate_contributions": 0.0,
+    "useful_receiver_bits": 0.0,
+    "obsolete_on_arrival_bits": 0.0,
+    "unique_beliefs_advanced": 0.0,
+    "stale_ignored": 0.0,
+    "coalesced": 0.0,
+    "coalesced_queued_bits": 0.0,
+    "energy_j": 0.0,
+    "deadline_success_critical": 0.0,
+    "deadline_success_routine": 0.0,
+    "sync_critical_all_equal_fraction": 0.0,
+    "critical_delivered_fraction": 0.0,
+    "n_seeds": 1
+   },
+   "value_per_bit": {
+    "mission_information_retained": 0.021951219512195128,
+    "critical_information_retained": 0.15,
+    "bits_sent": 184.0,
+    "retained_per_mbit": 119.30010604453874,
+    "critical_alert_latency_s": 105.0,
+    "critical_delta_latency_s": null,
+    "queue_depth_max": 187.0,
+    "backlog_bits_max": 320540416.0,
+    "queue_depth_end": 187.0,
+    "backlog_bits_end": 320540416.0,
+    "duplicate_contributions": 0.0,
+    "useful_receiver_bits": 184.0,
+    "obsolete_on_arrival_bits": 0.0,
+    "unique_beliefs_advanced": 0.0,
+    "stale_ignored": 0.0,
+    "coalesced": 0.0,
+    "coalesced_queued_bits": 0.0,
+    "energy_j": 0.0184,
+    "deadline_success_critical": 0.0,
+    "deadline_success_routine": 0.0,
+    "sync_critical_all_equal_fraction": 0.0,
+    "critical_delivered_fraction": 1.0,
+    "n_seeds": 1
+   }
+  },
+  "bw_1pct": {
+   "baac": {
+    "mission_information_retained": 0.021951219512195128,
+    "critical_information_retained": 0.15,
+    "bits_sent": 2760.0,
+    "retained_per_mbit": 7.95334040296925,
+    "critical_alert_latency_s": 1.0,
+    "critical_delta_latency_s": null,
+    "queue_depth_max": 18.0,
+    "backlog_bits_max": 28680880.0,
+    "queue_depth_end": 18.0,
+    "backlog_bits_end": 25327312.0,
+    "duplicate_contributions": 0.0,
+    "useful_receiver_bits": 2208.0,
+    "obsolete_on_arrival_bits": 0.0,
+    "unique_beliefs_advanced": 0.0,
+    "stale_ignored": 0.0,
+    "coalesced": 169.0,
+    "coalesced_queued_bits": 295210896.0,
+    "energy_j": 0.276,
+    "deadline_success_critical": 1.0,
+    "deadline_success_routine": 0.0,
+    "sync_critical_all_equal_fraction": 0.0,
+    "critical_delivered_fraction": 1.0,
+    "n_seeds": 1
+   },
+   "raw": {
+    "mission_information_retained": 0.0,
+    "critical_information_retained": 0.0,
+    "bits_sent": 2049.0,
+    "retained_per_mbit": 0.0,
+    "critical_alert_latency_s": null,
+    "critical_delta_latency_s": null,
+    "queue_depth_max": 187.0,
+    "backlog_bits_max": 320540600.0,
+    "queue_depth_end": 187.0,
+    "backlog_bits_end": 320540600.0,
+    "duplicate_contributions": 0.0,
+    "useful_receiver_bits": 0.0,
+    "obsolete_on_arrival_bits": 0.0,
+    "unique_beliefs_advanced": 0.0,
+    "stale_ignored": 0.0,
+    "coalesced": 0.0,
+    "coalesced_queued_bits": 0.0,
+    "energy_j": 0.20490000000000003,
+    "deadline_success_critical": 0.0,
+    "deadline_success_routine": 0.0,
+    "sync_critical_all_equal_fraction": 0.0,
+    "critical_delivered_fraction": 0.0,
+    "n_seeds": 1
+   },
+   "fifo": {
+    "mission_information_retained": 0.0,
+    "critical_information_retained": 0.0,
+    "bits_sent": 2049.0,
+    "retained_per_mbit": 0.0,
+    "critical_alert_latency_s": null,
+    "critical_delta_latency_s": null,
+    "queue_depth_max": 187.0,
+    "backlog_bits_max": 320540600.0,
+    "queue_depth_end": 187.0,
+    "backlog_bits_end": 320540600.0,
+    "duplicate_contributions": 0.0,
+    "useful_receiver_bits": 0.0,
+    "obsolete_on_arrival_bits": 0.0,
+    "unique_beliefs_advanced": 0.0,
+    "stale_ignored": 0.0,
+    "coalesced": 0.0,
+    "coalesced_queued_bits": 0.0,
+    "energy_j": 0.20490000000000003,
+    "deadline_success_critical": 0.0,
+    "deadline_success_routine": 0.0,
+    "sync_critical_all_equal_fraction": 0.0,
+    "critical_delivered_fraction": 0.0,
+    "n_seeds": 1
+   },
+   "fixed_priority": {
+    "mission_information_retained": 0.0,
+    "critical_information_retained": 0.0,
+    "bits_sent": 2049.0,
+    "retained_per_mbit": 0.0,
+    "critical_alert_latency_s": null,
+    "critical_delta_latency_s": null,
+    "queue_depth_max": 187.0,
+    "backlog_bits_max": 320540600.0,
+    "queue_depth_end": 187.0,
+    "backlog_bits_end": 320540600.0,
+    "duplicate_contributions": 0.0,
+    "useful_receiver_bits": 0.0,
+    "obsolete_on_arrival_bits": 0.0,
+    "unique_beliefs_advanced": 0.0,
+    "stale_ignored": 0.0,
+    "coalesced": 0.0,
+    "coalesced_queued_bits": 0.0,
+    "energy_j": 0.20490000000000003,
+    "deadline_success_critical": 0.0,
+    "deadline_success_routine": 0.0,
+    "sync_critical_all_equal_fraction": 0.0,
+    "critical_delivered_fraction": 0.0,
+    "n_seeds": 1
+   },
+   "value_per_bit": {
+    "mission_information_retained": 0.021951219512195128,
+    "critical_information_retained": 0.15,
+    "bits_sent": 2760.0,
+    "retained_per_mbit": 7.95334040296925,
+    "critical_alert_latency_s": 1.0,
+    "critical_delta_latency_s": null,
+    "queue_depth_max": 187.0,
+    "backlog_bits_max": 320538208.0,
+    "queue_depth_end": 187.0,
+    "backlog_bits_end": 320538208.0,
+    "duplicate_contributions": 0.0,
+    "useful_receiver_bits": 2208.0,
+    "obsolete_on_arrival_bits": 0.0,
+    "unique_beliefs_advanced": 0.0,
+    "stale_ignored": 0.0,
+    "coalesced": 0.0,
+    "coalesced_queued_bits": 0.0,
+    "energy_j": 0.276,
+    "deadline_success_critical": 1.0,
+    "deadline_success_routine": 0.0,
+    "sync_critical_all_equal_fraction": 0.0,
+    "critical_delivered_fraction": 1.0,
+    "n_seeds": 1
+   }
+  }
+ },
+ "comparisons": {
+  "bw_0.1pct": {
+   "raw": {
+    "baac_minus_policy_mean": 0.021951219512195128,
+    "baac_minus_policy_min": 0.021951219512195128,
+    "baac_strictly_more_every_seed": true,
+    "baac_strictly_more_mean": true
+   },
+   "fifo": {
+    "baac_minus_policy_mean": 0.021951219512195128,
+    "baac_minus_policy_min": 0.021951219512195128,
+    "baac_strictly_more_every_seed": true,
+    "baac_strictly_more_mean": true
+   },
+   "fixed_priority": {
+    "baac_minus_policy_mean": 0.021951219512195128,
+    "baac_minus_policy_min": 0.021951219512195128,
+    "baac_strictly_more_every_seed": true,
+    "baac_strictly_more_mean": true
+   },
+   "value_per_bit": {
+    "baac_minus_policy_mean": 0.0,
+    "baac_minus_policy_min": 0.0,
+    "baac_strictly_more_every_seed": false,
+    "baac_strictly_more_mean": false
+   }
+  },
+  "bw_1pct": {
+   "raw": {
+    "baac_minus_policy_mean": 0.021951219512195128,
+    "baac_minus_policy_min": 0.021951219512195128,
+    "baac_strictly_more_every_seed": true,
+    "baac_strictly_more_mean": true
+   },
+   "fifo": {
+    "baac_minus_policy_mean": 0.021951219512195128,
+    "baac_minus_policy_min": 0.021951219512195128,
+    "baac_strictly_more_every_seed": true,
+    "baac_strictly_more_mean": true
+   },
+   "fixed_priority": {
+    "baac_minus_policy_mean": 0.021951219512195128,
+    "baac_minus_policy_min": 0.021951219512195128,
+    "baac_strictly_more_every_seed": true,
+    "baac_strictly_more_mean": true
+   },
+   "value_per_bit": {
+    "baac_minus_policy_mean": 0.0,
+    "baac_minus_policy_min": 0.0,
+    "baac_strictly_more_every_seed": false,
+    "baac_strictly_more_mean": false
+   }
+  }
+ },
+ "per_run": [
+  {
+   "run_id": "I7-COMPACT-SUMMARY-DEV-LOW-5100001-s5100001-bw0.001-shadow",
+   "seed": 5100001,
+   "scenario": "I7-BANDWIDTH",
+   "bandwidth_factor": 0.001,
+   "primary": "baac",
+   "link": {
+    "name": "acoustic",
+    "bandwidth_bps": 1.2,
+    "latency_s": 1.0,
+    "packet_loss": 0.05,
+    "bit_error_rate": 1e-06,
+    "energy_per_bit_j": 0.0001,
+    "packet_bits": 1024,
+    "max_retries": 3,
+    "max_range_m": null,
+    "outages_s": [],
+    "outage_follows_critical_finding": false,
+    "outage_hold_after_finding_s": 45.0,
+    "outage_max_s": 120.0,
+    "bandwidth_schedule": [],
+    "degraded_below_fraction": 0.5,
+    "source": "SYNTHETIC_ONLY"
+   },
+   "patch_first_visible_t_s": 54.25,
+   "critical_offers": [
+    [
+     "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+     55,
+     57100000000
+    ]
+   ],
+   "offers": 187,
+   "offer_stream_sha256": "ca9c9e771aa5bef3b6daf629bd36fd12fde6bd7e329a2dc2009495ec48135188",
+   "beliefs_reported": 18,
+   "arms": {
+    "baac": {
+     "policy": "C-B10_baac",
+     "bandwidth_bps": 1.2,
+     "mission_information_retained": 0.021951219512195128,
+     "critical_information_retained": 0.15,
+     "bits_sent": 184,
+     "energy_j": 0.0184,
+     "retained_per_mbit": 119.30010604453874,
+     "receiver_beliefs": 0,
+     "critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "revision": 55,
+       "finding_t_s": 57.1,
+       "link_down_at_finding": false,
+       "alert_latency_s": 105.0,
+       "delta_latency_s": null
+      }
+     ],
+     "critical_alert_latency_s": 105.0,
+     "critical_delta_latency_s": null,
+     "deadline_success": {
+      "critical": 0.18181818181818182,
+      "routine": 0.0
+     },
+     "deadline_counts": {
+      "critical": {
+       "met": 2,
+       "evaluable": 11
+      },
+      "routine": {
+       "met": 0,
+       "evaluable": 97
+      }
+     },
+     "queue_depth_max": 18,
+     "backlog_bits_max": 28680880,
+     "queue_depth_end": 18,
+     "backlog_bits_end": 25327496,
+     "queue_trace": [
+      [
+       0.1,
+       5,
+       26088,
+       0
+      ],
+      [
+       5.1,
+       14,
+       16887048,
+       0
+      ],
+      [
+       10.1,
+       15,
+       18575408,
+       0
+      ],
+      [
+       15.1,
+       15,
+       18576168,
+       0
+      ],
+      [
+       20.1,
+       16,
+       26991888,
+       0
+      ],
+      [
+       25.1,
+       16,
+       26991824,
+       0
+      ],
+      [
+       30.1,
+       17,
+       28680880,
+       0
+      ],
+      [
+       35.1,
+       18,
+       15237376,
+       0
+      ],
+      [
+       40.1,
+       18,
+       15237376,
+       0
+      ],
+      [
+       45.1,
+       18,
+       15237304,
+       0
+      ],
+      [
+       50.1,
+       18,
+       21964560,
+       0
+      ],
+      [
+       55.1,
+       18,
+       21964504,
+       0
+      ],
+      [
+       60.1,
+       18,
+       23647264,
+       1
+      ],
+      [
+       65.1,
+       18,
+       25327168,
+       1
+      ],
+      [
+       70.1,
+       18,
+       25327048,
+       1
+      ],
+      [
+       75.1,
+       18,
+       25327016,
+       1
+      ],
+      [
+       80.1,
+       18,
+       25326880,
+       1
+      ],
+      [
+       85.1,
+       18,
+       25326880,
+       1
+      ],
+      [
+       90.1,
+       18,
+       25326888,
+       1
+      ],
+      [
+       95.1,
+       18,
+       25326992,
+       1
+      ],
+      [
+       100.1,
+       18,
+       25326992,
+       1
+      ],
+      [
+       105.1,
+       18,
+       25327040,
+       1
+      ],
+      [
+       110.1,
+       18,
+       25326952,
+       1
+      ],
+      [
+       115.1,
+       18,
+       25326944,
+       1
+      ],
+      [
+       120.1,
+       18,
+       25326904,
+       1
+      ],
+      [
+       125.1,
+       18,
+       25327112,
+       1
+      ],
+      [
+       130.1,
+       18,
+       25327232,
+       1
+      ],
+      [
+       135.1,
+       18,
+       25327264,
+       1
+      ],
+      [
+       140.1,
+       18,
+       25327264,
+       1
+      ],
+      [
+       145.1,
+       18,
+       25327264,
+       1
+      ],
+      [
+       150.1,
+       18,
+       25327248,
+       1
+      ],
+      [
+       155.1,
+       18,
+       25327280,
+       1
+      ],
+      [
+       160.1,
+       18,
+       25327280,
+       1
+      ],
+      [
+       165.1,
+       18,
+       25327208,
+       1
+      ],
+      [
+       170.1,
+       18,
+       25327200,
+       1
+      ],
+      [
+       175.1,
+       18,
+       25327200,
+       1
+      ],
+      [
+       180.1,
+       18,
+       25327200,
+       1
+      ],
+      [
+       185.1,
+       18,
+       25327296,
+       1
+      ],
+      [
+       190.1,
+       18,
+       25327320,
+       1
+      ],
+      [
+       195.1,
+       18,
+       25327328,
+       1
+      ],
+      [
+       200.1,
+       18,
+       25327224,
+       1
+      ],
+      [
+       205.1,
+       18,
+       25327224,
+       1
+      ],
+      [
+       210.1,
+       18,
+       25327232,
+       1
+      ],
+      [
+       215.1,
+       18,
+       25327448,
+       1
+      ],
+      [
+       220.1,
+       18,
+       25327448,
+       1
+      ],
+      [
+       225.1,
+       18,
+       25327416,
+       1
+      ],
+      [
+       230.1,
+       18,
+       25327480,
+       1
+      ],
+      [
+       235.1,
+       18,
+       25327480,
+       1
+      ]
+     ],
+     "sync_critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "sender_revision": 378,
+       "intent_revision": 383,
+       "receiver_revision": null,
+       "equal": false,
+       "duplicates": 0
+      }
+     ],
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "useful_receiver_bits": 184,
+     "obsolete_on_arrival_bits": 0,
+     "unique_beliefs_advanced": 0,
+     "coalesced_queued_bits": 295212920,
+     "stale_ignored": 0,
+     "coalesced": 169,
+     "drop_reasons": {}
+    },
+    "raw": {
+     "policy": "C-B0_send_all",
+     "bandwidth_bps": 1.2,
+     "mission_information_retained": 0.0,
+     "critical_information_retained": 0.0,
+     "bits_sent": 0,
+     "energy_j": 0.0,
+     "retained_per_mbit": null,
+     "receiver_beliefs": 0,
+     "critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "revision": 55,
+       "finding_t_s": 57.1,
+       "link_down_at_finding": false,
+       "alert_latency_s": null,
+       "delta_latency_s": null
+      }
+     ],
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "deadline_counts": {
+      "critical": {
+       "met": 0,
+       "evaluable": 11
+      },
+      "routine": {
+       "met": 0,
+       "evaluable": 97
+      }
+     },
+     "queue_depth_max": 187,
+     "backlog_bits_max": 320540600,
+     "queue_depth_end": 187,
+     "backlog_bits_end": 320540600,
+     "queue_trace": [
+      [
+       0.1,
+       5,
+       26088,
+       0
+      ],
+      [
+       5.1,
+       14,
+       16887048,
+       0
+      ],
+      [
+       10.1,
+       15,
+       18575408,
+       0
+      ],
+      [
+       15.1,
+       16,
+       18581264,
+       0
+      ],
+      [
+       20.1,
+       27,
+       43863240,
+       0
+      ],
+      [
+       25.1,
+       28,
+       45551536,
+       0
+      ],
+      [
+       30.1,
+       30,
+       47245712,
+       0
+      ],
+      [
+       35.1,
+       42,
+       59084184,
+       0
+      ],
+      [
+       40.1,
+       42,
+       59084184,
+       0
+      ],
+      [
+       45.1,
+       44,
+       60778288,
+       0
+      ],
+      [
+       50.1,
+       54,
+       77649552,
+       0
+      ],
+      [
+       55.1,
+       56,
+       79343960,
+       0
+      ],
+      [
+       60.1,
+       57,
+       81032720,
+       1
+      ],
+      [
+       65.1,
+       67,
+       99583888,
+       1
+      ],
+      [
+       70.1,
+       68,
+       101272176,
+       1
+      ],
+      [
+       75.1,
+       69,
+       102960904,
+       2
+      ],
+      [
+       80.1,
+       79,
+       121511936,
+       2
+      ],
+      [
+       85.1,
+       79,
+       121511936,
+       2
+      ],
+      [
+       90.1,
+       80,
+       123200672,
+       3
+      ],
+      [
+       95.1,
+       90,
+       141751808,
+       3
+      ],
+      [
+       100.1,
+       90,
+       141751808,
+       3
+      ],
+      [
+       105.1,
+       91,
+       143440592,
+       4
+      ],
+      [
+       110.1,
+       100,
+       160304632,
+       4
+      ],
+      [
+       115.1,
+       101,
+       161991632,
+       4
+      ],
+      [
+       120.1,
+       102,
+       163680376,
+       5
+      ],
+      [
+       125.1,
+       111,
+       180544624,
+       5
+      ],
+      [
+       130.1,
+       112,
+       182231744,
+       5
+      ],
+      [
+       135.1,
+       113,
+       183920520,
+       6
+      ],
+      [
+       140.1,
+       122,
+       200784768,
+       6
+      ],
+      [
+       145.1,
+       122,
+       200784768,
+       6
+      ],
+      [
+       150.1,
+       123,
+       202473528,
+       7
+      ],
+      [
+       155.1,
+       132,
+       219337808,
+       7
+      ],
+      [
+       160.1,
+       132,
+       219337808,
+       7
+      ],
+      [
+       165.1,
+       134,
+       222713616,
+       8
+      ],
+      [
+       170.1,
+       143,
+       239577888,
+       8
+      ],
+      [
+       175.1,
+       143,
+       239577888,
+       8
+      ],
+      [
+       180.1,
+       144,
+       241266664,
+       9
+      ],
+      [
+       185.1,
+       153,
+       258131032,
+       9
+      ],
+      [
+       190.1,
+       154,
+       259818088,
+       9
+      ],
+      [
+       195.1,
+       155,
+       261506872,
+       10
+      ],
+      [
+       200.1,
+       164,
+       278371136,
+       10
+      ],
+      [
+       205.1,
+       164,
+       278371136,
+       10
+      ],
+      [
+       210.1,
+       166,
+       281746984,
+       11
+      ],
+      [
+       215.1,
+       175,
+       298611464,
+       11
+      ],
+      [
+       220.1,
+       175,
+       298611464,
+       11
+      ],
+      [
+       225.1,
+       176,
+       300300224,
+       12
+      ],
+      [
+       230.1,
+       186,
+       318851824,
+       12
+      ],
+      [
+       235.1,
+       186,
+       318851824,
+       12
+      ]
+     ],
+     "sync_critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "sender_revision": 378,
+       "intent_revision": 383,
+       "receiver_revision": null,
+       "equal": false,
+       "duplicates": 0
+      }
+     ],
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "useful_receiver_bits": 0,
+     "obsolete_on_arrival_bits": 0,
+     "unique_beliefs_advanced": 0,
+     "coalesced_queued_bits": 0,
+     "stale_ignored": 0,
+     "coalesced": 0,
+     "drop_reasons": {}
+    },
+    "fifo": {
+     "policy": "C-B1_fifo",
+     "bandwidth_bps": 1.2,
+     "mission_information_retained": 0.0,
+     "critical_information_retained": 0.0,
+     "bits_sent": 0,
+     "energy_j": 0.0,
+     "retained_per_mbit": null,
+     "receiver_beliefs": 0,
+     "critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "revision": 55,
+       "finding_t_s": 57.1,
+       "link_down_at_finding": false,
+       "alert_latency_s": null,
+       "delta_latency_s": null
+      }
+     ],
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "deadline_counts": {
+      "critical": {
+       "met": 0,
+       "evaluable": 11
+      },
+      "routine": {
+       "met": 0,
+       "evaluable": 97
+      }
+     },
+     "queue_depth_max": 187,
+     "backlog_bits_max": 320540600,
+     "queue_depth_end": 187,
+     "backlog_bits_end": 320540600,
+     "queue_trace": [
+      [
+       0.1,
+       5,
+       26088,
+       0
+      ],
+      [
+       5.1,
+       14,
+       16887048,
+       0
+      ],
+      [
+       10.1,
+       15,
+       18575408,
+       0
+      ],
+      [
+       15.1,
+       16,
+       18581264,
+       0
+      ],
+      [
+       20.1,
+       27,
+       43863240,
+       0
+      ],
+      [
+       25.1,
+       28,
+       45551536,
+       0
+      ],
+      [
+       30.1,
+       30,
+       47245712,
+       0
+      ],
+      [
+       35.1,
+       42,
+       59084184,
+       0
+      ],
+      [
+       40.1,
+       42,
+       59084184,
+       0
+      ],
+      [
+       45.1,
+       44,
+       60778288,
+       0
+      ],
+      [
+       50.1,
+       54,
+       77649552,
+       0
+      ],
+      [
+       55.1,
+       56,
+       79343960,
+       0
+      ],
+      [
+       60.1,
+       57,
+       81032720,
+       1
+      ],
+      [
+       65.1,
+       67,
+       99583888,
+       1
+      ],
+      [
+       70.1,
+       68,
+       101272176,
+       1
+      ],
+      [
+       75.1,
+       69,
+       102960904,
+       2
+      ],
+      [
+       80.1,
+       79,
+       121511936,
+       2
+      ],
+      [
+       85.1,
+       79,
+       121511936,
+       2
+      ],
+      [
+       90.1,
+       80,
+       123200672,
+       3
+      ],
+      [
+       95.1,
+       90,
+       141751808,
+       3
+      ],
+      [
+       100.1,
+       90,
+       141751808,
+       3
+      ],
+      [
+       105.1,
+       91,
+       143440592,
+       4
+      ],
+      [
+       110.1,
+       100,
+       160304632,
+       4
+      ],
+      [
+       115.1,
+       101,
+       161991632,
+       4
+      ],
+      [
+       120.1,
+       102,
+       163680376,
+       5
+      ],
+      [
+       125.1,
+       111,
+       180544624,
+       5
+      ],
+      [
+       130.1,
+       112,
+       182231744,
+       5
+      ],
+      [
+       135.1,
+       113,
+       183920520,
+       6
+      ],
+      [
+       140.1,
+       122,
+       200784768,
+       6
+      ],
+      [
+       145.1,
+       122,
+       200784768,
+       6
+      ],
+      [
+       150.1,
+       123,
+       202473528,
+       7
+      ],
+      [
+       155.1,
+       132,
+       219337808,
+       7
+      ],
+      [
+       160.1,
+       132,
+       219337808,
+       7
+      ],
+      [
+       165.1,
+       134,
+       222713616,
+       8
+      ],
+      [
+       170.1,
+       143,
+       239577888,
+       8
+      ],
+      [
+       175.1,
+       143,
+       239577888,
+       8
+      ],
+      [
+       180.1,
+       144,
+       241266664,
+       9
+      ],
+      [
+       185.1,
+       153,
+       258131032,
+       9
+      ],
+      [
+       190.1,
+       154,
+       259818088,
+       9
+      ],
+      [
+       195.1,
+       155,
+       261506872,
+       10
+      ],
+      [
+       200.1,
+       164,
+       278371136,
+       10
+      ],
+      [
+       205.1,
+       164,
+       278371136,
+       10
+      ],
+      [
+       210.1,
+       166,
+       281746984,
+       11
+      ],
+      [
+       215.1,
+       175,
+       298611464,
+       11
+      ],
+      [
+       220.1,
+       175,
+       298611464,
+       11
+      ],
+      [
+       225.1,
+       176,
+       300300224,
+       12
+      ],
+      [
+       230.1,
+       186,
+       318851824,
+       12
+      ],
+      [
+       235.1,
+       186,
+       318851824,
+       12
+      ]
+     ],
+     "sync_critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "sender_revision": 378,
+       "intent_revision": 383,
+       "receiver_revision": null,
+       "equal": false,
+       "duplicates": 0
+      }
+     ],
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "useful_receiver_bits": 0,
+     "obsolete_on_arrival_bits": 0,
+     "unique_beliefs_advanced": 0,
+     "coalesced_queued_bits": 0,
+     "stale_ignored": 0,
+     "coalesced": 0,
+     "drop_reasons": {}
+    },
+    "fixed_priority": {
+     "policy": "C-B2_fixed_priority",
+     "bandwidth_bps": 1.2,
+     "mission_information_retained": 0.0,
+     "critical_information_retained": 0.0,
+     "bits_sent": 0,
+     "energy_j": 0.0,
+     "retained_per_mbit": null,
+     "receiver_beliefs": 0,
+     "critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "revision": 55,
+       "finding_t_s": 57.1,
+       "link_down_at_finding": false,
+       "alert_latency_s": null,
+       "delta_latency_s": null
+      }
+     ],
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "deadline_counts": {
+      "critical": {
+       "met": 0,
+       "evaluable": 11
+      },
+      "routine": {
+       "met": 0,
+       "evaluable": 97
+      }
+     },
+     "queue_depth_max": 187,
+     "backlog_bits_max": 320540600,
+     "queue_depth_end": 187,
+     "backlog_bits_end": 320540600,
+     "queue_trace": [
+      [
+       0.1,
+       5,
+       26088,
+       0
+      ],
+      [
+       5.1,
+       14,
+       16887048,
+       0
+      ],
+      [
+       10.1,
+       15,
+       18575408,
+       0
+      ],
+      [
+       15.1,
+       16,
+       18581264,
+       0
+      ],
+      [
+       20.1,
+       27,
+       43863240,
+       0
+      ],
+      [
+       25.1,
+       28,
+       45551536,
+       0
+      ],
+      [
+       30.1,
+       30,
+       47245712,
+       0
+      ],
+      [
+       35.1,
+       42,
+       59084184,
+       0
+      ],
+      [
+       40.1,
+       42,
+       59084184,
+       0
+      ],
+      [
+       45.1,
+       44,
+       60778288,
+       0
+      ],
+      [
+       50.1,
+       54,
+       77649552,
+       0
+      ],
+      [
+       55.1,
+       56,
+       79343960,
+       0
+      ],
+      [
+       60.1,
+       57,
+       81032720,
+       1
+      ],
+      [
+       65.1,
+       67,
+       99583888,
+       1
+      ],
+      [
+       70.1,
+       68,
+       101272176,
+       1
+      ],
+      [
+       75.1,
+       69,
+       102960904,
+       2
+      ],
+      [
+       80.1,
+       79,
+       121511936,
+       2
+      ],
+      [
+       85.1,
+       79,
+       121511936,
+       2
+      ],
+      [
+       90.1,
+       80,
+       123200672,
+       3
+      ],
+      [
+       95.1,
+       90,
+       141751808,
+       3
+      ],
+      [
+       100.1,
+       90,
+       141751808,
+       3
+      ],
+      [
+       105.1,
+       91,
+       143440592,
+       4
+      ],
+      [
+       110.1,
+       100,
+       160304632,
+       4
+      ],
+      [
+       115.1,
+       101,
+       161991632,
+       4
+      ],
+      [
+       120.1,
+       102,
+       163680376,
+       5
+      ],
+      [
+       125.1,
+       111,
+       180544624,
+       5
+      ],
+      [
+       130.1,
+       112,
+       182231744,
+       5
+      ],
+      [
+       135.1,
+       113,
+       183920520,
+       6
+      ],
+      [
+       140.1,
+       122,
+       200784768,
+       6
+      ],
+      [
+       145.1,
+       122,
+       200784768,
+       6
+      ],
+      [
+       150.1,
+       123,
+       202473528,
+       7
+      ],
+      [
+       155.1,
+       132,
+       219337808,
+       7
+      ],
+      [
+       160.1,
+       132,
+       219337808,
+       7
+      ],
+      [
+       165.1,
+       134,
+       222713616,
+       8
+      ],
+      [
+       170.1,
+       143,
+       239577888,
+       8
+      ],
+      [
+       175.1,
+       143,
+       239577888,
+       8
+      ],
+      [
+       180.1,
+       144,
+       241266664,
+       9
+      ],
+      [
+       185.1,
+       153,
+       258131032,
+       9
+      ],
+      [
+       190.1,
+       154,
+       259818088,
+       9
+      ],
+      [
+       195.1,
+       155,
+       261506872,
+       10
+      ],
+      [
+       200.1,
+       164,
+       278371136,
+       10
+      ],
+      [
+       205.1,
+       164,
+       278371136,
+       10
+      ],
+      [
+       210.1,
+       166,
+       281746984,
+       11
+      ],
+      [
+       215.1,
+       175,
+       298611464,
+       11
+      ],
+      [
+       220.1,
+       175,
+       298611464,
+       11
+      ],
+      [
+       225.1,
+       176,
+       300300224,
+       12
+      ],
+      [
+       230.1,
+       186,
+       318851824,
+       12
+      ],
+      [
+       235.1,
+       186,
+       318851824,
+       12
+      ]
+     ],
+     "sync_critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "sender_revision": 378,
+       "intent_revision": 383,
+       "receiver_revision": null,
+       "equal": false,
+       "duplicates": 0
+      }
+     ],
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "useful_receiver_bits": 0,
+     "obsolete_on_arrival_bits": 0,
+     "unique_beliefs_advanced": 0,
+     "coalesced_queued_bits": 0,
+     "stale_ignored": 0,
+     "coalesced": 0,
+     "drop_reasons": {}
+    },
+    "value_per_bit": {
+     "policy": "C-B4_value_per_bit",
+     "bandwidth_bps": 1.2,
+     "mission_information_retained": 0.021951219512195128,
+     "critical_information_retained": 0.15,
+     "bits_sent": 184,
+     "energy_j": 0.0184,
+     "retained_per_mbit": 119.30010604453874,
+     "receiver_beliefs": 0,
+     "critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "revision": 55,
+       "finding_t_s": 57.1,
+       "link_down_at_finding": false,
+       "alert_latency_s": 105.0,
+       "delta_latency_s": null
+      }
+     ],
+     "critical_alert_latency_s": 105.0,
+     "critical_delta_latency_s": null,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "deadline_counts": {
+      "critical": {
+       "met": 0,
+       "evaluable": 11
+      },
+      "routine": {
+       "met": 0,
+       "evaluable": 97
+      }
+     },
+     "queue_depth_max": 187,
+     "backlog_bits_max": 320540416,
+     "queue_depth_end": 187,
+     "backlog_bits_end": 320540416,
+     "queue_trace": [
+      [
+       0.1,
+       5,
+       26088,
+       0
+      ],
+      [
+       5.1,
+       14,
+       16887048,
+       0
+      ],
+      [
+       10.1,
+       15,
+       18575408,
+       0
+      ],
+      [
+       15.1,
+       16,
+       18581264,
+       0
+      ],
+      [
+       20.1,
+       27,
+       43863240,
+       0
+      ],
+      [
+       25.1,
+       28,
+       45551536,
+       0
+      ],
+      [
+       30.1,
+       30,
+       47245712,
+       0
+      ],
+      [
+       35.1,
+       42,
+       59084184,
+       0
+      ],
+      [
+       40.1,
+       42,
+       59084184,
+       0
+      ],
+      [
+       45.1,
+       44,
+       60778288,
+       0
+      ],
+      [
+       50.1,
+       54,
+       77649552,
+       0
+      ],
+      [
+       55.1,
+       56,
+       79343960,
+       0
+      ],
+      [
+       60.1,
+       57,
+       81032720,
+       1
+      ],
+      [
+       65.1,
+       67,
+       99583888,
+       1
+      ],
+      [
+       70.1,
+       68,
+       101272176,
+       1
+      ],
+      [
+       75.1,
+       69,
+       102960904,
+       2
+      ],
+      [
+       80.1,
+       79,
+       121511936,
+       2
+      ],
+      [
+       85.1,
+       79,
+       121511936,
+       2
+      ],
+      [
+       90.1,
+       80,
+       123200672,
+       3
+      ],
+      [
+       95.1,
+       90,
+       141751808,
+       3
+      ],
+      [
+       100.1,
+       90,
+       141751808,
+       3
+      ],
+      [
+       105.1,
+       91,
+       143440592,
+       4
+      ],
+      [
+       110.1,
+       100,
+       160304632,
+       4
+      ],
+      [
+       115.1,
+       101,
+       161991632,
+       4
+      ],
+      [
+       120.1,
+       102,
+       163680376,
+       5
+      ],
+      [
+       125.1,
+       111,
+       180544624,
+       5
+      ],
+      [
+       130.1,
+       112,
+       182231744,
+       5
+      ],
+      [
+       135.1,
+       113,
+       183920520,
+       6
+      ],
+      [
+       140.1,
+       122,
+       200784768,
+       6
+      ],
+      [
+       145.1,
+       122,
+       200784768,
+       6
+      ],
+      [
+       150.1,
+       123,
+       202473528,
+       7
+      ],
+      [
+       155.1,
+       132,
+       219337808,
+       7
+      ],
+      [
+       160.1,
+       132,
+       219337808,
+       7
+      ],
+      [
+       165.1,
+       134,
+       222713432,
+       8
+      ],
+      [
+       170.1,
+       143,
+       239577704,
+       8
+      ],
+      [
+       175.1,
+       143,
+       239577704,
+       8
+      ],
+      [
+       180.1,
+       144,
+       241266480,
+       9
+      ],
+      [
+       185.1,
+       153,
+       258130848,
+       9
+      ],
+      [
+       190.1,
+       154,
+       259817904,
+       9
+      ],
+      [
+       195.1,
+       155,
+       261506688,
+       10
+      ],
+      [
+       200.1,
+       164,
+       278370952,
+       10
+      ],
+      [
+       205.1,
+       164,
+       278370952,
+       10
+      ],
+      [
+       210.1,
+       166,
+       281746800,
+       11
+      ],
+      [
+       215.1,
+       175,
+       298611280,
+       11
+      ],
+      [
+       220.1,
+       175,
+       298611280,
+       11
+      ],
+      [
+       225.1,
+       176,
+       300300040,
+       12
+      ],
+      [
+       230.1,
+       186,
+       318851640,
+       12
+      ],
+      [
+       235.1,
+       186,
+       318851640,
+       12
+      ]
+     ],
+     "sync_critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "sender_revision": 378,
+       "intent_revision": 383,
+       "receiver_revision": null,
+       "equal": false,
+       "duplicates": 0
+      }
+     ],
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "useful_receiver_bits": 184,
+     "obsolete_on_arrival_bits": 0,
+     "unique_beliefs_advanced": 0,
+     "coalesced_queued_bits": 0,
+     "stale_ignored": 0,
+     "coalesced": 0,
+     "drop_reasons": {}
+    }
+   },
+   "reconnection": {}
+  },
+  {
+   "run_id": "I7-COMPACT-SUMMARY-DEV-LOW-5100001-s5100001-bw0.01-shadow",
+   "seed": 5100001,
+   "scenario": "I7-BANDWIDTH",
+   "bandwidth_factor": 0.01,
+   "primary": "baac",
+   "link": {
+    "name": "acoustic",
+    "bandwidth_bps": 12.0,
+    "latency_s": 1.0,
+    "packet_loss": 0.05,
+    "bit_error_rate": 1e-06,
+    "energy_per_bit_j": 0.0001,
+    "packet_bits": 1024,
+    "max_retries": 3,
+    "max_range_m": null,
+    "outages_s": [],
+    "outage_follows_critical_finding": false,
+    "outage_hold_after_finding_s": 45.0,
+    "outage_max_s": 120.0,
+    "bandwidth_schedule": [],
+    "degraded_below_fraction": 0.5,
+    "source": "SYNTHETIC_ONLY"
+   },
+   "patch_first_visible_t_s": 54.25,
+   "critical_offers": [
+    [
+     "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+     55,
+     57100000000
+    ]
+   ],
+   "offers": 187,
+   "offer_stream_sha256": "ca9c9e771aa5bef3b6daf629bd36fd12fde6bd7e329a2dc2009495ec48135188",
+   "beliefs_reported": 18,
+   "arms": {
+    "baac": {
+     "policy": "C-B10_baac",
+     "bandwidth_bps": 12.0,
+     "mission_information_retained": 0.021951219512195128,
+     "critical_information_retained": 0.15,
+     "bits_sent": 2760,
+     "energy_j": 0.276,
+     "retained_per_mbit": 7.95334040296925,
+     "receiver_beliefs": 0,
+     "critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "revision": 55,
+       "finding_t_s": 57.1,
+       "link_down_at_finding": false,
+       "alert_latency_s": 1.0,
+       "delta_latency_s": null
+      }
+     ],
+     "critical_alert_latency_s": 1.0,
+     "critical_delta_latency_s": null,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.0
+     },
+     "deadline_counts": {
+      "critical": {
+       "met": 12,
+       "evaluable": 12
+      },
+      "routine": {
+       "met": 0,
+       "evaluable": 97
+      }
+     },
+     "queue_depth_max": 18,
+     "backlog_bits_max": 28680880,
+     "queue_depth_end": 18,
+     "backlog_bits_end": 25327312,
+     "queue_trace": [
+      [
+       0.1,
+       5,
+       26088,
+       0
+      ],
+      [
+       5.1,
+       14,
+       16887048,
+       0
+      ],
+      [
+       10.1,
+       15,
+       18575408,
+       0
+      ],
+      [
+       15.1,
+       15,
+       18576168,
+       0
+      ],
+      [
+       20.1,
+       16,
+       26991888,
+       0
+      ],
+      [
+       25.1,
+       16,
+       26991824,
+       0
+      ],
+      [
+       30.1,
+       17,
+       28680880,
+       0
+      ],
+      [
+       35.1,
+       18,
+       15237376,
+       0
+      ],
+      [
+       40.1,
+       18,
+       15237376,
+       0
+      ],
+      [
+       45.1,
+       18,
+       15237304,
+       0
+      ],
+      [
+       50.1,
+       18,
+       21964560,
+       0
+      ],
+      [
+       55.1,
+       18,
+       21964504,
+       0
+      ],
+      [
+       60.1,
+       18,
+       23647080,
+       1
+      ],
+      [
+       65.1,
+       18,
+       25326984,
+       1
+      ],
+      [
+       70.1,
+       18,
+       25326864,
+       1
+      ],
+      [
+       75.1,
+       18,
+       25326832,
+       1
+      ],
+      [
+       80.1,
+       18,
+       25326696,
+       1
+      ],
+      [
+       85.1,
+       18,
+       25326696,
+       1
+      ],
+      [
+       90.1,
+       18,
+       25326704,
+       1
+      ],
+      [
+       95.1,
+       18,
+       25326808,
+       1
+      ],
+      [
+       100.1,
+       18,
+       25326808,
+       1
+      ],
+      [
+       105.1,
+       18,
+       25326856,
+       1
+      ],
+      [
+       110.1,
+       18,
+       25326768,
+       1
+      ],
+      [
+       115.1,
+       18,
+       25326760,
+       1
+      ],
+      [
+       120.1,
+       18,
+       25326720,
+       1
+      ],
+      [
+       125.1,
+       18,
+       25326928,
+       1
+      ],
+      [
+       130.1,
+       18,
+       25327048,
+       1
+      ],
+      [
+       135.1,
+       18,
+       25327080,
+       1
+      ],
+      [
+       140.1,
+       18,
+       25327080,
+       1
+      ],
+      [
+       145.1,
+       18,
+       25327080,
+       1
+      ],
+      [
+       150.1,
+       18,
+       25327064,
+       1
+      ],
+      [
+       155.1,
+       18,
+       25327096,
+       1
+      ],
+      [
+       160.1,
+       18,
+       25327096,
+       1
+      ],
+      [
+       165.1,
+       18,
+       25327024,
+       1
+      ],
+      [
+       170.1,
+       18,
+       25327016,
+       1
+      ],
+      [
+       175.1,
+       18,
+       25327016,
+       1
+      ],
+      [
+       180.1,
+       18,
+       25327016,
+       1
+      ],
+      [
+       185.1,
+       18,
+       25327112,
+       1
+      ],
+      [
+       190.1,
+       18,
+       25327136,
+       1
+      ],
+      [
+       195.1,
+       18,
+       25327144,
+       1
+      ],
+      [
+       200.1,
+       18,
+       25327040,
+       1
+      ],
+      [
+       205.1,
+       18,
+       25327040,
+       1
+      ],
+      [
+       210.1,
+       18,
+       25327048,
+       1
+      ],
+      [
+       215.1,
+       18,
+       25327264,
+       1
+      ],
+      [
+       220.1,
+       18,
+       25327264,
+       1
+      ],
+      [
+       225.1,
+       18,
+       25327232,
+       1
+      ],
+      [
+       230.1,
+       18,
+       25327296,
+       1
+      ],
+      [
+       235.1,
+       18,
+       25327296,
+       1
+      ]
+     ],
+     "sync_critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "sender_revision": 378,
+       "intent_revision": 383,
+       "receiver_revision": null,
+       "equal": false,
+       "duplicates": 0
+      }
+     ],
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "useful_receiver_bits": 2208,
+     "obsolete_on_arrival_bits": 0,
+     "unique_beliefs_advanced": 0,
+     "coalesced_queued_bits": 295210896,
+     "stale_ignored": 0,
+     "coalesced": 169,
+     "drop_reasons": {}
+    },
+    "raw": {
+     "policy": "C-B0_send_all",
+     "bandwidth_bps": 12.0,
+     "mission_information_retained": 0.0,
+     "critical_information_retained": 0.0,
+     "bits_sent": 2049,
+     "energy_j": 0.20490000000000003,
+     "retained_per_mbit": 0.0,
+     "receiver_beliefs": 0,
+     "critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "revision": 55,
+       "finding_t_s": 57.1,
+       "link_down_at_finding": false,
+       "alert_latency_s": null,
+       "delta_latency_s": null
+      }
+     ],
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "deadline_counts": {
+      "critical": {
+       "met": 0,
+       "evaluable": 11
+      },
+      "routine": {
+       "met": 0,
+       "evaluable": 97
+      }
+     },
+     "queue_depth_max": 187,
+     "backlog_bits_max": 320540600,
+     "queue_depth_end": 187,
+     "backlog_bits_end": 320540600,
+     "queue_trace": [
+      [
+       0.1,
+       5,
+       26088,
+       0
+      ],
+      [
+       5.1,
+       14,
+       16887048,
+       0
+      ],
+      [
+       10.1,
+       15,
+       18575408,
+       0
+      ],
+      [
+       15.1,
+       16,
+       18581264,
+       0
+      ],
+      [
+       20.1,
+       27,
+       43863240,
+       0
+      ],
+      [
+       25.1,
+       28,
+       45551536,
+       0
+      ],
+      [
+       30.1,
+       30,
+       47245712,
+       0
+      ],
+      [
+       35.1,
+       42,
+       59084184,
+       0
+      ],
+      [
+       40.1,
+       42,
+       59084184,
+       0
+      ],
+      [
+       45.1,
+       44,
+       60778288,
+       0
+      ],
+      [
+       50.1,
+       54,
+       77649552,
+       0
+      ],
+      [
+       55.1,
+       56,
+       79343960,
+       0
+      ],
+      [
+       60.1,
+       57,
+       81032720,
+       1
+      ],
+      [
+       65.1,
+       67,
+       99583888,
+       1
+      ],
+      [
+       70.1,
+       68,
+       101272176,
+       1
+      ],
+      [
+       75.1,
+       69,
+       102960904,
+       2
+      ],
+      [
+       80.1,
+       79,
+       121511936,
+       2
+      ],
+      [
+       85.1,
+       79,
+       121511936,
+       2
+      ],
+      [
+       90.1,
+       80,
+       123200672,
+       3
+      ],
+      [
+       95.1,
+       90,
+       141751808,
+       3
+      ],
+      [
+       100.1,
+       90,
+       141751808,
+       3
+      ],
+      [
+       105.1,
+       91,
+       143440592,
+       4
+      ],
+      [
+       110.1,
+       100,
+       160304632,
+       4
+      ],
+      [
+       115.1,
+       101,
+       161991632,
+       4
+      ],
+      [
+       120.1,
+       102,
+       163680376,
+       5
+      ],
+      [
+       125.1,
+       111,
+       180544624,
+       5
+      ],
+      [
+       130.1,
+       112,
+       182231744,
+       5
+      ],
+      [
+       135.1,
+       113,
+       183920520,
+       6
+      ],
+      [
+       140.1,
+       122,
+       200784768,
+       6
+      ],
+      [
+       145.1,
+       122,
+       200784768,
+       6
+      ],
+      [
+       150.1,
+       123,
+       202473528,
+       7
+      ],
+      [
+       155.1,
+       132,
+       219337808,
+       7
+      ],
+      [
+       160.1,
+       132,
+       219337808,
+       7
+      ],
+      [
+       165.1,
+       134,
+       222713616,
+       8
+      ],
+      [
+       170.1,
+       143,
+       239577888,
+       8
+      ],
+      [
+       175.1,
+       143,
+       239577888,
+       8
+      ],
+      [
+       180.1,
+       144,
+       241266664,
+       9
+      ],
+      [
+       185.1,
+       153,
+       258131032,
+       9
+      ],
+      [
+       190.1,
+       154,
+       259818088,
+       9
+      ],
+      [
+       195.1,
+       155,
+       261506872,
+       10
+      ],
+      [
+       200.1,
+       164,
+       278371136,
+       10
+      ],
+      [
+       205.1,
+       164,
+       278371136,
+       10
+      ],
+      [
+       210.1,
+       166,
+       281746984,
+       11
+      ],
+      [
+       215.1,
+       175,
+       298611464,
+       11
+      ],
+      [
+       220.1,
+       175,
+       298611464,
+       11
+      ],
+      [
+       225.1,
+       176,
+       300300224,
+       12
+      ],
+      [
+       230.1,
+       186,
+       318851824,
+       12
+      ],
+      [
+       235.1,
+       186,
+       318851824,
+       12
+      ]
+     ],
+     "sync_critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "sender_revision": 378,
+       "intent_revision": 383,
+       "receiver_revision": null,
+       "equal": false,
+       "duplicates": 0
+      }
+     ],
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "useful_receiver_bits": 0,
+     "obsolete_on_arrival_bits": 0,
+     "unique_beliefs_advanced": 0,
+     "coalesced_queued_bits": 0,
+     "stale_ignored": 0,
+     "coalesced": 0,
+     "drop_reasons": {}
+    },
+    "fifo": {
+     "policy": "C-B1_fifo",
+     "bandwidth_bps": 12.0,
+     "mission_information_retained": 0.0,
+     "critical_information_retained": 0.0,
+     "bits_sent": 2049,
+     "energy_j": 0.20490000000000003,
+     "retained_per_mbit": 0.0,
+     "receiver_beliefs": 0,
+     "critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "revision": 55,
+       "finding_t_s": 57.1,
+       "link_down_at_finding": false,
+       "alert_latency_s": null,
+       "delta_latency_s": null
+      }
+     ],
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "deadline_counts": {
+      "critical": {
+       "met": 0,
+       "evaluable": 11
+      },
+      "routine": {
+       "met": 0,
+       "evaluable": 97
+      }
+     },
+     "queue_depth_max": 187,
+     "backlog_bits_max": 320540600,
+     "queue_depth_end": 187,
+     "backlog_bits_end": 320540600,
+     "queue_trace": [
+      [
+       0.1,
+       5,
+       26088,
+       0
+      ],
+      [
+       5.1,
+       14,
+       16887048,
+       0
+      ],
+      [
+       10.1,
+       15,
+       18575408,
+       0
+      ],
+      [
+       15.1,
+       16,
+       18581264,
+       0
+      ],
+      [
+       20.1,
+       27,
+       43863240,
+       0
+      ],
+      [
+       25.1,
+       28,
+       45551536,
+       0
+      ],
+      [
+       30.1,
+       30,
+       47245712,
+       0
+      ],
+      [
+       35.1,
+       42,
+       59084184,
+       0
+      ],
+      [
+       40.1,
+       42,
+       59084184,
+       0
+      ],
+      [
+       45.1,
+       44,
+       60778288,
+       0
+      ],
+      [
+       50.1,
+       54,
+       77649552,
+       0
+      ],
+      [
+       55.1,
+       56,
+       79343960,
+       0
+      ],
+      [
+       60.1,
+       57,
+       81032720,
+       1
+      ],
+      [
+       65.1,
+       67,
+       99583888,
+       1
+      ],
+      [
+       70.1,
+       68,
+       101272176,
+       1
+      ],
+      [
+       75.1,
+       69,
+       102960904,
+       2
+      ],
+      [
+       80.1,
+       79,
+       121511936,
+       2
+      ],
+      [
+       85.1,
+       79,
+       121511936,
+       2
+      ],
+      [
+       90.1,
+       80,
+       123200672,
+       3
+      ],
+      [
+       95.1,
+       90,
+       141751808,
+       3
+      ],
+      [
+       100.1,
+       90,
+       141751808,
+       3
+      ],
+      [
+       105.1,
+       91,
+       143440592,
+       4
+      ],
+      [
+       110.1,
+       100,
+       160304632,
+       4
+      ],
+      [
+       115.1,
+       101,
+       161991632,
+       4
+      ],
+      [
+       120.1,
+       102,
+       163680376,
+       5
+      ],
+      [
+       125.1,
+       111,
+       180544624,
+       5
+      ],
+      [
+       130.1,
+       112,
+       182231744,
+       5
+      ],
+      [
+       135.1,
+       113,
+       183920520,
+       6
+      ],
+      [
+       140.1,
+       122,
+       200784768,
+       6
+      ],
+      [
+       145.1,
+       122,
+       200784768,
+       6
+      ],
+      [
+       150.1,
+       123,
+       202473528,
+       7
+      ],
+      [
+       155.1,
+       132,
+       219337808,
+       7
+      ],
+      [
+       160.1,
+       132,
+       219337808,
+       7
+      ],
+      [
+       165.1,
+       134,
+       222713616,
+       8
+      ],
+      [
+       170.1,
+       143,
+       239577888,
+       8
+      ],
+      [
+       175.1,
+       143,
+       239577888,
+       8
+      ],
+      [
+       180.1,
+       144,
+       241266664,
+       9
+      ],
+      [
+       185.1,
+       153,
+       258131032,
+       9
+      ],
+      [
+       190.1,
+       154,
+       259818088,
+       9
+      ],
+      [
+       195.1,
+       155,
+       261506872,
+       10
+      ],
+      [
+       200.1,
+       164,
+       278371136,
+       10
+      ],
+      [
+       205.1,
+       164,
+       278371136,
+       10
+      ],
+      [
+       210.1,
+       166,
+       281746984,
+       11
+      ],
+      [
+       215.1,
+       175,
+       298611464,
+       11
+      ],
+      [
+       220.1,
+       175,
+       298611464,
+       11
+      ],
+      [
+       225.1,
+       176,
+       300300224,
+       12
+      ],
+      [
+       230.1,
+       186,
+       318851824,
+       12
+      ],
+      [
+       235.1,
+       186,
+       318851824,
+       12
+      ]
+     ],
+     "sync_critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "sender_revision": 378,
+       "intent_revision": 383,
+       "receiver_revision": null,
+       "equal": false,
+       "duplicates": 0
+      }
+     ],
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "useful_receiver_bits": 0,
+     "obsolete_on_arrival_bits": 0,
+     "unique_beliefs_advanced": 0,
+     "coalesced_queued_bits": 0,
+     "stale_ignored": 0,
+     "coalesced": 0,
+     "drop_reasons": {}
+    },
+    "fixed_priority": {
+     "policy": "C-B2_fixed_priority",
+     "bandwidth_bps": 12.0,
+     "mission_information_retained": 0.0,
+     "critical_information_retained": 0.0,
+     "bits_sent": 2049,
+     "energy_j": 0.20490000000000003,
+     "retained_per_mbit": 0.0,
+     "receiver_beliefs": 0,
+     "critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "revision": 55,
+       "finding_t_s": 57.1,
+       "link_down_at_finding": false,
+       "alert_latency_s": null,
+       "delta_latency_s": null
+      }
+     ],
+     "critical_alert_latency_s": null,
+     "critical_delta_latency_s": null,
+     "deadline_success": {
+      "critical": 0.0,
+      "routine": 0.0
+     },
+     "deadline_counts": {
+      "critical": {
+       "met": 0,
+       "evaluable": 11
+      },
+      "routine": {
+       "met": 0,
+       "evaluable": 97
+      }
+     },
+     "queue_depth_max": 187,
+     "backlog_bits_max": 320540600,
+     "queue_depth_end": 187,
+     "backlog_bits_end": 320540600,
+     "queue_trace": [
+      [
+       0.1,
+       5,
+       26088,
+       0
+      ],
+      [
+       5.1,
+       14,
+       16887048,
+       0
+      ],
+      [
+       10.1,
+       15,
+       18575408,
+       0
+      ],
+      [
+       15.1,
+       16,
+       18581264,
+       0
+      ],
+      [
+       20.1,
+       27,
+       43863240,
+       0
+      ],
+      [
+       25.1,
+       28,
+       45551536,
+       0
+      ],
+      [
+       30.1,
+       30,
+       47245712,
+       0
+      ],
+      [
+       35.1,
+       42,
+       59084184,
+       0
+      ],
+      [
+       40.1,
+       42,
+       59084184,
+       0
+      ],
+      [
+       45.1,
+       44,
+       60778288,
+       0
+      ],
+      [
+       50.1,
+       54,
+       77649552,
+       0
+      ],
+      [
+       55.1,
+       56,
+       79343960,
+       0
+      ],
+      [
+       60.1,
+       57,
+       81032720,
+       1
+      ],
+      [
+       65.1,
+       67,
+       99583888,
+       1
+      ],
+      [
+       70.1,
+       68,
+       101272176,
+       1
+      ],
+      [
+       75.1,
+       69,
+       102960904,
+       2
+      ],
+      [
+       80.1,
+       79,
+       121511936,
+       2
+      ],
+      [
+       85.1,
+       79,
+       121511936,
+       2
+      ],
+      [
+       90.1,
+       80,
+       123200672,
+       3
+      ],
+      [
+       95.1,
+       90,
+       141751808,
+       3
+      ],
+      [
+       100.1,
+       90,
+       141751808,
+       3
+      ],
+      [
+       105.1,
+       91,
+       143440592,
+       4
+      ],
+      [
+       110.1,
+       100,
+       160304632,
+       4
+      ],
+      [
+       115.1,
+       101,
+       161991632,
+       4
+      ],
+      [
+       120.1,
+       102,
+       163680376,
+       5
+      ],
+      [
+       125.1,
+       111,
+       180544624,
+       5
+      ],
+      [
+       130.1,
+       112,
+       182231744,
+       5
+      ],
+      [
+       135.1,
+       113,
+       183920520,
+       6
+      ],
+      [
+       140.1,
+       122,
+       200784768,
+       6
+      ],
+      [
+       145.1,
+       122,
+       200784768,
+       6
+      ],
+      [
+       150.1,
+       123,
+       202473528,
+       7
+      ],
+      [
+       155.1,
+       132,
+       219337808,
+       7
+      ],
+      [
+       160.1,
+       132,
+       219337808,
+       7
+      ],
+      [
+       165.1,
+       134,
+       222713616,
+       8
+      ],
+      [
+       170.1,
+       143,
+       239577888,
+       8
+      ],
+      [
+       175.1,
+       143,
+       239577888,
+       8
+      ],
+      [
+       180.1,
+       144,
+       241266664,
+       9
+      ],
+      [
+       185.1,
+       153,
+       258131032,
+       9
+      ],
+      [
+       190.1,
+       154,
+       259818088,
+       9
+      ],
+      [
+       195.1,
+       155,
+       261506872,
+       10
+      ],
+      [
+       200.1,
+       164,
+       278371136,
+       10
+      ],
+      [
+       205.1,
+       164,
+       278371136,
+       10
+      ],
+      [
+       210.1,
+       166,
+       281746984,
+       11
+      ],
+      [
+       215.1,
+       175,
+       298611464,
+       11
+      ],
+      [
+       220.1,
+       175,
+       298611464,
+       11
+      ],
+      [
+       225.1,
+       176,
+       300300224,
+       12
+      ],
+      [
+       230.1,
+       186,
+       318851824,
+       12
+      ],
+      [
+       235.1,
+       186,
+       318851824,
+       12
+      ]
+     ],
+     "sync_critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "sender_revision": 378,
+       "intent_revision": 383,
+       "receiver_revision": null,
+       "equal": false,
+       "duplicates": 0
+      }
+     ],
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "useful_receiver_bits": 0,
+     "obsolete_on_arrival_bits": 0,
+     "unique_beliefs_advanced": 0,
+     "coalesced_queued_bits": 0,
+     "stale_ignored": 0,
+     "coalesced": 0,
+     "drop_reasons": {}
+    },
+    "value_per_bit": {
+     "policy": "C-B4_value_per_bit",
+     "bandwidth_bps": 12.0,
+     "mission_information_retained": 0.021951219512195128,
+     "critical_information_retained": 0.15,
+     "bits_sent": 2760,
+     "energy_j": 0.276,
+     "retained_per_mbit": 7.95334040296925,
+     "receiver_beliefs": 0,
+     "critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "revision": 55,
+       "finding_t_s": 57.1,
+       "link_down_at_finding": false,
+       "alert_latency_s": 1.0,
+       "delta_latency_s": null
+      }
+     ],
+     "critical_alert_latency_s": 1.0,
+     "critical_delta_latency_s": null,
+     "deadline_success": {
+      "critical": 1.0,
+      "routine": 0.0
+     },
+     "deadline_counts": {
+      "critical": {
+       "met": 12,
+       "evaluable": 12
+      },
+      "routine": {
+       "met": 0,
+       "evaluable": 97
+      }
+     },
+     "queue_depth_max": 187,
+     "backlog_bits_max": 320538208,
+     "queue_depth_end": 187,
+     "backlog_bits_end": 320538208,
+     "queue_trace": [
+      [
+       0.1,
+       5,
+       26088,
+       0
+      ],
+      [
+       5.1,
+       14,
+       16887048,
+       0
+      ],
+      [
+       10.1,
+       15,
+       18575408,
+       0
+      ],
+      [
+       15.1,
+       16,
+       18581264,
+       0
+      ],
+      [
+       20.1,
+       27,
+       43863240,
+       0
+      ],
+      [
+       25.1,
+       28,
+       45551536,
+       0
+      ],
+      [
+       30.1,
+       30,
+       47245712,
+       0
+      ],
+      [
+       35.1,
+       42,
+       59084184,
+       0
+      ],
+      [
+       40.1,
+       42,
+       59084184,
+       0
+      ],
+      [
+       45.1,
+       44,
+       60778288,
+       0
+      ],
+      [
+       50.1,
+       54,
+       77649552,
+       0
+      ],
+      [
+       55.1,
+       56,
+       79343960,
+       0
+      ],
+      [
+       60.1,
+       57,
+       81032536,
+       1
+      ],
+      [
+       65.1,
+       67,
+       99583704,
+       1
+      ],
+      [
+       70.1,
+       68,
+       101271992,
+       1
+      ],
+      [
+       75.1,
+       69,
+       102960536,
+       2
+      ],
+      [
+       80.1,
+       79,
+       121511568,
+       2
+      ],
+      [
+       85.1,
+       79,
+       121511568,
+       2
+      ],
+      [
+       90.1,
+       80,
+       123200120,
+       3
+      ],
+      [
+       95.1,
+       90,
+       141751256,
+       3
+      ],
+      [
+       100.1,
+       90,
+       141751256,
+       3
+      ],
+      [
+       105.1,
+       91,
+       143439856,
+       4
+      ],
+      [
+       110.1,
+       100,
+       160303896,
+       4
+      ],
+      [
+       115.1,
+       101,
+       161990896,
+       4
+      ],
+      [
+       120.1,
+       102,
+       163679456,
+       5
+      ],
+      [
+       125.1,
+       111,
+       180543704,
+       5
+      ],
+      [
+       130.1,
+       112,
+       182230824,
+       5
+      ],
+      [
+       135.1,
+       113,
+       183919416,
+       6
+      ],
+      [
+       140.1,
+       122,
+       200783664,
+       6
+      ],
+      [
+       145.1,
+       122,
+       200783664,
+       6
+      ],
+      [
+       150.1,
+       123,
+       202472240,
+       7
+      ],
+      [
+       155.1,
+       132,
+       219336520,
+       7
+      ],
+      [
+       160.1,
+       132,
+       219336520,
+       7
+      ],
+      [
+       165.1,
+       134,
+       222712144,
+       8
+      ],
+      [
+       170.1,
+       143,
+       239576416,
+       8
+      ],
+      [
+       175.1,
+       143,
+       239576416,
+       8
+      ],
+      [
+       180.1,
+       144,
+       241265008,
+       9
+      ],
+      [
+       185.1,
+       153,
+       258129376,
+       9
+      ],
+      [
+       190.1,
+       154,
+       259816432,
+       9
+      ],
+      [
+       195.1,
+       155,
+       261505032,
+       10
+      ],
+      [
+       200.1,
+       164,
+       278369296,
+       10
+      ],
+      [
+       205.1,
+       164,
+       278369296,
+       10
+      ],
+      [
+       210.1,
+       166,
+       281744960,
+       11
+      ],
+      [
+       215.1,
+       175,
+       298609440,
+       11
+      ],
+      [
+       220.1,
+       175,
+       298609440,
+       11
+      ],
+      [
+       225.1,
+       176,
+       300298016,
+       12
+      ],
+      [
+       230.1,
+       186,
+       318849616,
+       12
+      ],
+      [
+       235.1,
+       186,
+       318849616,
+       12
+      ]
+     ],
+     "sync_critical": [
+      {
+       "belief_id": "018bcfe5-6804-75ef-ba40-0448a1c7d238",
+       "sender_revision": 378,
+       "intent_revision": 383,
+       "receiver_revision": null,
+       "equal": false,
+       "duplicates": 0
+      }
+     ],
+     "sync_critical_all_equal": false,
+     "duplicate_contributions": 0,
+     "useful_receiver_bits": 2208,
+     "obsolete_on_arrival_bits": 0,
+     "unique_beliefs_advanced": 0,
+     "coalesced_queued_bits": 0,
+     "stale_ignored": 0,
+     "coalesced": 0,
+     "drop_reasons": {}
+    }
+   },
+   "reconnection": {}
+  }
+ ]
+}

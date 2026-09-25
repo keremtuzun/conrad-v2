@@ -46,7 +46,14 @@ NS = 1_000_000_000
 
 
 # ---------------------------------------------------------------------------------------------- one mission
-def _settings(seed: int, scenario: str, factor: float, primary: str, shadows: list[str]) -> ConradSettings:
+def _settings(
+    seed: int,
+    scenario: str,
+    factor: float,
+    primary: str,
+    shadows: list[str],
+    baac_override: dict[str, Any] | None = None,
+) -> ConradSettings:
     base = load_settings(REPO_ROOT / DEFAULT_CONFIG)
     mission = dict(base.sim.get("mission", {}))
     _, rt = resolve(scenario, mission)
@@ -55,6 +62,7 @@ def _settings(seed: int, scenario: str, factor: float, primary: str, shadows: li
     runtime["link"] = {**dict(runtime.get("link", {})), "bandwidth_bps": ref_bps * factor}
     runtime["baac"] = {
         **dict(runtime.get("baac", {})),
+        **(baac_override or {}),
         "scheduler_policy": POLICIES[primary],
         "shadow_arms": [{"name": n, "policy": POLICIES[n]} for n in shadows],
     }
@@ -94,7 +102,7 @@ def _score_arm(
     alerts: dict[str, list[tuple[int, int]]] = {}
     deltas: dict[str, list[tuple[int, int]]] = {}
     for r in rep["receipts"]:
-        if r["kind"] == "alert":
+        if r["kind"] in ("alert", "critical_summary"):
             alerts.setdefault(r["belief_id"], []).append((r["t_ns"], r["revision"]))
         elif r["kind"] == "deltas":
             deltas.setdefault(r["belief_id"], []).append((r["t_ns"], r["revision"]))
@@ -195,7 +203,11 @@ def _reconnection_trace(rep: dict[str, Any], shore: Any, n: int = 12) -> list[di
         a_ns, b_ns = int(a * NS), int(b * NS)
         found = [c for c in shore.critical_offers if a_ns <= c[2] < b_ns]
         txs = [t for t in rep["transmissions"] if t["sent_ns"] >= b_ns][:n]
-        recs = [r for r in rep["receipts"] if r["t_ns"] >= b_ns and r["kind"] in ("alert", "deltas")]
+        recs = [
+            r
+            for r in rep["receipts"]
+            if r["t_ns"] >= b_ns and r["kind"] in ("alert", "critical_summary", "deltas")
+        ]
         first_crit_delta = next(
             (
                 i
@@ -225,7 +237,7 @@ def mission_job(job: dict[str, Any]) -> dict[str, Any]:
     """Run one integrated mission with a primary arm and shadow arms; return scored, JSON-safe results."""
     seed, scenario, factor = int(job["seed"]), str(job["scenario"]), float(job["factor"])
     primary, shadows = str(job["primary"]), list(job["shadows"])
-    settings = _settings(seed, scenario, factor, primary, shadows)
+    settings = _settings(seed, scenario, factor, primary, shadows, job["cfg"].get("baac_override"))
     runs_root = Path(job["runs_root"])
     session = prepare(scenario, settings, run_id=job["run_id"], runs_root=runs_root)
     session.run()

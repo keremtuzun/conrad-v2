@@ -20,6 +20,7 @@ def main() -> None:
     parser.add_argument("--scenario", default="I7-OUTAGE-CRITICAL")
     parser.add_argument("--levels", nargs="+", type=float, default=[0.1])
     parser.add_argument("--workers", type=int, default=1)
+    parser.add_argument("--compact-summary", action="store_true")
     args = parser.parse_args()
 
     config = {
@@ -45,6 +46,11 @@ def main() -> None:
         "workers": args.workers,
         "keep_bundles": False,
     }
+    if args.compact_summary:
+        config["baac_override"] = {
+            "model_version": "baac-critical-summary-v1",
+            "compact_critical_summary": True,
+        }
     out = Path("artifacts") / "experiments" / args.experiment_id
     run(config, args.seeds, out)
 
