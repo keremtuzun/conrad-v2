@@ -420,5 +420,21 @@ subthreshold crack control, occlusion, required-domain edge defect,
 separated defects, and the equal-global-mean pair. Results were appended
 case by case under `SPATIAL-ASSOC-DEV-407-408/results.jsonl`. These are
 development seeds and do not repair or reclassify validation seeds 1401/1402.
-Current-association closed-loop replay and Unity parity remain required
-before a separately declared validation cycle.
+
+The repaired `SPATIAL-V2-AXIAL-480S-DEV` closed-loop mission subsequently
+finished with final qualified `INTACT`, required coverage 1.0, and zero
+`SEVERE` target revisions. The first direct `INTACT` revision was at 291.3 s;
+there were 181 target spatial revisions, 13 MCBR plans, 480 structural
+sensor responses, and 213 Model2T ingests. It used 422.28 process CPU
+seconds over 480.94 wall seconds on the contended host, persisted 7,801
+belief revisions with 24,282,590 payload bytes, and wrote a 109,468,831-byte
+bundle. The bundle pins `spatial-structural-association-axial-v2` together
+with detectability-v2 and bounded-registration-v2. Full replay verified
+1,753 files and 478 objects, and exactly reproduced 25,957 events, 1,822
+Observation payloads, 1,155 Evidence payloads, 7,801 belief payloads,
+4,800 command payloads, trajectory, 13 view executions, 675 structural
+associations, and 503 BAAC transmissions. This is development evidence;
+The nine opt-in Unity development parity tests then passed under this
+same axial-association/detectability contract, across clear/occluded,
+exact/bounded-survey, and deterministic/noisy cases. Cycle-2 validation
+seeds remained unopened at this entry.

@@ -15,9 +15,9 @@ sensor parameters. No physical calibration or deployment claim follows.
 | E Conservative condition | Required-domain complete coverage and independent looks for qualified intact; severe local finding overrides incomplete coverage | DEVELOPMENT VERIFIED; prospective validation pending |
 | F Identifiability | Controlled mission sensor/Evidence/Model2T sweep separates same-mean worlds; one closed-loop healthy and two defect development missions | PARTIAL: independent closed-loop case matrix pending |
 | G Synthetic detectability | Detectability v2: independent explicit crack length/depth thresholds plus patch size; unit boundary and mission-path negative controls passed | DEVELOPMENT VERIFIED; prospective validation pending |
-| H Kernel/Unity parity | Pinned player; 9/9 opt-in live development tests at detectability-v2 across clear/occluded, exact/bounded, deterministic/noisy cases | DEVELOPMENT VERIFIED; prospective parity partition pending |
+| H Kernel/Unity parity | Pinned player; 9/9 opt-in live development tests at current association/detectability-v2 across clear/occluded, exact/bounded, deterministic/noisy cases | DEVELOPMENT VERIFIED; cycle-2 parity partition pending |
 | I Truth boundary | Static import guards and runtime artifact scan passed on spatial mission development path | DEVELOPMENT VERIFIED; current-HEAD sweep pending |
-| J Replay/versioning | Full detectability-v2 exact-survey 480 s replay (2,402 Observation, 1,922 Evidence, 8,001 belief payloads equal); bounded 80 s earlier-contract replay; old-contract rejection | DEVELOPMENT VERIFIED; prospective validation pending |
+| J Replay/versioning | Full association-v2/detectability-v2 480 s replay (1,822 Observation, 1,155 Evidence, 7,801 belief payloads equal), plus explicit old-contract rejection | DEVELOPMENT VERIFIED; cycle-2 validation pending |
 
 The first prospectively declared controlled-view validation on seeds 1401
 and 1402 is **FAIL (6/28)**. All 22 failures stopped at the unchanged
@@ -28,8 +28,8 @@ remained `UNKNOWN`. Those seeds are spent and will not be rerun. Architecture
 A-J remains **NOT FROZEN**. A unique-axial-segment association rule passed
 the full 28/28 case matrix on fresh development seeds 407/408, with
 near-joint/overlap/uncertain-survey abstention checks. Current-association
-closed-loop replay, Unity parity, and a separate, predeclared validation
-cycle are still required.
+closed-loop replay passed exactly. Unity parity and the separately
+predeclared cycle-2 validation are still required.
 
 The ordinary clean-checkout suite passed at `68de752` (1,452 passed,
 14 skipped, 121 deselected, 3 historical xfailed). A later clean checkout at
@@ -42,17 +42,20 @@ a later clean checkout at `6b082e7` passed 1,454 tests, with 14 documented
 skips, 139 slow tests deselected, and 3 historical xfails. The full suite at
 `2611851` passed 1,468 tests, with 14 documented skips, 125 opt-in Unity
 tests deselected, and 3 historical xfails. That full run preceded the
-axial-association repair; a full suite at the final HEAD remains required.
+axial-association repair. The clean checkout at `af53152` passed the full
+suite with 1,471 passes, 14 documented skips, 125 opt-in Unity tests
+deselected, and 3 historical xfails. A final full suite at the frozen HEAD
+remains required.
 The historical
 gitignored I5 artifact is an explicit skip in the normal clean checkout,
 never regenerated from spent final seeds.
 
 Architecture A-J cannot be marked PASS from this development ledger. Before
-freeze, a declared prospective validation partition must test the case
-matrix and matched Unity semantics without changing criteria after seeing
-results. The full healthy closed-loop run and replay at the current
-registration and detectability-v2 contract completed in development with
-exact full replay. The declared 480-second same-mean development pair completed: the
+freeze, the separately declared cycle-2 partition must test the unchanged
+case matrix and matched Unity semantics. The healthy closed-loop run and
+replay at the current association/detectability/registration contract
+completed in development with exact full replay. The declared 480-second
+same-mean development pair under the earlier association contract completed: the
 uniform world reached qualified `INTACT`, and the local world had 386 `SEVERE`
 revisions and zero `INTACT` revisions. Performance evidence includes 80-second
 untraced kernel timing with actual MCBR plans; a 40-step matched development

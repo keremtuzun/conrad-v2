@@ -91,3 +91,13 @@ was 1.554 s total (38.8 ms mean, 122.2 ms p95). Unity startup/prepare took
 different backend startup cost; the lower Unity step mean in this sample is
 not a general throughput guarantee. It shows no catastrophic Unity step
 overhead in this controlled development slice.
+
+With the axial-association repair, the 480-second closed-loop development
+run made 13 MCBR plans (22.09 s cumulative), 480 spatial sensor responses
+(9.60 s), 213 Model2T ingests (0.072 s), and 212 Model2T updates (8.65 s).
+Its 4,800 steps consumed 422.28 process CPU seconds and 480.94 wall seconds
+while full pytest ran in a separate checkout. The bundle used 109,468,831
+bytes, including 24,282,590 bytes of belief-revision JSON. This is the
+current association contract's development cost evidence; the earlier
+detectability-v2 timing above had a different association policy and mission
+trajectory, so its counts are not a matched performance comparison.
