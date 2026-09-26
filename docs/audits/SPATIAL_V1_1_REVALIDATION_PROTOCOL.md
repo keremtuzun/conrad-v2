@@ -1,6 +1,6 @@
 # Spatial Structural Architecture V1.1 revalidation protocol
 
-Status: **DECLARED; UNOPENED**
+Status: **CONTROLLED/CONTRACT PASS; UNITY PARITY BLOCKED**
 
 This protocol revalidates the separately versioned Spatial V1.1 candidate
 declared in `../architecture/SPATIAL_V1_1_CANDIDATE.md`. It does not modify the
@@ -55,3 +55,28 @@ and boundary checks pass, and the already-preregistered v10 R6 development
 matrix passes. A missing Unity player, a skipped Unity case, or any failure is
 not a pass. No v10 validation or final seed may be opened until the complete
 result is committed and pushed and a separate validation declaration is frozen.
+
+## Result recorded 2026-09-26
+
+The controlled mission-path matrix completed 28/28 without failures or
+interruptions. Its retained files are:
+
+| File | SHA-256 |
+|---|---|
+| `protocol.json` | `e7bceb2ed001c20e82f94d7ba1871f3d08d53d1c5ddba605f9367c8e8f1c69b6` |
+| `results.jsonl` | `2c4d97edf5d420ad77f464186c2e47448673fa7d683f28e0d7a8d38b09f83510` |
+| `summary.json` | `2adafbd1ce532998304e2649a9ef5cd8a3c26966239109d0f44c50d1b61ce7f8` |
+
+An additional 102/102 focused tests passed across mission belief/truth
+integration, exact replay identity and edited-identity refusal, static and
+dynamic truth-boundary enforcement, structural lineage, adversarial local
+identifiability, visibility geometry, EKF fix reacquisition, and navigation
+endpoint margins.
+
+Unity preflight stopped with `Unity player unavailable` before creating the
+output directory or opening either reserved Unity world. No `ConradSim.exe`
+exists in the repository or other indexed Conrad checkout, and no Unity Editor
+is installed on this host. Therefore the 16-case Unity parity matrix is
+**NOT RUN**, Spatial V1.1 remains unfrozen, and v10 validation/final remain
+sealed. The controlled and contract passes do not substitute for this missing
+software execution gate.

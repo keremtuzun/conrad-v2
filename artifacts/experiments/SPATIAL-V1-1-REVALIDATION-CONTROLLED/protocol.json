@@ -1,0 +1,104 @@
+{
+  "seeds": [
+    2001,
+    2002
+  ],
+  "cases": [
+    [
+      "healthy",
+      null,
+      "INTACT",
+      true
+    ],
+    [
+      "partial_healthy",
+      null,
+      null,
+      false
+    ],
+    [
+      "outside_support",
+      "outside-support",
+      null,
+      false
+    ],
+    [
+      "occluded_defect",
+      "occluded-defect",
+      null,
+      false
+    ],
+    [
+      "covered_corrosion",
+      {
+        "corrosion_depth_m": 0.008
+      },
+      "SEVERE",
+      true
+    ],
+    [
+      "covered_crack",
+      {
+        "crack_length_m": 0.02,
+        "crack_depth_m": 0.006
+      },
+      "SEVERE",
+      true
+    ],
+    [
+      "subthreshold_crack_length",
+      {
+        "crack_length_m": 0.009,
+        "crack_depth_m": 0.006
+      },
+      "INTACT",
+      true
+    ],
+    [
+      "subthreshold_crack_depth",
+      {
+        "crack_length_m": 0.02,
+        "crack_depth_m": 0.0009
+      },
+      "INTACT",
+      true
+    ],
+    [
+      "subresolution",
+      "subresolution",
+      "INTACT",
+      true
+    ],
+    [
+      "heterogeneous_healthy",
+      "heterogeneous-healthy",
+      "INTACT",
+      true
+    ],
+    [
+      "multiple_defects",
+      "multiple-defects",
+      "SEVERE",
+      true
+    ],
+    [
+      "edge_defect",
+      "edge-defect",
+      "SEVERE",
+      true
+    ],
+    [
+      "uniform_same_mean",
+      "uniform-same-mean",
+      "INTACT",
+      true
+    ],
+    [
+      "local_same_mean",
+      "local-same-mean",
+      "SEVERE",
+      true
+    ]
+  ],
+  "total": 28
+}
