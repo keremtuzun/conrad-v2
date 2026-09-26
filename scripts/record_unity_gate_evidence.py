@@ -64,6 +64,40 @@ MODULES = {
     "I6": "tests/unity_live/test_i6_unity.py",
     "I7": "tests/unity_live/test_i7_unity.py",
 }
+
+RECORDED_PLAYER_ARTIFACTS = {
+    "I4": ROOT / "artifacts" / "gates" / "I4" / "unity_i4_v4_final_results.json",
+    "I5": ROOT / "artifacts" / "gates" / "I5" / "unity_i5_results.json",
+    "I6": ROOT / "artifacts" / "gates" / "I6" / "unity_i6_results.json",
+    "I7": ROOT / "artifacts" / "gates" / "I7" / "unity_i7_results.json",
+}
+
+
+def recorded_player_identity(gate: str) -> dict:
+    """Preserve formal player provenance when --no-run is used away from the Unity host."""
+    live = player_identity()
+    if live.get("player") and live.get("player_exe_sha256"):
+        return live
+    path = RECORDED_PLAYER_ARTIFACTS.get(gate)
+    if path is not None and path.exists():
+        data = json.loads(path.read_text(encoding="utf-8"))
+        player = data.get("player")
+        if isinstance(player, dict) and player.get("player") and player.get("player_exe_sha256"):
+            return player
+    return live
+
+
+def recorded_git_commit(gate: str, *, rerun: bool) -> str:
+    """A --no-run refresh must not claim the old Unity evidence was produced at HEAD."""
+    if rerun:
+        return git_commit()
+    path = ROOT / "artifacts" / "gates" / gate / "evidence_formal.json"
+    if path.exists():
+        data = json.loads(path.read_text(encoding="utf-8"))
+        commit = data.get("git_commit")
+        if isinstance(commit, str) and commit:
+            return commit
+    return git_commit()
 REPLAY = {
     "I1": [T1 + "test_bundle_replays_deterministically"],
     "I2": [
@@ -372,7 +406,7 @@ def record(gate: str, rerun: bool = True) -> GateEvidence:
         criteria.append(CriterionResult(criterion=name, status=status, measured=text))
     note = (
         f"meta={json.dumps(data.get('meta', {}), sort_keys=True)}; "
-        f"player={json.dumps(player_identity(), sort_keys=True)}; validity=L1_APPROXIMATE_PHYSICS, "
+        f"player={json.dumps(recorded_player_identity(gate), sort_keys=True)}; validity=L1_APPROXIMATE_PHYSICS, "
         "every physical parameter SYNTHETIC_ONLY"
     )
     if gate == "I3":
@@ -429,7 +463,7 @@ def record(gate: str, rerun: bool = True) -> GateEvidence:
         gate_id=gate,
         evidence_class=EvidenceClass.FORMAL,
         execution_path=GATE_BY_ID[gate].formal_path + " (built Unity V2 player, lock-step TCP)",
-        git_commit=git_commit(),
+        git_commit=recorded_git_commit(gate, rerun=rerun),
         criteria=tuple(criteria),
         artifacts=(
             MODULES[gate],
