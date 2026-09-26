@@ -10,9 +10,7 @@ from pathlib import Path
 
 def binomial_upper_tail(n: int, minimum_successes: int, probability: float) -> float:
     return sum(
-        comb(n, successes)
-        * probability**successes
-        * (1.0 - probability) ** (n - successes)
+        comb(n, successes) * probability**successes * (1.0 - probability) ** (n - successes)
         for successes in range(minimum_successes, n + 1)
     )
 

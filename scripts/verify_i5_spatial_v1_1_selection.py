@@ -67,8 +67,7 @@ def verify(config: dict[str, Any], result: dict[str, Any]) -> dict[str, Any]:
             "unique_rows": len(set(observed)),
             "primary_nominal_warrants": verdicts["per_scenario_warrant_reached"][nominal],
             "non_nominal_warrants": {
-                scenario: verdicts["per_scenario_warrant_reached"][scenario]
-                for scenario in non_nominal
+                scenario: verdicts["per_scenario_warrant_reached"][scenario] for scenario in non_nominal
             },
             "non_nominal_correct_given_warrant": {
                 scenario: verdicts["per_scenario_correct_given_warrant_rate"][scenario]

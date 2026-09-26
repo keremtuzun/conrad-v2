@@ -1,6 +1,7 @@
 """Mission-level Unity fault aliases preserve the kernel scenario semantics."""
 
 from types import SimpleNamespace
+from typing import Any
 
 from conrad.adapters.unity import FaultType
 from conrad.sim.mission.options import FaultSpec
@@ -9,18 +10,18 @@ from conrad.sim.mission.unity_world import LOW_POWER, UnityMissionWorld
 
 class _Hardware:
     def __init__(self) -> None:
-        self.requests = []
+        self.requests: list[Any] = []
 
     def now_ns(self) -> int:
         return 30_000_000_000
 
-    def inject_fault(self, request):
+    def inject_fault(self, request: Any) -> SimpleNamespace:
         self.requests.append(request)
         return SimpleNamespace(accepted=True, reason_codes=())
 
 
 def test_low_power_preserves_distinct_unity_semantics() -> None:
-    world = object.__new__(UnityMissionWorld)
+    world: Any = object.__new__(UnityMissionWorld)
     world.scenario_id = "I5-BATTERY-RESERVE"
     world.hardware = _Hardware()
     world.suite = SimpleNamespace(dynamic_fix_outages=[])

@@ -21,8 +21,7 @@ def test_exact_final_design_is_smallest_qualified_prefix() -> None:
     lower_probability = float(report["validation_one_sided_lower_probability"])
     for n in range(1, 28):
         assert not any(
-            binomial_upper_tail(n, k, 0.5) <= 0.05
-            and binomial_upper_tail(n, k, lower_probability) >= 0.8
+            binomial_upper_tail(n, k, 0.5) <= 0.05 and binomial_upper_tail(n, k, lower_probability) >= 0.8
             for k in range(n + 1)
         )
 
