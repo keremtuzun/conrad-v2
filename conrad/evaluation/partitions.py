@@ -105,6 +105,11 @@ I5_UNITY_DOMAIN = "i5_unity"
 I5_UNITY_V2_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_i5_unity_v2.yaml"
 I5_UNITY_V2_PARTITIONS_SHA256 = "664edb970ea347df21cf86f9bf50aaa60efd8a72e10ffcdb729b88c4923b91a9"
 I5_UNITY_V2_DOMAIN = "i5_unity_v2"
+# Spatial V1.1 formal Unity I5 cycle. Both blocks are fresh; only the
+# prospectively declared prefix of the final block may be opened.
+I5_UNITY_V3_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_i5_unity_v3.yaml"
+I5_UNITY_V3_PARTITIONS_SHA256 = "cb8afdb68cec7e95a013a75b46b31491a382440ef0f37a48cc6e469bf026c31f"
+I5_UNITY_V3_DOMAIN = "i5_unity_v3"
 # Gate I4 world family ACTIVE_INSPECTION_OCCLUDED_V1 (docs/audits/I4_WORLD_FAMILY.md): the unity_gate
 # final_test seeds 7800002-7800013 are SPENT (ACTIVE-MCBR-E004 and the formal I4-UNITY run), so the new family
 # gets fresh worlds in the free 8 000 000 block. Pinned on 2026-09-20 before any world of the family was built.
@@ -1002,6 +1007,54 @@ def _i5_unity_v2_split(part: Partition) -> Split:
     )
 
 
+def load_i5_unity_v3(
+    path: Path = I5_UNITY_V3_PARTITIONS_PATH, *, verify_digest: bool = True
+) -> dict[str, Any]:
+    """Fresh Spatial V1.1 formal Unity I5 worlds, disjoint from all older I5 partitions."""
+    digest = canonical_digest(path)
+    if verify_digest and digest != I5_UNITY_V3_PARTITIONS_SHA256:
+        raise PartitionIntegrityError(
+            f"{path} changed after freezing: digest {digest} != pinned {I5_UNITY_V3_PARTITIONS_SHA256}"
+        )
+    raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+    validate_i5_unity(
+        raw,
+        load()["raw"],
+        load_nav()["raw"],
+        [
+            load_i5()["raw"],
+            load_i5_v2()["raw"],
+            load_i5_v3()["raw"],
+            load_i5_v4()["raw"],
+            load_i5_v5()["raw"],
+            load_i5_v6()["raw"],
+            load_i5_v7()["raw"],
+            load_i5_v8()["raw"],
+            load_i5_v9()["raw"],
+            load_i5_v10()["raw"],
+            load_i5_unity()["raw"],
+            load_i5_unity_v2()["raw"],
+        ],
+        load_unity_gates()["raw"],
+    )
+    return {"raw": raw, "digest": digest}
+
+
+def _i5_unity_v3_split(part: Partition) -> Split:
+    loaded = load_i5_unity_v3()
+    raw = loaded["raw"]
+    if part.value not in raw["world_seeds"]:
+        raise KeyError(f"i5_unity_v3 partition has no {part.value!r} split")
+    return Split(
+        domain=I5_UNITY_V3_DOMAIN,
+        partition=part,
+        world_seeds=_seeds(raw["world_seeds"][part.value]),
+        families=tuple(raw["families"]),
+        replicates_per_world=1,
+        digest=loaded["digest"],
+    )
+
+
 def load_i4_occluded(
     path: Path = I4_OCCLUDED_PARTITIONS_PATH, *, verify_digest: bool = True
 ) -> dict[str, Any]:
@@ -1459,6 +1512,8 @@ def split(domain: str, partition: str | Partition, purpose: str | Purpose) -> Sp
         return _i5_unity_split(part)
     if domain == I5_UNITY_V2_DOMAIN:
         return _i5_unity_v2_split(part)
+    if domain == I5_UNITY_V3_DOMAIN:
+        return _i5_unity_v3_split(part)
     if domain == I4_OCCLUDED_DOMAIN:
         return _i4_occluded_split(part)
     if domain == I4_OCCLUDED_V2_DOMAIN:
@@ -1533,6 +1588,9 @@ def partition_of(domain: str, seed: int) -> Partition | None:
     if domain == I5_UNITY_V2_DOMAIN:
         unity_i5_v2 = load_i5_unity_v2()["raw"]["world_seeds"]
         return next((Partition(p) for p, spec in unity_i5_v2.items() if int(seed) in _seeds(spec)), None)
+    if domain == I5_UNITY_V3_DOMAIN:
+        unity_i5_v3 = load_i5_unity_v3()["raw"]["world_seeds"]
+        return next((Partition(p) for p, spec in unity_i5_v3.items() if int(seed) in _seeds(spec)), None)
     if domain == I7_V2_DOMAIN:
         i7 = load_i7_v2()["raw"]["world_seeds"]
         return next((Partition(p) for p, spec in i7.items() if int(seed) in _seeds(spec)), None)

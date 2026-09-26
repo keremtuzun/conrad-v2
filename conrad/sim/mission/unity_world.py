@@ -38,6 +38,7 @@ import numpy as np
 import yaml
 from pydantic import Field
 
+from conrad.adapters.unity import FaultInjectionRequest, FaultType
 from conrad.adapters.unity.conversion import PayloadStore, UnityBridgeConfig
 from conrad.adapters.unity.hardware import UnityRobotHardware
 from conrad.orchestration.mission_context import MissionContext
@@ -79,7 +80,8 @@ UNITY_PAYLOAD_SENSORS = (
 UNITY_ECO_SENSORS = ("environmental_probe", "ecological_survey")
 RANGE_SENSOR, SONAR_SENSOR, CAMERA_SENSOR = "range_imager", "sonar", "camera"
 FIX_OUTAGE = "FIX_OUTAGE"
-"""The only ``FaultSpec.type`` the Unity mission path realises (an outage of the synthetic USBL-like fix)."""
+LOW_POWER = "LOW_POWER"
+"""Mission-level aliases realised by the Unity mission path."""
 CONVERTER_VERSION = "unity_to_model2s_v1"
 UNITY_ROBOT_DIR = "artifacts/unity/robot"
 
@@ -489,13 +491,14 @@ class UnityMissionWorld:
         uopts: UnityWorldOptions | None = None,
     ) -> UnityMissionWorld:
         u = uopts or UnityWorldOptions()
-        # FIX_OUTAGE is realised on this path (the synthetic USBL-like fix is rendered in Python, exactly as on
-        # the kernel). Unity-side faults (thruster, sensor, power, leak) would have to go through the bridge
-        # INJECT_FAULT and are still refused here; on the NAV path they are supported by ``run_unity_nav``.
-        unsupported = sorted({f.type for f in options.faults if f.type != FIX_OUTAGE})
+        # FIX_OUTAGE is rendered in Python exactly as on the kernel. LOW_POWER is the mission-level name for
+        # the kernel's capacity-scale event; Unity realises the same event through BATTERY_DEGRADATION on the
+        # bridge. Other Unity-side faults remain on the NAV harness until their mission semantics are declared.
+        supported = {FIX_OUTAGE, LOW_POWER}
+        unsupported = sorted({f.type for f in options.faults if f.type not in supported})
         if unsupported:
             raise ValueError(
-                f"the Unity mission path realises only {FIX_OUTAGE} faults, not {unsupported}; Unity-side "
+                f"the Unity mission path realises only {sorted(supported)} faults, not {unsupported}; Unity-side "
                 "faults go through run_unity_nav's bridge injection"
             )
         if options.eco_events and not options.ecological_enabled:
@@ -637,9 +640,7 @@ class UnityMissionWorld:
         return self.hardware.now_ns() / 1e9
 
     def due_faults(self, inspection_started_s: float | None = None) -> list[dict[str, Any]]:
-        """Scheduled FIX_OUTAGE faults and ecological events whose time has come (as ``MissionWorld.due_faults``).
-
-        Only ``FIX_OUTAGE`` is realised here; every other fault type is refused in ``build``."""
+        """Fire the mission path's declared fix-outage and low-power events."""
         fired: list[dict[str, Any]] = []
         keep = []
         for f in self._pending_faults:
@@ -647,7 +648,22 @@ class UnityMissionWorld:
             if base is None or base + f.t_s > self.t_s + 1e-9:
                 keep.append(f)
                 continue
-            self.suite.dynamic_fix_outages.append((self.t_s, self.t_s + (f.duration_s or 30.0)))
+            if f.type == FIX_OUTAGE:
+                self.suite.dynamic_fix_outages.append((self.t_s, self.t_s + (f.duration_s or 30.0)))
+            elif f.type == LOW_POWER:
+                ack = self.hardware.inject_fault(
+                    FaultInjectionRequest(
+                        fault_id=f"{self.scenario_id}-{LOW_POWER}-{round(self.t_s * 1000)}",
+                        fault_type=FaultType.BATTERY_DEGRADATION,
+                        start_time_ns=self.hardware.now_ns(),
+                        duration_ns=None if f.duration_s is None else round(f.duration_s * 1e9),
+                        magnitude=f.magnitude,
+                    )
+                )
+                if not ack.accepted:
+                    raise RuntimeError(f"Unity refused {LOW_POWER}: {ack.reason_codes}")
+            else:  # pragma: no cover - build() refuses unknown mission faults
+                raise RuntimeError(f"unsupported Unity mission fault {f.type}")
             fired.append({"kind": "FAULT", "fired_at_s": round(self.t_s, 3), **f.model_dump(mode="json")})
         self._pending_faults = keep
         while self._pending_eco and self._pending_eco[0].t_s <= self.t_s + 1e-9:

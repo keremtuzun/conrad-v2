@@ -1,0 +1,15 @@
+# Immutable fresh partition for the Spatial V1.1 FORMAL Unity I5 cycle.
+# Declared 2026-09-26 before any world in this file was built. The formal run
+# uses only the first two final worlds; the rest remain unread and may not be
+# added after observing the result.
+version: partitions-i5-unity-2026-09-26-v3
+families: [inspectable_pipeline]
+scenarios: [I5-NOMINAL, I5-CRITICAL-FINDING, I5-UNCERTAIN-BELIEF, I5-ROUTE-BLOCKED,
+            I5-BATTERY-RESERVE, I5-TIME-RESERVE, I5-COMMS-OUTAGE]
+world_seeds:
+  development: {explicit: [], range: [8701100, 8701110]}
+  final_test: {explicit: [], range: [8701000, 8701010]}
+reserved_elsewhere:
+  - {range: [0, 8701000], owner: prior and reserved CONRAD evaluation spaces}
+  - {range: [8701010, 8701100], owner: excluded gap}
+  - {range: [8701110, 8702000], owner: reserved Unity V1.1 space}
