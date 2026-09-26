@@ -1,0 +1,88 @@
+{
+  "candidate": "V5_efficiency_candidate",
+  "cloud_usage": {
+    "cap_try": 1000.0,
+    "cost_try": 0.0,
+    "cumulative_try_since_budget_rule": 0.0,
+    "provider": null,
+    "used": false
+  },
+  "decision": "REJECTED_NO_VALIDATION",
+  "declared_entry_rule": "If V5 does not improve info_per_kj versus A-B0_random and V4_protocol_only on development, do not spend validation.",
+  "experiment_id": "ACTIVE-MCBR-E008-DEV",
+  "gate_id": "I4-V5-DEVELOPMENT-DECISION",
+  "n_worlds": 40,
+  "next_action": "Design a new internal I4 repair candidate on development data only; do not validate V5_efficiency_candidate.",
+  "partition": "development",
+  "primary_metric": "info_per_kj",
+  "purpose": "design",
+  "rationale": [
+    "V5 clears the random-baseline development comparison on info_per_kj.",
+    "V5 does not improve info_per_kj over V4_protocol_only on development; paired benefit mean is negative and CI includes zero.",
+    "Validation split is therefore preserved closed for this candidate.",
+    "I4 remains FAIL; no final_test or OOD evidence was read or spent for this repair decision."
+  ],
+  "result": {
+    "means": {
+      "A-B0_random": {
+        "defect_read": 0.325,
+        "energy_j": 18701.490536096113,
+        "hidden_state_error_improvement": 0.2603301333582756,
+        "info_per_kj": 0.013629243377263655,
+        "info_per_time": 0.002603301333582756,
+        "planning_latency_ms": 1228.8465273054194
+      },
+      "A-B2_coverage": {
+        "defect_read": 0.25,
+        "energy_j": 19223.560414092517,
+        "hidden_state_error_improvement": 0.19814739387060296,
+        "info_per_kj": 0.01042657596778416,
+        "info_per_time": 0.0019814739387060297,
+        "planning_latency_ms": 1289.1003944207719
+      },
+      "V4_protocol_only": {
+        "defect_read": 0.475,
+        "energy_j": 18484.71779739919,
+        "hidden_state_error_improvement": 0.3801312406730249,
+        "info_per_kj": 0.020110935608564272,
+        "info_per_time": 0.003801312406730248,
+        "planning_latency_ms": 1269.9305697626187
+      },
+      "V5_efficiency_candidate": {
+        "defect_read": 0.5,
+        "energy_j": 18576.236621308664,
+        "hidden_state_error_improvement": 0.38750469376494057,
+        "info_per_kj": 0.020102275765156472,
+        "info_per_time": 0.003875046937649405,
+        "planning_latency_ms": 1322.5473283700314
+      }
+    },
+    "vs_A_B0_random": {
+      "baseline_mean": 0.013629243377263655,
+      "benefit_mean": 0.006473032387892816,
+      "candidate_mean": 0.020102275765156472,
+      "ci95": [
+        0.0009909342445262963,
+        0.011985380729019435
+      ],
+      "fraction_improved": 0.35,
+      "n_worlds": 40,
+      "repeatable_benefit": true
+    },
+    "vs_V4_protocol_only": {
+      "baseline_mean": 0.020110935608564272,
+      "benefit_mean": -8.659843407801162e-06,
+      "candidate_mean": 0.020102275765156472,
+      "ci95": [
+        -0.002139967662058319,
+        0.0026924618271337896
+      ],
+      "fraction_improved": 0.075,
+      "n_worlds": 40,
+      "repeatable_benefit": false
+    }
+  },
+  "source_artifact": "artifacts/experiments/ACTIVE-MCBR-E008-DEV/i4_v5_development.json",
+  "source_sha256": "5bc4d923a1894590165eb34109516f168ffcebc670bc4ddb38d1180cdf55650f",
+  "status": "VALIDATED-RUN"
+}
