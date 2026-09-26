@@ -167,6 +167,8 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
         "conrad.evaluation.identification_rehearsal",
         "configs/eval/id_rehearsal_e001.yaml",
     ),
+    "OSFM-CONTRACT-TINY": ("conrad.evaluation.osfm_stub", "configs/eval/osfm/registry_stub.yaml"),
+    "OSFM-S-SMOKE": ("conrad.evaluation.osfm_stub", "configs/eval/osfm/registry_stub.yaml"),
 }
 DEFAULT_SEEDS = [2026201, 2026202, 2026203]
 

@@ -88,6 +88,31 @@ def data_verify(
     raise typer.Exit(0 if not problems else 1)
 
 
+@data_app.command("osfm-ready")
+def data_osfm_ready(
+    manifest: str = typer.Option(..., "--manifest", help="DATA-OSFM-01 corpus manifest YAML"),
+) -> None:
+    """Verify DATA-OSFM-01 corpus readiness without treating references as downloaded data."""
+    from conrad.foundation.data.manifest import load_corpus_manifest, verify_corpus_manifest
+
+    corpus = load_corpus_manifest(manifest)
+    problems = verify_corpus_manifest(corpus)
+    typer.echo(
+        json.dumps(
+            {
+                "corpus_id": corpus.corpus_id,
+                "readiness": corpus.readiness.value,
+                "corpus_digest": corpus.corpus_digest,
+                "partitions": corpus.partition_counts(),
+                "problems": problems,
+            },
+            indent=2,
+        )
+    )
+    typer.echo("RESULT: " + ("OK" if not problems else f"FAIL ({len(problems)} problems)"))
+    raise typer.Exit(0 if not problems else 1)
+
+
 # ---------------------------------------------------------------------- integrated mission (gates I1-I7)
 DEFAULT_SIM_CONFIG = "configs/sim/mission_default.yaml"
 

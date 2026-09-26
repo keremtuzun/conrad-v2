@@ -1,0 +1,15 @@
+job: osfm_contract_tiny
+scale: tiny
+seed: 20260310
+batch_size: 2
+lr: 0.001
+stage_id: P3
+missing_modalities:
+  - POINT_CLOUD
+dropout_modalities:
+  - SONAR
+token_mask_fraction: 0.25
+student_transforms:
+  - rgb_calibrated_jitter
+  - sonar_snr_jitter
+  - context_calibrated_scale

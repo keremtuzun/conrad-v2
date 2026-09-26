@@ -3,6 +3,8 @@ run directory and a compatibility-stamped checkpoint, then proves the checkpoint
 
 Registered jobs:
   core_tbd_smoke   CORE-TBD learned GRU temporal dynamics on the abstract sandbox (CPU smoke)
+  osfm_contract_tiny   P3 CPU end-to-end foundation contract smoke
+  osfm_s_smoke   P3 architecture-faithful D_F=384 foundation wiring smoke
 
 A full-scale config (``scale: full``) is accepted and validated, but running it on a host without
 the declared compute raises ComputeBlockedError instead of silently shrinking the job.
@@ -131,6 +133,28 @@ def _core_tbd_job(job: dict[str, Any], run: RunDirectory, seed: int) -> dict[str
 JOBS: dict[str, Callable[[dict[str, Any], RunDirectory, int], dict[str, Any]]] = {
     "core_tbd_smoke": _core_tbd_job
 }
+
+
+def _osfm_contract_tiny_job(job: dict[str, Any], run: RunDirectory, seed: int) -> dict[str, Any]:
+    from conrad.foundation.pretraining.smoke import public_real_subpipe_probe, run_osfm_smoke
+
+    result = run_osfm_smoke(run, job, seed, architecture_faithful=False)
+    result["public_real_ingestion"] = public_real_subpipe_probe(job)
+    return result
+
+
+def _osfm_s_smoke_job(job: dict[str, Any], run: RunDirectory, seed: int) -> dict[str, Any]:
+    from conrad.foundation.pretraining.smoke import run_osfm_smoke
+
+    return run_osfm_smoke(run, job, seed, architecture_faithful=True)
+
+
+JOBS.update(
+    {
+        "osfm_contract_tiny": _osfm_contract_tiny_job,
+        "osfm_s_smoke": _osfm_s_smoke_job,
+    }
+)
 
 
 def run_training(config_path: str | Path, runs_root: str | Path | None = None) -> dict[str, Any]:

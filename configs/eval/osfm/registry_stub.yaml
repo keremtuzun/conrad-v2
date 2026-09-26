@@ -1,0 +1,5 @@
+experiment_namespace: OSFM
+registered_ids:
+  - OSFM-CONTRACT-TINY
+  - OSFM-S-SMOKE
+status: stub-for-p3-registration-tests

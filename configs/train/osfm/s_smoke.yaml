@@ -1,0 +1,15 @@
+job: osfm_s_smoke
+scale: smoke
+seed: 20260311
+batch_size: 1
+lr: 0.0005
+stage_id: P3
+missing_modalities: []
+dropout_modalities:
+  - DEPTH_RANGE
+token_mask_fraction: 0.10
+student_transforms:
+  - rgb_calibrated_jitter
+  - sonar_snr_jitter
+  - range_quantization_stress
+  - geometry_point_jitter

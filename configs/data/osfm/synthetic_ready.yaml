@@ -1,0 +1,36 @@
+corpus_id: DATA-OSFM-01
+readiness: READY
+sources:
+  - source_id: synthetic-pretrain-real
+    manifest_digest: "0000000000000000000000000000000000000000000000000000000000000001"
+    source_digest: "0000000000000000000000000000000000000000000000000000000000000001"
+    partition: PRETRAIN_REAL
+    first_party: false
+  - source_id: synthetic-pretrain-synthetic
+    manifest_digest: "0000000000000000000000000000000000000000000000000000000000000002"
+    source_digest: "0000000000000000000000000000000000000000000000000000000000000002"
+    partition: PRETRAIN_SYNTHETIC
+    first_party: false
+  - source_id: synthetic-validation
+    manifest_digest: "0000000000000000000000000000000000000000000000000000000000000003"
+    source_digest: "0000000000000000000000000000000000000000000000000000000000000003"
+    partition: VALIDATION
+    first_party: false
+  - source_id: synthetic-final-test
+    manifest_digest: "0000000000000000000000000000000000000000000000000000000000000004"
+    source_digest: "0000000000000000000000000000000000000000000000000000000000000004"
+    partition: FINAL_TEST
+    first_party: false
+  - source_id: synthetic-ood-test
+    manifest_digest: "0000000000000000000000000000000000000000000000000000000000000005"
+    source_digest: "0000000000000000000000000000000000000000000000000000000000000005"
+    partition: OOD_TEST
+    first_party: false
+required_partitions:
+  - PRETRAIN_REAL
+  - PRETRAIN_SYNTHETIC
+  - VALIDATION
+  - FINAL_TEST
+  - OOD_TEST
+notes:
+  - synthetic readiness fixture for P3 contract tests, not a public-real ingestion result
