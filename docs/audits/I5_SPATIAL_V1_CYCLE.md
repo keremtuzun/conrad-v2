@@ -188,3 +188,32 @@ frozen baselines. Any safety outlier is inspected before validation. Sensor,
 truth, support, Model2T, warrant, thresholds, scenarios, arms, durations,
 attempt bounds, and scoring remain identical to R3. Validation and final stay
 sealed during R4.
+
+## Development iteration 4: corrected boundary contract, competitiveness fail
+
+Seeds 8600000..8600004 completed all 105 missions. Every scenario was 5/5
+correct given warrant, including five legitimate nominal intact warrants.
+Covered resolvable defect cells produced zero false intact, violations and
+nominal over-escalations were zero, traceability was 1.0, and UIR was 0. The
+boundary correction also removed the catastrophic churn seen in R3: no R4
+mission recorded more than six safety-state entries.
+
+R4 nevertheless failed its prospectively declared competitive criterion.
+EGDC and the rule baseline each achieved 28 task successes with zero decision
+violations, but EGDC recorded 27 safety-state entries versus the rule
+baseline's 20. The seven-entry difference was localized to critical-finding
+(three EGDC, zero rule) and communication-outage (four EGDC, zero rule)
+missions; nominal, uncertain-belief, route-blocked, battery-reserve, and
+time-reserve totals were identical. The affected EGDC missions followed
+different post-finding information and communication sequences and travelled
+farther than the rule baseline. This is not a warrant, false-intact, collision,
+or hard-constraint failure, but it is a preregistered advancement failure and
+is retained as such.
+
+The immutable R4 result is
+`artifacts/experiments/M1-ACTION-SPATIAL-V1-DEV-R4/m1_action_spatial_v1_dev_r4_development.json`
+with SHA-256
+`8db0250af9eca09632f485d7da8f0465f7dbf09ae7587a5b243aeb2e02e4e336`.
+No v9 validation or final world has been opened. Any further candidate must
+first explain the post-finding route/safety difference and use only the five
+remaining development seeds 8600005..8600009.
