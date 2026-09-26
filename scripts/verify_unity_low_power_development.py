@@ -22,7 +22,7 @@ SEED = 8701100
 SCENARIO = "I5-BATTERY-RESERVE"
 PLAYER_SHA256 = "c52be937690a5d3d5be03f4acc3fc06842dd17ce3f53000e34f6daa528ab71e9"
 RUNS = ROOT / "artifacts/unity/development/I5_LOW_POWER_SEMANTICS_V2"
-OUTPUT = ROOT / "artifacts/verification/unity_low_power_semantics_development.json"
+OUTPUT = ROOT / "artifacts/verification/unity_low_power_semantics_development_v2.json"
 
 
 def _sha256(path: Path) -> str:
@@ -65,7 +65,7 @@ def verify() -> dict[str, Any]:
         "pass_rule": {
             "post_fault_battery_at_most": 0.12,
             "warrant_reached": True,
-            "chosen_at_onset": "RETURN_TO_SAFE_STATE",
+            "chosen_at_onset_prefix": "RETURN_TO_SAFE_STATE:",
             "correct": True,
             "violations_total": 0,
         },
@@ -76,7 +76,7 @@ def verify() -> dict[str, Any]:
         batteries
         and batteries[0] <= 0.12
         and row["driving"]["warrant_reached"] is True
-        and row["driving"]["chosen_at_onset"] == "RETURN_TO_SAFE_STATE"
+        and str(row["driving"]["chosen_at_onset"]).startswith("RETURN_TO_SAFE_STATE:")
         and row["driving"]["correct"] is True
         and row["driving"]["violations_total"] == 0
     )

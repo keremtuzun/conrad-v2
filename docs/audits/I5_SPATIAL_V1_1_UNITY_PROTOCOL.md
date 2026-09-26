@@ -46,6 +46,11 @@ energy used low. Unity accepted the injected 0.12 event, but remaining battery
 was still about 0.96 at mission end instead of 0.12. This is a software defect,
 not permission to reinterpret or rerun the result.
 
+The defect was subsequently corrected and verified on development world
+8701100 with a newly built player. See
+`docs/audits/I5_LOW_POWER_POST_FORMAL_CORRECTION.md`. That post-result
+development evidence does not alter this formal result.
+
 The formal leakage node also errored before completing because the test tried
 to label a scored row with absent `run_id`. A separately versioned read-only
 supplement scans the exact stored bundles. Its outcome does not alter that

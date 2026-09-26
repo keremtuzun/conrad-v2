@@ -1,0 +1,35 @@
+{
+  "arm": "egdc_structured",
+  "chosen_at_onset": "RETURN_TO_SAFE_STATE:",
+  "correct": true,
+  "evidence_class": "DEVELOPMENT",
+  "limitations": [
+    "single development world",
+    "synthetic Unity L1 approximate physics"
+  ],
+  "partition": "development",
+  "partition_digest": "cb8afdb68cec7e95a013a75b46b31491a382440ef0f37a48cc6e469bf026c31f",
+  "partition_file": "configs/eval/partitions_i5_unity_v3.yaml",
+  "pass_rule": {
+    "chosen_at_onset_prefix": "RETURN_TO_SAFE_STATE:",
+    "correct": true,
+    "post_fault_battery_at_most": 0.12,
+    "violations_total": 0,
+    "warrant_reached": true
+  },
+  "player": {
+    "build_info": null,
+    "player": "ConradSim",
+    "player_exe_sha256": "c52be937690a5d3d5be03f4acc3fc06842dd17ce3f53000e34f6daa528ab71e9"
+  },
+  "post_fault_battery_first": 0.11995199236341447,
+  "post_fault_battery_min": 0.11995199236341447,
+  "scenario": "I5-BATTERY-RESERVE",
+  "source_row": "artifacts/unity/development/I5_LOW_POWER_SEMANTICS_V2/I5-SPATIAL-V1-1-UNITY-I5-BATTERY-RESERVE-s8701100-egdc_structured",
+  "source_row_sha256": "bb965c7fc5641a0432ce00501ecebdf5644ae13b1e6ee4d95290761a030278a3",
+  "status": "PASS",
+  "verification": "Unity LOW_POWER kernel-semantics development check",
+  "violations_total": 0,
+  "warrant_reached": true,
+  "world": 8701100
+}
