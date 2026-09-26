@@ -1,0 +1,34 @@
+job: osfm_m1_fusion_smoke
+experiment_id: OSFM-M1-FUSION-SMOKE-001
+scale: smoke
+stage_id: M1-FUSION
+seed: 20260414
+batch_size: 4
+d_f: 384
+scene_latents: 64
+cross_attention_blocks: 3
+latent_self_attention_blocks: 6
+heads: 6
+mlp_ratio: 4
+lr: 0.0002
+optimizer_steps: 1
+encoder_depth: 1
+points_per_sample: 64
+num_groups: 4
+group_size: 8
+artificial_modality_dropout_p: 0.30
+objective_weights:
+  masked_latent_prediction: 1.0
+  global_consistency: 0.5
+  cross_modal_consistency: 0.5
+  missing_modality: 0.5
+  degradation: 0.25
+  geometry_consistency: 0.25
+  metric_reconstruction: 0.25
+  temp: NOT_ACTIVE
+data:
+  source: synthetic_multimodal_foundation_batch_engineering_smoke
+  pair_graph_required: true
+  row_alignment_authority: false
+  public_real_dataset_used: false
+  not_domain_pretraining_evidence: true

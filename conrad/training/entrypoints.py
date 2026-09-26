@@ -173,6 +173,12 @@ def _osfm_u1_geometry_smoke_job(job: dict[str, Any], run: RunDirectory, seed: in
     return run_u1_geometry_smoke(run, job, seed)
 
 
+def _osfm_m1_fusion_smoke_job(job: dict[str, Any], run: RunDirectory, seed: int) -> dict[str, Any]:
+    from conrad.foundation.pretraining.m1_fusion import run_m1_fusion_smoke
+
+    return run_m1_fusion_smoke(run, job, seed)
+
+
 JOBS.update(
     {
         "osfm_contract_tiny": _osfm_contract_tiny_job,
@@ -181,6 +187,7 @@ JOBS.update(
         "osfm_u1_sonar_smoke": _osfm_u1_sonar_smoke_job,
         "osfm_u1_range_smoke": _osfm_u1_range_smoke_job,
         "osfm_u1_geometry_smoke": _osfm_u1_geometry_smoke_job,
+        "osfm_m1_fusion_smoke": _osfm_m1_fusion_smoke_job,
     }
 )
 

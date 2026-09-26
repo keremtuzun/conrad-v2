@@ -41,3 +41,12 @@ def test_osfm_u1_geometry_smoke_cli_registered(tmp_path: Path) -> None:
     assert result["component"] == "foundation.osfm.u1_geometry"
     metric = result["objectives"]["u1_geometry_metric_reconstruction"]
     assert metric["u1_geometry_metric_reconstruction/status"] == "ACTIVE"
+
+
+def test_osfm_m1_fusion_smoke_cli_registered(tmp_path: Path) -> None:
+    result = run_training("configs/train/osfm/m1_fusion_smoke.yaml", runs_root=tmp_path)
+    assert result["experiment_id"] == "OSFM-M1-FUSION-SMOKE-001"
+    assert result["component"] == "foundation.osfm.m1_fusion"
+    assert result["architecture"]["d_f"] == 384
+    assert result["architecture"]["scene_latents"] == [64, 384]
+    assert result["fixture"]["modality_presence"][2] == [0, 1, 0, 0]
