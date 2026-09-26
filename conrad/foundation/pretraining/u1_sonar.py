@@ -5,22 +5,42 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import subprocess
+import tempfile
 import time
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
+from uuid import UUID
 
+import cv2
 import torch
 import torch.nn.functional as F
 from torch import nn
 
+from conrad.data.adapters.subpipe import SubPipeAdapter
+from conrad.data.manifest import data_root_for, load_manifest, verify_loaded_manifest
 from conrad.foundation.encoders.sonar import SonarEncoderConfig, SonarEncoderOutput, SonarViTS14Encoder
+from conrad.foundation.data.manifest import CorpusPartition
+from conrad.foundation.data.osfm_public_real import (
+    SUBPIPE_MANIFEST,
+    SUBPIPE_SOURCE_ID,
+    _partition_ranges,
+    load_subpipe_osfm_evidence,
+    validate_subpipe_osfm_evidence,
+)
+from conrad.foundation.pretraining.dinov2 import verify_dinov2_checkpoint
 from conrad.foundation.pretraining.ema import EMASchedule, update_ema_teacher
 from conrad.foundation.pretraining.losses import ObjectiveResult, ObjectiveRouter
 from conrad.foundation.pretraining.smoke import split_hash_for_plan
 from conrad.foundation.pretraining.u1_rgb import RepresentationHealth, contiguous_2d_mask, parameter_count
 from conrad.foundation.pretraining.u1_rgb import representation_health as _representation_health
+from conrad.persistence.object_store import ObjectStore
+from conrad.schemas.ids import IdFactory
+from conrad.settings import REPO_ROOT
 from conrad.training.checkpoint import load_checkpoint, save_checkpoint
 from conrad.training.checkpoint_meta import CompatibilityTuple, config_digest
+from conrad.training.determinism import inspect_compute
 from conrad.training.run_dir import RunDirectory
 
 
@@ -42,6 +62,76 @@ class U1SonarStepOutput:
     teacher: SonarEncoderOutput
     degradation_logits: torch.Tensor
     health: RepresentationHealth
+
+
+def _repo_tracked_clean() -> tuple[bool, str]:
+    try:
+        status = subprocess.check_output(
+            ["git", "status", "--porcelain", "--untracked-files=no"],
+            cwd=REPO_ROOT,
+            text=True,
+            timeout=30,
+        ).strip()
+    except (OSError, subprocess.SubprocessError) as exc:
+        return False, f"git status unavailable: {exc}"
+    return not bool(status), status
+
+
+def _load_json(path: str | Path) -> dict[str, Any]:
+    p = Path(path)
+    if not p.is_absolute():
+        p = REPO_ROOT / p
+    data = json.loads(p.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError(f"{p} must contain a JSON object")
+    return data
+
+
+def _require_u1_sonar_research_gate(job: dict[str, Any]) -> dict[str, Any]:
+    """Fail closed before any P4.8 real-data run starts."""
+    if job.get("formal_run_allowed") is not True:
+        raise RuntimeError("P4.8 U1 sonar research config is not formally allowed")
+    clean, detail = _repo_tracked_clean()
+    if bool(job.get("require_clean_git", True)) and not clean:
+        raise RuntimeError(f"P4.8 requires clean tracked git state: {detail}")
+    compute = inspect_compute()
+    min_vram = int(job.get("min_vram_gb", 16))
+    if not compute.cuda_available:
+        raise RuntimeError("P4.8 requires CUDA; CPU/MPS execution is refused")
+    measured_vram = [
+        int(torch.cuda.get_device_properties(i).total_memory // (1024**3))
+        for i in range(torch.cuda.device_count())
+    ]
+    if not measured_vram or max(measured_vram) < min_vram:
+        raise RuntimeError(f"P4.8 requires >= {min_vram} GB CUDA VRAM; measured {measured_vram}")
+
+    p47 = _load_json(job.get("p47_go_artifact", "artifacts/gates/P4.7B_L4/osfm_readiness.json"))
+    if p47.get("status") != "VALIDATED-RUN" or p47.get("decision") != "GO" or p47.get("blockers"):
+        raise RuntimeError("P4.8 requires a blocker-free P4.7 GO readiness artifact")
+
+    manifest = load_manifest(SUBPIPE_MANIFEST)
+    manifest_problems = verify_loaded_manifest(manifest, data_root_for(manifest.dataset_id))
+    if manifest_problems:
+        raise RuntimeError(f"SubPipe manifest verification failed: {[str(p) for p in manifest_problems]}")
+    evidence = load_subpipe_osfm_evidence(job.get("evidence", "configs/data/osfm/subpipe_p47b_evidence.json"))
+    evidence_problems = validate_subpipe_osfm_evidence(evidence)
+    if evidence_problems:
+        raise RuntimeError(f"SubPipe OSFM evidence verification failed: {evidence_problems}")
+
+    init = Path(job.get("init", "artifacts/external/dinov2/dinov2_vits14.pth"))
+    if not init.is_absolute():
+        init = REPO_ROOT / init
+    init_verification = verify_dinov2_checkpoint(init)
+    return {
+        "p47_go_artifact": job.get("p47_go_artifact", "artifacts/gates/P4.7B_L4/osfm_readiness.json"),
+        "p47_report_digest": p47.get("report_digest"),
+        "compute": compute.model_dump(mode="json"),
+        "measured_cuda_vram_gb": measured_vram,
+        "subpipe_source_id": SUBPIPE_SOURCE_ID,
+        "subpipe_evidence_digest": evidence.get("evidence_digest"),
+        "dinov2": init_verification,
+        "clean_tracked_git": clean,
+    }
 
 
 def synthetic_sonar_views(job: dict[str, Any], seed: int) -> U1SonarViews:
@@ -74,6 +164,99 @@ def synthetic_sonar_views(job: dict[str, Any], seed: int) -> U1SonarViews:
         token_mask=mask,
         sample_ids=tuple(f"synthetic-rendered-sonar-{idx}" for idx in range(batch)),
         corruption_trace=("bounded_speckle_like_noise", "gain_variation", "attenuation_like_rolloff", "dropout"),
+    )
+
+
+def real_subpipe_sonar_views(
+    job: dict[str, Any],
+    seed: int,
+    *,
+    partition: CorpusPartition,
+    train_stats: tuple[float, float] | None = None,
+) -> tuple[U1SonarViews, dict[str, Any], tuple[float, float]]:
+    if partition not in (CorpusPartition.PRETRAIN_REAL, CorpusPartition.VALIDATION):
+        raise ValueError("P4.8 U1 sonar may read only PRETRAIN_REAL or VALIDATION")
+    image_size = int(job.get("image_size", 28))
+    batch = int(job.get("batch_size", 2))
+    stream = str(job.get("stream", "sss_lf"))
+    if stream not in {"sss_lf", "sss_hf"}:
+        raise ValueError("P4.8 U1 sonar stream must be sss_lf or sss_hf")
+    gen = torch.Generator().manual_seed(seed + (0 if partition is CorpusPartition.PRETRAIN_REAL else 10_000))
+    manifest = load_manifest(SUBPIPE_MANIFEST)
+    with tempfile.TemporaryDirectory(prefix="conrad-p48-u1-sonar-") as tmp:
+        adapter = SubPipeAdapter(
+            manifest,
+            data_root_for(manifest.dataset_id),
+            ObjectStore(Path(tmp) / "objects"),
+            IdFactory(seed=2026092602),
+            UUID("00000000-0000-7000-8000-00000000048a"),
+            streams=(stream,),
+            manifest_path=SUBPIPE_MANIFEST,
+        )
+        try:
+            refs = adapter.frames(stream)
+            ranges = _partition_ranges(len(refs))
+            selected = refs[slice(*ranges[partition])]
+            if len(selected) < batch:
+                raise RuntimeError(f"{partition.value} has only {len(selected)} frames for batch {batch}")
+            idx = torch.randperm(len(selected), generator=gen)[:batch].tolist()
+            chosen = [selected[i] for i in idx]
+            images: list[torch.Tensor] = []
+            sample_ids: list[str] = []
+            for ref in chosen:
+                obs = adapter.normalize_observation(ref)
+                if obs.sensor_context.get("sonar_rendering") != "colormapped PPM, not raw backscatter":
+                    raise RuntimeError("SubPipe rendered-sonar limitation missing from observation metadata")
+                raw = adapter.load(ref)
+                gray = cv2.cvtColor(raw, cv2.COLOR_BGR2GRAY) if raw.ndim == 3 else raw
+                resized = cv2.resize(gray, (image_size, image_size), interpolation=cv2.INTER_AREA)
+                tensor = torch.from_numpy(resized).float().unsqueeze(0) / 255.0
+                images.append(tensor)
+                sample_ids.append(f"{partition.value}:{stream}:{ref.member}")
+        finally:
+            adapter.close()
+    teacher = torch.stack(images, dim=0)
+    if train_stats is None:
+        mean = float(teacher.mean())
+        std = float(teacher.std(unbiased=False).clamp_min(1e-6))
+    else:
+        mean, std = train_stats
+    teacher = ((teacher - mean) / std).clamp(-5.0, 5.0)
+    speckle = torch.randn(teacher.shape, generator=gen, dtype=teacher.dtype) * float(job.get("noise_std", 0.025))
+    gain = 0.96 + torch.rand((teacher.shape[0], 1, 1, 1), generator=gen, dtype=teacher.dtype) * 0.08
+    student = (teacher * gain + speckle).clamp(-5.0, 5.0)
+    mask = contiguous_2d_mask(
+        batch_size=batch,
+        grid_size=SonarEncoderConfig(image_size=image_size).grid_size,
+        mask_fraction=float(job.get("token_mask_fraction", 0.60)),
+        min_visible_fraction=float(job.get("min_visible_fraction", 0.10)),
+        generator=gen,
+    )
+    evidence = {
+        "partition": partition.value,
+        "stream": stream,
+        "sample_ids": sample_ids,
+        "source_frame_count": len(selected),
+        "lineage_unit": f"subpipe/mini_sss/{stream}",
+        "normalization_fit_partitions": [CorpusPartition.PRETRAIN_REAL.value],
+        "normalization_excluded_partitions": [
+            CorpusPartition.VALIDATION.value,
+            CorpusPartition.FINAL_TEST.value,
+            CorpusPartition.OOD_TEST.value,
+        ],
+        "rendered_sonar_limitation": "SubPipe sonar is rendered side-scan imagery, not raw acoustic backscatter.",
+        "train_stats": {"mean": mean, "std": std},
+    }
+    return (
+        U1SonarViews(
+            teacher_sonar=teacher,
+            student_sonar=student,
+            token_mask=mask,
+            sample_ids=tuple(sample_ids),
+            corruption_trace=("bounded_speckle_like_noise", "gain_variation"),
+        ),
+        evidence,
+        (mean, std),
     )
 
 
@@ -295,6 +478,160 @@ def run_u1_sonar_smoke(run: RunDirectory, job: dict[str, Any], seed: int) -> dic
         },
     )
     run.write_artifact("reports", "u1_sonar_smoke_report.json", json.dumps(result, indent=2, default=str))
+    run.write_artifact(
+        "reports",
+        "checkpoint_index.json",
+        json.dumps({"latest": str(ckpt), "checkpoint_id": meta.checkpoint_id}, indent=2),
+    )
+    return result
+
+
+def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> dict[str, Any]:
+    gate = _require_u1_sonar_research_gate(job)
+    if job.get("rehearsal_only", True) is not True:
+        raise RuntimeError("Full P4.8 U1 sonar run remains locked until rehearsal evidence is reviewed")
+    t0 = time.perf_counter()
+    torch.manual_seed(seed)
+    torch.use_deterministic_algorithms(True, warn_only=True)
+    device = torch.device("cuda:0")
+    torch.cuda.reset_peak_memory_stats(device)
+    config = SonarEncoderConfig(image_size=int(job.get("image_size", 28)))
+    train_views, train_evidence, train_stats = real_subpipe_sonar_views(
+        job, seed, partition=CorpusPartition.PRETRAIN_REAL
+    )
+    val_views, val_evidence, _ = real_subpipe_sonar_views(
+        job, seed + 1, partition=CorpusPartition.VALIDATION, train_stats=train_stats
+    )
+    bundle = U1SonarTrainingBundle(
+        SonarViTS14Encoder(config),
+        ema_schedule=EMASchedule(start=0.996, end=0.9999, total_steps=int(job.get("optimizer_steps", 2))),
+    ).to(device)
+    train_views = U1SonarViews(
+        train_views.teacher_sonar.to(device),
+        train_views.student_sonar.to(device),
+        train_views.token_mask.to(device),
+        train_views.sample_ids,
+        train_views.corruption_trace,
+    )
+    val_views = U1SonarViews(
+        val_views.teacher_sonar.to(device),
+        val_views.student_sonar.to(device),
+        val_views.token_mask.to(device),
+        val_views.sample_ids,
+        val_views.corruption_trace,
+    )
+    optimizer = torch.optim.AdamW(
+        bundle.parameters(),
+        lr=float(job.get("lr", 1e-4)),
+        weight_decay=float(job.get("weight_decay", 0.05)),
+    )
+    steps = int(job.get("optimizer_steps", 2))
+    last = None
+    for step in range(1, steps + 1):
+        bundle.train()
+        out = bundle(train_views)
+        out.loss.backward()
+        torch.nn.utils.clip_grad_norm_(bundle.parameters(), float(job.get("grad_clip_norm", 1.0)))
+        optimizer.step()
+        optimizer.zero_grad(set_to_none=True)
+        ema = bundle.update_teacher_after_optimizer(step)
+        last = out
+        run.log_metrics(
+            {
+                "step": step,
+                "train/osfm_u1_sonar_loss": float(out.loss.detach().cpu()),
+                "ema_momentum": float(ema),
+            }
+        )
+    bundle.eval()
+    with torch.no_grad():
+        val = bundle(val_views)
+    split_plan = {
+        "train_sample_ids": train_views.sample_ids,
+        "validation_sample_ids": val_views.sample_ids,
+        "lineage": train_evidence["lineage_unit"],
+        "partition_policy": "PRETRAIN_REAL trains; VALIDATION selects; FINAL_TEST/OOD_TEST forbidden",
+    }
+    split_hash = split_hash_for_plan(split_plan)
+    manifest_digest = load_manifest(SUBPIPE_MANIFEST).manifest_digest()
+    metrics: dict[str, float | str] = {
+        "val/osfm_u1_sonar_loss": float(val.loss.detach().cpu()),
+        "train/osfm_u1_sonar_loss": float(last.loss.detach().cpu()) if last is not None else float("nan"),
+        "optimizer_steps": float(steps),
+        "representation_finite": float(val.health.finite),
+        "representation_variance_mean": val.health.variance_mean,
+        "representation_collapse_score": val.health.collapse_score,
+        "representation_effective_rank": val.health.effective_rank,
+        "formal_rank_guard_numeric": {"PASS": 1.0, "FAIL": 0.0, "NOT_EVALUABLE": -1.0}[val.health.formal_rank_guard],
+        "parameter_count": float(parameter_count(bundle.student)),
+        "memory_allocated_bytes": float(torch.cuda.max_memory_allocated(device)),
+    }
+    metrics.update({k: v for k, v in _objective_metrics(val.results).items() if isinstance(v, float)})
+    ckpt = run.path / "checkpoints" / "osfm_u1_sonar_research_rehearsal.pt"
+    meta = save_checkpoint(
+        ckpt,
+        model=bundle,
+        component="foundation.osfm.u1_sonar",
+        config=job,
+        manifest_digests=(manifest_digest,),
+        split_hash=split_hash,
+        seeds={"torch": seed, "mask": seed},
+        metrics={k: float(v) for k, v in metrics.items() if isinstance(v, float)},
+        epoch=0,
+        step=steps,
+        created_time_ns=time.time_ns(),
+        optimizer=optimizer,
+        trainer_state={
+            "cuda_rng_state": [torch.cuda.get_rng_state(device)],
+            "amp_scaler": None,
+            "split_plan": split_plan,
+        },
+        is_encoder=True,
+        representation_pretraining_id="P4.8A-U1-SONAR-REAL-REHEARSAL",
+        selection_metric="val/osfm_u1_sonar_loss",
+        extra_compatibility={"osfm_stage": "U1-SONAR-RESEARCH", "p48_rehearsal": "true"},
+    )
+    wall_s = time.perf_counter() - t0
+    result = {
+        "component": "foundation.osfm.u1_sonar",
+        "experiment_id": "P4.8A-U1-SONAR-REAL-REHEARSAL",
+        "formal_p4_8": False,
+        "rehearsal_only": True,
+        "gate": gate,
+        "data": {
+            "source": SUBPIPE_SOURCE_ID,
+            "subpipe_used": True,
+            "train": train_evidence,
+            "validation": val_evidence,
+            "final_test_used": False,
+            "ood_test_used": False,
+            "limitation": "SubPipe sonar is rendered side-scan imagery, not raw acoustic backscatter.",
+        },
+        "checkpoint": str(ckpt),
+        "checkpoint_id": meta.checkpoint_id,
+        "split_hash": split_hash,
+        "metrics": metrics,
+        "objectives": {r.objective_id: r.as_metrics() for r in val.results},
+        "representation_health": val.health.__dict__,
+        "compute": {
+            "device": str(device),
+            "peak_memory_bytes": int(metrics["memory_allocated_bytes"]),
+            "wall_clock_s": wall_s,
+            "throughput_samples_per_s": (len(train_views.sample_ids) * steps) / wall_s,
+        },
+        "next_gate": "Full P4.8 remains locked until rehearsal evidence is committed and full_run_allowed is set explicitly.",
+    }
+    run.log_event(
+        "P48A_U1_SONAR_REAL_REHEARSAL",
+        time.time_ns(),
+        {
+            "train_sample_ids": train_views.sample_ids,
+            "validation_sample_ids": val_views.sample_ids,
+            "objective_status": {r.objective_id: r.status.value for r in val.results},
+            "rendered_sonar_limitation": result["data"]["limitation"],
+        },
+    )
+    run.write_artifact("reports", "p48a_u1_sonar_rehearsal_report.json", json.dumps(result, indent=2, default=str))
     run.write_artifact(
         "reports",
         "checkpoint_index.json",

@@ -7,8 +7,17 @@ import torch
 from conrad.foundation.encoders.sonar import SonarEncoderConfig, SonarViTS14Encoder
 from conrad.foundation.pretraining.losses import ObjectiveStatus
 from conrad.foundation.pretraining.u1_rgb import contiguous_2d_mask, parameter_count
-from conrad.foundation.pretraining.u1_sonar import U1SonarTrainingBundle, synthetic_sonar_views
-from conrad.training.entrypoints import run_training
+import pytest
+
+from conrad.foundation.data.manifest import CorpusPartition
+from conrad.foundation.pretraining import u1_sonar
+from conrad.foundation.pretraining.u1_sonar import (
+    U1SonarTrainingBundle,
+    _require_u1_sonar_research_gate,
+    real_subpipe_sonar_views,
+    synthetic_sonar_views,
+)
+from conrad.training.entrypoints import ComputeBlockedError, run_training
 
 
 def test_sonar_vit_s14_single_channel_contract_and_dense_taps() -> None:
@@ -97,3 +106,35 @@ def test_osfm_u1_sonar_smoke_checkpoint_reload_and_replay(tmp_path: Path) -> Non
     assert result["representation_health"]["formal_rank_guard"] == "NOT_EVALUABLE"
     assert result["objectives"]["u1_sonar_metric"]["u1_sonar_metric/status"] == "NOT_APPLICABLE"
     assert Path(result["checkpoint"]).is_file()
+
+
+def test_p48a_research_config_is_registered_but_cpu_blocked(tmp_path: Path) -> None:
+    with pytest.raises(ComputeBlockedError, match="full-scale run requires"):
+        run_training("configs/train/osfm/research/u1_sonar_rehearsal.yaml", runs_root=tmp_path)
+
+
+def test_p48a_gate_requires_explicit_formal_allow(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(u1_sonar, "inspect_compute", lambda: type("C", (), {"cuda_available": True, "model_dump": lambda self, mode='json': {}})())
+    monkeypatch.setattr(torch.cuda, "device_count", lambda: 1)
+    monkeypatch.setattr(torch.cuda, "get_device_properties", lambda _i: type("P", (), {"total_memory": 24 * 1024**3})())
+    with pytest.raises(RuntimeError, match="not formally allowed"):
+        _require_u1_sonar_research_gate({"formal_run_allowed": False})
+
+
+def test_real_subpipe_views_refuse_final_and_ood_partitions() -> None:
+    job = {"batch_size": 2, "image_size": 28}
+    for partition in (CorpusPartition.FINAL_TEST, CorpusPartition.OOD_TEST):
+        with pytest.raises(ValueError, match="PRETRAIN_REAL or VALIDATION"):
+            real_subpipe_sonar_views(job, 1, partition=partition)
+
+
+def test_p48a_rehearsal_config_preserves_partition_policy() -> None:
+    import yaml
+
+    cfg = yaml.safe_load(Path("configs/train/osfm/research/u1_sonar_rehearsal.yaml").read_text())
+    assert cfg["formal_run_allowed"] is True
+    assert cfg["rehearsal_only"] is True
+    assert cfg["partition_access"]["train"] == ["PRETRAIN_REAL"]
+    assert cfg["partition_access"]["validation"] == ["VALIDATION"]
+    assert set(cfg["partition_access"]["forbidden_training_access"]) == {"FINAL_TEST", "OOD_TEST"}
+    assert "rendered side-scan imagery" in " ".join(cfg["notes"])
