@@ -192,6 +192,14 @@ def test_every_python_fault_type_is_handled_or_explicitly_refused() -> None:
             assert f'case "{fault.value}":' in injector, fault
 
 
+def test_low_power_matches_kernel_remaining_energy_semantics() -> None:
+    power = _src("RobotHardwareSimulation/RobotHardwareServer.cs")
+    injector = _src("MissionExperimentRuntime/FaultInjector.cs")
+    assert "public void SetRemainingFraction(double fraction)" in power
+    assert "EnergyUsedJ = Math.Max(EnergyUsedJ, (1.0 - bounded) * CapacityJ * CapacityFactor);" in power
+    assert 'case "LOW_POWER": _power.SetRemainingFraction(f.Magnitude); break;' in injector
+
+
 def _transliterate(expr: str) -> str:
     return re.sub(r"\b([cu])\.([XYZW])\b", lambda m: f"{m.group(1)}['{m.group(2)}']", expr)
 

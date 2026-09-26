@@ -139,7 +139,7 @@ UNITY_SCENARIOS["I7-UNITY-OUTAGE"] = {
 # length, link model and the readable-surface tiling are the surrogate's (conrad/sim/mission/scenarios.py);
 # only the Unity control period is set here. The arm under comparison is set per run by the harness
 # (tests/unity_live/test_i5_unity.py), exactly as the surrogate does.
-# LOW_POWER is mapped by UnityMissionWorld to the bridge's BATTERY_DEGRADATION event, so the Spatial V1.1
+# LOW_POWER is mapped by UnityMissionWorld to the bridge's distinct LOW_POWER event, so the Spatial V1.1
 # formal cycle can exercise every surrogate scenario. The historical v2 protocol remains unchanged.
 for _i5 in (
     "I5-NOMINAL",

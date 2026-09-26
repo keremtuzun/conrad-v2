@@ -36,6 +36,15 @@ namespace Conrad.UnityV2.RobotHardwareSimulation
         }
 
         public double RemainingFraction => Math.Max(0.0, Math.Min(1.0, 1.0 - EnergyUsedJ / (CapacityJ * CapacityFactor)));
+        /// <summary>
+        /// LOW_POWER is an instantaneous state event: consume enough energy that the remaining fraction is no
+        /// greater than the requested value. This mirrors the Python kernel and never restores spent energy.
+        /// </summary>
+        public void SetRemainingFraction(double fraction)
+        {
+            double bounded = Math.Max(0.0, Math.Min(1.0, fraction));
+            EnergyUsedJ = Math.Max(EnergyUsedJ, (1.0 - bounded) * CapacityJ * CapacityFactor);
+        }
         public void Reset() { EnergyUsedJ = 0; LastPowerW = 0; CapacityFactor = 1.0; }
     }
 

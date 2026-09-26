@@ -491,9 +491,9 @@ class UnityMissionWorld:
         uopts: UnityWorldOptions | None = None,
     ) -> UnityMissionWorld:
         u = uopts or UnityWorldOptions()
-        # FIX_OUTAGE is rendered in Python exactly as on the kernel. LOW_POWER is the mission-level name for
-        # the kernel's capacity-scale event; Unity realises the same event through BATTERY_DEGRADATION on the
-        # bridge. Other Unity-side faults remain on the NAV harness until their mission semantics are declared.
+        # FIX_OUTAGE is rendered in Python exactly as on the kernel. LOW_POWER is a bridge event with the
+        # kernel's remaining-energy semantics. Other Unity-side faults remain on the NAV harness until their
+        # mission semantics are declared.
         supported = {FIX_OUTAGE, LOW_POWER}
         unsupported = sorted({f.type for f in options.faults if f.type not in supported})
         if unsupported:
@@ -654,7 +654,7 @@ class UnityMissionWorld:
                 ack = self.hardware.inject_fault(
                     FaultInjectionRequest(
                         fault_id=f"{self.scenario_id}-{LOW_POWER}-{round(self.t_s * 1000)}",
-                        fault_type=FaultType.BATTERY_DEGRADATION,
+                        fault_type=FaultType.LOW_POWER,
                         start_time_ns=self.hardware.now_ns(),
                         duration_ns=None if f.duration_s is None else round(f.duration_s * 1e9),
                         magnitude=f.magnitude,

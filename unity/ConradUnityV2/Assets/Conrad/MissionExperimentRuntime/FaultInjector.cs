@@ -39,7 +39,7 @@ namespace Conrad.UnityV2.MissionExperimentRuntime
         {
             "THRUSTER_FAILURE", "THRUSTER_DEGRADATION", "THRUSTER_STUCK", "THRUSTER_LATENCY", "THRUSTER_INTERMITTENT",
             "IMU_BIAS", "IMU_DROPOUT", "DEPTH_BIAS", "CAMERA_FAILURE", "CAMERA_FOULING", "SONAR_NOISE", "SONAR_FAILURE",
-            "COMM_LOSS", "BATTERY_DEGRADATION", "LEAK_SIGNAL",
+            "COMM_LOSS", "LOW_POWER", "BATTERY_DEGRADATION", "LEAK_SIGNAL",
         };
 
         private readonly List<FaultSpec> _schedule = new List<FaultSpec>();
@@ -111,6 +111,7 @@ namespace Conrad.UnityV2.MissionExperimentRuntime
                     case "SONAR_NOISE": foreach (var s in SensorsFor(f, "SONAR")) s.Fault.NoiseScale = Math.Max(1, f.Magnitude); break;
                     case "SONAR_FAILURE": foreach (var s in SensorsFor(f, "SONAR")) s.Fault.Failed = true; break;
                     case "COMM_LOSS": _server.CommLoss = true; break;
+                    case "LOW_POWER": _power.SetRemainingFraction(f.Magnitude); break;
                     case "BATTERY_DEGRADATION": _power.CapacityFactor = Math.Max(0.01, Math.Min(1, f.Magnitude)); break;
                     case "LEAK_SIGNAL": _server.LeakDetected = true; break;
                 }

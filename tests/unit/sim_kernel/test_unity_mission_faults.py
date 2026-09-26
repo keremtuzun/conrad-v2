@@ -19,7 +19,7 @@ class _Hardware:
         return SimpleNamespace(accepted=True, reason_codes=())
 
 
-def test_low_power_maps_to_unity_battery_degradation() -> None:
+def test_low_power_preserves_distinct_unity_semantics() -> None:
     world = object.__new__(UnityMissionWorld)
     world.scenario_id = "I5-BATTERY-RESERVE"
     world.hardware = _Hardware()
@@ -35,6 +35,6 @@ def test_low_power_maps_to_unity_battery_degradation() -> None:
     assert world._pending_faults == []
     assert len(world.hardware.requests) == 1
     request = world.hardware.requests[0]
-    assert request.fault_type is FaultType.BATTERY_DEGRADATION
+    assert request.fault_type is FaultType.LOW_POWER
     assert request.magnitude == 0.12
     assert request.start_time_ns == 30_000_000_000
