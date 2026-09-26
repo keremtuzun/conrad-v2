@@ -1,0 +1,14 @@
+{
+  "alpha": 0.05,
+  "false_positive_probability_at_null": 0.04357927665114403,
+  "maximum_available_n": 40,
+  "method": "one-sided exact binomial with one-sided Clopper-Pearson validation bound",
+  "minimum_nominal_warrants": 19,
+  "null_nominal_warrant_probability": 0.5,
+  "power_at_validation_lower_bound": 0.8352075352835021,
+  "selected_n": 28,
+  "target_power": 0.8,
+  "validation_one_sided_lower_probability": 0.7411344491069477,
+  "validation_successes": 10,
+  "validation_trials": 10
+}

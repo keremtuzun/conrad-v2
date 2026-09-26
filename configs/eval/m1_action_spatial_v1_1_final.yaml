@@ -1,0 +1,98 @@
+# Spatial V1.1 v10 one-shot surrogate FINAL. Frozen before any final seed was opened.
+experiment_id: M1-ACTION-SPATIAL-V1-1-FINAL
+hypothesis: >-
+  On the first 28 untouched v10 final worlds, frozen Spatial V1.1 produces at
+  least 19 legitimate nominal intact warrants, handles every reached action
+  warrant with at least 0.9 correctness, produces zero false intact on covered
+  resolvable defects, zero decision violations and nominal over-escalations,
+  complete traceability, UIR 0, and pooled outcomes no worse than both frozen
+  baselines.
+partition: final_test
+partition_domain: i5_mission_v10
+seeds: [8700200, 8700201, 8700202, 8700203, 8700204, 8700205, 8700206,
+        8700207, 8700208, 8700209, 8700210, 8700211, 8700212, 8700213,
+        8700214, 8700215, 8700216, 8700217, 8700218, 8700219, 8700220,
+        8700221, 8700222, 8700223, 8700224, 8700225, 8700226, 8700227]
+scenarios: [I5-NOMINAL, I5-CRITICAL-FINDING, I5-UNCERTAIN-BELIEF, I5-ROUTE-BLOCKED,
+            I5-BATTERY-RESERVE, I5-TIME-RESERVE, I5-COMMS-OUTAGE]
+arms: [egdc_structured, rule_fsm, naive_act_on_claims]
+latency_budget_s: {default: 4.0, I5-NOMINAL: 20.0}
+success_floor: 0.9
+uir_max: 0.0
+contact_clearance_m: 0.3
+workers: 5
+keep_bundles: false
+final_rule:
+  expected_rows: 588
+  primary_nominal_warrants_min: 19
+  each_scenario_warrants_min: 1
+  each_scenario_correct_given_warrant_rate_min: 0.9
+  false_intact_on_covered_resolvable_defect_max: 0
+  decision_violations_max: 0
+  nominal_over_escalations_max: 0
+  traceability_min: 1.0
+  uir_max: 0.0
+  competitiveness: >-
+    EGDC pooled task success must be at least each frozen baseline, EGDC safety
+    entries at most each frozen baseline, and EGDC decision violations at most
+    each frozen baseline.
+  power_design:
+    artifact_sha256: cecf8a6593194654100089410f51816cf1cf50c0f7c7abc86292fa474ef2195c
+    validation_result_sha256: a3c27c0edc277f79dd29d7b9b71b6aba65337ff8bdc583d2375ce98a5b6687e1
+    method: one-sided exact binomial with one-sided Clopper-Pearson validation bound
+    validation_one_sided_lower_probability: 0.7411344491069477
+    null_nominal_warrant_probability: 0.5
+    alpha: 0.05
+    target_power: 0.8
+    false_positive_probability_at_null: 0.04357927665114403
+    power_at_validation_lower_bound: 0.8352075352835021
+  stop_rule: >-
+    Run every declared row exactly once. Any missing, duplicate, interrupted, or
+    failed predicate is a final FAIL. Do not add seeds, rerun a failed world,
+    change a threshold, or use the unused final suffix after seeing the result.
+spatial_v1:
+  sensor_config: configs/sim/spatial_v1_synthetic_sensor_detectability_v2.json
+  sensor_file_sha256: c7f68b08a008135d5a86961135c05930170c19f86d772b10094926f207877efe
+  world:
+    family: inspectable_pipeline
+    survey_sigma_m: 0.0
+    survey_endpoint_bound_m: null
+  runtime:
+    duration_s: 120.0
+    cruise_speed_fraction: 0.4
+    max_plans_per_need: 24
+    decision: {max_information_attempts: 24}
+    view_execution: {enabled: true, max_view_attempts: 24}
+  runtime_by_scenario:
+    I5-NOMINAL: {duration_s: 480.0}
+  default_truth:
+    axial_cells: 2
+    sectors: 4
+    base: {corrosion_depth_m: 0.0, crack_length_m: 0.0, crack_depth_m: 0.0}
+  truth_by_scenario:
+    I5-CRITICAL-FINDING: &covered_resolvable_defect
+      axial_cells: 2
+      sectors: 4
+      cell_states:
+        - {}
+        - {}
+        - {corrosion_depth_m: 0.008}
+        - {corrosion_depth_m: 0.008}
+        - {}
+        - {}
+        - {corrosion_depth_m: 0.008}
+        - {corrosion_depth_m: 0.008}
+    I5-COMMS-OUTAGE: *covered_resolvable_defect
+  model2t:
+    axial_cells: 2
+    sectors: 4
+    thresholds:
+      corrosion_degraded_m: 0.002
+      corrosion_severe_m: 0.006
+      corrosion_failed_m: 0.012
+      crack_degraded_m: 0.003
+      crack_severe_m: 0.01
+      crack_failed_m: 0.03
+    required_looks: 1
+    required_domain: {axial_fraction: [0.05, 0.95], sectors: [2, 3]}
+limitations: [synthetic data only, python L1 kernel, SURROGATE final evidence, physical calibration pending]
