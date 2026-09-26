@@ -1,0 +1,230 @@
+{
+ "meta": {
+  "experiment_id": "I5-SPATIAL-V1-1-UNITY-FORMAL",
+  "worlds": [
+   8701000,
+   8701001
+  ],
+  "scenarios": [
+   "I5-NOMINAL",
+   "I5-CRITICAL-FINDING",
+   "I5-UNCERTAIN-BELIEF",
+   "I5-ROUTE-BLOCKED",
+   "I5-BATTERY-RESERVE",
+   "I5-TIME-RESERVE",
+   "I5-COMMS-OUTAGE"
+  ],
+  "arms": [
+   "egdc_structured",
+   "rule_fsm",
+   "naive_act_on_claims"
+  ],
+  "partition": "configs/eval/partitions_i5_unity_v3.yaml",
+  "config_sha256": "9051df7d1d7d409e53c4749faa31a16a99a703f7505b47128150a34c1f8f9e51",
+  "player": {
+   "player": "ConradSim",
+   "player_exe_sha256": "7e42f64199b043204d62737d06aabc6b6ceb1f3c1c699f158a612b938ea87ac6",
+   "build_info": null
+  },
+  "results": "artifacts/gates/I5_SPATIAL_V1_1/unity_i5_spatial_v1_1_results.json"
+ },
+ "criteria": {
+  "actions exercised correctly inside integrated missions": {
+   "per_scenario_warrants": {
+    "I5-NOMINAL": 2,
+    "I5-CRITICAL-FINDING": 2,
+    "I5-UNCERTAIN-BELIEF": 2,
+    "I5-ROUTE-BLOCKED": 2,
+    "I5-BATTERY-RESERVE": 0,
+    "I5-TIME-RESERVE": 2,
+    "I5-COMMS-OUTAGE": 2
+   },
+   "per_scenario_correct_given_warrant": {
+    "I5-NOMINAL": 1.0,
+    "I5-CRITICAL-FINDING": 1.0,
+    "I5-UNCERTAIN-BELIEF": 1.0,
+    "I5-ROUTE-BLOCKED": 1.0,
+    "I5-BATTERY-RESERVE": null,
+    "I5-TIME-RESERVE": 1.0,
+    "I5-COMMS-OUTAGE": 1.0
+   },
+   "false_intact": true,
+   "violations_total": 0,
+   "nominal_over_escalations": 0,
+   "spatial_v1_runtime_selected": true
+  },
+  "traceable decisions with low measured UIR": {
+   "traceable_fraction": 1.0,
+   "uir": 0.0
+  },
+  "competitive mission outcomes vs decision baselines": {
+   "competitive": {
+    "rule_fsm": {
+     "egdc_task_success": 10,
+     "baseline_task_success": 10,
+     "egdc_safety_events": 0,
+     "baseline_safety_events": 0,
+     "per_scenario_success": {
+      "I5-NOMINAL": [
+       2,
+       2
+      ],
+      "I5-CRITICAL-FINDING": [
+       2,
+       2
+      ],
+      "I5-UNCERTAIN-BELIEF": [
+       0,
+       0
+      ],
+      "I5-ROUTE-BLOCKED": [
+       2,
+       2
+      ],
+      "I5-BATTERY-RESERVE": [
+       0,
+       0
+      ],
+      "I5-TIME-RESERVE": [
+       2,
+       2
+      ],
+      "I5-COMMS-OUTAGE": [
+       2,
+       2
+      ]
+     },
+     "egdc_violations": 0,
+     "baseline_violations": 0,
+     "not_worse": true
+    },
+    "naive_act_on_claims": {
+     "egdc_task_success": 10,
+     "baseline_task_success": 4,
+     "egdc_safety_events": 0,
+     "baseline_safety_events": 26,
+     "per_scenario_success": {
+      "I5-NOMINAL": [
+       2,
+       0
+      ],
+      "I5-CRITICAL-FINDING": [
+       2,
+       2
+      ],
+      "I5-UNCERTAIN-BELIEF": [
+       0,
+       0
+      ],
+      "I5-ROUTE-BLOCKED": [
+       2,
+       0
+      ],
+      "I5-BATTERY-RESERVE": [
+       0,
+       0
+      ],
+      "I5-TIME-RESERVE": [
+       2,
+       0
+      ],
+      "I5-COMMS-OUTAGE": [
+       2,
+       2
+      ]
+     },
+     "egdc_violations": 0,
+     "baseline_violations": 10145,
+     "not_worse": true
+    }
+   }
+  },
+  "coverage of the declared grid": {
+   "flights": 42,
+   "declared": 42
+  },
+  "replay": {
+   "run": "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-NOMINAL-s8701000-egdc_structured",
+   "events": {
+    "original": 29438,
+    "replayed": 29438,
+    "equal": true,
+    "first_difference": null
+   },
+   "decisions": {
+    "original": 240,
+    "replayed": 240,
+    "equal": true,
+    "first_difference": null
+   },
+   "revisions": {
+    "original": 7630,
+    "replayed": 7630,
+    "equal": true,
+    "first_difference": null
+   },
+   "observation_payloads": {
+    "original": 4085,
+    "replayed": 4085,
+    "equal": true,
+    "first_difference": null
+   },
+   "evidence_payloads": {
+    "original": 3126,
+    "replayed": 3126,
+    "equal": true,
+    "first_difference": null
+   },
+   "command_payloads": {
+    "original": 4800,
+    "replayed": 4800,
+    "equal": true,
+    "first_difference": null
+   },
+   "belief_payloads": {
+    "original": 7630,
+    "replayed": 7630,
+    "equal": true,
+    "first_difference": null
+   },
+   "trajectories": {
+    "original": 1,
+    "replayed": 1,
+    "equal": true,
+    "first_difference": null
+   },
+   "view_execution": {
+    "original": 12,
+    "replayed": 12,
+    "equal": true,
+    "first_difference": null
+   },
+   "structural_associations": {
+    "original": 2424,
+    "replayed": 2424,
+    "equal": true,
+    "first_difference": null
+   },
+   "baac_transmissions": {
+    "original": 492,
+    "replayed": 492,
+    "equal": true,
+    "first_difference": null
+   },
+   "equal": true,
+   "trajectory": {
+    "samples": [
+     481,
+     481
+    ],
+    "max_abs_difference": 0.0,
+    "tolerance": 0.0,
+    "equal": true
+   },
+   "replay_dir": "/Users/kerem/Documents/ChatGPT/conrad v2/artifacts/unity/gate_runs/replay/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-NOMINAL-s8701000-egdc_structured",
+   "verified_files": 1121,
+   "verified_objects": 789,
+   "same_player_binary": true
+  }
+ }
+}

@@ -1,0 +1,69 @@
+{
+  "gate_id": "I5",
+  "evidence_class": "FORMAL",
+  "execution_path": "Model1 action matrix plus frozen Spatial V1.1 through built Unity V2 player",
+  "git_commit": "8442db4034275c9210dbfb4cd64ce6b0e6946dd2",
+  "criteria": [
+    {
+      "criterion": "continue",
+      "status": "PASS",
+      "measured": "{\"chosen_as_itself\": 100, \"floor\": 0.9, \"n_canonical\": 100, \"recall\": 1.0}"
+    },
+    {
+      "criterion": "request evidence",
+      "status": "PASS",
+      "measured": "{\"chosen_as_itself\": 770, \"floor\": 0.9, \"n_canonical\": 770, \"recall\": 1.0}"
+    },
+    {
+      "criterion": "replan",
+      "status": "PASS",
+      "measured": "{\"chosen_as_itself\": 100, \"floor\": 0.9, \"n_canonical\": 100, \"recall\": 1.0}"
+    },
+    {
+      "criterion": "change sensing",
+      "status": "PASS",
+      "measured": "{\"chosen_as_itself\": 50, \"floor\": 0.9, \"n_canonical\": 50, \"recall\": 1.0}"
+    },
+    {
+      "criterion": "return",
+      "status": "PASS",
+      "measured": "{\"chosen_as_itself\": 170, \"floor\": 0.9, \"n_canonical\": 170, \"recall\": 1.0}"
+    },
+    {
+      "criterion": "escalate",
+      "status": "PASS",
+      "measured": "{\"chosen_as_itself\": 80, \"floor\": 0.9, \"n_canonical\": 80, \"recall\": 1.0}"
+    },
+    {
+      "criterion": "hard constraints inviolable",
+      "status": "PASS",
+      "measured": "{\"hard_constraint_violations\": {\"chosen_action_audit\": 0, \"chosen_action_audit_by_rule\": {}, \"injected_accepted_kinds\": {}, \"injected_by_kind\": {\"BATTERY_BELOW_RESERVE\": 10, \"ENERGY_EXCEEDED\": 10, \"ESTIMATOR_FAULT\": 10, \"HEALTH_FAULT\": 10, \"LEAK\": 10, \"MOTION_NOT_PERMITTED\": 10, \"NO_ROBOT_STATE\": 10, \"OUTSIDE_BOUNDARY\": 10, \"QUERY_BAD_DOMAIN\": 10, \"QUERY_UNAVAILABLE_DOMAIN\": 10, \"REPORT_NO_TARGET\": 10, \"RISK_OVER_LIMIT\": 10, \"RI_BAD_QUESTION\": 10, \"RI_NO_TARGET\": 10, \"STALE_ROBOT_STATE\": 10, \"STALE_SUPPORT_CONTINUE\": 10, \"TIME_BELOW_RESERVE\": 10, \"TRANSMIT_LINK_DOWN\": 10, \"UNKNOWN_SUPPORT\": 10, \"UNSUPPORTED_SUPPORT\": 10, \"WAIT_BAD_DURATION\": 10}, \"injected_invalid_accepted\": 0, \"injected_invalid_proposals\": 210, \"total\": 0}, \"uir\": {\"relied_unsupported_claims\": 0, \"relied_world_claims\": 632, \"unsupported_claim_fraction\": 0.047337278106508875, \"unsupported_inference_rate\": 0.0, \"world_claims\": 4225}}"
+    },
+    {
+      "criterion": "actions exercised correctly inside integrated missions",
+      "status": "FAIL",
+      "measured": "{\"actions exercised correctly inside integrated missions\": {\"false_intact\": true, \"nominal_over_escalations\": 0, \"per_scenario_correct_given_warrant\": {\"I5-BATTERY-RESERVE\": null, \"I5-COMMS-OUTAGE\": 1.0, \"I5-CRITICAL-FINDING\": 1.0, \"I5-NOMINAL\": 1.0, \"I5-ROUTE-BLOCKED\": 1.0, \"I5-TIME-RESERVE\": 1.0, \"I5-UNCERTAIN-BELIEF\": 1.0}, \"per_scenario_warrants\": {\"I5-BATTERY-RESERVE\": 0, \"I5-COMMS-OUTAGE\": 2, \"I5-CRITICAL-FINDING\": 2, \"I5-NOMINAL\": 2, \"I5-ROUTE-BLOCKED\": 2, \"I5-TIME-RESERVE\": 2, \"I5-UNCERTAIN-BELIEF\": 2}, \"spatial_v1_runtime_selected\": true, \"violations_total\": 0}, \"grid\": {\"declared\": 42, \"flights\": 42}, \"leakage\": null, \"replay\": {\"baac_transmissions\": {\"equal\": true, \"first_difference\": null, \"original\": 492, \"replayed\": 492}, \"belief_payloads\": {\"equal\": true, \"first_difference\": null, \"original\": 7630, \"replayed\": 7630}, \"command_payloads\": {\"equal\": true, \"first_difference\": null, \"original\": 4800, \"replayed\": 4800}, \"decisions\": {\"equal\": true, \"first_difference\": null, \"original\": 240, \"replayed\": 240}, \"equal\": true, \"events\": {\"equal\": true, \"first_difference\": null, \"original\": 29438, \"replayed\": 29438}, \"evidence_payloads\": {\"equal\": true, \"first_difference\": null, \"original\": 3126, \"replayed\": 3126}, \"observation_payloads\": {\"equal\": true, \"first_difference\": null, \"original\": 4085, \"replayed\": 4085}, \"replay_dir\": \"/Users/kerem/Documents/ChatGPT/conrad v2/artifacts/unity/gate_runs/replay/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-NOMINAL-s8701000-egdc_structured\", \"revisions\": {\"equal\": true, \"first_difference\": null, \"original\": 7630, \"replayed\": 7630}, \"run\": \"artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-NOMINAL-s8701000-egdc_structured\", \"same_player_binary\": true, \"structural_associations\": {\"equal\": true, \"first_difference\": null, \"original\": 2424, \"replayed\": 2424}, \"trajectories\": {\"equal\": true, \"first_difference\": null, \"original\": 1, \"replayed\": 1}, \"trajectory\": {\"equal\": true, \"max_abs_difference\": 0.0, \"samples\": [481, 481], \"tolerance\": 0.0}, \"verified_files\": 1121, \"verified_objects\": 789, \"view_execution\": {\"equal\": true, \"first_difference\": null, \"original\": 12, \"replayed\": 12}}}"
+    },
+    {
+      "criterion": "traceable decisions with low measured UIR",
+      "status": "FAIL",
+      "measured": "{\"grid\": {\"declared\": 42, \"flights\": 42}, \"leakage\": null, \"replay\": {\"baac_transmissions\": {\"equal\": true, \"first_difference\": null, \"original\": 492, \"replayed\": 492}, \"belief_payloads\": {\"equal\": true, \"first_difference\": null, \"original\": 7630, \"replayed\": 7630}, \"command_payloads\": {\"equal\": true, \"first_difference\": null, \"original\": 4800, \"replayed\": 4800}, \"decisions\": {\"equal\": true, \"first_difference\": null, \"original\": 240, \"replayed\": 240}, \"equal\": true, \"events\": {\"equal\": true, \"first_difference\": null, \"original\": 29438, \"replayed\": 29438}, \"evidence_payloads\": {\"equal\": true, \"first_difference\": null, \"original\": 3126, \"replayed\": 3126}, \"observation_payloads\": {\"equal\": true, \"first_difference\": null, \"original\": 4085, \"replayed\": 4085}, \"replay_dir\": \"/Users/kerem/Documents/ChatGPT/conrad v2/artifacts/unity/gate_runs/replay/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-NOMINAL-s8701000-egdc_structured\", \"revisions\": {\"equal\": true, \"first_difference\": null, \"original\": 7630, \"replayed\": 7630}, \"run\": \"artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-NOMINAL-s8701000-egdc_structured\", \"same_player_binary\": true, \"structural_associations\": {\"equal\": true, \"first_difference\": null, \"original\": 2424, \"replayed\": 2424}, \"trajectories\": {\"equal\": true, \"first_difference\": null, \"original\": 1, \"replayed\": 1}, \"trajectory\": {\"equal\": true, \"max_abs_difference\": 0.0, \"samples\": [481, 481], \"tolerance\": 0.0}, \"verified_files\": 1121, \"verified_objects\": 789, \"view_execution\": {\"equal\": true, \"first_difference\": null, \"original\": 12, \"replayed\": 12}}, \"traceable decisions with low measured UIR\": {\"traceable_fraction\": 1.0, \"uir\": 0.0}}"
+    },
+    {
+      "criterion": "competitive mission outcomes vs decision baselines",
+      "status": "FAIL",
+      "measured": "{\"competitive mission outcomes vs decision baselines\": {\"competitive\": {\"naive_act_on_claims\": {\"baseline_safety_events\": 26, \"baseline_task_success\": 4, \"baseline_violations\": 10145, \"egdc_safety_events\": 0, \"egdc_task_success\": 10, \"egdc_violations\": 0, \"not_worse\": true, \"per_scenario_success\": {\"I5-BATTERY-RESERVE\": [0, 0], \"I5-COMMS-OUTAGE\": [2, 2], \"I5-CRITICAL-FINDING\": [2, 2], \"I5-NOMINAL\": [2, 0], \"I5-ROUTE-BLOCKED\": [2, 0], \"I5-TIME-RESERVE\": [2, 0], \"I5-UNCERTAIN-BELIEF\": [0, 0]}}, \"rule_fsm\": {\"baseline_safety_events\": 0, \"baseline_task_success\": 10, \"baseline_violations\": 0, \"egdc_safety_events\": 0, \"egdc_task_success\": 10, \"egdc_violations\": 0, \"not_worse\": true, \"per_scenario_success\": {\"I5-BATTERY-RESERVE\": [0, 0], \"I5-COMMS-OUTAGE\": [2, 2], \"I5-CRITICAL-FINDING\": [2, 2], \"I5-NOMINAL\": [2, 2], \"I5-ROUTE-BLOCKED\": [2, 2], \"I5-TIME-RESERVE\": [2, 2], \"I5-UNCERTAIN-BELIEF\": [0, 0]}}}}, \"grid\": {\"declared\": 42, \"flights\": 42}, \"leakage\": null, \"replay\": {\"baac_transmissions\": {\"equal\": true, \"first_difference\": null, \"original\": 492, \"replayed\": 492}, \"belief_payloads\": {\"equal\": true, \"first_difference\": null, \"original\": 7630, \"replayed\": 7630}, \"command_payloads\": {\"equal\": true, \"first_difference\": null, \"original\": 4800, \"replayed\": 4800}, \"decisions\": {\"equal\": true, \"first_difference\": null, \"original\": 240, \"replayed\": 240}, \"equal\": true, \"events\": {\"equal\": true, \"first_difference\": null, \"original\": 29438, \"replayed\": 29438}, \"evidence_payloads\": {\"equal\": true, \"first_difference\": null, \"original\": 3126, \"replayed\": 3126}, \"observation_payloads\": {\"equal\": true, \"first_difference\": null, \"original\": 4085, \"replayed\": 4085}, \"replay_dir\": \"/Users/kerem/Documents/ChatGPT/conrad v2/artifacts/unity/gate_runs/replay/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-NOMINAL-s8701000-egdc_structured\", \"revisions\": {\"equal\": true, \"first_difference\": null, \"original\": 7630, \"replayed\": 7630}, \"run\": \"artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-NOMINAL-s8701000-egdc_structured\", \"same_player_binary\": true, \"structural_associations\": {\"equal\": true, \"first_difference\": null, \"original\": 2424, \"replayed\": 2424}, \"trajectories\": {\"equal\": true, \"first_difference\": null, \"original\": 1, \"replayed\": 1}, \"trajectory\": {\"equal\": true, \"max_abs_difference\": 0.0, \"samples\": [481, 481], \"tolerance\": 0.0}, \"verified_files\": 1121, \"verified_objects\": 789, \"view_execution\": {\"equal\": true, \"first_difference\": null, \"original\": 12, \"replayed\": 12}}}"
+    }
+  ],
+  "artifacts": [
+    "tests/unity_live/test_i5_spatial_v1_1_unity.py",
+    "artifacts/gates/I5_SPATIAL_V1_1/unity_pytest.xml",
+    "artifacts/gates/I5_SPATIAL_V1_1/unity_pytest.txt",
+    "artifacts/gates/I5_SPATIAL_V1_1/unity_measured.json",
+    "artifacts/gates/I5_SPATIAL_V1_1/unity_i5_spatial_v1_1_results.json",
+    "configs/eval/i5_spatial_v1_1_unity_formal.yaml",
+    "configs/eval/partitions_i5_unity_v3.yaml",
+    "artifacts/experiments/M1-ACTION-SPATIAL-V1-1-FINAL/final_verification.json"
+  ],
+  "notes": "meta={\"arms\": [\"egdc_structured\", \"rule_fsm\", \"naive_act_on_claims\"], \"config_sha256\": \"9051df7d1d7d409e53c4749faa31a16a99a703f7505b47128150a34c1f8f9e51\", \"experiment_id\": \"I5-SPATIAL-V1-1-UNITY-FORMAL\", \"partition\": \"configs/eval/partitions_i5_unity_v3.yaml\", \"player\": {\"build_info\": null, \"player\": \"ConradSim\", \"player_exe_sha256\": \"7e42f64199b043204d62737d06aabc6b6ceb1f3c1c699f158a612b938ea87ac6\"}, \"results\": \"artifacts/gates/I5_SPATIAL_V1_1/unity_i5_spatial_v1_1_results.json\", \"scenarios\": [\"I5-NOMINAL\", \"I5-CRITICAL-FINDING\", \"I5-UNCERTAIN-BELIEF\", \"I5-ROUTE-BLOCKED\", \"I5-BATTERY-RESERVE\", \"I5-TIME-RESERVE\", \"I5-COMMS-OUTAGE\"], \"worlds\": [8701000, 8701001]}; player={\"build_info\": null, \"player\": \"ConradSim\", \"player_exe_sha256\": \"7e42f64199b043204d62737d06aabc6b6ceb1f3c1c699f158a612b938ea87ac6\"}; fresh worlds 8701000-8701001; unused suffix 8701002-8701009 not opened; all 42 Unity flights sequential; SYNTHETIC_ONLY; L1_APPROXIMATE_PHYSICS; historical I5 FORMAL 9/10 FAIL remains preserved in evidence_formal.json"
+}

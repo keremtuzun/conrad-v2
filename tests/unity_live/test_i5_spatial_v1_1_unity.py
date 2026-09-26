@@ -254,7 +254,10 @@ def test_no_twin_truth_leakage_on_runtime_side(flights):
         run_dir = REPO_ROOT / row["run_dir"]
         meta = json.loads((run_dir / "truth/truth_record.json").read_text(encoding="utf-8"))["meta"]
         count, bad = leakage_scan(run_dir, set(meta["world_entity_ids"]), set())
-        scanned[row["run_id"]] = count
+        # Score rows intentionally contain only evaluation fields.  Use the
+        # immutable bundle path as the audit label instead of assuming a
+        # separate run_id field was copied into the score payload.
+        scanned[row["run_dir"]] = count
         violations.extend(bad)
         assert count > 100
     measured(GATE, "leakage", runs=scanned, violations=violations[:20])

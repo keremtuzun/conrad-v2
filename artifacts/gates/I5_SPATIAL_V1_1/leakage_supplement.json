@@ -1,0 +1,186 @@
+{
+  "all_runs_scanned": true,
+  "audit": "I5 Spatial V1.1 completed-bundle leakage supplement",
+  "evidence_role": "SUPPLEMENTAL_READ_ONLY_AUDIT",
+  "expected_runs": 42,
+  "formal_test_error": "KeyError: 'run_id' before scan result recording completed",
+  "formal_test_node_status": "ERROR",
+  "formal_verdict_changed": false,
+  "notes": "This scan only reads the exact completed formal bundles. It cannot convert the formal ERROR node to PASS and cannot change the 7/10 formal FAIL.",
+  "runs": {
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-BATTERY-RESERVE-s8701000-egdc_structured": {
+      "texts_scanned": 7618,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-BATTERY-RESERVE-s8701000-naive_act_on_claims": {
+      "texts_scanned": 5592,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-BATTERY-RESERVE-s8701000-rule_fsm": {
+      "texts_scanned": 7618,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-BATTERY-RESERVE-s8701001-egdc_structured": {
+      "texts_scanned": 6982,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-BATTERY-RESERVE-s8701001-naive_act_on_claims": {
+      "texts_scanned": 5525,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-BATTERY-RESERVE-s8701001-rule_fsm": {
+      "texts_scanned": 6982,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-COMMS-OUTAGE-s8701000-egdc_structured": {
+      "texts_scanned": 7475,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-COMMS-OUTAGE-s8701000-naive_act_on_claims": {
+      "texts_scanned": 5592,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-COMMS-OUTAGE-s8701000-rule_fsm": {
+      "texts_scanned": 6233,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-COMMS-OUTAGE-s8701001-egdc_structured": {
+      "texts_scanned": 7281,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-COMMS-OUTAGE-s8701001-naive_act_on_claims": {
+      "texts_scanned": 5525,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-COMMS-OUTAGE-s8701001-rule_fsm": {
+      "texts_scanned": 5975,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-CRITICAL-FINDING-s8701000-egdc_structured": {
+      "texts_scanned": 7836,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-CRITICAL-FINDING-s8701000-naive_act_on_claims": {
+      "texts_scanned": 5592,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-CRITICAL-FINDING-s8701000-rule_fsm": {
+      "texts_scanned": 7836,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-CRITICAL-FINDING-s8701001-egdc_structured": {
+      "texts_scanned": 6982,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-CRITICAL-FINDING-s8701001-naive_act_on_claims": {
+      "texts_scanned": 5525,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-CRITICAL-FINDING-s8701001-rule_fsm": {
+      "texts_scanned": 6982,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-NOMINAL-s8701000-egdc_structured": {
+      "texts_scanned": 36444,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-NOMINAL-s8701000-naive_act_on_claims": {
+      "texts_scanned": 21010,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-NOMINAL-s8701000-rule_fsm": {
+      "texts_scanned": 36444,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-NOMINAL-s8701001-egdc_structured": {
+      "texts_scanned": 29562,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-NOMINAL-s8701001-naive_act_on_claims": {
+      "texts_scanned": 20205,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-NOMINAL-s8701001-rule_fsm": {
+      "texts_scanned": 29562,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-ROUTE-BLOCKED-s8701000-egdc_structured": {
+      "texts_scanned": 7456,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-ROUTE-BLOCKED-s8701000-naive_act_on_claims": {
+      "texts_scanned": 6160,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-ROUTE-BLOCKED-s8701000-rule_fsm": {
+      "texts_scanned": 7456,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-ROUTE-BLOCKED-s8701001-egdc_structured": {
+      "texts_scanned": 6735,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-ROUTE-BLOCKED-s8701001-naive_act_on_claims": {
+      "texts_scanned": 6185,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-ROUTE-BLOCKED-s8701001-rule_fsm": {
+      "texts_scanned": 6735,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-TIME-RESERVE-s8701000-egdc_structured": {
+      "texts_scanned": 5589,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-TIME-RESERVE-s8701000-naive_act_on_claims": {
+      "texts_scanned": 5592,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-TIME-RESERVE-s8701000-rule_fsm": {
+      "texts_scanned": 5589,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-TIME-RESERVE-s8701001-egdc_structured": {
+      "texts_scanned": 4878,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-TIME-RESERVE-s8701001-naive_act_on_claims": {
+      "texts_scanned": 5525,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-TIME-RESERVE-s8701001-rule_fsm": {
+      "texts_scanned": 4878,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-UNCERTAIN-BELIEF-s8701000-egdc_structured": {
+      "texts_scanned": 7618,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-UNCERTAIN-BELIEF-s8701000-naive_act_on_claims": {
+      "texts_scanned": 5592,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-UNCERTAIN-BELIEF-s8701000-rule_fsm": {
+      "texts_scanned": 7618,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-UNCERTAIN-BELIEF-s8701001-egdc_structured": {
+      "texts_scanned": 6982,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-UNCERTAIN-BELIEF-s8701001-naive_act_on_claims": {
+      "texts_scanned": 5525,
+      "violations": []
+    },
+    "artifacts/unity/gate_runs/I5_SPATIAL_V1_1/I5-SPATIAL-V1-1-UNITY-I5-UNCERTAIN-BELIEF-s8701001-rule_fsm": {
+      "texts_scanned": 6982,
+      "violations": []
+    }
+  },
+  "runs_scanned": 42,
+  "source_results": "artifacts/gates/I5_SPATIAL_V1_1/unity_i5_spatial_v1_1_results.json",
+  "source_results_sha256": "bde617d70a617f13758cf06a3bdac6bf323c63d7a5093cb14da3194f20b5ffc1",
+  "supplemental_status": "PASS",
+  "unity_rerun": false,
+  "violations": []
+}

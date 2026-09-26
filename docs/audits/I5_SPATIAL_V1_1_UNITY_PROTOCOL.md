@@ -1,6 +1,6 @@
 # I5 Spatial V1.1 formal Unity protocol
 
-Status: **DECLARED / SEALED BEFORE EXECUTION**
+Status: **FORMAL FAIL — 7/10 criteria passed**
 
 The Spatial V1.1 surrogate final passed under its preregistered rule. Its exact
 result SHA-256 is
@@ -24,6 +24,40 @@ sequential Unity flights. All final surrogate scenarios are included, including
 battery reserve. The mission-level `LOW_POWER` event maps to Unity's existing
 `BATTERY_DEGRADATION` bridge fault with the same capacity factor; it is not a
 mocked battery reading.
+
+## Immutable execution result
+
+The exact declared grid ran once, sequentially, on worlds 8701000 and 8701001.
+No unused suffix world was opened and no flight was repeated. The exact player
+hash matched, bundle replay passed with zero trajectory difference, the
+declared grid was complete, and the matrix's seven criteria passed.
+
+The integrated action criterion failed because `I5-BATTERY-RESERVE` reached
+its warrant on 0/2 worlds. Every other scenario reached its warrant on 2/2
+worlds with correct-given-warrant 1.0. The primary arm had zero decision
+violations, zero false-intact cases, zero nominal over-escalations,
+traceability 1.0, and UIR 0.0. It was not worse than either baseline, but those
+results cannot compensate for the missing battery warrants.
+
+The cause is a cross-runtime semantic mismatch in the declared bridge:
+kernel `LOW_POWER` sets energy used so remaining battery becomes the requested
+fraction, whereas Unity `BATTERY_DEGRADATION` only scales capacity and leaves
+energy used low. Unity accepted the injected 0.12 event, but remaining battery
+was still about 0.96 at mission end instead of 0.12. This is a software defect,
+not permission to reinterpret or rerun the result.
+
+The formal leakage node also errored before completing because the test tried
+to label a scored row with absent `run_id`. A separately versioned read-only
+supplement scans the exact stored bundles. Its outcome does not alter that
+formal node or the formal verdict.
+
+Immutable artifacts:
+
+- result SHA-256: `bde617d70a617f13758cf06a3bdac6bf323c63d7a5093cb14da3194f20b5ffc1`;
+- measured SHA-256: `563985f3fac47a01defa03e040aefc1b5736ea1a216c1507781e48b1fb764f90`;
+- JUnit SHA-256: `3f114cfb40ad9aac2618122d9147a086ef8ea5ff8c65f696af524f69b51a1b11`;
+- log SHA-256: `8ce15dd3a7639a31411c05fede24af122bf896709c2eb83fe316178b208f8ce8`; and
+- I5 evidence SHA-256: `08caaf1d3745bfd3c5d9a5cdf078130f4da17d5c5121a55d15b9c82ac2f05822`.
 
 ## Frozen rule
 

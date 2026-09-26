@@ -1,0 +1,79 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.4, pytest-8.4.2, pluggy-1.6.0 -- /Users/kerem/Documents/ChatGPT/conrad v2/.venv/bin/python3
+hypothesis profile 'default'
+rootdir: /Users/kerem/Documents/ChatGPT/conrad v2
+configfile: pyproject.toml
+plugins: cov-6.3.0, anyio-4.15.1, hypothesis-6.168.0
+collecting ... collected 14 items
+
+tests/unity_live/test_i5_spatial_v1_1_unity.py::test_action_matrix_class[continue] PASSED [  7%]
+tests/unity_live/test_i5_spatial_v1_1_unity.py::test_action_matrix_class[request evidence] PASSED [ 14%]
+tests/unity_live/test_i5_spatial_v1_1_unity.py::test_action_matrix_class[replan] PASSED [ 21%]
+tests/unity_live/test_i5_spatial_v1_1_unity.py::test_action_matrix_class[change sensing] PASSED [ 28%]
+tests/unity_live/test_i5_spatial_v1_1_unity.py::test_action_matrix_class[return] PASSED [ 35%]
+tests/unity_live/test_i5_spatial_v1_1_unity.py::test_action_matrix_class[escalate] PASSED [ 42%]
+tests/unity_live/test_i5_spatial_v1_1_unity.py::test_matrix_hard_constraints_inviolable PASSED [ 50%]
+tests/unity_live/test_i5_spatial_v1_1_unity.py::test_actions_exercised_correctly_inside_integrated_missions FAILED [ 57%]
+tests/unity_live/test_i5_spatial_v1_1_unity.py::test_traceable_decisions_with_low_measured_uir PASSED [ 64%]
+tests/unity_live/test_i5_spatial_v1_1_unity.py::test_competitive_mission_outcomes_vs_decision_baselines PASSED [ 71%]
+tests/unity_live/test_i5_spatial_v1_1_unity.py::test_every_scenario_and_arm_flew_on_every_world PASSED [ 78%]
+tests/unity_live/test_i5_spatial_v1_1_unity.py::test_no_twin_truth_leakage_on_runtime_side FAILED [ 85%]
+tests/unity_live/test_i5_spatial_v1_1_unity.py::test_bundle_replays_deterministically PASSED [ 92%]
+tests/unity_live/test_i5_spatial_v1_1_unity.py::test_results_file_is_versioned_and_written PASSED [100%]
+
+=================================== FAILURES ===================================
+_________ test_actions_exercised_correctly_inside_integrated_missions __________
+
+flights = {'config': {'arms': ['egdc_structured', 'rule_fsm', 'naive_act_on_claims'], 'contact_clearance_m': 0.3, 'experiment_id...: 0, ...}}, 'competitive_outcomes': True, 'floor_status': 'ENGINEERING_ESTIMATE (ch25 leaves the I5 bound OPEN)', ...}}
+
+    def test_actions_exercised_correctly_inside_integrated_missions(flights):
+        verdict = flights["verdicts"]
+        rule = flights["config"]["formal_rule"]
+        measured(
+            GATE,
+            C_ACTIONS,
+            per_scenario_warrants=verdict["per_scenario_warrant_reached"],
+            per_scenario_correct_given_warrant=verdict["per_scenario_correct_given_warrant_rate"],
+            false_intact=verdict["spatial_false_intact_zero"],
+            violations_total=verdict["violations_total"],
+            nominal_over_escalations=verdict["nominal_over_escalations"],
+            spatial_v1_runtime_selected=verdict["spatial_v1_runtime_selected"],
+        )
+>       assert verdict["actions_exercised_correctly"]
+E       assert False
+
+tests/unity_live/test_i5_spatial_v1_1_unity.py:215: AssertionError
+__________________ test_no_twin_truth_leakage_on_runtime_side __________________
+
+flights = {'config': {'arms': ['egdc_structured', 'rule_fsm', 'naive_act_on_claims'], 'contact_clearance_m': 0.3, 'experiment_id...: 0, ...}}, 'competitive_outcomes': True, 'floor_status': 'ENGINEERING_ESTIMATE (ch25 leaves the I5 bound OPEN)', ...}}
+
+    def test_no_twin_truth_leakage_on_runtime_side(flights):
+        scanned: dict[str, int] = {}
+        violations: list[str] = []
+        for row in flights["rows"]:
+            run_dir = REPO_ROOT / row["run_dir"]
+            meta = json.loads((run_dir / "truth/truth_record.json").read_text(encoding="utf-8"))["meta"]
+            count, bad = leakage_scan(run_dir, set(meta["world_entity_ids"]), set())
+>           scanned[row["run_id"]] = count
+                    ^^^^^^^^^^^^^
+E           KeyError: 'run_id'
+
+tests/unity_live/test_i5_spatial_v1_1_unity.py:257: KeyError
+==================================== PASSES ====================================
+- generated xml file: /Users/kerem/Documents/ChatGPT/conrad v2/artifacts/gates/I5_SPATIAL_V1_1/unity_pytest.xml -
+=========================== short test summary info ============================
+PASSED tests/unity_live/test_i5_spatial_v1_1_unity.py::test_action_matrix_class[continue]
+PASSED tests/unity_live/test_i5_spatial_v1_1_unity.py::test_action_matrix_class[request evidence]
+PASSED tests/unity_live/test_i5_spatial_v1_1_unity.py::test_action_matrix_class[replan]
+PASSED tests/unity_live/test_i5_spatial_v1_1_unity.py::test_action_matrix_class[change sensing]
+PASSED tests/unity_live/test_i5_spatial_v1_1_unity.py::test_action_matrix_class[return]
+PASSED tests/unity_live/test_i5_spatial_v1_1_unity.py::test_action_matrix_class[escalate]
+PASSED tests/unity_live/test_i5_spatial_v1_1_unity.py::test_matrix_hard_constraints_inviolable
+PASSED tests/unity_live/test_i5_spatial_v1_1_unity.py::test_traceable_decisions_with_low_measured_uir
+PASSED tests/unity_live/test_i5_spatial_v1_1_unity.py::test_competitive_mission_outcomes_vs_decision_baselines
+PASSED tests/unity_live/test_i5_spatial_v1_1_unity.py::test_every_scenario_and_arm_flew_on_every_world
+PASSED tests/unity_live/test_i5_spatial_v1_1_unity.py::test_bundle_replays_deterministically
+PASSED tests/unity_live/test_i5_spatial_v1_1_unity.py::test_results_file_is_versioned_and_written
+FAILED tests/unity_live/test_i5_spatial_v1_1_unity.py::test_actions_exercised_correctly_inside_integrated_missions
+FAILED tests/unity_live/test_i5_spatial_v1_1_unity.py::test_no_twin_truth_leakage_on_runtime_side
+================== 2 failed, 12 passed in 1605.43s (0:26:45) ===================

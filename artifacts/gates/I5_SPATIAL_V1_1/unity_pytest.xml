@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="14" time="1605.429" timestamp="2026-09-26T19:21:06.510467+03:00" hostname="Mac-mini.local"><testcase classname="tests.unity_live.test_i5_spatial_v1_1_unity" name="test_action_matrix_class[continue]" time="0.009" /><testcase classname="tests.unity_live.test_i5_spatial_v1_1_unity" name="test_action_matrix_class[request evidence]" time="0.000" /><testcase classname="tests.unity_live.test_i5_spatial_v1_1_unity" name="test_action_matrix_class[replan]" time="0.000" /><testcase classname="tests.unity_live.test_i5_spatial_v1_1_unity" name="test_action_matrix_class[change sensing]" time="0.000" /><testcase classname="tests.unity_live.test_i5_spatial_v1_1_unity" name="test_action_matrix_class[return]" time="0.000" /><testcase classname="tests.unity_live.test_i5_spatial_v1_1_unity" name="test_action_matrix_class[escalate]" time="0.000" /><testcase classname="tests.unity_live.test_i5_spatial_v1_1_unity" name="test_matrix_hard_constraints_inviolable" time="0.000" /><testcase classname="tests.unity_live.test_i5_spatial_v1_1_unity" name="test_actions_exercised_correctly_inside_integrated_missions" time="1470.238"><failure message="assert False">flights = {'config': {'arms': ['egdc_structured', 'rule_fsm', 'naive_act_on_claims'], 'contact_clearance_m': 0.3, 'experiment_id...: 0, ...}}, 'competitive_outcomes': True, 'floor_status': 'ENGINEERING_ESTIMATE (ch25 leaves the I5 bound OPEN)', ...}}
+
+    def test_actions_exercised_correctly_inside_integrated_missions(flights):
+        verdict = flights["verdicts"]
+        rule = flights["config"]["formal_rule"]
+        measured(
+            GATE,
+            C_ACTIONS,
+            per_scenario_warrants=verdict["per_scenario_warrant_reached"],
+            per_scenario_correct_given_warrant=verdict["per_scenario_correct_given_warrant_rate"],
+            false_intact=verdict["spatial_false_intact_zero"],
+            violations_total=verdict["violations_total"],
+            nominal_over_escalations=verdict["nominal_over_escalations"],
+            spatial_v1_runtime_selected=verdict["spatial_v1_runtime_selected"],
+        )
+&gt;       assert verdict["actions_exercised_correctly"]
+E       assert False
+
+tests/unity_live/test_i5_spatial_v1_1_unity.py:215: AssertionError</failure></testcase><testcase classname="tests.unity_live.test_i5_spatial_v1_1_unity" name="test_traceable_decisions_with_low_measured_uir" time="0.000" /><testcase classname="tests.unity_live.test_i5_spatial_v1_1_unity" name="test_competitive_mission_outcomes_vs_decision_baselines" time="0.000" /><testcase classname="tests.unity_live.test_i5_spatial_v1_1_unity" name="test_every_scenario_and_arm_flew_on_every_world" time="0.000" /><testcase classname="tests.unity_live.test_i5_spatial_v1_1_unity" name="test_no_twin_truth_leakage_on_runtime_side" time="1.738"><failure message="KeyError: 'run_id'">flights = {'config': {'arms': ['egdc_structured', 'rule_fsm', 'naive_act_on_claims'], 'contact_clearance_m': 0.3, 'experiment_id...: 0, ...}}, 'competitive_outcomes': True, 'floor_status': 'ENGINEERING_ESTIMATE (ch25 leaves the I5 bound OPEN)', ...}}
+
+    def test_no_twin_truth_leakage_on_runtime_side(flights):
+        scanned: dict[str, int] = {}
+        violations: list[str] = []
+        for row in flights["rows"]:
+            run_dir = REPO_ROOT / row["run_dir"]
+            meta = json.loads((run_dir / "truth/truth_record.json").read_text(encoding="utf-8"))["meta"]
+            count, bad = leakage_scan(run_dir, set(meta["world_entity_ids"]), set())
+&gt;           scanned[row["run_id"]] = count
+                    ^^^^^^^^^^^^^
+E           KeyError: 'run_id'
+
+tests/unity_live/test_i5_spatial_v1_1_unity.py:257: KeyError</failure></testcase><testcase classname="tests.unity_live.test_i5_spatial_v1_1_unity" name="test_bundle_replays_deterministically" time="131.914" /><testcase classname="tests.unity_live.test_i5_spatial_v1_1_unity" name="test_results_file_is_versioned_and_written" time="0.011" /></testsuite></testsuites>
