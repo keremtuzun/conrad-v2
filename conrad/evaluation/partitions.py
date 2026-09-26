@@ -88,6 +88,12 @@ I5_V8_DOMAIN = "i5_mission_v8"
 I5_V9_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_i5_v9.yaml"
 I5_V9_PARTITIONS_SHA256 = "c5b890be75e80872d3ccc8c6f730b567bba6449d0f7ba3f743cf41e1c97ff8fc"
 I5_V9_DOMAIN = "i5_mission_v9"
+# I5 Spatial V1.1 visibility/localization remediation. Every block is fresh
+# after v9 development was exhausted; validation/final stay sealed until the
+# preregistered candidate passes development.
+I5_V10_PARTITIONS_PATH = REPO_ROOT / "configs" / "eval" / "partitions_i5_v10.yaml"
+I5_V10_PARTITIONS_SHA256 = "359b7de4fd0172458ba960881402be05f0551a2dcd49aebeeaf827a0ec18e365"
+I5_V10_DOMAIN = "i5_mission_v10"
 # Held-out worlds of the FORMAL Unity gate I5 integrated missions. The unity_gate final_test split is fully
 # allocated and every I5 python-kernel final split is spent by its surrogate, so formal I5 gets its own worlds.
 # Pinned on 2026-09-20 before any run on them.
@@ -848,6 +854,44 @@ def _i5_v9_split(part: Partition) -> Split:
     )
 
 
+def load_i5_v10(path: Path = I5_V10_PARTITIONS_PATH, *, verify_digest: bool = True) -> dict[str, Any]:
+    """Fresh I5 Spatial V1.1 cycle after visibility/localization remediation."""
+    digest = canonical_digest(path)
+    if verify_digest and digest != I5_V10_PARTITIONS_SHA256:
+        raise PartitionIntegrityError(
+            f"{path} changed after freezing: digest {digest} != pinned {I5_V10_PARTITIONS_SHA256}"
+        )
+    raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+    blocks = {name: set(_seeds(spec)) for name, spec in raw["world_seeds"].items()}
+    if set(blocks) != {"development", "validation", "final_test"} or any(not b for b in blocks.values()):
+        raise PartitionIntegrityError("i5_v10 requires nonempty development, validation, final_test")
+    if sum(map(len, blocks.values())) != len(set().union(*blocks.values())):
+        raise PartitionIntegrityError("i5_v10 splits overlap")
+    taken = set().union(*(set(_seeds(item)) for item in raw.get("reserved_elsewhere", [])))
+    taken |= set().union(*(set(_seeds(spec)) for spec in load_i5_v9()["raw"]["world_seeds"].values()))
+    taken |= set().union(*(set(_seeds(spec)) for spec in load_i5_unity_v2()["raw"]["world_seeds"].values()))
+    if set().union(*blocks.values()) & taken:
+        raise PartitionIntegrityError("i5_v10 collides with historical or reserved seeds")
+    if tuple(raw["scenarios"]) != tuple(load_i5_v9()["raw"]["scenarios"]):
+        raise PartitionIntegrityError("i5_v10 must retain the legitimate Spatial V1 scenario set")
+    return {"raw": raw, "digest": digest}
+
+
+def _i5_v10_split(part: Partition) -> Split:
+    loaded = load_i5_v10()
+    raw = loaded["raw"]
+    if part.value not in raw["world_seeds"]:
+        raise KeyError(f"i5_v10 partition has no {part.value!r} split")
+    return Split(
+        domain=I5_V10_DOMAIN,
+        partition=part,
+        world_seeds=_seeds(raw["world_seeds"][part.value]),
+        families=tuple(raw["scenarios"]),
+        replicates_per_world=1,
+        digest=loaded["digest"],
+    )
+
+
 def _i5_v3_split(part: Partition) -> Split:
     loaded = load_i5_v3()
     raw = loaded["raw"]
@@ -1409,6 +1453,8 @@ def split(domain: str, partition: str | Partition, purpose: str | Purpose) -> Sp
         return _i5_v8_split(part)
     if domain == I5_V9_DOMAIN:
         return _i5_v9_split(part)
+    if domain == I5_V10_DOMAIN:
+        return _i5_v10_split(part)
     if domain == I5_UNITY_DOMAIN:
         return _i5_unity_split(part)
     if domain == I5_UNITY_V2_DOMAIN:
@@ -1478,6 +1524,9 @@ def partition_of(domain: str, seed: int) -> Partition | None:
     if domain == I5_V9_DOMAIN:
         v9 = load_i5_v9()["raw"]["world_seeds"]
         return next((Partition(p) for p, spec in v9.items() if int(seed) in _seeds(spec)), None)
+    if domain == I5_V10_DOMAIN:
+        v10 = load_i5_v10()["raw"]["world_seeds"]
+        return next((Partition(p) for p, spec in v10.items() if int(seed) in _seeds(spec)), None)
     if domain == I5_UNITY_DOMAIN:
         unity_i5 = load_i5_unity()["raw"]["world_seeds"]
         return next((Partition(p) for p, spec in unity_i5.items() if int(seed) in _seeds(spec)), None)

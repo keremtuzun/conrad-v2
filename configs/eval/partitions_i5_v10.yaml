@@ -1,0 +1,15 @@
+# Spatial V1.1 visibility/localization remediation cycle, declared 2026-09-26
+# before any world in these blocks was built. All ranges are half-open.
+# Development verifies the versioned candidate, validation selects/estimates
+# warrant incidence, and final_test remains sealed until validation passes and
+# a prospective final sample-size rule is frozen.
+version: partitions-i5-spatial-v1-1-remediation-2026-09-26-v10
+scenarios: [I5-NOMINAL, I5-CRITICAL-FINDING, I5-UNCERTAIN-BELIEF, I5-ROUTE-BLOCKED,
+            I5-BATTERY-RESERVE, I5-TIME-RESERVE, I5-COMMS-OUTAGE]
+world_seeds:
+  development: {explicit: [], range: [8700000, 8700010]}
+  validation: {explicit: [], range: [8700100, 8700110]}
+  final_test: {explicit: [], range: [8700200, 8700240]}
+reserved_elsewhere:
+  - {range: [5300000, 8700000], owner: historical declared gate and experiment partitions}
+  - {range: [8701000, 8702000], owner: reserved for a future I5 Spatial V1.1 Unity cycle if earned}
