@@ -1,0 +1,41 @@
+stage_id: U1-SONAR-RESEARCH
+scale: full
+formal_run_allowed: false
+promotable: false
+blocked_until:
+  - EXT-DATA-PUBLIC-REAL-01
+  - EXT-DINOV2-VITS14-01
+  - EXT-COMPUTE-P4-RESEARCH-01
+required_parents:
+  - generic_rgb_initialization_policy_resolved
+required_partitions:
+  - PRETRAIN_REAL
+  - VALIDATION
+required_modalities:
+  - sonar
+initialization_policy:
+  patch_projection: independent_or_recorded_rgb_transform_digest
+  transformer: may_inherit_generic_rgb_weights_with_recorded_digest
+  independence_evidence: U1-SONAR validation metrics and separate checkpoint ancestry
+objectives:
+  - teacher_student_mse
+  - mask_reconstruction
+optimizer:
+  family: AdamW
+  learning_rates:
+    encoder: 0.0001
+    heads: 0.0003
+  weight_decay: 0.05
+  schedule: warmup_5pct_cosine_by_optimizer_step
+  grad_clip_norm: 1.0
+budget:
+  batch_size_per_gpu: 64
+  gradient_accumulation: 4
+  effective_batch_target: 256
+  optimizer_steps: 100000
+validation:
+  every_steps: 1000
+  selection_metric: val_ssl_total
+promotion:
+  produces: U1-SONAR-RESEARCH-CHECKPOINT
+  requires_clean_git: true

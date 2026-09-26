@@ -1,0 +1,44 @@
+stage_id: J1-RESEARCH
+scale: full
+formal_run_allowed: false
+promotable: false
+blocked_until:
+  - EXT-DATA-PUBLIC-REAL-01
+  - EXT-DINOV2-VITS14-01
+  - EXT-COMPUTE-P4-RESEARCH-01
+required_parents:
+  - U1-RGB-RESEARCH
+  - U1-SONAR-RESEARCH
+  - U1-RANGE-RESEARCH
+  - U1-GEOMETRY-RESEARCH
+  - M1-RESEARCH
+  - T1-RESEARCH
+objectives:
+  - masked_latent_prediction
+  - global_consistency
+  - cross_modal_consistency
+  - temporal_prediction
+  - missing_modality
+  - degradation
+  - geometry_consistency
+  - metric_reconstruction
+optimizer:
+  family: AdamW
+  learning_rates:
+    joint_heads: 0.0003
+    fusion_temporal: 0.0001
+    unfrozen_u1: 0.00003
+  weight_decay: 0.05
+  schedule: warmup_5pct_cosine_by_optimizer_step
+budget:
+  batch_size_per_gpu: 8
+  gradient_accumulation: 32
+  effective_batch_target: 256
+  optimizer_steps: 150000
+validation:
+  every_steps: 1000
+  selection_metric: val_ssl_total
+promotion:
+  produces: OSFM-S-PRETRAIN-V1-CANDIDATE
+  final_name_requires: P4.12-OSFM-FQ
+  requires_clean_git: true

@@ -1,0 +1,35 @@
+stage_id: M1-RESEARCH
+scale: full
+formal_run_allowed: false
+promotable: false
+blocked_until:
+  - EXT-DATA-PUBLIC-REAL-01
+  - EXT-COMPUTE-P4-RESEARCH-01
+required_parents:
+  - U1-RGB-RESEARCH
+  - U1-SONAR-RESEARCH
+  - U1-RANGE-RESEARCH
+  - U1-GEOMETRY-RESEARCH
+objectives:
+  - global_consistency
+  - cross_modal_consistency
+  - missing_modality
+optimizer:
+  family: AdamW
+  learning_rates:
+    fusion: 0.0002
+    adapters: 0.0003
+    unfrozen_u1: 0.00005
+  weight_decay: 0.05
+  schedule: warmup_5pct_cosine_by_optimizer_step
+budget:
+  batch_size_per_gpu: 32
+  gradient_accumulation: 8
+  effective_batch_target: 256
+  optimizer_steps: 120000
+validation:
+  every_steps: 1000
+  selection_metric: val_ssl_total
+promotion:
+  produces: M1-RESEARCH-CHECKPOINT
+  requires_clean_git: true

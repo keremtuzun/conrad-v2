@@ -1,0 +1,35 @@
+stage_id: U1-RANGE-RESEARCH
+scale: full
+formal_run_allowed: false
+promotable: false
+blocked_until:
+  - EXT-DATA-PUBLIC-REAL-01
+  - EXT-COMPUTE-P4-RESEARCH-01
+required_partitions:
+  - PRETRAIN_REAL
+  - VALIDATION
+required_modalities:
+  - range
+objectives:
+  - teacher_student_mse
+  - mask_reconstruction
+  - metric_reconstruction
+optimizer:
+  family: AdamW
+  learning_rates:
+    encoder: 0.0001
+    heads: 0.0003
+  weight_decay: 0.05
+  schedule: warmup_5pct_cosine_by_optimizer_step
+  grad_clip_norm: 1.0
+budget:
+  batch_size_per_gpu: 64
+  gradient_accumulation: 4
+  effective_batch_target: 256
+  optimizer_steps: 80000
+validation:
+  every_steps: 1000
+  selection_metric: val_ssl_total
+promotion:
+  produces: U1-RANGE-RESEARCH-CHECKPOINT
+  requires_clean_git: true

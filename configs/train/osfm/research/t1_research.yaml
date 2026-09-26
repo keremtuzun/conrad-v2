@@ -1,0 +1,31 @@
+stage_id: T1-RESEARCH
+scale: full
+formal_run_allowed: false
+promotable: false
+blocked_until:
+  - EXT-DATA-PUBLIC-REAL-01
+  - EXT-COMPUTE-P4-RESEARCH-01
+required_parents:
+  - M1-RESEARCH
+objectives:
+  - temporal_prediction
+  - global_consistency
+optimizer:
+  family: AdamW
+  learning_rates:
+    temporal: 0.0002
+    heads: 0.0003
+    fusion: 0.00005
+  weight_decay: 0.05
+  schedule: warmup_5pct_cosine_by_optimizer_step
+budget:
+  batch_size_per_gpu: 16
+  gradient_accumulation: 16
+  effective_batch_target: 256
+  optimizer_steps: 120000
+validation:
+  every_steps: 1000
+  selection_metric: val_ssl_total
+promotion:
+  produces: T1-RESEARCH-CHECKPOINT
+  requires_clean_git: true

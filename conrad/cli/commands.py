@@ -28,6 +28,35 @@ def train_run(config: str = typer.Option(..., "--config")) -> None:
     )
 
 
+@train_app.command("osfm-readiness")
+def train_osfm_readiness(
+    corpus: str = typer.Option("configs/data/osfm/synthetic_ready.yaml", "--corpus"),
+    init: str = typer.Option("artifacts/external/dinov2/dinov2_vits14.pth", "--init"),
+    output: str = typer.Option("artifacts/gates/P4.7/osfm_readiness.json", "--output"),
+) -> None:
+    """Run the P4.7 OS-FM pretraining readiness gate. Does not start training."""
+    from conrad.foundation.pretraining.readiness import run_p47_readiness, write_p47_report
+
+    report = run_p47_readiness(corpus_manifest=corpus, init_path=init)
+    written = write_p47_report(report, output)
+    typer.echo(
+        json.dumps(
+            {
+                "gate_id": report.gate_id,
+                "status": report.status,
+                "decision": report.decision.value,
+                "synthetic_staging_permitted": report.synthetic_staging_permitted,
+                "blockers": [b.model_dump(mode="json") for b in report.blockers],
+                "report": str(written),
+                "report_digest": report.report_digest,
+            },
+            indent=2,
+        )
+    )
+    typer.echo("RESULT: " + report.decision.value)
+    raise typer.Exit(0 if report.decision.value in {"GO", "CONDITIONAL-GO"} else 1)
+
+
 @eval_app.command("run")
 def eval_run(
     experiment: str = typer.Option(None, "--experiment", help="experiment ID, e.g. CORE-BUO-E001"),
