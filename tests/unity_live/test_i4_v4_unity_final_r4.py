@@ -40,6 +40,7 @@ from conrad.orchestration.mission_config import runtime_config
 from conrad.settings import REPO_ROOT
 from conrad.sim.mission.run import settings_for
 from conrad.sim.mission.unity_run import player_identity, prepare_unity, replay_unity_run, resolve_unity
+from conrad.sim.mission.unity_world import UnityWorldOptions
 
 GATE = "I4"
 SCENARIO = "I4-OCCLUDED-UNITY"
@@ -97,14 +98,16 @@ def config_digest() -> str:
 def fly(scenario: str, seed: int, arm: str, override: dict[str, Any], root: Path) -> Path:
     cfg = config()
     settings = settings_for(MISSION_CONFIG)
-    settings.sim.setdefault("unity", {}).update(cfg.get("unity_runtime", {}))
     _, runtime_raw = resolve_unity(scenario, dict(settings.sim.get("mission", {})))
     rcfg = runtime_config({**runtime_raw, **override})
+    uopts = UnityWorldOptions(graphics=bool(cfg.get("unity_runtime", {}).get("graphics", True)))
     run_id = f"{scenario}-s{seed}-{arm}"
     done = root / run_id / "reports" / "metrics.json"
     if done.exists() and (root / run_id / "bundle_manifest.json").exists():
         return root / run_id  # resume an interrupted session: finished bundles are kept, never re-scored
-    s = prepare_unity(scenario, MISSION_CONFIG, run_id=run_id, runs_root=root, seed=seed, stored_runtime=rcfg)
+    s = prepare_unity(
+        scenario, MISSION_CONFIG, run_id=run_id, runs_root=root, seed=seed, uopts=uopts, stored_runtime=rcfg
+    )
     try:
         s.run()
         out = s.finish()
