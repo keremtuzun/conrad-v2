@@ -1,0 +1,13 @@
+{
+  "blockers": [],
+  "decision": "GO",
+  "gate_id": "P4.8-FULL-LAUNCH",
+  "implementation_review": "/home/burakaksu/conrad-v2-p48a-work/artifacts/gates/P4.8B/full_run_implementation_review.json",
+  "implementation_review_digest": "02ccf98b00922744a49712ad9a3c97ea05da6784bca812b35b1bcb1a4106e143",
+  "p47_report": "/home/burakaksu/conrad-v2-p48a-work/artifacts/gates/P4.7D_L4/osfm_readiness.json",
+  "p47_report_digest": "88beb4860a917b1ad66d4b727951dc072912dd82726dfb7f6ee1b346ce290921",
+  "rehearsal_report": "/home/burakaksu/conrad-v2-p48a-work/artifacts/gates/P4.8A/rehearsal_l4_r02/reports/p48a_u1_sonar_rehearsal_report.json",
+  "rehearsal_report_digest": "410727494a12ff0cd71894be8479fe45b133c1cc29d087b5ba3f0c38e01d2f03",
+  "schema_version": "1.0.0",
+  "status": "VALIDATED-RUN"
+}
