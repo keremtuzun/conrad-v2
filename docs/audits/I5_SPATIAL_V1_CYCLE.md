@@ -217,3 +217,38 @@ with SHA-256
 No v9 validation or final world has been opened. Any further candidate must
 first explain the post-finding route/safety difference and use only the five
 remaining development seeds 8600005..8600009.
+
+## R4 safety diagnosis and R5 declaration
+
+Retained diagnostic replays of the already-spent R4 worlds reproduced all
+seven excess entries. Every one was a fail-safe `HOLD` caused by five
+consecutive rejected absolute position fixes and `LOCALIZATION_LOST`; none was
+caused by a boundary risk or collision. EGDC's information-gathering routes
+continued after the first finding and therefore exposed the estimator to more
+inspection manoeuvres than the rule baseline.
+
+The trajectory configuration explained the lockout. The mission requested
+80% of the simulated vehicle's 1.0 m/s safety maximum, while its absolute
+position fix arrives once per second with configured sigma 0.10 m. With the
+EKF's configured initial position sigma 0.10 m and unchanged 3-DOF 99.9%
+innovation gate 16.27, the one-sample isotropic gate radius is approximately
+0.57 m. A 0.8 m/s reversal can therefore move a valid next fix outside the
+gate. Rejection prevents the state correction, subsequent residuals grow, and
+the five-rejection safety rule correctly enters HOLD.
+
+A diagnostic replay at a 0.4 max-speed fraction kept one-second travel below
+that gate radius. On the three spent worlds and two affected scenarios, both
+EGDC and the rule baseline retained 6/6 task successes and zero decision
+violations; EGDC's safety entries fell from seven to zero. This replay is
+mechanism confirmation only and is not selection or gate evidence.
+
+R5 is prospectively declared on the five untouched v9 development worlds
+8600005..8600009. Its only candidate change from R4 is
+`cruise_speed_fraction: 0.4`; position-fix noise, innovation gate, lost-state
+threshold, sensor, truth, support, Model2T, warrant, scenarios, arms,
+durations, attempt bounds, and scoring are unchanged. It advances only if the
+R4 criteria all hold: zero false intact, every non-nominal action correct given
+warrant, zero violations and nominal over-escalations, traceability 1.0, UIR
+0, at least three of five legitimate nominal intact warrants, and aggregate
+task success, safety entries, and violations no worse than both baselines.
+Validation and final remain sealed during R5.
