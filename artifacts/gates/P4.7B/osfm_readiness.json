@@ -3,7 +3,7 @@
   "gate_id": "P4.7",
   "status": "VALIDATED-RUN",
   "decision": "CONDITIONAL-GO",
-  "source_commit": "5b9e4b0ec8173e10da57e05393b91fa5cf0e8fac",
+  "source_commit": "d918ea7e4383f6fa635c0a5ea8d0b7e9c746609c",
   "data_findings": {
     "corpus_manifest": "configs/data/osfm/public_real_subpipe_p47b.yaml",
     "corpus_readiness": "READY",
