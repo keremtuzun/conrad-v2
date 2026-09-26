@@ -1,0 +1,54 @@
+{
+  "seeds": [
+    2003,
+    2004
+  ],
+  "cases": [
+    [
+      false,
+      false,
+      false
+    ],
+    [
+      false,
+      false,
+      true
+    ],
+    [
+      false,
+      true,
+      false
+    ],
+    [
+      false,
+      true,
+      true
+    ],
+    [
+      true,
+      false,
+      false
+    ],
+    [
+      true,
+      false,
+      true
+    ],
+    [
+      true,
+      true,
+      false
+    ],
+    [
+      true,
+      true,
+      true
+    ]
+  ],
+  "player_sha256": "7e42f64199b043204d62737d06aabc6b6ceb1f3c1c699f158a612b938ea87ac6",
+  "protocol_id": "SPATIAL-V1.1-MACOS-PARITY-1",
+  "platform": "macOS 26.6.2 (25G83) arm64 host",
+  "unity_editor": "6000.5.9f1 (b57deb96f08d)",
+  "player_format": "Mach-O universal (x86_64, arm64), native arm64 execution",
+  "player_path": "unity/ConradUnityV2/Builds/macOS-ARM64/ConradSim.app/Contents/MacOS/ConradSim"
+}

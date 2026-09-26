@@ -1,0 +1,41 @@
+{
+  "bridge": {
+    "control_endpoint": "tcp://127.0.0.1:61999",
+    "stream_endpoint": null,
+    "truth_endpoint": "tcp://127.0.0.1:62000"
+  },
+  "clock_domain": "SIM",
+  "experiment_name": "SPATIAL-UNITY-PARITY-DEV",
+  "faults": [],
+  "format": "conrad.unity.experiment.v1",
+  "lock_step": true,
+  "physics_dt_ns": 5000000,
+  "power": {
+    "comms_w": 2.0,
+    "compute_w": 15.0,
+    "sensors_w": 5.0,
+    "source": "SYNTHETIC_ONLY",
+    "thruster_coefficient": 0.8
+  },
+  "seed": 2004,
+  "sensor_rendering": {
+    "camera": {
+      "height_px": 48,
+      "source": "SYNTHETIC_ONLY",
+      "vertical_fov_deg": 60.0,
+      "width_px": 64
+    },
+    "sonar": {
+      "attenuation_per_m": 0.02,
+      "beams": 16,
+      "bins": 64,
+      "false_return_prob": 0.0,
+      "horizontal_fov_rad": 1.0,
+      "range_max_m": 20.0,
+      "source": "SYNTHETIC_ONLY"
+    }
+  },
+  "thruster_noise_fraction": 0.0,
+  "truth_endpoint_enabled": true,
+  "validation_report_ref": null
+}

@@ -1,0 +1,40 @@
+Mono path[0] = '/Users/kerem/Documents/ChatGPT/conrad v2/unity/ConradUnityV2/Builds/macOS-ARM64/ConradSim.app/Contents/Resources/Data/Managed'
+Mono config path = '/Users/kerem/Documents/ChatGPT/conrad v2/unity/ConradUnityV2/Builds/macOS-ARM64/ConradSim.app/Contents/MonoBleedingEdge/etc'
+CodeReloadManager initialized
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+ preferred device: Apple M2 (high power)
+Metal devices available: 1
+0: Apple M2 (high power)
+Using device Apple M2 (high power)
+Initialize engine version: 6000.5.9f1 (b57deb96f08d)
+[Subsystems] Discovering subsystems at path /Users/kerem/Documents/ChatGPT/conrad v2/unity/ConradUnityV2/Builds/macOS-ARM64/ConradSim.app/Contents/Resources/Data/UnitySubsystems
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+Initializing Metal device caps: Apple M2
+Mac GPU Family: 2
+Apple GPU Family: 8
+MSL Version: 3.0
+Has Float MSAA: 1
+Has Float Filtering: 1
+ReadWrite Texture Tier: 2
+Begin MonoManager ReloadAssembly
+- Finished resetting the current domain, in  0.019 seconds
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+UnloadTime: 0.555041 ms
+[Conrad] headless player: unity=6000.5.9f1 graphics=Metal batchmode=True
+[Conrad] bridge up: transport=tcp_length_prefixed_json control=tcp://127.0.0.1:61965 truth=tcp://127.0.0.1:61966 validity=L1_APPROXIMATE_PHYSICS lock_step=True digest=441640c2743f8f1a0a5c9c75cbf1adbb7b3ced367d664fcfc2545fcf6b9bad3f
+[Conrad] client 127.0.0.1:61968 dropped: peer 127.0.0.1:61968 disconnected
+Thread 0x16edab000 may have been prematurely finalized
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+Thread 0x16dac7000 may have been prematurely finalized
+CodeReloadManager destroyed

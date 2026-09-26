@@ -1,0 +1,16 @@
+{"seed": 2003, "occluded": false, "noisy": false, "bounded_survey": false, "status": "PASS"}
+{"seed": 2003, "occluded": false, "noisy": false, "bounded_survey": true, "status": "PASS"}
+{"seed": 2003, "occluded": false, "noisy": true, "bounded_survey": false, "status": "PASS"}
+{"seed": 2003, "occluded": false, "noisy": true, "bounded_survey": true, "status": "PASS"}
+{"seed": 2003, "occluded": true, "noisy": false, "bounded_survey": false, "status": "PASS"}
+{"seed": 2003, "occluded": true, "noisy": false, "bounded_survey": true, "status": "PASS"}
+{"seed": 2003, "occluded": true, "noisy": true, "bounded_survey": false, "status": "PASS"}
+{"seed": 2003, "occluded": true, "noisy": true, "bounded_survey": true, "status": "PASS"}
+{"seed": 2004, "occluded": false, "noisy": false, "bounded_survey": false, "status": "PASS"}
+{"seed": 2004, "occluded": false, "noisy": false, "bounded_survey": true, "status": "PASS"}
+{"seed": 2004, "occluded": false, "noisy": true, "bounded_survey": false, "status": "PASS"}
+{"seed": 2004, "occluded": false, "noisy": true, "bounded_survey": true, "status": "PASS"}
+{"seed": 2004, "occluded": true, "noisy": false, "bounded_survey": false, "status": "PASS"}
+{"seed": 2004, "occluded": true, "noisy": false, "bounded_survey": true, "status": "PASS"}
+{"seed": 2004, "occluded": true, "noisy": true, "bounded_survey": false, "status": "PASS"}
+{"seed": 2004, "occluded": true, "noisy": true, "bounded_survey": true, "status": "PASS"}

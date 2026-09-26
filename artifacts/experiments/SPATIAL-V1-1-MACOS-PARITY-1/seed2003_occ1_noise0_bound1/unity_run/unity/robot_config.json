@@ -1,0 +1,975 @@
+{
+  "added_mass_diag": {
+    "sigma": null,
+    "source": "SYNTHETIC_ONLY",
+    "units": "kg|kg*m^2",
+    "value": [
+      5.5,
+      12.7,
+      14.6,
+      0.12,
+      0.12,
+      0.12
+    ]
+  },
+  "battery": {
+    "capacity_j": {
+      "sigma": null,
+      "source": "SYNTHETIC_ONLY",
+      "units": "J",
+      "value": 960000.0
+    },
+    "max_current_a": {
+      "sigma": null,
+      "source": "SYNTHETIC_ONLY",
+      "units": "A",
+      "value": 60.0
+    },
+    "nominal_voltage_v": {
+      "sigma": null,
+      "source": "SYNTHETIC_ONLY",
+      "units": "V",
+      "value": 14.8
+    },
+    "reserve_fraction": {
+      "sigma": null,
+      "source": "SYNTHETIC_ONLY",
+      "units": "unitless",
+      "value": 0.2
+    }
+  },
+  "body_convention": "CONRAD_BODY_RH_X_FORWARD_Y_LEFT_Z_UP",
+  "center_of_buoyancy_body_m": {
+    "sigma": null,
+    "source": "SYNTHETIC_ONLY",
+    "units": "m",
+    "value": [
+      0.0,
+      0.0,
+      0.02
+    ]
+  },
+  "center_of_mass_body_m": {
+    "sigma": null,
+    "source": "SYNTHETIC_ONLY",
+    "units": "m",
+    "value": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "communications": [
+    {
+      "bandwidth_bps": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "bit/s",
+        "value": 2000.0
+      },
+      "bit_error_rate": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "unitless",
+        "value": 0.0001
+      },
+      "latency_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 1.0
+      },
+      "link_name": "acoustic",
+      "packet_loss": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "unitless",
+        "value": 0.1
+      }
+    }
+  ],
+  "compute": {
+    "description": "simulation host",
+    "ram_bytes": {
+      "sigma": null,
+      "source": "SYNTHETIC_ONLY",
+      "units": "bytes",
+      "value": 8000000000.0
+    },
+    "thermal_limit_c": {
+      "sigma": null,
+      "source": "SYNTHETIC_ONLY",
+      "units": "degC",
+      "value": 85.0
+    }
+  },
+  "config_name": "sim_reference_unity_mission",
+  "config_version": "0.2.0",
+  "dimensions_m": {
+    "sigma": null,
+    "source": "SYNTHETIC_ONLY",
+    "units": "m",
+    "value": [
+      0.46,
+      0.34,
+      0.25
+    ]
+  },
+  "displaced_volume_m3": {
+    "sigma": null,
+    "source": "SYNTHETIC_ONLY",
+    "units": "m^3",
+    "value": 0.01125
+  },
+  "format": "conrad.unity.robot_config.v1",
+  "inertia_diag_kgm2": {
+    "sigma": null,
+    "source": "SYNTHETIC_ONLY",
+    "units": "kg*m^2",
+    "value": [
+      0.16,
+      0.16,
+      0.16
+    ]
+  },
+  "linear_drag": {
+    "sigma": null,
+    "source": "SYNTHETIC_ONLY",
+    "units": "N*s/m|N*m*s/rad",
+    "value": [
+      4.0,
+      6.2,
+      5.2,
+      0.07,
+      0.07,
+      0.07
+    ]
+  },
+  "mass_kg": {
+    "sigma": null,
+    "source": "SYNTHETIC_ONLY",
+    "units": "kg",
+    "value": 11.5
+  },
+  "quadratic_drag": {
+    "sigma": null,
+    "source": "SYNTHETIC_ONLY",
+    "units": "N*s^2/m^2|N*m*s^2/rad^2",
+    "value": [
+      18.2,
+      21.7,
+      37.0,
+      1.55,
+      1.55,
+      1.55
+    ]
+  },
+  "robot_config_digest": "441640c2743f8f1a0a5c9c75cbf1adbb7b3ced367d664fcfc2545fcf6b9bad3f",
+  "robot_id": "0197c0de-0000-7000-8000-00000000c0de",
+  "safety": {
+    "command_timeout_s": {
+      "sigma": null,
+      "source": "SYNTHETIC_ONLY",
+      "units": "s",
+      "value": 0.25
+    },
+    "max_depth_m": {
+      "sigma": null,
+      "source": "SYNTHETIC_ONLY",
+      "units": "m",
+      "value": 60.0
+    },
+    "max_pose_sigma_m": {
+      "sigma": null,
+      "source": "SYNTHETIC_ONLY",
+      "units": "m",
+      "value": 1.5
+    },
+    "max_speed_mps": {
+      "sigma": null,
+      "source": "SYNTHETIC_ONLY",
+      "units": "m/s",
+      "value": 1.0
+    },
+    "min_altitude_m": {
+      "sigma": null,
+      "source": "SYNTHETIC_ONLY",
+      "units": "m",
+      "value": 0.5
+    },
+    "min_battery_fraction": {
+      "sigma": null,
+      "source": "SYNTHETIC_ONLY",
+      "units": "unitless",
+      "value": 0.15
+    },
+    "safe_hold_action": {
+      "sigma": null,
+      "source": "SYNTHETIC_ONLY",
+      "units": "enum",
+      "value": "STATION_KEEP"
+    },
+    "state_stale_after_s": {
+      "sigma": null,
+      "source": "SYNTHETIC_ONLY",
+      "units": "s",
+      "value": 0.5
+    }
+  },
+  "schema_version": "1.0.0",
+  "sensors": [
+    {
+      "bias": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "native",
+        "value": 0.0
+      },
+      "calibration_ref": null,
+      "drift_per_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "native/s",
+        "value": 0.0
+      },
+      "frame_id": "SENSOR_IMU",
+      "latency_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.01
+      },
+      "modality": "IMU",
+      "mount_pose_body": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "m,quat_wxyz",
+        "value": [
+          0.25,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "noise_std": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "native",
+        "value": 0.01
+      },
+      "parameters": {
+        "gyro_noise_std": 0.002,
+        "report_orientation": true
+      },
+      "rate_hz": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "Hz",
+        "value": 100.0
+      },
+      "sensor_name": "imu"
+    },
+    {
+      "bias": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "native",
+        "value": 0.0
+      },
+      "calibration_ref": null,
+      "drift_per_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "native/s",
+        "value": 0.0
+      },
+      "frame_id": "SENSOR_DEPTH",
+      "latency_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.01
+      },
+      "modality": "PRESSURE_DEPTH",
+      "mount_pose_body": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "m,quat_wxyz",
+        "value": [
+          0.25,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "noise_std": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "native",
+        "value": 0.02
+      },
+      "parameters": {},
+      "rate_hz": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "Hz",
+        "value": 20.0
+      },
+      "sensor_name": "depth"
+    },
+    {
+      "bias": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "native",
+        "value": 0.0
+      },
+      "calibration_ref": null,
+      "drift_per_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "native/s",
+        "value": 0.0
+      },
+      "frame_id": "SENSOR_CAMERA",
+      "latency_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.01
+      },
+      "modality": "RGB",
+      "mount_pose_body": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "m,quat_wxyz",
+        "value": [
+          0.25,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "noise_std": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "native",
+        "value": 0.02
+      },
+      "parameters": {
+        "height_px": 48,
+        "vertical_fov_deg": 60.0,
+        "width_px": 64
+      },
+      "rate_hz": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "Hz",
+        "value": 1.0
+      },
+      "sensor_name": "camera"
+    },
+    {
+      "bias": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "native",
+        "value": 0.0
+      },
+      "calibration_ref": null,
+      "drift_per_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "native/s",
+        "value": 0.0
+      },
+      "frame_id": "SENSOR_SONAR",
+      "latency_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.01
+      },
+      "modality": "SONAR",
+      "mount_pose_body": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "m,quat_wxyz",
+        "value": [
+          0.35,
+          0.0,
+          0.1,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "noise_std": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "native",
+        "value": 0.005
+      },
+      "parameters": {
+        "attenuation_per_m": 0.02,
+        "beams": 20,
+        "bins": 68,
+        "elevation_rays": 5,
+        "false_return_prob": 0.0,
+        "horizontal_fov_rad": 1.5707963267948966,
+        "range_max_m": 6.0,
+        "vertical_fov_rad": 0.3490658503988659
+      },
+      "rate_hz": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "Hz",
+        "value": 0.3333333333333333
+      },
+      "sensor_name": "sonar"
+    },
+    {
+      "bias": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "m",
+        "value": 0.0
+      },
+      "calibration_ref": null,
+      "drift_per_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "m/s",
+        "value": 0.0
+      },
+      "frame_id": "SENSOR_DEPTH_RANGE",
+      "latency_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.01
+      },
+      "modality": "DEPTH_RANGE",
+      "mount_pose_body": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "m,quat_wxyz",
+        "value": [
+          0.3,
+          0.0,
+          -0.05,
+          0.7071067811865476,
+          0.0,
+          0.0,
+          0.7071067811865475
+        ]
+      },
+      "noise_std": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "m",
+        "value": 0.01
+      },
+      "parameters": {
+        "dropout_prob": 0.01,
+        "height_px": 18,
+        "hfov_deg": 70.0,
+        "max_range_m": 6.0,
+        "min_range_m": 0.0,
+        "width_px": 24
+      },
+      "rate_hz": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "Hz",
+        "value": 0.3333333333333333
+      },
+      "sensor_name": "range_imager"
+    }
+  ],
+  "thrusters": [
+    {
+      "deadzone_command": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "unitless",
+        "value": 0.05
+      },
+      "direction_body": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "unit",
+        "value": [
+          0.7071067811865476,
+          -0.7071067811865476,
+          0.0
+        ]
+      },
+      "latency_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.02
+      },
+      "max_forward_thrust_n": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 40.0
+      },
+      "max_reverse_thrust_n": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 30.0
+      },
+      "position_body_m": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "m",
+        "value": [
+          0.2,
+          0.15,
+          0.0
+        ]
+      },
+      "thrust_coefficient": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 40.0
+      },
+      "thruster_id": "H1",
+      "time_constant_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.15
+      }
+    },
+    {
+      "deadzone_command": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "unitless",
+        "value": 0.05
+      },
+      "direction_body": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "unit",
+        "value": [
+          0.7071067811865476,
+          0.7071067811865476,
+          0.0
+        ]
+      },
+      "latency_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.02
+      },
+      "max_forward_thrust_n": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 40.0
+      },
+      "max_reverse_thrust_n": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 30.0
+      },
+      "position_body_m": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "m",
+        "value": [
+          0.2,
+          -0.15,
+          0.0
+        ]
+      },
+      "thrust_coefficient": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 40.0
+      },
+      "thruster_id": "H2",
+      "time_constant_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.15
+      }
+    },
+    {
+      "deadzone_command": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "unitless",
+        "value": 0.05
+      },
+      "direction_body": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "unit",
+        "value": [
+          0.7071067811865476,
+          0.7071067811865476,
+          0.0
+        ]
+      },
+      "latency_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.02
+      },
+      "max_forward_thrust_n": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 40.0
+      },
+      "max_reverse_thrust_n": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 30.0
+      },
+      "position_body_m": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "m",
+        "value": [
+          -0.2,
+          0.15,
+          0.0
+        ]
+      },
+      "thrust_coefficient": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 40.0
+      },
+      "thruster_id": "H3",
+      "time_constant_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.15
+      }
+    },
+    {
+      "deadzone_command": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "unitless",
+        "value": 0.05
+      },
+      "direction_body": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "unit",
+        "value": [
+          0.7071067811865476,
+          -0.7071067811865476,
+          0.0
+        ]
+      },
+      "latency_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.02
+      },
+      "max_forward_thrust_n": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 40.0
+      },
+      "max_reverse_thrust_n": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 30.0
+      },
+      "position_body_m": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "m",
+        "value": [
+          -0.2,
+          -0.15,
+          0.0
+        ]
+      },
+      "thrust_coefficient": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 40.0
+      },
+      "thruster_id": "H4",
+      "time_constant_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.15
+      }
+    },
+    {
+      "deadzone_command": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "unitless",
+        "value": 0.05
+      },
+      "direction_body": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "unit",
+        "value": [
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "latency_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.02
+      },
+      "max_forward_thrust_n": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 40.0
+      },
+      "max_reverse_thrust_n": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 30.0
+      },
+      "position_body_m": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "m",
+        "value": [
+          0.12,
+          0.2,
+          0.05
+        ]
+      },
+      "thrust_coefficient": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 40.0
+      },
+      "thruster_id": "V1",
+      "time_constant_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.15
+      }
+    },
+    {
+      "deadzone_command": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "unitless",
+        "value": 0.05
+      },
+      "direction_body": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "unit",
+        "value": [
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "latency_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.02
+      },
+      "max_forward_thrust_n": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 40.0
+      },
+      "max_reverse_thrust_n": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 30.0
+      },
+      "position_body_m": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "m",
+        "value": [
+          0.12,
+          -0.2,
+          0.05
+        ]
+      },
+      "thrust_coefficient": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 40.0
+      },
+      "thruster_id": "V2",
+      "time_constant_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.15
+      }
+    },
+    {
+      "deadzone_command": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "unitless",
+        "value": 0.05
+      },
+      "direction_body": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "unit",
+        "value": [
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "latency_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.02
+      },
+      "max_forward_thrust_n": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 40.0
+      },
+      "max_reverse_thrust_n": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 30.0
+      },
+      "position_body_m": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "m",
+        "value": [
+          -0.12,
+          0.2,
+          0.05
+        ]
+      },
+      "thrust_coefficient": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 40.0
+      },
+      "thruster_id": "V3",
+      "time_constant_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.15
+      }
+    },
+    {
+      "deadzone_command": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "unitless",
+        "value": 0.05
+      },
+      "direction_body": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "unit",
+        "value": [
+          0.0,
+          0.0,
+          1.0
+        ]
+      },
+      "latency_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.02
+      },
+      "max_forward_thrust_n": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 40.0
+      },
+      "max_reverse_thrust_n": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 30.0
+      },
+      "position_body_m": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "m",
+        "value": [
+          -0.12,
+          -0.2,
+          0.05
+        ]
+      },
+      "thrust_coefficient": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "N",
+        "value": 40.0
+      },
+      "thruster_id": "V4",
+      "time_constant_s": {
+        "sigma": null,
+        "source": "SYNTHETIC_ONLY",
+        "units": "s",
+        "value": 0.15
+      }
+    }
+  ],
+  "wire_convention": "UNITY_LH_X_RIGHT_Y_UP_Z_FORWARD"
+}

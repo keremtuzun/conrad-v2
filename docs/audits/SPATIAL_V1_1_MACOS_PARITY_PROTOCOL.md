@@ -1,6 +1,6 @@
 # Spatial V1.1 native-macOS Unity parity supplement
 
-Status: **DECLARED / SEALED BEFORE EXECUTION**
+Status: **PASS (16/16); PLATFORM-BOUNDED**
 
 Protocol ID: `SPATIAL-V1.1-MACOS-PARITY-1`
 
@@ -51,3 +51,21 @@ parity matrix; only the declared player, platform, and fresh seeds differ.
 This supplement can qualify Spatial V1.1 only for the exact macOS player hash
 above. It cannot be reported as execution of the historical Windows binary or
 as physical, ROS, hardware, or deployment validation.
+
+## Result recorded 2026-09-26
+
+The sealed matrix completed 16/16 cases with zero failures or interruptions:
+8/8 for seed 2003 and 8/8 for seed 2004. All declared clear/occluded,
+deterministic/noisy, and exact/bounded combinations ran once. The retained
+result files are:
+
+| File | SHA-256 |
+|---|---|
+| `protocol.json` | `2ca446bf5045049cc9bb8cbac8b2b9a01b7989eb8ffd10aa352ea56c167b2e3f` |
+| `results.jsonl` | `d606993f9bb50814fbf8090dba6fcd894c5f2a46f82d3bd9bcc2a92d6eb0c393` |
+| `summary.json` | `45fd75debe10fa8d950fc88edb2bb3d2f6174696aced5ed37a6873683392a23b` |
+
+The full per-case Unity input documents and player logs are retained below
+`artifacts/experiments/SPATIAL-V1-1-MACOS-PARITY-1/`. This PASS establishes
+kernel/Unity semantic parity only for the exact player hash and platform scope
+declared above; the Windows-pinned protocol remains **NOT RUN**.

@@ -1,0 +1,48 @@
+{
+  "coordinate_system": {
+    "authority": "SIMULATION_DEFAULT",
+    "forward_axis": "+X",
+    "handedness": "RIGHT",
+    "units": "m",
+    "up_axis": "+Z"
+  },
+  "ecological_state": {},
+  "environment": {
+    "surface_z_m": 30.0,
+    "turbidity": 0.0,
+    "water_density_kgm3": 1022.2222222222223
+  },
+  "events": [],
+  "metadata": {},
+  "mission": null,
+  "robots": [
+    {
+      "initial_pose": {
+        "covariance_6x6": null,
+        "frame_id": "WORLD",
+        "orientation_wxyz": [
+          0.007870563327917695,
+          0.0,
+          0.0,
+          -0.999969026636776
+        ],
+        "position_m": [
+          6.967651481060213,
+          2.509252022414932,
+          2.226834515475059
+        ]
+      },
+      "robot_config_ref": "sim_reference_unity_mission@0.2.0",
+      "robot_id": "0197c0de-0000-7000-8000-00000000c0de",
+      "schema_version": "1.0.0",
+      "sensors": []
+    }
+  ],
+  "scenario_id": "018bcfe5-6801-7be7-8a16-a1abc2c90a2e",
+  "scenario_version": "unity-mission:twin2s-ocpwe-0.1.0",
+  "schema_version": "1.0.0",
+  "seed": 2004,
+  "spatial_state": {},
+  "structural_state": {},
+  "world_entities": []
+}
