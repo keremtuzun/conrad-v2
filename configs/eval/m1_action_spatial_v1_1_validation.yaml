@@ -1,0 +1,87 @@
+# Spatial V1.1 v10 VALIDATION selection and warrant-incidence measurement.
+# Frozen before seeds 8700100..8700109 were opened. Never final gate evidence.
+experiment_id: M1-ACTION-SPATIAL-V1-1-VAL
+hypothesis: >-
+  On all ten fresh v10 validation worlds, the frozen Spatial V1.1 contract
+  retains at least six legitimate nominal intact warrants, exercises every
+  non-nominal warrant at least once with at least 0.9 correct-given-warrant,
+  produces zero false intact on covered resolvable defects, zero decision
+  violations and nominal over-escalations, complete traceability, UIR 0, and
+  pooled outcomes no worse than both frozen baselines.
+partition: validation
+partition_domain: i5_mission_v10
+seeds: [8700100, 8700101, 8700102, 8700103, 8700104,
+        8700105, 8700106, 8700107, 8700108, 8700109]
+scenarios: [I5-NOMINAL, I5-CRITICAL-FINDING, I5-UNCERTAIN-BELIEF, I5-ROUTE-BLOCKED,
+            I5-BATTERY-RESERVE, I5-TIME-RESERVE, I5-COMMS-OUTAGE]
+arms: [egdc_structured, rule_fsm, naive_act_on_claims]
+latency_budget_s: {default: 4.0, I5-NOMINAL: 20.0}
+success_floor: 0.9
+uir_max: 0.0
+contact_clearance_m: 0.3
+workers: 5
+keep_bundles: false
+selection_rule:
+  primary_nominal_warrants_min: 6
+  non_nominal_warrants_per_scenario_min: 1
+  non_nominal_correct_given_warrant_rate_min: 0.9
+  false_intact_on_covered_resolvable_defect_max: 0
+  decision_violations_max: 0
+  nominal_over_escalations_max: 0
+  traceability_min: 1.0
+  uir_max: 0.0
+  competitiveness: >-
+    EGDC pooled task success must be at least each frozen baseline, EGDC safety
+    entries at most each frozen baseline, and EGDC decision violations at most
+    each frozen baseline.
+  final_sizing_boundary: >-
+    If and only if every selection predicate passes, use the observed validation
+    nominal-warrant incidence in a separately committed power calculation and
+    freeze a final prefix, sample size, minimum warrant count, and all final
+    thresholds before opening any v10 final world.
+spatial_v1:
+  sensor_config: configs/sim/spatial_v1_synthetic_sensor_detectability_v2.json
+  sensor_file_sha256: c7f68b08a008135d5a86961135c05930170c19f86d772b10094926f207877efe
+  world:
+    family: inspectable_pipeline
+    survey_sigma_m: 0.0
+    survey_endpoint_bound_m: null
+  runtime:
+    duration_s: 120.0
+    cruise_speed_fraction: 0.4
+    max_plans_per_need: 24
+    decision: {max_information_attempts: 24}
+    view_execution: {enabled: true, max_view_attempts: 24}
+  runtime_by_scenario:
+    I5-NOMINAL: {duration_s: 480.0}
+  default_truth:
+    axial_cells: 2
+    sectors: 4
+    base: {corrosion_depth_m: 0.0, crack_length_m: 0.0, crack_depth_m: 0.0}
+  truth_by_scenario:
+    I5-CRITICAL-FINDING: &covered_resolvable_defect
+      axial_cells: 2
+      sectors: 4
+      cell_states:
+        - {}
+        - {}
+        - {corrosion_depth_m: 0.008}
+        - {corrosion_depth_m: 0.008}
+        - {}
+        - {}
+        - {corrosion_depth_m: 0.008}
+        - {corrosion_depth_m: 0.008}
+    I5-COMMS-OUTAGE: *covered_resolvable_defect
+  model2t:
+    axial_cells: 2
+    sectors: 4
+    thresholds:
+      corrosion_degraded_m: 0.002
+      corrosion_severe_m: 0.006
+      corrosion_failed_m: 0.012
+      crack_degraded_m: 0.003
+      crack_severe_m: 0.01
+      crack_failed_m: 0.03
+    required_looks: 1
+    required_domain: {axial_fraction: [0.05, 0.95], sectors: [2, 3]}
+limitations: [synthetic data only, python L1 kernel, validation selection only, physical calibration pending]
