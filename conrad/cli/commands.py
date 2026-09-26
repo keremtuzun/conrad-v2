@@ -92,6 +92,46 @@ def train_osfm_p48_full_launch(
     raise typer.Exit(0 if report["decision"] == "GO" else 1)
 
 
+@train_app.command("osfm-p48-cloud-budget")
+def train_osfm_p48_cloud_budget(
+    config: str = typer.Option("configs/train/osfm/research/u1_sonar_research.yaml", "--config"),
+    rehearsal: str = typer.Option(
+        "artifacts/gates/P4.8A/rehearsal_l4/reports/p48a_u1_sonar_rehearsal_report.json",
+        "--rehearsal",
+    ),
+    cap_tl: float = typer.Option(1000.0, "--cap-tl"),
+    tl_per_usd: float = typer.Option(41.0, "--tl-per-usd"),
+    usd_per_hour: float = typer.Option(0.648, "--usd-per-hour"),
+    output: str = typer.Option("artifacts/gates/P4.8C/cloud_budget_preflight.json", "--output"),
+) -> None:
+    """Estimate cloud GPU cost before launching P4.8. Does not start training."""
+    from conrad.foundation.pretraining.cloud_budget import estimate_p48_cloud_budget, write_cloud_budget_report
+
+    report = estimate_p48_cloud_budget(
+        config_path=config,
+        rehearsal_report=rehearsal,
+        cap_tl=cap_tl,
+        tl_per_usd=tl_per_usd,
+        usd_per_hour=usd_per_hour,
+    )
+    written = write_cloud_budget_report(report, output)
+    typer.echo(
+        json.dumps(
+            {
+                "gate_id": report["gate_id"],
+                "decision": report["decision"],
+                "cap_tl": report["cap_tl"],
+                "estimate": report["estimate"],
+                "blockers": report["blockers"],
+                "report": str(written),
+            },
+            indent=2,
+        )
+    )
+    typer.echo("RESULT: " + report["decision"])
+    raise typer.Exit(0 if report["decision"] == "GO" else 1)
+
+
 @eval_app.command("run")
 def eval_run(
     experiment: str = typer.Option(None, "--experiment", help="experiment ID, e.g. CORE-BUO-E001"),

@@ -1,0 +1,34 @@
+{
+  "assumptions": {
+    "safety_factor": 1.25,
+    "source": "P4.8A measured L4 rehearsal throughput and user cloud cap",
+    "tl_per_usd": 41.0,
+    "usd_per_hour": 0.648
+  },
+  "blockers": [
+    {
+      "blocker_id": "P48-CLOUD-BUDGET-01",
+      "detail": "estimated 59094.41 TL exceeds cap 1000.00 TL",
+      "scope": "USER_BUDGET"
+    }
+  ],
+  "cap_tl": 1000.0,
+  "config": {
+    "batch_size": 8,
+    "optimizer_steps": 100000,
+    "path": "/Users/burakaksu/.codex/.chatgpt-projects/g-p-6a8d5c04f0dc8191b725da34b795a7ca/conrad-v2/configs/train/osfm/research/u1_sonar_research.yaml"
+  },
+  "decision": "NO-GO",
+  "estimate": {
+    "hours": 1779.4162073888883,
+    "max_optimizer_steps_under_cap": 1692,
+    "tl": 59094.412247384986,
+    "usd": 1441.3271279849996
+  },
+  "gate_id": "P4.8-CLOUD-BUDGET",
+  "measured_rehearsal": {
+    "path": "/Users/burakaksu/.codex/.chatgpt-projects/g-p-6a8d5c04f0dc8191b725da34b795a7ca/conrad-v2/artifacts/gates/P4.8A/rehearsal_l4/reports/p48a_u1_sonar_rehearsal_report.json",
+    "throughput_samples_per_s": 0.1248849039923665
+  },
+  "schema_version": "1.0.0"
+}
