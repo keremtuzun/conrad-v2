@@ -17,6 +17,7 @@ from conrad.foundation.pretraining.u1_sonar import (
     real_subpipe_sonar_views,
     synthetic_sonar_views,
 )
+from conrad.training import entrypoints
 from conrad.training.entrypoints import ComputeBlockedError, run_training
 
 
@@ -108,7 +109,21 @@ def test_osfm_u1_sonar_smoke_checkpoint_reload_and_replay(tmp_path: Path) -> Non
     assert Path(result["checkpoint"]).is_file()
 
 
-def test_p48a_research_config_is_registered_but_cpu_blocked(tmp_path: Path) -> None:
+def test_p48a_research_config_is_registered_but_cpu_blocked(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr(
+        entrypoints,
+        "inspect_compute",
+        lambda: type(
+            "C",
+            (),
+            {
+                "cuda_available": False,
+                "model_dump": lambda self, mode="json": {"cuda_available": False},
+            },
+        )(),
+    )
     with pytest.raises(ComputeBlockedError, match="full-scale run requires"):
         run_training("configs/train/osfm/research/u1_sonar_rehearsal.yaml", runs_root=tmp_path)
 
