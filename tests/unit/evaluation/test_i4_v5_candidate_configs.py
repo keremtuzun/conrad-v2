@@ -51,3 +51,16 @@ def test_i4_v6_development_screen_is_registered_and_keeps_held_out_splits_closed
     assert "V6_route_cost_only" in dev["arms"]
     assert "V6_deadline_only" in dev["arms"]
     assert "V6_stop_low_value" in dev["arms"]
+
+
+def test_i4_v7_stop_threshold_screen_is_registered_and_development_only() -> None:
+    assert EXPERIMENTS["ACTIVE-MCBR-E010-DEV"][1] == "configs/eval/i4_v7_stop_threshold_development.yaml"
+    dev = _load("i4_v7_stop_threshold_development.yaml")
+    assert dev["partition"] == "development"
+    assert dev["purpose"] == "design"
+    assert dev["primary_metric"] == "info_per_kj"
+    assert dev["baseline"] == "A-B0_random"
+    assert dev["reference_arms"] == ["V4_protocol_only"]
+    assert dev["partition"] != "validation"
+    assert dev["partition"] != "final_test"
+    assert all(name.startswith(("A-B0_", "V4_", "V7_")) for name in dev["arms"])

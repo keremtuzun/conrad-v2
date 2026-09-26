@@ -126,6 +126,10 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
         "conrad.evaluation.decision_experiments.i4_view_execution",
         "configs/eval/i4_v6_development.yaml",
     ),
+    "ACTIVE-MCBR-E010-DEV": (
+        "conrad.evaluation.decision_experiments.i4_view_execution",
+        "configs/eval/i4_v7_stop_threshold_development.yaml",
+    ),
     "COM-BAAC-E001": ("conrad.evaluation.decision_experiments.com_baac", "configs/eval/com_baac_e001.yaml"),
     "COM-I7-E001": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e001.yaml"),
     "COM-I7-E002": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e002.yaml"),
