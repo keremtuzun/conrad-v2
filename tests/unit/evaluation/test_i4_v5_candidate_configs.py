@@ -64,3 +64,18 @@ def test_i4_v7_stop_threshold_screen_is_registered_and_development_only() -> Non
     assert dev["partition"] != "validation"
     assert dev["partition"] != "final_test"
     assert all(name.startswith(("A-B0_", "V4_", "V7_")) for name in dev["arms"])
+
+
+def test_i4_v8_ranker_family_screen_is_registered_and_development_only() -> None:
+    assert EXPERIMENTS["ACTIVE-MCBR-E011-DEV"][1] == "configs/eval/i4_v8_ranker_family_development.yaml"
+    dev = _load("i4_v8_ranker_family_development.yaml")
+    assert dev["partition"] == "development"
+    assert dev["purpose"] == "design"
+    assert dev["primary_metric"] == "info_per_kj"
+    assert dev["baseline"] == "A-B0_random"
+    assert dev["reference_arms"] == ["V4_protocol_only"]
+    assert dev["partition"] != "validation"
+    assert dev["partition"] != "final_test"
+    assert dev["partition"] != "ood_test"
+    assert dev["arms"]["V8_mission_ratio"]["v4"]["ranker"]["kind"] == "mission_conditioned"
+    assert dev["arms"]["V8_hypothesis_ratio"]["v4"]["ranker"]["kind"] == "hypothesis_discrimination"

@@ -1,0 +1,56 @@
+# ACTIVE-MCBR-E011-DEV: I4 V8 ranker-family resource screen, DEVELOPMENT only.
+#
+# V5, V6 and V7 did not improve info_per_kj over V4_protocol_only. This screen returns to the I4 triage
+# diagnosis: weighted-ratio headroom exists in development, but the oracle evidence is truth-side diagnostic
+# only. V8 tests deployable belief-side ranker families under the same V4 execution protocol before any
+# validation split is spent.
+experiment_id: ACTIVE-MCBR-E011-DEV
+partition_file: configs/eval/partitions_i4_mcbr_v4.yaml
+partition: development
+purpose: design
+world_family: ACTIVE_INSPECTION_OCCLUDED_V1
+scenario: I4-OCCLUDED
+seeds: [8002000, 8002001, 8002002, 8002003, 8002004, 8002005, 8002006, 8002007, 8002008, 8002009, 8002010, 8002011, 8002012, 8002013, 8002014, 8002015, 8002016, 8002017, 8002018, 8002019, 8002020, 8002021, 8002022, 8002023, 8002024, 8002025, 8002026, 8002027, 8002028, 8002029, 8002030, 8002031, 8002032, 8002033, 8002034, 8002035, 8002036, 8002037, 8002038, 8002039]
+primary_metric: info_per_kj
+direction: higher
+baseline: A-B0_random
+reference_arms: [V4_protocol_only]
+out_name: i4_v8_ranker_family_development.json
+question: >-
+  Can a deployable belief-side ranker-family change convert the weighted-ratio diagnostic headroom into a
+  resource-normalized I4 repair without reading validation, final_test or OOD?
+runtime:
+  duration_s: 100.0
+  control_period_s: 0.1
+  max_plans_per_need: 4
+  model2e_enabled: false
+arms:
+  A-B0_random: {planner: A-B0_random}
+  V4_protocol_only:
+    planner: PRODUCTION
+    view_execution: {enabled: true}
+  V8_bayes_ratio_floor_001:
+    planner: V4
+    v4:
+      ranker: {kind: bayes_eig, cost_mode: ratio, cost_weight: 1.0, cost_floor: 0.01}
+    view_execution: {enabled: true}
+  V8_mission_ratio:
+    planner: V4
+    v4:
+      ranker: {kind: mission_conditioned, cost_mode: ratio, cost_weight: 1.0}
+    view_execution: {enabled: true}
+  V8_hypothesis_ratio:
+    planner: V4
+    v4:
+      ranker: {kind: hypothesis_discrimination, cost_mode: ratio, cost_weight: 1.0}
+    view_execution: {enabled: true}
+  V8_mission_ratio_cost125:
+    planner: V4
+    v4:
+      ranker: {kind: mission_conditioned, cost_mode: ratio, cost_weight: 1.25}
+    view_execution: {enabled: true}
+workers: 12
+decision_rule: >-
+  Development only. Unit = one world, paired across arms. A V8 arm may proceed to validation only if its
+  info_per_kj paired benefit has CI95 lower bound above 0 versus A-B0_random, its mean info_per_kj exceeds
+  V4_protocol_only on development, and its mean defect_read is not below V4_protocol_only. Otherwise reject V8.
