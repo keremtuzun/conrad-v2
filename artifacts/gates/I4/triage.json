@@ -1,0 +1,126 @@
+{
+  "blockers": [
+    {
+      "blocker_id": "I4-FORMAL-FAIL-01",
+      "criterion": "beats simple views on information/time/energy",
+      "detail": "test_beats_simple_views_on_information_per_time_and_energy[A-B1_fixed_inspection]=PASS; test_beats_simple_views_on_information_per_time_and_energy[A-B0_random]=FAIL; test_beats_simple_views_on_information_per_time_and_energy[A-B2_coverage]=PASS; test_bundle_replays_deterministically=PASS; test_no_twin_truth_leakage_on_runtime_side=PASS; test_declared_arm_set_is_recorded=PASS; test_results_file_is_written=PASS; test_run3_is_declared_fresh_and_does_not_touch_the_earlier_runs=PASS; test_every_arm_is_reported_on_every_metric=PASS; test_v3_protocol_control_attributes_the_effect=PASS; measured: {\"information/time/energy vs A-B0_random\": {\"comparator\": \"A-B0_random\", \"means\": {\"A-B0_random\": {\"info_per_kj\": 0.06592, \"info_per_time\": 0.002735}, \"PRODUCTION\": {\"info_per_kj\": 0.103573, \"info_per_time\": 0.004291}}, \"paired\": {\"info_per_kj\": {\"baseline_mean\": 0.06592, \"benefit_mean\": 0.037653, \"ci95\": [-0.000208, 0.074893], \"fraction_improved\": 0.3, \"n_worlds\": 30, \"production_mean\": 0.103573}, \"info_per_time\": {\"baseline_mean\": 0.002735, \"benefit_mean\": 0.001556, \"ci95\": [1.9e-05, 0.00308], \"fraction_improved\": 0.266667, \"n_worlds\": 30, \"production_mean\": 0.004291}}}, \"information/time/energy vs A-B1_fixed_inspection\": {\"comparator\": \"A-B1_fixed_inspection\", \"means\": {\"A-B1_fixed_inspection\": {\"info_per_kj\": 0.046172, \"info_per_time\": 0.001899}, \"PRODUCTION\": {\"info_per_kj\": 0.103573, \"info_per_time\": 0.004291}}, \"paired\": {\"info_per_kj\": {\"baseline_mean\": 0.046172, \"benefit_mean\": 0.057401, \"ci95\": [0.023083, 0.092335], \"fraction_improved\": 0.366667, \"n_worlds\": 30, \"production_mean\": 0.103573}, \"info_per_time\": {\"baseline_mean\": 0.001899, \"benefit_mean\": 0.002392, \"ci95\": [0.000995, 0.003798], \"fraction_improved\": 0.366667, \"n_worlds\": 30, \"production_mean\": 0.004291}}}, \"information/time/energy vs A-B2_coverage\": {\"comparator\": \"A-B2_coverage\", \"means\": {\"A-B2_coverage\": {\"info_per_kj\": 0.071644, \"info_per_time\": 0.002946}, \"PRODUCTION\": {\"info_per_kj\": 0.103573, \"info_per_time\": 0.004291}}, \"paired\": {\"info_per_kj\": {\"baseline_mean\": 0.071644, \"benefit_mean\": 0.031929, \"ci95\": [0.004901, 0.060712], \"fraction_improved\": 0.333333, \"n_worlds\": 30, \"production_mean\": 0.103573}, \"info_per_time\": {\"baseline_mean\": 0.002946, \"benefit_mean\": 0.001345, \"ci95\": [0.000234, 0.002535], \"fraction_improved\": 0.333333, \"n_worlds\": 30, \"production_mean\": 0.004291}}}, \"replay\": {\"decisions\": {\"equal\": true, \"first_difference\": null, \"original\": 50, \"replayed\": 50}, \"equal\": true, \"events\": {\"equal\": true, \"first_difference\": null, \"original\": 4691, \"replayed\": 4691}, \"revisions\": {\"equal\": true, \"first_difference\": null, \"original\": 1088, \"replayed\": 1088}, \"same_player_binary\": true, \"trajectory\": {\"equal\": true, \"max_abs_difference\": 0.0, \"samples\": [101, 101], \"tolerance\": 0.0}, \"verified_files\": 253, \"verified_objects\": 165, \"world\": 8002200}}",
+      "scope": "INTERNAL"
+    }
+  ],
+  "criteria": {
+    "beats coverage-only": {
+      "status": "PASS"
+    },
+    "beats fixed views on actual hidden-state reconstruction": {
+      "status": "PASS"
+    },
+    "beats random views": {
+      "status": "PASS"
+    },
+    "beats simple views on information/time/energy": {
+      "status": "FAIL"
+    },
+    "critical structure partly hidden -> uncertain -> MCBR view -> navigation -> new evidence -> belief improves": {
+      "status": "PASS"
+    }
+  },
+  "decision": "REPAIR_REQUIRED",
+  "diagnostics": {
+    "oracle_headroom": {
+      "arms": {
+        "A-B2_coverage": {
+          "fraction_read": 0.275,
+          "mean": 0.21867361001689173,
+          "mean_when_read": 0.7951767636977881,
+          "n": 40,
+          "observations": 2.95,
+          "worlds_with_the_defect_read": 11
+        },
+        "ORACLE_1STEP": {
+          "extra_worlds_read_vs_coverage": -4,
+          "fraction_read": 0.175,
+          "mean": 0.14494087729774593,
+          "mean_when_read": 0.8282335845585482,
+          "n": 40,
+          "observations": 2.7,
+          "worlds_with_the_defect_read": 7
+        },
+        "ORACLE_2STEP": {
+          "extra_worlds_read_vs_coverage": -4,
+          "fraction_read": 0.175,
+          "mean": 0.14494087729774593,
+          "mean_when_read": 0.8282335845585482,
+          "n": 40,
+          "observations": 2.7,
+          "worlds_with_the_defect_read": 7
+        },
+        "PRODUCTION": {
+          "extra_worlds_read_vs_coverage": 4,
+          "fraction_read": 0.375,
+          "mean": 0.2884592382210482,
+          "mean_when_read": 0.7692246352561284,
+          "n": 40,
+          "observations": 2.575,
+          "worlds_with_the_defect_read": 15
+        }
+      },
+      "experiment_id": "ACTIVE-MCBR-E006",
+      "n_worlds": 40,
+      "partition": "development",
+      "path": "/Users/burakaksu/.codex/.chatgpt-projects/g-p-6a8d5c04f0dc8191b725da34b795a7ca/conrad-v2/artifacts/experiments/ACTIVE-MCBR-E006/i4_oracle_headroom.json"
+    },
+    "weighted_oracle_headroom": {
+      "arms": {
+        "A-B2_coverage": {
+          "fraction_read": 0.275,
+          "mean": 0.21867361001689173,
+          "mean_when_read": 0.7951767636977881,
+          "n": 40,
+          "observations": 2.95,
+          "worlds_with_the_defect_read": 11
+        },
+        "ORACLE_1STEP_WEIGHTED": {
+          "extra_worlds_read_vs_coverage": 4,
+          "fraction_read": 0.375,
+          "mean": 0.2840152670210145,
+          "mean_when_read": 0.7573740453893721,
+          "n": 40,
+          "observations": 2.6,
+          "worlds_with_the_defect_read": 15
+        },
+        "ORACLE_1STEP_WEIGHTED_RATIO": {
+          "extra_worlds_read_vs_coverage": 5,
+          "fraction_read": 0.4,
+          "mean": 0.3052121105975233,
+          "mean_when_read": 0.7630302764938084,
+          "n": 40,
+          "observations": 2.575,
+          "worlds_with_the_defect_read": 16
+        }
+      },
+      "experiment_id": "ACTIVE-MCBR-E006",
+      "n_worlds": 40,
+      "partition": "development",
+      "path": "/Users/burakaksu/.codex/.chatgpt-projects/g-p-6a8d5c04f0dc8191b725da34b795a7ca/conrad-v2/artifacts/experiments/ACTIVE-MCBR-E006-W/i4_oracle_headroom_weighted.json"
+    }
+  },
+  "formal_evidence": "/Users/burakaksu/.codex/.chatgpt-projects/g-p-6a8d5c04f0dc8191b725da34b795a7ca/conrad-v2/artifacts/gates/I4/evidence_formal.json",
+  "formal_git_commit": "9280b5bb697730b154aa328a158b3c320e51b0ce",
+  "gate_id": "I4-TRIAGE",
+  "recommendation": {
+    "best_existing_weighted_oracle": {
+      "arm": "ORACLE_1STEP_WEIGHTED_RATIO",
+      "coverage_worlds_read": 11,
+      "extra_worlds_read_vs_coverage": 5
+    },
+    "do_not_do": [
+      "do not relabel existing formal I4 evidence as PASS",
+      "do not reread or tune on formal I4 final-test per-world outcomes",
+      "do not promote oracle evidence; it is truth-side diagnostic only"
+    ],
+    "next_internal_action": "design_i4_v5_weighted_ratio_development_repair",
+    "reason": "formal I4 fails only the information/time/energy criterion; existing development diagnostics show weighted-ratio oracle headroom over coverage, so the next repair should target value/cost and execution efficiency on development/validation partitions before any new formal final-test run"
+  },
+  "schema_version": "1.0.0",
+  "status": "DESIGNED"
+}

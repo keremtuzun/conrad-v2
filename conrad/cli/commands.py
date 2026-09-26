@@ -392,6 +392,36 @@ def gates_status(as_json: bool = typer.Option(False, "--json")) -> None:
         )
 
 
+@gates_app.command("i4-triage")
+def gates_i4_triage(
+    formal: str = typer.Option("artifacts/gates/I4/evidence_formal.json", "--formal"),
+    oracle: str = typer.Option("artifacts/experiments/ACTIVE-MCBR-E006/i4_oracle_headroom.json", "--oracle"),
+    weighted_oracle: str = typer.Option(
+        "artifacts/experiments/ACTIVE-MCBR-E006-W/i4_oracle_headroom_weighted.json", "--weighted-oracle"
+    ),
+    output: str = typer.Option("artifacts/gates/I4/triage.json", "--output"),
+) -> None:
+    """Summarize the current I4 formal failure and diagnostic repair direction. Does not promote a gate."""
+    from conrad.evaluation.i4_triage import build_i4_triage, write_i4_triage
+
+    report = build_i4_triage(formal=formal, oracle=oracle, weighted_oracle=weighted_oracle)
+    written = write_i4_triage(report, output)
+    typer.echo(
+        json.dumps(
+            {
+                "gate_id": report["gate_id"],
+                "status": report["status"],
+                "decision": report["decision"],
+                "blockers": report["blockers"],
+                "next_internal_action": report["recommendation"]["next_internal_action"],
+                "report": str(written),
+            },
+            indent=2,
+        )
+    )
+    typer.echo("RESULT: " + report["decision"])
+
+
 def _register_gates() -> None:
     from conrad.cli.app import app
 
