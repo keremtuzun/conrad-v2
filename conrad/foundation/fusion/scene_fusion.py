@@ -16,7 +16,7 @@ class SceneFusionConfig:
     latent_self_attention_blocks: int = 6
     heads: int = 6
     mlp_ratio: int = 4
-    modalities: tuple[str, ...] = ("rgb", "sonar", "range", "geometry")
+    modalities: tuple[str, ...] = ("rgb", "sonar", "range", "geometry", "context")
 
 
 @dataclass(frozen=True)

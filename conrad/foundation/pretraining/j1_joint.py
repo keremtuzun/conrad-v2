@@ -14,11 +14,19 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
+from conrad.foundation.context import (
+    ContextObservation,
+    collate_context_observations,
+    context_schema_summary,
+    direct_model2_evidence,
+    fit_context_normalization,
+)
 from conrad.foundation.data.pairing import PairEdge, PairGraph, PairRelation
 from conrad.foundation.encoders.geometry import GeometryEncoderConfig
 from conrad.foundation.encoders.range import RangeEncoderConfig
 from conrad.foundation.encoders.rgb import RGBEncoderConfig
 from conrad.foundation.encoders.sonar import SonarEncoderConfig
+from conrad.foundation.fusion.scene_fusion import SceneFusionConfig, SceneFusionTransformer
 from conrad.foundation.joint import JointOSFMInputs, JointOSFMModel, JointOSFMOutput
 from conrad.foundation.pretraining.ema import EMASchedule, update_ema_teacher
 from conrad.foundation.pretraining.losses import ObjectiveResult, ObjectiveRouter
@@ -33,6 +41,7 @@ from conrad.training.checkpoint_meta import CompatibilityTuple, config_digest
 from conrad.training.run_dir import RunDirectory
 
 MODALITIES = ("rgb", "sonar", "range", "geometry")
+FUSION_SOURCES = ("rgb", "sonar", "range", "geometry", "context")
 PARENT_SPECS = {
     "rgb": {
         "path": "artifacts/runs/train-osfm_u1_rgb_smoke-1790410824000679000/checkpoints/osfm_u1_rgb_smoke.pt",
@@ -81,6 +90,8 @@ class J1Fixture:
     structure: tuple[str, ...]
     metric_capable: torch.Tensor
     geometry_capable: torch.Tensor
+    context_train_only_stats: dict[str, Any]
+    model2_direct_evidence: tuple[dict[str, Any], ...]
 
 
 @dataclass(frozen=True)
@@ -93,6 +104,52 @@ class J1StepOutput:
 
 def _mask_dict(batch: int, steps: int) -> dict[str, torch.Tensor]:
     return {name: torch.zeros(batch, steps, dtype=torch.bool) for name in MODALITIES}
+
+
+def _synthetic_context(batch: int, steps: int) -> tuple[tuple[ContextObservation, ...], ...]:
+    rows: list[tuple[ContextObservation, ...]] = []
+    for row in range(batch):
+        for step in range(steps):
+            timestamp = int(step * 500)
+            present_environment = not (row == 2 and step % 2 == 0)
+            present_sensor = not (row == 3 and step > 0)
+            items = [
+                ContextObservation(
+                    "vehicle_depth_m",
+                    (12.0 + row + step * 0.05,),
+                    True,
+                    timestamp,
+                    "m",
+                    f"simulated-measurement:nav:{row}:{step}",
+                    uncertainty=(0.2,),
+                    source_observation_id=f"nav-{row}-{step}",
+                    sensor_lineage=("sim-nav",),
+                ),
+                ContextObservation(
+                    "temperature_c",
+                    (12.8 + row * 0.1,),
+                    present_environment,
+                    timestamp,
+                    "degC",
+                    f"simulated-measurement:env:{row}:{step}",
+                    uncertainty=(0.05,),
+                    source_observation_id=f"env-{row}-{step}" if present_environment else None,
+                    sensor_lineage=("sim-env",),
+                ),
+                ContextObservation(
+                    "sonar_frequency_khz",
+                    (900.0,),
+                    present_sensor,
+                    timestamp,
+                    "kHz",
+                    f"simulated-measurement:sonar:{row}:{step}",
+                    uncertainty=None,
+                    source_observation_id=f"sonar-{row}-{step}" if present_sensor else None,
+                    sensor_lineage=("sim-sonar",),
+                ),
+            ]
+            rows.append(tuple(items))
+    return tuple(rows)
 
 
 def synthetic_j1_fixture(job: dict[str, Any], seed: int) -> J1Fixture:
@@ -144,6 +201,10 @@ def synthetic_j1_fixture(job: dict[str, Any], seed: int) -> J1Fixture:
     )
     boundary = torch.zeros(batch, steps, dtype=torch.bool)
     boundary[2, 5] = True
+    context_rows = _synthetic_context(batch, steps)
+    train_rows = tuple(context_rows[idx] for idx in range(0, batch * steps, steps))
+    context_stats = fit_context_normalization(train_rows, fit_partitions=("PRETRAIN_REAL",))
+    context_batch = collate_context_observations(context_rows, stats=context_stats)
     pair_rows = []
     for _ in range(steps):
         pair_rows.append(
@@ -155,7 +216,7 @@ def synthetic_j1_fixture(job: dict[str, Any], seed: int) -> J1Fixture:
             )
         )
     return J1Fixture(
-        inputs=JointOSFMInputs(rgb, sonar, range_raster, range_validity, geometry, geometry_validity, natural, artificial, padding, timestamps, valid, boundary),
+        inputs=JointOSFMInputs(rgb, sonar, range_raster, range_validity, geometry, geometry_validity, natural, artificial, padding, timestamps, valid, boundary, context_batch),
         pair_graphs=tuple(tuple(row) for row in zip(*pair_rows)),
         sequence_ids=("fully-paired-temporal", "natural-missing-plus-dropout-gap", "sonar-only-boundary", "unpaired-single-window"),
         structure=(
@@ -166,6 +227,8 @@ def synthetic_j1_fixture(job: dict[str, Any], seed: int) -> J1Fixture:
         ),
         metric_capable=torch.tensor([[True] * steps, [False] * steps, [False] * steps, [True] + [False] * 9]),
         geometry_capable=torch.tensor([[True] * steps, [True] * steps, [False] * steps, [False] * steps]),
+        context_train_only_stats={"fit_partitions": context_stats.fit_partitions, "means": context_stats.means, "stds": context_stats.stds},
+        model2_direct_evidence=direct_model2_evidence(context_batch),
     )
 
 
@@ -191,6 +254,30 @@ def load_j1_parents(model: JointOSFMModel) -> dict[str, ParentLoadStatus]:
     }
     status = {}
     for name, spec in PARENT_SPECS.items():
+        if name == "fusion":
+            legacy = SceneFusionTransformer(SceneFusionConfig(modalities=MODALITIES))
+            legacy_status = load_parent_component(
+                name=name,
+                path=REPO_ROOT / str(spec["path"]),
+                expected_digest=str(spec["digest"]),
+                expected_component=str(spec["component"]),
+                state_prefix=str(spec["prefix"]),
+                module=legacy,
+            )
+            own = model.fusion.state_dict()
+            legacy_state = legacy.state_dict()
+            merged = {key: legacy_state.get(key, value) for key, value in own.items()}
+            model.fusion.load_state_dict(merged, strict=True)
+            status[name] = ParentLoadStatus(
+                **{
+                    **legacy_status.as_dict(),
+                    "parameter_tensors_loaded": legacy_status.parameter_tensors_loaded,
+                    "parameter_values_loaded": legacy_status.parameter_values_loaded,
+                    "status": "LOADED_VERIFIED_WITH_CONTEXT_EXTENSION",
+                    "reason": "legacy four-modality fusion parent loaded exactly; new context embedding initialized by OSFM-P4-CONTEXT-R01",
+                }
+            )
+            continue
         status[name] = load_parent_component(
             name=name,
             path=REPO_ROOT / str(spec["path"]),
@@ -214,7 +301,7 @@ class J1JointTrainingBundle(nn.Module):
         self.masked_head = nn.Linear(d_f, d_f)
         self.global_projector = nn.Sequential(nn.LayerNorm(d_f), nn.Linear(d_f, d_f))
         self.temp_predictor = nn.Sequential(nn.LayerNorm(d_f), nn.Linear(d_f, d_f))
-        self.modality_decoders = nn.ModuleDict({m: nn.Linear(d_f, d_f) for m in MODALITIES})
+        self.modality_decoders = nn.ModuleDict({m: nn.Linear(d_f, d_f) for m in FUSION_SOURCES})
         self.degradation_head = nn.Linear(d_f, 2)
         self.geometry_head = nn.Linear(d_f, d_f)
         self.metric_head = nn.Linear(d_f, d_f)
@@ -235,7 +322,7 @@ class J1JointTrainingBundle(nn.Module):
     def configure_smoke_trainability(self) -> dict[str, int | str]:
         for param in self.student.parameters():
             param.requires_grad_(False)
-        for module in (self.student.fusion, self.student.temporal, self.masked_head, self.global_projector, self.temp_predictor, self.modality_decoders, self.degradation_head, self.geometry_head, self.metric_head):
+        for module in (self.student.context_encoder, self.student.fusion, self.student.temporal, self.masked_head, self.global_projector, self.temp_predictor, self.modality_decoders, self.degradation_head, self.geometry_head, self.metric_head):
             for param in module.parameters():
                 param.requires_grad_(True)
         for param in self.student.rgb.blocks[-1].parameters():
@@ -345,6 +432,13 @@ def _coverage(fixture: J1Fixture, out: JointOSFMOutput) -> dict[str, Any]:
         "natural_missing": out.fusion.natural_missing_mask.reshape(batch, steps, -1).to(torch.int).tolist(),
         "artificial_dropout": out.fusion.artificial_dropout_mask.reshape(batch, steps, -1).to(torch.int).tolist(),
         "padding": out.fusion.padding_mask.reshape(batch, steps, -1).to(torch.int).tolist(),
+        "fusion_sources": list(out.fusion.modality_names),
+        "context_available": out.context.available_mask.reshape(batch, steps, -1).to(torch.int).tolist()
+        if out.context is not None
+        else None,
+        "context_fields": list(out.context.field_names) if out.context is not None else [],
+        "context_train_only_stats": fixture.context_train_only_stats,
+        "model2_direct_evidence_example": fixture.model2_direct_evidence[0],
         "timestamps_s": fixture.inputs.timestamps_s.tolist(),
         "temporal_valid_mask": fixture.inputs.temporal_valid_mask.to(torch.int).tolist(),
         "boundary_reset_mask": fixture.inputs.boundary_reset_mask.to(torch.int).tolist(),
@@ -462,7 +556,11 @@ def run_j1_joint_smoke(run: RunDirectory, job: dict[str, Any], seed: int) -> dic
                 "sonar": "independent single-channel ViT-S/14 12L 6H width384 dense taps 3/6/9/12",
                 "range": "patch8 width256 6L 4H projection256->384",
                 "geometry": "Point-MAE-style grouped width256 6L 4H projection256->384",
+                "context": "typed sparse-context encoder width256 2L 4H projection256->384; missing values masked, not zero-as-measured",
             },
+            "architecture_revision": "OSFM-P4-CONTEXT-R01",
+            "context_schema": context_schema_summary(),
+            "dual_path_model2_policy": "context measurements feed OS-FM as tokens and remain available as exact direct Model2 evidence; Model2 never reconstructs exact values from OS-FM embeddings",
             "fusion": {"scene_latents": [64, 384], "cross_attention_blocks": 3, "latent_self_attention_blocks": 6, "heads": 6, "mlp_expansion": 4},
             "temporal": {"memory_tokens": [16, 384], "transformer_blocks": 4, "heads": 6, "mlp_expansion": 4, "max_windows": 10, "gap_reset_s": 1.0},
             "outputs": {"fusion_global": list(post.student.fusion.global_repr.shape), "temporal_window_repr": list(post.student.temporal.window_repr.shape)},

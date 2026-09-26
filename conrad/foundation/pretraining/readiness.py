@@ -93,6 +93,7 @@ class P47ReadinessReport(VersionedModel):
     determinism_findings: dict[str, Any]
     observability_requirements: tuple[str, ...]
     representation_health: RepresentationHealthSpec
+    architecture_revision: dict[str, Any]
     stage_plan: tuple[StagePlan, ...]
     promotion_rules: tuple[str, ...]
     osfm_fq_confirmation: tuple[str, ...]
@@ -390,9 +391,10 @@ def _stage_plan() -> tuple[StagePlan, ...]:
         stage(stage_id="U1-SONAR-RESEARCH", required_parents=("U1-RGB generic initialization policy resolved",), data_requirements=("PRETRAIN_REAL:SONAR or approved non-promotable PRETRAIN_SYNTHETIC",), objectives=("teacher_student_mse", "mask_reconstruction"), trainable_policy="train sonar encoder and U1 heads; RGB-derived init only with recorded transform digest", optimizer="AdamW", learning_rates={"encoder": 1e-4, "heads": 3e-4}, precision="BF16 preferred; FP16+GradScaler fallback; FP32 dev only", batch_size_per_gpu=64, gradient_accumulation=4, effective_batch_target=256, optimizer_steps=100_000, validation_every_steps=1_000, checkpoint_metric="val_ssl_total with required objective coverage", promotion_criteria=("clean git", "sonar independence evidence", "top validation checkpoint passes health")),
         stage(stage_id="U1-RANGE-RESEARCH", required_parents=(), data_requirements=("PRETRAIN_REAL:RANGE or approved non-promotable PRETRAIN_SYNTHETIC",), objectives=("teacher_student_mse", "mask_reconstruction", "metric_reconstruction"), trainable_policy="train range encoder and metric heads", optimizer="AdamW", learning_rates={"encoder": 1e-4, "heads": 3e-4}, precision="BF16 preferred; FP16+GradScaler fallback; FP32 dev only", batch_size_per_gpu=64, gradient_accumulation=4, effective_batch_target=256, optimizer_steps=80_000, validation_every_steps=1_000, checkpoint_metric="val_ssl_total with required objective coverage", promotion_criteria=("clean git", "metric-capable validation coverage", "top validation checkpoint passes health")),
         stage(stage_id="U1-GEOMETRY-RESEARCH", required_parents=(), data_requirements=("PRETRAIN_REAL:GEOMETRY or approved non-promotable PRETRAIN_SYNTHETIC",), objectives=("teacher_student_mse", "geometry_consistency"), trainable_policy="train geometry encoder and geometry heads", optimizer="AdamW", learning_rates={"encoder": 1e-4, "heads": 3e-4}, precision="BF16 preferred; FP16+GradScaler fallback; FP32 dev only", batch_size_per_gpu=64, gradient_accumulation=4, effective_batch_target=256, optimizer_steps=80_000, validation_every_steps=1_000, checkpoint_metric="val_ssl_total with required objective coverage", promotion_criteria=("clean git", "geometry validation coverage", "top validation checkpoint passes health")),
-        stage(stage_id="M1-RESEARCH", required_parents=("U1-RGB-RESEARCH", "U1-SONAR-RESEARCH", "U1-RANGE-RESEARCH", "U1-GEOMETRY-RESEARCH"), data_requirements=("paired/unpaired PRETRAIN_REAL multimodal corpus",), objectives=("global_consistency", "cross_modal_consistency", "missing_modality"), trainable_policy="freeze stable U1 blocks initially; train fusion/adapters, then unfreeze final U1 blocks if health remains stable", optimizer="AdamW", learning_rates={"fusion": 2e-4, "adapters": 3e-4, "unfrozen_u1": 5e-5}, precision="BF16 preferred; FP16+GradScaler fallback", batch_size_per_gpu=32, gradient_accumulation=8, effective_batch_target=256, optimizer_steps=120_000, validation_every_steps=1_000, checkpoint_metric="val_ssl_total with fixed M1 objective coverage", promotion_criteria=("all parent digests verified", "pair coverage thresholds met", "top validation checkpoint passes health")),
+        stage(stage_id="U1-CONTEXT-RESEARCH", required_parents=(), data_requirements=("PRETRAIN_REAL typed context measurements where available; missing remains masked",), objectives=("context_mask_reconstruction", "context_dropout_robustness", "legitimate_context_conditioning"), trainable_policy="train typed sparse ContextEncoder and context heads; no unique sensor-ID shortcuts; direct Model2 evidence remains parallel", optimizer="AdamW", learning_rates={"context_encoder": 2e-4, "heads": 3e-4}, precision="BF16 preferred; FP16+GradScaler fallback; FP32 dev only", batch_size_per_gpu=128, gradient_accumulation=2, effective_batch_target=256, optimizer_steps=60_000, validation_every_steps=1_000, checkpoint_metric="val_context_ssl_total with required measured-field coverage", promotion_criteria=("clean git", "train-only normalization", "missingness/provenance contracts pass", "top validation checkpoint passes health")),
+        stage(stage_id="M1-RESEARCH", required_parents=("U1-RGB-RESEARCH", "U1-SONAR-RESEARCH", "U1-RANGE-RESEARCH", "U1-GEOMETRY-RESEARCH", "U1-CONTEXT-RESEARCH"), data_requirements=("paired/unpaired PRETRAIN_REAL multimodal corpus with optional typed context",), objectives=("global_consistency", "cross_modal_consistency", "missing_modality", "legitimate_context_conditioning"), trainable_policy="freeze stable U1 blocks initially; train fusion/adapters/context integration, then unfreeze final U1 blocks if health remains stable", optimizer="AdamW", learning_rates={"fusion": 2e-4, "adapters": 3e-4, "context": 2e-4, "unfrozen_u1": 5e-5}, precision="BF16 preferred; FP16+GradScaler fallback", batch_size_per_gpu=32, gradient_accumulation=8, effective_batch_target=256, optimizer_steps=120_000, validation_every_steps=1_000, checkpoint_metric="val_ssl_total with fixed M1 objective coverage", promotion_criteria=("all parent digests verified", "pair/context coverage thresholds met", "top validation checkpoint passes health")),
         stage(stage_id="T1-RESEARCH", required_parents=("M1-RESEARCH",), data_requirements=("temporal PRETRAIN_REAL sequences with lineage-disjoint validation",), objectives=("temporal_prediction", "global_consistency"), trainable_policy="train temporal memory and temporal heads; fusion frozen first, then controlled unfreeze", optimizer="AdamW", learning_rates={"temporal": 2e-4, "heads": 3e-4, "fusion": 5e-5}, precision="BF16 preferred; FP16+GradScaler fallback", batch_size_per_gpu=16, gradient_accumulation=16, effective_batch_target=256, optimizer_steps=120_000, validation_every_steps=1_000, checkpoint_metric="val_ssl_total with temporal coverage threshold", promotion_criteria=("temporal coverage/gap diagnostics pass", "top validation checkpoint passes health")),
-        stage(stage_id="J1-RESEARCH", required_parents=("U1-RGB-RESEARCH", "U1-SONAR-RESEARCH", "U1-RANGE-RESEARCH", "U1-GEOMETRY-RESEARCH", "M1-RESEARCH", "T1-RESEARCH"), data_requirements=("full multimodal PRETRAIN_REAL corpus plus approved synthetic augmentation",), objectives=("masked_latent_prediction", "global_consistency", "cross_modal_consistency", "temporal_prediction", "missing_modality", "degradation", "geometry_consistency", "metric_reconstruction"), trainable_policy="train joint heads/fusion/temporal plus controlled final-block U1 unfreeze", optimizer="AdamW", learning_rates={"joint_heads": 3e-4, "fusion_temporal": 1e-4, "unfrozen_u1": 3e-5}, precision="BF16 preferred; FP16+GradScaler fallback", batch_size_per_gpu=8, gradient_accumulation=32, effective_batch_target=256, optimizer_steps=150_000, validation_every_steps=1_000, checkpoint_metric="val_ssl_total with all required J1 objective coverage", promotion_criteria=("produces OSFM-S-PRETRAIN-V1-CANDIDATE only", "OSFM-FQ still required for final")),
+        stage(stage_id="J1-RESEARCH", required_parents=("U1-RGB-RESEARCH", "U1-SONAR-RESEARCH", "U1-RANGE-RESEARCH", "U1-GEOMETRY-RESEARCH", "U1-CONTEXT-RESEARCH", "M1-RESEARCH", "T1-RESEARCH"), data_requirements=("full multimodal PRETRAIN_REAL corpus plus optional measured context and approved synthetic augmentation",), objectives=("masked_latent_prediction", "global_consistency", "cross_modal_consistency", "temporal_prediction", "missing_modality", "degradation", "geometry_consistency", "metric_reconstruction", "context_mask_reconstruction", "missing_context_robustness"), trainable_policy="train joint heads/fusion/temporal/context plus controlled final-block U1 unfreeze", optimizer="AdamW", learning_rates={"joint_heads": 3e-4, "fusion_temporal_context": 1e-4, "unfrozen_u1": 3e-5}, precision="BF16 preferred; FP16+GradScaler fallback", batch_size_per_gpu=8, gradient_accumulation=32, effective_batch_target=256, optimizer_steps=150_000, validation_every_steps=1_000, checkpoint_metric="val_ssl_total with all required J1 objective coverage", promotion_criteria=("produces OSFM-S-PRETRAIN-V1-CANDIDATE only", "OSFM-FQ still required for final")),
     )
 
 
@@ -430,7 +432,7 @@ def run_p47_readiness(
         "J1-RESEARCH top checkpoint becomes OSFM-S-PRETRAIN-V1-CANDIDATE only; OSFM-FQ produces OSFM-S-PRETRAIN-V1",
     )
     fq = (
-        "B0 scratch vs B1 generic init vs B2 full OS-FM",
+        "B0 scratch vs B1 generic init vs B2 full context-enabled OS-FM",
         "downstream transfer: detection, segmentation, anomaly, condition cues",
         "label fractions 1/5/10/25/100 with formal low-label 10/25",
         ">=5 downstream seeds for final comparisons; >=3 pretraining seeds target",
@@ -455,6 +457,7 @@ def run_p47_readiness(
         "init": init_findings,
         "compute": compute,
         "blockers": [b.model_dump(mode="json") for b in blockers],
+        "architecture_revision": "OSFM-P4-CONTEXT-R01",
         "stage_plan": [s.model_dump(mode="json") for s in _stage_plan()],
     }
     return P47ReadinessReport(
@@ -471,6 +474,29 @@ def run_p47_readiness(
         },
         observability_requirements=observability,
         representation_health=RepresentationHealthSpec(),
+        architecture_revision={
+            "revision_id": "OSFM-P4-CONTEXT-R01",
+            "status": "CONTROLLED_ARCHITECTURE_AMENDMENT",
+            "input_sources": (
+                "rgb",
+                "sonar",
+                "range",
+                "geometry",
+                "environmental_context",
+                "platform_sensor_context",
+            ),
+            "context_encoder": {
+                "internal_width": 256,
+                "transformer_blocks": 2,
+                "heads": 4,
+                "output_d_f": 384,
+            },
+            "fusion": "context tokens join the existing D_F=384 SceneFusionTransformer; existing scene latent and attention dimensions remain frozen",
+            "dual_path_model2": "physical measurements are encoded for OS-FM context and simultaneously retained as exact direct Model2T/Model2E/Model2S evidence",
+            "missingness": "missing context values remain masked and are not zero-filled as measured",
+            "normalization": "continuous context statistics are fit on training partitions only",
+            "not_model2_replacement": "OS-FM understands measurement context; Model2 preserves and reasons with exact typed measurements",
+        },
         stage_plan=_stage_plan(),
         promotion_rules=promotion_rules,
         osfm_fq_confirmation=fq,

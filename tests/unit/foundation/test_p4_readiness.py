@@ -54,10 +54,13 @@ def test_stage_plan_locks_research_sequence_and_candidate_boundary() -> None:
         "U1-SONAR-RESEARCH",
         "U1-RANGE-RESEARCH",
         "U1-GEOMETRY-RESEARCH",
+        "U1-CONTEXT-RESEARCH",
         "M1-RESEARCH",
         "T1-RESEARCH",
         "J1-RESEARCH",
     ]
+    assert report.architecture_revision["revision_id"] == "OSFM-P4-CONTEXT-R01"
+    assert "dual_path_model2" in report.architecture_revision
     j1 = report.stage_plan[-1]
     assert j1.optimizer_steps == 150_000
     assert "OSFM-FQ" in " ".join(j1.promotion_criteria)

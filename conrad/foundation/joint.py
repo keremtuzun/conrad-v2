@@ -7,6 +7,7 @@ from dataclasses import dataclass
 import torch
 from torch import nn
 
+from conrad.foundation.context import ContextBatch, ContextEncoder, ContextEncoderOutput
 from conrad.foundation.encoders.geometry import GeometryEncoderConfig, GeometryGroupedEncoder
 from conrad.foundation.encoders.range import RangeEncoderConfig, RangeViTP8Encoder
 from conrad.foundation.encoders.rgb import RGBEncoderConfig, RGBViTS14Encoder
@@ -29,6 +30,7 @@ class JointOSFMInputs:
     timestamps_s: torch.Tensor
     temporal_valid_mask: torch.Tensor
     boundary_reset_mask: torch.Tensor
+    context: ContextBatch | None = None
 
 
 @dataclass(frozen=True)
@@ -36,6 +38,7 @@ class JointOSFMOutput:
     modality_sets: tuple[ModalityTokenSet, ...]
     fusion: SceneFusionOutput
     temporal: TemporalMemoryOutput
+    context: ContextEncoderOutput | None = None
 
 
 class JointOSFMModel(nn.Module):
@@ -46,6 +49,7 @@ class JointOSFMModel(nn.Module):
         sonar: SonarViTS14Encoder | None = None,
         range_encoder: RangeViTP8Encoder | None = None,
         geometry: GeometryGroupedEncoder | None = None,
+        context_encoder: ContextEncoder | None = None,
         fusion: SceneFusionTransformer | None = None,
         temporal: TemporalMemoryTransformer | None = None,
     ) -> None:
@@ -54,10 +58,11 @@ class JointOSFMModel(nn.Module):
         self.sonar = sonar or SonarViTS14Encoder(SonarEncoderConfig())
         self.range = range_encoder or RangeViTP8Encoder(RangeEncoderConfig())
         self.geometry = geometry or GeometryGroupedEncoder(GeometryEncoderConfig(num_groups=4, group_size=8))
+        self.context_encoder = context_encoder or ContextEncoder()
         self.fusion = fusion or SceneFusionTransformer()
         self.temporal = temporal or TemporalMemoryTransformer()
 
-    def _sets_for_windows(self, inputs: JointOSFMInputs) -> tuple[ModalityTokenSet, ...]:
+    def _sets_for_windows(self, inputs: JointOSFMInputs) -> tuple[tuple[ModalityTokenSet, ...], ContextEncoderOutput | None]:
         batch, steps = inputs.temporal_valid_mask.shape
         flat = batch * steps
         rgb_out = self.rgb(inputs.rgb.reshape(flat, *inputs.rgb.shape[2:]))
@@ -74,16 +79,31 @@ class JointOSFMModel(nn.Module):
         def flat_mask(name: str, source: dict[str, torch.Tensor]) -> torch.Tensor:
             return source[name].reshape(flat).to(device=rgb_out.patch_tokens.device, dtype=torch.bool)
 
-        return (
+        sets: list[ModalityTokenSet] = [
             ModalityTokenSet("rgb", rgb_out.patch_tokens, rgb_out.visible_mask, flat_mask("rgb", inputs.natural_missing), flat_mask("rgb", inputs.artificial_dropout), flat_mask("rgb", inputs.padding)),
             ModalityTokenSet("sonar", sonar_out.patch_tokens, sonar_out.visible_mask, flat_mask("sonar", inputs.natural_missing), flat_mask("sonar", inputs.artificial_dropout), flat_mask("sonar", inputs.padding)),
             ModalityTokenSet("range", range_out.patch_tokens, range_out.visible_mask, flat_mask("range", inputs.natural_missing), flat_mask("range", inputs.artificial_dropout), flat_mask("range", inputs.padding)),
             ModalityTokenSet("geometry", geo_out.group_tokens, geo_out.visible_mask, flat_mask("geometry", inputs.natural_missing), flat_mask("geometry", inputs.artificial_dropout), flat_mask("geometry", inputs.padding)),
-        )
+        ]
+        context_out = None
+        if inputs.context is not None:
+            context_out = self.context_encoder(inputs.context)
+            context_missing = ~context_out.available_mask.any(dim=1)
+            sets.append(
+                ModalityTokenSet(
+                    "context",
+                    context_out.tokens,
+                    context_out.available_mask,
+                    context_missing.to(device=context_out.tokens.device),
+                    torch.zeros(flat, dtype=torch.bool, device=context_out.tokens.device),
+                    torch.zeros(flat, dtype=torch.bool, device=context_out.tokens.device),
+                )
+            )
+        return tuple(sets), context_out
 
     def forward(self, inputs: JointOSFMInputs) -> JointOSFMOutput:
         batch, steps = inputs.temporal_valid_mask.shape
-        sets = self._sets_for_windows(inputs)
+        sets, context_out = self._sets_for_windows(inputs)
         fused = self.fusion(sets)
         global_seq = fused.global_repr.reshape(batch, steps, -1)
         temporal = self.temporal(
@@ -92,4 +112,4 @@ class JointOSFMModel(nn.Module):
             inputs.temporal_valid_mask,
             inputs.boundary_reset_mask,
         )
-        return JointOSFMOutput(sets, fused, temporal)
+        return JointOSFMOutput(sets, fused, temporal, context_out)

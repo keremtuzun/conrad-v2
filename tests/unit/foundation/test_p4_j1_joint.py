@@ -32,7 +32,8 @@ def test_j1_parent_checkpoint_loading_equality() -> None:
     assert status["rgb"].parameter_tensors_loaded == len(model.rgb.state_dict())
     changed = any(not torch.equal(before[k], model.rgb.state_dict()[k]) for k in before)
     assert changed
-    assert status["fusion"].parameter_values_loaded == sum(v.numel() for v in model.fusion.state_dict().values())
+    assert status["fusion"].status == "LOADED_VERIFIED_WITH_CONTEXT_EXTENSION"
+    assert status["fusion"].parameter_values_loaded < sum(v.numel() for v in model.fusion.state_dict().values())
     assert status["temporal"].max_abs_diff_after_load == 0.0
 
 
@@ -88,16 +89,22 @@ def test_j1_joint_contracts_routing_missingness_temporal_and_step() -> None:
     out = bundle(fixture)
     assert list(out.student.fusion.scene_latents.shape) == [40, 64, 384]
     assert list(out.student.temporal.window_repr.shape) == [4, 10, 384]
+    assert out.student.context is not None
+    assert "context" in out.student.fusion.modality_names
+    assert list(out.student.context.pooled.shape) == [40, 384]
     statuses = {result.objective_id: result.status.value for result in out.results}
     assert statuses["j1_cross_modal_consistency"] == "ACTIVE"
     assert statuses["j1_temp"] == "ACTIVE"
     assert statuses["j1_geometry_consistency"] == "ACTIVE"
     assert all(torch.isfinite(result.contribution) for result in out.results)
-    natural = out.student.fusion.natural_missing_mask.reshape(4, 10, 4)
-    artificial = out.student.fusion.artificial_dropout_mask.reshape(4, 10, 4)
+    natural = out.student.fusion.natural_missing_mask.reshape(4, 10, len(out.student.fusion.modality_names))
+    artificial = out.student.fusion.artificial_dropout_mask.reshape(4, 10, len(out.student.fusion.modality_names))
+    modality_idx = {name: idx for idx, name in enumerate(out.student.fusion.modality_names)}
     assert natural[1, 0, 2]
     assert artificial[1, 2, 1]
     assert not artificial[1, 0, 2]
+    assert not natural[0, 0, modality_idx["context"]]
+    assert fixture.model2_direct_evidence[0]["model2_direct_measurements"]
     assert out.student.temporal.gap_reset_mask[1, 3]
     assert out.student.temporal.reset_mask[2, 5]
     assert not out.student.temporal.adjacent_eligible_mask[3].any()
@@ -134,5 +141,8 @@ def test_j1_run_saves_reloads_and_reports(tmp_path: Path) -> None:
     assert result["metrics"]["gradient_connected"] == 1.0
     assert result["representation_health"]["finite"] is True
     assert all(status["loaded"] for status in result["parent_checkpoint_ancestry"].values())
+    assert result["architecture"]["architecture_revision"] == "OSFM-P4-CONTEXT-R01"
+    assert "temperature_c" in result["architecture"]["context_schema"]
+    assert result["fixture"]["model2_direct_evidence_example"]["model2_direct_measurements"]
     assert Path(result["checkpoint"]).is_file()
     assert (run.path / "reports" / "j1_joint_smoke_report.json").is_file()
