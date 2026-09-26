@@ -243,6 +243,7 @@ def _data_findings(corpus_path: Path) -> tuple[dict[str, Any], list[Blocker], bo
 def _initialization_findings(init_path: Path) -> tuple[dict[str, Any], list[Blocker]]:
     blockers: list[Blocker] = []
     present = init_path.exists()
+    verification: dict[str, Any] | None = None
     if not present:
         blockers.append(
             Blocker(
@@ -252,10 +253,26 @@ def _initialization_findings(init_path: Path) -> tuple[dict[str, Any], list[Bloc
                 detail=f"DINOv2 ViT-S/14 generic weights missing at {init_path}; final-candidate runs must not use random init.",
             )
         )
+    else:
+        try:
+            from conrad.foundation.pretraining.dinov2 import verify_dinov2_checkpoint
+
+            verification = verify_dinov2_checkpoint(init_path)
+        except (FileNotFoundError, ValueError) as exc:
+            blockers.append(
+                Blocker(
+                    blocker_id="EXT-DINOV2-VITS14-01",
+                    kind=BlockerKind.EXTERNAL,
+                    status="BLOCKED_EXTERNAL",
+                    detail=f"DINOv2 ViT-S/14 provenance/hash verification failed: {exc}",
+                )
+            )
     return (
         {
             "dinov2_vits14_path": str(init_path.relative_to(REPO_ROOT)) if init_path.is_relative_to(REPO_ROOT) else str(init_path),
             "present": present,
+            "verification": verification,
+            "provenance_sidecar": str(init_path.with_name(init_path.name + ".provenance.json")),
             "required_provenance": {
                 "source": "official DINOv2 ViT-S/14 checkpoint",
                 "version": "exact release/checkpoint name",

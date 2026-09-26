@@ -1,0 +1,17 @@
+{
+  "model_id": "dinov2_vits14_pretrain",
+  "source_url": "https://dl.fbaipublicfiles.com/dinov2/dinov2_vits14/dinov2_vits14_pretrain.pth",
+  "official_repository": "https://github.com/facebookresearch/dinov2",
+  "license": "FAIR Noncommercial Research License",
+  "usage_notes": "Noncommercial research use; retain Meta attribution and license terms.",
+  "retrieved_at": "2026-09-26",
+  "importer": "conrad.foundation.pretraining.dinov2.import_dinov2_vits14",
+  "excluded_or_reinitialized": [
+    "mask_token",
+    "blocks.*.ls*.gamma",
+    "distillation heads"
+  ],
+  "path": "artifacts/external/dinov2/dinov2_vits14.pth",
+  "sha256": "b938bf1bc15cd2ec0feacfe3a1bb553fe8ea9ca46a7e1d8d00217f29aef60cd9",
+  "byte_length": 88283115
+}

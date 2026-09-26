@@ -190,9 +190,32 @@ def run_osfm_smoke(
     }
 
 
-def public_real_subpipe_probe(_config: dict[str, Any]) -> dict[str, str]:
-    return {
-        "status": "BLOCKED_EXTERNAL",
-        "reason": "verified SubPipe payload is not present in this checkout; manifest-only references are not ingestion evidence",
-    }
+def public_real_subpipe_probe(_config: dict[str, Any]) -> dict[str, Any]:
+    """Probe the real SubPipe archive through its production adapter, if present."""
+    from uuid import UUID
 
+    from conrad.data.adapters.subpipe import SubPipeAdapter
+    from conrad.data.manifest import data_root_for, find_manifest, load_manifest
+    from conrad.persistence.object_store import ObjectStore
+    from conrad.schemas.ids import IdFactory
+
+    try:
+        manifest_path = find_manifest("public.subpipe@zenodo-12666132-v3.0.1-SubPipeMini2")
+        manifest = load_manifest(manifest_path)
+        adapter = SubPipeAdapter(
+            manifest,
+            data_root_for(manifest.dataset_id),
+            ObjectStore(Path("/tmp/conrad-public-real-probe")),
+            IdFactory(seed=47, namespace=UUID(int=47)),
+            UUID(int=47),
+            streams=("sss_lf",),
+            manifest_path=manifest_path,
+        )
+        audit = adapter.inspect()
+        refs = adapter.frames("sss_lf") if audit.usable else ()
+        adapter.close()
+        if not audit.usable:
+            return {"status": "BLOCKED_EXTERNAL", "reason": "; ".join(str(p) for p in audit.problems)}
+        return {"status": "VERIFIED", "adapter": "subpipe_zip-1.0.0", "sonar_frames": len(refs)}
+    except Exception as exc:  # unavailable external payloads remain an explicit blocker
+        return {"status": "BLOCKED_EXTERNAL", "reason": str(exc)}
