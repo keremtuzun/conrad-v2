@@ -1,0 +1,265 @@
+{
+  "cleared_variants": [],
+  "cloud_usage": {
+    "cap_try": 1000.0,
+    "cost_try": 0.0,
+    "cumulative_try_since_budget_rule": 0.0,
+    "provider": null,
+    "used": false
+  },
+  "decision": "REJECTED_NO_VALIDATION",
+  "declared_entry_rule": "Development only. Unit = one world, paired across arms. A threshold may proceed to validation only if its info_per_kj paired benefit has CI95 lower bound above 0 versus A-B0_random and its mean info_per_kj exceeds V4_protocol_only on development without reducing mean defect_read below V4_protocol_only. Otherwise reject V7.",
+  "experiment_id": "ACTIVE-MCBR-E010-DEV",
+  "gate_id": "I4-V7-DEVELOPMENT-DECISION",
+  "n_worlds": 40,
+  "next_action": "Do not validate V7. Stop internal threshold tuning unless a new pre-declared architecture-level I4 repair hypothesis is introduced; formal I4 remains failed.",
+  "partition": "development",
+  "primary_metric": "info_per_kj",
+  "purpose": "design",
+  "rationale": [
+    "V7_stop_005 and V7_stop_010 match V4_protocol_only on mean info_per_kj rather than exceeding it.",
+    "V7_stop_020 and V7_stop_050 reduce mean info_per_kj below V4_protocol_only and do not clear the random-baseline CI rule.",
+    "No V7 stop threshold satisfies the declared development entry rule for spending validation evidence.",
+    "Validation split remains closed for V7; no final_test or OOD evidence was read or spent for this repair decision.",
+    "I4 remains FAIL."
+  ],
+  "source_artifact": "artifacts/experiments/ACTIVE-MCBR-E010-DEV/i4_v7_stop_threshold_development.json",
+  "source_primary_metric_field": "hidden_state_error_improvement",
+  "source_primary_metric_note": "Raw experiment retained the scenario default primary_metric field; V7 development entry rule and decision use info_per_kj.",
+  "source_sha256": "1b53c5889439ad9f4380b75182eef846c8894222177e88383ab5f511ab2a399b",
+  "status": "VALIDATED-RUN",
+  "v4_protocol_only": {
+    "mean_defect_read": 0.475,
+    "mean_energy_j": 18484.71779739919,
+    "mean_hidden_state_error_improvement": 0.3801312406730249,
+    "mean_info_per_kj": 0.020110935608564272,
+    "mean_info_per_time": 0.003801312406730248,
+    "mean_planning_latency_ms": 1165.3004845714652
+  },
+  "variants": {
+    "V7_stop_005": {
+      "mean_defect_read": 0.475,
+      "mean_energy_j": 18485.044611379057,
+      "mean_hidden_state_error_improvement": 0.3801312406730249,
+      "mean_info_per_kj": 0.020110935608564272,
+      "mean_info_per_time": 0.003801312406730248,
+      "mean_planning_latency_ms": 1238.7480940335686,
+      "vs_A_B0_random_defect_read": {
+        "baseline_mean": 0.325,
+        "benefit_mean": 0.15,
+        "candidate_mean": 0.475,
+        "ci95": [
+          0.025,
+          0.275
+        ],
+        "fraction_improved": 0.175,
+        "n_worlds": 40,
+        "repeatable_benefit": true
+      },
+      "vs_A_B0_random_info_per_kj": {
+        "baseline_mean": 0.013629243377263655,
+        "benefit_mean": 0.006481692231300617,
+        "candidate_mean": 0.020110935608564272,
+        "ci95": [
+          0.0007086879752824217,
+          0.01257875987534033
+        ],
+        "fraction_improved": 0.325,
+        "n_worlds": 40,
+        "repeatable_benefit": true
+      },
+      "vs_V4_protocol_only_defect_read": {
+        "baseline_mean": 0.475,
+        "benefit_mean": 0.0,
+        "candidate_mean": 0.475,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "fraction_improved": 0.0,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      },
+      "vs_V4_protocol_only_info_per_kj": {
+        "baseline_mean": 0.020110935608564272,
+        "benefit_mean": 0.0,
+        "candidate_mean": 0.020110935608564272,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "fraction_improved": 0.0,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      }
+    },
+    "V7_stop_010": {
+      "mean_defect_read": 0.475,
+      "mean_energy_j": 18409.102927344287,
+      "mean_hidden_state_error_improvement": 0.3801312406730249,
+      "mean_info_per_kj": 0.020110935608564272,
+      "mean_info_per_time": 0.003801312406730248,
+      "mean_planning_latency_ms": 1203.9992303645097,
+      "vs_A_B0_random_defect_read": {
+        "baseline_mean": 0.325,
+        "benefit_mean": 0.15,
+        "candidate_mean": 0.475,
+        "ci95": [
+          0.025,
+          0.275
+        ],
+        "fraction_improved": 0.175,
+        "n_worlds": 40,
+        "repeatable_benefit": true
+      },
+      "vs_A_B0_random_info_per_kj": {
+        "baseline_mean": 0.013629243377263655,
+        "benefit_mean": 0.006481692231300617,
+        "candidate_mean": 0.020110935608564272,
+        "ci95": [
+          0.0007086879752824217,
+          0.01257875987534033
+        ],
+        "fraction_improved": 0.325,
+        "n_worlds": 40,
+        "repeatable_benefit": true
+      },
+      "vs_V4_protocol_only_defect_read": {
+        "baseline_mean": 0.475,
+        "benefit_mean": 0.0,
+        "candidate_mean": 0.475,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "fraction_improved": 0.0,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      },
+      "vs_V4_protocol_only_info_per_kj": {
+        "baseline_mean": 0.020110935608564272,
+        "benefit_mean": 0.0,
+        "candidate_mean": 0.020110935608564272,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "fraction_improved": 0.0,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      }
+    },
+    "V7_stop_020": {
+      "mean_defect_read": 0.45,
+      "mean_energy_j": 18266.6954340775,
+      "mean_hidden_state_error_improvement": 0.3646669788650711,
+      "mean_info_per_kj": 0.019374740335103956,
+      "mean_info_per_time": 0.003646669788650711,
+      "mean_planning_latency_ms": 1182.5966549862642,
+      "vs_A_B0_random_defect_read": {
+        "baseline_mean": 0.325,
+        "benefit_mean": 0.125,
+        "candidate_mean": 0.45,
+        "ci95": [
+          0.0,
+          0.275
+        ],
+        "fraction_improved": 0.175,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      },
+      "vs_A_B0_random_info_per_kj": {
+        "baseline_mean": 0.013629243377263655,
+        "benefit_mean": 0.005745496957840301,
+        "candidate_mean": 0.019374740335103956,
+        "ci95": [
+          -0.0004955172705076222,
+          0.012066806988277515
+        ],
+        "fraction_improved": 0.325,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      },
+      "vs_V4_protocol_only_defect_read": {
+        "baseline_mean": 0.475,
+        "benefit_mean": -0.025,
+        "candidate_mean": 0.45,
+        "ci95": [
+          -0.075,
+          0.0
+        ],
+        "fraction_improved": 0.0,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      },
+      "vs_V4_protocol_only_info_per_kj": {
+        "baseline_mean": 0.020110935608564272,
+        "benefit_mean": -0.0007361952734603166,
+        "candidate_mean": 0.019374740335103956,
+        "ci95": [
+          -0.0022085858203809497,
+          0.0
+        ],
+        "fraction_improved": 0.0,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      }
+    },
+    "V7_stop_050": {
+      "mean_defect_read": 0.425,
+      "mean_energy_j": 16900.71225187354,
+      "mean_hidden_state_error_improvement": 0.34184987406173784,
+      "mean_info_per_kj": 0.01806777957349802,
+      "mean_info_per_time": 0.003418498740617379,
+      "mean_planning_latency_ms": 1251.7294806906648,
+      "vs_A_B0_random_defect_read": {
+        "baseline_mean": 0.325,
+        "benefit_mean": 0.1,
+        "candidate_mean": 0.425,
+        "ci95": [
+          -0.05,
+          0.25
+        ],
+        "fraction_improved": 0.175,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      },
+      "vs_A_B0_random_info_per_kj": {
+        "baseline_mean": 0.013629243377263655,
+        "benefit_mean": 0.004438536196234363,
+        "candidate_mean": 0.01806777957349802,
+        "ci95": [
+          -0.002166430785763931,
+          0.011253274527021496
+        ],
+        "fraction_improved": 0.3,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      },
+      "vs_V4_protocol_only_defect_read": {
+        "baseline_mean": 0.475,
+        "benefit_mean": -0.05,
+        "candidate_mean": 0.425,
+        "ci95": [
+          -0.125,
+          0.0
+        ],
+        "fraction_improved": 0.0,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      },
+      "vs_V4_protocol_only_info_per_kj": {
+        "baseline_mean": 0.020110935608564272,
+        "benefit_mean": -0.0020431560350662546,
+        "candidate_mean": 0.01806777957349802,
+        "ci95": [
+          -0.0053932728317384465,
+          0.0
+        ],
+        "fraction_improved": 0.0,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      }
+    }
+  }
+}
