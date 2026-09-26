@@ -1,0 +1,49 @@
+# ACTIVE-MCBR-E008-VAL: I4 V5 efficiency candidate, VALIDATION only.
+#
+# Declared before validation. FINAL_TEST stays closed unless V5 clears this selection gate.
+experiment_id: ACTIVE-MCBR-E008-VAL
+partition_file: configs/eval/partitions_i4_mcbr_v4.yaml
+partition: validation
+purpose: selection
+world_family: ACTIVE_INSPECTION_OCCLUDED_V1
+scenario: I4-OCCLUDED
+seeds: [8002100, 8002101, 8002102, 8002103, 8002104, 8002105, 8002106, 8002107, 8002108, 8002109, 8002110, 8002111, 8002112, 8002113, 8002114, 8002115, 8002116, 8002117, 8002118, 8002119, 8002120, 8002121, 8002122, 8002123, 8002124, 8002125, 8002126, 8002127, 8002128, 8002129, 8002130, 8002131, 8002132, 8002133, 8002134, 8002135, 8002136, 8002137, 8002138, 8002139]
+primary_metric: info_per_kj
+direction: higher
+baseline: A-B0_random
+reference_arms: [A-B2_coverage, V4_protocol_only]
+out_name: i4_v5_validation.json
+question: >-
+  Selection test for the V5 efficiency candidate. It may proceed to a formal Unity final-test design only if
+  it improves the failed resource-normalized criterion against random and does not regress hidden-state readout.
+runtime:
+  duration_s: 100.0
+  control_period_s: 0.1
+  max_plans_per_need: 4
+  model2e_enabled: false
+arms:
+  A-B0_random: {planner: A-B0_random}
+  A-B2_coverage: {planner: A-B2_coverage}
+  V4_protocol_only:
+    planner: PRODUCTION
+    view_execution: {enabled: true}
+  V5_efficiency_candidate:
+    planner: V4
+    v4:
+      ranker: {kind: bayes_eig, cost_mode: ratio, cost_weight: 1.25}
+    view_execution:
+      enabled: true
+      belief_map_navigation: true
+      blocked_cost_multiplier: 3.0
+      budget_from_mission_duration: true
+      declare_budgets: true
+      drop_abandoned_prior_view: true
+      max_view_attempts: 6
+      protect_active_view: true
+      refund_abandoned_attempt: true
+      route_aware_navigation_cost: true
+workers: 12
+decision_rule: >-
+  Selection only. Unit = one world, paired across arms. V5 may be frozen only if its paired benefit over
+  A-B0_random on info_per_kj has CI95 lower bound above 0 and its hidden_state_error_improvement is not worse
+  than V4_protocol_only. Otherwise I4 remains FAIL and no final-test run is spent.

@@ -1,0 +1,50 @@
+# ACTIVE-MCBR-E008-DEV: I4 V5 efficiency candidate, DEVELOPMENT only.
+#
+# This config does not promote I4. It tests configs/active/mcbr_v5_candidate.yaml on development worlds
+# after I4 triage identified a formal failure in information/time/energy against random views.
+experiment_id: ACTIVE-MCBR-E008-DEV
+partition_file: configs/eval/partitions_i4_mcbr_v4.yaml
+partition: development
+purpose: design
+world_family: ACTIVE_INSPECTION_OCCLUDED_V1
+scenario: I4-OCCLUDED
+seeds: [8002000, 8002001, 8002002, 8002003, 8002004, 8002005, 8002006, 8002007, 8002008, 8002009, 8002010, 8002011, 8002012, 8002013, 8002014, 8002015, 8002016, 8002017, 8002018, 8002019, 8002020, 8002021, 8002022, 8002023, 8002024, 8002025, 8002026, 8002027, 8002028, 8002029, 8002030, 8002031, 8002032, 8002033, 8002034, 8002035, 8002036, 8002037, 8002038, 8002039]
+primary_metric: info_per_kj
+direction: higher
+baseline: A-B0_random
+reference_arms: [A-B2_coverage, V4_protocol_only]
+out_name: i4_v5_development.json
+question: >-
+  Can a route-aware, more cost-sensitive V5 candidate improve the failed formal I4 resource-normalized
+  criterion against random views without reading final_test?
+runtime:
+  duration_s: 100.0
+  control_period_s: 0.1
+  max_plans_per_need: 4
+  model2e_enabled: false
+arms:
+  A-B0_random: {planner: A-B0_random}
+  A-B2_coverage: {planner: A-B2_coverage}
+  V4_protocol_only:
+    planner: PRODUCTION
+    view_execution: {enabled: true}
+  V5_efficiency_candidate:
+    planner: V4
+    v4:
+      ranker: {kind: bayes_eig, cost_mode: ratio, cost_weight: 1.25}
+    view_execution:
+      enabled: true
+      belief_map_navigation: true
+      blocked_cost_multiplier: 3.0
+      budget_from_mission_duration: true
+      declare_budgets: true
+      drop_abandoned_prior_view: true
+      max_view_attempts: 6
+      protect_active_view: true
+      refund_abandoned_attempt: true
+      route_aware_navigation_cost: true
+workers: 12
+decision_rule: >-
+  Development only. Unit = one world, paired across arms. Report info_per_kj, info_per_time,
+  hidden_state_error_improvement, defect_read, travel_m, energy_j and planning_latency_ms. If V5 does not
+  improve info_per_kj versus A-B0_random and V4_protocol_only on development, do not spend validation.

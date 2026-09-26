@@ -110,6 +110,16 @@ EXPERIMENTS: dict[str, tuple[str, str]] = {
         "conrad.evaluation.decision_experiments.i4_view_execution",
         "configs/eval/i4_v4_validation.yaml",
     ),
+    # MCBR V5 candidate: resource-efficiency repair design/selection only. It promotes no gate and does
+    # not read final_test or ood_test.
+    "ACTIVE-MCBR-E008-DEV": (
+        "conrad.evaluation.decision_experiments.i4_view_execution",
+        "configs/eval/i4_v5_development.yaml",
+    ),
+    "ACTIVE-MCBR-E008-VAL": (
+        "conrad.evaluation.decision_experiments.i4_view_execution",
+        "configs/eval/i4_v5_validation.yaml",
+    ),
     "COM-BAAC-E001": ("conrad.evaluation.decision_experiments.com_baac", "configs/eval/com_baac_e001.yaml"),
     "COM-I7-E001": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e001.yaml"),
     "COM-I7-E002": ("conrad.evaluation.decision_experiments.com_i7", "configs/eval/com_i7_e002.yaml"),
