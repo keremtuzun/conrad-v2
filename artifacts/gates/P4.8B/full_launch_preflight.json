@@ -1,0 +1,17 @@
+{
+  "blockers": [
+    {
+      "blocker_id": "P48-FULL-RUN-IMPLEMENTATION-01",
+      "detail": "formal P4.8 is still locked in code until a reviewed full-run sampler/reload path replaces rehearsal_only",
+      "scope": "INTERNAL"
+    }
+  ],
+  "decision": "NO-GO",
+  "gate_id": "P4.8-FULL-LAUNCH",
+  "p47_report": "/Users/burakaksu/.codex/.chatgpt-projects/g-p-6a8d5c04f0dc8191b725da34b795a7ca/conrad-v2/artifacts/gates/P4.7B_L4/osfm_readiness.json",
+  "p47_report_digest": "7998d37928a358470924313b3acead8a6663b42be7c0e4c0eaf2aea775661ee1",
+  "rehearsal_report": "/Users/burakaksu/.codex/.chatgpt-projects/g-p-6a8d5c04f0dc8191b725da34b795a7ca/conrad-v2/artifacts/gates/P4.8A/rehearsal_l4/reports/p48a_u1_sonar_rehearsal_report.json",
+  "rehearsal_report_digest": "9ebaf1463d0b74ce3f8e4f1b1d0891298b07cec7222b75b31064170ae1aa6a30",
+  "schema_version": "1.0.0",
+  "status": "VALIDATED-RUN"
+}

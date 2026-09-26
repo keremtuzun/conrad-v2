@@ -57,6 +57,36 @@ def train_osfm_readiness(
     raise typer.Exit(0 if report.decision.value in {"GO", "CONDITIONAL-GO"} else 1)
 
 
+@train_app.command("osfm-p48-full-launch")
+def train_osfm_p48_full_launch(
+    rehearsal: str = typer.Option(
+        "artifacts/gates/P4.8A/rehearsal_l4/reports/p48a_u1_sonar_rehearsal_report.json",
+        "--rehearsal",
+    ),
+    p47: str = typer.Option("artifacts/gates/P4.7B_L4/osfm_readiness.json", "--p47"),
+    output: str = typer.Option("artifacts/gates/P4.8B/full_launch_preflight.json", "--output"),
+) -> None:
+    """Run the P4.8 full-launch preflight. Does not start training."""
+    from conrad.foundation.pretraining.p48_gate import evaluate_p48_full_launch, write_p48_full_launch_report
+
+    report = evaluate_p48_full_launch(rehearsal_report=rehearsal, p47_report=p47)
+    written = write_p48_full_launch_report(report, output)
+    typer.echo(
+        json.dumps(
+            {
+                "gate_id": report["gate_id"],
+                "status": report["status"],
+                "decision": report["decision"],
+                "blockers": report["blockers"],
+                "report": str(written),
+            },
+            indent=2,
+        )
+    )
+    typer.echo("RESULT: " + report["decision"])
+    raise typer.Exit(0 if report["decision"] == "GO" else 1)
+
+
 @eval_app.command("run")
 def eval_run(
     experiment: str = typer.Option(None, "--experiment", help="experiment ID, e.g. CORE-BUO-E001"),
