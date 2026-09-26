@@ -24,7 +24,7 @@ from conrad.twins.twin2s.world import SpatialWorld
 
 Visibility = Callable[[NDArray[np.float64], NDArray[np.float64]], NDArray[np.bool_]]
 Certificate = Callable[[float, float, float, float], bool]
-VISIBILITY_CERTIFICATE_VERSION = "capsule-sdf-recursive-v1"
+VISIBILITY_CERTIFICATE_VERSION = "capsule-sdf-recursive-v2"
 
 
 def pose_visible_capsule_supports(

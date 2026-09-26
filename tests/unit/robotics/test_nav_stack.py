@@ -124,6 +124,73 @@ def test_goal_inside_raw_boundary_but_outside_uncertainty_margin_is_rejected():
     assert "uncertainty-inflated" in stack.records[-1].payload["detail"]
 
 
+def test_goal_endpoint_reserves_declared_position_tolerance_inside_boundary():
+    ids = IdFactory(seed=23)
+    mission, run_id = ids.new(), ids.new()
+    hw = build_sim_hardware(CFG, 23)
+    hw.kernel.reset(np.array([0.0, 0.0, -4.0]))
+    boundary = MissionBoundary(min_xyz_m=(-5.0, -5.0, -10.0), max_xyz_m=(5.0, 5.0, 0.0))
+    stack = NavigationStack(
+        hw,
+        CFG,
+        ids,
+        mission,
+        run_id,
+        Pose(frame_id="WORLD", position_m=(0.0, 0.0, -4.0)),
+        config=NavigationStackConfig(safety=SafetyConfig(boundary=boundary, boundary_sigma_k=3.0)),
+    )
+    hw.advance(0.1)
+    # Initial 3-sigma clearance is 0.3 m. The endpoint is outside the raw uncertainty margin only after
+    # reserving the goal's additional 0.4 m accepted-position tolerance.
+    assert stack.set_goal(goal(ids, (4.5, 0.0, -4.0))) is None
+    assert stack.status is GoalStatus.REJECTED
+    assert stack.records[-1].payload["reason"] == "GOAL_OUTSIDE_ENVELOPE"
+
+
+def test_intermediate_route_points_do_not_inherit_endpoint_position_tolerance():
+    ids = IdFactory(seed=24)
+    mission, run_id = ids.new(), ids.new()
+    hw = build_sim_hardware(CFG, 24)
+    hw.kernel.reset(np.array([0.0, 0.0, -4.0]))
+    boundary = MissionBoundary(min_xyz_m=(-5.0, -5.0, -10.0), max_xyz_m=(5.0, 5.0, 0.0))
+    stack = NavigationStack(
+        hw,
+        CFG,
+        ids,
+        mission,
+        run_id,
+        Pose(frame_id="WORLD", position_m=(0.0, 0.0, -4.0)),
+        config=NavigationStackConfig(safety=SafetyConfig(boundary=boundary, boundary_sigma_k=3.0)),
+    )
+    hw.advance(0.1)
+    stack._check_route_boundary(
+        np.asarray([[4.5, 0.0, -4.0], [0.0, 0.0, -4.0]]),
+        sigma_m=0.1,
+        final_position_tolerance_m=0.4,
+    )
+
+
+def test_stationary_hold_does_not_treat_completion_tolerance_as_commanded_drift():
+    ids = IdFactory(seed=25)
+    mission, run_id = ids.new(), ids.new()
+    hw = build_sim_hardware(CFG, 25)
+    hw.kernel.reset(np.array([4.5, 0.0, -4.0]))
+    boundary = MissionBoundary(min_xyz_m=(-5.0, -5.0, -10.0), max_xyz_m=(5.0, 5.0, 0.0))
+    stack = NavigationStack(
+        hw,
+        CFG,
+        ids,
+        mission,
+        run_id,
+        Pose(frame_id="WORLD", position_m=(4.5, 0.0, -4.0)),
+        config=NavigationStackConfig(safety=SafetyConfig(boundary=boundary, boundary_sigma_k=3.0)),
+    )
+    hw.advance(0.1)
+    hold = goal(ids, (4.5, 0.0, -4.0), primitive="STATION_KEEP", duration_s=10.0)
+    assert stack.set_goal(hold) is not None
+    assert stack.status is GoalStatus.EXECUTING
+
+
 def test_leak_overrides_autonomy_and_only_explicit_stop_is_authorized():
     ids, hw, stack, gw = setup()
     stack.set_goal(goal(ids, (5.0, 0.0, -4.0)))

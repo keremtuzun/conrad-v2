@@ -336,7 +336,11 @@ class Deliberation:
                 min_m=lo,
                 max_m=hi,
                 now_ns=now.time_ns,
-                position_margin_m=None if sigma is None else self.boundary_sigma_k * sigma,
+                position_margin_m=(
+                    None
+                    if sigma is None
+                    else self.boundary_sigma_k * sigma + self.cfg.view_position_tolerance_m
+                ),
             )
         req = PlanningRequest(
             need=need,

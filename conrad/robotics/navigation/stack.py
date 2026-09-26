@@ -23,7 +23,12 @@ from conrad.robotics.navigation.global_planner import (
     KnowledgeQuery,
     PlanningError,
 )
-from conrad.robotics.navigation.goals import GoalManager, GoalRejectedError, NavigationObjective
+from conrad.robotics.navigation.goals import (
+    GoalManager,
+    GoalRejectedError,
+    NavigationObjective,
+    ObjectiveKind,
+)
 from conrad.robotics.navigation.local_planner import (
     LocalDistance,
     PotentialFieldLocalPlanner,
@@ -127,7 +132,12 @@ class NavigationStack:
                 if self.planner is not None and not obj.route_is_prescribed:
                     legs = [self.planner.plan(route[i], route[i + 1]) for i in range(len(route) - 1)]
                     route = np.vstack([legs[0]] + [leg[1:] for leg in legs[1:]])
-            self._check_route_boundary(route, est.pose.position_sigma_m())
+            final_tolerance_m = (
+                0.0
+                if obj.kind is ObjectiveKind.STATION_KEEP and not obj.params.get("full_attitude_hold")
+                else goal.position_tolerance_m
+            )
+            self._check_route_boundary(route, est.pose.position_sigma_m(), final_tolerance_m)
             traj = self.trajectories.generate(
                 route,
                 goal.goal_id,
@@ -168,8 +178,10 @@ class NavigationStack:
         if boundary is not None and not all(boundary.contains(w) for w in obj.waypoints):
             raise GoalRejectedError("GOAL_OUTSIDE_ENVELOPE", "waypoint outside the mission boundary")
 
-    def _check_route_boundary(self, route: np.ndarray, sigma_m: float | None) -> None:
-        """Reject routes the safety supervisor's uncertainty ball cannot contain."""
+    def _check_route_boundary(
+        self, route: np.ndarray, sigma_m: float | None, final_position_tolerance_m: float
+    ) -> None:
+        """Reject routes whose uncertainty ball or allowed endpoint error can cross the boundary."""
         boundary = self.config.safety.boundary
         if boundary is None:
             return
@@ -178,7 +190,9 @@ class NavigationStack:
                 "GOAL_OUTSIDE_ENVELOPE", "route boundary clearance cannot be established without pose sigma"
             )
         margin = self.config.safety.boundary_sigma_k * sigma_m
-        if not all(boundary.contains_ball(point, margin) for point in route):
+        if not all(
+            boundary.contains_ball(point, margin) for point in route[:-1]
+        ) or not boundary.contains_ball(route[-1], margin + final_position_tolerance_m):
             raise GoalRejectedError(
                 "GOAL_OUTSIDE_ENVELOPE",
                 "route enters the uncertainty-inflated mission boundary margin",

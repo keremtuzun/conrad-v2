@@ -129,6 +129,14 @@ class EkfConfig(ConradModel):
     )
     max_process_noise_scale: float = Field(default=25.0, ge=1, description=f"cap on adaptation; {_SYN}")
     fix_rejections_for_lost: int = Field(default=5, ge=1)
+    fix_reacquisition_consistent_rejections: int = Field(
+        default=3,
+        ge=2,
+        description=(
+            "consecutive gated fixes that must form a max-speed-reachable track from the last accepted fix "
+            "before reacquisition; impossible jumps remain rejected"
+        ),
+    )
     degraded_sigma_fraction: float = Field(default=0.5, gt=0, le=1)
     # -- initial covariance ----------------------------------------------------------------------------------------
     initial_position_sigma_m: float = Field(default=0.1, gt=0)
@@ -182,6 +190,9 @@ class EkfStateEstimator(StateEstimator):
         self._fix_rejections = 0
         self._depth_rejections = 0
         self._last_fix_ns: int | None = None
+        self._last_accepted_fix: tuple[np.ndarray, float, int, str] | None = None
+        self._rejected_fix_candidate: tuple[np.ndarray, float, int, str] | None = None
+        self._consistent_rejected_fixes = 0
         self.last_nis: float | None = None
         # consistency / adaptation state (all inferred from received data)
         self.nis_ratio_ewma: float | None = None
@@ -202,6 +213,7 @@ class EkfStateEstimator(StateEstimator):
         self._d_lin = np.asarray(robot_config.linear_drag.require("linear_drag"))[:3]
         self._d_quad = np.asarray(robot_config.quadratic_drag.require("quadratic_drag"))[:3]
         self._v_model = np.zeros(3)
+        self._max_speed_mps = float(robot_config.safety.max_speed_mps.require("safety.max_speed_mps"))
 
     # -- propagation ------------------------------------------------------------------------------
     def _observe_imu_noise(self, imu: ImuSample, dt: float) -> None:
@@ -373,22 +385,112 @@ class EkfStateEstimator(StateEstimator):
         self._depth_rejections = 0
         self._correct(residual, h, r)
 
-    def update_position_fix(self, position_world: np.ndarray, sigma_m: float) -> bool:
+    @staticmethod
+    def _reachable_fix(
+        previous: tuple[np.ndarray, float, int, str],
+        position_world: np.ndarray,
+        sigma_m: float,
+        timestamp_ns: int,
+        source_id: str,
+        max_speed_mps: float,
+        gate_nis: float,
+    ) -> bool:
+        previous_position, previous_sigma, previous_ns, previous_source = previous
+        elapsed_s = (timestamp_ns - previous_ns) / 1e9
+        if source_id != previous_source or elapsed_s <= 0.0:
+            return False
+        noise_radius_m = float(np.sqrt(gate_nis * (previous_sigma**2 + sigma_m**2)))
+        reachable_radius_m = max_speed_mps * elapsed_s + noise_radius_m
+        return bool(np.linalg.norm(position_world - previous_position) <= reachable_radius_m)
+
+    def _remember_accepted_fix(
+        self,
+        position_world: np.ndarray,
+        sigma_m: float,
+        timestamp_ns: int | None,
+        source_id: str | None,
+    ) -> None:
+        if timestamp_ns is not None and source_id is not None:
+            self._last_accepted_fix = (position_world.copy(), sigma_m, timestamp_ns, source_id)
+        self._rejected_fix_candidate = None
+        self._consistent_rejected_fixes = 0
+
+    def _can_reacquire_fix(
+        self,
+        position_world: np.ndarray,
+        sigma_m: float,
+        timestamp_ns: int | None,
+        source_id: str | None,
+    ) -> bool:
+        """Require a short, physically reachable measurement track before overriding a stale prediction gate.
+
+        The fallback never trusts a single rejected innovation.  It also remains anchored to the last accepted
+        measurement, so a repeated but physically impossible position jump cannot become self-consistent merely
+        by being repeated.
+        """
+        if timestamp_ns is None or source_id is None or self._last_accepted_fix is None:
+            self._rejected_fix_candidate = None
+            self._consistent_rejected_fixes = 0
+            return False
+        reachable_from_anchor = self._reachable_fix(
+            self._last_accepted_fix,
+            position_world,
+            sigma_m,
+            timestamp_ns,
+            source_id,
+            self._max_speed_mps,
+            self.config.fix_gate_nis,
+        )
+        reachable_from_candidate = self._rejected_fix_candidate is None or self._reachable_fix(
+            self._rejected_fix_candidate,
+            position_world,
+            sigma_m,
+            timestamp_ns,
+            source_id,
+            self._max_speed_mps,
+            self.config.fix_gate_nis,
+        )
+        if reachable_from_anchor and reachable_from_candidate:
+            self._consistent_rejected_fixes += 1
+        else:
+            self._consistent_rejected_fixes = 0
+        self._rejected_fix_candidate = (position_world.copy(), sigma_m, timestamp_ns, source_id)
+        return self._consistent_rejected_fixes >= self.config.fix_reacquisition_consistent_rejections
+
+    def update_position_fix(
+        self,
+        position_world: np.ndarray,
+        sigma_m: float,
+        *,
+        timestamp_ns: int | None = None,
+        source_id: str | None = None,
+    ) -> bool:
         """Gated WORLD position fix. Returns False (and counts an inconsistency) when rejected."""
+        position_world = np.asarray(position_world, dtype=np.float64)
+        sigma_m = max(float(sigma_m), 1e-3)
         h = np.zeros((3, N_STATE))
         h[:, 0:3] = np.eye(3)
-        r = np.eye(3) * max(sigma_m, 1e-3) ** 2
-        residual = np.asarray(position_world, dtype=np.float64) - self._p
+        r = np.eye(3) * sigma_m**2
+        residual = position_world - self._p
         s = h @ self._P @ h.T + r
         nis = float(residual @ np.linalg.solve(s, residual))
         self.last_nis = nis
         self._record_nis(nis, 3)
+        reacquired = False
         if nis > self.config.fix_gate_nis:
             self._fix_rejections += 1
-            return False
+            if not self._can_reacquire_fix(position_world, sigma_m, timestamp_ns, source_id):
+                return False
+            reacquired = True
+        if reacquired:
+            # The reachable measurement track proves that the prediction covariance omitted manoeuvre error.
+            # Add the minimum PSD term in the innovation direction before correction; directly snapping the
+            # state to the fix would hide uncertainty, while correcting with the stale covariance barely moves it.
+            self._P[0:3, 0:3] += np.outer(residual, residual) / self.config.fix_gate_nis
         self._fix_rejections = 0
         self._last_fix_ns = self._stamp.time_ns
         self._correct(residual, h, r)
+        self._remember_accepted_fix(position_world, sigma_m, timestamp_ns, source_id)
         return True
 
     def _update_from_observation(self, obs: Observation) -> bool:
@@ -397,7 +499,12 @@ class EkfStateEstimator(StateEstimator):
             return False
         if ctx.get("frame_id", WORLD) != WORLD or "sigma_m" not in ctx:
             return False
-        return self.update_position_fix(np.asarray(obs.inline_values), float(ctx["sigma_m"]))
+        return self.update_position_fix(
+            np.asarray(obs.inline_values),
+            float(ctx["sigma_m"]),
+            timestamp_ns=obs.timestamp.time_ns,
+            source_id=str(obs.sensor_id),
+        )
 
     def update_visual(self, visual: Observation) -> bool:
         return self._update_from_observation(visual)

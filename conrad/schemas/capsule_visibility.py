@@ -16,6 +16,7 @@ from conrad.schemas.capsule_surface import capsule_basis
 
 Certificate = Callable[[float, float, float, float], bool]
 Clearance = Callable[[NDArray[np.float64], float, float], bool]
+MAX_SUBDIVISION_DEPTH = 5
 
 
 def capsule_geometry_certificate(
@@ -98,6 +99,6 @@ def capsule_geometry_certificate(
                 )
             )
 
-        return cover(x0, x1, t0, t1, 2)
+        return cover(x0, x1, t0, t1, MAX_SUBDIVISION_DEPTH)
 
     return certify

@@ -6,7 +6,13 @@ from uuid import UUID
 import numpy as np
 import pytest
 
-from conrad.schemas.capsule_surface import CapsuleSurfaceGrid, surface_coordinates, surface_point
+from conrad.schemas.capsule_surface import (
+    CapsuleSurfaceGrid,
+    capsule_basis,
+    surface_coordinates,
+    surface_point,
+)
+from conrad.schemas.capsule_visibility import capsule_geometry_certificate
 from conrad.schemas.frames import Pose
 from conrad.schemas.structural_sensor import StructuralSensorModelV2
 from conrad.schemas.structural_support import ParameterAuthority
@@ -222,6 +228,37 @@ def test_subdivided_certificate_can_prove_visible_resolution_cell():
         world, 0, a, b, radius, origin, rotation, sensor, Twin2SConfig()
     )
     assert certificate(0.9, 1.1, 3.14, 3.86)
+
+
+def test_recursive_v2_certifies_small_radius_resolution_cell_seen_by_flown_view():
+    """Regression for I5 R5: depth two rejected a fully visible 0.2 m cell on a narrow pipe."""
+    radius = 0.16155756209579647
+    a, b = np.zeros(3), np.array([4.0, 0.0, 0.0])
+    _d, u, v = capsule_basis(a, b)
+    basis = np.column_stack((_d, u, v))
+    origin = basis @ np.array([0.36314944481069417, 0.7103865717863308, -1.759002939510051])
+    rotation = basis @ np.array(
+        [
+            [0.08532904082689485, -0.9722450074766852, 0.21784994888276324],
+            [-0.35267790988689923, -0.23396456086623782, -0.9060236620179833],
+            [0.9318461496778159, 0.0004792654055245042, -0.3628533087010517],
+        ]
+    )
+    certificate = capsule_geometry_certificate(
+        a,
+        b,
+        radius,
+        origin,
+        rotation,
+        min_range_m=0.3,
+        max_range_m=4.0,
+        hfov_rad=math.radians(100.0),
+        vfov_rad=math.radians(80.0),
+        min_incidence_cos=0.17,
+        min_quality=0.35,
+        water_attenuation_per_m=0.12,
+    )
+    assert certificate(0.4, 0.6, 1.5 * math.pi, 1.5 * math.pi + 0.2 / radius)
 
 
 @pytest.mark.parametrize("angle", [-4 * math.pi, -0.01, 0.0, 0.01, math.pi, 2 * math.pi + 0.3])
