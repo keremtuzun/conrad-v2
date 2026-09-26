@@ -18,6 +18,10 @@ import yaml
 from pydantic import Field
 
 from conrad.foundation.data.manifest import CorpusPartition, CorpusReadiness, load_corpus_manifest
+from conrad.foundation.data.osfm_public_real import (
+    load_subpipe_osfm_evidence,
+    validate_subpipe_osfm_evidence,
+)
 from conrad.data.manifest import data_root_for, load_manifest, verify_loaded_manifest
 from conrad.schemas.base import ConradModel, VersionedModel, digest_of
 from conrad.settings import REPO_ROOT
@@ -156,6 +160,13 @@ def _load_yaml(path: Path) -> dict[str, Any]:
     return data
 
 
+def _repo_display_path(path: Path) -> str:
+    try:
+        return str(path.relative_to(REPO_ROOT))
+    except ValueError:
+        return str(path)
+
+
 def _public_manifest_findings() -> dict[str, Any]:
     findings: dict[str, Any] = {}
     for path in sorted((REPO_ROOT / "datasets" / "public").glob("*.manifest.yaml")):
@@ -191,6 +202,18 @@ def _data_findings(corpus_path: Path) -> tuple[dict[str, Any], list[Blocker], bo
         and item["local_payload_usable"]
     ]
     synthetic_fixture = "synthetic readiness fixture" in " ".join(corpus.notes).lower()
+    evidence_note = next((note for note in corpus.notes if note.startswith("public-real evidence:")), None)
+    corpus_public_real_evidence: dict[str, Any] | None = None
+    corpus_public_real_problems: list[str] = []
+    if evidence_note:
+        evidence_ref = evidence_note.split(":", 1)[1].strip()
+        try:
+            corpus_public_real_evidence = load_subpipe_osfm_evidence(evidence_ref)
+            corpus_public_real_problems = validate_subpipe_osfm_evidence(corpus_public_real_evidence)
+        except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+            corpus_public_real_problems = [f"could not load public-real evidence {evidence_ref!r}: {exc}"]
+    elif not synthetic_fixture:
+        corpus_public_real_problems = ["corpus does not name a public-real evidence file"]
     has_required = all(counts[p.value] > 0 for p in CorpusPartition)
     if corpus.readiness is not CorpusReadiness.READY or not has_required:
         blockers.append(
@@ -219,9 +242,18 @@ def _data_findings(corpus_path: Path) -> tuple[dict[str, Any], list[Blocker], bo
                 detail="No locally verified public-real payload is ready as a promotable DATA-OSFM-01 pretraining corpus.",
             )
         )
+    if corpus_public_real_problems:
+        blockers.append(
+            Blocker(
+                blocker_id="INT-DATA-OSFM-PUBLIC-REAL-EVIDENCE-01",
+                kind=BlockerKind.INTERNAL,
+                status="BLOCKED_INTERNAL",
+                detail="; ".join(corpus_public_real_problems),
+            )
+        )
     return (
         {
-            "corpus_manifest": str(corpus_path.relative_to(REPO_ROOT)),
+            "corpus_manifest": _repo_display_path(corpus_path),
             "corpus_readiness": corpus.readiness.value,
             "corpus_digest": corpus.corpus_digest,
             "partition_counts": counts,
@@ -229,6 +261,8 @@ def _data_findings(corpus_path: Path) -> tuple[dict[str, Any], list[Blocker], bo
             "synthetic_fixture": synthetic_fixture,
             "public_manifest_summary": public,
             "public_real_ready_payloads": public_real_ready,
+            "corpus_public_real_evidence": corpus_public_real_evidence,
+            "corpus_public_real_evidence_problems": corpus_public_real_problems,
             "lineage_policy": (
                 "PRETRAIN_REAL and PRETRAIN_SYNTHETIC may train; VALIDATION selects checkpoints; "
                 "FINAL_TEST and OOD_TEST are promotion-only and blocked from training access"

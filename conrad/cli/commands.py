@@ -142,6 +142,27 @@ def data_osfm_ready(
     raise typer.Exit(0 if not problems else 1)
 
 
+@data_app.command("osfm-build-subpipe")
+def data_osfm_build_subpipe(
+    evidence: str = typer.Option(
+        "configs/data/osfm/subpipe_p47b_evidence.json", "--evidence", help="Small JSON evidence output"
+    ),
+    corpus: str = typer.Option(
+        "configs/data/osfm/public_real_subpipe_p47b.yaml", "--corpus", help="DATA-OSFM corpus YAML output"
+    ),
+) -> None:
+    """Build the P4.7B SubPipe DATA-OSFM public-real evidence and corpus manifest."""
+    from conrad.foundation.data.osfm_public_real import (
+        write_subpipe_osfm_corpus,
+        write_subpipe_osfm_evidence,
+    )
+
+    evidence_path = write_subpipe_osfm_evidence(evidence)
+    corpus_path = write_subpipe_osfm_corpus(corpus, evidence_path.relative_to(Path.cwd()))
+    typer.echo(json.dumps({"evidence": str(evidence_path), "corpus": str(corpus_path)}, indent=2))
+    typer.echo("RESULT: OK")
+
+
 # ---------------------------------------------------------------------- integrated mission (gates I1-I7)
 DEFAULT_SIM_CONFIG = "configs/sim/mission_default.yaml"
 

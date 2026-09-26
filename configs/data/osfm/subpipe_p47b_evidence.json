@@ -1,0 +1,145 @@
+{
+  "adapter": {
+    "name": "subpipe_zip",
+    "version": "subpipe_zip-1.0.0"
+  },
+  "dataset_id": "public.subpipe",
+  "deployment_allowed": false,
+  "dropped_invalid_items": 0,
+  "evidence_digest": "9df7435312e2a7271f5dc526a9f8effb1233f38c0bb86a653ad988de5ada60f4",
+  "evidence_id": "DATA-OSFM-P4.7B-SUBPIPE-PRETRAIN-REAL",
+  "first_payload": {
+    "archive_member": "SubPipeMiniSSS/DATA/SSS_LF_images/Image/1693569219.799.pbm",
+    "dtype": "uint8",
+    "license": "CC-BY-4.0",
+    "shape": [
+      500,
+      2500,
+      3
+    ],
+    "sonar_rendering": "colormapped PPM, not raw backscatter",
+    "stream": "sss_lf"
+  },
+  "license": "CC-BY-4.0",
+  "lineage_counts": {
+    "FINAL_TEST": 2,
+    "OOD_TEST": 2,
+    "PRETRAIN_REAL": 2,
+    "VALIDATION": 2
+  },
+  "lineage_strategy": {
+    "highest_available_lineage": "one mission/sequence in SubPipeMiniSSS; stream plus contiguous time block",
+    "limitation": "SubPipeMini2 metadata available here does not expose independent site, asset, dive, trajectory, or multi-sequence hierarchy beyond the single mission/sequence.",
+    "random_frame_split": false,
+    "split_unit": "contiguous time block within each sonar stream"
+  },
+  "manifest_digest": "75e1bf661c1269130aee21926ce1153f1dc643fe0b8a61283263379f5f086a4e",
+  "manifest_path": "datasets/public/subpipe.manifest.yaml",
+  "partition_counts": {
+    "FINAL_TEST": 206,
+    "OOD_TEST": 209,
+    "PRETRAIN_REAL": 1445,
+    "VALIDATION": 206
+  },
+  "partition_digests": {
+    "FINAL_TEST": "ea7043720dc3200eafbe38343e1d0118103d892ee89eadc47ee10c67cd1a146b",
+    "OOD_TEST": "3aa0ced60ffd186823e60696bd33cafc67bd51cd7ede175572b3398baa56adce",
+    "PRETRAIN_REAL": "9ac9af4c640a05fd14e9b4c9fc9be22ba351c00623585d427e3185b48b5076a2",
+    "VALIDATION": "ac2f1b3ca66239c067f4cc084f8e4653df8cf6cd95314973c4abca0c86774b4a"
+  },
+  "partition_overlap_counts": {
+    "FINAL_TEST__OOD_TEST": 0,
+    "PRETRAIN_REAL__FINAL_TEST": 0,
+    "PRETRAIN_REAL__OOD_TEST": 0,
+    "PRETRAIN_REAL__VALIDATION": 0,
+    "VALIDATION__FINAL_TEST": 0,
+    "VALIDATION__OOD_TEST": 0
+  },
+  "rights_review_status": "CLEARED",
+  "schema_version": "1.0.0",
+  "sonar_limitations": "SubPipe sonar is rendered side-scan imagery (colormapped PPM), not raw acoustic backscatter.",
+  "source_category": "PUBLIC_REAL",
+  "source_digest": "81912c80e61ad9e767c0ceefd4c13bb6a9ca291c68fea577e2c96851141bcaaf",
+  "source_frame_count": 2066,
+  "source_id": "public.subpipe@zenodo-12666132-v3.0.1-SubPipeMini2",
+  "streams": {
+    "sss_hf": {
+      "frame_count": 1011,
+      "lineage_unit": "subpipe/mini_sss/sss_hf",
+      "modality": "SONAR",
+      "partition_counts": {
+        "FINAL_TEST": 101,
+        "OOD_TEST": 102,
+        "PRETRAIN_REAL": 707,
+        "VALIDATION": 101
+      },
+      "partition_time_ranges_ns": {
+        "FINAL_TEST": {
+          "end_time_ns": 1693570128979000000,
+          "start_time_ns": 1693570028960000000
+        },
+        "OOD_TEST": {
+          "end_time_ns": 1693573392819000000,
+          "start_time_ns": 1693570129979000000
+        },
+        "PRETRAIN_REAL": {
+          "end_time_ns": 1693569926940000000,
+          "start_time_ns": 1693569220750000000
+        },
+        "VALIDATION": {
+          "end_time_ns": 1693570027960000000,
+          "start_time_ns": 1693569927940000000
+        }
+      }
+    },
+    "sss_lf": {
+      "frame_count": 1055,
+      "lineage_unit": "subpipe/mini_sss/sss_lf",
+      "modality": "SONAR",
+      "partition_counts": {
+        "FINAL_TEST": 105,
+        "OOD_TEST": 107,
+        "PRETRAIN_REAL": 738,
+        "VALIDATION": 105
+      },
+      "partition_time_ranges_ns": {
+        "FINAL_TEST": {
+          "end_time_ns": 1693570166979000000,
+          "start_time_ns": 1693570062959000000
+        },
+        "OOD_TEST": {
+          "end_time_ns": 1693573392819000000,
+          "start_time_ns": 1693570167979000000
+        },
+        "PRETRAIN_REAL": {
+          "end_time_ns": 1693569956939000000,
+          "start_time_ns": 1693569219799000000
+        },
+        "VALIDATION": {
+          "end_time_ns": 1693570061959000000,
+          "start_time_ns": 1693569957939000000
+        }
+      }
+    }
+  },
+  "train_only_normalization": {
+    "excluded_partitions": [
+      "VALIDATION",
+      "FINAL_TEST",
+      "OOD_TEST"
+    ],
+    "fit_partitions": [
+      "PRETRAIN_REAL"
+    ],
+    "policy": "fit image normalization/statistics on PRETRAIN_REAL only; never on VALIDATION, FINAL_TEST, or OOD_TEST",
+    "source_digest": "9ac9af4c640a05fd14e9b4c9fc9be22ba351c00623585d427e3185b48b5076a2",
+    "source_frame_count": 1445
+  },
+  "training_allowed": true,
+  "verification": {
+    "adapter_usable": true,
+    "problem_count": 0,
+    "problems": [],
+    "smoke_loaded_first_payload": true
+  }
+}

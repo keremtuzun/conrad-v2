@@ -1,0 +1,43 @@
+corpus_id: DATA-OSFM-01
+readiness: READY
+sources:
+- source_id: public.subpipe@zenodo-12666132-v3.0.1-SubPipeMini2:pretrain_real
+  manifest_digest: 75e1bf661c1269130aee21926ce1153f1dc643fe0b8a61283263379f5f086a4e
+  source_digest: 9ac9af4c640a05fd14e9b4c9fc9be22ba351c00623585d427e3185b48b5076a2
+  partition: PRETRAIN_REAL
+  first_party: false
+- source_id: public.subpipe@zenodo-12666132-v3.0.1-SubPipeMini2:validation
+  manifest_digest: 75e1bf661c1269130aee21926ce1153f1dc643fe0b8a61283263379f5f086a4e
+  source_digest: ac2f1b3ca66239c067f4cc084f8e4653df8cf6cd95314973c4abca0c86774b4a
+  partition: VALIDATION
+  first_party: false
+- source_id: public.subpipe@zenodo-12666132-v3.0.1-SubPipeMini2:final_test
+  manifest_digest: 75e1bf661c1269130aee21926ce1153f1dc643fe0b8a61283263379f5f086a4e
+  source_digest: ea7043720dc3200eafbe38343e1d0118103d892ee89eadc47ee10c67cd1a146b
+  partition: FINAL_TEST
+  first_party: false
+- source_id: public.subpipe@zenodo-12666132-v3.0.1-SubPipeMini2:ood_test
+  manifest_digest: 75e1bf661c1269130aee21926ce1153f1dc643fe0b8a61283263379f5f086a4e
+  source_digest: 3aa0ced60ffd186823e60696bd33cafc67bd51cd7ede175572b3398baa56adce
+  partition: OOD_TEST
+  first_party: false
+- source_id: synthetic-pretrain-synthetic-staging
+  manifest_digest: cf79778d5c91dcff7f4d17bc2f3805e06e34fe5d40232ac14578fd5e362c0745
+  source_digest: cf79778d5c91dcff7f4d17bc2f3805e06e34fe5d40232ac14578fd5e362c0745
+  partition: PRETRAIN_SYNTHETIC
+  first_party: false
+required_partitions:
+- PRETRAIN_REAL
+- PRETRAIN_SYNTHETIC
+- VALIDATION
+- FINAL_TEST
+- OOD_TEST
+notes:
+- P4.7B public-real DATA-OSFM corpus assembly for P4.8+ readiness.
+- 'public-real evidence: configs/data/osfm/subpipe_p47b_evidence.json'
+- PRETRAIN_REAL uses verified local SubPipeMini2 rendered side-scan imagery only.
+- SubPipe sonar is rendered side-scan imagery, not raw acoustic backscatter.
+- SubPipeMini2 has one mission/sequence; partitions are contiguous time blocks per
+  sonar stream.
+- normalization/statistics fit on PRETRAIN_REAL only; validation/final/OOD excluded.
+- 'evidence_digest: 9df7435312e2a7271f5dc526a9f8effb1233f38c0bb86a653ad988de5ada60f4'
