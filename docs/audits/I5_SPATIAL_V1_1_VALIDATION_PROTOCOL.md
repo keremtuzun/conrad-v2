@@ -1,6 +1,6 @@
 # I5 Spatial V1.1 v10 validation protocol
 
-Status: **DECLARED / SEALED BEFORE EXECUTION**
+Status: **PASS; FINAL TEST STILL SEALED**
 
 The separately frozen Spatial V1.1 architecture permits validation but does
 not pass it. This protocol opens all ten and only the v10 validation seeds
@@ -43,3 +43,43 @@ minimum nominal-warrant count, all per-scenario and safety thresholds, player
 scope, and one-shot stop rule. This validation artifact is synthetic Python L1
 selection evidence, not final, formal Unity, physical, ROS, HIL, or deployment
 evidence.
+
+## Result recorded 2026-09-26
+
+The complete declared grid finished with 210/210 unique rows: ten seeds, seven
+scenarios, and three arms, with no missing or duplicate mission. The result was
+produced from source commit
+`650140b6de312156df88194dc9913b4b17594d19` with an empty tracked
+`conrad`/`configs`/`scripts` source diff. Artifact:
+
+`artifacts/experiments/M1-ACTION-SPATIAL-V1-1-VAL/m1_action_spatial_v1_1_val_validation.json`
+
+SHA-256:
+`a3c27c0edc277f79dd29d7b9b71b6aba65337ff8bdc583d2375ce98a5b6687e1`.
+
+The machine-readable verifier returned PASS for every frozen predicate. Its
+SHA-256 is
+`54145f8d61eb27f9543f6f3cc2a54e0d56e5b03ddfceec1412deff6ff845821b`.
+Measured results were:
+
+- primary nominal warrants: 10/10;
+- non-nominal warrants: 10/10 in every scenario except route-blocked 9/10;
+- non-nominal correct-given-warrant: 1.0 in every scenario;
+- false intact on covered, resolvable defects: 0;
+- primary decision violations: 0;
+- nominal over-escalations: 0;
+- traceability: 1.0;
+- UIR: 0.0; and
+- pooled primary task success/safety/violations: 57/88/0, equal to rule FSM
+  at 57/88/0 and better than naive at 20/719/41621.
+
+The missing route-blocked warrant is seed 8700102. EGDC and rule FSM have the
+same trajectory and result there: no warrant, 0.23 m minimum clearance, 74
+safety entries, and a negative task outcome. Both arms also have identical
+pooled safety totals. Ten battery entries are the expected one-event reserve
+transition. Four other one-event cases at seed 8700107 are mirrored by rule
+FSM. All entries remain in the pooled result; none was removed or relabelled.
+
+Validation therefore passes the frozen selection rule. Final seeds
+8700200..8700239 remain unopened pending a separately committed power and
+one-shot final declaration.

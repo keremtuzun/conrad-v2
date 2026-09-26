@@ -1,0 +1,126 @@
+{
+  "checks": {
+    "competitiveness": true,
+    "complete_unique_grid": true,
+    "config_exact": true,
+    "decision_violations": true,
+    "false_intact": true,
+    "nominal_over_escalations": true,
+    "non_nominal_correct_given_warrant": true,
+    "non_nominal_warrants": true,
+    "partition_exact": true,
+    "primary_nominal_warrants": true,
+    "spatial_runtime": true,
+    "traceability": true,
+    "uir": true
+  },
+  "config_sha256": "aaa32e4a772c3f61aed0c628af715302bb434d2146ff1c3597019ea653a30aa1",
+  "measured": {
+    "competitive_outcomes": {
+      "naive_act_on_claims": {
+        "baseline_safety_events": 719,
+        "baseline_task_success": 20,
+        "baseline_violations": 41621,
+        "egdc_safety_events": 88,
+        "egdc_task_success": 57,
+        "egdc_violations": 0,
+        "not_worse": true,
+        "per_scenario_success": {
+          "I5-BATTERY-RESERVE": [
+            10,
+            0
+          ],
+          "I5-COMMS-OUTAGE": [
+            10,
+            10
+          ],
+          "I5-CRITICAL-FINDING": [
+            10,
+            10
+          ],
+          "I5-NOMINAL": [
+            10,
+            0
+          ],
+          "I5-ROUTE-BLOCKED": [
+            7,
+            0
+          ],
+          "I5-TIME-RESERVE": [
+            10,
+            0
+          ],
+          "I5-UNCERTAIN-BELIEF": [
+            0,
+            0
+          ]
+        }
+      },
+      "rule_fsm": {
+        "baseline_safety_events": 88,
+        "baseline_task_success": 57,
+        "baseline_violations": 0,
+        "egdc_safety_events": 88,
+        "egdc_task_success": 57,
+        "egdc_violations": 0,
+        "not_worse": true,
+        "per_scenario_success": {
+          "I5-BATTERY-RESERVE": [
+            10,
+            10
+          ],
+          "I5-COMMS-OUTAGE": [
+            10,
+            10
+          ],
+          "I5-CRITICAL-FINDING": [
+            10,
+            10
+          ],
+          "I5-NOMINAL": [
+            10,
+            10
+          ],
+          "I5-ROUTE-BLOCKED": [
+            7,
+            7
+          ],
+          "I5-TIME-RESERVE": [
+            10,
+            10
+          ],
+          "I5-UNCERTAIN-BELIEF": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "decision_violations": 0,
+    "false_intact": 0,
+    "nominal_over_escalations": 0,
+    "non_nominal_correct_given_warrant": {
+      "I5-BATTERY-RESERVE": 1.0,
+      "I5-COMMS-OUTAGE": 1.0,
+      "I5-CRITICAL-FINDING": 1.0,
+      "I5-ROUTE-BLOCKED": 1.0,
+      "I5-TIME-RESERVE": 1.0,
+      "I5-UNCERTAIN-BELIEF": 1.0
+    },
+    "non_nominal_warrants": {
+      "I5-BATTERY-RESERVE": 10,
+      "I5-COMMS-OUTAGE": 10,
+      "I5-CRITICAL-FINDING": 10,
+      "I5-ROUTE-BLOCKED": 9,
+      "I5-TIME-RESERVE": 10,
+      "I5-UNCERTAIN-BELIEF": 10
+    },
+    "primary_nominal_warrants": 10,
+    "rows": 210,
+    "traceability": 1.0,
+    "uir": 0.0,
+    "unique_rows": 210
+  },
+  "result_sha256": "a3c27c0edc277f79dd29d7b9b71b6aba65337ff8bdc583d2375ce98a5b6687e1",
+  "status": "PASS"
+}
