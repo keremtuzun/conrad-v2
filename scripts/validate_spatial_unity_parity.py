@@ -16,6 +16,7 @@ from tests.unity_live.test_spatial_unity_parity import _exercise_kernel_unity_pa
 PLAYER_SHA256 = "36c5c9f13481406382a8e9ef8fc0ea7cdf055c43bb12fc8fd545b07c199cd277"
 SEEDS = (1401, 1402)
 CASES = tuple(product((False, True), repeat=3))  # occluded, noisy, bounded survey
+PROTOCOL_EXTRA: dict[str, Any] = {}
 
 
 def main() -> None:
@@ -32,7 +33,12 @@ def main() -> None:
     digest = hashlib.sha256(player.read_bytes()).hexdigest()
     if digest != PLAYER_SHA256:
         raise SystemExit(f"Unity player hash mismatch: {digest}")
-    protocol = {"seeds": SEEDS, "cases": CASES, "player_sha256": PLAYER_SHA256}
+    protocol = {
+        "seeds": SEEDS,
+        "cases": CASES,
+        "player_sha256": PLAYER_SHA256,
+        **PROTOCOL_EXTRA,
+    }
     if args.resume:
         if not out.is_dir() or json.loads((out / "protocol.json").read_text(encoding="utf-8")) != json.loads(
             json.dumps(protocol)

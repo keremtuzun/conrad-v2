@@ -85,3 +85,16 @@ found`. The Mac was locked when Unity Hub was opened for the required account
 sign-in. Therefore the 16-case Unity parity matrix is **NOT RUN**, Spatial V1.1
 remains unfrozen, and v10 validation/final remain sealed. The controlled and
 contract passes do not substitute for this missing software execution gate.
+
+## Post-blocker platform supplement
+
+After the result above was recorded, the user activated a valid Unity license.
+The exact editor then completed a batch compile successfully with no C# errors.
+A separately committed build path produced a native macOS player and a
+development-only seed-1999 spatial smoke case passed. These later facts do not
+change the Windows-pinned result above.
+
+Because the available host is Apple silicon, a new platform-specific parity
+cycle was prospectively declared in
+`SPATIAL_V1_1_MACOS_PARITY_PROTOCOL.md`, with a new player hash and fresh seeds
+2003 and 2004. The original seeds 2001 and 2002 remain unopened by Unity.
