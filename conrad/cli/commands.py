@@ -64,12 +64,17 @@ def train_osfm_p48_full_launch(
         "--rehearsal",
     ),
     p47: str = typer.Option("artifacts/gates/P4.7B_L4/osfm_readiness.json", "--p47"),
+    implementation_review: str = typer.Option(
+        "artifacts/gates/P4.8B/full_run_implementation_review.json", "--implementation-review"
+    ),
     output: str = typer.Option("artifacts/gates/P4.8B/full_launch_preflight.json", "--output"),
 ) -> None:
     """Run the P4.8 full-launch preflight. Does not start training."""
     from conrad.foundation.pretraining.p48_gate import evaluate_p48_full_launch, write_p48_full_launch_report
 
-    report = evaluate_p48_full_launch(rehearsal_report=rehearsal, p47_report=p47)
+    report = evaluate_p48_full_launch(
+        rehearsal_report=rehearsal, p47_report=p47, implementation_review=implementation_review
+    )
     written = write_p48_full_launch_report(report, output)
     typer.echo(
         json.dumps(

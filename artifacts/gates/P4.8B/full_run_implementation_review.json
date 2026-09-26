@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "gate_id": "P4.8B",
+  "status": "IMPLEMENTED",
+  "supports_full_run": true,
+  "requires_full_run_allowed": true,
+  "varies_training_batches": true,
+  "reload_verification_required": true,
+  "final_or_ood_training_access": "forbidden",
+  "normalization_scope": "PRETRAIN_REAL_ONLY",
+  "implementation_files": [
+    "conrad/foundation/pretraining/u1_sonar.py",
+    "configs/train/osfm/research/u1_sonar_research.yaml",
+    "conrad/foundation/pretraining/p48_gate.py"
+  ],
+  "review_notes": [
+    "Full-run branch refuses execution unless full_run_allowed is true.",
+    "Runtime gate still requires clean tracked git, P4.7 GO, verified SubPipe payload, verified DINOv2 checkpoint, CUDA, and at least 16 GB CUDA VRAM.",
+    "Training batches vary by step through partition-local sampling offsets.",
+    "Checkpoint reload compatibility is required before report completion.",
+    "FINAL_TEST and OOD_TEST remain unavailable to sampler, training, and normalization statistics.",
+    "SubPipe sonar limitation remains rendered side-scan imagery, not raw acoustic backscatter."
+  ]
+}

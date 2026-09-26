@@ -1,11 +1,24 @@
+job: osfm_u1_sonar_research
 stage_id: U1-SONAR-RESEARCH
 scale: full
-formal_run_allowed: false
-promotable: false
-blocked_until:
-  - EXT-DATA-PUBLIC-REAL-01
-  - EXT-DINOV2-VITS14-01
-  - EXT-COMPUTE-P4-RESEARCH-01
+formal_run_allowed: true
+full_run_allowed: true
+rehearsal_only: false
+promotable: true
+require_clean_git: true
+required_compute: CUDA GPU with >=16 GB VRAM
+min_vram_gb: 16
+p47_go_artifact: artifacts/gates/P4.7B_L4/osfm_readiness.json
+corpus: configs/data/osfm/public_real_subpipe_p47b.yaml
+evidence: configs/data/osfm/subpipe_p47b_evidence.json
+init: artifacts/external/dinov2/dinov2_vits14.pth
+stream: sss_lf
+image_size: 28
+batch_size: 8
+optimizer_steps: 100000
+validation_every_steps: 1000
+seed: 2026092618
+blocked_until: []
 required_parents:
   - generic_rgb_initialization_policy_resolved
 required_partitions:
@@ -28,6 +41,12 @@ optimizer:
   weight_decay: 0.05
   schedule: warmup_5pct_cosine_by_optimizer_step
   grad_clip_norm: 1.0
+lr: 0.0001
+weight_decay: 0.05
+grad_clip_norm: 1.0
+token_mask_fraction: 0.6
+min_visible_fraction: 0.1
+noise_std: 0.025
 budget:
   batch_size_per_gpu: 64
   gradient_accumulation: 4
@@ -39,3 +58,9 @@ validation:
 promotion:
   produces: U1-SONAR-RESEARCH-CHECKPOINT
   requires_clean_git: true
+  final_or_ood_training_access: forbidden
+notes:
+  - Full P4.8 U1 sonar research launch remains fail-closed unless all gate checks pass at runtime.
+  - Training reads PRETRAIN_REAL only; validation reads VALIDATION only.
+  - FINAL_TEST and OOD_TEST are forbidden for training, sampler, and normalization statistics.
+  - SubPipe sonar is rendered side-scan imagery, not raw acoustic backscatter.

@@ -18,6 +18,7 @@ from conrad.settings import REPO_ROOT
 
 DEFAULT_REHEARSAL_REPORT = Path("artifacts/gates/P4.8A/rehearsal_l4/reports/p48a_u1_sonar_rehearsal_report.json")
 DEFAULT_P47_REPORT = Path("artifacts/gates/P4.7B_L4/osfm_readiness.json")
+DEFAULT_IMPLEMENTATION_REVIEW = Path("artifacts/gates/P4.8B/full_run_implementation_review.json")
 
 
 @dataclass(frozen=True)
@@ -92,6 +93,7 @@ def _check_partition_evidence(report: dict[str, Any], blockers: list[P48Blocker]
 def evaluate_p48_full_launch(
     rehearsal_report: str | Path = DEFAULT_REHEARSAL_REPORT,
     p47_report: str | Path = DEFAULT_P47_REPORT,
+    implementation_review: str | Path = DEFAULT_IMPLEMENTATION_REVIEW,
 ) -> dict[str, Any]:
     blockers: list[P48Blocker] = []
     rehearsal, rehearsal_digest, problem = _load_json(rehearsal_report)
@@ -127,13 +129,29 @@ def evaluate_p48_full_launch(
     if health.get("finite") is not True:
         blockers.append(P48Blocker("P48-REPRESENTATION-01", "INTERNAL", "rehearsal representation health is not finite"))
 
-    blockers.append(
-        P48Blocker(
-            "P48-FULL-RUN-IMPLEMENTATION-01",
-            "INTERNAL",
-            "formal P4.8 is still locked in code until a reviewed full-run sampler/reload path replaces rehearsal_only",
-        )
-    )
+    implementation, implementation_digest, implementation_problem = _load_json(implementation_review)
+    if implementation_problem:
+        blockers.append(P48Blocker("P48-FULL-RUN-IMPLEMENTATION-01", "INTERNAL", implementation_problem))
+        implementation = {}
+    else:
+        required_review = {
+            "status": "IMPLEMENTED",
+            "supports_full_run": True,
+            "requires_full_run_allowed": True,
+            "varies_training_batches": True,
+            "reload_verification_required": True,
+            "final_or_ood_training_access": "forbidden",
+            "normalization_scope": "PRETRAIN_REAL_ONLY",
+        }
+        missing = {key: value for key, value in required_review.items() if implementation.get(key) != value}
+        if missing:
+            blockers.append(
+                P48Blocker(
+                    "P48-FULL-RUN-IMPLEMENTATION-02",
+                    "INTERNAL",
+                    f"implementation review missing required fields: {sorted(missing)}",
+                )
+            )
     decision = "GO" if not blockers else "NO-GO"
     status = "VALIDATED-RUN" if rehearsal and p47 else "DESIGNED"
     return {
@@ -145,6 +163,8 @@ def evaluate_p48_full_launch(
         "rehearsal_report_digest": rehearsal_digest,
         "p47_report": str(_resolve(p47_report)),
         "p47_report_digest": p47_digest,
+        "implementation_review": str(_resolve(implementation_review)),
+        "implementation_review_digest": implementation_digest,
         "blockers": [b.as_dict() for b in blockers],
     }
 

@@ -173,6 +173,7 @@ def real_subpipe_sonar_views(
     *,
     partition: CorpusPartition,
     train_stats: tuple[float, float] | None = None,
+    sample_offset: int = 0,
 ) -> tuple[U1SonarViews, dict[str, Any], tuple[float, float]]:
     if partition not in (CorpusPartition.PRETRAIN_REAL, CorpusPartition.VALIDATION):
         raise ValueError("P4.8 U1 sonar may read only PRETRAIN_REAL or VALIDATION")
@@ -199,7 +200,8 @@ def real_subpipe_sonar_views(
             selected = refs[slice(*ranges[partition])]
             if len(selected) < batch:
                 raise RuntimeError(f"{partition.value} has only {len(selected)} frames for batch {batch}")
-            idx = torch.randperm(len(selected), generator=gen)[:batch].tolist()
+            order = torch.randperm(len(selected), generator=gen).tolist()
+            idx = [order[(sample_offset + i) % len(order)] for i in range(batch)]
             chosen = [selected[i] for i in idx]
             images: list[torch.Tensor] = []
             sample_ids: list[str] = []
@@ -488,17 +490,16 @@ def run_u1_sonar_smoke(run: RunDirectory, job: dict[str, Any], seed: int) -> dic
 
 def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> dict[str, Any]:
     gate = _require_u1_sonar_research_gate(job)
-    if job.get("rehearsal_only", True) is not True:
-        raise RuntimeError("Full P4.8 U1 sonar run remains locked until rehearsal evidence is reviewed")
+    rehearsal_only = bool(job.get("rehearsal_only", True))
+    if not rehearsal_only and job.get("full_run_allowed") is not True:
+        raise RuntimeError("Full P4.8 U1 sonar run requires full_run_allowed: true")
     t0 = time.perf_counter()
     torch.manual_seed(seed)
     torch.use_deterministic_algorithms(True, warn_only=True)
     device = torch.device("cuda:0")
     torch.cuda.reset_peak_memory_stats(device)
     config = SonarEncoderConfig(image_size=int(job.get("image_size", 28)))
-    train_views, train_evidence, train_stats = real_subpipe_sonar_views(
-        job, seed, partition=CorpusPartition.PRETRAIN_REAL
-    )
+    train_views, train_evidence, train_stats = real_subpipe_sonar_views(job, seed, partition=CorpusPartition.PRETRAIN_REAL)
     val_views, val_evidence, _ = real_subpipe_sonar_views(
         job, seed + 1, partition=CorpusPartition.VALIDATION, train_stats=train_stats
     )
@@ -526,8 +527,30 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         weight_decay=float(job.get("weight_decay", 0.05)),
     )
     steps = int(job.get("optimizer_steps", 2))
+    validation_every = int(job.get("validation_every_steps", max(1, steps)))
     last = None
+    val = None
+    all_train_sample_ids: list[str] = []
     for step in range(1, steps + 1):
+        if not rehearsal_only and step > 1:
+            train_views, step_evidence, _ = real_subpipe_sonar_views(
+                job,
+                seed + step,
+                partition=CorpusPartition.PRETRAIN_REAL,
+                train_stats=train_stats,
+                sample_offset=(step - 1) * int(job.get("batch_size", 2)),
+            )
+            train_evidence = {
+                **train_evidence,
+                "sample_ids": list(dict.fromkeys([*train_evidence["sample_ids"], *step_evidence["sample_ids"]])),
+            }
+            train_views = U1SonarViews(
+                train_views.teacher_sonar.to(device),
+                train_views.student_sonar.to(device),
+                train_views.token_mask.to(device),
+                train_views.sample_ids,
+                train_views.corruption_trace,
+            )
         bundle.train()
         out = bundle(train_views)
         out.loss.backward()
@@ -536,6 +559,7 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         optimizer.zero_grad(set_to_none=True)
         ema = bundle.update_teacher_after_optimizer(step)
         last = out
+        all_train_sample_ids.extend(train_views.sample_ids)
         run.log_metrics(
             {
                 "step": step,
@@ -543,11 +567,16 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
                 "ema_momentum": float(ema),
             }
         )
+        if not rehearsal_only and step % validation_every == 0:
+            bundle.eval()
+            with torch.no_grad():
+                val = bundle(val_views)
+            run.log_metrics({"step": step, "val/osfm_u1_sonar_loss": float(val.loss.detach().cpu())})
     bundle.eval()
     with torch.no_grad():
-        val = bundle(val_views)
+        val = bundle(val_views) if val is None else val
     split_plan = {
-        "train_sample_ids": train_views.sample_ids,
+        "train_sample_ids": tuple(dict.fromkeys(all_train_sample_ids or train_views.sample_ids)),
         "validation_sample_ids": val_views.sample_ids,
         "lineage": train_evidence["lineage_unit"],
         "partition_policy": "PRETRAIN_REAL trains; VALIDATION selects; FINAL_TEST/OOD_TEST forbidden",
@@ -567,7 +596,9 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         "memory_allocated_bytes": float(torch.cuda.max_memory_allocated(device)),
     }
     metrics.update({k: v for k, v in _objective_metrics(val.results).items() if isinstance(v, float)})
-    ckpt = run.path / "checkpoints" / "osfm_u1_sonar_research_rehearsal.pt"
+    ckpt_name = "osfm_u1_sonar_research_rehearsal.pt" if rehearsal_only else "osfm_u1_sonar_research_full.pt"
+    ckpt = run.path / "checkpoints" / ckpt_name
+    representation_id = "P4.8A-U1-SONAR-REAL-REHEARSAL" if rehearsal_only else "P4.8-U1-SONAR-RESEARCH"
     meta = save_checkpoint(
         ckpt,
         model=bundle,
@@ -582,21 +613,38 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         created_time_ns=time.time_ns(),
         optimizer=optimizer,
         trainer_state={
-            "cuda_rng_state": [torch.cuda.get_rng_state(device)],
+            "cuda_rng_state": [torch.cuda.get_rng_state(device).cpu()],
             "amp_scaler": None,
             "split_plan": split_plan,
         },
         is_encoder=True,
-        representation_pretraining_id="P4.8A-U1-SONAR-REAL-REHEARSAL",
+        representation_pretraining_id=representation_id,
         selection_metric="val/osfm_u1_sonar_loss",
-        extra_compatibility={"osfm_stage": "U1-SONAR-RESEARCH", "p48_rehearsal": "true"},
+        extra_compatibility={"osfm_stage": "U1-SONAR-RESEARCH", "p48_rehearsal": str(rehearsal_only).lower()},
     )
+    fresh = U1SonarTrainingBundle(SonarViTS14Encoder(config)).to(device)
+    load_checkpoint(
+        ckpt,
+        expected=CompatibilityTuple(
+            config_digest=config_digest(job),
+            manifest_digests=(manifest_digest,),
+            split_hash=split_hash,
+            component="foundation.osfm.u1_sonar",
+            representation_pretraining_id=representation_id,
+            extra={"osfm_stage": "U1-SONAR-RESEARCH", "p48_rehearsal": str(rehearsal_only).lower()},
+        ),
+        model=fresh,
+    )
+    fresh.eval()
+    with torch.no_grad():
+        reloaded = fresh(val_views)
+    reload_max_abs_diff = float((val.student.modality_repr - reloaded.student.modality_repr).abs().max().detach().cpu())
     wall_s = time.perf_counter() - t0
     result = {
         "component": "foundation.osfm.u1_sonar",
-        "experiment_id": "P4.8A-U1-SONAR-REAL-REHEARSAL",
-        "formal_p4_8": False,
-        "rehearsal_only": True,
+        "experiment_id": "P4.8A-U1-SONAR-REAL-REHEARSAL" if rehearsal_only else "P4.8-U1-SONAR-RESEARCH",
+        "formal_p4_8": not rehearsal_only,
+        "rehearsal_only": rehearsal_only,
         "gate": gate,
         "data": {
             "source": SUBPIPE_SOURCE_ID,
@@ -613,16 +661,19 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         "metrics": metrics,
         "objectives": {r.objective_id: r.as_metrics() for r in val.results},
         "representation_health": val.health.__dict__,
+        "reload": {"max_abs_diff": reload_max_abs_diff, "matches": reload_max_abs_diff <= 1e-6},
         "compute": {
             "device": str(device),
             "peak_memory_bytes": int(metrics["memory_allocated_bytes"]),
             "wall_clock_s": wall_s,
             "throughput_samples_per_s": (len(train_views.sample_ids) * steps) / wall_s,
         },
-        "next_gate": "Full P4.8 remains locked until rehearsal evidence is committed and full_run_allowed is set explicitly.",
+        "next_gate": "P4.8 full run evidence may promote U1 sonar only after checkpoint/reload and held-out validation review."
+        if not rehearsal_only
+        else "Full P4.8 remains locked until rehearsal evidence is committed and full_run_allowed is set explicitly.",
     }
     run.log_event(
-        "P48A_U1_SONAR_REAL_REHEARSAL",
+        "P48A_U1_SONAR_REAL_REHEARSAL" if rehearsal_only else "P48_U1_SONAR_RESEARCH",
         time.time_ns(),
         {
             "train_sample_ids": train_views.sample_ids,
@@ -631,7 +682,8 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
             "rendered_sonar_limitation": result["data"]["limitation"],
         },
     )
-    run.write_artifact("reports", "p48a_u1_sonar_rehearsal_report.json", json.dumps(result, indent=2, default=str))
+    report_name = "p48a_u1_sonar_rehearsal_report.json" if rehearsal_only else "p48_u1_sonar_research_report.json"
+    run.write_artifact("reports", report_name, json.dumps(result, indent=2, default=str))
     run.write_artifact(
         "reports",
         "checkpoint_index.json",

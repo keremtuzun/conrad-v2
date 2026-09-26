@@ -58,10 +58,22 @@ def _write(path: Path, payload: dict) -> Path:
     return path
 
 
+def _implementation_review() -> dict:
+    return {
+        "status": "IMPLEMENTED",
+        "supports_full_run": True,
+        "requires_full_run_allowed": True,
+        "varies_training_batches": True,
+        "reload_verification_required": True,
+        "final_or_ood_training_access": "forbidden",
+        "normalization_scope": "PRETRAIN_REAL_ONLY",
+    }
+
+
 def test_p48_full_launch_gate_fails_closed_until_full_run_path_exists(tmp_path: Path) -> None:
     p47 = _write(tmp_path / "p47.json", _p47_report())
     rehearsal = _write(tmp_path / "rehearsal.json", _rehearsal_report())
-    report = evaluate_p48_full_launch(rehearsal, p47)
+    report = evaluate_p48_full_launch(rehearsal, p47, tmp_path / "missing-implementation.json")
     assert report["status"] == "VALIDATED-RUN"
     assert report["decision"] == "NO-GO"
     assert [b["blocker_id"] for b in report["blockers"]] == ["P48-FULL-RUN-IMPLEMENTATION-01"]
@@ -71,15 +83,16 @@ def test_p48_full_launch_gate_fails_closed_until_full_run_path_exists(tmp_path: 
 
 def test_p48_full_launch_gate_fails_closed_on_missing_rehearsal(tmp_path: Path) -> None:
     p47 = _write(tmp_path / "p47.json", _p47_report())
-    report = evaluate_p48_full_launch(tmp_path / "missing.json", p47)
+    implementation = _write(tmp_path / "implementation.json", _implementation_review())
+    report = evaluate_p48_full_launch(tmp_path / "missing.json", p47, implementation)
     blockers = {b["blocker_id"] for b in report["blockers"]}
     assert report["decision"] == "NO-GO"
     assert "P48A-EVIDENCE-01" in blockers
-    assert "P48-FULL-RUN-IMPLEMENTATION-01" in blockers
 
 
 def test_p48_full_launch_gate_detects_partition_and_metadata_leakage(tmp_path: Path) -> None:
     p47 = _write(tmp_path / "p47.json", _p47_report())
+    implementation = _write(tmp_path / "implementation.json", _implementation_review())
     bad = copy.deepcopy(_rehearsal_report())
     bad["data"]["validation"]["sample_ids"] = ["train-a"]
     bad["data"]["final_test_used"] = True
@@ -88,9 +101,18 @@ def test_p48_full_launch_gate_detects_partition_and_metadata_leakage(tmp_path: P
     bad["data"]["train"]["rendered_sonar_limitation"] = "sonar"
     bad["data"]["validation"]["rendered_sonar_limitation"] = "sonar"
     rehearsal = _write(tmp_path / "rehearsal.json", bad)
-    report = evaluate_p48_full_launch(rehearsal, p47)
+    report = evaluate_p48_full_launch(rehearsal, p47, implementation)
     blockers = {b["blocker_id"] for b in report["blockers"]}
     assert "P48-DATA-LEAK-01" in blockers
     assert "P48-DATA-OVERLAP-01" in blockers
     assert "P48-STATS-TRAIN-ONLY-01" in blockers
     assert "P48-SONAR-CLAIM-01" in blockers
+
+
+def test_p48_full_launch_gate_goes_when_all_evidence_is_present(tmp_path: Path) -> None:
+    p47 = _write(tmp_path / "p47.json", _p47_report())
+    rehearsal = _write(tmp_path / "rehearsal.json", _rehearsal_report())
+    implementation = _write(tmp_path / "implementation.json", _implementation_review())
+    report = evaluate_p48_full_launch(rehearsal, p47, implementation)
+    assert report["decision"] == "GO"
+    assert report["blockers"] == []
