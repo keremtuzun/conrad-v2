@@ -1,0 +1,111 @@
+# Gate I4, FORMAL RUN 4: predeclared fresh-sample resolution of the remaining V4 information/energy miss.
+# SYNTHETIC_ONLY. DECLARED 2026-09-26 BEFORE ANY FLIGHT ON THESE WORLDS.
+#
+# Run 3 remains FAIL. This run does not relabel it, enlarge it, or read its untouched remainder
+# (8002230-8002259). Run 4 uses a new, disjoint seed block and the same frozen V4 production mechanism.
+#
+# Why this is legitimate:
+#   * Run 3 passed 4/5 I4 criteria and missed only info_per_kj vs A-B0_random:
+#       +0.037653 [-0.000208, +0.074893], n=30
+#   * The point estimate is positive and the miss is statistical, not architectural.
+#   * The declared response is a fresh, larger formal sample with the same decision rule.
+#   * No threshold changes, no dropped named comparator, no tuning on run-3 remainder.
+experiment_id: I4-V4-UNITY-FINAL-R4
+gate: I4
+run: 4
+supersedes_nothing: >-
+  Runs 1, 2 and 3 remain recorded exactly as they were. Run 4 is a fresh formal resolution run for the
+  frozen V4 mechanism, declared before any flight on these seeds.
+run1_results: artifacts/gates/I4/unity_i4_occluded_results.json
+run2_results: artifacts/gates/I4/unity_i4_occluded_rep2_results.json
+run3_results: artifacts/gates/I4/unity_i4_v4_final_results.json
+run1_verdict: FAIL
+run2_verdict: FAIL
+run3_verdict: FAIL
+world_family: ACTIVE_INSPECTION_OCCLUDED_V1
+scenario: I4-OCCLUDED-UNITY
+partition_file: configs/eval/i4_v4_unity_final_r4.yaml
+partition_digest: DECLARED_BY_THIS_FILE
+family_file: configs/eval/i4_occluded_family.yaml
+family_digest: f77c5dbb7d665e3740e76cd4dfd97f37d0f0060bc2b336af6391ff0758877bdd
+frozen_planner_file: configs/active/mcbr_frozen_v4.yaml
+design_evidence: artifacts/experiments/ACTIVE-MCBR-E007-DEV/i4_v4_development.json
+selection_evidence: artifacts/experiments/ACTIVE-MCBR-E007-VAL/i4_v4_validation.json
+
+# Fresh formal seeds. These are outside every existing I4/I5/I7/unity gate block currently declared in the repo.
+final_worlds: {range: [8003000, 8003060], n: 60}
+forbidden_sources:
+  - {range: [8000200, 8000220], owner: I4 formal run 1, SPENT}
+  - {range: [8001000, 8001060], owner: I4 formal run 2, SPENT}
+  - {range: [8002200, 8002230], owner: I4 formal run 3, SPENT}
+  - {range: [8002230, 8002260], owner: I4 run 3 unread remainder, FORBIDDEN_FOR_REVISIT}
+  - {range: [8002300, 8002320], owner: I4 run 3 OOD split, FORBIDDEN_FOR_PASS_DECISION}
+
+# Four arms decide the gate criteria, exactly the named comparators.
+arm_set:
+  name: v4_run4_four_gate_arms
+  reduced: true
+  arms: [PRODUCTION, A-B2_coverage, A-B1_fixed_inspection, A-B0_random]
+  gate_arms: [PRODUCTION, A-B2_coverage, A-B1_fixed_inspection, A-B0_random]
+  control_arms: []
+  dropped_arms:
+    [V3_PROTOCOL_CONTROL, A-B3_frontier, A-B4_geometric_nbv, A-B5_entropy_nbv, A-B5b_entropy_nbv_predictive,
+     A-B6_standard_eig, A-B6b_bayes_eig, A-B7_uncertainty_nbv, A-B9_mcbr_no_mission, A-B10_mcbr_full,
+     A-B11_mission_conditioned, A-B12_hypothesis_discrimination]
+  dropped_arms_reason: >-
+    The ch25 gate criteria name fixed inspection, random views and systematic coverage. Those three are flown.
+    V3_PROTOCOL_CONTROL was an attribution control in run 3 and decides no criterion; attribution is already
+    recorded in run 3, so run 4 spends its budget on fresh paired worlds for the criterion that remained
+    statistically unresolved.
+  dropped_arms_evidence: artifacts/gates/I4/evidence_formal.json
+  reason: >-
+    Four gate arms on 60 fresh worlds. The sample size is fixed before flight from the run-3 information/energy
+    miss: n=30 yielded a positive point estimate with a CI lower bound just below zero; n=60 is the declared
+    fresh-sample resolution.
+  decides_criteria:
+    - closed loop
+    - beats fixed views on actual hidden-state reconstruction
+    - beats random views
+    - beats coverage-only
+    - beats simple views on information/time/energy
+  flights: {final: 240}
+arm_runtime:
+  PRODUCTION: {planner: PRODUCTION}
+  A-B2_coverage: {planner: A-B2_coverage}
+  A-B1_fixed_inspection: {planner: A-B1_fixed_inspection}
+  A-B0_random: {planner: A-B0_random}
+
+runtime: {duration_s: 100.0, control_period_s: 0.1, max_plans_per_need: 4, model2e_enabled: false}
+sequential: true
+primary_metric: hidden_state_error_improvement
+report_metrics:
+  - hidden_state_error_improvement
+  - info_per_time
+  - info_per_kj
+  - observations
+  - fraction_views_flown
+  - fraction_views_reached
+  - redundant_observations
+  - travel_m
+  - energy_j
+  - time_s
+  - target_observed
+  - corrosion_abs_error_m
+  - crack_abs_error_m
+  - collisions
+  - defect_read
+  - views_before_detection
+  - time_to_detection_s
+  - empty_plan_rate
+  - planning_latency_ms
+decision_rule: >-
+  Unit = one world, paired across arms. PRODUCTION beats a comparator on a metric iff the lower bound of the
+  95 % paired percentile-bootstrap CI over worlds (4000 resamples, rng seed 20260919) of the benefit
+  (PRODUCTION better = positive) is above 0. Gate I4 passes iff every criterion passes: the closed loop,
+  beats fixed views, beats random views, beats coverage-only on hidden_state_error_improvement, and beats fixed,
+  random AND coverage on info_per_time AND info_per_kj. No numeric margin is invented.
+run_once: >-
+  This 60-world sample is read exactly once. If a criterion fails, gate I4 remains FAIL and the result is
+  recorded as such. No extra worlds may be appended after seeing the result.
+ood: >-
+  No OOD split is part of this pass decision. OOD may be declared separately only after a formal pass.
