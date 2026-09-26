@@ -40,11 +40,13 @@ generated Spatial V1.1 controlled-view databases.
 
 ## Explicit remaining software environment block
 
-Unity live tests remain deselected or skipped because this Apple-silicon host
-has no Unity Editor, activated Unity license, native player, Wine runtime, or
-recoverable Windows player artifact. The repository, Git history, GitHub
-releases, and GitHub Actions artifacts contain no player binary. Spatial V1.1
-Unity parity and all downstream I5 validation/final/formal work therefore
-remain unopened, not passed. Installing Unity and activating a user license is
+Unity live tests remain deselected or skipped. This Apple-silicon host has no
+recoverable Windows player artifact or Wine runtime; the repository, Git
+history, GitHub releases, and GitHub Actions artifacts contain no player
+binary. Unity Hub 3.21.3 and the exact Apple-silicon editor 6000.5.9f1 changeset
+`b57deb96f08d` were installed after the regression run, but batch project
+compile exits 198 because no Unity Editor license is active. Spatial V1.1 Unity
+parity and all downstream I5 validation/final/formal work therefore remain
+unopened, not passed. Unity Hub account sign-in and license activation are
 required before a native player can be built and a new platform-specific
 parity protocol can execute.

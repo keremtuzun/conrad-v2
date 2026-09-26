@@ -73,10 +73,15 @@ dynamic truth-boundary enforcement, structural lineage, adversarial local
 identifiability, visibility geometry, EKF fix reacquisition, and navigation
 endpoint margins.
 
-Unity preflight stopped with `Unity player unavailable` before creating the
-output directory or opening either reserved Unity world. No `ConradSim.exe`
-exists in the repository or other indexed Conrad checkout, and no Unity Editor
-is installed on this host. Therefore the 16-case Unity parity matrix is
-**NOT RUN**, Spatial V1.1 remains unfrozen, and v10 validation/final remain
-sealed. The controlled and contract passes do not substitute for this missing
-software execution gate.
+Unity parity preflight stopped with `Unity player unavailable` before creating
+the output directory or opening either reserved Unity world. No
+`ConradSim.exe` exists in the repository, Git history, GitHub releases,
+Actions artifacts, or another indexed Conrad checkout.
+
+Unity Hub 3.21.3 and the exact Apple-silicon editor 6000.5.9f1 changeset
+`b57deb96f08d` were then installed. The batch project-compile preflight stopped
+before project import with exit code 198 and `No valid Unity Editor license
+found`. The Mac was locked when Unity Hub was opened for the required account
+sign-in. Therefore the 16-case Unity parity matrix is **NOT RUN**, Spatial V1.1
+remains unfrozen, and v10 validation/final remain sealed. The controlled and
+contract passes do not substitute for this missing software execution gate.
