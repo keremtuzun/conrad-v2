@@ -1,0 +1,37 @@
+batch_size: 2
+corpus: configs/data/osfm/public_real_subpipe_p47b.yaml
+evidence: configs/data/osfm/subpipe_p47b_evidence.json
+formal_run_allowed: true
+grad_clip_norm: 1.0
+image_size: 28
+init: artifacts/external/dinov2/dinov2_vits14.pth
+job: osfm_u1_sonar_research
+lr: 0.0001
+min_visible_fraction: 0.1
+min_vram_gb: 16
+noise_std: 0.025
+notes:
+- P4.8A is a governed real-data rehearsal, not the full 100k-step formal U1 run.
+- PRETRAIN_REAL trains; VALIDATION selects/checks; FINAL_TEST and OOD_TEST are not
+  loaded.
+- SubPipe sonar is rendered side-scan imagery, not raw acoustic backscatter.
+- Full P4.8 remains locked until this rehearsal evidence is committed and reviewed.
+optimizer_steps: 2
+p47_go_artifact: artifacts/gates/P4.7B_L4/osfm_readiness.json
+partition_access:
+  forbidden_training_access:
+  - FINAL_TEST
+  - OOD_TEST
+  train:
+  - PRETRAIN_REAL
+  validation:
+  - VALIDATION
+rehearsal_only: true
+require_clean_git: true
+required_compute: 1x CUDA GPU >= 16 GB VRAM (EXT-COMPUTE-P4-RESEARCH-01)
+scale: full
+seed: 2026092608
+stage_id: P4.8A-U1-SONAR-REAL-REHEARSAL
+stream: sss_lf
+token_mask_fraction: <redacted>
+weight_decay: 0.05

@@ -1,0 +1,18 @@
+{
+  "comparability": "COMPARABLE",
+  "files": {
+    "checkpoints/osfm_u1_sonar_research_rehearsal.pt": "ddef49aa5b074d455290585b2ab23ec6eabf047b7686f34f1c2cc0fd90834501",
+    "checkpoints/osfm_u1_sonar_research_rehearsal.pt.meta.json": "52e34fbd1966da79a128feabe84a4be4b391f98a53493af7204f83871b193b92",
+    "config.resolved.yaml": "9e680540acbd4411a1960f8a4ef115c62f1539c85842d0b3b24b24e3abb2cf97",
+    "environment.json": "e42632b1287102b09c0844a3f373bb6270ad0c21c9424eade34495ec08ddbd37",
+    "events.jsonl": "5195cab723b2ffbfa7fdbfa778b60547a9e0504c83776bf142b10927d1cc28e6",
+    "git.json": "2512895053424065452c63c7eecc788449830a26b2cfbc8fdb6e0c2823c5bab8",
+    "manifests.json": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "metrics.jsonl": "28408e94d4958fcc82822293e45dbb78342ff7387ed2f5dc88a533384ee726e9",
+    "reports/checkpoint_index.json": "c31fa0b734e55f5478e842533d9732444b90eef92f39545397291529ee6ddd56",
+    "reports/p48a_u1_sonar_rehearsal_report.json": "9ebaf1463d0b74ce3f8e4f1b1d0891298b07cec7222b75b31064170ae1aa6a30",
+    "reports/training_result.json": "2aad8bc5e754f1d947d5dedfaf08786bf965aa939a1c0f26b2593e0dc05c4756"
+  },
+  "finished_time_ns": 1790427460148444234,
+  "status": "COMPLETED"
+}
