@@ -1,0 +1,30 @@
+job: osfm_u1_sonar_smoke
+experiment_id: OSFM-U1-SONAR-SMOKE-001
+scale: smoke
+stage_id: U1-SONAR
+seed: 20260411
+batch_size: 2
+image_size: 28
+patch_size: 14
+width: 384
+layers: 12
+heads: 6
+lr: 0.0002
+optimizer_steps: 1
+token_mask_fraction: 0.60
+min_visible_fraction: 0.10
+objective_weights:
+  masked_latent_prediction: 1.0
+  global_consistency: 0.5
+  degradation: 0.25
+  metric: 0.25
+pretrained_weights:
+  required_for_smoke: false
+  used: false
+  source: none
+  note: deterministic/random initialization smoke only; no RGB checkpoint tensors copied for P4.1.
+data:
+  source: synthetic_rendered_sonar_engineering_smoke
+  subpipe_used: false
+  rendered_side_scan_limitation: SubPipe provides rendered side-scan sonar imagery rather than raw acoustic backscatter.
+  not_domain_pretraining_evidence: true
