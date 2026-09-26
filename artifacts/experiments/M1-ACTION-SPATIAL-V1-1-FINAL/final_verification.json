@@ -1,0 +1,80 @@
+{
+  "checkpoint_manifest_sha256": "181ab792565f4226de57b78ba51c8144349fd66600b53c40886c909aff5d260e",
+  "checkpoint_sha256": "ade1a1b2ecc818fd4a2fdcfd29d6e351499c73374b2068390f8732ed202ffd24",
+  "checks": {
+    "checkpoint_complete_unique_grid": true,
+    "checkpoint_declaration_exact": true,
+    "checkpoint_declaration_hash": true,
+    "checkpoint_manifest_rows_exact": true,
+    "checkpoint_rows_exact": true,
+    "competitiveness": true,
+    "complete_unique_grid": true,
+    "config_exact": true,
+    "decision_violations": true,
+    "each_scenario_correct_given_warrant": true,
+    "each_scenario_warrants": true,
+    "false_intact": true,
+    "identity_exact": true,
+    "nominal_over_escalations": true,
+    "partition_exact": true,
+    "primary_nominal_warrants": true,
+    "result_axes_exact": true,
+    "source_clean": true,
+    "source_commit": true,
+    "spatial_runtime": true,
+    "surrogate_boundary": true,
+    "traceability": true,
+    "uir": true
+  },
+  "config_sha256": "a98ec719f901b79574d59e9511eeac4ee5779038716ddcaa949271c2bfe14bbf",
+  "measured": {
+    "decision_violations": 0,
+    "false_intact": 0,
+    "nominal_over_escalations": 0,
+    "pooled": {
+      "egdc_structured": {
+        "safety_events": 72,
+        "task_success": 162,
+        "violations": 0
+      },
+      "naive_act_on_claims": {
+        "safety_events": 1520,
+        "task_success": 54,
+        "violations": 118654
+      },
+      "rule_fsm": {
+        "safety_events": 74,
+        "task_success": 162,
+        "violations": 0
+      }
+    },
+    "rows": 588,
+    "scenario_correct_given_warrant": {
+      "I5-BATTERY-RESERVE": 1.0,
+      "I5-COMMS-OUTAGE": 1.0,
+      "I5-CRITICAL-FINDING": 1.0,
+      "I5-NOMINAL": 1.0,
+      "I5-ROUTE-BLOCKED": 0.9642857142857143,
+      "I5-TIME-RESERVE": 1.0,
+      "I5-UNCERTAIN-BELIEF": 1.0
+    },
+    "scenario_warrants": {
+      "I5-BATTERY-RESERVE": 28,
+      "I5-COMMS-OUTAGE": 28,
+      "I5-CRITICAL-FINDING": 28,
+      "I5-NOMINAL": 25,
+      "I5-ROUTE-BLOCKED": 28,
+      "I5-TIME-RESERVE": 28,
+      "I5-UNCERTAIN-BELIEF": 28
+    },
+    "source": {
+      "git_commit": "d65ce7bcc22f313656ecebf0cb94d2fcc560ad0d",
+      "source_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "traceability": 1.0,
+    "uir": 0.0,
+    "unique_rows": 588
+  },
+  "result_sha256": "0dbc96d699a698ed95011330692533312094d941b5e3fb9c9bf25a965e10e3d1",
+  "status": "PASS"
+}

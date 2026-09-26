@@ -1,6 +1,6 @@
 # I5 Spatial V1.1 v10 one-shot surrogate final protocol
 
-Status: **DECLARED / SEALED BEFORE EXECUTION**
+Status: **SURROGATE FINAL PASS**
 
 Validation passed 10/10 nominal warrants and every frozen selection predicate.
 The exact validation result SHA-256 is
@@ -59,3 +59,60 @@ authorize a separately declared formal Unity final on fresh reserved worlds
 and the already-frozen native player hash. It is not itself formal Unity,
 physical, ROS, HIL, or deployment evidence. A FAIL remains a FAIL and does not
 authorize formal Unity.
+
+## Recorded result
+
+The one-shot run completed all 588 declared missions without opening the
+barred suffix. The result SHA-256 is
+`0dbc96d699a698ed95011330692533312094d941b5e3fb9c9bf25a965e10e3d1`.
+The durable checkpoint SHA-256 is
+`ade1a1b2ecc818fd4a2fdcfd29d6e351499c73374b2068390f8732ed202ffd24`.
+The committed compact checkpoint manifest SHA-256 is
+`181ab792565f4226de57b78ba51c8144349fd66600b53c40886c909aff5d260e`;
+it preserves the declaration, source identity, row count, canonical row hash,
+and full-checkpoint hash without committing the 34 MB duplicate checkpoint.
+
+The checkpoint declaration pins source commit
+`d65ce7bcc22f313656ecebf0cb94d2fcc560ad0d` and an empty tracked diff over
+`conrad/`, `configs/`, and `scripts/` (SHA-256
+`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`).
+
+The independent raw-row verifier passed every fail-closed check. Its artifact
+SHA-256 is
+`39d5252fd8313da6ece3fd057e55077e3b6c3b94ec8e29645e1779822faec203`,
+and the verifier source SHA-256 is
+`0cd776e7f552a220b09344d65dbdbd23f6f95aec91bbe4bb2d74e1ec27f67fd2`.
+
+Measured primary results:
+
+- exact grid: 588/588 unique rows;
+- nominal warrants: 25/28 (threshold 19/28);
+- every non-nominal scenario: 28/28 warrants;
+- correct given warrant: 1.0 except route-blocked at 27/28 =
+  0.9642857142857143;
+- false intact, primary decision violations, and nominal over-escalations: 0;
+- traceability: 1.0; UIR: 0.0; and
+- pooled task-success / safety-entry / violation counts: EGDC 162/72/0,
+  rule FSM 162/74/0, naive 54/1520/118654.
+
+### Negative and outlier audit
+
+The PASS does not erase negative rows. Nominal seeds 8700200, 8700207, and
+8700223 never reached an intact warrant and ended with unknown or mixed
+knowledge; they were not counted as correct. Route-blocked seed 8700207 reached
+its warrant at 20 s, chose `WAIT`, issued the expected replan at 26 s (6 s,
+outside the 4 s budget), passed the obstacle with only 0.2511672213 m minimum
+clearance, accumulated seven safety-state entries, and failed task success.
+The rule FSM had the same miss on that world. Route-blocked seed 8700218 issued
+the correct replan but still failed task success with six safety-state entries.
+These outcomes remain in the immutable result and are why route correctness is
+27/28 rather than a perfect result.
+
+All uncertain-belief missions correctly requested more evidence, but the
+mission outcome definition does not mark that scenario as task success because
+the critical condition remains unknown. This is preserved as a limitation, not
+relabelled as success.
+
+This PASS authorizes only a separately preregistered formal Unity V1.1 run on
+fresh worlds. It does not change the historical I5 formal result (9/10 FAIL),
+and it makes no claim about physical, ROS, HIL, or deployment readiness.

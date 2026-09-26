@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint_sha256": "ade1a1b2ecc818fd4a2fdcfd29d6e351499c73374b2068390f8732ed202ffd24",
+  "declaration_sha256": "d9346f19709130a5af39e4dcdf1674f090dda3d897c3a76d786548cad5c55f6b",
+  "completed_rows": 588,
+  "completed_rows_canonical_sha256": "5e3fe9ef3847e00473a70fd30ffe2e8b1426dfc089f9d3d09216f963e0066c74",
+  "source": {
+    "git_commit": "d65ce7bcc22f313656ecebf0cb94d2fcc560ad0d",
+    "source_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}
