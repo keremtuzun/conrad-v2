@@ -1,6 +1,6 @@
 # I5 Spatial V1 post-R5 software remediation
 
-Status: **VERSIONED CANDIDATE; SPENT-DEVELOPMENT DIAGNOSTIC ONLY**  
+Status: **V1.1 DEVELOPMENT PASS; ARCHITECTURE REVALIDATION PENDING**
 Date: 2026-09-26  
 Historical R5 verdict: **FAIL (immutable)**
 
@@ -89,3 +89,45 @@ final world is read it requires:
 4. a commit and remote push of the candidate and declarations.
 
 No new validation or final partition has been opened.
+
+## Fresh V1.1 R6 development result
+
+The V1.1 candidate, fresh v10 partition, and R6 advancement rule were committed
+and pushed before any v10 seed was opened. R6 then executed the complete
+preregistered development matrix: ten seeds, seven scenarios, and three arms
+(210 unique missions, with no missing or duplicate rows). Only development
+seeds 8700000..8700009 were used. Validation seeds 8700100..8700109 and final
+seeds 8700200..8700239 remain unopened.
+
+Artifact:
+`artifacts/experiments/M1-ACTION-SPATIAL-V1-1-DEV-R6/m1_action_spatial_v1_1_dev_r6_development.json`
+SHA-256:
+`7c3b7c2549aa3a1b426b71431e223a5e37d74e2fecff4f260b78b07fb7efea3e`
+
+The measured result passes every preregistered R6 advancement predicate:
+
+- primary nominal warrants: 10/10 (minimum 6/10);
+- non-nominal correct-given-warrant: 60/60 = 1.0;
+- false intact on a covered, resolvable defect: 0;
+- primary decision violations: 0;
+- nominal over-escalations: 0;
+- traceability: 5110/5110 = 1.0;
+- unsupported inference rate: 0/1913 = 0.0; and
+- pooled primary outcomes: 59 task successes, 18 safety entries, and 0
+  violations, versus 59/24/0 for rule FSM and 20/490/41875 for the naive arm.
+
+The preregistered safety-outlier inspection found ten entries in the
+battery-reserve scenario and eight in two route-blocked worlds. The battery
+entry is the expected transition into safe hold and is identical across the
+primary and rule arms. In route-blocked seeds 8700000 and 8700009, the primary
+and rule arms have identical actions, trajectories, task results, and safety
+counts (2 and 6 respectively). Seed 8700007 misses the 0.30 m obstacle-clearance
+criterion in both arms and remains a negative task outcome. These results are
+retained in the pooled 59/70 task-success count; no outlier was removed or
+relabelled.
+
+R6 is synthetic Python L1 development evidence only. It does not qualify
+Spatial V1.1, reopen the immutable Spatial V1 freeze, or authorize validation.
+Versioned controlled-support, identifiability, truth-boundary, replay-mismatch,
+and Unity semantic-parity checks must pass before a validation declaration can
+be frozen and any v10 validation seed opened.
