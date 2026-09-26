@@ -221,6 +221,7 @@ def test_v3_frozen_config_still_loads():
 
 
 V4_FROZEN = ROOT / "configs" / "active" / "mcbr_frozen_v4.yaml"
+V5_CANDIDATE = ROOT / "configs" / "active" / "mcbr_v5_candidate.yaml"
 
 
 @pytest.mark.skipif(not V4_FROZEN.exists(), reason="no V4 planner has been frozen yet")
@@ -233,6 +234,19 @@ def test_v4_frozen_config_loads_and_fails_closed_when_edited(tmp_path):
     copy.write_text(edited, encoding="utf-8")
     with pytest.raises(FrozenConfigError):
         load_frozen(copy)
+
+
+def test_v5_candidate_config_loads_but_is_not_production():
+    raw = load_frozen(V5_CANDIDATE)
+    assert raw["candidate_status"] == "DESIGN_ONLY"
+    assert raw["formal_gate_effect"] == "NONE"
+    assert raw["planner"]["selected"] == "V5-bayes_eig_ratio_efficiency_candidate"
+    assert raw["view_execution"]["route_aware_navigation_cost"] is True
+    assert raw["view_execution"]["budget_from_mission_duration"] is True
+    assert raw["view_execution"]["max_view_attempts"] < load_frozen(V4_FROZEN)["view_execution"]["max_view_attempts"]
+    from conrad.active.production import FROZEN_PATH
+
+    assert FROZEN_PATH.name == "mcbr_frozen_v4.yaml"
 
 
 # ------------------------------------------------------------------ empty plans are reported

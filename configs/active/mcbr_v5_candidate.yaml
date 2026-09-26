@@ -1,0 +1,57 @@
+# Candidate-only I4 repair. DO NOT POINT PRODUCTION HERE without development + validation evidence.
+#
+# Purpose: target the formal I4 failure in artifacts/gates/I4/evidence_formal.json:
+# "beats simple views on information/time/energy" failed against A-B0_random because info_per_kj CI95
+# lower bound was slightly below zero. This candidate is for development/validation experiments only.
+#
+# The planner and view_execution sections carry the same digest contract as frozen production files so
+# experiments can prove which candidate was run.
+config_digest: 61f3b3f532d3e40765bb8fca9a0ed92472a491d1bb6432969e75e2593f38beda
+candidate_id: MCBR-V5-EFFICIENCY-CANDIDATE
+candidate_status: DESIGN_ONLY
+created_from: configs/active/mcbr_frozen_v4.yaml
+created_after_triage: artifacts/gates/I4/triage.json
+formal_gate_effect: NONE
+rules:
+  - Do not use FINAL_TEST or OOD_TEST for tuning this candidate.
+  - Do not edit mcbr_frozen_v4.yaml or production.py to point at this candidate before validation.
+  - Do not promote oracle/headroom evidence; use it only to choose development hypotheses.
+  - Formal I4 remains FAIL until a fresh formal Unity run records PASS.
+planner:
+  ranker:
+    cost_mode: ratio
+    cost_weight: 1.25
+    kind: bayes_eig
+  selected: V5-bayes_eig_ratio_efficiency_candidate
+view_execution:
+  belief_map_navigation: true
+  blocked_cost_multiplier: 3.0
+  budget_from_mission_duration: true
+  declare_budgets: true
+  drop_abandoned_prior_view: true
+  enabled: true
+  max_view_attempts: 6
+  protect_active_view: true
+  refund_abandoned_attempt: true
+  route_aware_navigation_cost: true
+view_execution_digest: 148169521f6347f03d19aa299f62341f7bb5f28dafdd22406b987d46b4b79de7
+expected_effect:
+  primary_target: improve information per time and per energy versus random views
+  mechanism:
+    - increase cost sensitivity in the ranking rule
+    - charge route-aware navigation cost for blocked/occupied corridors
+    - use remaining mission duration as the planning budget
+    - reduce accepted view attempts from 8 to 6
+validation_plan:
+  development:
+    partition_file: configs/eval/partitions_i4_mcbr_v4.yaml
+    partition: development
+    purpose: DESIGN
+    required: true
+  validation:
+    partition_file: configs/eval/partitions_i4_mcbr_v4.yaml
+    partition: validation
+    purpose: SELECTION
+    required: true
+  final_test:
+    allowed_before_validation_pass: false
