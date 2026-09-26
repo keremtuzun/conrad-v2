@@ -25,10 +25,12 @@ SPLIT = re.compile(r'"partition[^"]*":\s*"([^"]+)"|partition=([\w/.-]+)|seeds?\s
 
 
 def _evidence(gate: str, kind: str) -> dict | None:
-    p = ROOT / "artifacts" / "gates" / gate / f"evidence_{kind}.json"
-    if not p.exists():
+    candidates = sorted((ROOT / "artifacts" / "gates" / gate).glob(f"evidence_{kind}*.json"))
+    if not candidates:
         return None
-    return json.loads(p.read_text(encoding="utf-8"))
+    # Keep the same deterministic selection rule as evaluate_gates(): the last
+    # separately versioned evidence file of this class is the current record.
+    return json.loads(candidates[-1].read_text(encoding="utf-8"))
 
 
 def _split_of(ev: dict | None) -> str:
@@ -58,15 +60,15 @@ def rows() -> list[dict[str, str]]:
                 failed += c["status"] == CriterionStatus.FAIL.value
         blocker = ""
         if r.official_status is not GateStatus.PASS:
-            if r.blocking_upstream:
-                blocker = "blocked by " + ", ".join(r.blocking_upstream)
-            elif g.external_blocker:
-                blocker = g.external_blocker.value
-            elif formal:
+            if r.formal_status is GateStatus.FAIL and formal:
                 bad = [
                     c["criterion"] for c in formal["criteria"] if c["status"] == CriterionStatus.FAIL.value
                 ]
                 blocker = "; ".join(bad) or "no formal evidence"
+            elif r.blocking_upstream:
+                blocker = "blocked by " + ", ".join(r.blocking_upstream)
+            elif g.external_blocker:
+                blocker = g.external_blocker.value
             else:
                 blocker = "no formal evidence"
         out.append(

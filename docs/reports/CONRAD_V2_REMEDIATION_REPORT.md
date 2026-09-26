@@ -1,5 +1,13 @@
 # Conrad V2: strict remediation, falsification and completion pass
 
+> **2026-09-26 completion addendum:** This document preserves the 2026-09-20
+> remediation record below. The current artifact-derived closure report is
+> `docs/reports/SOFTWARE_COMPLETION_2026_09_26.md`, and the current generated
+> gate table is `docs/reports/CONRAD_V2_GATE_TABLE.md`. Later negative results
+> remain negative: I4 is FAIL, Spatial V1.1 I5 formal is 7/10 FAIL, I6 formal
+> evidence is 3/3 PASS but blocked upstream, and I7 is surrogate 3/4 FAIL with
+> formal NOT_RUN.
+
 Date: 2026-09-20. Repository: `C:\Users\Kerem\Kerem\conrad-v2`, branch `main`, no remote.
 Start of this pass: `28871b4`. Detail: `docs/audits/CONRAD_V2_REMEDIATION_AUDIT.md` and the per-topic audits
 in `docs/audits/`.
@@ -262,7 +270,12 @@ EXPERIMENTAL with a frozen production configuration and a failed integration gat
 
 ## P. Verdict
 
-PENDING_VERDICT
+The remediation program completed the software implementation and validation
+work to its declared stopping rules. Spatial V1.1 A-J is PASS for synthetic
+software, while I4, I5, and I7 remain honest negative research results. No
+physical, HIL, or deployment claim is made. See the 2026-09-26 completion
+report for the final decision table, clean-clone proof, exact newer evidence,
+and physical-only remainder.
 
 ## Q. Corrections to the previous report
 

@@ -1,5 +1,5 @@
 {
-  "source": "docs\\specification\\requirements_source.psv",
+  "source": "docs/specification/requirements_source.psv",
   "requirements": [
     {
       "requirement_id": "REQ-REPO-001",
@@ -1810,7 +1810,7 @@
         "SYS-I5"
       ],
       "gate_id": "I5",
-      "gate_official_status": "BLOCKED_UPSTREAM",
+      "gate_official_status": "FAIL",
       "configuration_keys": [],
       "assumptions": [],
       "external_dependencies": [],
