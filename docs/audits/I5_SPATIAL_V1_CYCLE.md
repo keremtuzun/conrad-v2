@@ -252,3 +252,30 @@ warrant, zero violations and nominal over-escalations, traceability 1.0, UIR
 0, at least three of five legitimate nominal intact warrants, and aggregate
 task success, safety entries, and violations no worse than both baselines.
 Validation and final remain sealed during R5.
+
+## Development iteration 5: localization correction retained, advancement failed
+
+Seeds 8600005..8600009 completed all 105 missions in 813.3 wall seconds. The
+candidate retained the central safety and grounding properties: every action
+was correct given a reached warrant, every covered resolvable defect remained
+non-intact, decision violations and nominal over-escalations were zero,
+traceability was 1.0, and UIR was 0. The catastrophic localization lockout from
+R4's affected diagnostic worlds did not recur as an unbounded safety-state
+churn.
+
+R5 nevertheless failed two prospectively declared advancement criteria. Only
+two of five nominal worlds reached a legitimate intact warrant, below the
+required three of five. EGDC and the rule baseline each achieved 26 task
+successes with zero decision violations, but EGDC recorded 47 safety-state
+entries versus the rule baseline's 44. The three-entry aggregate difference
+and the reduced nominal warrant incidence require diagnosis; they cannot be
+treated as near-pass evidence or repaired by changing the committed criteria.
+
+The immutable R5 result is
+`artifacts/experiments/M1-ACTION-SPATIAL-V1-DEV-R5/m1_action_spatial_v1_dev_r5_development.json`
+with SHA-256
+`4b799f7b1d77e4852c2d8064fe99784a1c76bc362377a563c8e6008ac43147a4`.
+R5 is development evidence only. All v9 development worlds are now spent; v9
+validation and final remain unopened. Any mechanism change must be diagnosed
+from already-spent evidence and evaluated only after declaring a fresh seed
+partition.
