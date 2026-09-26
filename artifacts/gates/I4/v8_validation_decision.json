@@ -1,0 +1,95 @@
+{
+  "candidate": {
+    "mean_defect_read": 0.625,
+    "mean_energy_j": 18248.717559183162,
+    "mean_hidden_state_error_improvement": 0.4993394087860782,
+    "mean_info_per_kj": 0.02714999555618844,
+    "mean_info_per_time": 0.004993394087860782,
+    "mean_planning_latency_ms": 1279.078751298524,
+    "vs_A_B0_random_defect_read": {
+      "baseline_mean": 0.325,
+      "benefit_mean": 0.3,
+      "candidate_mean": 0.625,
+      "ci95": [
+        0.15,
+        0.45
+      ],
+      "fraction_improved": 0.325,
+      "n_worlds": 40,
+      "repeatable_benefit": true
+    },
+    "vs_A_B0_random_info_per_kj": {
+      "baseline_mean": 0.013288384507771155,
+      "benefit_mean": 0.013861611048417283,
+      "candidate_mean": 0.02714999555618844,
+      "ci95": [
+        0.007020286422202859,
+        0.020854368307078194
+      ],
+      "fraction_improved": 0.5,
+      "n_worlds": 40,
+      "repeatable_benefit": true
+    },
+    "vs_V4_protocol_only_defect_read": {
+      "baseline_mean": 0.625,
+      "benefit_mean": 0.0,
+      "candidate_mean": 0.625,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "fraction_improved": 0.0,
+      "n_worlds": 40,
+      "repeatable_benefit": false
+    },
+    "vs_V4_protocol_only_info_per_kj": {
+      "baseline_mean": 0.02714999555618844,
+      "benefit_mean": 0.0,
+      "candidate_mean": 0.02714999555618844,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "fraction_improved": 0.0,
+      "n_worlds": 40,
+      "repeatable_benefit": false
+    }
+  },
+  "cleared_for_formal_freeze": false,
+  "cloud_usage": {
+    "cap_try": 1000.0,
+    "cost_try": 0.0,
+    "cumulative_try_since_budget_rule": 0.0,
+    "provider": null,
+    "used": false
+  },
+  "decision": "REJECTED_NO_FORMAL_FREEZE",
+  "declared_entry_rule": "Selection only. Unit = one world, paired across arms. V8_bayes_ratio_floor_001 may be frozen as the next formal I4 repair candidate only if its paired benefit over A-B0_random on info_per_kj has CI95 lower bound above 0, its mean info_per_kj exceeds V4_protocol_only, and its mean defect_read is not below V4_protocol_only. Otherwise reject V8 and keep I4 FAIL without spending final_test or OOD.",
+  "experiment_id": "ACTIVE-MCBR-E011-VAL",
+  "gate_id": "I4-V8-VALIDATION-DECISION",
+  "n_worlds": 40,
+  "next_action": "Reject V8. Do not freeze it or spend formal final_test/OOD. Further I4 work needs a new predeclared repair hypothesis or a formal Unity rerun plan for an already validated mechanism.",
+  "partition": "validation",
+  "primary_metric": "info_per_kj",
+  "purpose": "selection",
+  "rationale": [
+    "V8_bayes_ratio_floor_001 repeats the random-baseline info_per_kj benefit on validation.",
+    "It exactly matches V4_protocol_only on validation for mean info_per_kj and mean defect_read.",
+    "Because it does not exceed V4_protocol_only on the declared validation rule, it is not a new formal repair candidate.",
+    "No final_test or OOD evidence was read or spent for V8.",
+    "I4 remains FAIL."
+  ],
+  "source_artifact": "artifacts/experiments/ACTIVE-MCBR-E011-VAL/i4_v8_ranker_family_validation.json",
+  "source_primary_metric_field": "hidden_state_error_improvement",
+  "source_primary_metric_note": "Raw experiment module reports the mission primary field; validation decision uses the config decision rule metric info_per_kj.",
+  "source_sha256": "ac3fa6f448c650d78c53bac3d4f078b18dec683e8967a5b84a0de7f3cc4c3fd3",
+  "status": "VALIDATED-RUN",
+  "v4_protocol_only": {
+    "mean_defect_read": 0.625,
+    "mean_energy_j": 18248.717559183162,
+    "mean_hidden_state_error_improvement": 0.4993394087860782,
+    "mean_info_per_kj": 0.02714999555618844,
+    "mean_info_per_time": 0.004993394087860782,
+    "mean_planning_latency_ms": 1325.6465514585823
+  }
+}
