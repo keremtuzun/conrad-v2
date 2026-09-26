@@ -199,7 +199,6 @@ class UnityPlayerSession:
         for flag, path in paths.items():
             args += [flag, str(path)]
         args += ["-conradParentPid", str(os.getpid()), "-conradIdleExitS", "120"]
-        args += ["-screen-width", "320", "-screen-height", "240", "-screen-fullscreen", "0"]
         self.args = args
         self.process = subprocess.Popen(args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         return self
