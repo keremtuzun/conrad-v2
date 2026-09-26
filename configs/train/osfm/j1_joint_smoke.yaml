@@ -1,0 +1,69 @@
+job: osfm_j1_joint_smoke
+experiment_id: OSFM-J1-JOINT-SMOKE-001
+scale: smoke
+stage_id: J1-JOINT
+seed: 20260416
+batch_size: 4
+d_f: 384
+rgb:
+  patch_size: 14
+  width: 384
+  layers: 12
+  heads: 6
+  dense_taps: [3, 6, 9, 12]
+sonar:
+  patch_size: 14
+  width: 384
+  layers: 12
+  heads: 6
+  dense_taps: [3, 6, 9, 12]
+range:
+  patch_size: 8
+  internal_width: 256
+  layers: 6
+  heads: 4
+  projection: "256->384"
+geometry:
+  internal_width: 256
+  layers: 6
+  heads: 4
+  projection: "256->384"
+fusion:
+  scene_latents: 64
+  cross_attention_blocks: 3
+  latent_self_attention_blocks: 6
+  heads: 6
+  mlp_ratio: 4
+temporal:
+  memory_tokens: 16
+  transformer_blocks: 4
+  heads: 6
+  mlp_ratio: 4
+  sequence_windows: 10
+  bounded_history_target_s: 5.0
+  gap_reset_s: 1.0
+sequence_windows: 10
+window_stride_ms: 500
+lr: 0.0001
+optimizer_steps: 1
+rgb_image_size: 28
+range_image_size: 32
+points_per_sample: 64
+objective_weights:
+  masked_latent_prediction: 1.0
+  global_consistency: 0.5
+  cross_modal_consistency: 0.5
+  temporal_objective: 0.5
+  missing_modality: 0.5
+  degradation: 0.25
+  geometry_objective: 0.25
+  metric_reconstruction: 0.25
+data:
+  source: synthetic_multimodal_temporal_joint_engineering_smoke
+  public_real_dataset_used: false
+  pair_graph_required: true
+  natural_missingness_required: true
+  artificial_dropout_required: true
+  padding_distinct_from_missing: true
+  synthetic_truth_training_control_only: true
+  not_research_scale_pretraining_evidence: true

@@ -185,6 +185,12 @@ def _osfm_t1_temporal_smoke_job(job: dict[str, Any], run: RunDirectory, seed: in
     return run_t1_temporal_smoke(run, job, seed)
 
 
+def _osfm_j1_joint_smoke_job(job: dict[str, Any], run: RunDirectory, seed: int) -> dict[str, Any]:
+    from conrad.foundation.pretraining.j1_joint import run_j1_joint_smoke
+
+    return run_j1_joint_smoke(run, job, seed)
+
+
 JOBS.update(
     {
         "osfm_contract_tiny": _osfm_contract_tiny_job,
@@ -195,6 +201,7 @@ JOBS.update(
         "osfm_u1_geometry_smoke": _osfm_u1_geometry_smoke_job,
         "osfm_m1_fusion_smoke": _osfm_m1_fusion_smoke_job,
         "osfm_t1_temporal_smoke": _osfm_t1_temporal_smoke_job,
+        "osfm_j1_joint_smoke": _osfm_j1_joint_smoke_job,
     }
 )
 
