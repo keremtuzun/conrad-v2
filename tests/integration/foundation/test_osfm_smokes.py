@@ -50,3 +50,12 @@ def test_osfm_m1_fusion_smoke_cli_registered(tmp_path: Path) -> None:
     assert result["architecture"]["d_f"] == 384
     assert result["architecture"]["scene_latents"] == [64, 384]
     assert result["fixture"]["modality_presence"][2] == [0, 1, 0, 0]
+
+
+def test_osfm_t1_temporal_smoke_cli_registered(tmp_path: Path) -> None:
+    result = run_training("configs/train/osfm/t1_temporal_smoke.yaml", runs_root=tmp_path)
+    assert result["experiment_id"] == "OSFM-T1-TEMPORAL-SMOKE-001"
+    assert result["component"] == "foundation.osfm.t1_temporal"
+    assert result["architecture"]["memory_tokens"] == [16, 384]
+    assert result["fixture"]["history_lengths"][0] == list(range(1, 11))
+    assert result["fixture"]["gap_reset_mask"][1][3] == 1

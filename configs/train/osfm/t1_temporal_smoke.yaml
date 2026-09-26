@@ -1,0 +1,35 @@
+job: osfm_t1_temporal_smoke
+experiment_id: OSFM-T1-TEMPORAL-SMOKE-001
+scale: smoke
+stage_id: T1-TEMPORAL
+seed: 20260415
+d_f: 384
+memory_tokens: 16
+transformer_blocks: 4
+heads: 6
+mlp_ratio: 4
+sequence_windows: 10
+window_stride_ms: 500
+bounded_history_target_s: 5.0
+gap_reset_s: 1.0
+lr: 0.0002
+optimizer_steps: 1
+encoder_depth: 1
+points_per_sample: 64
+num_groups: 4
+group_size: 8
+objective_weights:
+  masked_latent_prediction: 0.5
+  global_consistency: 0.25
+  temp: 0.5
+  degradation: 0.25
+  cross_modal: NOT_ACTIVE_FOR_T1_SMOKE
+  missing_modality: NOT_ACTIVE_FOR_T1_SMOKE
+  geometry_consistency: NOT_ACTIVE_FOR_T1_SMOKE
+  metric_reconstruction: NOT_ACTIVE_FOR_T1_SMOKE
+data:
+  source: synthetic_scene_fusion_window_sequences_engineering_smoke
+  scene_fusion_in_path: true
+  parent_u1_checkpoints_loaded: false
+  public_real_dataset_used: false
+  not_domain_pretraining_evidence: true
