@@ -50,3 +50,14 @@ parity and all downstream I5 validation/final/formal work therefore remain
 unopened, not passed. Unity Hub account sign-in and license activation are
 required before a native player can be built and a new platform-specific
 parity protocol can execute.
+
+## Post-record Unity completion
+
+The blocker above was subsequently cleared by user license activation. The
+exact editor compiled the project, a native macOS player was built, and a
+separately declared parity supplement passed 16/16 on fresh Unity seeds. The
+result is recorded at commit
+`3c9adec495eacb2b50b4bbbab9b37038bad5dda7` and frozen with its exact platform
+and player-hash boundary in `../architecture/SPATIAL_V1_1_FREEZE.md`. This
+later result does not retroactively add Unity execution to the broad regression
+snapshot described above.

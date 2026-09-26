@@ -1,6 +1,6 @@
 # I5 Spatial V1 post-R5 software remediation
 
-Status: **V1.1 DEVELOPMENT PASS; ARCHITECTURE REVALIDATION PENDING**
+Status: **V1.1 FROZEN; V10 VALIDATION NOT YET OPENED**
 Date: 2026-09-26  
 Historical R5 verdict: **FAIL (immutable)**
 
@@ -131,3 +131,18 @@ Spatial V1.1, reopen the immutable Spatial V1 freeze, or authorize validation.
 Versioned controlled-support, identifiability, truth-boundary, replay-mismatch,
 and Unity semantic-parity checks must pass before a validation declaration can
 be frozen and any v10 validation seed opened.
+
+## Architecture revalidation completion
+
+The controlled V1.1 matrix passed 28/28, the focused contract/boundary suite
+passed 102/102, and the separately preregistered native-macOS Unity supplement
+passed 16/16 on fresh Unity seeds 2003 and 2004. The latter is bounded to Unity
+6000.5.9f1 and player executable SHA-256
+`7e42f64199b043204d62737d06aabc6b6ceb1f3c1c699f158a612b938ea87ac6`.
+The Windows-pinned protocol remains NOT RUN and was not relabelled.
+
+Spatial V1.1 is therefore frozen in
+`../architecture/SPATIAL_V1_1_FREEZE.md`. Validation seeds 8700100..8700109
+and final seeds 8700200..8700239 remain unopened. The next permitted step is a
+separately committed prospective v10 validation declaration; this architecture
+freeze is not an I5 validation or final pass.

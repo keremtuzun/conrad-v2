@@ -1,7 +1,10 @@
 # Spatial Structural Architecture V1.1 candidate
 
-Status: **PREREGISTERED CANDIDATE; NOT FROZEN**  
+Status: **HISTORICAL PREREGISTRATION; PROMOTED TO SEPARATE V1.1 FREEZE**
 Declared: 2026-09-26, before opening the v10 partition
+
+Promotion record: `SPATIAL_V1_1_FREEZE.md`. This candidate declaration remains
+evidence of the rule fixed before development and revalidation.
 
 Spatial Structural Architecture V1 remains frozen at source commit
 `8c79b7127dc1424fc093e9c0814e41ca64e66b00` with visibility certificate
