@@ -76,6 +76,13 @@ arm_runtime:
   A-B0_random: {planner: A-B0_random}
 
 runtime: {duration_s: 100.0, control_period_s: 0.1, max_plans_per_need: 4, model2e_enabled: false}
+unity_runtime:
+  graphics: false
+  reason: >-
+    Run-4 uses sonar/geometric mission scoring and no camera-output criterion. Windows SSH batch sessions on the
+    RTX 3050 runner cannot reliably switch the built player's 320x240 graphics mode, so this formal run disables
+    Unity graphics for runner compatibility without changing the planner, world seeds, mission duration, control
+    period, metrics, comparators, or decision rule.
 sequential: true
 primary_metric: hidden_state_error_improvement
 report_metrics:

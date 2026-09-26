@@ -95,7 +95,9 @@ def config_digest() -> str:
 
 
 def fly(scenario: str, seed: int, arm: str, override: dict[str, Any], root: Path) -> Path:
+    cfg = config()
     settings = settings_for(MISSION_CONFIG)
+    settings.sim.setdefault("unity", {}).update(cfg.get("unity_runtime", {}))
     _, runtime_raw = resolve_unity(scenario, dict(settings.sim.get("mission", {})))
     rcfg = runtime_config({**runtime_raw, **override})
     run_id = f"{scenario}-s{seed}-{arm}"
