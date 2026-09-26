@@ -1,12 +1,12 @@
 """Launch the built Unity V2 headless player and connect to it (lock-step, loopback TCP).
 
 ``UnityPlayerSession`` writes the three inputs the player reads (RobotConfig export, shared Scenario,
-ExperimentConfig), starts ``ConradSim.exe -batchmode`` as a child process bound to free loopback ports,
+ExperimentConfig), starts the native player in batch mode as a child process bound to free loopback ports,
 waits until the control endpoint accepts, and hands out a connected ``UnityRobotHardware`` (control
 plane) and, when enabled, a ``UnityTruthClient`` (truth plane, training/evaluation only).
 
-The player is found at, in order: the explicit ``player_path``, ``$CONRAD_UNITY_PLAYER``, then
-``unity/ConradUnityV2/Builds/Win64/ConradSim.exe`` (built by ``BuildScript.BuildWindows64Player``).
+The player is found at, in order: the explicit ``player_path``, ``$CONRAD_UNITY_PLAYER``, then the
+native default (the macOS app executable on Darwin, otherwise the Windows executable).
 
 implementation_status: EXPERIMENTAL_CANDIDATE
 """
@@ -17,6 +17,7 @@ import json
 import os
 import socket
 import subprocess
+import sys
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -35,7 +36,19 @@ from conrad.sim.unity.robot_export import robot_config_to_unity
 from conrad.sim.unity.truth import UnityTruthClient
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_PLAYER = REPO_ROOT / "unity" / "ConradUnityV2" / "Builds" / "Win64" / "ConradSim.exe"
+WINDOWS_PLAYER = REPO_ROOT / "unity" / "ConradUnityV2" / "Builds" / "Win64" / "ConradSim.exe"
+MACOS_PLAYER = (
+    REPO_ROOT
+    / "unity"
+    / "ConradUnityV2"
+    / "Builds"
+    / "macOS-ARM64"
+    / "ConradSim.app"
+    / "Contents"
+    / "MacOS"
+    / "ConradSim"
+)
+DEFAULT_PLAYER = MACOS_PLAYER if sys.platform == "darwin" else WINDOWS_PLAYER
 EXPERIMENT_FORMAT = "conrad.unity.experiment.v1"
 
 EXIT_REFUSED_INPUTS = 3  # ConradHeadless.ExitRefusedInputs
@@ -174,7 +187,10 @@ class UnityPlayerSession:
     def start(self) -> UnityPlayerSession:
         player = find_player(self.player_path)
         if player is None:
-            raise UnityPlayerError("no Unity player binary; build it with BuildScript.BuildWindows64Player")
+            raise UnityPlayerError(
+                "no Unity player binary; build it with BuildScript.BuildWindows64Player "
+                "or BuildScript.BuildMacOSArm64Player"
+            )
         port = free_loopback_port()
         self.control_endpoint = f"tcp://127.0.0.1:{port}"
         self.truth_endpoint = f"tcp://127.0.0.1:{free_loopback_port()}" if self.enable_truth else None

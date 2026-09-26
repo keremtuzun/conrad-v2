@@ -33,6 +33,7 @@ from conrad.sim.unity import (
     robot_config_to_unity,
     write_unity_robot_config,
 )
+from conrad.sim.unity import player as unity_player
 from conrad.sim.unity.truth import (
     GroundTruthReply,
     GroundTruthRequest,
@@ -42,6 +43,18 @@ from conrad.sim.unity.truth import (
 )
 
 CONFIG = sim_robot_config()
+
+
+def test_find_player_preserves_explicit_and_environment_precedence(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    explicit = tmp_path / "explicit-player"
+    environment = tmp_path / "environment-player"
+    explicit.touch()
+    environment.touch()
+    monkeypatch.setenv("CONRAD_UNITY_PLAYER", str(environment))
+    assert unity_player.find_player(explicit) == explicit
+    assert unity_player.find_player() == environment
 
 
 def test_export_embeds_digest_and_sources(tmp_path: Path) -> None:

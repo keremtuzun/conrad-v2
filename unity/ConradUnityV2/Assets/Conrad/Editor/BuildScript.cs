@@ -1,7 +1,9 @@
-// Editor-only: builds the minimal V2.0 headless scene programmatically and the Windows64 standalone player.
+// Editor-only: builds the minimal V2.0 headless scene programmatically and a standalone player.
 // Batch use (repo root):
 //   Unity.exe -batchmode -nographics -quit -projectPath unity/ConradUnityV2 -logFile <log>
 //             -executeMethod Conrad.UnityV2.Editor.BuildScript.BuildWindows64Player
+//   Unity -batchmode -nographics -quit -projectPath unity/ConradUnityV2 -logFile <log>
+//         -executeMethod Conrad.UnityV2.Editor.BuildScript.BuildMacOSArm64Player
 // The scene: a Vehicle (Rigidbody + hull BoxCollider + VehicleDynamics6Dof + ExperimentRuntime + TcpBridgeServer
 // + ConradHeadless, a child camera and a sonar mount), a directional light, and a World root with a seafloor
 // box, a pipe capsule and an obstacle box (static colliders, Conrad WORLD geometry through SceneGeometryBuilder).
@@ -24,8 +26,10 @@ namespace Conrad.UnityV2.Editor
     public static class BuildScript
     {
         public const string ScenePath = "Assets/Scenes/ConradHeadless.unity";
-        public const string PlayerDirectory = "Builds/Win64";
-        public const string PlayerExe = "ConradSim.exe";
+        public const string WindowsPlayerDirectory = "Builds/Win64";
+        public const string WindowsPlayerExe = "ConradSim.exe";
+        public const string MacOSPlayerDirectory = "Builds/macOS-ARM64";
+        public const string MacOSPlayerApp = "ConradSim.app";
         public const int IgnoreRaycastLayer = 2; // the vehicle never occludes its own sonar
 
         private static Dictionary<string, object> Box(string id, double[] center, double[] size) => new Dictionary<string, object>
@@ -99,6 +103,32 @@ namespace Conrad.UnityV2.Editor
         [MenuItem("Conrad/Build Windows64 Player")]
         public static void BuildWindows64Player()
         {
+            BuildStandalonePlayer(
+                WindowsPlayerDirectory,
+                WindowsPlayerExe,
+                BuildTarget.StandaloneWindows64,
+                architecture: 0,
+                platformName: "Windows64");
+        }
+
+        [MenuItem("Conrad/Build macOS ARM64 Player")]
+        public static void BuildMacOSArm64Player()
+        {
+            BuildStandalonePlayer(
+                MacOSPlayerDirectory,
+                MacOSPlayerApp,
+                BuildTarget.StandaloneOSX,
+                architecture: 1,
+                platformName: "macOS ARM64");
+        }
+
+        private static void BuildStandalonePlayer(
+            string playerDirectory,
+            string playerName,
+            BuildTarget target,
+            int architecture,
+            string platformName)
+        {
             SetupHeadlessScene();
             PlayerSettings.productName = "ConradSim";
             PlayerSettings.companyName = "Conrad";
@@ -109,13 +139,14 @@ namespace Conrad.UnityV2.Editor
             PlayerSettings.resizableWindow = false;
             PlayerSettings.usePlayerLog = true;
             PlayerSettings.SetScriptingBackend(UnityEditor.Build.NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
+            PlayerSettings.SetArchitecture(UnityEditor.Build.NamedBuildTarget.Standalone, architecture);
 
-            string output = Path.Combine(PlayerDirectory, PlayerExe);
+            string output = Path.Combine(playerDirectory, playerName);
             var options = new BuildPlayerOptions
             {
                 scenes = new[] { ScenePath },
                 locationPathName = output,
-                target = BuildTarget.StandaloneWindows64,
+                target = target,
                 targetGroup = BuildTargetGroup.Standalone,
                 options = BuildOptions.StrictMode,
             };
@@ -126,11 +157,11 @@ namespace Conrad.UnityV2.Editor
                           + ",\"total_errors\":" + s.totalErrors + ",\"total_warnings\":" + s.totalWarnings
                           + ",\"build_started_utc\":\"" + s.buildStartedAt.ToUniversalTime().ToString("o")
                           + "\",\"build_seconds\":" + s.totalTime.TotalSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture) + "}";
-            Directory.CreateDirectory(PlayerDirectory);
-            File.WriteAllText(Path.Combine(PlayerDirectory, "conrad_build_info.json"), info);
+            Directory.CreateDirectory(playerDirectory);
+            File.WriteAllText(Path.Combine(playerDirectory, "conrad_build_info.json"), info);
             Debug.Log("[Conrad] build " + s.result + ": " + info);
             if (s.result != BuildResult.Succeeded)
-                throw new Exception("Windows64 player build failed: " + s.result + " (" + s.totalErrors + " errors)");
+                throw new Exception(platformName + " player build failed: " + s.result + " (" + s.totalErrors + " errors)");
         }
     }
 }
