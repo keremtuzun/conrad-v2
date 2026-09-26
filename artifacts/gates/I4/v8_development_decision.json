@@ -1,0 +1,267 @@
+{
+  "cleared_variants": [
+    "V8_bayes_ratio_floor_001"
+  ],
+  "cloud_usage": {
+    "cap_try": 1000.0,
+    "cost_try": 0.0,
+    "cumulative_try_since_budget_rule": 0.0,
+    "provider": null,
+    "used": false
+  },
+  "decision": "ACCEPTED_FOR_VALIDATION",
+  "declared_entry_rule": "Development only. Unit = one world, paired across arms. A V8 arm may proceed to validation only if its info_per_kj paired benefit has CI95 lower bound above 0 versus A-B0_random, its mean info_per_kj exceeds V4_protocol_only on development, and its mean defect_read is not below V4_protocol_only. Otherwise reject V8.",
+  "experiment_id": "ACTIVE-MCBR-E011-DEV",
+  "gate_id": "I4-V8-DEVELOPMENT-DECISION",
+  "n_worlds": 40,
+  "next_action": "Run a predeclared validation screen for V8_bayes_ratio_floor_001 only; do not spend final_test or OOD before validation passes.",
+  "partition": "development",
+  "primary_metric": "info_per_kj",
+  "purpose": "design",
+  "rationale": [
+    "V8_bayes_ratio_floor_001 clears the random-baseline info_per_kj CI rule on development.",
+    "V8_bayes_ratio_floor_001 has higher mean info_per_kj than V4_protocol_only and does not reduce mean defect_read.",
+    "The observed benefit over V4_protocol_only is small and its CI lower bound is 0.0, so this is not a freeze or formal pass.",
+    "Validation is now justified for the cleared candidate only; final_test and OOD remain closed.",
+    "I4 remains FAIL until validation clears and a fresh formal Unity final-test run records PASS."
+  ],
+  "source_artifact": "artifacts/experiments/ACTIVE-MCBR-E011-DEV/i4_v8_ranker_family_development.json",
+  "source_primary_metric_field": "hidden_state_error_improvement",
+  "source_primary_metric_note": "Raw experiment module reports the mission primary field; V8 decision uses the config decision rule metric info_per_kj.",
+  "source_sha256": "0b9b492ca044b6c3b6b89ecba0ac3c1bdceaa81ea48d35a7fc2aa786b6d9c656",
+  "status": "VALIDATED-RUN",
+  "v4_protocol_only": {
+    "mean_defect_read": 0.475,
+    "mean_energy_j": 18484.71779739919,
+    "mean_hidden_state_error_improvement": 0.3801312406730249,
+    "mean_info_per_kj": 0.020110935608564272,
+    "mean_info_per_time": 0.003801312406730248,
+    "mean_planning_latency_ms": 1387.5851428498815
+  },
+  "variants": {
+    "V8_bayes_ratio_floor_001": {
+      "mean_defect_read": 0.5,
+      "mean_energy_j": 18354.281753593456,
+      "mean_hidden_state_error_improvement": 0.40288125452722295,
+      "mean_info_per_kj": 0.021134201486277333,
+      "mean_info_per_time": 0.004028812545272229,
+      "mean_planning_latency_ms": 1410.361293227167,
+      "vs_A_B0_random_defect_read": {
+        "baseline_mean": 0.325,
+        "benefit_mean": 0.175,
+        "candidate_mean": 0.5,
+        "ci95": [
+          0.05,
+          0.325
+        ],
+        "fraction_improved": 0.2,
+        "n_worlds": 40,
+        "repeatable_benefit": true
+      },
+      "vs_A_B0_random_info_per_kj": {
+        "baseline_mean": 0.013629243377263655,
+        "benefit_mean": 0.0075049581090136765,
+        "candidate_mean": 0.021134201486277333,
+        "ci95": [
+          0.0013147485646049725,
+          0.013813178747242272
+        ],
+        "fraction_improved": 0.35,
+        "n_worlds": 40,
+        "repeatable_benefit": true
+      },
+      "vs_V4_protocol_only_defect_read": {
+        "baseline_mean": 0.475,
+        "benefit_mean": 0.025,
+        "candidate_mean": 0.5,
+        "ci95": [
+          0.0,
+          0.075
+        ],
+        "fraction_improved": 0.025,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      },
+      "vs_V4_protocol_only_info_per_kj": {
+        "baseline_mean": 0.020110935608564272,
+        "benefit_mean": 0.001023265877713059,
+        "candidate_mean": 0.021134201486277333,
+        "ci95": [
+          0.0,
+          0.003069797633139177
+        ],
+        "fraction_improved": 0.025,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      }
+    },
+    "V8_hypothesis_ratio": {
+      "mean_defect_read": 0.325,
+      "mean_energy_j": 19629.21006434359,
+      "mean_hidden_state_error_improvement": 0.2649031280767419,
+      "mean_info_per_kj": 0.01420196528549622,
+      "mean_info_per_time": 0.002649031280767419,
+      "mean_planning_latency_ms": 1438.5041194591395,
+      "vs_A_B0_random_defect_read": {
+        "baseline_mean": 0.325,
+        "benefit_mean": 0.0,
+        "candidate_mean": 0.325,
+        "ci95": [
+          -0.125,
+          0.125
+        ],
+        "fraction_improved": 0.075,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      },
+      "vs_A_B0_random_info_per_kj": {
+        "baseline_mean": 0.013629243377263655,
+        "benefit_mean": 0.0005727219082325636,
+        "candidate_mean": 0.01420196528549622,
+        "ci95": [
+          -0.0045141759221030645,
+          0.0054071817888984176
+        ],
+        "fraction_improved": 0.2,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      },
+      "vs_V4_protocol_only_defect_read": {
+        "baseline_mean": 0.475,
+        "benefit_mean": -0.15,
+        "candidate_mean": 0.325,
+        "ci95": [
+          -0.275,
+          -0.025
+        ],
+        "fraction_improved": 0.025,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      },
+      "vs_V4_protocol_only_info_per_kj": {
+        "baseline_mean": 0.020110935608564272,
+        "benefit_mean": -0.005908970323068054,
+        "candidate_mean": 0.01420196528549622,
+        "ci95": [
+          -0.012071813855265325,
+          0.00017993977828168153
+        ],
+        "fraction_improved": 0.175,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      }
+    },
+    "V8_mission_ratio": {
+      "mean_defect_read": 0.475,
+      "mean_energy_j": 18484.71779739919,
+      "mean_hidden_state_error_improvement": 0.3801312406730249,
+      "mean_info_per_kj": 0.020110935608564272,
+      "mean_info_per_time": 0.003801312406730248,
+      "mean_planning_latency_ms": 1397.0530364236765,
+      "vs_A_B0_random_defect_read": {
+        "baseline_mean": 0.325,
+        "benefit_mean": 0.15,
+        "candidate_mean": 0.475,
+        "ci95": [
+          0.025,
+          0.275
+        ],
+        "fraction_improved": 0.175,
+        "n_worlds": 40,
+        "repeatable_benefit": true
+      },
+      "vs_A_B0_random_info_per_kj": {
+        "baseline_mean": 0.013629243377263655,
+        "benefit_mean": 0.006481692231300617,
+        "candidate_mean": 0.020110935608564272,
+        "ci95": [
+          0.0007086879752824217,
+          0.01257875987534033
+        ],
+        "fraction_improved": 0.325,
+        "n_worlds": 40,
+        "repeatable_benefit": true
+      },
+      "vs_V4_protocol_only_defect_read": {
+        "baseline_mean": 0.475,
+        "benefit_mean": 0.0,
+        "candidate_mean": 0.475,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "fraction_improved": 0.0,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      },
+      "vs_V4_protocol_only_info_per_kj": {
+        "baseline_mean": 0.020110935608564272,
+        "benefit_mean": 0.0,
+        "candidate_mean": 0.020110935608564272,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "fraction_improved": 0.0,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      }
+    },
+    "V8_mission_ratio_cost125": {
+      "mean_defect_read": 0.475,
+      "mean_energy_j": 18496.283694589983,
+      "mean_hidden_state_error_improvement": 0.3801312406730249,
+      "mean_info_per_kj": 0.020110935608564272,
+      "mean_info_per_time": 0.003801312406730248,
+      "mean_planning_latency_ms": 1369.6043449275141,
+      "vs_A_B0_random_defect_read": {
+        "baseline_mean": 0.325,
+        "benefit_mean": 0.15,
+        "candidate_mean": 0.475,
+        "ci95": [
+          0.025,
+          0.275
+        ],
+        "fraction_improved": 0.175,
+        "n_worlds": 40,
+        "repeatable_benefit": true
+      },
+      "vs_A_B0_random_info_per_kj": {
+        "baseline_mean": 0.013629243377263655,
+        "benefit_mean": 0.006481692231300617,
+        "candidate_mean": 0.020110935608564272,
+        "ci95": [
+          0.0007086879752824217,
+          0.01257875987534033
+        ],
+        "fraction_improved": 0.325,
+        "n_worlds": 40,
+        "repeatable_benefit": true
+      },
+      "vs_V4_protocol_only_defect_read": {
+        "baseline_mean": 0.475,
+        "benefit_mean": 0.0,
+        "candidate_mean": 0.475,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "fraction_improved": 0.0,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      },
+      "vs_V4_protocol_only_info_per_kj": {
+        "baseline_mean": 0.020110935608564272,
+        "benefit_mean": 0.0,
+        "candidate_mean": 0.020110935608564272,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "fraction_improved": 0.0,
+        "n_worlds": 40,
+        "repeatable_benefit": false
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+# ACTIVE-MCBR-E011-VAL: I4 V8 ranker-family validation, VALIDATION only.
+#
+# Declared after V8_bayes_ratio_floor_001 cleared the development entry rule in ACTIVE-MCBR-E011-DEV.
+# FINAL_TEST and OOD stay closed unless this validation screen clears.
+experiment_id: ACTIVE-MCBR-E011-VAL
+partition_file: configs/eval/partitions_i4_mcbr_v4.yaml
+partition: validation
+purpose: selection
+world_family: ACTIVE_INSPECTION_OCCLUDED_V1
+scenario: I4-OCCLUDED
+seeds: [8002100, 8002101, 8002102, 8002103, 8002104, 8002105, 8002106, 8002107, 8002108, 8002109, 8002110, 8002111, 8002112, 8002113, 8002114, 8002115, 8002116, 8002117, 8002118, 8002119, 8002120, 8002121, 8002122, 8002123, 8002124, 8002125, 8002126, 8002127, 8002128, 8002129, 8002130, 8002131, 8002132, 8002133, 8002134, 8002135, 8002136, 8002137, 8002138, 8002139]
+primary_metric: info_per_kj
+direction: higher
+baseline: A-B0_random
+reference_arms: [V4_protocol_only]
+out_name: i4_v8_ranker_family_validation.json
+question: >-
+  Selection test for V8_bayes_ratio_floor_001. It may become a formal I4 repair candidate only if it repeats
+  the resource-normalized improvement on validation without reducing hidden-state readout.
+runtime:
+  duration_s: 100.0
+  control_period_s: 0.1
+  max_plans_per_need: 4
+  model2e_enabled: false
+arms:
+  A-B0_random: {planner: A-B0_random}
+  V4_protocol_only:
+    planner: PRODUCTION
+    view_execution: {enabled: true}
+  V8_bayes_ratio_floor_001:
+    planner: V4
+    v4:
+      ranker: {kind: bayes_eig, cost_mode: ratio, cost_weight: 1.0, cost_floor: 0.01}
+    view_execution: {enabled: true}
+workers: 12
+decision_rule: >-
+  Selection only. Unit = one world, paired across arms. V8_bayes_ratio_floor_001 may be frozen as the next
+  formal I4 repair candidate only if its paired benefit over A-B0_random on info_per_kj has CI95 lower bound
+  above 0, its mean info_per_kj exceeds V4_protocol_only, and its mean defect_read is not below
+  V4_protocol_only. Otherwise reject V8 and keep I4 FAIL without spending final_test or OOD.

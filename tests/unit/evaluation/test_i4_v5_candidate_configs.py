@@ -79,3 +79,22 @@ def test_i4_v8_ranker_family_screen_is_registered_and_development_only() -> None
     assert dev["partition"] != "ood_test"
     assert dev["arms"]["V8_mission_ratio"]["v4"]["ranker"]["kind"] == "mission_conditioned"
     assert dev["arms"]["V8_hypothesis_ratio"]["v4"]["ranker"]["kind"] == "hypothesis_discrimination"
+
+
+def test_i4_v8_validation_screen_is_registered_and_keeps_final_splits_closed() -> None:
+    assert EXPERIMENTS["ACTIVE-MCBR-E011-VAL"][1] == "configs/eval/i4_v8_ranker_family_validation.yaml"
+    val = _load("i4_v8_ranker_family_validation.yaml")
+    assert val["partition"] == "validation"
+    assert val["purpose"] == "selection"
+    assert val["primary_metric"] == "info_per_kj"
+    assert val["baseline"] == "A-B0_random"
+    assert val["reference_arms"] == ["V4_protocol_only"]
+    assert val["partition"] != "final_test"
+    assert val["partition"] != "ood_test"
+    assert list(val["arms"]) == ["A-B0_random", "V4_protocol_only", "V8_bayes_ratio_floor_001"]
+    assert val["arms"]["V8_bayes_ratio_floor_001"]["v4"]["ranker"] == {
+        "kind": "bayes_eig",
+        "cost_mode": "ratio",
+        "cost_weight": 1.0,
+        "cost_floor": 0.01,
+    }
