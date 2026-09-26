@@ -3,8 +3,11 @@ from __future__ import annotations
 import torch
 
 from conrad.foundation.context import (
+    ContextAvailability,
     ContextEncoder,
+    ContextFamily,
     ContextObservation,
+    auxiliary_context_contract,
     collate_context_observations,
     direct_model2_evidence,
     fit_context_normalization,
@@ -19,7 +22,15 @@ def _rows() -> tuple[tuple[ContextObservation, ...], ...]:
             ContextObservation("vehicle_depth_m", (8.0,), True, 1000, "m", "sensor:nav:train", uncertainty=(0.2,)),
         ),
         (
-            ContextObservation("temperature_c", (99.0,), False, 1500, "degC", "sensor:env:missing"),
+            ContextObservation(
+                "temperature_c",
+                (99.0,),
+                True,
+                1500,
+                "degC",
+                "sensor:env:stale",
+                availability=ContextAvailability.STALE,
+            ),
             ContextObservation("vehicle_depth_m", (9.0,), True, 1500, "m", "sensor:nav:val", uncertainty=(0.2,)),
         ),
     )
@@ -32,7 +43,9 @@ def test_context_contract_missing_is_not_zero_filled_as_measured() -> None:
     assert batch.present_mask[0, temp_idx]
     assert not batch.present_mask[1, temp_idx]
     assert batch.values[1, temp_idx].abs().sum() == 0.0
-    assert batch.provenance[1][temp_idx] == "sensor:env:missing"
+    assert batch.raw_values[1, temp_idx, 0] == 99.0
+    assert batch.availability[1][temp_idx] == ContextAvailability.STALE.value
+    assert batch.provenance[1][temp_idx] == "sensor:env:stale"
     assert batch.units[temp_idx] == "degC"
 
 
@@ -96,5 +109,16 @@ def test_model2_direct_evidence_keeps_exact_parallel_measurement_path() -> None:
     evidence = direct_model2_evidence(batch)
     by_field = {item["field"]: item for item in evidence[0]["model2_direct_measurements"]}
     assert by_field["temperature_c"]["units"] == "degC"
+    assert by_field["temperature_c"]["value"] == (12.800000190734863,)
     assert by_field["temperature_c"]["provenance"] == "sensor:env:train"
     assert all(item["field"] != "temperature_c" for item in evidence[1]["model2_direct_measurements"])
+
+
+def test_auxiliary_context_contract_reserves_future_hooks_without_requiring_them_now() -> None:
+    contract = auxiliary_context_contract()
+    assert contract["token_dimension"] == 384
+    assert ContextFamily.ASSET_ENGINEERING.value in contract["future_hook_families"]
+    assert ContextFamily.OPERATIONAL_PROCESS.value in contract["future_hook_families"]
+    assert ContextFamily.DOCUMENT_KNOWLEDGE.value in contract["future_hook_families"]
+    assert ContextAvailability.UNSUPPORTED.value in contract["availability_states"]
+    assert "exact physical measurements" in contract["model2_dual_path"]

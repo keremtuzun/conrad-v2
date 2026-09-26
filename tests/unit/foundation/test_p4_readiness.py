@@ -59,7 +59,8 @@ def test_stage_plan_locks_research_sequence_and_candidate_boundary() -> None:
         "T1-RESEARCH",
         "J1-RESEARCH",
     ]
-    assert report.architecture_revision["revision_id"] == "OSFM-P4-CONTEXT-R01"
+    assert report.architecture_revision["revision_id"] == "OSFM-P4-CONTEXT-R02"
+    assert report.architecture_revision["architecture_freeze_doc"] == "docs/OSFM_ARCHITECTURE_FREEZE.md"
     assert "dual_path_model2" in report.architecture_revision
     j1 = report.stage_plan[-1]
     assert j1.optimizer_steps == 150_000

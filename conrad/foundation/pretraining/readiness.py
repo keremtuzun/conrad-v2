@@ -457,7 +457,7 @@ def run_p47_readiness(
         "init": init_findings,
         "compute": compute,
         "blockers": [b.model_dump(mode="json") for b in blockers],
-        "architecture_revision": "OSFM-P4-CONTEXT-R01",
+        "architecture_revision": "OSFM-P4-CONTEXT-R02",
         "stage_plan": [s.model_dump(mode="json") for s in _stage_plan()],
     }
     return P47ReadinessReport(
@@ -475,8 +475,8 @@ def run_p47_readiness(
         observability_requirements=observability,
         representation_health=RepresentationHealthSpec(),
         architecture_revision={
-            "revision_id": "OSFM-P4-CONTEXT-R01",
-            "status": "CONTROLLED_ARCHITECTURE_AMENDMENT",
+            "revision_id": "OSFM-P4-CONTEXT-R02",
+            "status": "CONTROLLED_ARCHITECTURE_FREEZE",
             "input_sources": (
                 "rgb",
                 "sonar",
@@ -484,6 +484,7 @@ def run_p47_readiness(
                 "geometry",
                 "environmental_context",
                 "platform_sensor_context",
+                "auxiliary_context_tokens",
             ),
             "context_encoder": {
                 "internal_width": 256,
@@ -496,6 +497,7 @@ def run_p47_readiness(
             "missingness": "missing context values remain masked and are not zero-filled as measured",
             "normalization": "continuous context statistics are fit on training partitions only",
             "not_model2_replacement": "OS-FM understands measurement context; Model2 preserves and reasons with exact typed measurements",
+            "architecture_freeze_doc": "docs/OSFM_ARCHITECTURE_FREEZE.md",
         },
         stage_plan=_stage_plan(),
         promotion_rules=promotion_rules,

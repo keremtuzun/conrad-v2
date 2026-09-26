@@ -141,7 +141,7 @@ def test_j1_run_saves_reloads_and_reports(tmp_path: Path) -> None:
     assert result["metrics"]["gradient_connected"] == 1.0
     assert result["representation_health"]["finite"] is True
     assert all(status["loaded"] for status in result["parent_checkpoint_ancestry"].values())
-    assert result["architecture"]["architecture_revision"] == "OSFM-P4-CONTEXT-R01"
+    assert result["architecture"]["architecture_revision"] == "OSFM-P4-CONTEXT-R02"
     assert "temperature_c" in result["architecture"]["context_schema"]
     assert result["fixture"]["model2_direct_evidence_example"]["model2_direct_measurements"]
     assert Path(result["checkpoint"]).is_file()

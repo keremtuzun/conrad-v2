@@ -4,6 +4,10 @@ Conrad V2 separates the **truth**, **belief** and **decision** worlds, plus an *
 robot. This document describes how the code in `conrad/` implements that split. Package-level detail is in
 [IMPLEMENTATION_MAP.md](IMPLEMENTATION_MAP.md).
 
+The P4 OS-FM architecture is frozen in
+[OSFM_ARCHITECTURE_FREEZE.md](OSFM_ARCHITECTURE_FREEZE.md) as revision `OSFM-P4-CONTEXT-R02`. That document
+separates the current P4.8-critical interfaces from later P5-P18 and post-P18 product capabilities.
+
 ## Planes and ownership
 
 | Plane | Packages | Owns | May import truth |

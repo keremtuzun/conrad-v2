@@ -18,6 +18,25 @@ class ContextFamily(str, Enum):
     PLATFORM_NAVIGATION = "platform_navigation"
     ENVIRONMENTAL = "environmental"
     SENSOR_ACQUISITION = "sensor_acquisition"
+    ASSET_ENGINEERING = "asset_engineering"
+    OPERATIONAL_PROCESS = "operational_process"
+    DOCUMENT_KNOWLEDGE = "document_knowledge"
+    MISSION_QUERY = "mission_query"
+    EXTERNAL_CONTEXT = "external_context"
+
+
+class ContextAvailability(str, Enum):
+    AVAILABLE = "AVAILABLE"
+    MISSING = "MISSING"
+    STALE = "STALE"
+    DEGRADED = "DEGRADED"
+    FAILED = "FAILED"
+    UNSUPPORTED = "UNSUPPORTED"
+    INVALID = "INVALID"
+
+    @property
+    def contributes_to_representation(self) -> bool:
+        return self is ContextAvailability.AVAILABLE
 
 
 @dataclass(frozen=True)
@@ -26,6 +45,7 @@ class ContextFieldSpec:
     family: ContextFamily
     units: str
     width: int = 1
+    description: str = ""
 
 
 DEFAULT_CONTEXT_FIELDS: tuple[ContextFieldSpec, ...] = (
@@ -73,6 +93,17 @@ class ContextObservation:
     uncertainty: tuple[float, ...] | None = None
     source_observation_id: str | None = None
     sensor_lineage: tuple[str, ...] = ()
+    availability: ContextAvailability = ContextAvailability.AVAILABLE
+    validity: bool = True
+    quality: float | None = None
+    freshness_ms: int | None = None
+    coordinate_frame: str | None = None
+    clock_domain: str | None = None
+    calibration_ref: str | None = None
+    notes: tuple[str, ...] = ()
+
+    def is_available(self) -> bool:
+        return self.present and self.validity and self.availability.contributes_to_representation
 
 
 @dataclass(frozen=True)
@@ -84,15 +115,21 @@ class ContextNormalizationStats:
 
 @dataclass(frozen=True)
 class ContextBatch:
+    raw_values: torch.Tensor
     values: torch.Tensor
     present_mask: torch.Tensor
     uncertainty: torch.Tensor
     uncertainty_mask: torch.Tensor
     timestamps_ms: torch.Tensor
     field_names: tuple[str, ...]
+    field_widths: tuple[int, ...]
     units: tuple[str, ...]
     provenance: tuple[tuple[str, ...], ...]
     source_observation_ids: tuple[tuple[str | None, ...], ...]
+    availability: tuple[tuple[str, ...], ...]
+    validity_mask: torch.Tensor
+    quality: torch.Tensor
+    quality_mask: torch.Tensor
 
 
 @dataclass(frozen=True)
@@ -110,6 +147,44 @@ def context_schema_summary(fields: tuple[ContextFieldSpec, ...] = DEFAULT_CONTEX
     }
 
 
+def auxiliary_context_contract() -> dict[str, Any]:
+    """Stable adapter contract for future non-perception context sources.
+
+    Adapters may emit typed observations that become D_F=384 auxiliary tokens.
+    Exact measurements and documents keep their separate provenance-bearing
+    evidence paths; this contract is not a shortcut around Model2.
+    """
+
+    return {
+        "token_dimension": 384,
+        "supported_families": tuple(family.value for family in ContextFamily),
+        "availability_states": tuple(state.value for state in ContextAvailability),
+        "required_observation_fields": (
+            "field",
+            "value",
+            "units",
+            "timestamp_ms",
+            "provenance",
+            "availability",
+            "validity",
+        ),
+        "current_training_families": (
+            ContextFamily.PLATFORM_NAVIGATION.value,
+            ContextFamily.ENVIRONMENTAL.value,
+            ContextFamily.SENSOR_ACQUISITION.value,
+        ),
+        "future_hook_families": (
+            ContextFamily.ASSET_ENGINEERING.value,
+            ContextFamily.OPERATIONAL_PROCESS.value,
+            ContextFamily.DOCUMENT_KNOWLEDGE.value,
+            ContextFamily.MISSION_QUERY.value,
+            ContextFamily.EXTERNAL_CONTEXT.value,
+        ),
+        "model2_dual_path": "exact physical measurements remain provenance-bearing Model2 evidence outside the learned token path",
+        "host_boundary": "auxiliary tokens may condition inspection intelligence; host adapters retain execution authority",
+    }
+
+
 def fit_context_normalization(
     observations: tuple[tuple[ContextObservation, ...], ...],
     *,
@@ -120,7 +195,7 @@ def fit_context_normalization(
     widths = {field.name: field.width for field in fields}
     for row in observations:
         for item in row:
-            if item.present and item.field in values:
+            if item.is_available() and item.field in values:
                 tensor = torch.tensor(item.value, dtype=torch.float32).flatten()
                 if tensor.numel() != widths[item.field]:
                     raise ValueError(f"context field {item.field!r} expected width {widths[item.field]}")
@@ -149,18 +224,24 @@ def collate_context_observations(
     batch = len(observations)
     max_width = max(field.width for field in fields)
     values = torch.zeros(batch, len(fields), max_width, dtype=torch.float32)
+    raw_values = torch.zeros(batch, len(fields), max_width, dtype=torch.float32)
     present = torch.zeros(batch, len(fields), dtype=torch.bool)
     uncertainty = torch.zeros(batch, len(fields), max_width, dtype=torch.float32)
     uncertainty_mask = torch.zeros(batch, len(fields), dtype=torch.bool)
     timestamps = torch.zeros(batch, len(fields), dtype=torch.int64)
+    validity = torch.zeros(batch, len(fields), dtype=torch.bool)
+    quality = torch.zeros(batch, len(fields), dtype=torch.float32)
+    quality_mask = torch.zeros(batch, len(fields), dtype=torch.bool)
     provenance: list[tuple[str, ...]] = []
     source_ids: list[tuple[str | None, ...]] = []
+    availability_rows: list[tuple[str, ...]] = []
     field_index = {field.name: idx for idx, field in enumerate(fields)}
     field_width = {field.name: field.width for field in fields}
     field_units = {field.name: field.units for field in fields}
     for row_idx, row in enumerate(observations):
         row_prov: list[str] = ["" for _ in fields]
         row_sources: list[str | None] = [None for _ in fields]
+        row_availability: list[str] = [ContextAvailability.MISSING.value for _ in fields]
         seen: set[str] = set()
         for item in row:
             if item.field not in field_index:
@@ -175,11 +256,16 @@ def collate_context_observations(
             raw = torch.tensor(item.value, dtype=torch.float32).flatten()
             if raw.numel() != width:
                 raise ValueError(f"context field {item.field!r} expected width {width}")
-            if item.present:
+            raw_values[row_idx, idx, :width] = raw
+            if item.is_available():
                 mean = torch.tensor(stats.means[item.field], dtype=torch.float32)
                 std = torch.tensor(stats.stds[item.field], dtype=torch.float32)
                 values[row_idx, idx, :width] = (raw - mean) / std
                 present[row_idx, idx] = True
+            validity[row_idx, idx] = item.validity
+            if item.quality is not None:
+                quality[row_idx, idx] = float(item.quality)
+                quality_mask[row_idx, idx] = True
             if item.uncertainty is not None:
                 unc = torch.tensor(item.uncertainty, dtype=torch.float32).flatten()
                 if unc.numel() != width:
@@ -189,18 +275,26 @@ def collate_context_observations(
             timestamps[row_idx, idx] = int(item.timestamp_ms)
             row_prov[idx] = item.provenance
             row_sources[idx] = item.source_observation_id
+            row_availability[idx] = item.availability.value
         provenance.append(tuple(row_prov))
         source_ids.append(tuple(row_sources))
+        availability_rows.append(tuple(row_availability))
     return ContextBatch(
+        raw_values=raw_values,
         values=values,
         present_mask=present,
         uncertainty=uncertainty,
         uncertainty_mask=uncertainty_mask,
         timestamps_ms=timestamps,
         field_names=tuple(field.name for field in fields),
+        field_widths=tuple(field.width for field in fields),
         units=tuple(field.units for field in fields),
         provenance=tuple(provenance),
         source_observation_ids=tuple(source_ids),
+        availability=tuple(availability_rows),
+        validity_mask=validity,
+        quality=quality,
+        quality_mask=quality_mask,
     )
 
 
@@ -216,6 +310,7 @@ def direct_model2_evidence(context: ContextBatch) -> tuple[dict[str, Any], ...]:
             row_items.append(
                 {
                     "field": field,
+                    "value": tuple(float(x) for x in context.raw_values[row, idx, : context.field_widths[idx]].tolist()),
                     "units": context.units[idx],
                     "timestamp_ms": int(context.timestamps_ms[row, idx]),
                     "provenance": context.provenance[row][idx],

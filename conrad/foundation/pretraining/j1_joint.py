@@ -274,7 +274,7 @@ def load_j1_parents(model: JointOSFMModel) -> dict[str, ParentLoadStatus]:
                     "parameter_tensors_loaded": legacy_status.parameter_tensors_loaded,
                     "parameter_values_loaded": legacy_status.parameter_values_loaded,
                     "status": "LOADED_VERIFIED_WITH_CONTEXT_EXTENSION",
-                    "reason": "legacy four-modality fusion parent loaded exactly; new context embedding initialized by OSFM-P4-CONTEXT-R01",
+                    "reason": "legacy four-modality fusion parent loaded exactly; new context embedding initialized by OSFM-P4-CONTEXT-R02",
                 }
             )
             continue
@@ -558,7 +558,7 @@ def run_j1_joint_smoke(run: RunDirectory, job: dict[str, Any], seed: int) -> dic
                 "geometry": "Point-MAE-style grouped width256 6L 4H projection256->384",
                 "context": "typed sparse-context encoder width256 2L 4H projection256->384; missing values masked, not zero-as-measured",
             },
-            "architecture_revision": "OSFM-P4-CONTEXT-R01",
+            "architecture_revision": "OSFM-P4-CONTEXT-R02",
             "context_schema": context_schema_summary(),
             "dual_path_model2_policy": "context measurements feed OS-FM as tokens and remain available as exact direct Model2 evidence; Model2 never reconstructs exact values from OS-FM embeddings",
             "fusion": {"scene_latents": [64, 384], "cross_attention_blocks": 3, "latent_self_attention_blocks": 6, "heads": 6, "mlp_expansion": 4},
