@@ -216,8 +216,7 @@ class FeasibilityFilter:
             margin = bounds.position_margin_m
             position = (execution_pose or candidate.pose).position_m
             if margin is None or any(
-                not (bounds.min_m[i] + margin <= position[i] <= bounds.max_m[i] - margin)
-                for i in range(3)
+                not (bounds.min_m[i] + margin <= position[i] <= bounds.max_m[i] - margin) for i in range(3)
             ):
                 out.append(R_BOUNDARY)
         if cost is None:

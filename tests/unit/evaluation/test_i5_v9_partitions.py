@@ -20,9 +20,7 @@ def test_i5_v9_splits_are_fresh_disjoint_and_access_controlled():
     historical = {seed for spec in v8.values() for seed in P._seeds(spec)}
     assert (len(development), len(validation), len(final)) == (10, 10, 40)
     assert not (
-        set(development) & set(validation)
-        or set(development) & set(final)
-        or set(validation) & set(final)
+        set(development) & set(validation) or set(development) & set(final) or set(validation) & set(final)
     )
     assert not (set(development) | set(validation) | set(final)) & historical
 
