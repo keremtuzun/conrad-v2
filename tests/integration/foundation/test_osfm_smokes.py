@@ -33,3 +33,11 @@ def test_osfm_u1_range_smoke_cli_registered(tmp_path: Path) -> None:
     assert result["component"] == "foundation.osfm.u1_range"
     metric = result["objectives"]["u1_range_metric_reconstruction"]
     assert metric["u1_range_metric_reconstruction/status"] == "ACTIVE"
+
+
+def test_osfm_u1_geometry_smoke_cli_registered(tmp_path: Path) -> None:
+    result = run_training("configs/train/osfm/u1_geometry_smoke.yaml", runs_root=tmp_path)
+    assert result["experiment_id"] == "OSFM-U1-GEOMETRY-SMOKE-001"
+    assert result["component"] == "foundation.osfm.u1_geometry"
+    metric = result["objectives"]["u1_geometry_metric_reconstruction"]
+    assert metric["u1_geometry_metric_reconstruction/status"] == "ACTIVE"
