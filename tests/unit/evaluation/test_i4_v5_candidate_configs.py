@@ -36,3 +36,18 @@ def test_i4_v5_candidate_targets_failed_resource_metric_without_changing_product
     assert v5["v4"]["ranker"] == {"kind": "bayes_eig", "cost_mode": "ratio", "cost_weight": 1.25}
     assert v5["view_execution"]["route_aware_navigation_cost"] is True
     assert v5["view_execution"]["budget_from_mission_duration"] is True
+
+
+def test_i4_v6_development_screen_is_registered_and_keeps_held_out_splits_closed() -> None:
+    assert EXPERIMENTS["ACTIVE-MCBR-E009-DEV"][1] == "configs/eval/i4_v6_development.yaml"
+    dev = _load("i4_v6_development.yaml")
+    assert dev["partition"] == "development"
+    assert dev["purpose"] == "design"
+    assert dev["partition"] != "validation"
+    assert dev["partition"] != "final_test"
+    assert dev["primary_metric"] == "info_per_kj"
+    assert dev["baseline"] == "A-B0_random"
+    assert dev["reference_arms"] == ["V4_protocol_only"]
+    assert "V6_route_cost_only" in dev["arms"]
+    assert "V6_deadline_only" in dev["arms"]
+    assert "V6_stop_low_value" in dev["arms"]

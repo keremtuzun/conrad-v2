@@ -1,0 +1,58 @@
+# ACTIVE-MCBR-E009-DEV: I4 V6 resource-efficiency screen, DEVELOPMENT only.
+#
+# V5 improved over random but failed its declared entry rule because it did not improve info_per_kj over
+# V4_protocol_only on development. This round screens lower-change V4 variants against A-B0_random and
+# V4_protocol_only on the failed formal resource-normalized metric before any validation split is spent.
+experiment_id: ACTIVE-MCBR-E009-DEV
+partition_file: configs/eval/partitions_i4_mcbr_v4.yaml
+partition: development
+purpose: design
+world_family: ACTIVE_INSPECTION_OCCLUDED_V1
+scenario: I4-OCCLUDED
+seeds: [8002000, 8002001, 8002002, 8002003, 8002004, 8002005, 8002006, 8002007, 8002008, 8002009, 8002010, 8002011, 8002012, 8002013, 8002014, 8002015, 8002016, 8002017, 8002018, 8002019, 8002020, 8002021, 8002022, 8002023, 8002024, 8002025, 8002026, 8002027, 8002028, 8002029, 8002030, 8002031, 8002032, 8002033, 8002034, 8002035, 8002036, 8002037, 8002038, 8002039]
+primary_metric: info_per_kj
+direction: higher
+baseline: A-B0_random
+reference_arms: [V4_protocol_only]
+out_name: i4_v6_development.json
+question: >-
+  Does a lower-change V4 execution variant repair the formal I4 information/time/energy failure without the
+  V5 latency and route-cost penalty?
+runtime:
+  duration_s: 100.0
+  control_period_s: 0.1
+  max_plans_per_need: 4
+  model2e_enabled: false
+arms:
+  A-B0_random: {planner: A-B0_random}
+  A-B2_coverage: {planner: A-B2_coverage}
+  V4_protocol_only:
+    planner: PRODUCTION
+    view_execution: {enabled: true}
+  V6_route_cost_only:
+    planner: V4
+    view_execution:
+      enabled: true
+      route_aware_navigation_cost: true
+  V6_deadline_only:
+    planner: PRODUCTION
+    view_execution:
+      enabled: true
+      budget_from_mission_duration: true
+  V6_attempt6_only:
+    planner: PRODUCTION
+    view_execution:
+      enabled: true
+      max_view_attempts: 6
+  V6_stop_low_value:
+    planner: V4
+    v4:
+      ranker: {kind: bayes_eig, cost_mode: ratio, cost_weight: 1.0, stop_min_value: 0.001}
+      with_stop: true
+    view_execution:
+      enabled: true
+workers: 12
+decision_rule: >-
+  Development only. Unit = one world, paired across arms. A V6 variant may proceed to validation only if its
+  info_per_kj paired benefit has CI95 lower bound above 0 versus A-B0_random and it improves info_per_kj versus
+  V4_protocol_only on development. If no variant clears both checks, reject V6 and preserve validation closed.
