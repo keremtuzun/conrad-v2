@@ -1,0 +1,3842 @@
+{
+ "arm_runtime": {
+  "A-B0_random": {
+   "planner": "A-B0_random"
+  },
+  "A-B2_coverage": {
+   "planner": "A-B2_coverage"
+  },
+  "V4_protocol_only": {
+   "planner": "PRODUCTION",
+   "view_execution": {
+    "enabled": true
+   }
+  },
+  "V5_efficiency_candidate": {
+   "planner": "V4",
+   "v4": {
+    "ranker": {
+     "cost_mode": "ratio",
+     "cost_weight": 1.25,
+     "kind": "bayes_eig"
+    }
+   },
+   "view_execution": {
+    "belief_map_navigation": true,
+    "blocked_cost_multiplier": 3.0,
+    "budget_from_mission_duration": true,
+    "declare_budgets": true,
+    "drop_abandoned_prior_view": true,
+    "enabled": true,
+    "max_view_attempts": 6,
+    "protect_active_view": true,
+    "refund_abandoned_attempt": true,
+    "route_aware_navigation_cost": true
+   }
+  }
+ },
+ "arms": [
+  "A-B0_random",
+  "A-B2_coverage",
+  "V4_protocol_only",
+  "V5_efficiency_candidate"
+ ],
+ "baseline": "A-B0_random",
+ "config": {
+  "arms": {
+   "A-B0_random": {
+    "planner": "A-B0_random"
+   },
+   "A-B2_coverage": {
+    "planner": "A-B2_coverage"
+   },
+   "V4_protocol_only": {
+    "planner": "PRODUCTION",
+    "view_execution": {
+     "enabled": true
+    }
+   },
+   "V5_efficiency_candidate": {
+    "planner": "V4",
+    "v4": {
+     "ranker": {
+      "cost_mode": "ratio",
+      "cost_weight": 1.25,
+      "kind": "bayes_eig"
+     }
+    },
+    "view_execution": {
+     "belief_map_navigation": true,
+     "blocked_cost_multiplier": 3.0,
+     "budget_from_mission_duration": true,
+     "declare_budgets": true,
+     "drop_abandoned_prior_view": true,
+     "enabled": true,
+     "max_view_attempts": 6,
+     "protect_active_view": true,
+     "refund_abandoned_attempt": true,
+     "route_aware_navigation_cost": true
+    }
+   }
+  },
+  "baseline": "A-B0_random",
+  "decision_rule": "Development only. Unit = one world, paired across arms. Report info_per_kj, info_per_time, hidden_state_error_improvement, defect_read, travel_m, energy_j and planning_latency_ms. If V5 does not improve info_per_kj versus A-B0_random and V4_protocol_only on development, do not spend validation.",
+  "direction": "higher",
+  "experiment_id": "ACTIVE-MCBR-E008-DEV",
+  "out_name": "i4_v5_development.json",
+  "partition": "development",
+  "partition_file": "configs/eval/partitions_i4_mcbr_v4.yaml",
+  "primary_metric": "info_per_kj",
+  "purpose": "design",
+  "question": "Can a route-aware, more cost-sensitive V5 candidate improve the failed formal I4 resource-normalized criterion against random views without reading final_test?",
+  "reference_arms": [
+   "A-B2_coverage",
+   "V4_protocol_only"
+  ],
+  "runtime": {
+   "control_period_s": 0.1,
+   "duration_s": 100.0,
+   "max_plans_per_need": 4,
+   "model2e_enabled": false
+  },
+  "scenario": "I4-OCCLUDED",
+  "seeds": [
+   8002000,
+   8002001,
+   8002002,
+   8002003,
+   8002004,
+   8002005,
+   8002006,
+   8002007,
+   8002008,
+   8002009,
+   8002010,
+   8002011,
+   8002012,
+   8002013,
+   8002014,
+   8002015,
+   8002016,
+   8002017,
+   8002018,
+   8002019,
+   8002020,
+   8002021,
+   8002022,
+   8002023,
+   8002024,
+   8002025,
+   8002026,
+   8002027,
+   8002028,
+   8002029,
+   8002030,
+   8002031,
+   8002032,
+   8002033,
+   8002034,
+   8002035,
+   8002036,
+   8002037,
+   8002038,
+   8002039
+  ],
+  "workers": 12,
+  "world_family": "ACTIVE_INSPECTION_OCCLUDED_V1"
+ },
+ "data_status": "SYNTHETIC_ONLY",
+ "decision_rule": "Development only. Unit = one world, paired across arms. Report info_per_kj, info_per_time, hidden_state_error_improvement, defect_read, travel_m, energy_j and planning_latency_ms. If V5 does not improve info_per_kj versus A-B0_random and V4_protocol_only on development, do not spend validation.",
+ "evidence_kind": "SURROGATE",
+ "evidence_note": "python sim kernel; it promotes no gate and changes no recorded I4 result",
+ "execution_breakdown": {
+  "A-B0_random": {
+   "abandon_reasons": {
+    "ABANDONED_MISSION_END": 0,
+    "ABANDONED_NAV_REJECTED": 0,
+    "ABANDONED_PREEMPTED": 0,
+    "ABANDONED_ROUTE_BLOCKED": 1,
+    "ABANDONED_SAFE_HOLD": 0,
+    "ABANDONED_TIMEOUT": 0,
+    "ABANDONED_TRAJECTORY_LOST": 0,
+    "ARRIVED_DWELL_SHORT": 0,
+    "COMPLETED_OFF_POSE": 0
+   },
+   "accepted_views": 6,
+   "counts": {
+    "ABANDONED_MISSION_END": 0,
+    "ABANDONED_NAV_REJECTED": 0,
+    "ABANDONED_PREEMPTED": 0,
+    "ABANDONED_ROUTE_BLOCKED": 1,
+    "ABANDONED_SAFE_HOLD": 0,
+    "ABANDONED_TIMEOUT": 0,
+    "ABANDONED_TRAJECTORY_LOST": 0,
+    "ARRIVED_DWELL_SHORT": 0,
+    "COMPLETED_OFF_POSE": 0,
+    "FLOWN": 5
+   },
+   "fraction_flown": 0.8333333333333334,
+   "fractions": {
+    "ABANDONED_MISSION_END": 0.0,
+    "ABANDONED_NAV_REJECTED": 0.0,
+    "ABANDONED_PREEMPTED": 0.0,
+    "ABANDONED_ROUTE_BLOCKED": 0.16666666666666666,
+    "ABANDONED_SAFE_HOLD": 0.0,
+    "ABANDONED_TIMEOUT": 0.0,
+    "ABANDONED_TRAJECTORY_LOST": 0.0,
+    "ARRIVED_DWELL_SHORT": 0.0,
+    "COMPLETED_OFF_POSE": 0.0,
+    "FLOWN": 0.8333333333333334
+   },
+   "goal_rejections": 0.0,
+   "mean_feasible_candidates": 4.0,
+   "not_flown": 1,
+   "plans_need_satisfied": 0.0,
+   "plans_no_feasible_candidate": 0.0,
+   "plans_not_worth_cost": 0.0,
+   "plans_total": 6.0,
+   "plans_with_an_action": 6.0
+  },
+  "A-B2_coverage": {
+   "abandon_reasons": {
+    "ABANDONED_MISSION_END": 0,
+    "ABANDONED_NAV_REJECTED": 0,
+    "ABANDONED_PREEMPTED": 0,
+    "ABANDONED_ROUTE_BLOCKED": 4,
+    "ABANDONED_SAFE_HOLD": 0,
+    "ABANDONED_TIMEOUT": 0,
+    "ABANDONED_TRAJECTORY_LOST": 0,
+    "ARRIVED_DWELL_SHORT": 0,
+    "COMPLETED_OFF_POSE": 0
+   },
+   "accepted_views": 8,
+   "counts": {
+    "ABANDONED_MISSION_END": 0,
+    "ABANDONED_NAV_REJECTED": 0,
+    "ABANDONED_PREEMPTED": 0,
+    "ABANDONED_ROUTE_BLOCKED": 4,
+    "ABANDONED_SAFE_HOLD": 0,
+    "ABANDONED_TIMEOUT": 0,
+    "ABANDONED_TRAJECTORY_LOST": 0,
+    "ARRIVED_DWELL_SHORT": 0,
+    "COMPLETED_OFF_POSE": 0,
+    "FLOWN": 4
+   },
+   "fraction_flown": 0.5,
+   "fractions": {
+    "ABANDONED_MISSION_END": 0.0,
+    "ABANDONED_NAV_REJECTED": 0.0,
+    "ABANDONED_PREEMPTED": 0.0,
+    "ABANDONED_ROUTE_BLOCKED": 0.5,
+    "ABANDONED_SAFE_HOLD": 0.0,
+    "ABANDONED_TIMEOUT": 0.0,
+    "ABANDONED_TRAJECTORY_LOST": 0.0,
+    "ARRIVED_DWELL_SHORT": 0.0,
+    "COMPLETED_OFF_POSE": 0.0,
+    "FLOWN": 0.5
+   },
+   "goal_rejections": 1.0,
+   "mean_feasible_candidates": 4.0,
+   "not_flown": 4,
+   "plans_need_satisfied": 0.0,
+   "plans_no_feasible_candidate": 0.0,
+   "plans_not_worth_cost": 0.0,
+   "plans_total": 8.0,
+   "plans_with_an_action": 8.0
+  },
+  "V4_protocol_only": {
+   "abandon_reasons": {
+    "ABANDONED_MISSION_END": 1,
+    "ABANDONED_NAV_REJECTED": 0,
+    "ABANDONED_PREEMPTED": 0,
+    "ABANDONED_ROUTE_BLOCKED": 0,
+    "ABANDONED_SAFE_HOLD": 0,
+    "ABANDONED_TIMEOUT": 0,
+    "ABANDONED_TRAJECTORY_LOST": 0,
+    "ARRIVED_DWELL_SHORT": 0,
+    "COMPLETED_OFF_POSE": 0
+   },
+   "accepted_views": 5,
+   "counts": {
+    "ABANDONED_MISSION_END": 1,
+    "ABANDONED_NAV_REJECTED": 0,
+    "ABANDONED_PREEMPTED": 0,
+    "ABANDONED_ROUTE_BLOCKED": 0,
+    "ABANDONED_SAFE_HOLD": 0,
+    "ABANDONED_TIMEOUT": 0,
+    "ABANDONED_TRAJECTORY_LOST": 0,
+    "ARRIVED_DWELL_SHORT": 0,
+    "COMPLETED_OFF_POSE": 0,
+    "FLOWN": 4
+   },
+   "fraction_flown": 0.8,
+   "fractions": {
+    "ABANDONED_MISSION_END": 0.2,
+    "ABANDONED_NAV_REJECTED": 0.0,
+    "ABANDONED_PREEMPTED": 0.0,
+    "ABANDONED_ROUTE_BLOCKED": 0.0,
+    "ABANDONED_SAFE_HOLD": 0.0,
+    "ABANDONED_TIMEOUT": 0.0,
+    "ABANDONED_TRAJECTORY_LOST": 0.0,
+    "ARRIVED_DWELL_SHORT": 0.0,
+    "COMPLETED_OFF_POSE": 0.0,
+    "FLOWN": 0.8
+   },
+   "goal_rejections": 0.0,
+   "mean_feasible_candidates": 4.0,
+   "not_flown": 1,
+   "plans_need_satisfied": 0.0,
+   "plans_no_feasible_candidate": 0.0,
+   "plans_not_worth_cost": 0.0,
+   "plans_total": 5.0,
+   "plans_with_an_action": 5.0
+  },
+  "V5_efficiency_candidate": {
+   "abandon_reasons": {
+    "ABANDONED_MISSION_END": 1,
+    "ABANDONED_NAV_REJECTED": 0,
+    "ABANDONED_PREEMPTED": 0,
+    "ABANDONED_ROUTE_BLOCKED": 0,
+    "ABANDONED_SAFE_HOLD": 0,
+    "ABANDONED_TIMEOUT": 0,
+    "ABANDONED_TRAJECTORY_LOST": 0,
+    "ARRIVED_DWELL_SHORT": 0,
+    "COMPLETED_OFF_POSE": 0
+   },
+   "accepted_views": 5,
+   "counts": {
+    "ABANDONED_MISSION_END": 1,
+    "ABANDONED_NAV_REJECTED": 0,
+    "ABANDONED_PREEMPTED": 0,
+    "ABANDONED_ROUTE_BLOCKED": 0,
+    "ABANDONED_SAFE_HOLD": 0,
+    "ABANDONED_TIMEOUT": 0,
+    "ABANDONED_TRAJECTORY_LOST": 0,
+    "ARRIVED_DWELL_SHORT": 0,
+    "COMPLETED_OFF_POSE": 0,
+    "FLOWN": 4
+   },
+   "fraction_flown": 0.8,
+   "fractions": {
+    "ABANDONED_MISSION_END": 0.2,
+    "ABANDONED_NAV_REJECTED": 0.0,
+    "ABANDONED_PREEMPTED": 0.0,
+    "ABANDONED_ROUTE_BLOCKED": 0.0,
+    "ABANDONED_SAFE_HOLD": 0.0,
+    "ABANDONED_TIMEOUT": 0.0,
+    "ABANDONED_TRAJECTORY_LOST": 0.0,
+    "ARRIVED_DWELL_SHORT": 0.0,
+    "COMPLETED_OFF_POSE": 0.0,
+    "FLOWN": 0.8
+   },
+   "goal_rejections": 0.0,
+   "mean_feasible_candidates": 4.0,
+   "not_flown": 1,
+   "plans_need_satisfied": 0.0,
+   "plans_no_feasible_candidate": 0.0,
+   "plans_not_worth_cost": 0.0,
+   "plans_total": 5.0,
+   "plans_with_an_action": 5.0
+  }
+ },
+ "experiment_id": "ACTIVE-MCBR-E008-DEV",
+ "metrics_not_paired": [],
+ "mission_config": "configs/sim/mission_test_small.yaml",
+ "n_worlds": 2,
+ "paired_vs_baseline": {
+  "A-B2_coverage": {
+   "accepted_views": {
+    "baseline_mean": 3.0,
+    "benefit_mean": -1.0,
+    "candidate_mean": 4.0,
+    "ci95": [
+     -2.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "collisions": {
+    "baseline_mean": 0.0,
+    "benefit_mean": -4.0,
+    "candidate_mean": 4.0,
+    "ci95": [
+     -8.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "defect_read": {
+    "baseline_mean": 0.5,
+    "benefit_mean": -0.5,
+    "candidate_mean": 0.0,
+    "ci95": [
+     -1.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "empty_plan_rate": {
+    "baseline_mean": 0.0,
+    "benefit_mean": 0.0,
+    "candidate_mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "energy_j": {
+    "baseline_mean": 20210.577617332885,
+    "benefit_mean": -797.5101051374368,
+    "candidate_mean": 21008.08772247032,
+    "ci95": [
+     -2212.770408223074,
+     617.7501979482004
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "fraction_views_flown": {
+    "baseline_mean": 0.75,
+    "benefit_mean": -0.25,
+    "candidate_mean": 0.5,
+    "ci95": [
+     -0.5,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "fraction_views_reached": {
+    "baseline_mean": 0.75,
+    "benefit_mean": -0.25,
+    "candidate_mean": 0.5,
+    "ci95": [
+     -0.5,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_final": {
+    "baseline_mean": 0.5462690346329531,
+    "benefit_mean": -0.45373096536704693,
+    "candidate_mean": 1.0,
+    "ci95": [
+     -0.9074619307340939,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_improvement": {
+    "baseline_mean": 0.45373096536704693,
+    "benefit_mean": -0.45373096536704693,
+    "candidate_mean": 0.0,
+    "ci95": [
+     -0.9074619307340939,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "info_per_kj": {
+    "baseline_mean": 0.02173978797030108,
+    "benefit_mean": -0.02173978797030108,
+    "candidate_mean": 0.0,
+    "ci95": [
+     -0.04347957594060216,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "info_per_time": {
+    "baseline_mean": 0.004537309653670469,
+    "benefit_mean": -0.004537309653670469,
+    "candidate_mean": 0.0,
+    "ci95": [
+     -0.009074619307340938,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "mean_boresight_error_rad": {
+    "baseline_mean": 0.38456480246861396,
+    "benefit_mean": -0.2861775004376433,
+    "candidate_mean": 0.6707423029062572,
+    "ci95": [
+     -0.566995753894522,
+     -0.00535924698076462
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "mean_closest_approach_m": {
+    "baseline_mean": 0.9552018340845971,
+    "benefit_mean": -0.7805178879829717,
+    "candidate_mean": 1.7357197220675689,
+    "ci95": [
+     -1.5666636533422091,
+     0.00562787737626563
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "mean_view_direction_error_rad": {
+    "baseline_mean": 0.3735563649156473,
+    "benefit_mean": -0.43724945619584304,
+    "candidate_mean": 0.8108058211114904,
+    "ci95": [
+     -0.8747833110908527,
+     0.0002843986991666516
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "mission_error_reduction": {
+    "baseline_mean": 0.45373096536704693,
+    "benefit_mean": -0.45373096536704693,
+    "candidate_mean": 0.0,
+    "ci95": [
+     -0.9074619307340939,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "mission_success": {
+    "baseline_mean": 0.5,
+    "benefit_mean": -0.5,
+    "candidate_mean": 0.0,
+    "ci95": [
+     -1.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "observations": {
+    "baseline_mean": 3.0,
+    "benefit_mean": -1.0,
+    "candidate_mean": 4.0,
+    "ci95": [
+     -2.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "planning_latency_ms": {
+    "baseline_mean": 489.844473751873,
+    "benefit_mean": -1.1123753683932591,
+    "candidate_mean": 490.95684912026627,
+    "ci95": [
+     -3.6959479984943755,
+     1.4711972617078573
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "redundant_observations": {
+    "baseline_mean": 2.5,
+    "benefit_mean": -1.5,
+    "candidate_mean": 4.0,
+    "ci95": [
+     -3.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "time_to_detection_s": {
+    "baseline_mean": 76.15,
+    "benefit_mean": -23.85,
+    "candidate_mean": 100.0,
+    "ci95": [
+     -47.7,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "travel_m": {
+    "baseline_mean": 28.64051893770947,
+    "benefit_mean": 1.2156826560000802,
+    "candidate_mean": 27.42483628170939,
+    "ci95": [
+     0.4999316373619074,
+     1.931433674638253
+    ],
+    "fraction_improved": 1.0,
+    "n_worlds": 2,
+    "repeatable_benefit": true
+   },
+   "views_before_detection": {
+    "baseline_mean": 2.5,
+    "benefit_mean": -1.5,
+    "candidate_mean": 4.0,
+    "ci95": [
+     -3.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   }
+  },
+  "V4_protocol_only": {
+   "accepted_views": {
+    "baseline_mean": 3.0,
+    "benefit_mean": 0.5,
+    "candidate_mean": 2.5,
+    "ci95": [
+     0.0,
+     1.0
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "collisions": {
+    "baseline_mean": 0.0,
+    "benefit_mean": -1.5,
+    "candidate_mean": 1.5,
+    "ci95": [
+     -3.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "defect_read": {
+    "baseline_mean": 0.5,
+    "benefit_mean": 0.0,
+    "candidate_mean": 0.5,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "empty_plan_rate": {
+    "baseline_mean": 0.0,
+    "benefit_mean": 0.0,
+    "candidate_mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "energy_j": {
+    "baseline_mean": 20210.577617332885,
+    "benefit_mean": -24.190184672469513,
+    "candidate_mean": 20234.767802005354,
+    "ci95": [
+     -3280.030668293977,
+     3231.650298949038
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "fraction_views_flown": {
+    "baseline_mean": 0.75,
+    "benefit_mean": 0.125,
+    "candidate_mean": 0.875,
+    "ci95": [
+     -0.25,
+     0.5
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "fraction_views_reached": {
+    "baseline_mean": 0.75,
+    "benefit_mean": 0.25,
+    "candidate_mean": 1.0,
+    "ci95": [
+     0.0,
+     0.5
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_final": {
+    "baseline_mean": 0.5462690346329531,
+    "benefit_mean": -0.062120127530965394,
+    "candidate_mean": 0.6083891621639185,
+    "ci95": [
+     -0.12424025506193079,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_improvement": {
+    "baseline_mean": 0.45373096536704693,
+    "benefit_mean": -0.06212012753096535,
+    "candidate_mean": 0.3916108378360816,
+    "ci95": [
+     -0.1242402550619307,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "info_per_kj": {
+    "baseline_mean": 0.02173978797030108,
+    "benefit_mean": -0.005524705698290673,
+    "candidate_mean": 0.016215082272010406,
+    "ci95": [
+     -0.011049411396581346,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "info_per_time": {
+    "baseline_mean": 0.004537309653670469,
+    "benefit_mean": -0.0006212012753096536,
+    "candidate_mean": 0.0039161083783608155,
+    "ci95": [
+     -0.0012424025506193072,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "mean_boresight_error_rad": {
+    "baseline_mean": 0.38456480246861396,
+    "benefit_mean": 0.374827535758635,
+    "candidate_mean": 0.009737266709978987,
+    "ci95": [
+     -0.0036083807121665146,
+     0.7532634522294365
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "mean_closest_approach_m": {
+    "baseline_mean": 0.9552018340845971,
+    "benefit_mean": 0.8742891444261163,
+    "candidate_mean": 0.08091268965848089,
+    "ci95": [
+     0.0010915987165422449,
+     1.7474866901356902
+    ],
+    "fraction_improved": 1.0,
+    "n_worlds": 2,
+    "repeatable_benefit": true
+   },
+   "mean_view_direction_error_rad": {
+    "baseline_mean": 0.3735563649156473,
+    "benefit_mean": 0.3472854064055042,
+    "candidate_mean": 0.026270958510143126,
+    "ci95": [
+     -0.001192289725797554,
+     0.695763102536806
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "mission_error_reduction": {
+    "baseline_mean": 0.45373096536704693,
+    "benefit_mean": -0.06212012753096535,
+    "candidate_mean": 0.3916108378360816,
+    "ci95": [
+     -0.1242402550619307,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "mission_success": {
+    "baseline_mean": 0.5,
+    "benefit_mean": 0.0,
+    "candidate_mean": 0.5,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "observations": {
+    "baseline_mean": 3.0,
+    "benefit_mean": 0.5,
+    "candidate_mean": 2.5,
+    "ci95": [
+     0.0,
+     1.0
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "planning_latency_ms": {
+    "baseline_mean": 489.844473751873,
+    "benefit_mean": 2.2765571302443277,
+    "candidate_mean": 487.5679166216287,
+    "ci95": [
+     -14.261885742598679,
+     18.815000003087334
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "redundant_observations": {
+    "baseline_mean": 2.5,
+    "benefit_mean": 0.5,
+    "candidate_mean": 2.0,
+    "ci95": [
+     0.0,
+     1.0
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "time_to_detection_s": {
+    "baseline_mean": 76.15,
+    "benefit_mean": -0.5,
+    "candidate_mean": 76.65,
+    "ci95": [
+     -1.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "travel_m": {
+    "baseline_mean": 28.64051893770947,
+    "benefit_mean": 0.8617710398336875,
+    "candidate_mean": 27.778747897875782,
+    "ci95": [
+     -1.0976693873218508,
+     2.821211466989226
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "views_before_detection": {
+    "baseline_mean": 2.5,
+    "benefit_mean": 0.5,
+    "candidate_mean": 2.0,
+    "ci95": [
+     0.0,
+     1.0
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   }
+  },
+  "V5_efficiency_candidate": {
+   "accepted_views": {
+    "baseline_mean": 3.0,
+    "benefit_mean": 0.5,
+    "candidate_mean": 2.5,
+    "ci95": [
+     0.0,
+     1.0
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "collisions": {
+    "baseline_mean": 0.0,
+    "benefit_mean": 0.0,
+    "candidate_mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "defect_read": {
+    "baseline_mean": 0.5,
+    "benefit_mean": 0.0,
+    "candidate_mean": 0.5,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "empty_plan_rate": {
+    "baseline_mean": 0.0,
+    "benefit_mean": 0.0,
+    "candidate_mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "energy_j": {
+    "baseline_mean": 20210.577617332885,
+    "benefit_mean": 1488.4347220388527,
+    "candidate_mean": 18722.14289529403,
+    "ci95": [
+     -254.78085487133285,
+     3231.650298949038
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "fraction_views_flown": {
+    "baseline_mean": 0.75,
+    "benefit_mean": 0.125,
+    "candidate_mean": 0.875,
+    "ci95": [
+     -0.25,
+     0.5
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "fraction_views_reached": {
+    "baseline_mean": 0.75,
+    "benefit_mean": 0.25,
+    "candidate_mean": 1.0,
+    "ci95": [
+     0.0,
+     0.5
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_final": {
+    "baseline_mean": 0.5462690346329531,
+    "benefit_mean": 0.000995341074308126,
+    "candidate_mean": 0.5452736935586449,
+    "ci95": [
+     0.0,
+     0.001990682148616252
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "hidden_state_error_improvement": {
+    "baseline_mean": 0.45373096536704693,
+    "benefit_mean": 0.0009953410743081537,
+    "candidate_mean": 0.4547263064413551,
+    "ci95": [
+     0.0,
+     0.0019906821486163073
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "info_per_kj": {
+    "baseline_mean": 0.02173978797030108,
+    "benefit_mean": -0.00021507096936789621,
+    "candidate_mean": 0.021524717000933183,
+    "ci95": [
+     -0.00043014193873579243,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "info_per_time": {
+    "baseline_mean": 0.004537309653670469,
+    "benefit_mean": 9.953410743081953e-06,
+    "candidate_mean": 0.004547263064413551,
+    "ci95": [
+     0.0,
+     1.9906821486163906e-05
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "mean_boresight_error_rad": {
+    "baseline_mean": 0.38456480246861396,
+    "benefit_mean": 0.3788994304794539,
+    "candidate_mean": 0.005665371989160062,
+    "ci95": [
+     -0.0036083807121665146,
+     0.7614072416710743
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "mean_closest_approach_m": {
+    "baseline_mean": 0.9552018340845971,
+    "benefit_mean": 0.8709706687474079,
+    "candidate_mean": 0.0842311653371892,
+    "ci95": [
+     0.0010915987165422449,
+     1.7408497387782735
+    ],
+    "fraction_improved": 1.0,
+    "n_worlds": 2,
+    "repeatable_benefit": true
+   },
+   "mean_view_direction_error_rad": {
+    "baseline_mean": 0.3735563649156473,
+    "benefit_mean": 0.35176403086222785,
+    "candidate_mean": 0.02179233405341948,
+    "ci95": [
+     -0.001192289725797554,
+     0.7047203514502532
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "mission_error_reduction": {
+    "baseline_mean": 0.45373096536704693,
+    "benefit_mean": 0.0009953410743081537,
+    "candidate_mean": 0.4547263064413551,
+    "ci95": [
+     0.0,
+     0.0019906821486163073
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "mission_success": {
+    "baseline_mean": 0.5,
+    "benefit_mean": 0.0,
+    "candidate_mean": 0.5,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "fraction_improved": 0.0,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "observations": {
+    "baseline_mean": 3.0,
+    "benefit_mean": 0.5,
+    "candidate_mean": 2.5,
+    "ci95": [
+     0.0,
+     1.0
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "planning_latency_ms": {
+    "baseline_mean": 489.844473751873,
+    "benefit_mean": 8.148359131155303,
+    "candidate_mean": 481.6961146207177,
+    "ci95": [
+     -8.736906740523409,
+     25.033625002834015
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "redundant_observations": {
+    "baseline_mean": 2.5,
+    "benefit_mean": 0.5,
+    "candidate_mean": 2.0,
+    "ci95": [
+     0.0,
+     1.0
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "time_to_detection_s": {
+    "baseline_mean": 76.15,
+    "benefit_mean": 1.5,
+    "candidate_mean": 74.65,
+    "ci95": [
+     0.0,
+     3.0
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "travel_m": {
+    "baseline_mean": 28.64051893770947,
+    "benefit_mean": 1.193408143939223,
+    "candidate_mean": 27.447110793770246,
+    "ci95": [
+     -0.43439517911077985,
+     2.821211466989226
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   },
+   "views_before_detection": {
+    "baseline_mean": 2.5,
+    "benefit_mean": 0.5,
+    "candidate_mean": 2.0,
+    "ci95": [
+     0.0,
+     1.0
+    ],
+    "fraction_improved": 0.5,
+    "n_worlds": 2,
+    "repeatable_benefit": false
+   }
+  }
+ },
+ "paired_vs_reference": {
+  "A-B2_coverage": {
+   "A-B0_random": {
+    "accepted_views": {
+     "baseline_mean": 4.0,
+     "benefit_mean": 1.0,
+     "candidate_mean": 3.0,
+     "ci95": [
+      0.0,
+      2.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "collisions": {
+     "baseline_mean": 4.0,
+     "benefit_mean": 4.0,
+     "candidate_mean": 0.0,
+     "ci95": [
+      0.0,
+      8.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "defect_read": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.5,
+     "candidate_mean": 0.5,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "empty_plan_rate": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 21008.08772247032,
+     "benefit_mean": 797.5101051374368,
+     "candidate_mean": 20210.577617332885,
+     "ci95": [
+      -617.7501979482004,
+      2212.770408223074
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "fraction_views_flown": {
+     "baseline_mean": 0.5,
+     "benefit_mean": 0.25,
+     "candidate_mean": 0.75,
+     "ci95": [
+      0.0,
+      0.5
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "fraction_views_reached": {
+     "baseline_mean": 0.5,
+     "benefit_mean": 0.25,
+     "candidate_mean": 0.75,
+     "ci95": [
+      0.0,
+      0.5
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 1.0,
+     "benefit_mean": 0.45373096536704693,
+     "candidate_mean": 0.5462690346329531,
+     "ci95": [
+      0.0,
+      0.9074619307340939
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.45373096536704693,
+     "candidate_mean": 0.45373096536704693,
+     "ci95": [
+      0.0,
+      0.9074619307340939
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.02173978797030108,
+     "candidate_mean": 0.02173978797030108,
+     "ci95": [
+      0.0,
+      0.04347957594060216
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.004537309653670469,
+     "candidate_mean": 0.004537309653670469,
+     "ci95": [
+      0.0,
+      0.009074619307340938
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mean_boresight_error_rad": {
+     "baseline_mean": 0.6707423029062572,
+     "benefit_mean": 0.2861775004376433,
+     "candidate_mean": 0.38456480246861396,
+     "ci95": [
+      0.00535924698076462,
+      0.566995753894522
+     ],
+     "fraction_improved": 1.0,
+     "n_worlds": 2,
+     "repeatable_benefit": true
+    },
+    "mean_closest_approach_m": {
+     "baseline_mean": 1.7357197220675689,
+     "benefit_mean": 0.7805178879829717,
+     "candidate_mean": 0.9552018340845971,
+     "ci95": [
+      -0.00562787737626563,
+      1.5666636533422091
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mean_view_direction_error_rad": {
+     "baseline_mean": 0.8108058211114904,
+     "benefit_mean": 0.43724945619584304,
+     "candidate_mean": 0.3735563649156473,
+     "ci95": [
+      -0.0002843986991666516,
+      0.8747833110908527
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.45373096536704693,
+     "candidate_mean": 0.45373096536704693,
+     "ci95": [
+      0.0,
+      0.9074619307340939
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mission_success": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.5,
+     "candidate_mean": 0.5,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 4.0,
+     "benefit_mean": 1.0,
+     "candidate_mean": 3.0,
+     "ci95": [
+      0.0,
+      2.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "planning_latency_ms": {
+     "baseline_mean": 490.95684912026627,
+     "benefit_mean": 1.1123753683932591,
+     "candidate_mean": 489.844473751873,
+     "ci95": [
+      -1.4711972617078573,
+      3.6959479984943755
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "redundant_observations": {
+     "baseline_mean": 4.0,
+     "benefit_mean": 1.5,
+     "candidate_mean": 2.5,
+     "ci95": [
+      0.0,
+      3.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "time_to_detection_s": {
+     "baseline_mean": 100.0,
+     "benefit_mean": 23.85,
+     "candidate_mean": 76.15,
+     "ci95": [
+      0.0,
+      47.7
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "travel_m": {
+     "baseline_mean": 27.42483628170939,
+     "benefit_mean": -1.2156826560000802,
+     "candidate_mean": 28.64051893770947,
+     "ci95": [
+      -1.931433674638253,
+      -0.4999316373619074
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "views_before_detection": {
+     "baseline_mean": 4.0,
+     "benefit_mean": 1.5,
+     "candidate_mean": 2.5,
+     "ci95": [
+      0.0,
+      3.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    }
+   },
+   "V4_protocol_only": {
+    "accepted_views": {
+     "baseline_mean": 4.0,
+     "benefit_mean": 1.5,
+     "candidate_mean": 2.5,
+     "ci95": [
+      0.0,
+      3.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "collisions": {
+     "baseline_mean": 4.0,
+     "benefit_mean": 2.5,
+     "candidate_mean": 1.5,
+     "ci95": [
+      0.0,
+      5.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "defect_read": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.5,
+     "candidate_mean": 0.5,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "empty_plan_rate": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 21008.08772247032,
+     "benefit_mean": 773.3199204649673,
+     "candidate_mean": 20234.767802005354,
+     "ci95": [
+      -1067.2602600709033,
+      2613.900101000838
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "fraction_views_flown": {
+     "baseline_mean": 0.5,
+     "benefit_mean": 0.375,
+     "candidate_mean": 0.875,
+     "ci95": [
+      -0.25,
+      1.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "fraction_views_reached": {
+     "baseline_mean": 0.5,
+     "benefit_mean": 0.5,
+     "candidate_mean": 1.0,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 1.0,
+     "benefit_mean": 0.3916108378360816,
+     "candidate_mean": 0.6083891621639185,
+     "ci95": [
+      0.0,
+      0.7832216756721632
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.3916108378360816,
+     "candidate_mean": 0.3916108378360816,
+     "ci95": [
+      0.0,
+      0.7832216756721632
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.016215082272010406,
+     "candidate_mean": 0.016215082272010406,
+     "ci95": [
+      0.0,
+      0.03243016454402081
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.0039161083783608155,
+     "candidate_mean": 0.0039161083783608155,
+     "ci95": [
+      0.0,
+      0.007832216756721631
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mean_boresight_error_rad": {
+     "baseline_mean": 0.6707423029062572,
+     "benefit_mean": 0.6610050361962783,
+     "candidate_mean": 0.009737266709978987,
+     "ci95": [
+      0.0017508662685981058,
+      1.3202592061239584
+     ],
+     "fraction_improved": 1.0,
+     "n_worlds": 2,
+     "repeatable_benefit": true
+    },
+    "mean_closest_approach_m": {
+     "baseline_mean": 1.7357197220675689,
+     "benefit_mean": 1.654807032409088,
+     "candidate_mean": 0.08091268965848089,
+     "ci95": [
+      -0.004536278659723385,
+      3.314150343477899
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mean_view_direction_error_rad": {
+     "baseline_mean": 0.8108058211114904,
+     "benefit_mean": 0.7845348626013472,
+     "candidate_mean": 0.026270958510143126,
+     "ci95": [
+      -0.0014766884249642056,
+      1.5705464136276586
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.3916108378360816,
+     "candidate_mean": 0.3916108378360816,
+     "ci95": [
+      0.0,
+      0.7832216756721632
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mission_success": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.5,
+     "candidate_mean": 0.5,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 4.0,
+     "benefit_mean": 1.5,
+     "candidate_mean": 2.5,
+     "ci95": [
+      0.0,
+      3.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "planning_latency_ms": {
+     "baseline_mean": 490.95684912026627,
+     "benefit_mean": 3.388932498637587,
+     "candidate_mean": 487.5679166216287,
+     "ci95": [
+      -15.733083004306536,
+      22.51094800158171
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "redundant_observations": {
+     "baseline_mean": 4.0,
+     "benefit_mean": 2.0,
+     "candidate_mean": 2.0,
+     "ci95": [
+      0.0,
+      4.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "time_to_detection_s": {
+     "baseline_mean": 100.0,
+     "benefit_mean": 23.35,
+     "candidate_mean": 76.65,
+     "ci95": [
+      0.0,
+      46.7
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "travel_m": {
+     "baseline_mean": 27.42483628170939,
+     "benefit_mean": -0.35391161616639266,
+     "candidate_mean": 27.778747897875782,
+     "ci95": [
+      -3.029103061960104,
+      2.3212798296273185
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "views_before_detection": {
+     "baseline_mean": 4.0,
+     "benefit_mean": 2.0,
+     "candidate_mean": 2.0,
+     "ci95": [
+      0.0,
+      4.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    }
+   },
+   "V5_efficiency_candidate": {
+    "accepted_views": {
+     "baseline_mean": 4.0,
+     "benefit_mean": 1.5,
+     "candidate_mean": 2.5,
+     "ci95": [
+      0.0,
+      3.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "collisions": {
+     "baseline_mean": 4.0,
+     "benefit_mean": 4.0,
+     "candidate_mean": 0.0,
+     "ci95": [
+      0.0,
+      8.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "defect_read": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.5,
+     "candidate_mean": 0.5,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "empty_plan_rate": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 21008.08772247032,
+     "benefit_mean": 2285.9448271762894,
+     "candidate_mean": 18722.14289529403,
+     "ci95": [
+      1957.989553351741,
+      2613.900101000838
+     ],
+     "fraction_improved": 1.0,
+     "n_worlds": 2,
+     "repeatable_benefit": true
+    },
+    "fraction_views_flown": {
+     "baseline_mean": 0.5,
+     "benefit_mean": 0.375,
+     "candidate_mean": 0.875,
+     "ci95": [
+      -0.25,
+      1.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "fraction_views_reached": {
+     "baseline_mean": 0.5,
+     "benefit_mean": 0.5,
+     "candidate_mean": 1.0,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 1.0,
+     "benefit_mean": 0.4547263064413551,
+     "candidate_mean": 0.5452736935586449,
+     "ci95": [
+      0.0,
+      0.9094526128827102
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.4547263064413551,
+     "candidate_mean": 0.4547263064413551,
+     "ci95": [
+      0.0,
+      0.9094526128827102
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.021524717000933183,
+     "candidate_mean": 0.021524717000933183,
+     "ci95": [
+      0.0,
+      0.043049434001866366
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.004547263064413551,
+     "candidate_mean": 0.004547263064413551,
+     "ci95": [
+      0.0,
+      0.009094526128827102
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mean_boresight_error_rad": {
+     "baseline_mean": 0.6707423029062572,
+     "benefit_mean": 0.6650769309170972,
+     "candidate_mean": 0.005665371989160062,
+     "ci95": [
+      0.0017508662685981058,
+      1.3284029955655963
+     ],
+     "fraction_improved": 1.0,
+     "n_worlds": 2,
+     "repeatable_benefit": true
+    },
+    "mean_closest_approach_m": {
+     "baseline_mean": 1.7357197220675689,
+     "benefit_mean": 1.6514885567303796,
+     "candidate_mean": 0.0842311653371892,
+     "ci95": [
+      -0.004536278659723385,
+      3.3075133921204825
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mean_view_direction_error_rad": {
+     "baseline_mean": 0.8108058211114904,
+     "benefit_mean": 0.7890134870580708,
+     "candidate_mean": 0.02179233405341948,
+     "ci95": [
+      -0.0014766884249642056,
+      1.5795036625411059
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.4547263064413551,
+     "candidate_mean": 0.4547263064413551,
+     "ci95": [
+      0.0,
+      0.9094526128827102
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mission_success": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.5,
+     "candidate_mean": 0.5,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 4.0,
+     "benefit_mean": 1.5,
+     "candidate_mean": 2.5,
+     "ci95": [
+      0.0,
+      3.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "planning_latency_ms": {
+     "baseline_mean": 490.95684912026627,
+     "benefit_mean": 9.260734499548562,
+     "candidate_mean": 481.6961146207177,
+     "ci95": [
+      -10.208104002231266,
+      28.72957300132839
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "redundant_observations": {
+     "baseline_mean": 4.0,
+     "benefit_mean": 2.0,
+     "candidate_mean": 2.0,
+     "ci95": [
+      0.0,
+      4.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "time_to_detection_s": {
+     "baseline_mean": 100.0,
+     "benefit_mean": 25.35,
+     "candidate_mean": 74.65,
+     "ci95": [
+      0.0,
+      50.7
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "travel_m": {
+     "baseline_mean": 27.42483628170939,
+     "benefit_mean": -0.022274512060857177,
+     "candidate_mean": 27.447110793770246,
+     "ci95": [
+      -2.365828853749033,
+      2.3212798296273185
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "views_before_detection": {
+     "baseline_mean": 4.0,
+     "benefit_mean": 2.0,
+     "candidate_mean": 2.0,
+     "ci95": [
+      0.0,
+      4.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    }
+   }
+  },
+  "V4_protocol_only": {
+   "A-B0_random": {
+    "accepted_views": {
+     "baseline_mean": 2.5,
+     "benefit_mean": -0.5,
+     "candidate_mean": 3.0,
+     "ci95": [
+      -1.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "collisions": {
+     "baseline_mean": 1.5,
+     "benefit_mean": 1.5,
+     "candidate_mean": 0.0,
+     "ci95": [
+      0.0,
+      3.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "defect_read": {
+     "baseline_mean": 0.5,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.5,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "empty_plan_rate": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 20234.767802005354,
+     "benefit_mean": 24.190184672469513,
+     "candidate_mean": 20210.577617332885,
+     "ci95": [
+      -3231.650298949038,
+      3280.030668293977
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "fraction_views_flown": {
+     "baseline_mean": 0.875,
+     "benefit_mean": -0.125,
+     "candidate_mean": 0.75,
+     "ci95": [
+      -0.5,
+      0.25
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "fraction_views_reached": {
+     "baseline_mean": 1.0,
+     "benefit_mean": -0.25,
+     "candidate_mean": 0.75,
+     "ci95": [
+      -0.5,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 0.6083891621639185,
+     "benefit_mean": 0.062120127530965394,
+     "candidate_mean": 0.5462690346329531,
+     "ci95": [
+      0.0,
+      0.12424025506193079
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.3916108378360816,
+     "benefit_mean": 0.06212012753096535,
+     "candidate_mean": 0.45373096536704693,
+     "ci95": [
+      0.0,
+      0.1242402550619307
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.016215082272010406,
+     "benefit_mean": 0.005524705698290673,
+     "candidate_mean": 0.02173978797030108,
+     "ci95": [
+      0.0,
+      0.011049411396581346
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0039161083783608155,
+     "benefit_mean": 0.0006212012753096536,
+     "candidate_mean": 0.004537309653670469,
+     "ci95": [
+      0.0,
+      0.0012424025506193072
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mean_boresight_error_rad": {
+     "baseline_mean": 0.009737266709978987,
+     "benefit_mean": -0.374827535758635,
+     "candidate_mean": 0.38456480246861396,
+     "ci95": [
+      -0.7532634522294365,
+      0.0036083807121665146
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mean_closest_approach_m": {
+     "baseline_mean": 0.08091268965848089,
+     "benefit_mean": -0.8742891444261163,
+     "candidate_mean": 0.9552018340845971,
+     "ci95": [
+      -1.7474866901356902,
+      -0.0010915987165422449
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mean_view_direction_error_rad": {
+     "baseline_mean": 0.026270958510143126,
+     "benefit_mean": -0.3472854064055042,
+     "candidate_mean": 0.3735563649156473,
+     "ci95": [
+      -0.695763102536806,
+      0.001192289725797554
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.3916108378360816,
+     "benefit_mean": 0.06212012753096535,
+     "candidate_mean": 0.45373096536704693,
+     "ci95": [
+      0.0,
+      0.1242402550619307
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mission_success": {
+     "baseline_mean": 0.5,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.5,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 2.5,
+     "benefit_mean": -0.5,
+     "candidate_mean": 3.0,
+     "ci95": [
+      -1.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "planning_latency_ms": {
+     "baseline_mean": 487.5679166216287,
+     "benefit_mean": -2.2765571302443277,
+     "candidate_mean": 489.844473751873,
+     "ci95": [
+      -18.815000003087334,
+      14.261885742598679
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "redundant_observations": {
+     "baseline_mean": 2.0,
+     "benefit_mean": -0.5,
+     "candidate_mean": 2.5,
+     "ci95": [
+      -1.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "time_to_detection_s": {
+     "baseline_mean": 76.65,
+     "benefit_mean": 0.5,
+     "candidate_mean": 76.15,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "travel_m": {
+     "baseline_mean": 27.778747897875782,
+     "benefit_mean": -0.8617710398336875,
+     "candidate_mean": 28.64051893770947,
+     "ci95": [
+      -2.821211466989226,
+      1.0976693873218508
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "views_before_detection": {
+     "baseline_mean": 2.0,
+     "benefit_mean": -0.5,
+     "candidate_mean": 2.5,
+     "ci95": [
+      -1.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    }
+   },
+   "A-B2_coverage": {
+    "accepted_views": {
+     "baseline_mean": 2.5,
+     "benefit_mean": -1.5,
+     "candidate_mean": 4.0,
+     "ci95": [
+      -3.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "collisions": {
+     "baseline_mean": 1.5,
+     "benefit_mean": -2.5,
+     "candidate_mean": 4.0,
+     "ci95": [
+      -5.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "defect_read": {
+     "baseline_mean": 0.5,
+     "benefit_mean": -0.5,
+     "candidate_mean": 0.0,
+     "ci95": [
+      -1.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "empty_plan_rate": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 20234.767802005354,
+     "benefit_mean": -773.3199204649673,
+     "candidate_mean": 21008.08772247032,
+     "ci95": [
+      -2613.900101000838,
+      1067.2602600709033
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "fraction_views_flown": {
+     "baseline_mean": 0.875,
+     "benefit_mean": -0.375,
+     "candidate_mean": 0.5,
+     "ci95": [
+      -1.0,
+      0.25
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "fraction_views_reached": {
+     "baseline_mean": 1.0,
+     "benefit_mean": -0.5,
+     "candidate_mean": 0.5,
+     "ci95": [
+      -1.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 0.6083891621639185,
+     "benefit_mean": -0.3916108378360816,
+     "candidate_mean": 1.0,
+     "ci95": [
+      -0.7832216756721632,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.3916108378360816,
+     "benefit_mean": -0.3916108378360816,
+     "candidate_mean": 0.0,
+     "ci95": [
+      -0.7832216756721632,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.016215082272010406,
+     "benefit_mean": -0.016215082272010406,
+     "candidate_mean": 0.0,
+     "ci95": [
+      -0.03243016454402081,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0039161083783608155,
+     "benefit_mean": -0.0039161083783608155,
+     "candidate_mean": 0.0,
+     "ci95": [
+      -0.007832216756721631,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mean_boresight_error_rad": {
+     "baseline_mean": 0.009737266709978987,
+     "benefit_mean": -0.6610050361962783,
+     "candidate_mean": 0.6707423029062572,
+     "ci95": [
+      -1.3202592061239584,
+      -0.0017508662685981058
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mean_closest_approach_m": {
+     "baseline_mean": 0.08091268965848089,
+     "benefit_mean": -1.654807032409088,
+     "candidate_mean": 1.7357197220675689,
+     "ci95": [
+      -3.314150343477899,
+      0.004536278659723385
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mean_view_direction_error_rad": {
+     "baseline_mean": 0.026270958510143126,
+     "benefit_mean": -0.7845348626013472,
+     "candidate_mean": 0.8108058211114904,
+     "ci95": [
+      -1.5705464136276586,
+      0.0014766884249642056
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.3916108378360816,
+     "benefit_mean": -0.3916108378360816,
+     "candidate_mean": 0.0,
+     "ci95": [
+      -0.7832216756721632,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mission_success": {
+     "baseline_mean": 0.5,
+     "benefit_mean": -0.5,
+     "candidate_mean": 0.0,
+     "ci95": [
+      -1.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 2.5,
+     "benefit_mean": -1.5,
+     "candidate_mean": 4.0,
+     "ci95": [
+      -3.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "planning_latency_ms": {
+     "baseline_mean": 487.5679166216287,
+     "benefit_mean": -3.388932498637587,
+     "candidate_mean": 490.95684912026627,
+     "ci95": [
+      -22.51094800158171,
+      15.733083004306536
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "redundant_observations": {
+     "baseline_mean": 2.0,
+     "benefit_mean": -2.0,
+     "candidate_mean": 4.0,
+     "ci95": [
+      -4.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "time_to_detection_s": {
+     "baseline_mean": 76.65,
+     "benefit_mean": -23.35,
+     "candidate_mean": 100.0,
+     "ci95": [
+      -46.7,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "travel_m": {
+     "baseline_mean": 27.778747897875782,
+     "benefit_mean": 0.35391161616639266,
+     "candidate_mean": 27.42483628170939,
+     "ci95": [
+      -2.3212798296273185,
+      3.029103061960104
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "views_before_detection": {
+     "baseline_mean": 2.0,
+     "benefit_mean": -2.0,
+     "candidate_mean": 4.0,
+     "ci95": [
+      -4.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    }
+   },
+   "V5_efficiency_candidate": {
+    "accepted_views": {
+     "baseline_mean": 2.5,
+     "benefit_mean": 0.0,
+     "candidate_mean": 2.5,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "collisions": {
+     "baseline_mean": 1.5,
+     "benefit_mean": 1.5,
+     "candidate_mean": 0.0,
+     "ci95": [
+      0.0,
+      3.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "defect_read": {
+     "baseline_mean": 0.5,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.5,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "empty_plan_rate": {
+     "baseline_mean": 0.0,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "energy_j": {
+     "baseline_mean": 20234.767802005354,
+     "benefit_mean": 1512.6249067113222,
+     "candidate_mean": 18722.14289529403,
+     "ci95": [
+      0.0,
+      3025.2498134226444
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "fraction_views_flown": {
+     "baseline_mean": 0.875,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.875,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "fraction_views_reached": {
+     "baseline_mean": 1.0,
+     "benefit_mean": 0.0,
+     "candidate_mean": 1.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_final": {
+     "baseline_mean": 0.6083891621639185,
+     "benefit_mean": 0.06311546860527352,
+     "candidate_mean": 0.5452736935586449,
+     "ci95": [
+      0.0,
+      0.12623093721054704
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "hidden_state_error_improvement": {
+     "baseline_mean": 0.3916108378360816,
+     "benefit_mean": 0.0631154686052735,
+     "candidate_mean": 0.4547263064413551,
+     "ci95": [
+      0.0,
+      0.126230937210547
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "info_per_kj": {
+     "baseline_mean": 0.016215082272010406,
+     "benefit_mean": 0.005309634728922777,
+     "candidate_mean": 0.021524717000933183,
+     "ci95": [
+      0.0,
+      0.010619269457845554
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "info_per_time": {
+     "baseline_mean": 0.0039161083783608155,
+     "benefit_mean": 0.0006311546860527355,
+     "candidate_mean": 0.004547263064413551,
+     "ci95": [
+      0.0,
+      0.001262309372105471
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mean_boresight_error_rad": {
+     "baseline_mean": 0.009737266709978987,
+     "benefit_mean": 0.004071894720818925,
+     "candidate_mean": 0.005665371989160062,
+     "ci95": [
+      0.0,
+      0.00814378944163785
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mean_closest_approach_m": {
+     "baseline_mean": 0.08091268965848089,
+     "benefit_mean": -0.003318475678708313,
+     "candidate_mean": 0.0842311653371892,
+     "ci95": [
+      -0.006636951357416626,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mean_view_direction_error_rad": {
+     "baseline_mean": 0.026270958510143126,
+     "benefit_mean": 0.0044786244567236455,
+     "candidate_mean": 0.02179233405341948,
+     "ci95": [
+      0.0,
+      0.008957248913447291
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mission_error_reduction": {
+     "baseline_mean": 0.3916108378360816,
+     "benefit_mean": 0.0631154686052735,
+     "candidate_mean": 0.4547263064413551,
+     "ci95": [
+      0.0,
+      0.126230937210547
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "mission_success": {
+     "baseline_mean": 0.5,
+     "benefit_mean": 0.0,
+     "candidate_mean": 0.5,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "observations": {
+     "baseline_mean": 2.5,
+     "benefit_mean": 0.0,
+     "candidate_mean": 2.5,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "planning_latency_ms": {
+     "baseline_mean": 487.5679166216287,
+     "benefit_mean": 5.871802000910975,
+     "candidate_mean": 481.6961146207177,
+     "ci95": [
+      5.52497900207527,
+      6.21862499974668
+     ],
+     "fraction_improved": 1.0,
+     "n_worlds": 2,
+     "repeatable_benefit": true
+    },
+    "redundant_observations": {
+     "baseline_mean": 2.0,
+     "benefit_mean": 0.0,
+     "candidate_mean": 2.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "time_to_detection_s": {
+     "baseline_mean": 76.65,
+     "benefit_mean": 2.0,
+     "candidate_mean": 74.65,
+     "ci95": [
+      0.0,
+      4.0
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "travel_m": {
+     "baseline_mean": 27.778747897875782,
+     "benefit_mean": 0.3316371041055355,
+     "candidate_mean": 27.447110793770246,
+     "ci95": [
+      0.0,
+      0.663274208211071
+     ],
+     "fraction_improved": 0.5,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    },
+    "views_before_detection": {
+     "baseline_mean": 2.0,
+     "benefit_mean": 0.0,
+     "candidate_mean": 2.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "fraction_improved": 0.0,
+     "n_worlds": 2,
+     "repeatable_benefit": false
+    }
+   }
+  }
+ },
+ "partition": "development",
+ "partition_digest": "17490d3dbcc85673ebe624e6f04357f42b87a2316d431d2982af58e40e864457",
+ "partition_file": "configs/eval/partitions_i4_mcbr_v4.yaml",
+ "per_world": {
+  "8002000": {
+   "A-B0_random": {
+    "accepted_views": 2.0,
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.0007670120350042522,
+    "crack_abs_error_m": 0.008827281337962359,
+    "critical_delivered": 1.0,
+    "defect_read": 1.0,
+    "dwell_time_in_tolerance_s": 4.849999999999991,
+    "empty_plan_rate": 0.0,
+    "energy_j": 20870.99312959689,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "first_direct_revision_s": 52.3,
+    "flown_views_with_revision": 1.0,
+    "fraction_views_flown": 0.5,
+    "fraction_views_reached": 0.5,
+    "goal_rejections": 0.0,
+    "hidden_state_error_final": 0.09253806926590608,
+    "hidden_state_error_improvement": 0.9074619307340939,
+    "info_per_kj": 0.04347957594060216,
+    "info_per_time": 0.009074619307340938,
+    "inspection_goal_t_s": 32.0,
+    "mean_boresight_error_rad": 0.764589831321885,
+    "mean_closest_approach_m": 1.886811976092991,
+    "mean_feasible_candidates": 5.0,
+    "mean_view_direction_error_rad": 0.7421173363756801,
+    "mission_error_reduction": 0.9074619307340939,
+    "mission_success": 1.0,
+    "mission_wall_clock_s": 19.89885145801236,
+    "observations": 2.0,
+    "outcome_counts": {
+     "ABANDONED_MISSION_END": 0,
+     "ABANDONED_NAV_REJECTED": 0,
+     "ABANDONED_PREEMPTED": 0,
+     "ABANDONED_ROUTE_BLOCKED": 1,
+     "ABANDONED_SAFE_HOLD": 0,
+     "ABANDONED_TIMEOUT": 0,
+     "ABANDONED_TRAJECTORY_LOST": 0,
+     "ARRIVED_DWELL_SHORT": 0,
+     "COMPLETED_OFF_POSE": 0,
+     "FLOWN": 1
+    },
+    "patch_max_visible_fraction": 0.7708333333333334,
+    "planner": "A-B0_random",
+    "planner_name_in_run": "A-B0_random",
+    "planning_latency_ms": 440.75824999890756,
+    "plans": [
+     "PLAN",
+     "PLAN"
+    ],
+    "plans_need_satisfied": 0.0,
+    "plans_not_worth_cost": 0.0,
+    "plans_planned": 2.0,
+    "plans_total": 2.0,
+    "plans_with_no_feasible_candidate": 0.0,
+    "redundant_observations": 1.0,
+    "seed": 8002000,
+    "target_observed": 1.0,
+    "time_s": 100.0,
+    "time_to_detection_s": 52.3,
+    "travel_m": 28.415055820769386,
+    "uir": 0.0,
+    "views_before_detection": 1.0,
+    "views_flown": 1.0
+   },
+   "A-B2_coverage": {
+    "accepted_views": 4.0,
+    "collisions": 8.0,
+    "corrosion_abs_error_m": 0.008760228834361327,
+    "crack_abs_error_m": 0.09051767503251772,
+    "critical_delivered": 0.0,
+    "defect_read": 0.0,
+    "dwell_time_in_tolerance_s": 0.0,
+    "empty_plan_rate": 0.0,
+    "energy_j": 23083.763537819963,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "first_direct_revision_s": null,
+    "flown_views_with_revision": 0.0,
+    "fraction_views_flown": 0.0,
+    "fraction_views_reached": 0.0,
+    "goal_rejections": 1.0,
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 32.0,
+    "mean_boresight_error_rad": 1.331585585216407,
+    "mean_closest_approach_m": 3.4534756294352,
+    "mean_feasible_candidates": 5.0,
+    "mean_view_direction_error_rad": 1.6169006474665328,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "mission_wall_clock_s": 20.684800290997373,
+    "observations": 4.0,
+    "outcome_counts": {
+     "ABANDONED_MISSION_END": 0,
+     "ABANDONED_NAV_REJECTED": 0,
+     "ABANDONED_PREEMPTED": 0,
+     "ABANDONED_ROUTE_BLOCKED": 4,
+     "ABANDONED_SAFE_HOLD": 0,
+     "ABANDONED_TIMEOUT": 0,
+     "ABANDONED_TRAJECTORY_LOST": 0,
+     "ARRIVED_DWELL_SHORT": 0,
+     "COMPLETED_OFF_POSE": 0,
+     "FLOWN": 0
+    },
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B2_coverage",
+    "planner_name_in_run": "A-B2_coverage",
+    "planning_latency_ms": 444.45419799740193,
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "plans_need_satisfied": 0.0,
+    "plans_not_worth_cost": 0.0,
+    "plans_planned": 4.0,
+    "plans_total": 4.0,
+    "plans_with_no_feasible_candidate": 0.0,
+    "redundant_observations": 4.0,
+    "seed": 8002000,
+    "target_observed": 0.0,
+    "time_s": 100.0,
+    "time_to_detection_s": 100.0,
+    "travel_m": 26.483622146131133,
+    "uir": 0.0,
+    "views_before_detection": 4.0,
+    "views_flown": 0.0
+   },
+   "V4_protocol_only": {
+    "accepted_views": 1.0,
+    "collisions": 3.0,
+    "corrosion_abs_error_m": 0.0015505480280372241,
+    "crack_abs_error_m": 0.023223040258763095,
+    "critical_delivered": 1.0,
+    "defect_read": 1.0,
+    "dwell_time_in_tolerance_s": 9.599999999999982,
+    "empty_plan_rate": 0.0,
+    "energy_j": 24151.023797890866,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "first_direct_revision_s": 53.3,
+    "flown_views_with_revision": 1.0,
+    "fraction_views_flown": 1.0,
+    "fraction_views_reached": 1.0,
+    "goal_rejections": 0.0,
+    "hidden_state_error_final": 0.21677832432783686,
+    "hidden_state_error_improvement": 0.7832216756721632,
+    "info_per_kj": 0.03243016454402081,
+    "info_per_time": 0.007832216756721631,
+    "inspection_goal_t_s": 32.0,
+    "mean_boresight_error_rad": 0.01132637909244849,
+    "mean_closest_approach_m": 0.13932528595730076,
+    "mean_feasible_candidates": 5.0,
+    "mean_view_direction_error_rad": 0.04635423383887421,
+    "mission_error_reduction": 0.7832216756721632,
+    "mission_success": 1.0,
+    "mission_wall_clock_s": 17.78542812500382,
+    "observations": 1.0,
+    "outcome_counts": {
+     "ABANDONED_MISSION_END": 0,
+     "ABANDONED_NAV_REJECTED": 0,
+     "ABANDONED_PREEMPTED": 0,
+     "ABANDONED_ROUTE_BLOCKED": 0,
+     "ABANDONED_SAFE_HOLD": 0,
+     "ABANDONED_TIMEOUT": 0,
+     "ABANDONED_TRAJECTORY_LOST": 0,
+     "ARRIVED_DWELL_SHORT": 0,
+     "COMPLETED_OFF_POSE": 0,
+     "FLOWN": 1
+    },
+    "patch_max_visible_fraction": 0.9166666666666666,
+    "planner": "V4_protocol_only",
+    "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+    "planning_latency_ms": 421.9432499958202,
+    "plans": [
+     "PLAN"
+    ],
+    "plans_need_satisfied": 0.0,
+    "plans_not_worth_cost": 0.0,
+    "plans_planned": 1.0,
+    "plans_total": 1.0,
+    "plans_with_no_feasible_candidate": 0.0,
+    "redundant_observations": 0.0,
+    "seed": 8002000,
+    "target_observed": 1.0,
+    "time_s": 100.0,
+    "time_to_detection_s": 53.3,
+    "travel_m": 29.512725208091236,
+    "uir": 0.0,
+    "views_before_detection": 0.0,
+    "views_flown": 1.0
+   },
+   "V5_efficiency_candidate": {
+    "accepted_views": 1.0,
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.001383750749385914,
+    "crack_abs_error_m": 0.0020942609400824985,
+    "critical_delivered": 1.0,
+    "defect_read": 1.0,
+    "dwell_time_in_tolerance_s": 8.599999999999985,
+    "empty_plan_rate": 0.0,
+    "energy_j": 21125.773984468222,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "first_direct_revision_s": 49.3,
+    "flown_views_with_revision": 1.0,
+    "fraction_views_flown": 1.0,
+    "fraction_views_reached": 1.0,
+    "goal_rejections": 0.0,
+    "hidden_state_error_final": 0.09054738711728982,
+    "hidden_state_error_improvement": 0.9094526128827102,
+    "info_per_kj": 0.043049434001866366,
+    "info_per_time": 0.009094526128827102,
+    "inspection_goal_t_s": 32.0,
+    "mean_boresight_error_rad": 0.003182589650810641,
+    "mean_closest_approach_m": 0.14596223731471739,
+    "mean_feasible_candidates": 5.0,
+    "mean_view_direction_error_rad": 0.03739698492542692,
+    "mission_error_reduction": 0.9094526128827102,
+    "mission_success": 1.0,
+    "mission_wall_clock_s": 19.6572045829962,
+    "observations": 1.0,
+    "outcome_counts": {
+     "ABANDONED_MISSION_END": 0,
+     "ABANDONED_NAV_REJECTED": 0,
+     "ABANDONED_PREEMPTED": 0,
+     "ABANDONED_ROUTE_BLOCKED": 0,
+     "ABANDONED_SAFE_HOLD": 0,
+     "ABANDONED_TIMEOUT": 0,
+     "ABANDONED_TRAJECTORY_LOST": 0,
+     "ARRIVED_DWELL_SHORT": 0,
+     "COMPLETED_OFF_POSE": 0,
+     "FLOWN": 1
+    },
+    "patch_max_visible_fraction": 0.4791666666666667,
+    "planner": "V5_efficiency_candidate",
+    "planner_name_in_run": "V4",
+    "planning_latency_ms": 415.72462499607354,
+    "plans": [
+     "PLAN"
+    ],
+    "plans_need_satisfied": 0.0,
+    "plans_not_worth_cost": 0.0,
+    "plans_planned": 1.0,
+    "plans_total": 1.0,
+    "plans_with_no_feasible_candidate": 0.0,
+    "redundant_observations": 0.0,
+    "seed": 8002000,
+    "target_observed": 1.0,
+    "time_s": 100.0,
+    "time_to_detection_s": 49.3,
+    "travel_m": 28.849450999880165,
+    "uir": 0.0,
+    "views_before_detection": 0.0,
+    "views_flown": 1.0
+   }
+  },
+  "8002001": {
+   "A-B0_random": {
+    "accepted_views": 4.0,
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.007040598176479052,
+    "crack_abs_error_m": 0.11200216618236314,
+    "critical_delivered": 0.0,
+    "defect_read": 0.0,
+    "dwell_time_in_tolerance_s": 7.949999999999988,
+    "empty_plan_rate": 0.0,
+    "energy_j": 19550.162105068877,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "first_direct_revision_s": null,
+    "flown_views_with_revision": 4.0,
+    "fraction_views_flown": 1.0,
+    "fraction_views_reached": 1.0,
+    "goal_rejections": 0.0,
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 34.0,
+    "mean_boresight_error_rad": 0.004539773615342968,
+    "mean_closest_approach_m": 0.023591692076203277,
+    "mean_feasible_candidates": 3.0,
+    "mean_view_direction_error_rad": 0.004995393455614492,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "mission_wall_clock_s": 20.4533325000084,
+    "observations": 4.0,
+    "outcome_counts": {
+     "ABANDONED_MISSION_END": 0,
+     "ABANDONED_NAV_REJECTED": 0,
+     "ABANDONED_PREEMPTED": 0,
+     "ABANDONED_ROUTE_BLOCKED": 0,
+     "ABANDONED_SAFE_HOLD": 0,
+     "ABANDONED_TIMEOUT": 0,
+     "ABANDONED_TRAJECTORY_LOST": 0,
+     "ARRIVED_DWELL_SHORT": 0,
+     "COMPLETED_OFF_POSE": 0,
+     "FLOWN": 4
+    },
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B0_random",
+    "planner_name_in_run": "A-B0_random",
+    "planning_latency_ms": 538.9306975048385,
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "plans_need_satisfied": 0.0,
+    "plans_not_worth_cost": 0.0,
+    "plans_planned": 4.0,
+    "plans_total": 4.0,
+    "plans_with_no_feasible_candidate": 0.0,
+    "redundant_observations": 4.0,
+    "seed": 8002001,
+    "target_observed": 0.0,
+    "time_s": 100.0,
+    "time_to_detection_s": 100.0,
+    "travel_m": 28.865982054649553,
+    "uir": 0.0,
+    "views_before_detection": 4.0,
+    "views_flown": 4.0
+   },
+   "A-B2_coverage": {
+    "accepted_views": 4.0,
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.007040598176479052,
+    "crack_abs_error_m": 0.11200216618236314,
+    "critical_delivered": 0.0,
+    "defect_read": 0.0,
+    "dwell_time_in_tolerance_s": 8.124999999999988,
+    "empty_plan_rate": 0.0,
+    "energy_j": 18932.411907120677,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "first_direct_revision_s": null,
+    "flown_views_with_revision": 4.0,
+    "fraction_views_flown": 1.0,
+    "fraction_views_reached": 1.0,
+    "goal_rejections": 0.0,
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 34.0,
+    "mean_boresight_error_rad": 0.009899020596107588,
+    "mean_closest_approach_m": 0.017963814699937648,
+    "mean_feasible_candidates": 3.0,
+    "mean_view_direction_error_rad": 0.004710994756447841,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "mission_wall_clock_s": 20.531916000007186,
+    "observations": 4.0,
+    "outcome_counts": {
+     "ABANDONED_MISSION_END": 0,
+     "ABANDONED_NAV_REJECTED": 0,
+     "ABANDONED_PREEMPTED": 0,
+     "ABANDONED_ROUTE_BLOCKED": 0,
+     "ABANDONED_SAFE_HOLD": 0,
+     "ABANDONED_TIMEOUT": 0,
+     "ABANDONED_TRAJECTORY_LOST": 0,
+     "ARRIVED_DWELL_SHORT": 0,
+     "COMPLETED_OFF_POSE": 0,
+     "FLOWN": 4
+    },
+    "patch_max_visible_fraction": 0.0,
+    "planner": "A-B2_coverage",
+    "planner_name_in_run": "A-B2_coverage",
+    "planning_latency_ms": 537.4595002431306,
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "plans_need_satisfied": 0.0,
+    "plans_not_worth_cost": 0.0,
+    "plans_planned": 4.0,
+    "plans_total": 4.0,
+    "plans_with_no_feasible_candidate": 0.0,
+    "redundant_observations": 4.0,
+    "seed": 8002001,
+    "target_observed": 0.0,
+    "time_s": 100.0,
+    "time_to_detection_s": 100.0,
+    "travel_m": 28.366050417287646,
+    "uir": 0.0,
+    "views_before_detection": 4.0,
+    "views_flown": 4.0
+   },
+   "V4_protocol_only": {
+    "accepted_views": 4.0,
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.007040598176479052,
+    "crack_abs_error_m": 0.11200216618236314,
+    "critical_delivered": 0.0,
+    "defect_read": 0.0,
+    "dwell_time_in_tolerance_s": 12.400000000000016,
+    "empty_plan_rate": 0.0,
+    "energy_j": 16318.51180611984,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "first_direct_revision_s": null,
+    "flown_views_with_revision": 3.0,
+    "fraction_views_flown": 0.75,
+    "fraction_views_reached": 1.0,
+    "goal_rejections": 0.0,
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 34.0,
+    "mean_boresight_error_rad": 0.008148154327509483,
+    "mean_closest_approach_m": 0.022500093359661032,
+    "mean_feasible_candidates": 3.0,
+    "mean_view_direction_error_rad": 0.006187683181412046,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "mission_wall_clock_s": 29.75774879200617,
+    "observations": 4.0,
+    "outcome_counts": {
+     "ABANDONED_MISSION_END": 1,
+     "ABANDONED_NAV_REJECTED": 0,
+     "ABANDONED_PREEMPTED": 0,
+     "ABANDONED_ROUTE_BLOCKED": 0,
+     "ABANDONED_SAFE_HOLD": 0,
+     "ABANDONED_TIMEOUT": 0,
+     "ABANDONED_TRAJECTORY_LOST": 0,
+     "ARRIVED_DWELL_SHORT": 0,
+     "COMPLETED_OFF_POSE": 0,
+     "FLOWN": 3
+    },
+    "patch_max_visible_fraction": 0.0,
+    "planner": "V4_protocol_only",
+    "planner_name_in_run": "PRODUCTION[V-bayes_eig_ratio]",
+    "planning_latency_ms": 553.1925832474371,
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "plans_need_satisfied": 0.0,
+    "plans_not_worth_cost": 0.0,
+    "plans_planned": 4.0,
+    "plans_total": 4.0,
+    "plans_with_no_feasible_candidate": 0.0,
+    "redundant_observations": 4.0,
+    "seed": 8002001,
+    "target_observed": 0.0,
+    "time_s": 100.0,
+    "time_to_detection_s": 100.0,
+    "travel_m": 26.044770587660327,
+    "uir": 0.0,
+    "views_before_detection": 4.0,
+    "views_flown": 3.0
+   },
+   "V5_efficiency_candidate": {
+    "accepted_views": 4.0,
+    "collisions": 0.0,
+    "corrosion_abs_error_m": 0.007040598176479052,
+    "crack_abs_error_m": 0.11200216618236314,
+    "critical_delivered": 0.0,
+    "defect_read": 0.0,
+    "dwell_time_in_tolerance_s": 12.400000000000016,
+    "empty_plan_rate": 0.0,
+    "energy_j": 16318.51180611984,
+    "family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+    "first_direct_revision_s": null,
+    "flown_views_with_revision": 3.0,
+    "fraction_views_flown": 0.75,
+    "fraction_views_reached": 1.0,
+    "goal_rejections": 0.0,
+    "hidden_state_error_final": 1.0,
+    "hidden_state_error_improvement": 0.0,
+    "info_per_kj": 0.0,
+    "info_per_time": 0.0,
+    "inspection_goal_t_s": 34.0,
+    "mean_boresight_error_rad": 0.008148154327509483,
+    "mean_closest_approach_m": 0.022500093359661032,
+    "mean_feasible_candidates": 3.0,
+    "mean_view_direction_error_rad": 0.006187683181412046,
+    "mission_error_reduction": 0.0,
+    "mission_success": 0.0,
+    "mission_wall_clock_s": 29.63221804201021,
+    "observations": 4.0,
+    "outcome_counts": {
+     "ABANDONED_MISSION_END": 1,
+     "ABANDONED_NAV_REJECTED": 0,
+     "ABANDONED_PREEMPTED": 0,
+     "ABANDONED_ROUTE_BLOCKED": 0,
+     "ABANDONED_SAFE_HOLD": 0,
+     "ABANDONED_TIMEOUT": 0,
+     "ABANDONED_TRAJECTORY_LOST": 0,
+     "ARRIVED_DWELL_SHORT": 0,
+     "COMPLETED_OFF_POSE": 0,
+     "FLOWN": 3
+    },
+    "patch_max_visible_fraction": 0.0,
+    "planner": "V5_efficiency_candidate",
+    "planner_name_in_run": "V4",
+    "planning_latency_ms": 547.6676042453619,
+    "plans": [
+     "PLAN",
+     "PLAN",
+     "PLAN",
+     "PLAN"
+    ],
+    "plans_need_satisfied": 0.0,
+    "plans_not_worth_cost": 0.0,
+    "plans_planned": 4.0,
+    "plans_total": 4.0,
+    "plans_with_no_feasible_candidate": 0.0,
+    "redundant_observations": 4.0,
+    "seed": 8002001,
+    "target_observed": 0.0,
+    "time_s": 100.0,
+    "time_to_detection_s": 100.0,
+    "travel_m": 26.044770587660327,
+    "uir": 0.0,
+    "views_before_detection": 4.0,
+    "views_flown": 3.0
+   }
+  }
+ },
+ "primary_metric": "hidden_state_error_improvement",
+ "purpose": "design",
+ "question": "Can a route-aware, more cost-sensitive V5 candidate improve the failed formal I4 resource-normalized criterion against random views without reading final_test?",
+ "read_table": {
+  "A-B0_random": {
+   "accepted_views": 6.0,
+   "fraction_read": 0.5,
+   "mean": 0.45373096536704693,
+   "mean_time_to_detection_s": 52.3,
+   "mean_views_before_detection": 1.0,
+   "mean_when_read": 0.9074619307340939,
+   "n": 2,
+   "views_flown": 5.0,
+   "worlds_read": 1
+  },
+  "A-B2_coverage": {
+   "accepted_views": 8.0,
+   "fraction_read": 0.0,
+   "mean": 0.0,
+   "mean_time_to_detection_s": null,
+   "mean_views_before_detection": null,
+   "mean_when_read": null,
+   "n": 2,
+   "views_flown": 4.0,
+   "worlds_read": 0
+  },
+  "V4_protocol_only": {
+   "accepted_views": 5.0,
+   "fraction_read": 0.5,
+   "mean": 0.3916108378360816,
+   "mean_time_to_detection_s": 53.3,
+   "mean_views_before_detection": 0.0,
+   "mean_when_read": 0.7832216756721632,
+   "n": 2,
+   "views_flown": 4.0,
+   "worlds_read": 1
+  },
+  "V5_efficiency_candidate": {
+   "accepted_views": 5.0,
+   "fraction_read": 0.5,
+   "mean": 0.4547263064413551,
+   "mean_time_to_detection_s": 49.3,
+   "mean_views_before_detection": 0.0,
+   "mean_when_read": 0.9094526128827102,
+   "n": 2,
+   "views_flown": 4.0,
+   "worlds_read": 1
+  }
+ },
+ "scenario": "I4-OCCLUDED",
+ "summary": {
+  "A-B0_random": {
+   "accepted_views": {
+    "mean": 3.0,
+    "n": 2,
+    "std": 1.0
+   },
+   "collisions": {
+    "mean": 0.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "defect_read": {
+    "mean": 0.5,
+    "n": 2,
+    "std": 0.5
+   },
+   "empty_plan_rate": {
+    "mean": 0.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "energy_j": {
+    "mean": 20210.577617332885,
+    "n": 2,
+    "std": 660.4155122640059
+   },
+   "fraction_views_flown": {
+    "mean": 0.75,
+    "n": 2,
+    "std": 0.25
+   },
+   "fraction_views_reached": {
+    "mean": 0.75,
+    "n": 2,
+    "std": 0.25
+   },
+   "hidden_state_error_final": {
+    "mean": 0.5462690346329531,
+    "n": 2,
+    "std": 0.45373096536704693
+   },
+   "hidden_state_error_improvement": {
+    "mean": 0.45373096536704693,
+    "n": 2,
+    "std": 0.45373096536704693
+   },
+   "info_per_kj": {
+    "mean": 0.02173978797030108,
+    "n": 2,
+    "std": 0.02173978797030108
+   },
+   "info_per_time": {
+    "mean": 0.004537309653670469,
+    "n": 2,
+    "std": 0.004537309653670469
+   },
+   "mean_boresight_error_rad": {
+    "mean": 0.38456480246861396,
+    "n": 2,
+    "std": 0.380025028853271
+   },
+   "mean_closest_approach_m": {
+    "mean": 0.9552018340845971,
+    "n": 2,
+    "std": 0.9316101420083938
+   },
+   "mean_view_direction_error_rad": {
+    "mean": 0.3735563649156473,
+    "n": 2,
+    "std": 0.3685609714600328
+   },
+   "mission_error_reduction": {
+    "mean": 0.45373096536704693,
+    "n": 2,
+    "std": 0.45373096536704693
+   },
+   "mission_success": {
+    "mean": 0.5,
+    "n": 2,
+    "std": 0.5
+   },
+   "observations": {
+    "mean": 3.0,
+    "n": 2,
+    "std": 1.0
+   },
+   "patch_max_visible_fraction": {
+    "mean": 0.3854166666666667,
+    "n": 2,
+    "std": 0.3854166666666667
+   },
+   "planning_latency_ms": {
+    "mean": 489.844473751873,
+    "n": 2,
+    "std": 49.08622375296545
+   },
+   "redundant_observations": {
+    "mean": 2.5,
+    "n": 2,
+    "std": 1.5
+   },
+   "target_observed": {
+    "mean": 0.5,
+    "n": 2,
+    "std": 0.5
+   },
+   "time_s": {
+    "mean": 100.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "time_to_detection_s": {
+    "mean": 76.15,
+    "n": 2,
+    "std": 23.85
+   },
+   "travel_m": {
+    "mean": 28.64051893770947,
+    "n": 2,
+    "std": 0.2254631169400838
+   },
+   "views_before_detection": {
+    "mean": 2.5,
+    "n": 2,
+    "std": 1.5
+   }
+  },
+  "A-B2_coverage": {
+   "accepted_views": {
+    "mean": 4.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "collisions": {
+    "mean": 4.0,
+    "n": 2,
+    "std": 4.0
+   },
+   "defect_read": {
+    "mean": 0.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "empty_plan_rate": {
+    "mean": 0.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "energy_j": {
+    "mean": 21008.08772247032,
+    "n": 2,
+    "std": 2075.675815349643
+   },
+   "fraction_views_flown": {
+    "mean": 0.5,
+    "n": 2,
+    "std": 0.5
+   },
+   "fraction_views_reached": {
+    "mean": 0.5,
+    "n": 2,
+    "std": 0.5
+   },
+   "hidden_state_error_final": {
+    "mean": 1.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "hidden_state_error_improvement": {
+    "mean": 0.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "info_per_kj": {
+    "mean": 0.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "info_per_time": {
+    "mean": 0.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "mean_boresight_error_rad": {
+    "mean": 0.6707423029062572,
+    "n": 2,
+    "std": 0.6608432823101497
+   },
+   "mean_closest_approach_m": {
+    "mean": 1.7357197220675689,
+    "n": 2,
+    "std": 1.7177559073676312
+   },
+   "mean_view_direction_error_rad": {
+    "mean": 0.8108058211114904,
+    "n": 2,
+    "std": 0.8060948263550425
+   },
+   "mission_error_reduction": {
+    "mean": 0.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "mission_success": {
+    "mean": 0.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "observations": {
+    "mean": 4.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "patch_max_visible_fraction": {
+    "mean": 0.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "planning_latency_ms": {
+    "mean": 490.95684912026627,
+    "n": 2,
+    "std": 46.502651122864336
+   },
+   "redundant_observations": {
+    "mean": 4.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "target_observed": {
+    "mean": 0.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "time_s": {
+    "mean": 100.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "time_to_detection_s": {
+    "mean": 100.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "travel_m": {
+    "mean": 27.42483628170939,
+    "n": 2,
+    "std": 0.9412141355782566
+   },
+   "views_before_detection": {
+    "mean": 4.0,
+    "n": 2,
+    "std": 0.0
+   }
+  },
+  "V4_protocol_only": {
+   "accepted_views": {
+    "mean": 2.5,
+    "n": 2,
+    "std": 1.5
+   },
+   "collisions": {
+    "mean": 1.5,
+    "n": 2,
+    "std": 1.5
+   },
+   "defect_read": {
+    "mean": 0.5,
+    "n": 2,
+    "std": 0.5
+   },
+   "empty_plan_rate": {
+    "mean": 0.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "energy_j": {
+    "mean": 20234.767802005354,
+    "n": 2,
+    "std": 3916.2559958855136
+   },
+   "fraction_views_flown": {
+    "mean": 0.875,
+    "n": 2,
+    "std": 0.125
+   },
+   "fraction_views_reached": {
+    "mean": 1.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "hidden_state_error_final": {
+    "mean": 0.6083891621639185,
+    "n": 2,
+    "std": 0.3916108378360816
+   },
+   "hidden_state_error_improvement": {
+    "mean": 0.3916108378360816,
+    "n": 2,
+    "std": 0.3916108378360816
+   },
+   "info_per_kj": {
+    "mean": 0.016215082272010406,
+    "n": 2,
+    "std": 0.016215082272010406
+   },
+   "info_per_time": {
+    "mean": 0.0039161083783608155,
+    "n": 2,
+    "std": 0.0039161083783608155
+   },
+   "mean_boresight_error_rad": {
+    "mean": 0.009737266709978987,
+    "n": 2,
+    "std": 0.0015891123824695041
+   },
+   "mean_closest_approach_m": {
+    "mean": 0.08091268965848089,
+    "n": 2,
+    "std": 0.05841259629881986
+   },
+   "mean_view_direction_error_rad": {
+    "mean": 0.026270958510143126,
+    "n": 2,
+    "std": 0.02008327532873108
+   },
+   "mission_error_reduction": {
+    "mean": 0.3916108378360816,
+    "n": 2,
+    "std": 0.3916108378360816
+   },
+   "mission_success": {
+    "mean": 0.5,
+    "n": 2,
+    "std": 0.5
+   },
+   "observations": {
+    "mean": 2.5,
+    "n": 2,
+    "std": 1.5
+   },
+   "patch_max_visible_fraction": {
+    "mean": 0.4583333333333333,
+    "n": 2,
+    "std": 0.4583333333333333
+   },
+   "planning_latency_ms": {
+    "mean": 487.5679166216287,
+    "n": 2,
+    "std": 65.62466662580846
+   },
+   "redundant_observations": {
+    "mean": 2.0,
+    "n": 2,
+    "std": 2.0
+   },
+   "target_observed": {
+    "mean": 0.5,
+    "n": 2,
+    "std": 0.5
+   },
+   "time_s": {
+    "mean": 100.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "time_to_detection_s": {
+    "mean": 76.65,
+    "n": 2,
+    "std": 23.35
+   },
+   "travel_m": {
+    "mean": 27.778747897875782,
+    "n": 2,
+    "std": 1.7339773102154545
+   },
+   "views_before_detection": {
+    "mean": 2.0,
+    "n": 2,
+    "std": 2.0
+   }
+  },
+  "V5_efficiency_candidate": {
+   "accepted_views": {
+    "mean": 2.5,
+    "n": 2,
+    "std": 1.5
+   },
+   "collisions": {
+    "mean": 0.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "defect_read": {
+    "mean": 0.5,
+    "n": 2,
+    "std": 0.5
+   },
+   "empty_plan_rate": {
+    "mean": 0.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "energy_j": {
+    "mean": 18722.14289529403,
+    "n": 2,
+    "std": 2403.6310891741914
+   },
+   "fraction_views_flown": {
+    "mean": 0.875,
+    "n": 2,
+    "std": 0.125
+   },
+   "fraction_views_reached": {
+    "mean": 1.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "hidden_state_error_final": {
+    "mean": 0.5452736935586449,
+    "n": 2,
+    "std": 0.4547263064413551
+   },
+   "hidden_state_error_improvement": {
+    "mean": 0.4547263064413551,
+    "n": 2,
+    "std": 0.4547263064413551
+   },
+   "info_per_kj": {
+    "mean": 0.021524717000933183,
+    "n": 2,
+    "std": 0.021524717000933183
+   },
+   "info_per_time": {
+    "mean": 0.004547263064413551,
+    "n": 2,
+    "std": 0.004547263064413551
+   },
+   "mean_boresight_error_rad": {
+    "mean": 0.005665371989160062,
+    "n": 2,
+    "std": 0.0024827823383494207
+   },
+   "mean_closest_approach_m": {
+    "mean": 0.0842311653371892,
+    "n": 2,
+    "std": 0.061731071977528175
+   },
+   "mean_view_direction_error_rad": {
+    "mean": 0.02179233405341948,
+    "n": 2,
+    "std": 0.015604650872007436
+   },
+   "mission_error_reduction": {
+    "mean": 0.4547263064413551,
+    "n": 2,
+    "std": 0.4547263064413551
+   },
+   "mission_success": {
+    "mean": 0.5,
+    "n": 2,
+    "std": 0.5
+   },
+   "observations": {
+    "mean": 2.5,
+    "n": 2,
+    "std": 1.5
+   },
+   "patch_max_visible_fraction": {
+    "mean": 0.23958333333333334,
+    "n": 2,
+    "std": 0.23958333333333334
+   },
+   "planning_latency_ms": {
+    "mean": 481.6961146207177,
+    "n": 2,
+    "std": 65.97148962464416
+   },
+   "redundant_observations": {
+    "mean": 2.0,
+    "n": 2,
+    "std": 2.0
+   },
+   "target_observed": {
+    "mean": 0.5,
+    "n": 2,
+    "std": 0.5
+   },
+   "time_s": {
+    "mean": 100.0,
+    "n": 2,
+    "std": 0.0
+   },
+   "time_to_detection_s": {
+    "mean": 74.65,
+    "n": 2,
+    "std": 25.35
+   },
+   "travel_m": {
+    "mean": 27.447110793770246,
+    "n": 2,
+    "std": 1.402340206109919
+   },
+   "views_before_detection": {
+    "mean": 2.0,
+    "n": 2,
+    "std": 2.0
+   }
+  }
+ },
+ "world_family": "ACTIVE_INSPECTION_OCCLUDED_V1",
+ "world_seeds": [
+  8002000,
+  8002001
+ ]
+}
