@@ -149,10 +149,17 @@ def _osfm_s_smoke_job(job: dict[str, Any], run: RunDirectory, seed: int) -> dict
     return run_osfm_smoke(run, job, seed, architecture_faithful=True)
 
 
+def _osfm_u1_rgb_smoke_job(job: dict[str, Any], run: RunDirectory, seed: int) -> dict[str, Any]:
+    from conrad.foundation.pretraining.u1_rgb import run_u1_rgb_smoke
+
+    return run_u1_rgb_smoke(run, job, seed)
+
+
 JOBS.update(
     {
         "osfm_contract_tiny": _osfm_contract_tiny_job,
         "osfm_s_smoke": _osfm_s_smoke_job,
+        "osfm_u1_rgb_smoke": _osfm_u1_rgb_smoke_job,
     }
 )
 

@@ -1,0 +1,28 @@
+job: osfm_u1_rgb_smoke
+experiment_id: OSFM-U1-RGB-SMOKE-001
+scale: smoke
+stage_id: U1-RGB
+seed: 20260401
+batch_size: 2
+image_size: 28
+patch_size: 14
+width: 384
+layers: 12
+heads: 6
+lr: 0.0002
+optimizer_steps: 1
+token_mask_fraction: 0.60
+min_visible_fraction: 0.10
+objective_weights:
+  masked_latent_prediction: 1.0
+  global_consistency: 0.5
+  degradation: 0.25
+  metric: 0.25
+pretrained_weights:
+  required_for_smoke: false
+  used: false
+  source: none
+  note: deterministic/random initialization smoke only; exact DINOv2 checkpoint acquisition remains a later research prerequisite.
+data:
+  source: synthetic_rgb_engineering_smoke
+  not_domain_pretraining_evidence: true
