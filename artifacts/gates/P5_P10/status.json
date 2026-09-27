@@ -1,0 +1,55 @@
+{
+  "blockers": [
+    {
+      "blocker_id": "P5-P10-OSFM-01",
+      "detail": "qualified OSFM-S-PRETRAIN-V1 metadata path not supplied",
+      "scope": "EXTERNAL"
+    }
+  ],
+  "contract_test": "tests/unit/oceansense/test_p5_p10_contracts.py",
+  "contract_test_result": "PASS",
+  "decision": "IMPLEMENTED",
+  "gate_id": "P5-P10-DOWNSTREAM-CONTRACTS",
+  "phases": {
+    "P10": {
+      "final_validation_dependency": "OSFM-S-PRETRAIN-V1",
+      "status": "IMPLEMENTED",
+      "validated_run_allowed": false
+    },
+    "P5": {
+      "final_validation_dependency": "OSFM-S-PRETRAIN-V1",
+      "status": "IMPLEMENTED",
+      "validated_run_allowed": false
+    },
+    "P6": {
+      "final_validation_dependency": "OSFM-S-PRETRAIN-V1",
+      "status": "IMPLEMENTED",
+      "validated_run_allowed": false
+    },
+    "P7": {
+      "final_validation_dependency": "OSFM-S-PRETRAIN-V1",
+      "status": "IMPLEMENTED",
+      "validated_run_allowed": false
+    },
+    "P8": {
+      "final_validation_dependency": "OSFM-S-PRETRAIN-V1",
+      "status": "IMPLEMENTED",
+      "validated_run_allowed": false
+    },
+    "P9": {
+      "final_validation_dependency": "OSFM-S-PRETRAIN-V1",
+      "status": "IMPLEMENTED",
+      "validated_run_allowed": false
+    }
+  },
+  "qualified_checkpoint": {
+    "detail": "no qualified checkpoint metadata",
+    "metadata_supplied": false,
+    "required_label": "OSFM-S-PRETRAIN-V1",
+    "verified": false
+  },
+  "schema_version": "1.0.0",
+  "source_commit": "c77f488",
+  "status": "IMPLEMENTED",
+  "status_note": "P5-P10 implementation contracts may be IMPLEMENTED with fixtures/dev checkpoints; final integrated VALIDATED-RUN requires verified OSFM-S-PRETRAIN-V1."
+}

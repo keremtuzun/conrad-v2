@@ -158,6 +158,14 @@ def test_p6_adapter_is_384_512_256_and_preserves_direct_measurements() -> None:
     assert bundle.learned_evidence.measurements == ev.measurements
 
 
+def test_p6_adapter_rejects_wrong_osfm_dimension_and_is_deterministic() -> None:
+    adapter_a = RepresentationAdapter(seed=99)
+    adapter_b = RepresentationAdapter(seed=99)
+    assert adapter_a.transform(representation()) == adapter_b.transform(representation())
+    with pytest.raises(ValueError, match="384D"):
+        adapter_a.transform(tuple(0.0 for _ in range(383)))
+
+
 def test_p7_uncertainty_channels_and_competing_hypotheses() -> None:
     base = Uncertainty(aleatoric=0.1, epistemic=0.8, contradiction=0.0, observational=0.9)
     fresh = Uncertainty(aleatoric=0.2, epistemic=0.3, contradiction=0.4, observational=0.2)
@@ -207,6 +215,17 @@ def test_p9_gateway_preserves_host_boundary_and_degraded_paths() -> None:
         )
 
 
+def test_p9_gateway_refuses_when_host_has_no_supported_fallback() -> None:
+    decision = HostIntentGateway().from_plan(
+        plan(),
+        HostCapabilityProfile(host_id="minimal-host", capabilities=()),
+        uid("intent"),
+    )
+    assert not decision.accepted
+    assert decision.intent is None
+    assert decision.reason_codes == ("HOST_CAPABILITY_UNAVAILABLE",)
+
+
 def test_p10_alpha_records_asset_memory_replay_and_degraded_operation(tmp_path: Path) -> None:
     memory = AssetMemory.load(tmp_path / "asset_memory.json")
     alpha = OceanSenseAlpha(memory, RepresentationAdapter(seed=7))
@@ -219,3 +238,17 @@ def test_p10_alpha_records_asset_memory_replay_and_degraded_operation(tmp_path: 
     loaded = AssetMemory.load(tmp_path / "asset_memory.json")
     assert loaded.records[0]["replay_key"] == result.replay_key
     assert loaded.records[0]["direct_physical_measurements"] == ["crack_length_m"]
+
+
+def test_p10_alpha_replay_key_and_outputs_are_deterministic(tmp_path: Path) -> None:
+    first = OceanSenseAlpha(AssetMemory.load(tmp_path / "a.json"), RepresentationAdapter(seed=123)).run(
+        evidence(), representation()
+    )
+    second = OceanSenseAlpha(AssetMemory.load(tmp_path / "b.json"), RepresentationAdapter(seed=123)).run(
+        evidence(), representation()
+    )
+    assert first.replay_key == second.replay_key
+    assert first.evidence_bundle.learned_evidence.embedding == second.evidence_bundle.learned_evidence.embedding
+    assert [o.model_dump(mode="json") for o in first.task_outputs] == [
+        o.model_dump(mode="json") for o in second.task_outputs
+    ]

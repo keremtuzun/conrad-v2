@@ -201,6 +201,35 @@ def eval_list() -> None:
         typer.echo(f"{eid:<22} {module}  [{cfg}]")
 
 
+@eval_app.command("oceansense-p5-p10-status")
+def eval_oceansense_p5_p10_status(
+    test_result: str = typer.Option("PASS", "--test-result", help="PASS only after the P5-P10 contract tests pass"),
+    qualified_checkpoint_metadata: str = typer.Option(None, "--qualified-checkpoint-metadata"),
+    output: str = typer.Option("artifacts/gates/P5_P10/status.json", "--output"),
+) -> None:
+    """Write the P5-P10 downstream status gate. Does not promote without OSFM-S-PRETRAIN-V1."""
+    from conrad.oceansense.status import evaluate_p5_p10_status, write_p5_p10_status
+
+    report = evaluate_p5_p10_status(
+        test_result=test_result,
+        qualified_checkpoint_metadata=qualified_checkpoint_metadata,
+    )
+    written = write_p5_p10_status(report, output)
+    typer.echo(
+        json.dumps(
+            {
+                "gate_id": report["gate_id"],
+                "status": report["status"],
+                "decision": report["decision"],
+                "blockers": report["blockers"],
+                "report": str(written),
+            },
+            indent=2,
+        )
+    )
+    raise typer.Exit(0 if report["decision"] in {"IMPLEMENTED", "VALIDATED-RUN"} else 1)
+
+
 @data_app.command("verify")
 def data_verify(
     manifest: str = typer.Option(..., "--manifest", help="manifest id, id@version, or path"),
