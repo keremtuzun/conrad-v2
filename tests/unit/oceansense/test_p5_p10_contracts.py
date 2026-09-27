@@ -284,10 +284,15 @@ def test_p10_alpha_records_asset_memory_replay_and_degraded_operation(tmp_path: 
     assert result.evidence_bundle.model2_embedding_dim == 256
     assert len(result.task_outputs) == 4
     assert result.gateway_decision is not None and result.gateway_decision.accepted
+    assert result.coverage.planned
+    assert result.coverage.host_accepted is True
+    assert result.coverage.observation_count == 1
+    assert result.coverage.status == "ACCEPTED_PLAN"
     assert not result.degraded
     loaded = AssetMemory.load(tmp_path / "asset_memory.json")
     assert loaded.records[0]["replay_key"] == result.replay_key
     assert loaded.records[0]["direct_physical_measurements"] == ["crack_length_m"]
+    assert loaded.records[0]["coverage"]["status"] == "ACCEPTED_PLAN"
 
 
 def test_p10_alpha_replay_key_and_outputs_are_deterministic(tmp_path: Path) -> None:
@@ -315,6 +320,8 @@ def test_p10_alpha_records_adapter_failure_as_degraded_operation(tmp_path: Path)
     loaded = AssetMemory.load(tmp_path / "asset_memory.json")
     assert loaded.records[0]["degraded"] is True
     assert loaded.records[0]["model2_embedding_dim"] is None
+    assert loaded.records[0]["coverage"]["status"] == "FAILED_BEFORE_PLANNING"
+    assert loaded.records[0]["coverage"]["observation_count"] == 0
     assert loaded.records[0]["direct_physical_measurements"] == ["crack_length_m"]
 
 
@@ -371,6 +378,7 @@ def test_p5_p10_end_to_end_fixture_chain_preserves_boundaries(tmp_path: Path) ->
         uid("intent-e2e"),
     )
     assert result.gateway_decision is not None and result.gateway_decision.accepted
+    assert result.coverage.status == "ACCEPTED_PLAN"
     assert not result.degraded
     assert result.evidence_bundle.direct_physical_evidence is ev
     assert {o.head_name for o in result.task_outputs} == {o.head_name for o in head_outputs}

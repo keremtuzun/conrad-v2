@@ -62,7 +62,7 @@ REQUIREMENTS: tuple[dict[str, Any], ...] = (
     },
     {
         "phase": "P10",
-        "requirement": "Alpha integration with persistence, provenance, replay, failure handling, Asset Memory, degraded operation",
+        "requirement": "Alpha integration with persistence, provenance, replay, failure handling, coverage, Asset Memory, degraded operation",
         "implementation": "conrad/oceansense/alpha.py",
         "tests": (
             "tests/unit/oceansense/test_p5_p10_contracts.py::test_p10_alpha_records_asset_memory_replay_and_degraded_operation",

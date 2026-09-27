@@ -88,7 +88,7 @@
       "final_validation_dependency": "OSFM-S-PRETRAIN-V1",
       "implementation": "conrad/oceansense/alpha.py",
       "phase": "P10",
-      "requirement": "Alpha integration with persistence, provenance, replay, failure handling, Asset Memory, degraded operation",
+      "requirement": "Alpha integration with persistence, provenance, replay, failure handling, coverage, Asset Memory, degraded operation",
       "status": "IMPLEMENTED",
       "tests": [
         "tests/unit/oceansense/test_p5_p10_contracts.py::test_p10_alpha_records_asset_memory_replay_and_degraded_operation",
@@ -122,6 +122,6 @@
     }
   ],
   "schema_version": "1.0.0",
-  "source_commit": "33258b0",
+  "source_commit": "b617f76",
   "status": "IMPLEMENTED"
 }

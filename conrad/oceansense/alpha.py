@@ -39,10 +39,20 @@ class AssetMemory:
 
 
 @dataclass(frozen=True)
+class CoverageRecord:
+    target_region: dict[str, object] | None
+    planned: bool
+    host_accepted: bool | None
+    observation_count: int
+    status: str
+
+
+@dataclass(frozen=True)
 class AlphaIntegrationResult:
     evidence_bundle: Model2EvidenceBundle | None
     task_outputs: tuple[TaskHeadOutput, ...]
     gateway_decision: GatewayDecision | None
+    coverage: CoverageRecord
     replay_key: str
     degraded: bool
     failures: tuple[str, ...] = ()
@@ -73,6 +83,13 @@ class OceanSenseAlpha:
         except ValueError as exc:
             replay_key = f"{evidence.run_id}:{evidence.evidence_id}:{self.adapter.version}:failed"
             failures.append(f"ADAPTER_FAILURE:{exc}")
+            coverage = CoverageRecord(
+                target_region=None,
+                planned=False,
+                host_accepted=None,
+                observation_count=0,
+                status="FAILED_BEFORE_PLANNING",
+            )
             self.asset_memory.append(
                 {
                     "replay_key": replay_key,
@@ -81,6 +98,13 @@ class OceanSenseAlpha:
                     "direct_physical_measurements": sorted(evidence.measurements),
                     "task_heads": [],
                     "gateway_accepted": None,
+                    "coverage": {
+                        "target_region": coverage.target_region,
+                        "planned": coverage.planned,
+                        "host_accepted": coverage.host_accepted,
+                        "observation_count": coverage.observation_count,
+                        "status": coverage.status,
+                    },
                     "degraded": True,
                     "failures": failures,
                 }
@@ -89,6 +113,7 @@ class OceanSenseAlpha:
                 evidence_bundle=None,
                 task_outputs=(),
                 gateway_decision=None,
+                coverage=coverage,
                 replay_key=replay_key,
                 degraded=True,
                 failures=tuple(failures),
@@ -110,6 +135,16 @@ class OceanSenseAlpha:
             gateway_decision = self.gateway.from_plan(plan, host_profile, intent_id)
             if not gateway_decision.accepted:
                 failures.extend(gateway_decision.reason_codes)
+        target_region = None
+        if plan is not None and plan.primary_action is not None:
+            target_region = plan.primary_action.target_region.model_dump(mode="json")
+        coverage = CoverageRecord(
+            target_region=target_region,
+            planned=plan is not None and plan.primary_action is not None,
+            host_accepted=None if gateway_decision is None else gateway_decision.accepted,
+            observation_count=1 if gateway_decision is not None and gateway_decision.accepted else 0,
+            status="ACCEPTED_PLAN" if gateway_decision is not None and gateway_decision.accepted else "NOT_EXECUTED_BY_HOST",
+        )
         replay_key = f"{evidence.run_id}:{evidence.evidence_id}:{bundle.adapter_version}"
         degraded = bool(host_profile and host_profile.degraded) or bool(failures)
         self.asset_memory.append(
@@ -120,6 +155,13 @@ class OceanSenseAlpha:
                 "direct_physical_measurements": sorted(evidence.measurements),
                 "task_heads": [o.head_name for o in outputs],
                 "gateway_accepted": None if gateway_decision is None else gateway_decision.accepted,
+                "coverage": {
+                    "target_region": coverage.target_region,
+                    "planned": coverage.planned,
+                    "host_accepted": coverage.host_accepted,
+                    "observation_count": coverage.observation_count,
+                    "status": coverage.status,
+                },
                 "degraded": degraded,
                 "failures": failures,
             }
@@ -128,6 +170,7 @@ class OceanSenseAlpha:
             evidence_bundle=bundle,
             task_outputs=outputs,
             gateway_decision=gateway_decision,
+            coverage=coverage,
             replay_key=replay_key,
             degraded=degraded,
             failures=tuple(failures),
