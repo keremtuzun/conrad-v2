@@ -1,0 +1,73 @@
+{
+  "gate": "P4.8F",
+  "status": "VALIDATED-RUN",
+  "purpose": "Bounded non-promotable benchmark of the corrected U1 sonar effective-batch regime",
+  "source_commit": "15beda9f5bd2fe007401197c8bfdd79e8edca4da",
+  "cloud": {
+    "project": "project-41fe08b0-9696-4f8a-928",
+    "instance": "conrad-l4-p48-use1b",
+    "zone": "us-east1-b",
+    "provisioning": "on-demand",
+    "accelerator": "NVIDIA L4",
+    "measured_vram_gib": 22,
+    "final_instance_status": "TERMINATED"
+  },
+  "training": {
+    "branch": "U1-SONAR",
+    "optimizer_steps": 100,
+    "batch_size_per_gpu": 64,
+    "gradient_accumulation": 4,
+    "effective_batch": 256,
+    "deterministic_cuda_workspace": ":4096:8",
+    "optimizer_runtime_seconds": 150.477426977,
+    "optimizer_steps_per_second": 0.6645515006,
+    "projected_u1_sonar_100k_gpu_hours": 41.79928527,
+    "promotable": false
+  },
+  "result": {
+    "run_id": "train-osfm_u1_sonar_research-1790531977032673848",
+    "validation_loss": 0.022061197087168694,
+    "effective_rank": 65.09303283691406,
+    "formal_rank_threshold": 64,
+    "formal_rank_guard": "PASS",
+    "reload_matches": true,
+    "reload_max_abs_diff": 0.0,
+    "checkpoint_sha256": "59722e2d1aef4809869b047b828b8785e1e8f92d08ba154f0310366a22d09e3a",
+    "parameter_count": 21372288
+  },
+  "evidence": {
+    "local_run_directory": "artifacts/runs/train-osfm_u1_sonar_research-1790531977032673848",
+    "report": "artifacts/runs/train-osfm_u1_sonar_research-1790531977032673848/reports/p48_u1_sonar_research_report.json",
+    "run_state": "artifacts/runs/train-osfm_u1_sonar_research-1790531977032673848/run_state.json",
+    "cloud_log": "artifacts/gates/P4.8F/cloud/benchmark_run.out.txt",
+    "cloud_log_sha256": "969123a9ac408a1085031d081a21f44522681e682cc7e56bcf7f82e54fe64d6b"
+  },
+  "schedule_reconciliation": {
+    "p4_8_optimizer_steps": 360000,
+    "p4_9_optimizer_steps": 120000,
+    "p4_10_optimizer_steps": 120000,
+    "p4_11_optimizer_steps": 150000,
+    "total_optimizer_steps": 750000,
+    "neutral_projection_gpu_hours_at_measured_sonar_rate": 313.4946395,
+    "note": "P4.8 branches may run concurrently, but concurrency reduces wall time rather than aggregate GPU-hours. Later multimodal, temporal, and joint stages require their own bounded benchmarks."
+  },
+  "budget_gate": {
+    "global_p4_to_p10_cap_try": 3200,
+    "planning_rate_try_per_l4_hour": 26.56467942,
+    "neutral_p4_training_projection_try": 8328.205,
+    "projection_excludes": [
+      "P4.12 qualification",
+      "P5-P10 compute",
+      "persistent disk and snapshot charges",
+      "branch closeout and rerun contingency"
+    ],
+    "decision": "DO_NOT_LAUNCH_FULL_RUN",
+    "blocker": "EXTERNAL-PROJECT-OWNER-BUDGET-CAP",
+    "reason": "The measured-rate P4 projection alone exceeds the approved combined P4-P10 cap."
+  },
+  "limitations": [
+    "This 100-step benchmark validates execution and the corrected anti-collapse regime; it is not a promotable research checkpoint.",
+    "The cost figure is a planning projection, not a Google Cloud billing export or an actual-spend claim.",
+    "The neutral full-schedule projection applies the measured sonar rate to other branches only for budget gating; each branch still requires its own benchmark."
+  ]
+}
