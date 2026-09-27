@@ -40,7 +40,10 @@ REQUIREMENTS: tuple[dict[str, Any], ...] = (
         "phase": "P7",
         "requirement": "four-channel uncertainty, provenance-aware update, contradiction handling, competing hypotheses",
         "implementation": "conrad/oceansense/reasoning.py",
-        "tests": ("tests/unit/oceansense/test_p5_p10_contracts.py::test_p7_uncertainty_channels_and_competing_hypotheses",),
+        "tests": (
+            "tests/unit/oceansense/test_p5_p10_contracts.py::test_p7_uncertainty_channels_and_competing_hypotheses",
+            "tests/unit/oceansense/test_p5_p10_contracts.py::test_p7_competing_hypotheses_mark_close_scores_unresolved",
+        ),
     },
     {
         "phase": "P8",

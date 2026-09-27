@@ -203,6 +203,15 @@ def test_p7_uncertainty_channels_and_competing_hypotheses() -> None:
     assert len(hyps.ranked()) == 2
 
 
+def test_p7_competing_hypotheses_mark_close_scores_unresolved() -> None:
+    tied_uncertainty = Uncertainty(aleatoric=0.1, epistemic=0.35, contradiction=0.1, observational=0.2)
+    left = belief("technical-close", Domain.TECHNICAL, "requires-review", tied_uncertainty)
+    right = belief("spatial-close", Domain.SPATIAL, "requires-review", tied_uncertainty)
+    hypotheses = CrossDomainReasoner().build_hypotheses((left, right), (uid("close-h1"), uid("close-h2")))
+    assert hypotheses.unresolved(margin=0.01)
+    assert tuple(h.hypothesis_id for h in hypotheses.ranked()) == tuple(sorted((uid("close-h1"), uid("close-h2")), key=str))
+
+
 def test_p8_information_need_value_of_information_contract() -> None:
     need = InformationNeed(
         need_id=uid("need"),

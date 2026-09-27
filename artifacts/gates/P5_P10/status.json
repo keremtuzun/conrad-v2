@@ -49,7 +49,7 @@
     "verified": false
   },
   "schema_version": "1.0.0",
-  "source_commit": "1c8a041",
+  "source_commit": "db5740b",
   "status": "IMPLEMENTED",
   "status_note": "P5-P10 implementation contracts may be IMPLEMENTED with fixtures/dev checkpoints; final integrated VALIDATED-RUN requires verified OSFM-S-PRETRAIN-V1."
 }
