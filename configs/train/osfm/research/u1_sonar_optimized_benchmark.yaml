@@ -1,0 +1,46 @@
+job: osfm_u1_sonar_research
+stage_id: P4.8D-U1-SONAR-OPTIMIZED-THROUGHPUT-BENCHMARK
+scale: full
+formal_run_allowed: true
+full_run_allowed: true
+rehearsal_only: false
+promotable: false
+require_clean_git: true
+required_compute: CUDA GPU with >=16 GB VRAM
+min_vram_gb: 16
+p47_go_artifact: artifacts/gates/P4.7D_L4/osfm_readiness.json
+corpus: configs/data/osfm/public_real_subpipe_p47b.yaml
+evidence: configs/data/osfm/subpipe_p47b_evidence.json
+init: artifacts/external/dinov2/dinov2_vits14.pth
+stream: sss_lf
+image_size: 28
+batch_size: 8
+validation_support: 96
+optimizer_steps: 100
+validation_every_steps: 100
+seed: 2026092701
+lr: 0.0001
+weight_decay: 0.05
+grad_clip_norm: 1.0
+token_mask_fraction: 0.6
+min_visible_fraction: 0.1
+noise_std: 0.025
+budget:
+  cap_tl: 1000
+  cumulative_spend_estimate_before_run_tl: 136
+  formal_p4_8_completion: false
+required_partitions:
+  - PRETRAIN_REAL
+  - VALIDATION
+required_modalities:
+  - sonar
+promotion:
+  produces: P4.8D-U1-SONAR-THROUGHPUT-EVIDENCE
+  requires_clean_git: true
+  final_or_ood_training_access: forbidden
+  promotable_to_formal_p4_8: false
+notes:
+  - This benchmark measures the decode-once P4.8 data path; it is not a promotable research run.
+  - Training reads PRETRAIN_REAL only; validation reads VALIDATION only.
+  - FINAL_TEST and OOD_TEST are forbidden for training, sampling, and normalization statistics.
+  - SubPipe sonar is rendered side-scan imagery, not raw acoustic backscatter.

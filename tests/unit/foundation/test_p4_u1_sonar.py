@@ -213,8 +213,21 @@ def test_p48_research_configs_require_formal_validation_support() -> None:
 
     for path in (
         Path("configs/train/osfm/research/u1_sonar_budget_pilot.yaml"),
+        Path("configs/train/osfm/research/u1_sonar_optimized_benchmark.yaml"),
         Path("configs/train/osfm/research/u1_sonar_research.yaml"),
     ):
         cfg = yaml.safe_load(path.read_text())
         assert cfg["validation_support"] >= 64
         assert cfg["p47_go_artifact"] == "artifacts/gates/P4.7D_L4/osfm_readiness.json"
+
+
+def test_p48_optimized_benchmark_is_non_promotable_and_bounded() -> None:
+    import yaml
+
+    cfg = yaml.safe_load(
+        Path("configs/train/osfm/research/u1_sonar_optimized_benchmark.yaml").read_text()
+    )
+    assert cfg["optimizer_steps"] == 100
+    assert cfg["promotable"] is False
+    assert cfg["promotion"]["promotable_to_formal_p4_8"] is False
+    assert cfg["budget"]["cumulative_spend_estimate_before_run_tl"] < cfg["budget"]["cap_tl"]
