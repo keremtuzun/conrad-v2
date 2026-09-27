@@ -161,6 +161,26 @@ def _load_json(path: str | Path) -> dict[str, Any]:
     return data
 
 
+def _configure_cuda_determinism() -> dict[str, Any]:
+    """Force deterministic scaled-dot-product attention backends for formal CUDA runs."""
+    settings: dict[str, Any] = {"applied": False}
+    cuda_backends = getattr(torch.backends, "cuda", None)
+    if not torch.cuda.is_available() or cuda_backends is None:
+        return settings
+
+    for name, enabled in (
+        ("enable_flash_sdp", False),
+        ("enable_mem_efficient_sdp", False),
+        ("enable_math_sdp", True),
+    ):
+        fn = getattr(cuda_backends, name, None)
+        if callable(fn):
+            fn(enabled)
+            settings[name] = enabled
+    settings["applied"] = True
+    return settings
+
+
 def _require_u1_sonar_research_gate(job: dict[str, Any]) -> dict[str, Any]:
     """Fail closed before any P4.8 real-data run starts."""
     if job.get("formal_run_allowed") is not True:
@@ -539,7 +559,8 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         raise RuntimeError("Full P4.8 U1 sonar run requires full_run_allowed: true")
     t0 = time.perf_counter()
     torch.manual_seed(seed)
-    torch.use_deterministic_algorithms(True, warn_only=True)
+    deterministic_backend = _configure_cuda_determinism()
+    torch.use_deterministic_algorithms(True, warn_only=bool(job.get("determinism_warn_only", rehearsal_only)))
     device = torch.device("cuda:0")
     torch.cuda.reset_peak_memory_stats(device)
     config = SonarEncoderConfig(image_size=int(job.get("image_size", 28)))
@@ -719,6 +740,7 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         "reload": {"max_abs_diff": reload_max_abs_diff, "matches": reload_max_abs_diff <= 1e-6},
         "compute": {
             "device": str(device),
+            "deterministic_backend": deterministic_backend,
             "peak_memory_bytes": int(metrics["memory_allocated_bytes"]),
             "wall_clock_s": wall_s,
             "throughput_samples_per_s": (len(train_views.sample_ids) * steps) / wall_s,

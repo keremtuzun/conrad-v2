@@ -14,6 +14,7 @@ from conrad.foundation.pretraining import u1_sonar
 from conrad.foundation.pretraining.u1_sonar import (
     SubPipeSonarPool,
     U1SonarTrainingBundle,
+    _configure_cuda_determinism,
     _require_u1_sonar_research_gate,
     load_subpipe_sonar_pool,
     real_subpipe_sonar_views,
@@ -231,3 +232,28 @@ def test_p48_optimized_benchmark_is_non_promotable_and_bounded() -> None:
     assert cfg["promotable"] is False
     assert cfg["promotion"]["promotable_to_formal_p4_8"] is False
     assert cfg["budget"]["cumulative_spend_estimate_before_run_tl"] < cfg["budget"]["cap_tl"]
+
+
+def test_p48_cuda_determinism_disables_memory_efficient_attention(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[tuple[str, bool]] = []
+
+    class FakeCudaBackends:
+        @staticmethod
+        def enable_flash_sdp(enabled: bool) -> None:
+            calls.append(("flash", enabled))
+
+        @staticmethod
+        def enable_mem_efficient_sdp(enabled: bool) -> None:
+            calls.append(("mem_efficient", enabled))
+
+        @staticmethod
+        def enable_math_sdp(enabled: bool) -> None:
+            calls.append(("math", enabled))
+
+    monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
+    monkeypatch.setattr(torch.backends, "cuda", FakeCudaBackends)
+
+    settings = _configure_cuda_determinism()
+
+    assert settings["applied"] is True
+    assert calls == [("flash", False), ("mem_efficient", False), ("math", True)]
