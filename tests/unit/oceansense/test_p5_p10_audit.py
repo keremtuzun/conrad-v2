@@ -21,7 +21,7 @@ def test_requirement_audit_records_all_p5_p10_rows_without_qualified_osfm() -> N
         {
             "blocker_id": "P5-P10-OSFM-01",
             "scope": "EXTERNAL",
-            "detail": "final integrated validation requires verified OSFM-S-PRETRAIN-V1",
+            "detail": "qualified OSFM-S-PRETRAIN-V1 metadata path not supplied",
         }
     ]
 
@@ -33,8 +33,19 @@ def test_requirement_audit_fails_closed_when_contract_tests_have_not_passed() ->
     assert report["remaining_blockers"][0]["blocker_id"] == "P5-P10-OSFM-01"
 
 
-def test_requirement_audit_allows_validated_run_only_with_qualified_checkpoint() -> None:
-    report = evaluate_p5_p10_requirement_audit(tests_passed=True, qualified_checkpoint_verified=True)
+def test_requirement_audit_allows_validated_run_only_with_qualified_checkpoint_metadata(tmp_path: Path) -> None:
+    metadata = tmp_path / "osfm_s_pretrain_v1.json"
+    metadata.write_text(
+        json.dumps(
+            {
+                "checkpoint_label": "OSFM-S-PRETRAIN-V1",
+                "status": "VALIDATED-RUN",
+                "decision": "PROMOTE",
+            }
+        ),
+        encoding="utf-8",
+    )
+    report = evaluate_p5_p10_requirement_audit(tests_passed=True, qualified_checkpoint_metadata=metadata)
     assert report["status"] == "VALIDATED-RUN"
     assert report["remaining_blockers"] == []
     assert all(row["status"] == "VALIDATED-RUN" for row in report["requirements"])

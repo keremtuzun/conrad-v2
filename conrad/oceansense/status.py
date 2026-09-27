@@ -63,6 +63,14 @@ def _checkpoint_verified(metadata: dict[str, Any] | None) -> tuple[bool, str]:
     return True, "qualified OSFM-S-PRETRAIN-V1 metadata is present"
 
 
+def verify_qualified_checkpoint_metadata(path: str | Path | None) -> tuple[bool, str, bool]:
+    """Verify qualified checkpoint metadata using the same fail-closed rule as the status gate."""
+
+    metadata, metadata_problem = _load_checkpoint_metadata(path)
+    checkpoint_ok, checkpoint_detail = _checkpoint_verified(metadata)
+    return checkpoint_ok, metadata_problem or checkpoint_detail, path is not None
+
+
 def evaluate_p5_p10_status(
     *,
     test_result: str = "NOT_RUN",
@@ -70,8 +78,7 @@ def evaluate_p5_p10_status(
 ) -> dict[str, Any]:
     """Return fail-closed P5-P10 status without running tests."""
 
-    metadata, metadata_problem = _load_checkpoint_metadata(qualified_checkpoint_metadata)
-    checkpoint_ok, checkpoint_detail = _checkpoint_verified(metadata)
+    checkpoint_ok, checkpoint_detail, metadata_supplied = verify_qualified_checkpoint_metadata(qualified_checkpoint_metadata)
     tests_passed = test_result == "PASS"
     implementation_status = "IMPLEMENTED" if tests_passed else "DESIGNED"
     integrated_status = "VALIDATED-RUN" if tests_passed and checkpoint_ok else implementation_status
@@ -89,7 +96,7 @@ def evaluate_p5_p10_status(
             {
                 "blocker_id": "P5-P10-OSFM-01",
                 "scope": "EXTERNAL",
-                "detail": metadata_problem or checkpoint_detail,
+                "detail": checkpoint_detail,
             }
         )
     phases = {
@@ -108,7 +115,7 @@ def evaluate_p5_p10_status(
         "contract_test_result": test_result,
         "qualified_checkpoint": {
             "required_label": QUALIFIED_CHECKPOINT_LABEL,
-            "metadata_supplied": qualified_checkpoint_metadata is not None,
+            "metadata_supplied": metadata_supplied,
             "verified": checkpoint_ok,
             "detail": checkpoint_detail,
         },

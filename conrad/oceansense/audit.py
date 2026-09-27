@@ -6,7 +6,12 @@ import json
 from pathlib import Path
 from typing import Any
 
-from conrad.oceansense.status import QUALIFIED_CHECKPOINT_LABEL, _repo_commit, _resolve
+from conrad.oceansense.status import (
+    QUALIFIED_CHECKPOINT_LABEL,
+    _repo_commit,
+    _resolve,
+    verify_qualified_checkpoint_metadata,
+)
 
 
 REQUIREMENTS: tuple[dict[str, Any], ...] = (
@@ -82,7 +87,14 @@ REQUIREMENTS: tuple[dict[str, Any], ...] = (
 )
 
 
-def evaluate_p5_p10_requirement_audit(*, tests_passed: bool, qualified_checkpoint_verified: bool = False) -> dict[str, Any]:
+def evaluate_p5_p10_requirement_audit(
+    *,
+    tests_passed: bool,
+    qualified_checkpoint_metadata: str | Path | None = None,
+) -> dict[str, Any]:
+    qualified_checkpoint_verified, checkpoint_detail, metadata_supplied = verify_qualified_checkpoint_metadata(
+        qualified_checkpoint_metadata
+    )
     rows = []
     for req in REQUIREMENTS:
         status = "IMPLEMENTED" if tests_passed else "DESIGNED"
@@ -102,13 +114,19 @@ def evaluate_p5_p10_requirement_audit(*, tests_passed: bool, qualified_checkpoin
         "source_commit": _repo_commit(),
         "status": "VALIDATED-RUN" if qualified_checkpoint_verified else ("IMPLEMENTED" if tests_passed else "DESIGNED"),
         "qualified_checkpoint_verified": qualified_checkpoint_verified,
+        "qualified_checkpoint": {
+            "required_label": QUALIFIED_CHECKPOINT_LABEL,
+            "metadata_supplied": metadata_supplied,
+            "verified": qualified_checkpoint_verified,
+            "detail": checkpoint_detail,
+        },
         "remaining_blockers": []
         if qualified_checkpoint_verified
         else [
             {
                 "blocker_id": "P5-P10-OSFM-01",
                 "scope": "EXTERNAL",
-                "detail": f"final integrated validation requires verified {QUALIFIED_CHECKPOINT_LABEL}",
+                "detail": checkpoint_detail,
             }
         ],
         "requirements": rows,

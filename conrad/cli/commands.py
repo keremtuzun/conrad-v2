@@ -233,7 +233,7 @@ def eval_oceansense_p5_p10_status(
 @eval_app.command("oceansense-p5-p10-audit")
 def eval_oceansense_p5_p10_audit(
     tests_passed: bool = typer.Option(True, "--tests-passed/--tests-not-passed"),
-    qualified_checkpoint_verified: bool = typer.Option(False, "--qualified-checkpoint-verified"),
+    qualified_checkpoint_metadata: str = typer.Option(None, "--qualified-checkpoint-metadata"),
     output: str = typer.Option("artifacts/gates/P5_P10/requirement_audit.json", "--output"),
 ) -> None:
     """Write the P5-P10 requirement-by-requirement audit matrix."""
@@ -241,7 +241,7 @@ def eval_oceansense_p5_p10_audit(
 
     report = evaluate_p5_p10_requirement_audit(
         tests_passed=tests_passed,
-        qualified_checkpoint_verified=qualified_checkpoint_verified,
+        qualified_checkpoint_metadata=qualified_checkpoint_metadata,
     )
     written = write_p5_p10_requirement_audit(report, output)
     typer.echo(

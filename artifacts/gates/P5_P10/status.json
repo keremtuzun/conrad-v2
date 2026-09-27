@@ -43,13 +43,13 @@
     }
   },
   "qualified_checkpoint": {
-    "detail": "no qualified checkpoint metadata",
+    "detail": "qualified OSFM-S-PRETRAIN-V1 metadata path not supplied",
     "metadata_supplied": false,
     "required_label": "OSFM-S-PRETRAIN-V1",
     "verified": false
   },
   "schema_version": "1.0.0",
-  "source_commit": "50898b0",
+  "source_commit": "42b7a93",
   "status": "IMPLEMENTED",
   "status_note": "P5-P10 implementation contracts may be IMPLEMENTED with fixtures/dev checkpoints; final integrated VALIDATED-RUN requires verified OSFM-S-PRETRAIN-V1."
 }
