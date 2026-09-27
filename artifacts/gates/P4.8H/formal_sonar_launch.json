@@ -1,0 +1,61 @@
+{
+  "gate": "P4.8H",
+  "status": "RUNNING",
+  "purpose": "Formal promotable P4.8 U1 Sonar 100k optimizer-step run",
+  "user_budget_cap_try": 9500,
+  "user_wall_clock_target_hours": 40,
+  "cloud": {
+    "project": "project-41fe08b0-9696-4f8a-928",
+    "instance": "conrad-l4-p48-use1b",
+    "zone": "us-east1-b",
+    "accelerator": "NVIDIA L4",
+    "measured_vram_mib": 23034
+  },
+  "launch": {
+    "source_commit": "88ad53aac08c9ab8904c1861c22c4fce154d45ce",
+    "remote_repo": "~/conrad-v2-p48-fix-bench",
+    "config": "configs/train/osfm/research/u1_sonar_research.yaml",
+    "launch_record": "artifacts/gates/P4.8H/formal_sonar_launch.txt",
+    "log": "artifacts/gates/P4.8H/formal_sonar_run.out.txt",
+    "pid_file": "artifacts/gates/P4.8H/formal_sonar_run.pid",
+    "initial_wrapper_pid": 1451,
+    "initial_python_pid": 1514,
+    "deterministic_cuda_workspace": ":4096:8",
+    "timeout_hours": 50
+  },
+  "expected_work": {
+    "branch": "U1-SONAR-RESEARCH",
+    "optimizer_steps": 100000,
+    "batch_size_per_gpu": 64,
+    "gradient_accumulation": 4,
+    "effective_batch": 256,
+    "promotable_if_gate_passes": true
+  },
+  "schedule_reconciliation": {
+    "frozen_p4_total_optimizer_steps": 750000,
+    "currently_launchable_promotable_branch": "U1-SONAR-RESEARCH",
+    "not_currently_launchable_as_promotable": [
+      "U1-RGB-RESEARCH",
+      "U1-RANGE-RESEARCH",
+      "U1-GEOMETRY-RESEARCH",
+      "M1-RESEARCH",
+      "T1-RESEARCH",
+      "J1-RESEARCH",
+      "P4.12-OSFM-FQ"
+    ],
+    "reason": "The repository currently has a formal U1 Sonar research runner and verified public-real SubPipe rendered-sonar payload. The other branches remain blocked/non-promotable in config and do not have equivalent formal research entrypoints or verified public-real non-sonar payloads."
+  },
+  "monitoring": {
+    "automation_id": "monitor-p4-8h-sonar-formal-run",
+    "cadence": "hourly",
+    "notify_on": [
+      "completion",
+      "failure",
+      "VM stopped unexpectedly",
+      "process missing",
+      "budget risk",
+      "fresh traceback/runtime error",
+      "required user action"
+    ]
+  }
+}
