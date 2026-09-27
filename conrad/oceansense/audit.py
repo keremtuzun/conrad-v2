@@ -67,6 +67,7 @@ REQUIREMENTS: tuple[dict[str, Any], ...] = (
         "tests": (
             "tests/unit/oceansense/test_p5_p10_contracts.py::test_p10_alpha_records_asset_memory_replay_and_degraded_operation",
             "tests/unit/oceansense/test_p5_p10_contracts.py::test_p10_alpha_replay_key_and_outputs_are_deterministic",
+            "tests/unit/oceansense/test_p5_p10_contracts.py::test_p10_alpha_records_adapter_failure_as_degraded_operation",
         ),
     },
     {

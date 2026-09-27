@@ -300,6 +300,20 @@ def test_p10_alpha_replay_key_and_outputs_are_deterministic(tmp_path: Path) -> N
     ]
 
 
+def test_p10_alpha_records_adapter_failure_as_degraded_operation(tmp_path: Path) -> None:
+    memory = AssetMemory.load(tmp_path / "asset_memory.json")
+    result = OceanSenseAlpha(memory, RepresentationAdapter(seed=7)).run(evidence(), tuple(0.0 for _ in range(383)))
+    assert result.evidence_bundle is None
+    assert result.task_outputs == ()
+    assert result.gateway_decision is None
+    assert result.degraded
+    assert result.failures and result.failures[0].startswith("ADAPTER_FAILURE:")
+    loaded = AssetMemory.load(tmp_path / "asset_memory.json")
+    assert loaded.records[0]["degraded"] is True
+    assert loaded.records[0]["model2_embedding_dim"] is None
+    assert loaded.records[0]["direct_physical_measurements"] == ["crack_length_m"]
+
+
 def test_p5_p10_end_to_end_fixture_chain_preserves_boundaries(tmp_path: Path) -> None:
     ev = evidence()
     rep = representation()

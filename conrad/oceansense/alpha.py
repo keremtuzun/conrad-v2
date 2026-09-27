@@ -40,7 +40,7 @@ class AssetMemory:
 
 @dataclass(frozen=True)
 class AlphaIntegrationResult:
-    evidence_bundle: Model2EvidenceBundle
+    evidence_bundle: Model2EvidenceBundle | None
     task_outputs: tuple[TaskHeadOutput, ...]
     gateway_decision: GatewayDecision | None
     replay_key: str
@@ -68,7 +68,31 @@ class OceanSenseAlpha:
         intent_id: UUID | None = None,
     ) -> AlphaIntegrationResult:
         failures: list[str] = []
-        bundle = adapt_evidence_for_model2(evidence, osfm_representation, self.adapter)
+        try:
+            bundle = adapt_evidence_for_model2(evidence, osfm_representation, self.adapter)
+        except ValueError as exc:
+            replay_key = f"{evidence.run_id}:{evidence.evidence_id}:{self.adapter.version}:failed"
+            failures.append(f"ADAPTER_FAILURE:{exc}")
+            self.asset_memory.append(
+                {
+                    "replay_key": replay_key,
+                    "evidence_id": str(evidence.evidence_id),
+                    "model2_embedding_dim": None,
+                    "direct_physical_measurements": sorted(evidence.measurements),
+                    "task_heads": [],
+                    "gateway_accepted": None,
+                    "degraded": True,
+                    "failures": failures,
+                }
+            )
+            return AlphaIntegrationResult(
+                evidence_bundle=None,
+                task_outputs=(),
+                gateway_decision=None,
+                replay_key=replay_key,
+                degraded=True,
+                failures=tuple(failures),
+            )
         task_input = TaskHeadInput(
             representation=osfm_representation,
             source_evidence_id=evidence.evidence_id,
