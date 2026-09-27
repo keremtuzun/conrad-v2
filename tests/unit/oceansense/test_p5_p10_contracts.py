@@ -7,7 +7,7 @@ import pytest
 
 from conrad.oceansense.alpha import AssetMemory, OceanSenseAlpha
 from conrad.oceansense.host import HostCapability, HostCapabilityProfile, HostIntentGateway, InspectionIntent
-from conrad.oceansense.inspection import value_of_information
+from conrad.oceansense.inspection import AdaptiveInspectionPlanner, value_of_information
 from conrad.oceansense.model2_adapter import MODEL2_DIM, RepresentationAdapter, adapt_evidence_for_model2
 from conrad.oceansense.reasoning import CrossDomainReasoner, provenance_aware_uncertainty_update
 from conrad.oceansense.task_heads import (
@@ -33,6 +33,8 @@ from conrad.schemas.observation import Evidence, Modality
 from conrad.schemas.timebase import stamp
 from conrad.schemas.uncertainty import Uncertainty
 from conrad.schemas.world import Domain
+from conrad.active.planner import PlanResult, PlanningRequest
+from conrad.schemas.provenance import ProvenanceRecord, SourceType
 
 
 def uid(name: str) -> UUID:
@@ -109,6 +111,24 @@ def plan() -> ObservationPlan:
         confidence=0.7,
         provenance=uid("provenance"),
     )
+
+
+class StubPlanner:
+    name = "stub-mcbr"
+
+    def plan(self, request: PlanningRequest) -> PlanResult:
+        return PlanResult(
+            plan=plan().model_copy(update={"need_id": request.need.need_id}),
+            provenance=ProvenanceRecord(
+                record_id=uid("plan-provenance"),
+                source_type=SourceType.PLAN,
+                source_ids=(request.need.need_id,),
+                operation="fixture adaptive inspection plan",
+                module="tests.unit.oceansense",
+                model_version="stub-mcbr",
+                timestamp=request.now,
+            ),
+        )
 
 
 def belief(name: str, domain: Domain, value: str, u: Uncertainty) -> BeliefMessage:
@@ -190,6 +210,32 @@ def test_p8_information_need_value_of_information_contract() -> None:
         desired_uncertainty_reduction={"CONTRADICTION": 0.4, "EPISTEMIC": 0.2},
     )
     assert value_of_information(need) == pytest.approx(0.56)
+
+
+def test_p8_adaptive_inspection_updates_plan_contract_fields() -> None:
+    need = InformationNeed(
+        need_id=uid("need"),
+        trace_id=uid("trace"),
+        target_belief_ids=(uid("belief"),),
+        question_type=QuestionType.RESOLVE_CONTRADICTION,
+        target_properties=("condition",),
+        priority=0.8,
+        desired_uncertainty_reduction={"CONTRADICTION": 0.4, "EPISTEMIC": 0.2},
+    )
+    request = PlanningRequest(
+        need=need,
+        beliefs=(),
+        robot_pose=Pose(frame_id="WORLD", position_m=(0.0, 0.0, 0.0)),
+        sensors=(),
+        is_free=lambda points: [],
+        predicted_visibility=lambda pose, region: 0.0,
+        navigation_cost=lambda start, end: ResourceCost(time_s=0.0, energy_j=0.0, risk=0.0, travel_m=0.0),
+        now=stamp(12.0, "fixture"),
+    )
+    out = AdaptiveInspectionPlanner(StubPlanner()).plan(request)
+    assert out.need_id == need.need_id
+    assert out.expected_mission_gain == pytest.approx(0.56)
+    assert out.targeted_uncertainty == (UncertaintyType.CONTRADICTION, UncertaintyType.EPISTEMIC)
 
 
 def test_p9_gateway_preserves_host_boundary_and_degraded_paths() -> None:

@@ -230,6 +230,34 @@ def eval_oceansense_p5_p10_status(
     raise typer.Exit(0 if report["decision"] in {"IMPLEMENTED", "VALIDATED-RUN"} else 1)
 
 
+@eval_app.command("oceansense-p5-p10-audit")
+def eval_oceansense_p5_p10_audit(
+    tests_passed: bool = typer.Option(True, "--tests-passed/--tests-not-passed"),
+    qualified_checkpoint_verified: bool = typer.Option(False, "--qualified-checkpoint-verified"),
+    output: str = typer.Option("artifacts/gates/P5_P10/requirement_audit.json", "--output"),
+) -> None:
+    """Write the P5-P10 requirement-by-requirement audit matrix."""
+    from conrad.oceansense.audit import evaluate_p5_p10_requirement_audit, write_p5_p10_requirement_audit
+
+    report = evaluate_p5_p10_requirement_audit(
+        tests_passed=tests_passed,
+        qualified_checkpoint_verified=qualified_checkpoint_verified,
+    )
+    written = write_p5_p10_requirement_audit(report, output)
+    typer.echo(
+        json.dumps(
+            {
+                "audit_id": report["audit_id"],
+                "status": report["status"],
+                "remaining_blockers": report["remaining_blockers"],
+                "report": str(written),
+            },
+            indent=2,
+        )
+    )
+    raise typer.Exit(0 if report["status"] in {"IMPLEMENTED", "VALIDATED-RUN"} else 1)
+
+
 @data_app.command("verify")
 def data_verify(
     manifest: str = typer.Option(..., "--manifest", help="manifest id, id@version, or path"),

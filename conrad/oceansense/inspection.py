@@ -36,13 +36,15 @@ class AdaptiveInspectionPlanner:
     def plan(self, request: PlanningRequest) -> ObservationPlan:
         result = self.mcbr.plan(request)
         plan = result.plan
-        targeted = tuple(
+        existing = tuple(dict.fromkeys(
             t for t in plan.targeted_uncertainty if t in set(UncertaintyType)
-        ) or tuple(
+        ))
+        requested = tuple(
             UncertaintyType[k.upper()]
             for k in request.need.desired_uncertainty_reduction
             if k.upper() in UncertaintyType.__members__
         )
+        targeted = tuple(dict.fromkeys((*requested, *existing)))
         return plan.model_copy(
             update={
                 "expected_mission_gain": max(plan.expected_mission_gain, value_of_information(request.need)),
