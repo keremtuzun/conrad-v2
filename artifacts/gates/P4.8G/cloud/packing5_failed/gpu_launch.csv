@@ -1,0 +1,2 @@
+timestamp, name, utilization.gpu [%], memory.used [MiB], memory.total [MiB], power.draw [W]
+2026/09/27 18:14:32.955, NVIDIA L4, 0 %, 0 MiB, 23034 MiB, 13.97 W

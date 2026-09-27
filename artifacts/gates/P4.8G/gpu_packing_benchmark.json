@@ -1,0 +1,70 @@
+{
+  "gate": "P4.8G",
+  "status": "VALIDATED-RUN",
+  "purpose": "Bounded benchmark of running multiple corrected U1 sonar effective-batch workers on one NVIDIA L4",
+  "source_commit": "ac351ab",
+  "cloud": {
+    "project": "project-41fe08b0-9696-4f8a-928",
+    "instance": "conrad-l4-p48-use1b",
+    "zone": "us-east1-b",
+    "accelerator": "NVIDIA L4",
+    "measured_vram_mib": 23034,
+    "final_instance_status": "TERMINATED"
+  },
+  "single_worker_baseline": {
+    "source_artifact": "artifacts/gates/P4.8F/corrected_sonar_benchmark.json",
+    "optimizer_steps": 100,
+    "optimizer_runtime_seconds": 150.477426977,
+    "optimizer_steps_per_second": 0.6645515006,
+    "formal_rank_guard": "PASS",
+    "reload_matches": true
+  },
+  "five_worker_attempt": {
+    "evidence_dir": "artifacts/gates/P4.8G/cloud/packing5_failed",
+    "workers": 5,
+    "result": "TERMINATED_AS_NONVIABLE",
+    "reason": "After about 7.5 minutes, workers were still dominated by disk I/O wait during setup and GPU memory/use remained effectively idle.",
+    "observed_worker_state": "D/R with folio_wait_bit_common, jbd2_log_wait_commit, or rq_qos_wait",
+    "recommendation": "Do not use five concurrent independent workers on this snapshot-backed boot disk without changing storage/layout."
+  },
+  "two_worker_attempt": {
+    "evidence_dir": "artifacts/gates/P4.8G/cloud/packing2_pass",
+    "workers": 2,
+    "start_utc": "2026-09-27T18:22:53Z",
+    "end_utc": "2026-09-27T18:26:10Z",
+    "wall_seconds": 197,
+    "optimizer_steps_per_worker": 100,
+    "aggregate_optimizer_steps": 200,
+    "aggregate_optimizer_steps_per_second": 1.0152284264,
+    "speedup_vs_single_worker": 1.527683098,
+    "worker_exit_codes": [
+      0,
+      0
+    ],
+    "validation_loss_each_worker": 0.022061197087168694,
+    "effective_rank_each_worker": 65.09303283691406,
+    "formal_rank_guard_each_worker": "PASS",
+    "reload_matches_each_worker": true,
+    "checkpoint_sha256_each_worker": "59722e2d1aef4809869b047b828b8785e1e8f92d08ba154f0310366a22d09e3a",
+    "parameter_count_each_worker": 21372288,
+    "peak_sampled_gpu_memory_mib": 0,
+    "end_sampled_gpu_utilization_percent": 45
+  },
+  "projection": {
+    "scope": "Neutral projection only; this does not make the benchmark promotable.",
+    "frozen_p4_optimizer_steps": 750000,
+    "projected_l4_wall_hours_at_two_worker_rate": 205.2272727,
+    "planning_rate_try_per_l4_hour": 26.56467942,
+    "projected_p4_training_try_at_two_worker_rate": 5452.419061,
+    "budget_cap_try": 3200,
+    "budget_decision": "DO_NOT_LAUNCH_FULL_P4_UNDER_CURRENT_CAP",
+    "note": "Two-worker packing improves wall-clock and cost projection versus the single-worker measured rate, but still exceeds the approved combined P4-P10 cap before P4.12, storage, reruns, and P5-P10."
+  },
+  "conclusion": {
+    "can_run_faster_than_single_worker": true,
+    "validated_safe_packing_factor_on_current_l4": 2,
+    "rejected_packing_factor_on_current_l4": 5,
+    "next_action_without_budget_change": "No full P4 launch; continue only with smaller benchmarks or implementation work.",
+    "next_action_with_budget_change": "Run promotable branches with at most two concurrent workers per L4, after each branch's formal gate is unblocked."
+  }
+}
