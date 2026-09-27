@@ -132,6 +132,44 @@ def train_osfm_p48_cloud_budget(
     raise typer.Exit(0 if report["decision"] == "GO" else 1)
 
 
+@train_app.command("osfm-p48-promote")
+def train_osfm_p48_promote(
+    report: str = typer.Option(..., "--report"),
+    config: str = typer.Option(..., "--config"),
+    run_state: str = typer.Option(..., "--run-state"),
+    p47: str = typer.Option("artifacts/gates/P4.7D_L4/osfm_readiness.json", "--p47"),
+    checkpoint: str = typer.Option(None, "--checkpoint"),
+    output: str = typer.Option("artifacts/gates/P4.8/promotion.json", "--output"),
+) -> None:
+    """Review a completed P4.8 U1-sonar run for promotion. Never trains."""
+    from conrad.foundation.pretraining.p48_promotion import (
+        evaluate_p48_promotion,
+        write_p48_promotion_report,
+    )
+
+    promotion = evaluate_p48_promotion(
+        run_report=report,
+        resolved_config=config,
+        run_state=run_state,
+        p47_report=p47,
+        checkpoint=checkpoint,
+    )
+    written = write_p48_promotion_report(promotion, output)
+    typer.echo(
+        json.dumps(
+            {
+                "gate_id": promotion["gate_id"],
+                "status": promotion["status"],
+                "decision": promotion["decision"],
+                "blockers": promotion["blockers"],
+                "report": str(written),
+            },
+            indent=2,
+        )
+    )
+    raise typer.Exit(0 if promotion["decision"] == "PROMOTE" else 1)
+
+
 @eval_app.command("run")
 def eval_run(
     experiment: str = typer.Option(None, "--experiment", help="experiment ID, e.g. CORE-BUO-E001"),

@@ -1,0 +1,35 @@
+{
+  "blockers": [
+    {
+      "blocker_id": "P48-PROMOTION-CONFIG-02",
+      "detail": "resolved config is not the promotable U1-SONAR-RESEARCH stage",
+      "scope": "INTERNAL"
+    },
+    {
+      "blocker_id": "P48-PROMOTION-STEPS-01",
+      "detail": "requires exactly the configured >=100000 steps; configured=1000, completed=1000",
+      "scope": "INTERNAL"
+    },
+    {
+      "blocker_id": "P48-PROMOTION-HEALTH-01",
+      "detail": "representation health did not pass finite, non-collapse, and effective-rank >=64 gates",
+      "scope": "RESEARCH_RESULT"
+    },
+    {
+      "blocker_id": "P48-PROMOTION-CHECKPOINT-01",
+      "detail": "missing checkpoint: /home/burakaksu/conrad-v2-p48a-work/artifacts/runs/train-osfm_u1_sonar_research-1790456655903482221/checkpoints/osfm_u1_sonar_research_full.pt",
+      "scope": "INTERNAL"
+    }
+  ],
+  "checkpoint_id": "aed100ac30da48e900ceecfdcb0faa6847d171f51447d24c1d2342a91268f154",
+  "decision": "DO-NOT-PROMOTE",
+  "gate_id": "P4.8-U1-SONAR-PROMOTION",
+  "promotion_record": {
+    "next_stage": null,
+    "produces": null,
+    "promoted": false
+  },
+  "schema_version": "1.0.0",
+  "stage_id": "U1-SONAR-RESEARCH",
+  "status": "VALIDATED-RUN"
+}
