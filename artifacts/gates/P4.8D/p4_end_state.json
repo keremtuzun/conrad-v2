@@ -1,0 +1,56 @@
+{
+  "gate_id": "P4-END-STATE",
+  "status": "VALIDATED-RUN",
+  "decision": "NO-GO",
+  "scope": "OceanSense/OS-FM P4",
+  "source_commit": "6d355f19c0d1a9f815e96f42e7ebf23cb9d2d8f8",
+  "latest_stage": "P4.8D-U1-SONAR-OPTIMIZED-THROUGHPUT-BENCHMARK",
+  "summary": "P4 has been driven through verified real SubPipe corpus readiness, L4 readiness, P4.8 rehearsal, budget pilot, optimized 100-step benchmark, and fail-closed promotion review. The formal 100000-step P4.8 run remains blocked by the user-defined 1000 TL cloud cap and cannot be substituted by the benchmark.",
+  "evidence": {
+    "p47_l4_readiness_go": "artifacts/gates/P4.7D_L4/osfm_readiness.json",
+    "p48_rehearsal": "artifacts/gates/P4.8A/rehearsal_l4_r02/reports/p48a_u1_sonar_rehearsal_report.json",
+    "p48_budget_pilot": "artifacts/gates/P4.8C/context_r02_budget_pilot_run/p48c-r02-budget-pilot-evidence.tgz",
+    "p48_budget_pilot_promotion_review": "artifacts/gates/P4.8D/context_r02_budget_pilot_promotion_review.json",
+    "p48_optimized_benchmark": "artifacts/gates/P4.8D/optimized_benchmark_summary.json",
+    "p48_optimized_benchmark_promotion_review": "artifacts/gates/P4.8D/optimized_benchmark_promotion_review.json",
+    "p48_full_run_projection": "artifacts/gates/P4.8D/full_run_projection_from_optimized_benchmark.json"
+  },
+  "validated_results": {
+    "subpipe_public_real_ready": true,
+    "p47_l4_decision": "GO",
+    "optimized_benchmark_status": "VALIDATED-RUN",
+    "optimized_benchmark_decision": "DO-NOT-PROMOTE",
+    "optimized_benchmark_steps": 100,
+    "optimized_benchmark_effective_rank": 63.63990020751953,
+    "optimized_benchmark_rank_gate": "FAIL",
+    "optimized_benchmark_reload_matches": true,
+    "full_formal_p48_required_steps": 100000,
+    "projected_cumulative_cloud_cost_tl": 1090.64,
+    "user_cloud_cap_tl": 1000,
+    "projected_over_cap_tl": 90.64
+  },
+  "blockers": [
+    {
+      "blocker_id": "P48-FULL-RUN-BUDGET-01",
+      "scope": "EXTERNAL",
+      "detail": "The optimized full 100000-step P4.8 projection is 1090.64 TL cumulative, exceeding the user-defined 1000 TL cap by 90.64 TL."
+    },
+    {
+      "blocker_id": "P48-PROMOTION-RESEARCH-01",
+      "scope": "RESEARCH_RESULT",
+      "detail": "The 100-step benchmark is non-promotable and failed the effective-rank threshold; it cannot clear P4.8 or unlock P4.9."
+    }
+  ],
+  "required_user_controlled_action": {
+    "options": [
+      "Raise the cloud budget cap above the projected 1090.64 TL cumulative estimate and explicitly authorize the formal run.",
+      "Provide cheaper qualifying CUDA compute with at least 16 GB VRAM and persistence long enough for the 100000-step run.",
+      "Explicitly revise the formal P4.8 requirement through a controlled architecture amendment."
+    ],
+    "without_action": "Do not launch full P4.8, do not promote U1 sonar, and do not advance to P4.9."
+  },
+  "cloud_state_at_closeout": {
+    "expected": "All Conrad Google Cloud VMs stopped/terminated.",
+    "spend_policy": "No new cloud run may start unless it is within the cap or the user explicitly raises the cap."
+  }
+}
