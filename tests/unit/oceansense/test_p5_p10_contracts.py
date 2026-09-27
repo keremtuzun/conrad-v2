@@ -276,6 +276,24 @@ def test_p9_gateway_refuses_when_host_has_no_supported_fallback() -> None:
     assert decision.reason_codes == ("HOST_CAPABILITY_UNAVAILABLE",)
 
 
+def test_p9_capability_negotiation_filters_without_inventing_host_authority() -> None:
+    profile = HostCapabilityProfile(
+        host_id="degraded-host",
+        capabilities=(HostCapability.STORE_AND_FORWARD, HostCapability.OPERATOR_ESCALATION),
+        degraded=True,
+        degradation_reasons=("NO_LOCAL_AUTONOMY",),
+    )
+    available = HostIntentGateway().negotiate(
+        (
+            HostCapability.REVISIT_REGION,
+            HostCapability.OPERATOR_ESCALATION,
+            HostCapability.STORE_AND_FORWARD,
+        ),
+        profile,
+    )
+    assert available == (HostCapability.OPERATOR_ESCALATION, HostCapability.STORE_AND_FORWARD)
+
+
 def test_p10_alpha_records_asset_memory_replay_and_degraded_operation(tmp_path: Path) -> None:
     memory = AssetMemory.load(tmp_path / "asset_memory.json")
     alpha = OceanSenseAlpha(memory, RepresentationAdapter(seed=7))

@@ -56,6 +56,7 @@ REQUIREMENTS: tuple[dict[str, Any], ...] = (
         "requirement": "host capability negotiation, InspectionIntent boundary, degraded/refusal paths",
         "implementation": "conrad/oceansense/host.py",
         "tests": (
+            "tests/unit/oceansense/test_p5_p10_contracts.py::test_p9_capability_negotiation_filters_without_inventing_host_authority",
             "tests/unit/oceansense/test_p5_p10_contracts.py::test_p9_gateway_preserves_host_boundary_and_degraded_paths",
             "tests/unit/oceansense/test_p5_p10_contracts.py::test_p9_gateway_refuses_when_host_has_no_supported_fallback",
         ),
