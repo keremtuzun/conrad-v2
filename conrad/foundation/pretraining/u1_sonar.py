@@ -42,6 +42,7 @@ from conrad.training.checkpoint import load_checkpoint, save_checkpoint
 from conrad.training.checkpoint_meta import CompatibilityTuple, config_digest
 from conrad.training.determinism import inspect_compute
 from conrad.training.run_dir import RunDirectory
+from conrad.training.trainer_config import warmup_cosine
 
 
 @dataclass(frozen=True)
@@ -136,6 +137,29 @@ class SubPipeSonarPool:
             ),
             "train_stats": {"mean": mean, "std": std},
         }
+
+
+def _formal_training_budget(job: dict[str, Any]) -> tuple[int, int, int]:
+    budget = job.get("budget")
+    if not isinstance(budget, dict):
+        raise RuntimeError("formal P4.8 requires an explicit training budget")
+    batch_size = int(budget.get("batch_size_per_gpu", 0))
+    accumulation = int(budget.get("gradient_accumulation", 0))
+    effective_target = int(budget.get("effective_batch_target", 0))
+    if batch_size <= 0 or accumulation <= 0 or effective_target <= 0:
+        raise RuntimeError("formal P4.8 training budget values must be positive")
+    if batch_size * accumulation != effective_target:
+        raise RuntimeError(
+            "formal P4.8 effective batch mismatch: "
+            f"{batch_size} * {accumulation} != {effective_target}"
+        )
+    configured_batch = int(job.get("batch_size", batch_size))
+    if configured_batch != batch_size:
+        raise RuntimeError(
+            "formal P4.8 batch_size must match budget.batch_size_per_gpu: "
+            f"{configured_batch} != {batch_size}"
+        )
+    return batch_size, accumulation, effective_target
 
 
 def _repo_tracked_clean() -> tuple[bool, str]:
@@ -557,6 +581,12 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
     rehearsal_only = bool(job.get("rehearsal_only", True))
     if not rehearsal_only and job.get("full_run_allowed") is not True:
         raise RuntimeError("Full P4.8 U1 sonar run requires full_run_allowed: true")
+    if rehearsal_only:
+        batch_size = int(job.get("batch_size", 2))
+        accumulation = 1
+        effective_batch = batch_size
+    else:
+        batch_size, accumulation, effective_batch = _formal_training_budget(job)
     t0 = time.perf_counter()
     torch.manual_seed(seed)
     deterministic_backend = _configure_cuda_determinism()
@@ -603,17 +633,24 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         weight_decay=float(job.get("weight_decay", 0.05)),
     )
     steps = int(job.get("optimizer_steps", 2))
+    warmup_steps = max(1, round(steps * 0.05))
+    scheduler = torch.optim.lr_scheduler.LambdaLR(
+        optimizer,
+        lr_lambda=lambda current: warmup_cosine(current, steps, warmup_steps, 0.0),
+    )
     validation_every = int(job.get("validation_every_steps", max(1, steps)))
     last = None
     val = None
-    all_train_sample_ids: list[str] = []
+    train_sample_ids_seen: dict[str, None] = {}
     for step in range(1, steps + 1):
-        if not rehearsal_only and step > 1:
+        optimizer.zero_grad(set_to_none=True)
+        step_loss = 0.0
+        for micro_step in range(accumulation):
             train_views = train_pool.views(
                 job,
-                seed + step,
+                seed + (step - 1) * accumulation + micro_step,
                 train_stats=train_stats,
-                sample_offset=(step - 1) * int(job.get("batch_size", 2)),
+                sample_offset=((step - 1) * accumulation + micro_step) * batch_size,
             )
             step_evidence = train_pool.evidence(train_stats, train_views.sample_ids)
             train_evidence = {
@@ -627,20 +664,22 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
                 train_views.sample_ids,
                 train_views.corruption_trace,
             )
-        bundle.train()
-        out = bundle(train_views)
-        out.loss.backward()
+            bundle.train()
+            out = bundle(train_views)
+            (out.loss / accumulation).backward()
+            step_loss += float(out.loss.detach().cpu())
+            last = out
+            train_sample_ids_seen.update(dict.fromkeys(train_views.sample_ids))
         torch.nn.utils.clip_grad_norm_(bundle.parameters(), float(job.get("grad_clip_norm", 1.0)))
         optimizer.step()
-        optimizer.zero_grad(set_to_none=True)
+        scheduler.step()
         ema = bundle.update_teacher_after_optimizer(step)
-        last = out
-        all_train_sample_ids.extend(train_views.sample_ids)
         run.log_metrics(
             {
                 "step": step,
-                "train/osfm_u1_sonar_loss": float(out.loss.detach().cpu()),
+                "train/osfm_u1_sonar_loss": step_loss / accumulation,
                 "ema_momentum": float(ema),
+                "learning_rate": float(scheduler.get_last_lr()[0]),
             }
         )
         if not rehearsal_only and step % validation_every == 0:
@@ -652,7 +691,7 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
     with torch.no_grad():
         val = bundle(val_views) if val is None else val
     split_plan = {
-        "train_sample_ids": tuple(dict.fromkeys(all_train_sample_ids or train_views.sample_ids)),
+        "train_sample_ids": tuple(train_sample_ids_seen or dict.fromkeys(train_views.sample_ids)),
         "validation_sample_ids": val_views.sample_ids,
         "lineage": train_evidence["lineage_unit"],
         "partition_policy": "PRETRAIN_REAL trains; VALIDATION selects; FINAL_TEST/OOD_TEST forbidden",
@@ -743,7 +782,10 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
             "deterministic_backend": deterministic_backend,
             "peak_memory_bytes": int(metrics["memory_allocated_bytes"]),
             "wall_clock_s": wall_s,
-            "throughput_samples_per_s": (len(train_views.sample_ids) * steps) / wall_s,
+            "throughput_samples_per_s": (effective_batch * steps) / wall_s,
+            "batch_size_per_gpu": batch_size,
+            "gradient_accumulation": accumulation,
+            "effective_batch": effective_batch,
         },
         "next_gate": "P4.8 full run evidence may promote U1 sonar only after checkpoint/reload and held-out validation review."
         if not rehearsal_only

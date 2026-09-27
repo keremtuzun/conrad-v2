@@ -14,7 +14,8 @@ evidence: configs/data/osfm/subpipe_p47b_evidence.json
 init: artifacts/external/dinov2/dinov2_vits14.pth
 stream: sss_lf
 image_size: 28
-batch_size: 8
+batch_size: 64
+gradient_accumulation: 4
 validation_support: 96
 optimizer_steps: 100000
 validation_every_steps: 1000

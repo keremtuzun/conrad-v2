@@ -15,6 +15,7 @@ from conrad.foundation.pretraining.u1_sonar import (
     SubPipeSonarPool,
     U1SonarTrainingBundle,
     _configure_cuda_determinism,
+    _formal_training_budget,
     _require_u1_sonar_research_gate,
     load_subpipe_sonar_pool,
     real_subpipe_sonar_views,
@@ -22,6 +23,31 @@ from conrad.foundation.pretraining.u1_sonar import (
 )
 from conrad.training import entrypoints
 from conrad.training.entrypoints import ComputeBlockedError, run_training
+
+
+def test_formal_sonar_budget_matches_frozen_effective_batch() -> None:
+    job = {
+        "batch_size": 64,
+        "budget": {
+            "batch_size_per_gpu": 64,
+            "gradient_accumulation": 4,
+            "effective_batch_target": 256,
+        },
+    }
+    assert _formal_training_budget(job) == (64, 4, 256)
+
+
+def test_formal_sonar_budget_fails_closed_on_runtime_mismatch() -> None:
+    job = {
+        "batch_size": 8,
+        "budget": {
+            "batch_size_per_gpu": 64,
+            "gradient_accumulation": 4,
+            "effective_batch_target": 256,
+        },
+    }
+    with pytest.raises(RuntimeError, match="batch_size must match"):
+        _formal_training_budget(job)
 
 
 def test_sonar_vit_s14_single_channel_contract_and_dense_taps() -> None:
@@ -220,6 +246,11 @@ def test_p48_research_configs_require_formal_validation_support() -> None:
         cfg = yaml.safe_load(path.read_text())
         assert cfg["validation_support"] >= 64
         assert cfg["p47_go_artifact"] == "artifacts/gates/P4.7D_L4/osfm_readiness.json"
+
+    formal = yaml.safe_load(
+        Path("configs/train/osfm/research/u1_sonar_research.yaml").read_text()
+    )
+    assert _formal_training_budget(formal) == (64, 4, 256)
 
 
 def test_p48_optimized_benchmark_is_non_promotable_and_bounded() -> None:
