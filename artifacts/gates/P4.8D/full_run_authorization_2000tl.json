@@ -1,0 +1,38 @@
+{
+  "basis": {
+    "optimized_benchmark": "artifacts/gates/P4.8D/optimized_benchmark_summary.json",
+    "prior_cumulative_estimate_tl": 146,
+    "projected_formal_run_cost_tl": 944.64,
+    "projected_total_cumulative_tl": 1090.64,
+    "projection": "artifacts/gates/P4.8D/full_run_projection_from_optimized_benchmark.json",
+    "remaining_headroom_tl": 909.36
+  },
+  "blockers": [],
+  "decision": "GO",
+  "gate_id": "P4.8D-FULL-RUN-AUTHORIZATION-2000TL",
+  "launch_constraints": {
+    "do_not_advance_to_p49_until_p48_promotion_passes": true,
+    "must_remain_fail_closed": true,
+    "required_config": "configs/train/osfm/research/u1_sonar_research.yaml",
+    "required_cuda_vram_gb": 16,
+    "required_p47_artifact": "artifacts/gates/P4.7D_L4/osfm_readiness.json",
+    "required_steps": 100000
+  },
+  "source_commit": "7cc6806",
+  "spend_policy": {
+    "checkpoint_payload_policy": "Do not commit large checkpoint payloads unless explicitly required; commit metadata/reports/gates.",
+    "report_every_cloud_use": true,
+    "report_periodic_time_left": true,
+    "stop_cloud_before_or_at_tl": 2000
+  },
+  "status": "VALIDATED-RUN",
+  "supersedes": [
+    "artifacts/gates/P4.8D/p4_end_state.json",
+    "artifacts/gates/P4.8D/full_run_authorization_1500tl.json"
+  ],
+  "user_authorization": {
+    "authorized_action": "Continue the Conrad/OceanSense workflow through end of P4 using the 2000 TL hard cloud cap, without interruption unless user intervention is needed or the budget reaches 2000 TL.",
+    "authorized_at_context": "2026-09-27 Europe/Istanbul",
+    "new_cloud_cap_tl": 2000
+  }
+}
