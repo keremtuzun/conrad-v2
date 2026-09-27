@@ -1,0 +1,87 @@
+{
+  "gate_id": "P4.8D-U1-SONAR-OPTIMIZED-THROUGHPUT-BENCHMARK",
+  "status": "VALIDATED-RUN",
+  "decision": "DO-NOT-PROMOTE",
+  "run_id": "train-osfm_u1_sonar_research-1790492233886693682",
+  "source_commit": "94f1c9f7219a90afc4bcd6abda0b212bc081a715",
+  "cloud_vm": {
+    "name": "conrad-l4-p48a",
+    "zone": "europe-west1-b",
+    "gpu": "NVIDIA L4",
+    "measured_vram_gb": 22,
+    "final_status": "TERMINATED"
+  },
+  "cloud_spend_estimate": {
+    "prior_cumulative_estimate_tl": 136,
+    "p48d_benchmark_and_retrieval_estimate_tl": 10,
+    "updated_cumulative_estimate_tl": 146,
+    "cap_tl": 1000,
+    "basis": "Two short conrad-l4-p48a VM windows for benchmark and evidence retrieval; rounded up using the existing 0.648 USD/hour and 41 TL/USD budget model."
+  },
+  "config": {
+    "path": "configs/train/osfm/research/u1_sonar_optimized_benchmark.yaml",
+    "resolved_config": "artifacts/gates/P4.8D/optimized_benchmark_evidence/artifacts/runs/train-osfm_u1_sonar_research-1790492233886693682/config.resolved.yaml",
+    "stage_id": "P4.8D-U1-SONAR-OPTIMIZED-THROUGHPUT-BENCHMARK",
+    "optimizer_steps": 100,
+    "promotable": false,
+    "formal_p4_8_completion": false
+  },
+  "metrics": {
+    "optimizer_steps": 100,
+    "train_loss": 0.042292267084121704,
+    "validation_loss": 0.01644868589937687,
+    "representation_finite": true,
+    "representation_effective_rank": 63.63990020751953,
+    "formal_rank_guard": "FAIL",
+    "reload_matches": true,
+    "reload_max_abs_diff": 0.0,
+    "checkpoint_id": "4d1d62055b3bf4b8c7d054822fcbf626e54f6b7f21ff3bfb5d838b3738e99c24"
+  },
+  "data_guards": {
+    "train_partition": "PRETRAIN_REAL",
+    "validation_partition": "VALIDATION",
+    "normalization_fit_partitions": [
+      "PRETRAIN_REAL"
+    ],
+    "normalization_excluded_partitions": [
+      "VALIDATION",
+      "FINAL_TEST",
+      "OOD_TEST"
+    ],
+    "final_test_used": false,
+    "ood_test_used": false,
+    "rendered_sonar_limitation": "SubPipe sonar is rendered side-scan imagery, not raw acoustic backscatter."
+  },
+  "evidence": {
+    "archive": "artifacts/gates/P4.8D/optimized_benchmark_evidence.tgz",
+    "unpacked_dir": "artifacts/gates/P4.8D/optimized_benchmark_evidence",
+    "training_result": "artifacts/gates/P4.8D/optimized_benchmark_evidence/artifacts/runs/train-osfm_u1_sonar_research-1790492233886693682/reports/training_result.json",
+    "run_state": "artifacts/gates/P4.8D/optimized_benchmark_evidence/artifacts/runs/train-osfm_u1_sonar_research-1790492233886693682/run_state.json",
+    "promotion_review": "artifacts/gates/P4.8D/optimized_benchmark_promotion_review.json",
+    "checkpoint_payload_copied_locally": false,
+    "checkpoint_payload_note": "The 329 MiB checkpoint payload remains on the cloud persistent disk; local evidence includes checkpoint metadata only."
+  },
+  "blockers": [
+    {
+      "blocker_id": "P48-PROMOTION-CONFIG-02",
+      "scope": "INTERNAL",
+      "detail": "Benchmark config is explicitly non-promotable."
+    },
+    {
+      "blocker_id": "P48-PROMOTION-STEPS-01",
+      "scope": "INTERNAL",
+      "detail": "Benchmark completed 100 steps; formal P4.8 requires the configured >=100000-step research run."
+    },
+    {
+      "blocker_id": "P48-PROMOTION-HEALTH-01",
+      "scope": "RESEARCH_RESULT",
+      "detail": "Representation effective rank was 63.63990020751953, below the >=64 promotion threshold."
+    },
+    {
+      "blocker_id": "P48-PROMOTION-CHECKPOINT-01",
+      "scope": "INTERNAL",
+      "detail": "Checkpoint payload was intentionally not copied into the local repo evidence package."
+    }
+  ],
+  "next_action": "Use the optimized benchmark timing to decide whether a full 100000-step P4.8 run fits the remaining 1000 TL cap; do not promote this benchmark or advance to P4.9."
+}

@@ -1,0 +1,123 @@
+{
+  "architecture_id": "conrad_v2_impl_freeze_v0_2",
+  "checkpoint_id": "4d1d62055b3bf4b8c7d054822fcbf626e54f6b7f21ff3bfb5d838b3738e99c24",
+  "component": "foundation.osfm.u1_sonar",
+  "config": {
+    "batch_size": 8,
+    "budget": {
+      "cap_tl": 1000,
+      "cumulative_spend_estimate_before_run_tl": 136,
+      "formal_p4_8_completion": false
+    },
+    "corpus": "configs/data/osfm/public_real_subpipe_p47b.yaml",
+    "evidence": "configs/data/osfm/subpipe_p47b_evidence.json",
+    "formal_run_allowed": true,
+    "full_run_allowed": true,
+    "grad_clip_norm": 1.0,
+    "image_size": 28,
+    "init": "artifacts/external/dinov2/dinov2_vits14.pth",
+    "job": "osfm_u1_sonar_research",
+    "lr": 0.0001,
+    "min_visible_fraction": 0.1,
+    "min_vram_gb": 16,
+    "noise_std": 0.025,
+    "notes": [
+      "This benchmark measures the decode-once P4.8 data path; it is not a promotable research run.",
+      "Training reads PRETRAIN_REAL only; validation reads VALIDATION only.",
+      "FINAL_TEST and OOD_TEST are forbidden for training, sampling, and normalization statistics.",
+      "SubPipe sonar is rendered side-scan imagery, not raw acoustic backscatter."
+    ],
+    "optimizer_steps": 100,
+    "p47_go_artifact": "artifacts/gates/P4.7D_L4/osfm_readiness.json",
+    "promotable": false,
+    "promotion": {
+      "final_or_ood_training_access": "forbidden",
+      "produces": "P4.8D-U1-SONAR-THROUGHPUT-EVIDENCE",
+      "promotable_to_formal_p4_8": false,
+      "requires_clean_git": true
+    },
+    "rehearsal_only": false,
+    "require_clean_git": true,
+    "required_compute": "CUDA GPU with >=16 GB VRAM",
+    "required_modalities": [
+      "sonar"
+    ],
+    "required_partitions": [
+      "PRETRAIN_REAL",
+      "VALIDATION"
+    ],
+    "scale": "full",
+    "seed": 2026092701,
+    "stage_id": "P4.8D-U1-SONAR-OPTIMIZED-THROUGHPUT-BENCHMARK",
+    "stream": "sss_lf",
+    "token_mask_fraction": 0.6,
+    "validation_every_steps": 100,
+    "validation_support": 96,
+    "weight_decay": 0.05
+  },
+  "config_digest": "4ebbb3f47d137cbfef811a2a51bc5d6544343dc5467a4072cc314a8769e5ecde",
+  "created_time_ns": 1790492350862738204,
+  "device_info": {
+    "cuda_available": true,
+    "cuda_devices": [
+      "NVIDIA L4"
+    ],
+    "device": "cpu",
+    "device_fallback": false,
+    "platform": "Linux-7.0.0-1011-gcp-x86_64-with-glibc2.39",
+    "python": "3.11.16",
+    "torch_version": "2.6.0+cu124"
+  },
+  "epoch": 0,
+  "extra_compatibility": {
+    "osfm_stage": "U1-SONAR-RESEARCH",
+    "p48_rehearsal": "false"
+  },
+  "format": "conrad-checkpoint-v1",
+  "git_commit": null,
+  "git_dirty": null,
+  "has_optimizer": true,
+  "has_scheduler": false,
+  "is_encoder": true,
+  "manifest_digests": [
+    "75e1bf661c1269130aee21926ce1153f1dc643fe0b8a61283263379f5f086a4e"
+  ],
+  "metrics": {
+    "formal_rank_guard_numeric": 0.0,
+    "memory_allocated_bytes": 543435776.0,
+    "optimizer_steps": 100.0,
+    "parameter_count": 21372288.0,
+    "representation_collapse_score": 0.0004941584193147719,
+    "representation_effective_rank": 63.63990020751953,
+    "representation_finite": 1.0,
+    "representation_variance_mean": 0.0004941584193147719,
+    "train/osfm_u1_sonar_loss": 0.042292267084121704,
+    "u1_sonar_degradation_contribution": 7.727507909294218e-05,
+    "u1_sonar_degradation_denominator": 96.0,
+    "u1_sonar_degradation_loss": 0.0003091003163717687,
+    "u1_sonar_degradation_numerator": 0.029673630371689796,
+    "u1_sonar_global_consistency_contribution": 0.005302142817527056,
+    "u1_sonar_global_consistency_denominator": 96.0,
+    "u1_sonar_global_consistency_loss": 0.010604285635054111,
+    "u1_sonar_global_consistency_numerator": 1.018011450767517,
+    "u1_sonar_masked_latent_prediction_contribution": 0.011069267988204956,
+    "u1_sonar_masked_latent_prediction_denominator": 192.0,
+    "u1_sonar_masked_latent_prediction_loss": 0.011069267988204956,
+    "u1_sonar_masked_latent_prediction_numerator": 2.1252994537353516,
+    "u1_sonar_metric_contribution": 0.0,
+    "u1_sonar_metric_denominator": 0.0,
+    "u1_sonar_metric_loss": 0.0,
+    "u1_sonar_metric_numerator": 0.0,
+    "val/osfm_u1_sonar_loss": 0.01644868589937687
+  },
+  "representation_pretraining_id": "P4.8-U1-SONAR-RESEARCH",
+  "schema_version": "1.0.0",
+  "seeds": {
+    "mask": 2026092701,
+    "torch": 2026092701
+  },
+  "selection_metric": "val/osfm_u1_sonar_loss",
+  "split_hash": "2e54ba2b679007f6dcf4678fb7d0a1bfe2c703591569b3df34f18683e32f1356",
+  "stack_id": "conrad_v2_stack_freeze_v0_2",
+  "step": 100
+}
