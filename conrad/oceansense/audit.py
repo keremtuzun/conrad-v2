@@ -73,6 +73,12 @@ REQUIREMENTS: tuple[dict[str, Any], ...] = (
             "tests/unit/oceansense/test_p5_p10_status.py::test_status_gate_allows_validated_run_only_with_qualified_checkpoint_metadata",
         ),
     },
+    {
+        "phase": "P5-P10",
+        "requirement": "single fixture path exercises task heads, Model2 adapter, reasoning, adaptive inspection, host boundary, persistence, replay, and direct evidence preservation",
+        "implementation": "conrad/oceansense/",
+        "tests": ("tests/unit/oceansense/test_p5_p10_contracts.py::test_p5_p10_end_to_end_fixture_chain_preserves_boundaries",),
+    },
 )
 
 

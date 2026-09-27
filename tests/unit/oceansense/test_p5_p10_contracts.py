@@ -298,3 +298,64 @@ def test_p10_alpha_replay_key_and_outputs_are_deterministic(tmp_path: Path) -> N
     assert [o.model_dump(mode="json") for o in first.task_outputs] == [
         o.model_dump(mode="json") for o in second.task_outputs
     ]
+
+
+def test_p5_p10_end_to_end_fixture_chain_preserves_boundaries(tmp_path: Path) -> None:
+    ev = evidence()
+    rep = representation()
+    adapter = RepresentationAdapter(seed=321)
+
+    bundle = adapt_evidence_for_model2(ev, rep, adapter)
+    assert bundle.model2_embedding_dim == MODEL2_DIM
+    assert bundle.direct_physical_evidence is ev
+
+    head_input = task_input()
+    head_outputs = [h.infer(head_input) for h in (DetectionHead(), SegmentationHead(), AnomalyHead(), ConditionHead())]
+    assert all(o.status is DownstreamValidationStatus.IMPLEMENTED for o in head_outputs)
+
+    base = Uncertainty(aleatoric=0.1, epistemic=0.7, contradiction=0.2, observational=0.6)
+    condition_uncertainty = Uncertainty.model_validate(head_outputs[-1].payload["condition"]["uncertainty"])
+    updated = provenance_aware_uncertainty_update(base, condition_uncertainty, independent=True)
+    technical = belief("technical-e2e", Domain.TECHNICAL, "requires-review", updated)
+    spatial = belief("spatial-e2e", Domain.SPATIAL, "blocked", base)
+    hypotheses = CrossDomainReasoner().build_hypotheses((technical, spatial), (uid("e2e-h1"), uid("e2e-h2")))
+    assert hypotheses.ranked()[0].score >= hypotheses.ranked()[-1].score
+
+    need = InformationNeed(
+        need_id=uid("need-e2e"),
+        trace_id=ev.trace_id,
+        target_belief_ids=(technical.belief_id, spatial.belief_id),
+        question_type=QuestionType.DISCRIMINATE_HYPOTHESES,
+        target_properties=("condition",),
+        priority=0.9,
+        desired_uncertainty_reduction={"CONTRADICTION": 0.3, "EPISTEMIC": 0.2},
+    )
+    request = PlanningRequest(
+        need=need,
+        beliefs=(technical, spatial),
+        robot_pose=Pose(frame_id="WORLD", position_m=(0.0, 0.0, 0.0)),
+        sensors=(),
+        is_free=lambda points: [],
+        predicted_visibility=lambda pose, region: 0.0,
+        navigation_cost=lambda start, end: ResourceCost(time_s=0.0, energy_j=0.0, risk=0.0, travel_m=0.0),
+        now=stamp(12.0, "fixture"),
+    )
+    observation_plan = AdaptiveInspectionPlanner(StubPlanner()).plan(request)
+    assert observation_plan.need_id == need.need_id
+    assert observation_plan.targeted_uncertainty[:2] == (UncertaintyType.CONTRADICTION, UncertaintyType.EPISTEMIC)
+
+    alpha = OceanSenseAlpha(AssetMemory.load(tmp_path / "asset_memory.json"), adapter)
+    result = alpha.run(
+        ev,
+        rep,
+        observation_plan,
+        HostCapabilityProfile(host_id="partner-host", capabilities=(HostCapability.REVISIT_REGION,)),
+        uid("intent-e2e"),
+    )
+    assert result.gateway_decision is not None and result.gateway_decision.accepted
+    assert not result.degraded
+    assert result.evidence_bundle.direct_physical_evidence is ev
+    assert {o.head_name for o in result.task_outputs} == {o.head_name for o in head_outputs}
+    memory = AssetMemory.load(tmp_path / "asset_memory.json")
+    assert memory.records[0]["replay_key"] == result.replay_key
+    assert memory.records[0]["direct_physical_measurements"] == ["crack_length_m"]
