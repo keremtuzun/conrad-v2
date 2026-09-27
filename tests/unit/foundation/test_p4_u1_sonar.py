@@ -265,6 +265,20 @@ def test_p48_optimized_benchmark_is_non_promotable_and_bounded() -> None:
     assert cfg["budget"]["cumulative_spend_estimate_before_run_tl"] < cfg["budget"]["cap_tl"]
 
 
+def test_p48_effective_batch_benchmark_is_bounded_and_non_promotable() -> None:
+    import yaml
+
+    cfg = yaml.safe_load(
+        Path(
+            "configs/train/osfm/research/u1_sonar_effective_batch_benchmark.yaml"
+        ).read_text()
+    )
+    assert cfg["optimizer_steps"] == 100
+    assert cfg["promotable"] is False
+    assert cfg["promotion"]["promotable_to_formal_p4_8"] is False
+    assert _formal_training_budget(cfg) == (64, 4, 256)
+
+
 def test_p48_cuda_determinism_disables_memory_efficient_attention(monkeypatch: pytest.MonkeyPatch) -> None:
     calls: list[tuple[str, bool]] = []
 

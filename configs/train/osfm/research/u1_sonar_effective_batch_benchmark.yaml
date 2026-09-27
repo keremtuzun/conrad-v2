@@ -1,0 +1,48 @@
+job: osfm_u1_sonar_research
+stage_id: P4.8F-U1-SONAR-EFFECTIVE-BATCH-BENCHMARK
+scale: full
+formal_run_allowed: true
+full_run_allowed: true
+rehearsal_only: false
+promotable: false
+require_clean_git: true
+required_compute: CUDA GPU with >=16 GB VRAM
+min_vram_gb: 16
+p47_go_artifact: artifacts/gates/P4.7D_L4/osfm_readiness.json
+corpus: configs/data/osfm/public_real_subpipe_p47b.yaml
+evidence: configs/data/osfm/subpipe_p47b_evidence.json
+init: artifacts/external/dinov2/dinov2_vits14.pth
+stream: sss_lf
+image_size: 28
+batch_size: 64
+gradient_accumulation: 4
+validation_support: 96
+optimizer_steps: 100
+validation_every_steps: 100
+seed: 2026092702
+lr: 0.0001
+weight_decay: 0.05
+grad_clip_norm: 1.0
+token_mask_fraction: 0.6
+min_visible_fraction: 0.1
+noise_std: 0.025
+budget:
+  batch_size_per_gpu: 64
+  gradient_accumulation: 4
+  effective_batch_target: 256
+  optimizer_steps: 100
+required_partitions:
+  - PRETRAIN_REAL
+  - VALIDATION
+required_modalities:
+  - sonar
+promotion:
+  produces: P4.8F-U1-SONAR-EFFECTIVE-BATCH-EVIDENCE
+  requires_clean_git: true
+  final_or_ood_training_access: forbidden
+  promotable_to_formal_p4_8: false
+notes:
+  - This bounded benchmark measures the corrected frozen effective-batch path and is not promotable.
+  - Training reads PRETRAIN_REAL only; validation reads VALIDATION only.
+  - FINAL_TEST and OOD_TEST are forbidden for training, sampling, and normalization statistics.
+  - SubPipe sonar is rendered side-scan imagery, not raw acoustic backscatter.
