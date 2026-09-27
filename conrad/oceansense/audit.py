@@ -81,6 +81,8 @@ REQUIREMENTS: tuple[dict[str, Any], ...] = (
         "tests": (
             "tests/unit/oceansense/test_p5_p10_status.py::test_status_gate_is_implemented_but_not_validated_without_qualified_osfm",
             "tests/unit/oceansense/test_p5_p10_status.py::test_status_gate_allows_validated_run_only_with_qualified_checkpoint_metadata",
+            "tests/unit/oceansense/test_p5_p10_status.py::test_status_gate_rejects_unqualified_checkpoint_metadata",
+            "tests/unit/oceansense/test_p5_p10_audit.py::test_requirement_audit_rejects_unqualified_checkpoint_metadata",
         ),
     },
     {
