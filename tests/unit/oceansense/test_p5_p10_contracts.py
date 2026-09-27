@@ -154,7 +154,8 @@ def belief(name: str, domain: Domain, value: str, u: Uncertainty) -> BeliefMessa
 
 def test_p5_task_heads_emit_schema_outputs_and_preserve_status() -> None:
     x = task_input()
-    outputs = [h.infer(x) for h in (DetectionHead(), SegmentationHead(), AnomalyHead(), ConditionHead())]
+    heads = (DetectionHead(), SegmentationHead(), AnomalyHead(), ConditionHead())
+    outputs = [h.infer(x) for h in heads]
     assert {o.head_name for o in outputs} == {
         "p5-detection-head-v0",
         "p5-segmentation-head-v0",
@@ -162,8 +163,21 @@ def test_p5_task_heads_emit_schema_outputs_and_preserve_status() -> None:
         "p5-condition-head-v0",
     }
     assert all(o.status is DownstreamValidationStatus.IMPLEMENTED for o in outputs)
-    with pytest.raises(ValueError, match="VALIDATED-RUN"):
-        DetectionHead().infer(x.model_copy(update={"status": DownstreamValidationStatus.VALIDATED_RUN}))
+
+    invalid_validated_input = x.model_copy(update={"status": DownstreamValidationStatus.VALIDATED_RUN})
+    for head in heads:
+        with pytest.raises(ValueError, match="VALIDATED-RUN"):
+            head.infer(invalid_validated_input)
+
+    qualified_input = x.model_copy(
+        update={
+            "status": DownstreamValidationStatus.VALIDATED_RUN,
+            "checkpoint_label": "OSFM-S-PRETRAIN-V1",
+        }
+    )
+    qualified_outputs = [h.infer(qualified_input) for h in heads]
+    assert all(o.status is DownstreamValidationStatus.VALIDATED_RUN for o in qualified_outputs)
+    assert all(o.payload["checkpoint_label"] == "OSFM-S-PRETRAIN-V1" for o in qualified_outputs)
 
 
 def test_p6_adapter_is_384_512_256_and_preserves_direct_measurements() -> None:
