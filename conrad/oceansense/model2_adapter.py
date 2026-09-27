@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 from uuid import UUID
 
 import numpy as np
@@ -37,9 +38,10 @@ class RepresentationAdapter:
 
 @dataclass(frozen=True)
 class Model2EvidenceBundle:
-    """Dual-path evidence prepared for Model2 ingestion."""
+    """Learned, semantic and direct evidence prepared for Model2 ingestion."""
 
     learned_evidence: Evidence
+    semantic_evidence: dict[str, Any]
     direct_physical_evidence: Evidence | None
     osfm_context_provenance_id: UUID
     adapter_version: str
@@ -64,8 +66,20 @@ def adapt_evidence_for_model2(evidence: Evidence, osfm_representation: tuple[flo
         }
     )
     direct = evidence if evidence.measurements else None
+    semantic = {
+        "source_evidence_id": str(evidence.evidence_id),
+        "source_observation_id": str(evidence.source_observation_id),
+        "modality": evidence.modality.value,
+        "spatial_support": None if evidence.spatial_support is None else evidence.spatial_support.model_dump(mode="json"),
+        "reliability": evidence.reliability,
+        "measurement_keys": tuple(sorted(evidence.measurements)),
+        "measurement_units": dict(sorted(evidence.measurement_units.items())),
+        "provenance_id": str(evidence.provenance_id),
+        "encoder_version": evidence.encoder_version,
+    }
     return Model2EvidenceBundle(
         learned_evidence=learned,
+        semantic_evidence=semantic,
         direct_physical_evidence=direct,
         osfm_context_provenance_id=evidence.provenance_id,
         adapter_version=adapter.version,

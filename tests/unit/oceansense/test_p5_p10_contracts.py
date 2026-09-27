@@ -176,6 +176,10 @@ def test_p6_adapter_is_384_512_256_and_preserves_direct_measurements() -> None:
     assert bundle.direct_physical_evidence is ev
     assert bundle.direct_physical_evidence.measurements == {"crack_length_m": 0.012}
     assert bundle.learned_evidence.measurements == ev.measurements
+    assert bundle.semantic_evidence["modality"] == "SONAR"
+    assert bundle.semantic_evidence["measurement_keys"] == ("crack_length_m",)
+    assert bundle.semantic_evidence["measurement_units"] == {"crack_length_m": "m"}
+    assert bundle.semantic_evidence["provenance_id"] == str(ev.provenance_id)
 
 
 def test_p6_adapter_rejects_wrong_osfm_dimension_and_is_deterministic() -> None:

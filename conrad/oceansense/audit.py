@@ -23,7 +23,7 @@ REQUIREMENTS: tuple[dict[str, Any], ...] = (
     },
     {
         "phase": "P6",
-        "requirement": "384->512->256 RepresentationAdapter and Model2 256D compatibility",
+        "requirement": "384->512->256 RepresentationAdapter, learned evidence, semantic evidence, and Model2 256D compatibility",
         "implementation": "conrad/oceansense/model2_adapter.py",
         "tests": (
             "tests/unit/oceansense/test_p5_p10_contracts.py::test_p6_adapter_is_384_512_256_and_preserves_direct_measurements",
