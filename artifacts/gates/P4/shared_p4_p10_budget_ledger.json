@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0.0",
+  "ledger_id": "CONRAD-P4-P10-SHARED-CLOUD-BUDGET",
+  "currency": "TRY",
+  "hard_cap_tl": 3200.0,
+  "scope": [
+    "P4",
+    "P5",
+    "P6",
+    "P7",
+    "P8",
+    "P9",
+    "P10"
+  ],
+  "actual_provider_spend_tl": null,
+  "actual_provider_spend_status": "UNVERIFIED_PROVIDER_BILLING_REQUIRED",
+  "historical_estimates": {
+    "prior_cumulative_estimate_tl": 146.0,
+    "superseded_sonar_formal_projection_tl": 944.64,
+    "superseded_projected_cumulative_tl": 1090.64,
+    "note": "These estimates used the pre-correction Sonar runtime path and are not valid projections for the frozen effective-batch schedule."
+  },
+  "current_state": {
+    "active_paid_gpu_jobs": 0,
+    "p48_sonar_failed_run_preserved": true,
+    "p48_sonar_failed_effective_rank": 14.767073631286621,
+    "p48_sonar_required_effective_rank": 64.0,
+    "corrected_benchmark_status": "BLOCKED_EXTERNAL_GPU_CAPACITY",
+    "corrected_benchmark_commit": "15beda9f5bd2fe007401197c8bfdd79e8edca4da"
+  },
+  "projected_additional_p4_spend_tl": null,
+  "projected_combined_p4_p10_spend_tl": null,
+  "remaining_under_cap_tl": null,
+  "projection_status": "PENDING_CORRECTED_BENCHMARK_AND_P5_P10_COMPUTE_PLAN",
+  "launch_policy": "Do not launch an unbounded paid workload unless the corrected benchmark and combined P4-P10 projection remain within the 3200 TL hard cap."
+}
