@@ -1,0 +1,45 @@
+batch_size: 8
+budget:
+  cap_tl: 1000
+  formal_p4_8_completion: false
+  optimizer_steps: 1000
+corpus: configs/data/osfm/public_real_subpipe_p47b.yaml
+evidence: configs/data/osfm/subpipe_p47b_evidence.json
+formal_run_allowed: true
+full_run_allowed: true
+grad_clip_norm: 1.0
+image_size: 28
+init: artifacts/external/dinov2/dinov2_vits14.pth
+job: osfm_u1_sonar_research
+lr: 0.0001
+min_visible_fraction: 0.1
+min_vram_gb: 16
+noise_std: 0.025
+notes:
+- This is an under-1000 TL budget pilot, not the formal 100000-step P4.8 run.
+- Training reads PRETRAIN_REAL only; validation reads VALIDATION only.
+- FINAL_TEST and OOD_TEST are forbidden for training, sampler, and normalization statistics.
+- SubPipe sonar is rendered side-scan imagery, not raw acoustic backscatter.
+optimizer_steps: 1000
+p47_go_artifact: artifacts/gates/P4.7D_L4/osfm_readiness.json
+promotable: false
+promotion:
+  final_or_ood_training_access: forbidden
+  produces: P4.8C-U1-SONAR-BUDGET-PILOT-CHECKPOINT
+  promotable_to_formal_p4_8: false
+  requires_clean_git: true
+rehearsal_only: false
+require_clean_git: true
+required_compute: CUDA GPU with >=16 GB VRAM
+required_modalities:
+- sonar
+required_partitions:
+- PRETRAIN_REAL
+- VALIDATION
+scale: full
+seed: 2026092620
+stage_id: P4.8C-U1-SONAR-BUDGET-PILOT
+stream: sss_lf
+token_mask_fraction: <redacted>
+validation_every_steps: 250
+weight_decay: 0.05
