@@ -64,6 +64,80 @@ class U1SonarStepOutput:
     health: RepresentationHealth
 
 
+@dataclass(frozen=True)
+class SubPipeSonarPool:
+    """Verified, partition-scoped rendered-sonar tensors decoded once per run."""
+
+    partition: CorpusPartition
+    stream: str
+    images: torch.Tensor
+    sample_ids: tuple[str, ...]
+
+    def views(
+        self,
+        job: dict[str, Any],
+        seed: int,
+        *,
+        train_stats: tuple[float, float],
+        sample_offset: int = 0,
+        batch_size: int | None = None,
+    ) -> U1SonarViews:
+        batch = int(batch_size if batch_size is not None else job.get("batch_size", 2))
+        if len(self.sample_ids) < batch:
+            raise RuntimeError(
+                f"{self.partition.value} has only {len(self.sample_ids)} frames for batch {batch}"
+            )
+        generator = torch.Generator().manual_seed(
+            seed + (0 if self.partition is CorpusPartition.PRETRAIN_REAL else 10_000)
+        )
+        order = torch.randperm(len(self.sample_ids), generator=generator).tolist()
+        indices = [order[(sample_offset + index) % len(order)] for index in range(batch)]
+        teacher = self.images[indices].clone()
+        mean, std = train_stats
+        teacher = ((teacher - mean) / std).clamp(-5.0, 5.0)
+        speckle = torch.randn(teacher.shape, generator=generator, dtype=teacher.dtype) * float(
+            job.get("noise_std", 0.025)
+        )
+        gain = 0.96 + torch.rand(
+            (teacher.shape[0], 1, 1, 1), generator=generator, dtype=teacher.dtype
+        ) * 0.08
+        student = (teacher * gain + speckle).clamp(-5.0, 5.0)
+        mask = contiguous_2d_mask(
+            batch_size=batch,
+            grid_size=SonarEncoderConfig(image_size=int(job.get("image_size", 28))).grid_size,
+            mask_fraction=float(job.get("token_mask_fraction", 0.60)),
+            min_visible_fraction=float(job.get("min_visible_fraction", 0.10)),
+            generator=generator,
+        )
+        return U1SonarViews(
+            teacher_sonar=teacher,
+            student_sonar=student,
+            token_mask=mask,
+            sample_ids=tuple(self.sample_ids[index] for index in indices),
+            corruption_trace=("bounded_speckle_like_noise", "gain_variation"),
+        )
+
+    def evidence(self, train_stats: tuple[float, float], sample_ids: tuple[str, ...]) -> dict[str, Any]:
+        mean, std = train_stats
+        return {
+            "partition": self.partition.value,
+            "stream": self.stream,
+            "sample_ids": list(sample_ids),
+            "source_frame_count": len(self.sample_ids),
+            "lineage_unit": f"subpipe/mini_sss/{self.stream}",
+            "normalization_fit_partitions": [CorpusPartition.PRETRAIN_REAL.value],
+            "normalization_excluded_partitions": [
+                CorpusPartition.VALIDATION.value,
+                CorpusPartition.FINAL_TEST.value,
+                CorpusPartition.OOD_TEST.value,
+            ],
+            "rendered_sonar_limitation": (
+                "SubPipe sonar is rendered side-scan imagery, not raw acoustic backscatter."
+            ),
+            "train_stats": {"mean": mean, "std": std},
+        }
+
+
 def _repo_tracked_clean() -> tuple[bool, str]:
     try:
         status = subprocess.check_output(
@@ -105,7 +179,7 @@ def _require_u1_sonar_research_gate(job: dict[str, Any]) -> dict[str, Any]:
     if not measured_vram or max(measured_vram) < min_vram:
         raise RuntimeError(f"P4.8 requires >= {min_vram} GB CUDA VRAM; measured {measured_vram}")
 
-    p47 = _load_json(job.get("p47_go_artifact", "artifacts/gates/P4.7B_L4/osfm_readiness.json"))
+    p47 = _load_json(job.get("p47_go_artifact", "artifacts/gates/P4.7D_L4/osfm_readiness.json"))
     if p47.get("status") != "VALIDATED-RUN" or p47.get("decision") != "GO" or p47.get("blockers"):
         raise RuntimeError("P4.8 requires a blocker-free P4.7 GO readiness artifact")
 
@@ -123,7 +197,7 @@ def _require_u1_sonar_research_gate(job: dict[str, Any]) -> dict[str, Any]:
         init = REPO_ROOT / init
     init_verification = verify_dinov2_checkpoint(init)
     return {
-        "p47_go_artifact": job.get("p47_go_artifact", "artifacts/gates/P4.7B_L4/osfm_readiness.json"),
+        "p47_go_artifact": job.get("p47_go_artifact", "artifacts/gates/P4.7D_L4/osfm_readiness.json"),
         "p47_report_digest": p47.get("report_digest"),
         "compute": compute.model_dump(mode="json"),
         "measured_cuda_vram_gb": measured_vram,
@@ -167,23 +241,17 @@ def synthetic_sonar_views(job: dict[str, Any], seed: int) -> U1SonarViews:
     )
 
 
-def real_subpipe_sonar_views(
-    job: dict[str, Any],
-    seed: int,
-    *,
-    partition: CorpusPartition,
-    train_stats: tuple[float, float] | None = None,
-    sample_offset: int = 0,
-) -> tuple[U1SonarViews, dict[str, Any], tuple[float, float]]:
+def load_subpipe_sonar_pool(job: dict[str, Any], *, partition: CorpusPartition) -> SubPipeSonarPool:
+    """Decode one lineage-safe partition once; no final or OOD access is permitted."""
     if partition not in (CorpusPartition.PRETRAIN_REAL, CorpusPartition.VALIDATION):
         raise ValueError("P4.8 U1 sonar may read only PRETRAIN_REAL or VALIDATION")
     image_size = int(job.get("image_size", 28))
-    batch = int(job.get("batch_size", 2))
     stream = str(job.get("stream", "sss_lf"))
     if stream not in {"sss_lf", "sss_hf"}:
         raise ValueError("P4.8 U1 sonar stream must be sss_lf or sss_hf")
-    gen = torch.Generator().manual_seed(seed + (0 if partition is CorpusPartition.PRETRAIN_REAL else 10_000))
     manifest = load_manifest(SUBPIPE_MANIFEST)
+    images: list[torch.Tensor] = []
+    sample_ids: list[str] = []
     with tempfile.TemporaryDirectory(prefix="conrad-p48-u1-sonar-") as tmp:
         adapter = SubPipeAdapter(
             manifest,
@@ -198,68 +266,44 @@ def real_subpipe_sonar_views(
             refs = adapter.frames(stream)
             ranges = _partition_ranges(len(refs))
             selected = refs[slice(*ranges[partition])]
-            if len(selected) < batch:
-                raise RuntimeError(f"{partition.value} has only {len(selected)} frames for batch {batch}")
-            order = torch.randperm(len(selected), generator=gen).tolist()
-            idx = [order[(sample_offset + i) % len(order)] for i in range(batch)]
-            chosen = [selected[i] for i in idx]
-            images: list[torch.Tensor] = []
-            sample_ids: list[str] = []
-            for ref in chosen:
+            for ref in selected:
                 obs = adapter.normalize_observation(ref)
                 if obs.sensor_context.get("sonar_rendering") != "colormapped PPM, not raw backscatter":
                     raise RuntimeError("SubPipe rendered-sonar limitation missing from observation metadata")
                 raw = adapter.load(ref)
                 gray = cv2.cvtColor(raw, cv2.COLOR_BGR2GRAY) if raw.ndim == 3 else raw
                 resized = cv2.resize(gray, (image_size, image_size), interpolation=cv2.INTER_AREA)
-                tensor = torch.from_numpy(resized).float().unsqueeze(0) / 255.0
-                images.append(tensor)
+                images.append(torch.from_numpy(resized).float().unsqueeze(0) / 255.0)
                 sample_ids.append(f"{partition.value}:{stream}:{ref.member}")
         finally:
             adapter.close()
-    teacher = torch.stack(images, dim=0)
+    if not images:
+        raise RuntimeError(f"{partition.value} contains no usable rendered-sonar frames")
+    return SubPipeSonarPool(
+        partition=partition,
+        stream=stream,
+        images=torch.stack(images, dim=0),
+        sample_ids=tuple(sample_ids),
+    )
+
+
+def real_subpipe_sonar_views(
+    job: dict[str, Any],
+    seed: int,
+    *,
+    partition: CorpusPartition,
+    train_stats: tuple[float, float] | None = None,
+    sample_offset: int = 0,
+) -> tuple[U1SonarViews, dict[str, Any], tuple[float, float]]:
+    pool = load_subpipe_sonar_pool(job, partition=partition)
     if train_stats is None:
-        mean = float(teacher.mean())
-        std = float(teacher.std(unbiased=False).clamp_min(1e-6))
+        mean = float(pool.images.mean())
+        std = float(pool.images.std(unbiased=False).clamp_min(1e-6))
     else:
         mean, std = train_stats
-    teacher = ((teacher - mean) / std).clamp(-5.0, 5.0)
-    speckle = torch.randn(teacher.shape, generator=gen, dtype=teacher.dtype) * float(job.get("noise_std", 0.025))
-    gain = 0.96 + torch.rand((teacher.shape[0], 1, 1, 1), generator=gen, dtype=teacher.dtype) * 0.08
-    student = (teacher * gain + speckle).clamp(-5.0, 5.0)
-    mask = contiguous_2d_mask(
-        batch_size=batch,
-        grid_size=SonarEncoderConfig(image_size=image_size).grid_size,
-        mask_fraction=float(job.get("token_mask_fraction", 0.60)),
-        min_visible_fraction=float(job.get("min_visible_fraction", 0.10)),
-        generator=gen,
-    )
-    evidence = {
-        "partition": partition.value,
-        "stream": stream,
-        "sample_ids": sample_ids,
-        "source_frame_count": len(selected),
-        "lineage_unit": f"subpipe/mini_sss/{stream}",
-        "normalization_fit_partitions": [CorpusPartition.PRETRAIN_REAL.value],
-        "normalization_excluded_partitions": [
-            CorpusPartition.VALIDATION.value,
-            CorpusPartition.FINAL_TEST.value,
-            CorpusPartition.OOD_TEST.value,
-        ],
-        "rendered_sonar_limitation": "SubPipe sonar is rendered side-scan imagery, not raw acoustic backscatter.",
-        "train_stats": {"mean": mean, "std": std},
-    }
-    return (
-        U1SonarViews(
-            teacher_sonar=teacher,
-            student_sonar=student,
-            token_mask=mask,
-            sample_ids=tuple(sample_ids),
-            corruption_trace=("bounded_speckle_like_noise", "gain_variation"),
-        ),
-        evidence,
-        (mean, std),
-    )
+    stats = (mean, std)
+    views = pool.views(job, seed, train_stats=stats, sample_offset=sample_offset)
+    return views, pool.evidence(stats, views.sample_ids), stats
 
 
 class U1SonarTrainingBundle(nn.Module):
@@ -499,10 +543,21 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
     device = torch.device("cuda:0")
     torch.cuda.reset_peak_memory_stats(device)
     config = SonarEncoderConfig(image_size=int(job.get("image_size", 28)))
-    train_views, train_evidence, train_stats = real_subpipe_sonar_views(job, seed, partition=CorpusPartition.PRETRAIN_REAL)
-    val_views, val_evidence, _ = real_subpipe_sonar_views(
-        job, seed + 1, partition=CorpusPartition.VALIDATION, train_stats=train_stats
+    train_pool = load_subpipe_sonar_pool(job, partition=CorpusPartition.PRETRAIN_REAL)
+    val_pool = load_subpipe_sonar_pool(job, partition=CorpusPartition.VALIDATION)
+    train_stats = (
+        float(train_pool.images.mean()),
+        float(train_pool.images.std(unbiased=False).clamp_min(1e-6)),
     )
+    train_views = train_pool.views(job, seed, train_stats=train_stats)
+    validation_support = min(int(job.get("validation_support", 96)), len(val_pool.sample_ids))
+    if validation_support < 64:
+        raise RuntimeError(
+            f"formal P4.8 validation requires >=64 independent samples; found {validation_support}"
+        )
+    val_views = val_pool.views(job, seed + 1, train_stats=train_stats, batch_size=validation_support)
+    train_evidence = train_pool.evidence(train_stats, train_views.sample_ids)
+    val_evidence = val_pool.evidence(train_stats, val_views.sample_ids)
     bundle = U1SonarTrainingBundle(
         SonarViTS14Encoder(config),
         ema_schedule=EMASchedule(start=0.996, end=0.9999, total_steps=int(job.get("optimizer_steps", 2))),
@@ -533,13 +588,13 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
     all_train_sample_ids: list[str] = []
     for step in range(1, steps + 1):
         if not rehearsal_only and step > 1:
-            train_views, step_evidence, _ = real_subpipe_sonar_views(
+            train_views = train_pool.views(
                 job,
                 seed + step,
-                partition=CorpusPartition.PRETRAIN_REAL,
                 train_stats=train_stats,
                 sample_offset=(step - 1) * int(job.get("batch_size", 2)),
             )
+            step_evidence = train_pool.evidence(train_stats, train_views.sample_ids)
             train_evidence = {
                 **train_evidence,
                 "sample_ids": list(dict.fromkeys([*train_evidence["sample_ids"], *step_evidence["sample_ids"]])),

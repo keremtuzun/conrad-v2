@@ -63,7 +63,7 @@ def train_osfm_p48_full_launch(
         "artifacts/gates/P4.8A/rehearsal_l4/reports/p48a_u1_sonar_rehearsal_report.json",
         "--rehearsal",
     ),
-    p47: str = typer.Option("artifacts/gates/P4.7B_L4/osfm_readiness.json", "--p47"),
+    p47: str = typer.Option("artifacts/gates/P4.7D_L4/osfm_readiness.json", "--p47"),
     implementation_review: str = typer.Option(
         "artifacts/gates/P4.8B/full_run_implementation_review.json", "--implementation-review"
     ),

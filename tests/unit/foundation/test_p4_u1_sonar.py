@@ -12,8 +12,10 @@ import pytest
 from conrad.foundation.data.manifest import CorpusPartition
 from conrad.foundation.pretraining import u1_sonar
 from conrad.foundation.pretraining.u1_sonar import (
+    SubPipeSonarPool,
     U1SonarTrainingBundle,
     _require_u1_sonar_research_gate,
+    load_subpipe_sonar_pool,
     real_subpipe_sonar_views,
     synthetic_sonar_views,
 )
@@ -143,6 +145,57 @@ def test_real_subpipe_views_refuse_final_and_ood_partitions() -> None:
             real_subpipe_sonar_views(job, 1, partition=partition)
 
 
+def test_subpipe_pool_batches_are_deterministic_and_partition_scoped() -> None:
+    pool = SubPipeSonarPool(
+        partition=CorpusPartition.PRETRAIN_REAL,
+        stream="sss_lf",
+        images=torch.linspace(0.0, 1.0, 12 * 28 * 28).reshape(12, 1, 28, 28),
+        sample_ids=tuple(f"PRETRAIN_REAL:sss_lf:frame-{index}" for index in range(12)),
+    )
+    job = {"batch_size": 4, "image_size": 28, "noise_std": 0.025}
+    stats = (float(pool.images.mean()), float(pool.images.std(unbiased=False)))
+    first = pool.views(job, 91, train_stats=stats)
+    replay = pool.views(job, 91, train_stats=stats)
+    shifted = pool.views(job, 91, train_stats=stats, sample_offset=4)
+    assert first.sample_ids == replay.sample_ids
+    assert torch.equal(first.teacher_sonar, replay.teacher_sonar)
+    assert torch.equal(first.student_sonar, replay.student_sonar)
+    assert first.sample_ids != shifted.sample_ids
+    assert all(sample_id.startswith("PRETRAIN_REAL:") for sample_id in first.sample_ids)
+
+
+def test_subpipe_pool_evidence_uses_training_statistics_only() -> None:
+    validation = SubPipeSonarPool(
+        partition=CorpusPartition.VALIDATION,
+        stream="sss_lf",
+        images=torch.ones(96, 1, 28, 28),
+        sample_ids=tuple(f"VALIDATION:sss_lf:frame-{index}" for index in range(96)),
+    )
+    train_stats = (0.25, 0.5)
+    views = validation.views(
+        {"batch_size": 8, "image_size": 28, "noise_std": 0.0},
+        7,
+        train_stats=train_stats,
+        batch_size=96,
+    )
+    evidence = validation.evidence(train_stats, views.sample_ids)
+    assert evidence["train_stats"] == {"mean": 0.25, "std": 0.5}
+    assert evidence["normalization_fit_partitions"] == ["PRETRAIN_REAL"]
+    assert set(evidence["normalization_excluded_partitions"]) == {
+        "VALIDATION",
+        "FINAL_TEST",
+        "OOD_TEST",
+    }
+    assert len(set(views.sample_ids)) == 96
+    assert all(sample_id.startswith("VALIDATION:") for sample_id in views.sample_ids)
+
+
+def test_subpipe_pool_loader_refuses_final_and_ood_partitions() -> None:
+    for partition in (CorpusPartition.FINAL_TEST, CorpusPartition.OOD_TEST):
+        with pytest.raises(ValueError, match="PRETRAIN_REAL or VALIDATION"):
+            load_subpipe_sonar_pool({"image_size": 28}, partition=partition)
+
+
 def test_p48a_rehearsal_config_preserves_partition_policy() -> None:
     import yaml
 
@@ -153,3 +206,15 @@ def test_p48a_rehearsal_config_preserves_partition_policy() -> None:
     assert cfg["partition_access"]["validation"] == ["VALIDATION"]
     assert set(cfg["partition_access"]["forbidden_training_access"]) == {"FINAL_TEST", "OOD_TEST"}
     assert "rendered side-scan imagery" in " ".join(cfg["notes"])
+
+
+def test_p48_research_configs_require_formal_validation_support() -> None:
+    import yaml
+
+    for path in (
+        Path("configs/train/osfm/research/u1_sonar_budget_pilot.yaml"),
+        Path("configs/train/osfm/research/u1_sonar_research.yaml"),
+    ):
+        cfg = yaml.safe_load(path.read_text())
+        assert cfg["validation_support"] >= 64
+        assert cfg["p47_go_artifact"] == "artifacts/gates/P4.7D_L4/osfm_readiness.json"

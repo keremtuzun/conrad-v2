@@ -8,13 +8,14 @@ promotable: false
 require_clean_git: true
 required_compute: CUDA GPU with >=16 GB VRAM
 min_vram_gb: 16
-p47_go_artifact: artifacts/gates/P4.7B_L4/osfm_readiness.json
+p47_go_artifact: artifacts/gates/P4.7D_L4/osfm_readiness.json
 corpus: configs/data/osfm/public_real_subpipe_p47b.yaml
 evidence: configs/data/osfm/subpipe_p47b_evidence.json
 init: artifacts/external/dinov2/dinov2_vits14.pth
 stream: sss_lf
 image_size: 28
 batch_size: 8
+validation_support: 96
 optimizer_steps: 1000
 validation_every_steps: 250
 seed: 2026092620

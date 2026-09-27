@@ -6,7 +6,7 @@ rehearsal_only: true
 require_clean_git: true
 required_compute: "1x CUDA GPU >= 16 GB VRAM (EXT-COMPUTE-P4-RESEARCH-01)"
 min_vram_gb: 16
-p47_go_artifact: artifacts/gates/P4.7B_L4/osfm_readiness.json
+p47_go_artifact: artifacts/gates/P4.7D_L4/osfm_readiness.json
 corpus: configs/data/osfm/public_real_subpipe_p47b.yaml
 evidence: configs/data/osfm/subpipe_p47b_evidence.json
 init: artifacts/external/dinov2/dinov2_vits14.pth

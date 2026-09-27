@@ -17,7 +17,7 @@ from conrad.settings import REPO_ROOT
 
 
 DEFAULT_REHEARSAL_REPORT = Path("artifacts/gates/P4.8A/rehearsal_l4/reports/p48a_u1_sonar_rehearsal_report.json")
-DEFAULT_P47_REPORT = Path("artifacts/gates/P4.7B_L4/osfm_readiness.json")
+DEFAULT_P47_REPORT = Path("artifacts/gates/P4.7D_L4/osfm_readiness.json")
 DEFAULT_IMPLEMENTATION_REVIEW = Path("artifacts/gates/P4.8B/full_run_implementation_review.json")
 
 
