@@ -11,16 +11,47 @@ local_time_window:
 hard_limits:
   max_wall_clock_hours: 24.0
   max_total_cost_try: 8500.0
+  preferred_cost_floor_try: 7500.0
+  preferred_cost_ceiling_try: 8000.0
   required_gpu_type: NVIDIA_L4
   required_gpu_count: 8
   required_rank_floor: 75.0
   required_successful_benchmark_steps: 1000
   selected_candidate_steps: 1200000
+  base_10p_steps: 1200000
   lower_report_steps: 700000
   upper_report_steps: 1600000
+  budget_fill_scale_options:
+    "1.0x": 1200000
+    "1.25x": 1500000
+    "1.5x": 1800000
+    "1.75x": 2100000
+    "2.0x": 2400000
+    "2.5x": 3000000
+    "3.0x": 3600000
   required_selected_steps_per_second_for_24h: 13.8888888889
   required_upper_steps_per_second_for_24h: 18.5185185185
   max_live_hourly_cost_try: 354.1666667
+budget_fill_scaling_policy:
+  enabled: true
+  base_scale: "1.0x"
+  base_steps: 1200000
+  cost_floor_try: 7500.0
+  cost_ceiling_try: 8000.0
+  absolute_stop_try: 8500.0
+  scale_order:
+    - "1.0x"
+    - "1.25x"
+    - "1.5x"
+    - "1.75x"
+    - "2.0x"
+    - "2.5x"
+    - "3.0x"
+  selection_rule: choose_largest_scale_with_projected_total_cost_between_7500_and_8000_try
+  fallback_if_all_under_floor: choose_largest_scale_under_8000_try_and_report_budget_underfill
+  no_go_if_base_exceeds_ceiling: true
+  do_not_select_any_scale_projected_over_8000_try: true
+  retain_8500_try_as_emergency_termination_limit: true
 exact_sequence:
   - id: local-preflight
     action: verify_local_branch_configs_and_tests
@@ -72,14 +103,17 @@ exact_sequence:
       upper_10p_hours: 1600000 / measured_steps_per_second / 3600
       projected_selected_cost_try: selected_10p_hours * live_hourly_cost_try
       projected_upper_cost_try: upper_10p_hours * live_hourly_cost_try
+      scaled_candidate_hours: selected_scale_steps / measured_steps_per_second / 3600
+      scaled_candidate_cost_try: scaled_candidate_hours * live_hourly_cost_try
+      selected_scale_steps: largest_budget_fill_scale_steps_with_projected_cost_between_7500_and_8000_try
     must_pass:
-      - selected_10p_hours_lte_24
-      - projected_selected_cost_try_lte_8500
+      - selected_scale_hours_lte_24
+      - projected_selected_scale_cost_between_7500_and_8000_try_or_declared_underfill_under_8000
       - live_hourly_cost_try_lte_max_live_hourly_cost_try
       - measured_steps_per_second_gte_13_8888888889
     output: artifacts/gates/V1.1/10P_3AM/projection_gate.json
-  - id: launch-10p-candidate
-    action: start_candidate_only_if_projection_gate_passes
+  - id: launch-budget-fill-candidate
+    action: start_selected_budget_fill_candidate_only_if_projection_gate_passes
     config: configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml
     must_pass_before_launch:
       - local-preflight
@@ -121,6 +155,6 @@ post_run_required_artifacts:
 decision_outputs:
   benchmark_no_go: stop_vm_and_report_exact_failed_gate
   projection_no_go: stop_vm_and_report_measured_steps_per_second_hours_and_cost
-  launch_go: start_10p_candidate_and_monitor_hourly
+  launch_go: start_selected_budget_fill_candidate_and_monitor_hourly
   run_failure: terminate_vm_preserve_logs_and_report
   run_success: preserve_checkpoint_reports_and_stop_vm
