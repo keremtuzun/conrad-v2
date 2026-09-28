@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
 from pathlib import Path
 from typing import Any
 
@@ -18,6 +19,7 @@ class MigrationReport:
     source_label: str | None
     source_status: str | None
     decision: str | None
+    checkpoint_sha256: str | None = None
 
     @property
     def qualified_for_training(self) -> bool:
@@ -25,7 +27,9 @@ class MigrationReport:
 
 
 def load_v1_checkpoint_for_v11(model: nn.Module, checkpoint_path: str | Path, *, strict_gate: bool = True) -> MigrationReport:
-    checkpoint = torch.load(checkpoint_path, map_location="cpu")
+    path = Path(checkpoint_path)
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    checkpoint = torch.load(path, map_location="cpu")
     metadata: dict[str, Any] = checkpoint.get("metadata", {})
     report_gate = (
         metadata.get("label"),
@@ -40,7 +44,7 @@ def load_v1_checkpoint_for_v11(model: nn.Module, checkpoint_path: str | Path, *,
     skipped = tuple(sorted(key for key, value in source.items() if key not in compatible or key not in target or target.get(key, value).shape != value.shape))
     missing = tuple(sorted(set(target) - set(compatible)))
     model.load_state_dict(compatible, strict=False)
-    return MigrationReport(tuple(sorted(compatible)), skipped, missing, *report_gate)
+    return MigrationReport(tuple(sorted(compatible)), skipped, missing, *report_gate, checkpoint_sha256=digest)
 
 
 def parameter_count(model: nn.Module) -> dict[str, int]:

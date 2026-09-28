@@ -4,11 +4,13 @@ from conrad.foundation.universal_v11 import (
     CorrespondenceGraph,
     EncoderFamily,
     ExactEvidenceRecord,
+    FamilyEncoderConfig,
     ModalityState,
     SampleLabResult,
     UniversalAdapter,
     UniversalModalityInput,
     UniversalOSFMV11,
+    parameter_count,
 )
 
 
@@ -56,7 +58,7 @@ def test_unsupported_failed_invalid_states_are_not_fused() -> None:
         ),
         reference_time_s=torch.zeros(2),
     )
-    assert out.fusion.modality_names == ("rgb_camera",)
+    assert out.fusion.modality_names == ("visual_image_family",)
     assert torch.allclose(out.router_weights[:, 1:], torch.zeros_like(out.router_weights[:, 1:]))
 
 
@@ -86,3 +88,47 @@ def test_correspondence_graph_allows_only_meaningful_pairs() -> None:
     assert graph.eligible(EncoderFamily.VISUAL_IMAGE, EncoderFamily.ACTIVE_ACOUSTIC)
     assert graph.eligible(EncoderFamily.CHEMICAL_ELECTROCHEMICAL_SPECTRAL, EncoderFamily.BIOLOGICAL_MOLECULAR)
     assert not graph.eligible(EncoderFamily.RADIOLOGICAL, EncoderFamily.ENGINEERING_DOCUMENT_CONTEXT)
+
+
+def test_all_required_states_are_explicit_and_route_or_fail_cleanly() -> None:
+    assert {state.name for state in ModalityState} == {
+        "AVAILABLE",
+        "MISSING",
+        "UNSUPPORTED",
+        "FAILED",
+        "DEGRADED",
+        "STALE",
+        "INVALID",
+        "UNCALIBRATED",
+        "SATURATED",
+    }
+    model = UniversalOSFMV11(
+        input_dims={"rgb_camera": 8},
+        family_encoder_config=FamilyEncoderConfig(depth=1),
+        include_v1_bank=False,
+    )
+    for state in (ModalityState.DEGRADED, ModalityState.UNCALIBRATED, ModalityState.SATURATED):
+        out = model((_input("rgb_camera", state),), reference_time_s=torch.zeros(2))
+        assert out.router_weights.shape == (2, 1)
+    try:
+        model((_input("rgb_camera", ModalityState.FAILED),), reference_time_s=torch.zeros(2))
+    except ValueError as exc:
+        assert "no routeable" in str(exc)
+    else:
+        raise AssertionError("all-unrouteable inputs must fail explicitly")
+
+
+def test_each_universal_family_encoder_produces_384d_tokens() -> None:
+    model = UniversalOSFMV11(family_encoder_config=FamilyEncoderConfig(depth=1), include_v1_bank=False)
+    for family in EncoderFamily:
+        encoder = model.family_encoders[family.value]
+        tokens, mask = encoder(torch.randn(2, 3, 384), torch.ones(2, 3, dtype=torch.bool))
+        assert tokens.shape == (2, 3, 384)
+        assert mask.all()
+
+
+def test_default_parameter_scale_matches_universal_v11_expectation() -> None:
+    counts = parameter_count(UniversalOSFMV11(input_dims={"rgb_camera": 8, "imaging_sonar": 8}))
+    assert 250_000_000 <= counts["total"] <= 320_000_000
+    assert counts["family_encoders"] > counts["fusion"]
+    assert counts["v1"] > 0

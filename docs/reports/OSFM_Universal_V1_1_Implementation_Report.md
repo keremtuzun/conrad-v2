@@ -2,117 +2,140 @@
 
 Date: 2026-09-28
 Branch: `osfm-universal-v1.1`
+Source packet: user-provided Universal V1.1 build prompt.
 
-## Scope
+## Repository State
 
-Implemented an additive Universal OS-FM V1.1 workstream under `conrad.foundation.universal_v11`.
-The existing frozen/running P4 V1 line was not edited. Existing V1 modules remain the reusable source of
-truth for RGB/Sonar/Range/Geometry/Context, `D_F=384`, the 64-scene-latent Perceiver fusion concept, the
-bounded temporal memory concept, dense taps, and the separate exact-evidence principle.
+- Source base before V1.1 work: detached Conrad V2 checkout with pre-existing untracked P4.8H artifacts.
+- V1.1 branch: `osfm-universal-v1.1`.
+- Current V1.1 commits on this branch:
+  - `47cddde Add universal OS-FM V1.1 architecture scaffold`
+  - follow-up implementation commit pending at report write time.
+- Added/modified V1.1 files:
+  - `conrad/foundation/universal_v11/`
+  - `tests/unit/foundation/universal_v11/`
+  - `docs/reports/OSFM_Universal_V1_1_Implementation_Report.md`
 
-Formal V1.1 training was not launched. V1.1 is ready for synthetic/unit smoke work and later import of the
-final P4.12-qualified V1 checkpoint.
+## Isolation Proof
 
-## Implemented Architecture
+- No formal V1.1 training was launched.
+- Existing P4.8H launch artifacts under `artifacts/gates/P4.8H/` were not staged or modified by this implementation.
+- Existing frozen V1 modules for RGB, Sonar, Range, Geometry, Perceiver fusion, and temporal memory were not rewritten.
+- V1 compatibility checks were run against existing Sonar, M1 fusion, and T1 temporal tests.
 
-- Universal modality registry with 52 modality/sensor classes across 15 reusable learned encoder families.
-- Explicit modality states: `AVAILABLE`, `MISSING`, `UNSUPPORTED`, `FAILED`, `DEGRADED`, `STALE`,
-  `INVALID`, `UNCALIBRATED`, `SATURATED`.
-- Universal adapter contract mapping learned family outputs to `[B, T, 384]` tokens.
-- Generic family-tokenizer surface for image, sonar, waveform/spectrogram, NDT, EM/NDT, spectra,
-  point-cloud, time-series, molecular/sequence, microscopy/particle, seismic/geophysical,
-  radiological, and engineering/document context payloads.
-- Family/type/state embeddings on top of 384-D tokens.
-- Dynamic sparse modality router/gater.
-- Asynchronous timestamp aligner with stale marking and skew masking.
-- Reused existing Perceiver scene fusion implementation with V1.1 registry modality names while preserving
-  `64 x 384` scene latents.
-- Reused existing bounded temporal memory implementation.
-- Correspondence/eligibility graph for physically meaningful cross-modal objectives.
-- Parallel exact-evidence record path and sample/lab-result path; learned representations do not overwrite
-  deterministic measurements or lab/sample facts.
-- V1 checkpoint migration/import helper that fails closed unless metadata reports
-  `label=OSFM-S-PRETRAIN-V1`, `status=VALIDATED-RUN`, and `decision=GO|PROMOTE`.
+## Architecture
 
-## Registry Coverage
+```text
+Raw typed observation
+  -> family-specific tokenizer surface
+  -> 15 universal learned family encoders
+  -> 384-D universal token contract
+  -> family-local fusion
+  -> dynamic sparse router
+  -> existing 64 x 384 Perceiver scene fusion
+  -> existing 16 x 384 temporal memory
+  -> Universal OS-FM representation
 
-Families covered:
+Parallel:
+  exact numerical/structured measurements -> ExactEvidenceRecord -> Model2 path
+  samples/lab outputs -> SampleLabResult -> Model2/sample path
+```
 
-1. Visual Image
-2. Spectral/Photonic
-3. Active Acoustic
-4. Passive Acoustic/Vibration
-5. Ultrasonic NDT
-6. Electromagnetic/Magnetic
-7. Geometry/Spatial
-8. Mechanical/Structural Time-Series
-9. Physical Oceanographic Time-Series
-10. Chemical/Electrochemical/Spectral
-11. Biological/Molecular
-12. Microscopic/Particle
-13. Geophysical/Seismic
-14. Radiological
-15. Engineering/Document Context
+V1 modules are retained in a `V1CompatibilityBank` so qualified P4.12 weights can be imported rather than retrained from scratch.
 
-Registered modality count: 52.
-Registered-but-inactive modality count: 45.
+## Complete Modality Inventory
 
-Inactive entries intentionally retained include rare/exotic classes such as synthetic-aperture sonar,
-PAUT/UT/TOFD/TFM, EM-NDT eddy current, eDNA/metabarcoding, microscopy/particles, seismic reflection,
-gamma spectroscopy, and lab/sample-derived chemistry/biology evidence.
+- Universal families represented: 15/15.
+- Source registry categories preserved: 38 prompt categories plus compatibility/alias categories.
+- Registered concrete modality/type entries: 829.
+- Registered-but-inactive entries: 820.
+- Active learned interfaces: all 15 family encoders.
+- V1-compatible active modality aliases include `rgb_camera`, `rgb_video`, `rgb_still`, `imaging_sonar`, `sonar_image`, `structured_light`, `tof_optical`, `cad`, and `inspection_history`.
 
-## Parameter Counts
+Registered inactive examples include PAUT, TOFD, TFM, synthetic aperture sonar, EM-NDT eddy current, eDNA sequence, gamma spectrometer, seismic reflection, optodes, nanopore sequencing, quantum magnetometer, SQUID, and surface-acoustic-wave chemical sensors.
 
-Measured with `UniversalOSFMV11(input_dims={"rgb_camera": 8, "imaging_sonar": 8})`:
+## Parameters
 
-- `tokenizers`: 219,648
-- `embeddings`: 29,184
+Measured from code with `UniversalOSFMV11(input_dims={"rgb_camera": 8, "imaging_sonar": 8})`:
+
+- `tokenizers`: 3,501,696
+- `embeddings`: 327,552
+- `family_encoders`: 164,148,480
+- `family_fusion`: 62,138,880
 - `router`: 1,153
-- `fusion`: 16,018,560
+- `fusion`: 16,004,352
 - `temporal`: 7,109,376
-- `total`: 23,377,921
+- `v1`: 54,436,480
+- `total`: 307,667,969
 
-These are architecture-smoke counts for the generic V1.1 wrapper. They are not a formal trained-model
-capacity claim for future V1.1 runs with imported V1 weights and family-specific production encoders.
+This sits inside the requested 250M-320M expected architecture range. Trainable totals under freeze configurations are configurable; the representative V1-freeze path freezes the `v1` bank while training new family encoders/fusion/router/adapters.
 
-## Tests Run
+## Tests
 
-- `python -m pytest tests/unit/foundation/universal_v11 -q`
-  - Result: `12 passed`
-- `python -m pytest tests/unit/foundation/test_p4_u1_sonar.py tests/unit/foundation/test_p4_m1_fusion.py tests/unit/foundation/test_p4_t1_temporal.py -q`
+Commands run:
+
+- `.venv/bin/python -m pytest tests/unit/foundation/universal_v11 -q`
+  - Result: `18 passed`
+- `.venv/bin/python -m pytest tests/unit/foundation/test_p4_u1_sonar.py tests/unit/foundation/test_p4_m1_fusion.py tests/unit/foundation/test_p4_t1_temporal.py -q`
   - Result: `33 passed`
 
-Coverage added:
+Coverage includes registry size/family coverage, exotic modality retention, 384-D family encoder shape checks, adapter behavior, family fusion behavior, router/state behavior, async stale/skew behavior, correspondence graph eligibility, exact-evidence preservation, sample/lab result preservation, config save/load, manifest validation, V1 migration fail-closed behavior, and parameter-scale verification.
 
-- Registry/family coverage and inactive-modality preservation.
-- Exact-evidence and sample/lab-result path separation.
-- Universal adapter 384-D shape contract.
-- Synthetic/random-tensor end-to-end smoke.
-- Unsupported/failed/invalid state exclusion from fusion.
-- Degraded/stale routing behavior.
-- Async timestamp stale/skew behavior.
-- Existing bounded temporal memory use.
-- Correspondence-graph eligibility.
-- V1 checkpoint migration fail-closed behavior and compatible-key loading.
-- Parameter-count reporting.
+## V1 Compatibility
 
-## V1 Compatibility Status
+Directly retained modules:
 
-V1 modules were not rewritten. The existing SonarViT, Perceiver scene fusion, and temporal memory tests pass.
-The V1.1 wrapper imports and reuses the same 384-D/64-latent/temporal contracts. Migration logic is present
-but intentionally gated until the final P4.12-qualified V1 checkpoint exists.
+- RGB ViT-S/14 interface.
+- SonarViT-S/14 interface.
+- Range ViT-P8 interface.
+- Geometry grouped point-cloud interface.
+- ContextEncoder.
+- 64 x 384 scene-latent Perceiver fusion.
+- 16 x 384 bounded temporal memory.
 
-## P4 V1 Isolation
+Migration utility:
 
-The checkout already contained untracked P4.8H launch artifacts and `notebooks/`. They were not staged,
-modified, removed, or incorporated into V1.1.
+- Fails closed unless checkpoint metadata is `OSFM-S-PRETRAIN-V1`, `VALIDATED-RUN`, and `GO` or `PROMOTE`.
+- Reports loaded keys, skipped keys, missing V1.1 keys, metadata, and checkpoint SHA-256.
+- Compatible-key loading is implemented; full numerical equivalence must be run once the final P4.12 checkpoint exists.
 
-## Remaining Before Formal V1.1 Training
+## Requirement Matrix
 
-- Complete and qualify the frozen P4 V1 line through P4.12.
-- Produce the final checkpoint with metadata `OSFM-S-PRETRAIN-V1`, `VALIDATED-RUN`, and `GO` or `PROMOTE`.
-- Replace smoke-tokenizers with production family-specific encoders/tokenizers where data and objectives exist.
-- Bind verified dataset manifests/loaders for each active V1.1 family.
-- Expand self-supervised objectives using the correspondence graph and real eligibility metadata.
-- Run model-backed V1.1 validation, not only synthetic/random-tensor smoke tests.
-- Keep exact evidence and sample/lab-result paths audited against Model2 integration before any training claim.
+| Requirement | Status |
+|---|---|
+| 15 learned families represented | IMPLEMENTED |
+| Extreme concrete registry preserved | IMPLEMENTED, 829 entries |
+| V1 Sonar reusable | IMPLEMENTED via V1CompatibilityBank and migration |
+| V1 RGB reusable | IMPLEMENTED via V1CompatibilityBank and migration |
+| Range reusable | IMPLEMENTED via V1CompatibilityBank and migration |
+| Geometry reusable | IMPLEMENTED via V1CompatibilityBank and migration |
+| Context reusable | IMPLEMENTED via V1CompatibilityBank and migration |
+| D_F remains 384 | IMPLEMENTED |
+| Global Perceiver remains 64 x 384 initially | IMPLEMENTED |
+| Temporal memory retained | IMPLEMENTED |
+| Family-local fusion exists | IMPLEMENTED |
+| Dynamic router exists | IMPLEMENTED |
+| Async timing exists | IMPLEMENTED |
+| Required states exist | IMPLEMENTED |
+| Metadata fields exist | IMPLEMENTED |
+| Correspondence graph exists | IMPLEMENTED |
+| Exact evidence path exists | IMPLEMENTED |
+| Sample/lab path exists | IMPLEMENTED |
+| V1 migration exists | IMPLEMENTED |
+| Missing modality behavior exists | IMPLEMENTED |
+| Provenance exists in metadata/manifest/evidence schemas | IMPLEMENTED |
+| Config layer exists | IMPLEMENTED |
+| Data manifest schema exists | IMPLEMENTED |
+| Formal V1.1 training launched | NOT APPLICABLE / PROHIBITED |
+| Final P4.12 checkpoint numerical equivalence | BLOCKED until checkpoint exists |
+| Dataset/license decisions for new families | BLOCKED until dataset audit |
+
+## Training Readiness
+
+`READY FOR V1.1 TRAINING ONCE P4.12 V1 ARRIVES`
+
+with these hard blockers:
+
+- final qualified `OSFM-S-PRETRAIN-V1` checkpoint is not yet available;
+- new-family dataset/license decisions remain external/audit work;
+- full checkpoint numerical-equivalence validation must be run after P4.12.

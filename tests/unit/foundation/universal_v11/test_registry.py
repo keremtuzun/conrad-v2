@@ -1,4 +1,5 @@
 from conrad.foundation.universal_v11 import EncoderFamily, MODALITY_REGISTRY, inactive_modalities
+from conrad.foundation.universal_v11.registry import registry_categories
 from conrad.foundation.universal_v11.registry import validate_registry
 
 
@@ -6,7 +7,8 @@ def test_registry_covers_all_universal_encoder_families() -> None:
     validate_registry()
     families = {spec.family for spec in MODALITY_REGISTRY}
     assert families == set(EncoderFamily)
-    assert len(MODALITY_REGISTRY) >= 45
+    assert len(MODALITY_REGISTRY) >= 800
+    assert len(registry_categories()) >= 38
 
 
 def test_registry_preserves_rare_inactive_modalities() -> None:
