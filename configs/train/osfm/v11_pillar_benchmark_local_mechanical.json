@@ -1,0 +1,10 @@
+{
+  "batch_size": 96,
+  "input_dim": 8,
+  "rank_floor": 8.0,
+  "rank_target": 8.0,
+  "seed": 20260929,
+  "fast_probe": true,
+  "max_hours": 24.0,
+  "max_budget_tl": 9000.0
+}

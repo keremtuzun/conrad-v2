@@ -170,6 +170,41 @@ def train_osfm_p48_promote(
     raise typer.Exit(0 if promotion["decision"] == "PROMOTE" else 1)
 
 
+@train_app.command("osfm-v11-pillar-benchmark")
+def train_osfm_v11_pillar_benchmark(
+    config: str = typer.Option(None, "--config"),
+    output: str = typer.Option("artifacts/gates/V1.1/pillar_benchmark.json", "--output"),
+    fast_probe: bool = typer.Option(False, "--fast-probe", help="Use shallow encoders for local CPU validation only"),
+) -> None:
+    """Run tiny Universal V1.1 pillar probes before any expensive cloud training."""
+    from conrad.foundation.universal_v11.benchmark import (
+        run_v11_pillar_benchmark,
+        write_v11_pillar_benchmark,
+    )
+
+    cfg = {}
+    if config:
+        cfg = json.loads(Path(config).read_text(encoding="utf-8"))
+    if fast_probe:
+        cfg["fast_probe"] = True
+    report = run_v11_pillar_benchmark(cfg)
+    written = write_v11_pillar_benchmark(report, output)
+    typer.echo(
+        json.dumps(
+            {
+                "gate_id": report["gate_id"],
+                "decision": report["decision"],
+                "rank_floor": report["rank_floor"],
+                "rank_target": report["rank_target"],
+                "formal_training_launched": report["formal_training_launched"],
+                "report": str(written),
+            },
+            indent=2,
+        )
+    )
+    raise typer.Exit(0 if report["decision"] == "GO" else 1)
+
+
 @eval_app.command("run")
 def eval_run(
     experiment: str = typer.Option(None, "--experiment", help="experiment ID, e.g. CORE-BUO-E001"),
