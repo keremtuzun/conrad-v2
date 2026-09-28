@@ -28,6 +28,9 @@ min_visible_fraction: 0.1
 noise_std: 0.025
 rank_diversity_weight: 1.0
 rank_diversity_target: 72
+variance_weight: 2.0
+covariance_weight: 0.05
+variance_target_std: 1.0
 select_best_validation_rank_checkpoint: true
 budget:
   batch_size_per_gpu: 64
@@ -46,6 +49,7 @@ promotion:
   promotable_to_formal_p4_8: false
 notes:
   - This benchmark validates the rank-diversity fix before any new promotable formal rerun.
+  - Adds explicit variance/covariance anti-collapse losses; rank metrics remain measured, not overridden.
   - Training reads PRETRAIN_REAL only; validation reads VALIDATION only.
   - FINAL_TEST and OOD_TEST are forbidden for training, sampling, normalization statistics, and checkpoint selection.
   - SubPipe sonar is rendered side-scan imagery, not raw acoustic backscatter.

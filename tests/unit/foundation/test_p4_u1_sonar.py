@@ -134,8 +134,31 @@ def test_u1_sonar_rank_diversity_regularizer_is_trainable() -> None:
     assert torch.isfinite(out.loss)
     assert out.rank_diversity_loss.item() >= 0.0
     assert out.rank_entropy.item() > 0.0
+    assert out.variance_loss.item() >= 0.0
+    assert out.covariance_loss.item() >= 0.0
     out.loss.backward()
     assert any(p.grad is not None for p in bundle.student.parameters())
+
+
+def test_u1_sonar_anti_collapse_regularizers_are_trainable() -> None:
+    views = synthetic_sonar_views({"batch_size": 96, "image_size": 28, "token_mask_fraction": 0.60}, 20260929)
+    bundle = U1SonarTrainingBundle(
+        SonarViTS14Encoder(SonarEncoderConfig(image_size=28)),
+        rank_diversity_weight=1.0,
+        rank_diversity_target=72.0,
+        variance_weight=2.0,
+        covariance_weight=0.05,
+        variance_target_std=1.0,
+    )
+    out = bundle(views)
+    assert torch.isfinite(out.loss)
+    assert out.variance_loss.item() > 0.0
+    assert out.covariance_loss.item() >= 0.0
+    out.loss.backward()
+    assert any(
+        p.grad is not None and torch.isfinite(p.grad).all()
+        for p in bundle.student.parameters()
+    )
 
 
 def test_osfm_u1_sonar_smoke_checkpoint_reload_and_replay(tmp_path: Path) -> None:
@@ -250,6 +273,20 @@ def test_p48a_rehearsal_config_preserves_partition_policy() -> None:
     assert cfg["partition_access"]["validation"] == ["VALIDATION"]
     assert set(cfg["partition_access"]["forbidden_training_access"]) == {"FINAL_TEST", "OOD_TEST"}
     assert "rendered side-scan imagery" in " ".join(cfg["notes"])
+
+
+def test_rankfix_configs_use_measured_anti_collapse_losses() -> None:
+    import yaml
+
+    for path in (
+        Path("configs/train/osfm/research/u1_sonar_rankfix_benchmark.yaml"),
+        Path("configs/train/osfm/research/u1_sonar_research.yaml"),
+    ):
+        cfg = yaml.safe_load(path.read_text())
+        assert cfg["rank_diversity_weight"] > 0
+        assert cfg["variance_weight"] > 0
+        assert cfg["covariance_weight"] > 0
+        assert cfg["variance_target_std"] > 0
 
 
 def test_p48_research_configs_require_formal_validation_support() -> None:

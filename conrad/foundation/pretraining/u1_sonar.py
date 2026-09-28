@@ -73,6 +73,8 @@ class U1SonarStepOutput:
     health: RepresentationHealth
     rank_diversity_loss: torch.Tensor
     rank_entropy: torch.Tensor
+    variance_loss: torch.Tensor
+    covariance_loss: torch.Tensor
 
 
 @dataclass(frozen=True)
@@ -368,6 +370,9 @@ class U1SonarTrainingBundle(nn.Module):
         ema_schedule: EMASchedule | None = None,
         rank_diversity_weight: float = 0.0,
         rank_diversity_target: float = 64.0,
+        variance_weight: float = 0.0,
+        covariance_weight: float = 0.0,
+        variance_target_std: float = 1.0,
     ) -> None:
         super().__init__()
         self.student = encoder
@@ -391,6 +396,21 @@ class U1SonarTrainingBundle(nn.Module):
         self.ema_schedule = ema_schedule or EMASchedule(start=0.996, end=0.9999, total_steps=100)
         self.rank_diversity_weight = float(rank_diversity_weight)
         self.rank_diversity_target = float(rank_diversity_target)
+        self.variance_weight = float(variance_weight)
+        self.covariance_weight = float(covariance_weight)
+        self.variance_target_std = float(variance_target_std)
+
+    def _anti_collapse_losses(self, representations: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        centered = representations.float() - representations.float().mean(dim=0, keepdim=True)
+        std = torch.sqrt(centered.var(dim=0, unbiased=False) + 1e-4)
+        variance_loss = F.relu(self.variance_target_std - std).mean()
+        if centered.shape[0] < 2:
+            covariance_loss = centered.sum() * 0.0
+        else:
+            cov = centered.T @ centered / (centered.shape[0] - 1)
+            off_diag = cov - torch.diag(torch.diag(cov))
+            covariance_loss = off_diag.pow(2).sum() / representations.shape[-1]
+        return variance_loss.to(representations.dtype), covariance_loss.to(representations.dtype)
 
     def forward(self, views: U1SonarViews) -> U1SonarStepOutput:
         student = self.student(views.student_sonar, views.token_mask)
@@ -428,6 +448,11 @@ class U1SonarTrainingBundle(nn.Module):
         total_loss = self.router.total(results)
         if self.rank_diversity_weight > 0:
             total_loss = total_loss + rank_loss * self.rank_diversity_weight
+        variance_loss, covariance_loss = self._anti_collapse_losses(student.modality_repr)
+        if self.variance_weight > 0:
+            total_loss = total_loss + variance_loss * self.variance_weight
+        if self.covariance_weight > 0:
+            total_loss = total_loss + covariance_loss * self.covariance_weight
         return U1SonarStepOutput(
             loss=total_loss,
             results=results,
@@ -437,6 +462,8 @@ class U1SonarTrainingBundle(nn.Module):
             health=_representation_health(student.modality_repr),
             rank_diversity_loss=rank_loss,
             rank_entropy=rank_entropy,
+            variance_loss=variance_loss,
+            covariance_loss=covariance_loss,
         )
 
     @torch.no_grad()
@@ -493,6 +520,8 @@ def run_u1_sonar_smoke(run: RunDirectory, job: dict[str, Any], seed: int) -> dic
         "memory_allocated_bytes": float(torch.cuda.memory_allocated() if torch.cuda.is_available() else 0),
         "rank_diversity_loss": float(post.rank_diversity_loss.detach().cpu()),
         "rank_entropy": float(post.rank_entropy.detach().cpu()),
+        "variance_loss": float(post.variance_loss.detach().cpu()),
+        "covariance_loss": float(post.covariance_loss.detach().cpu()),
     }
     metrics.update({k: v for k, v in _objective_metrics(post.results).items() if isinstance(v, float)})
     ckpt = run.path / "checkpoints" / "osfm_u1_sonar_smoke.pt"
@@ -651,6 +680,9 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         ema_schedule=EMASchedule(start=0.996, end=0.9999, total_steps=int(job.get("optimizer_steps", 2))),
         rank_diversity_weight=float(job.get("rank_diversity_weight", 0.0)),
         rank_diversity_target=float(job.get("rank_diversity_target", 64.0)),
+        variance_weight=float(job.get("variance_weight", 0.0)),
+        covariance_weight=float(job.get("covariance_weight", 0.0)),
+        variance_target_std=float(job.get("variance_target_std", 1.0)),
     ).to(device)
     training_model: nn.Module = bundle
     if distributed.enabled:
@@ -773,6 +805,8 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
                         "val/representation_effective_rank": val_rank,
                         "val/rank_diversity_loss": float(val.rank_diversity_loss.detach().cpu()),
                         "val/rank_entropy": float(val.rank_entropy.detach().cpu()),
+                        "val/variance_loss": float(val.variance_loss.detach().cpu()),
+                        "val/covariance_loss": float(val.covariance_loss.detach().cpu()),
                     }
                 )
             distributed.barrier()
@@ -844,6 +878,8 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         "memory_allocated_bytes": float(torch.cuda.max_memory_allocated(device)),
         "rank_diversity_loss": float(val.rank_diversity_loss.detach().cpu()),
         "rank_entropy": float(val.rank_entropy.detach().cpu()),
+        "variance_loss": float(val.variance_loss.detach().cpu()),
+        "covariance_loss": float(val.covariance_loss.detach().cpu()),
     }
     metrics.update({k: v for k, v in _objective_metrics(val.results).items() if isinstance(v, float)})
     ckpt_name = "osfm_u1_sonar_research_rehearsal.pt" if rehearsal_only else "osfm_u1_sonar_research_full.pt"

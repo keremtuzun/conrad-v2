@@ -58,6 +58,9 @@ representation_health:
   fail_closed_on_rank_regression: true
 rank_diversity_weight: 1.0
 rank_diversity_target: 72
+variance_weight: 2.0
+covariance_weight: 0.05
+variance_target_std: 1.0
 select_best_validation_rank_checkpoint: true
 budget:
   batch_size_per_gpu: 64
