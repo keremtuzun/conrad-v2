@@ -71,12 +71,18 @@ def test_range_views_record_validity_aware_corruptions_and_no_truth_leakage() ->
 
 def test_u1_range_objectives_backward_ema_and_metric_denominator_routing() -> None:
     views = synthetic_range_views({"batch_size": 2, "image_size": 32, "token_mask_fraction": 0.50}, 20260412)
-    bundle = U1RangeTrainingBundle(RangeViTP8Encoder(RangeEncoderConfig(image_size=32)))
+    bundle = U1RangeTrainingBundle(
+        RangeViTP8Encoder(RangeEncoderConfig(image_size=32)),
+        rank_diversity_weight=1.0,
+        rank_diversity_target=72.0,
+    )
     assert all(not p.requires_grad for p in bundle.teacher.parameters())
     optimizer = torch.optim.AdamW(bundle.parameters(), lr=1e-4)
     before = [p.detach().clone() for p in bundle.teacher.parameters()]
     out = bundle(views)
     assert torch.isfinite(out.loss)
+    assert out.rank_diversity_loss.item() >= 0.0
+    assert out.rank_entropy.item() > 0.0
     statuses = {r.objective_id: r.status for r in out.results}
     assert statuses["u1_range_masked_latent_prediction"] is ObjectiveStatus.ACTIVE
     assert statuses["u1_range_global_consistency"] is ObjectiveStatus.ACTIVE

@@ -44,8 +44,14 @@ def test_scene_fusion_has_no_anchor_modality_assumption() -> None:
 
 def test_missing_dropout_and_pairgraph_objective_routing() -> None:
     fixture = synthetic_m1_fixture({"batch_size": 4}, 20260414)
-    bundle = M1FusionTrainingBundle(SceneFusionTransformer(SceneFusionConfig()))
+    bundle = M1FusionTrainingBundle(
+        SceneFusionTransformer(SceneFusionConfig()),
+        rank_diversity_weight=1.0,
+        rank_diversity_target=72.0,
+    )
     out = bundle(fixture)
+    assert out.rank_diversity_loss.item() >= 0.0
+    assert out.rank_entropy.item() > 0.0
     objectives = {result.objective_id: result for result in out.results}
     assert objectives["m1_cross_modal_consistency"].status is ObjectiveStatus.ACTIVE
     assert objectives["m1_cross_modal_consistency"].denominator.item() == 1.0

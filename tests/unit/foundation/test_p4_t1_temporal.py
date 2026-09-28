@@ -40,9 +40,15 @@ def test_gap_boundary_short_sequence_and_no_cross_sequence_leakage() -> None:
 
 def test_t1_objectives_backward_optimizer_ema_and_denominators() -> None:
     fixture = synthetic_t1_fixture({"sequence_windows": 10}, 20260415)
-    bundle = T1TemporalTrainingBundle(TemporalMemoryTransformer(TemporalMemoryConfig()))
+    bundle = T1TemporalTrainingBundle(
+        TemporalMemoryTransformer(TemporalMemoryConfig()),
+        rank_diversity_weight=1.0,
+        rank_diversity_target=72.0,
+    )
     opt = torch.optim.AdamW((p for p in bundle.parameters() if p.requires_grad), lr=2e-4)
     out = bundle(fixture)
+    assert out.rank_diversity_loss.item() >= 0.0
+    assert out.rank_entropy.item() > 0.0
     objectives = {result.objective_id: result for result in out.results}
     assert objectives["t1_temp"].status is ObjectiveStatus.ACTIVE
     assert objectives["t1_temp"].denominator.item() == 25.0

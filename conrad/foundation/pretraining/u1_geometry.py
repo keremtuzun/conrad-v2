@@ -18,7 +18,7 @@ from conrad.foundation.encoders.geometry import GeometryEncoderConfig, GeometryE
 from conrad.foundation.pretraining.ema import EMASchedule, update_ema_teacher
 from conrad.foundation.pretraining.losses import ObjectiveResult, ObjectiveRouter
 from conrad.foundation.pretraining.smoke import split_hash_for_plan
-from conrad.foundation.pretraining.u1_rgb import RepresentationHealth, parameter_count
+from conrad.foundation.pretraining.u1_rgb import RepresentationHealth, parameter_count, rank_diversity_loss
 from conrad.foundation.pretraining.u1_rgb import representation_health as _representation_health
 from conrad.training.checkpoint import load_checkpoint, save_checkpoint
 from conrad.training.checkpoint_meta import CompatibilityTuple, config_digest
@@ -47,6 +47,8 @@ class U1GeometryStepOutput:
     metric_prediction: torch.Tensor
     degradation_logits: torch.Tensor
     health: RepresentationHealth
+    rank_diversity_loss: torch.Tensor
+    rank_entropy: torch.Tensor
 
 
 def deterministic_group_mask(
@@ -133,7 +135,14 @@ def synthetic_geometry_views(job: dict[str, Any], seed: int, *, all_invalid: boo
 
 
 class U1GeometryTrainingBundle(nn.Module):
-    def __init__(self, encoder: GeometryGroupedEncoder, *, ema_schedule: EMASchedule | None = None) -> None:
+    def __init__(
+        self,
+        encoder: GeometryGroupedEncoder,
+        *,
+        ema_schedule: EMASchedule | None = None,
+        rank_diversity_weight: float = 0.0,
+        rank_diversity_target: float = 64.0,
+    ) -> None:
         super().__init__()
         self.student = encoder
         self.teacher = copy.deepcopy(encoder)
@@ -156,6 +165,8 @@ class U1GeometryTrainingBundle(nn.Module):
             }
         )
         self.ema_schedule = ema_schedule or EMASchedule(start=0.996, end=0.9999, total_steps=100)
+        self.rank_diversity_weight = float(rank_diversity_weight)
+        self.rank_diversity_target = float(rank_diversity_target)
 
     def _metric_objective(
         self,
@@ -213,14 +224,22 @@ class U1GeometryTrainingBundle(nn.Module):
         )
         metric_loss, metric_prediction = self._metric_objective(views, student)
         results = (mask_loss, global_loss, degradation_loss, metric_loss)
+        rank_loss, rank_entropy = rank_diversity_loss(
+            student.modality_repr, target=self.rank_diversity_target
+        )
+        total_loss = self.router.total(results)
+        if self.rank_diversity_weight > 0:
+            total_loss = total_loss + rank_loss * self.rank_diversity_weight
         return U1GeometryStepOutput(
-            loss=self.router.total(results),
+            loss=total_loss,
             results=results,
             student=student,
             teacher=teacher,
             metric_prediction=metric_prediction,
             degradation_logits=logits,
             health=_representation_health(student.modality_repr),
+            rank_diversity_loss=rank_loss,
+            rank_entropy=rank_entropy,
         )
 
     @torch.no_grad()
@@ -288,6 +307,8 @@ def run_u1_geometry_smoke(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         ],
         "parameter_count": float(parameter_count(bundle.student)),
         "memory_allocated_bytes": float(torch.cuda.memory_allocated() if torch.cuda.is_available() else 0),
+        "rank_diversity_loss": float(post.rank_diversity_loss.detach().cpu()),
+        "rank_entropy": float(post.rank_entropy.detach().cpu()),
     }
     metrics.update({k: v for k, v in _objective_metrics(post.results).items() if isinstance(v, float)})
     ckpt = run.path / "checkpoints" / "osfm_u1_geometry_smoke.pt"

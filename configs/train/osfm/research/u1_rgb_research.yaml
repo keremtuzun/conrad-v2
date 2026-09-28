@@ -33,13 +33,17 @@ budget:
   optimizer_steps: 100000
 validation:
   every_steps: 1000
-  selection_metric: val_ssl_total
+  selection_metric: validation_effective_rank_then_val_ssl_total
   required_objective_coverage:
     teacher_student_mse: 0.95
     mask_reconstruction: 0.95
 representation_health:
   min_independent_representations: 64
   min_effective_rank: 64
+  rank_diversity_weight: 1.0
+  rank_diversity_target: 72
+  select_best_validation_rank_checkpoint: true
+  fail_closed_on_rank_regression: true
 promotion:
   produces: U1-RGB-RESEARCH-CHECKPOINT
   requires_clean_git: true

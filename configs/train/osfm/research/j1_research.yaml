@@ -37,7 +37,19 @@ budget:
   optimizer_steps: 150000
 validation:
   every_steps: 1000
-  selection_metric: val_ssl_total
+  selection_metric: validation_effective_rank_then_val_ssl_total
+representation_health:
+  min_independent_representations: 64
+  min_effective_rank: 64
+  rank_diversity_weight: 1.0
+  rank_diversity_target: 72
+  select_best_validation_rank_checkpoint: true
+  fail_closed_on_rank_regression: true
+joint_health:
+  require_per_modality_contribution: true
+  require_modality_balance_review: true
+  require_missing_modality_ablation: true
+  require_joint_output_rank: true
 promotion:
   produces: OSFM-S-PRETRAIN-V1-CANDIDATE
   final_name_requires: P4.12-OSFM-FQ

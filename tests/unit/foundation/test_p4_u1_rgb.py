@@ -40,12 +40,18 @@ def test_contiguous_60_percent_mask_is_deterministic_and_preserves_visible_token
 def test_u1_rgb_objectives_backward_ema_and_no_truth_leakage() -> None:
     views = synthetic_rgb_views({"batch_size": 2, "image_size": 28, "token_mask_fraction": 0.60}, 20260401)
     assert all("truth" not in sample_id.lower() for sample_id in views.sample_ids)
-    bundle = U1RGBTrainingBundle(RGBViTS14Encoder(RGBEncoderConfig(image_size=28)))
+    bundle = U1RGBTrainingBundle(
+        RGBViTS14Encoder(RGBEncoderConfig(image_size=28)),
+        rank_diversity_weight=1.0,
+        rank_diversity_target=72.0,
+    )
     assert all(not p.requires_grad for p in bundle.teacher.parameters())
     optimizer = torch.optim.AdamW(bundle.parameters(), lr=1e-4)
     before = [p.detach().clone() for p in bundle.teacher.parameters()]
     out = bundle(views)
     assert torch.isfinite(out.loss)
+    assert out.rank_diversity_loss.item() >= 0.0
+    assert out.rank_entropy.item() > 0.0
     statuses = {r.objective_id: r.status for r in out.results}
     assert statuses["u1_rgb_masked_latent_prediction"] is ObjectiveStatus.ACTIVE
     assert statuses["u1_rgb_global_consistency"] is ObjectiveStatus.ACTIVE

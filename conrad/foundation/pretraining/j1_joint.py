@@ -33,7 +33,7 @@ from conrad.foundation.pretraining.losses import ObjectiveResult, ObjectiveRoute
 from conrad.foundation.pretraining.m1_fusion import _objective_metrics, trainable_parameter_count
 from conrad.foundation.pretraining.parents import ParentLoadStatus, load_parent_component
 from conrad.foundation.pretraining.smoke import split_hash_for_plan
-from conrad.foundation.pretraining.u1_rgb import parameter_count
+from conrad.foundation.pretraining.u1_rgb import parameter_count, rank_diversity_loss
 from conrad.foundation.pretraining.u1_rgb import representation_health as _representation_health
 from conrad.settings import REPO_ROOT
 from conrad.training.checkpoint import load_checkpoint, save_checkpoint
@@ -100,6 +100,8 @@ class J1StepOutput:
     results: tuple[ObjectiveResult, ...]
     student: JointOSFMOutput
     teacher: JointOSFMOutput
+    rank_diversity_loss: torch.Tensor
+    rank_entropy: torch.Tensor
 
 
 def _mask_dict(batch: int, steps: int) -> dict[str, torch.Tensor]:
@@ -290,7 +292,14 @@ def load_j1_parents(model: JointOSFMModel) -> dict[str, ParentLoadStatus]:
 
 
 class J1JointTrainingBundle(nn.Module):
-    def __init__(self, model: JointOSFMModel, *, ema_schedule: EMASchedule | None = None) -> None:
+    def __init__(
+        self,
+        model: JointOSFMModel,
+        *,
+        ema_schedule: EMASchedule | None = None,
+        rank_diversity_weight: float = 0.0,
+        rank_diversity_target: float = 64.0,
+    ) -> None:
         super().__init__()
         self.student = model
         self.teacher = copy.deepcopy(model)
@@ -318,6 +327,8 @@ class J1JointTrainingBundle(nn.Module):
             }
         )
         self.ema_schedule = ema_schedule or EMASchedule(start=0.996, end=0.9999, total_steps=100)
+        self.rank_diversity_weight = float(rank_diversity_weight)
+        self.rank_diversity_target = float(rank_diversity_target)
 
     def configure_smoke_trainability(self) -> dict[str, int | str]:
         for param in self.student.parameters():
@@ -413,7 +424,13 @@ class J1JointTrainingBundle(nn.Module):
             metric_mask.float().sum(),
         )
         results = (mask_loss, global_loss, xm_loss, temp_loss, missing_loss, degradation_loss, geo_loss, metric_loss)
-        return J1StepOutput(self.router.total(results), results, student, teacher)
+        rank_loss, rank_entropy = rank_diversity_loss(
+            global_student[valid], target=self.rank_diversity_target
+        )
+        total_loss = self.router.total(results)
+        if self.rank_diversity_weight > 0:
+            total_loss = total_loss + rank_loss * self.rank_diversity_weight
+        return J1StepOutput(total_loss, results, student, teacher, rank_loss, rank_entropy)
 
     @torch.no_grad()
     def update_teacher_after_optimizer(self, step: int) -> float:
@@ -504,6 +521,8 @@ def run_j1_joint_smoke(run: RunDirectory, job: dict[str, Any], seed: int) -> dic
         "representation_effective_rank": health.effective_rank,
         "formal_rank_guard_numeric": {"PASS": 1.0, "FAIL": 0.0, "NOT_EVALUABLE": -1.0}[health.formal_rank_guard],
         "memory_allocated_bytes": float(torch.cuda.memory_allocated() if torch.cuda.is_available() else 0),
+        "rank_diversity_loss": float(post.rank_diversity_loss.detach().cpu()),
+        "rank_entropy": float(post.rank_entropy.detach().cpu()),
     }
     metrics.update({k: v for k, v in _objective_metrics(post.results).items() if isinstance(v, float)})
     manifest_digest = hashlib.sha256(b"SYNTHETIC:osfm-j1-joint-smoke:v1").hexdigest()

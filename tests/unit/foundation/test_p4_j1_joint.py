@@ -80,13 +80,15 @@ def test_j1_joint_contracts_routing_missingness_temporal_and_step() -> None:
     torch.manual_seed(20260416)
     model = build_j1_model()
     load_j1_parents(model)
-    bundle = J1JointTrainingBundle(model)
+    bundle = J1JointTrainingBundle(model, rank_diversity_weight=1.0, rank_diversity_target=72.0)
     policy = bundle.configure_smoke_trainability()
     assert policy["trainable_parameters"] > 0
     assert policy["frozen_parameters"] > 0
     assert any(param.requires_grad for param in bundle.student.rgb.blocks[-1].parameters())
     fixture = synthetic_j1_fixture({"batch_size": 4, "sequence_windows": 10}, 20260416)
     out = bundle(fixture)
+    assert out.rank_diversity_loss.item() >= 0.0
+    assert out.rank_entropy.item() > 0.0
     assert list(out.student.fusion.scene_latents.shape) == [40, 64, 384]
     assert list(out.student.temporal.window_repr.shape) == [4, 10, 384]
     assert out.student.context is not None

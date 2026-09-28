@@ -35,7 +35,12 @@ from conrad.foundation.pretraining.dinov2 import verify_dinov2_checkpoint
 from conrad.foundation.pretraining.ema import EMASchedule, update_ema_teacher
 from conrad.foundation.pretraining.losses import ObjectiveResult, ObjectiveRouter
 from conrad.foundation.pretraining.smoke import split_hash_for_plan
-from conrad.foundation.pretraining.u1_rgb import RepresentationHealth, contiguous_2d_mask, parameter_count
+from conrad.foundation.pretraining.u1_rgb import (
+    RepresentationHealth,
+    contiguous_2d_mask,
+    parameter_count,
+    rank_diversity_loss,
+)
 from conrad.foundation.pretraining.u1_rgb import representation_health as _representation_health
 from conrad.persistence.object_store import ObjectStore
 from conrad.schemas.ids import IdFactory
@@ -387,15 +392,6 @@ class U1SonarTrainingBundle(nn.Module):
         self.rank_diversity_weight = float(rank_diversity_weight)
         self.rank_diversity_target = float(rank_diversity_target)
 
-    def _rank_diversity_loss(self, representations: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
-        centered = representations.float() - representations.float().mean(dim=0, keepdim=True)
-        singular = torch.linalg.svdvals(centered)
-        probs = singular / singular.sum().clamp_min(1e-12)
-        entropy_rank = torch.exp(-(probs * probs.clamp_min(1e-12).log()).sum())
-        target = torch.tensor(self.rank_diversity_target, device=representations.device, dtype=entropy_rank.dtype)
-        loss = (target - entropy_rank).clamp_min(0.0) / target.clamp_min(1.0)
-        return loss.to(representations.dtype), entropy_rank.to(representations.dtype)
-
     def forward(self, views: U1SonarViews) -> U1SonarStepOutput:
         student = self.student(views.student_sonar, views.token_mask)
         with torch.no_grad():
@@ -426,7 +422,9 @@ class U1SonarTrainingBundle(nn.Module):
             metric_numerator = F.mse_loss(student.modality_repr[:, : views.metric_targets.shape[1]], views.metric_targets, reduction="sum")
         metric_loss = self.router._result("u1_sonar_metric", metric_numerator, metric_denominator)
         results = (mask_loss, global_loss, degradation_loss, metric_loss)
-        rank_loss, rank_entropy = self._rank_diversity_loss(student.modality_repr)
+        rank_loss, rank_entropy = rank_diversity_loss(
+            student.modality_repr, target=self.rank_diversity_target
+        )
         total_loss = self.router.total(results)
         if self.rank_diversity_weight > 0:
             total_loss = total_loss + rank_loss * self.rank_diversity_weight

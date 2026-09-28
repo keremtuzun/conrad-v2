@@ -25,7 +25,12 @@ from conrad.foundation.pretraining.losses import ObjectiveResult, ObjectiveRoute
 from conrad.foundation.pretraining.smoke import split_hash_for_plan
 from conrad.foundation.pretraining.u1_geometry import synthetic_geometry_views
 from conrad.foundation.pretraining.u1_range import synthetic_range_views
-from conrad.foundation.pretraining.u1_rgb import RepresentationHealth, parameter_count, synthetic_rgb_views
+from conrad.foundation.pretraining.u1_rgb import (
+    RepresentationHealth,
+    parameter_count,
+    rank_diversity_loss,
+    synthetic_rgb_views,
+)
 from conrad.foundation.pretraining.u1_rgb import representation_health as _representation_health
 from conrad.foundation.pretraining.u1_sonar import synthetic_sonar_views
 from conrad.settings import REPO_ROOT
@@ -60,6 +65,8 @@ class M1FusionStepOutput:
     student: SceneFusionOutput
     teacher: SceneFusionOutput
     health: RepresentationHealth
+    rank_diversity_loss: torch.Tensor
+    rank_entropy: torch.Tensor
 
 
 def _sha256_file(path: Path) -> str:
@@ -207,7 +214,14 @@ def synthetic_m1_fixture(job: dict[str, Any], seed: int) -> M1Fixture:
 
 
 class M1FusionTrainingBundle(nn.Module):
-    def __init__(self, fusion: SceneFusionTransformer, *, ema_schedule: EMASchedule | None = None) -> None:
+    def __init__(
+        self,
+        fusion: SceneFusionTransformer,
+        *,
+        ema_schedule: EMASchedule | None = None,
+        rank_diversity_weight: float = 0.0,
+        rank_diversity_target: float = 64.0,
+    ) -> None:
         super().__init__()
         self.fusion = fusion
         self.teacher = copy.deepcopy(fusion)
@@ -233,6 +247,8 @@ class M1FusionTrainingBundle(nn.Module):
             }
         )
         self.ema_schedule = ema_schedule or EMASchedule(start=0.996, end=0.9999, total_steps=100)
+        self.rank_diversity_weight = float(rank_diversity_weight)
+        self.rank_diversity_target = float(rank_diversity_target)
 
     def _eligible_pair_mask(self, fixture: M1Fixture, output: SceneFusionOutput, pairs: tuple[tuple[str, str], ...]) -> torch.Tensor:
         idx = {name: pos for pos, name in enumerate(output.modality_names)}
@@ -307,12 +323,20 @@ class M1FusionTrainingBundle(nn.Module):
             metric_mask.float().sum(),
         )
         results = (mask_loss, global_loss, xm_loss, missing_loss, degradation_loss, geo_loss, metric_loss)
+        rank_loss, rank_entropy = rank_diversity_loss(
+            student.global_repr, target=self.rank_diversity_target
+        )
+        total_loss = self.router.total(results)
+        if self.rank_diversity_weight > 0:
+            total_loss = total_loss + rank_loss * self.rank_diversity_weight
         return M1FusionStepOutput(
-            loss=self.router.total(results),
+            loss=total_loss,
             results=results,
             student=student,
             teacher=teacher,
             health=_representation_health(student.global_repr),
+            rank_diversity_loss=rank_loss,
+            rank_entropy=rank_entropy,
         )
 
     @torch.no_grad()
@@ -375,6 +399,8 @@ def run_m1_fusion_smoke(run: RunDirectory, job: dict[str, Any], seed: int) -> di
         "fusion_parameter_count": float(parameter_count(bundle.fusion)),
         "m1a_trainable_parameter_count": float(trainable_parameter_count(bundle)),
         "memory_allocated_bytes": float(torch.cuda.memory_allocated() if torch.cuda.is_available() else 0),
+        "rank_diversity_loss": float(post.rank_diversity_loss.detach().cpu()),
+        "rank_entropy": float(post.rank_entropy.detach().cpu()),
     }
     metrics.update({k: v for k, v in _objective_metrics(post.results).items() if isinstance(v, float)})
     manifest_digest = hashlib.sha256(b"SYNTHETIC:osfm-m1-fusion-smoke:v1").hexdigest()

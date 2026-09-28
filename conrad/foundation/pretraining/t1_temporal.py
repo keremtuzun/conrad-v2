@@ -24,7 +24,7 @@ from conrad.foundation.pretraining.m1_fusion import (
     trainable_parameter_count,
 )
 from conrad.foundation.pretraining.smoke import split_hash_for_plan
-from conrad.foundation.pretraining.u1_rgb import parameter_count
+from conrad.foundation.pretraining.u1_rgb import parameter_count, rank_diversity_loss
 from conrad.foundation.pretraining.u1_rgb import representation_health as _representation_health
 from conrad.foundation.temporal.memory import TemporalMemoryConfig, TemporalMemoryOutput, TemporalMemoryTransformer
 from conrad.training.checkpoint import load_checkpoint, save_checkpoint
@@ -50,6 +50,8 @@ class T1StepOutput:
     results: tuple[ObjectiveResult, ...]
     student: TemporalMemoryOutput
     teacher: TemporalMemoryOutput
+    rank_diversity_loss: torch.Tensor
+    rank_entropy: torch.Tensor
 
 
 def synthetic_t1_fixture(job: dict[str, Any], seed: int, fusion: SceneFusionTransformer | None = None) -> T1TemporalFixture:
@@ -116,7 +118,14 @@ def synthetic_t1_fixture(job: dict[str, Any], seed: int, fusion: SceneFusionTran
 
 
 class T1TemporalTrainingBundle(nn.Module):
-    def __init__(self, temporal: TemporalMemoryTransformer, *, ema_schedule: EMASchedule | None = None) -> None:
+    def __init__(
+        self,
+        temporal: TemporalMemoryTransformer,
+        *,
+        ema_schedule: EMASchedule | None = None,
+        rank_diversity_weight: float = 0.0,
+        rank_diversity_target: float = 64.0,
+    ) -> None:
         super().__init__()
         self.temporal = temporal
         self.teacher = copy.deepcopy(temporal)
@@ -137,6 +146,8 @@ class T1TemporalTrainingBundle(nn.Module):
             }
         )
         self.ema_schedule = ema_schedule or EMASchedule(start=0.996, end=0.9999, total_steps=100)
+        self.rank_diversity_weight = float(rank_diversity_weight)
+        self.rank_diversity_target = float(rank_diversity_target)
 
     def forward(self, fixture: T1TemporalFixture) -> T1StepOutput:
         student = self.temporal(
@@ -183,7 +194,13 @@ class T1TemporalTrainingBundle(nn.Module):
             valid.float().sum(),
         )
         results = (mask_loss, global_loss, temp_loss, degradation_loss)
-        return T1StepOutput(self.router.total(results), results, student, teacher)
+        rank_loss, rank_entropy = rank_diversity_loss(
+            student.window_repr[student.temporal_valid_mask], target=self.rank_diversity_target
+        )
+        total_loss = self.router.total(results)
+        if self.rank_diversity_weight > 0:
+            total_loss = total_loss + rank_loss * self.rank_diversity_weight
+        return T1StepOutput(total_loss, results, student, teacher, rank_loss, rank_entropy)
 
     @torch.no_grad()
     def update_teacher_after_optimizer(self, step: int) -> float:
@@ -246,6 +263,8 @@ def run_t1_temporal_smoke(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         "representation_effective_rank": health.effective_rank,
         "formal_rank_guard_numeric": {"PASS": 1.0, "FAIL": 0.0, "NOT_EVALUABLE": -1.0}[health.formal_rank_guard],
         "memory_allocated_bytes": float(torch.cuda.memory_allocated() if torch.cuda.is_available() else 0),
+        "rank_diversity_loss": float(post.rank_diversity_loss.detach().cpu()),
+        "rank_entropy": float(post.rank_entropy.detach().cpu()),
     }
     metrics.update({k: v for k, v in _objective_metrics(post.results).items() if isinstance(v, float)})
     manifest_digest = hashlib.sha256(b"SYNTHETIC:osfm-t1-temporal-smoke:v1").hexdigest()

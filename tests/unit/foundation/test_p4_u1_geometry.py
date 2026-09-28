@@ -89,12 +89,18 @@ def test_geometry_views_record_permitted_corruptions_and_no_truth_leakage() -> N
 
 def test_u1_geometry_objectives_backward_ema_and_metric_denominator_routing() -> None:
     views = synthetic_geometry_views({"batch_size": 2, "points_per_sample": 128, "num_groups": 8, "group_size": 16}, 20260413)
-    bundle = U1GeometryTrainingBundle(GeometryGroupedEncoder(_cfg()))
+    bundle = U1GeometryTrainingBundle(
+        GeometryGroupedEncoder(_cfg()),
+        rank_diversity_weight=1.0,
+        rank_diversity_target=72.0,
+    )
     assert all(not p.requires_grad for p in bundle.teacher.parameters())
     optimizer = torch.optim.AdamW(bundle.parameters(), lr=1e-4)
     before = [p.detach().clone() for p in bundle.teacher.parameters()]
     out = bundle(views)
     assert torch.isfinite(out.loss)
+    assert out.rank_diversity_loss.item() >= 0.0
+    assert out.rank_entropy.item() > 0.0
     statuses = {r.objective_id: r.status for r in out.results}
     assert statuses["u1_geometry_masked_latent_prediction"] is ObjectiveStatus.ACTIVE
     assert statuses["u1_geometry_global_consistency"] is ObjectiveStatus.ACTIVE

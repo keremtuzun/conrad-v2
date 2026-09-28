@@ -50,10 +50,24 @@ class U1RGBStepOutput:
     teacher: RGBEncoderOutput
     degradation_logits: torch.Tensor
     health: RepresentationHealth
+    rank_diversity_loss: torch.Tensor
+    rank_entropy: torch.Tensor
 
 
 def parameter_count(model: nn.Module) -> int:
     return sum(p.numel() for p in model.parameters())
+
+
+def rank_diversity_loss(
+    representations: torch.Tensor, *, target: float = 64.0
+) -> tuple[torch.Tensor, torch.Tensor]:
+    centered = representations.float() - representations.float().mean(dim=0, keepdim=True)
+    singular = torch.linalg.svdvals(centered)
+    probs = singular / singular.sum().clamp_min(1e-12)
+    entropy_rank = torch.exp(-(probs * probs.clamp_min(1e-12).log()).sum())
+    target_tensor = torch.tensor(float(target), device=representations.device, dtype=entropy_rank.dtype)
+    loss = (target_tensor - entropy_rank).clamp_min(0.0) / target_tensor.clamp_min(1.0)
+    return loss.to(representations.dtype), entropy_rank.to(representations.dtype)
 
 
 def contiguous_2d_mask(
@@ -106,7 +120,14 @@ def synthetic_rgb_views(job: dict[str, Any], seed: int) -> U1RGBViews:
 
 
 class U1RGBTrainingBundle(nn.Module):
-    def __init__(self, encoder: RGBViTS14Encoder, *, ema_schedule: EMASchedule | None = None) -> None:
+    def __init__(
+        self,
+        encoder: RGBViTS14Encoder,
+        *,
+        ema_schedule: EMASchedule | None = None,
+        rank_diversity_weight: float = 0.0,
+        rank_diversity_target: float = 64.0,
+    ) -> None:
         super().__init__()
         self.student = encoder
         self.teacher = copy.deepcopy(encoder)
@@ -127,6 +148,8 @@ class U1RGBTrainingBundle(nn.Module):
             }
         )
         self.ema_schedule = ema_schedule or EMASchedule(start=0.996, end=0.9999, total_steps=100)
+        self.rank_diversity_weight = float(rank_diversity_weight)
+        self.rank_diversity_target = float(rank_diversity_target)
 
     def forward(self, views: U1RGBViews) -> U1RGBStepOutput:
         student = self.student(views.student_rgb, views.token_mask)
@@ -157,13 +180,21 @@ class U1RGBTrainingBundle(nn.Module):
             torch.tensor(0.0, device=student.modality_repr.device),
         )
         results = (mask_loss, global_loss, degradation_loss, metric_loss)
+        rank_loss, rank_entropy = rank_diversity_loss(
+            student.modality_repr, target=self.rank_diversity_target
+        )
+        total_loss = self.router.total(results)
+        if self.rank_diversity_weight > 0:
+            total_loss = total_loss + rank_loss * self.rank_diversity_weight
         return U1RGBStepOutput(
-            loss=self.router.total(results),
+            loss=total_loss,
             results=results,
             student=student,
             teacher=teacher,
             degradation_logits=logits,
             health=representation_health(student.modality_repr),
+            rank_diversity_loss=rank_loss,
+            rank_entropy=rank_entropy,
         )
 
     @torch.no_grad()
@@ -247,6 +278,8 @@ def run_u1_rgb_smoke(run: RunDirectory, job: dict[str, Any], seed: int) -> dict[
         "formal_rank_guard_numeric": {"PASS": 1.0, "FAIL": 0.0, "NOT_EVALUABLE": -1.0}[post.health.formal_rank_guard],
         "parameter_count": float(parameter_count(bundle.student)),
         "memory_allocated_bytes": float(torch.cuda.memory_allocated() if torch.cuda.is_available() else 0),
+        "rank_diversity_loss": float(post.rank_diversity_loss.detach().cpu()),
+        "rank_entropy": float(post.rank_entropy.detach().cpu()),
     }
     metrics.update({k: v for k, v in _objective_metrics(post.results).items() if isinstance(v, float)})
     ckpt = run.path / "checkpoints" / "osfm_u1_rgb_smoke.pt"
