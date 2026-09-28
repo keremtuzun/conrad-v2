@@ -69,11 +69,11 @@ training_budget:
   continuation_policy: phase_by_phase_go_no_go
 phase_budget_policy:
   user_budget_cap_try_per_launch_window: 8500.0
-  launch_window_hours: 24.0
+  launch_window_hours: 48.0
   do_not_compress_full_plan_to_fit_one_window: true
   allowed_action_under_8500_try: run_one_measured_phase_or_candidate_window_only
   full_plan_requires_multiple_approved_windows_or_larger_budget: true
-  estimated_minimum_24h_windows_at_800k_steps_per_window: 5
+  estimated_minimum_48h_windows_at_800k_steps_per_window: 5
 step_allocation:
   - stage: V11-P4-A-v1-import-and-anchor
     optimizer_steps: 50000
@@ -171,7 +171,7 @@ do_not_start_if:
   - 8_l4_benchmark_missing
   - measured_phase_projection_missing
   - current_phase_projection_over_approved_budget
-  - current_phase_projection_over_approved_time_window
+  - current_phase_projection_over_approved_48h_window
   - rank_below_75
   - registry_coverage_incomplete
   - p4_v1_line_dirty_or_modified_by_v11_run
@@ -182,4 +182,4 @@ do_not_start_if:
 notes:
   - This is the full V1.1 plan. It intentionally exceeds old V1's 750k steps because V1.1 covers 15 families, routing, async alignment, exact evidence, lab/sample paths, and a large registry.
   - The 829 registry entries are all covered at the interface/routing level; semantic pretraining is claimed only for modalities with actual data/manifests/evidence.
-  - The 8-L4 8500 TRY window can validate throughput or run an initial candidate phase, but it is not enough to certify full V1.1 unless measured evidence proves otherwise across all phases.
+  - The 8-L4 48h/8500 TRY window can validate throughput or run an initial candidate phase, but it is not enough to certify full V1.1 unless measured evidence proves otherwise across all phases.

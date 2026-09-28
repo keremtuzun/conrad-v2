@@ -20,7 +20,7 @@ required_evidence:
   min_local_registry_rank: 75.0
 budget_guard:
   currency: TRY
-  max_wall_clock_hours: 24.0
+  max_wall_clock_hours: 48.0
   max_total_cost_try: 8500.0
   immediate_launch_cost_ceiling_try: 8000.0
   cautious_decision_cost_floor_try: 8000.0
@@ -58,7 +58,7 @@ measured_go_rules:
     p17_5: 2100000
   projection_must_fit:
     steps: selected_budget_fill_scale
-    max_hours: 24.0
+    max_hours: 48.0
     immediate_launch_cost_ceiling_try: 8000.0
     cautious_decision_cost_floor_try: 8000.0
     cautious_decision_cost_ceiling_try: 8500.0
@@ -66,11 +66,11 @@ measured_go_rules:
     selection_rule: choose_highest_of_10p_12_5p_15p_17_5p_projected_under_8000_try
     cautious_rule: if_highest_available_projection_is_8000_to_8500_try_codex_decides_with_rank_speed_stability_and_cost_margin
     no_go_rule: decline_any_scale_projected_over_8500_try
-  min_steps_per_second_for_24h:
-    p10_1_2m: 13.8888888889
-    p12_5_1_5m: 17.3611111111
-    p15_1_8m: 20.8333333333
-    p17_5_2_1m: 24.3055555556
+  min_steps_per_second_for_48h:
+    p10_1_2m: 6.9444444444
+    p12_5_1_5m: 8.6805555556
+    p15_1_8m: 10.4166666667
+    p17_5_2_1m: 12.1527777778
 fail_closed_on:
   - less_than_8_l4_allocated
   - rank_below_75
@@ -79,7 +79,7 @@ fail_closed_on:
   - oom_or_cuda_error
   - dataloader_stall
   - checkpoint_write_failure
-  - projected_runtime_over_24h
+  - projected_runtime_over_48h
   - projected_cost_over_8500_try
   - provider_price_above_launch_cap
   - p4_v1_line_contamination

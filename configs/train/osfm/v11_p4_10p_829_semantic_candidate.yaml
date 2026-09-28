@@ -33,7 +33,7 @@ compute_target:
   gpu_count_minimum: 8
   preferred_machine_type: g2-standard-96
   distributed_backend: torchrun_ddp
-  launch_window_hours: 24.0
+  launch_window_hours: 48.0
   launch_window_cost_cap_try: 8500.0
   launch_policy: start_only_if_8l4_benchmark_projects_selected_10p_steps_under_time_and_budget
 training_budget:
@@ -182,7 +182,7 @@ promotion:
     - p4_v1_noncontamination_report
 do_not_start_if:
   - 8_l4_benchmark_missing
-  - measured_projection_over_24h
+  - measured_projection_over_48h
   - measured_projection_over_8500_try
   - rank_below_75
   - registry_coverage_incomplete

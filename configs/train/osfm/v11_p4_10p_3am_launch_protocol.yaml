@@ -9,7 +9,7 @@ local_time_window:
   timezone: Europe/Istanbul
   reason: user quota/capacity reset window
 hard_limits:
-  max_wall_clock_hours: 24.0
+  max_wall_clock_hours: 48.0
   max_total_cost_try: 8500.0
   immediate_launch_cost_ceiling_try: 8000.0
   cautious_decision_cost_floor_try: 8000.0
@@ -27,9 +27,9 @@ hard_limits:
     "12.5P": 1500000
     "15P": 1800000
     "17.5P": 2100000
-  required_selected_steps_per_second_for_24h: 13.8888888889
-  required_upper_steps_per_second_for_24h: 18.5185185185
-  max_live_hourly_cost_try: 354.1666667
+  required_selected_steps_per_second_for_48h: 6.9444444444
+  required_upper_steps_per_second_for_48h: 9.2592592593
+  max_live_hourly_cost_try: 177.0833333
 budget_fill_scaling_policy:
   enabled: true
   base_scale: "10P"
@@ -65,7 +65,7 @@ exact_sequence:
       - region_or_zone_has_8_l4_capacity
       - live_or_configured_usd_try_rate_recorded
       - live_hourly_cost_try_recorded
-      - projected_24h_cost_try_lte_8500
+      - projected_48h_cost_try_lte_8500
     output: artifacts/gates/V1.1/10P_3AM/cloud_price_quota_preflight.json
   - id: create-or-start-8l4-vm
     action: start_preemptible_or_price_compliant_8_l4_worker
@@ -103,10 +103,10 @@ exact_sequence:
       scaled_candidate_cost_try: scaled_candidate_hours * live_hourly_cost_try
       selected_scale_steps: highest_of_10p_12_5p_15p_17_5p_allowed_by_budget_decision_policy
     must_pass:
-      - selected_scale_hours_lte_24
+      - selected_scale_hours_lte_48
       - projected_selected_scale_cost_lt_8000_immediate_or_8000_to_8500_cautious_go_or_gt_8500_decline
       - live_hourly_cost_try_lte_max_live_hourly_cost_try
-      - measured_steps_per_second_gte_13_8888888889
+      - measured_steps_per_second_gte_6_9444444444
     output: artifacts/gates/V1.1/10P_3AM/projection_gate.json
   - id: launch-budget-fill-candidate
     action: start_selected_budget_fill_candidate_only_if_projection_gate_passes
@@ -138,7 +138,7 @@ monitoring_policy:
     - dataloader_stall
     - checkpoint_write_failure
     - projected_total_cost_try_gt_8500
-    - projected_wall_clock_gt_24h
+    - projected_wall_clock_gt_48h
     - p4_v1_line_modified
 post_run_required_artifacts:
   - artifacts/gates/V1.1/10P_3AM/final_training_report.json
