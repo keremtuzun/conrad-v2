@@ -49,6 +49,9 @@ grad_clip_norm: 1.0
 token_mask_fraction: 0.6
 min_visible_fraction: 0.1
 noise_std: 0.025
+rank_diversity_weight: 1.0
+rank_diversity_target: 72
+select_best_validation_rank_checkpoint: true
 budget:
   batch_size_per_gpu: 64
   gradient_accumulation: 4
@@ -66,3 +69,4 @@ notes:
   - Training reads PRETRAIN_REAL only; validation reads VALIDATION only.
   - FINAL_TEST and OOD_TEST are forbidden for training, sampler, and normalization statistics.
   - SubPipe sonar is rendered side-scan imagery, not raw acoustic backscatter.
+  - P4.8H failed the formal representation rank guard; this config adds rank-diversity pressure and selects the best validation-rank checkpoint without using FINAL_TEST or OOD_TEST.

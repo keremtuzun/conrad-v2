@@ -66,6 +66,8 @@ class U1SonarStepOutput:
     teacher: SonarEncoderOutput
     degradation_logits: torch.Tensor
     health: RepresentationHealth
+    rank_diversity_loss: torch.Tensor
+    rank_entropy: torch.Tensor
 
 
 @dataclass(frozen=True)
@@ -354,7 +356,14 @@ def real_subpipe_sonar_views(
 
 
 class U1SonarTrainingBundle(nn.Module):
-    def __init__(self, encoder: SonarViTS14Encoder, *, ema_schedule: EMASchedule | None = None) -> None:
+    def __init__(
+        self,
+        encoder: SonarViTS14Encoder,
+        *,
+        ema_schedule: EMASchedule | None = None,
+        rank_diversity_weight: float = 0.0,
+        rank_diversity_target: float = 64.0,
+    ) -> None:
         super().__init__()
         self.student = encoder
         self.teacher = copy.deepcopy(encoder)
@@ -375,6 +384,17 @@ class U1SonarTrainingBundle(nn.Module):
             }
         )
         self.ema_schedule = ema_schedule or EMASchedule(start=0.996, end=0.9999, total_steps=100)
+        self.rank_diversity_weight = float(rank_diversity_weight)
+        self.rank_diversity_target = float(rank_diversity_target)
+
+    def _rank_diversity_loss(self, representations: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        centered = representations.float() - representations.float().mean(dim=0, keepdim=True)
+        singular = torch.linalg.svdvals(centered)
+        probs = singular / singular.sum().clamp_min(1e-12)
+        entropy_rank = torch.exp(-(probs * probs.clamp_min(1e-12).log()).sum())
+        target = torch.tensor(self.rank_diversity_target, device=representations.device, dtype=entropy_rank.dtype)
+        loss = (target - entropy_rank).clamp_min(0.0) / target.clamp_min(1.0)
+        return loss.to(representations.dtype), entropy_rank.to(representations.dtype)
 
     def forward(self, views: U1SonarViews) -> U1SonarStepOutput:
         student = self.student(views.student_sonar, views.token_mask)
@@ -406,13 +426,19 @@ class U1SonarTrainingBundle(nn.Module):
             metric_numerator = F.mse_loss(student.modality_repr[:, : views.metric_targets.shape[1]], views.metric_targets, reduction="sum")
         metric_loss = self.router._result("u1_sonar_metric", metric_numerator, metric_denominator)
         results = (mask_loss, global_loss, degradation_loss, metric_loss)
+        rank_loss, rank_entropy = self._rank_diversity_loss(student.modality_repr)
+        total_loss = self.router.total(results)
+        if self.rank_diversity_weight > 0:
+            total_loss = total_loss + rank_loss * self.rank_diversity_weight
         return U1SonarStepOutput(
-            loss=self.router.total(results),
+            loss=total_loss,
             results=results,
             student=student,
             teacher=teacher,
             degradation_logits=logits,
             health=_representation_health(student.modality_repr),
+            rank_diversity_loss=rank_loss,
+            rank_entropy=rank_entropy,
         )
 
     @torch.no_grad()
@@ -467,6 +493,8 @@ def run_u1_sonar_smoke(run: RunDirectory, job: dict[str, Any], seed: int) -> dic
         "formal_rank_guard_numeric": {"PASS": 1.0, "FAIL": 0.0, "NOT_EVALUABLE": -1.0}[post.health.formal_rank_guard],
         "parameter_count": float(parameter_count(bundle.student)),
         "memory_allocated_bytes": float(torch.cuda.memory_allocated() if torch.cuda.is_available() else 0),
+        "rank_diversity_loss": float(post.rank_diversity_loss.detach().cpu()),
+        "rank_entropy": float(post.rank_entropy.detach().cpu()),
     }
     metrics.update({k: v for k, v in _objective_metrics(post.results).items() if isinstance(v, float)})
     ckpt = run.path / "checkpoints" / "osfm_u1_sonar_smoke.pt"
@@ -623,6 +651,8 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
     bundle = U1SonarTrainingBundle(
         SonarViTS14Encoder(config),
         ema_schedule=EMASchedule(start=0.996, end=0.9999, total_steps=int(job.get("optimizer_steps", 2))),
+        rank_diversity_weight=float(job.get("rank_diversity_weight", 0.0)),
+        rank_diversity_target=float(job.get("rank_diversity_target", 64.0)),
     ).to(device)
     training_model: nn.Module = bundle
     if distributed.enabled:
@@ -660,6 +690,7 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
     validation_every = int(job.get("validation_every_steps", max(1, steps)))
     last = None
     val = None
+    best_validation: dict[str, Any] | None = None
     train_sample_ids_seen: dict[str, None] = {}
     for step in range(1, steps + 1):
         optimizer.zero_grad(set_to_none=True)
@@ -715,8 +746,36 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
                 bundle.eval()
                 with torch.no_grad():
                     val = bundle(val_views)
+                val_rank = val.health.effective_rank
+                val_loss = float(val.loss.detach().cpu())
+                best_rank = (
+                    -1.0
+                    if best_validation is None
+                    else float(best_validation["health"].effective_rank)
+                )
+                best_loss = (
+                    float("inf")
+                    if best_validation is None
+                    else float(best_validation["loss"])
+                )
+                if val_rank > best_rank or (val_rank == best_rank and val_loss < best_loss):
+                    best_validation = {
+                        "step": step,
+                        "loss": val_loss,
+                        "health": copy.deepcopy(val.health),
+                        "model_state": {
+                            key: value.detach().cpu().clone()
+                            for key, value in bundle.state_dict().items()
+                        },
+                    }
                 run.log_metrics(
-                    {"step": step, "val/osfm_u1_sonar_loss": float(val.loss.detach().cpu())}
+                    {
+                        "step": step,
+                        "val/osfm_u1_sonar_loss": val_loss,
+                        "val/representation_effective_rank": val_rank,
+                        "val/rank_diversity_loss": float(val.rank_diversity_loss.detach().cpu()),
+                        "val/rank_entropy": float(val.rank_entropy.detach().cpu()),
+                    }
                 )
             distributed.barrier()
     gathered_sample_ids = distributed.gather_objects(tuple(train_sample_ids_seen))
@@ -733,6 +792,35 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
     bundle.eval()
     with torch.no_grad():
         val = bundle(val_views) if val is None else val
+    final_step_health = copy.deepcopy(val.health)
+    if (
+        bool(job.get("select_best_validation_rank_checkpoint", False))
+        and best_validation is not None
+        and best_validation["health"].formal_rank_guard == "PASS"
+    ):
+        bundle.load_state_dict(best_validation["model_state"], strict=True)
+        bundle.to(device)
+        bundle.eval()
+        with torch.no_grad():
+            val = bundle(val_views)
+        selected_checkpoint_step = int(best_validation["step"])
+        checkpoint_selection = {
+            "policy": "best_validation_rank",
+            "selected_step": selected_checkpoint_step,
+            "selected_effective_rank": float(best_validation["health"].effective_rank),
+            "selected_formal_rank_guard": best_validation["health"].formal_rank_guard,
+            "selected_validation_loss": float(best_validation["loss"]),
+            "final_step_effective_rank_before_selection": float(final_step_health.effective_rank),
+            "final_step_formal_rank_guard_before_selection": final_step_health.formal_rank_guard,
+        }
+    else:
+        selected_checkpoint_step = steps
+        checkpoint_selection = {
+            "policy": "final_step",
+            "selected_step": selected_checkpoint_step,
+            "selected_effective_rank": float(val.health.effective_rank),
+            "selected_formal_rank_guard": val.health.formal_rank_guard,
+        }
     train_evidence = {
         **train_evidence,
         "sample_ids": list(merged_sample_ids or dict.fromkeys(train_views.sample_ids)),
@@ -756,6 +844,8 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         "formal_rank_guard_numeric": {"PASS": 1.0, "FAIL": 0.0, "NOT_EVALUABLE": -1.0}[val.health.formal_rank_guard],
         "parameter_count": float(parameter_count(bundle.student)),
         "memory_allocated_bytes": float(torch.cuda.max_memory_allocated(device)),
+        "rank_diversity_loss": float(val.rank_diversity_loss.detach().cpu()),
+        "rank_entropy": float(val.rank_entropy.detach().cpu()),
     }
     metrics.update({k: v for k, v in _objective_metrics(val.results).items() if isinstance(v, float)})
     ckpt_name = "osfm_u1_sonar_research_rehearsal.pt" if rehearsal_only else "osfm_u1_sonar_research_full.pt"
@@ -771,7 +861,7 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         seeds={"torch": seed, "mask": seed},
         metrics={k: float(v) for k, v in metrics.items() if isinstance(v, float)},
         epoch=0,
-        step=steps,
+        step=selected_checkpoint_step,
         created_time_ns=time.time_ns(),
         optimizer=optimizer,
         trainer_state={
@@ -823,6 +913,7 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         "metrics": metrics,
         "objectives": {r.objective_id: r.as_metrics() for r in val.results},
         "representation_health": val.health.__dict__,
+        "checkpoint_selection": checkpoint_selection,
         "reload": {"max_abs_diff": reload_max_abs_diff, "matches": reload_max_abs_diff <= 1e-6},
         "compute": {
             "device": str(device),

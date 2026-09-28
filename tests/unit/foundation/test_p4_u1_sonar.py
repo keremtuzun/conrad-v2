@@ -121,6 +121,23 @@ def test_u1_sonar_objectives_backward_ema_and_metric_routing() -> None:
     assert not bundle.teacher.training
 
 
+def test_u1_sonar_rank_diversity_regularizer_is_trainable() -> None:
+    views = synthetic_sonar_views({"batch_size": 96, "image_size": 28, "token_mask_fraction": 0.60}, 20260928)
+    bundle = U1SonarTrainingBundle(
+        SonarViTS14Encoder(SonarEncoderConfig(image_size=28)),
+        rank_diversity_weight=1.0,
+        rank_diversity_target=72.0,
+    )
+
+    out = bundle(views)
+
+    assert torch.isfinite(out.loss)
+    assert out.rank_diversity_loss.item() >= 0.0
+    assert out.rank_entropy.item() > 0.0
+    out.loss.backward()
+    assert any(p.grad is not None for p in bundle.student.parameters())
+
+
 def test_osfm_u1_sonar_smoke_checkpoint_reload_and_replay(tmp_path: Path) -> None:
     result = run_training("configs/train/osfm/u1_sonar_smoke.yaml", runs_root=tmp_path)
     assert result["experiment_id"] == "OSFM-U1-SONAR-SMOKE-001"
@@ -241,6 +258,7 @@ def test_p48_research_configs_require_formal_validation_support() -> None:
     for path in (
         Path("configs/train/osfm/research/u1_sonar_budget_pilot.yaml"),
         Path("configs/train/osfm/research/u1_sonar_optimized_benchmark.yaml"),
+        Path("configs/train/osfm/research/u1_sonar_rankfix_benchmark.yaml"),
         Path("configs/train/osfm/research/u1_sonar_research.yaml"),
     ):
         cfg = yaml.safe_load(path.read_text())
@@ -251,6 +269,9 @@ def test_p48_research_configs_require_formal_validation_support() -> None:
         Path("configs/train/osfm/research/u1_sonar_research.yaml").read_text()
     )
     assert _formal_training_budget(formal) == (64, 4, 256)
+    assert formal["rank_diversity_weight"] > 0
+    assert formal["rank_diversity_target"] > 64
+    assert formal["select_best_validation_rank_checkpoint"] is True
 
 
 def test_p48_optimized_benchmark_is_non_promotable_and_bounded() -> None:
@@ -276,6 +297,21 @@ def test_p48_effective_batch_benchmark_is_bounded_and_non_promotable() -> None:
     assert cfg["optimizer_steps"] == 100
     assert cfg["promotable"] is False
     assert cfg["promotion"]["promotable_to_formal_p4_8"] is False
+    assert _formal_training_budget(cfg) == (64, 4, 256)
+
+
+def test_p48_rankfix_benchmark_is_bounded_and_non_promotable() -> None:
+    import yaml
+
+    cfg = yaml.safe_load(
+        Path("configs/train/osfm/research/u1_sonar_rankfix_benchmark.yaml").read_text()
+    )
+    assert cfg["optimizer_steps"] == 1000
+    assert cfg["promotable"] is False
+    assert cfg["promotion"]["promotable_to_formal_p4_8"] is False
+    assert cfg["rank_diversity_weight"] > 0
+    assert cfg["rank_diversity_target"] > 64
+    assert cfg["select_best_validation_rank_checkpoint"] is True
     assert _formal_training_budget(cfg) == (64, 4, 256)
 
 
