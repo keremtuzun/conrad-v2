@@ -103,6 +103,25 @@
     "cloud_jobs_launched": 0,
     "cloud_spend_authorized_by_this_decision_tl": 0
   },
+  "cloud_capacity_probe": {
+    "attempted_utc_date": "2026-09-28",
+    "active_l4": "conrad-l4-p48-use1b/us-east1-b",
+    "europe_benchmark_attempt": {
+      "instance": "conrad-l4-p48a",
+      "zone": "europe-west1-b",
+      "result": "ZONE_RESOURCE_POOL_EXHAUSTED_WITH_DETAILS",
+      "instance_started": false
+    },
+    "us_central_benchmark_attempt": {
+      "instance": "conrad-l4-dev",
+      "zone": "us-central1-a",
+      "result": "GPUS_ALL_REGIONS quota exceeded",
+      "global_gpu_quota": 1,
+      "global_gpu_usage": 1,
+      "instance_started": false
+    },
+    "conclusion": "A second L4 cannot run while the formal Sonar L4 is active. The bounded benchmark must reuse the single quota slot after Sonar closeout, and eight to ten simultaneous L4s require an approved GPUS_ALL_REGIONS quota increase."
+  },
   "blockers": [
     {
       "id": "P4-FORMAL-RUNNERS-NONSONAR",
@@ -118,6 +137,11 @@
       "id": "P4-PARENT-CHAIN",
       "class": "INTERNAL_DEPENDENCY",
       "detail": "M1 requires promoted U1 parents; T1 requires promoted M1; J1 requires the promoted U1, M1, and T1 parent chain."
+    },
+    {
+      "id": "GCP-GPUS-ALL-REGIONS-QUOTA",
+      "class": "EXTERNAL",
+      "detail": "The Google Cloud project has a global GPU quota of one. Eight to ten simultaneous L4s cannot be provisioned until Google approves a quota increase."
     }
   ],
   "next_action": "Complete and promote the active formal Sonar branch, preserve its checkpoint evidence, and obtain/verify qualifying non-Sonar research payloads before implementing and benchmarking the remaining formal runners."
