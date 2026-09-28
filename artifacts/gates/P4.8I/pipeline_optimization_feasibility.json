@@ -1,0 +1,124 @@
+{
+  "gate": "P4.8I",
+  "status": "VALIDATED-RUN",
+  "purpose": "Fail-closed optimization and launch-feasibility review for a complete P4 run using up to ten L4 GPUs",
+  "source_parent_commit": "e2069a5",
+  "requested_constraints": {
+    "maximum_l4_gpus": 10,
+    "maximum_wall_hours": 36,
+    "maximum_p4_cloud_spend_tl": 8500,
+    "pricing_status": "PLANNING_ESTIMATE_ONLY_PROVIDER_BILLING_NOT_VERIFIED"
+  },
+  "pipeline_optimization": {
+    "change": "Accumulate training sample identifiers in one insertion-ordered map and materialize training evidence once after training instead of rebuilding and deduplicating the full evidence list on every microbatch.",
+    "semantic_effect": "none",
+    "unchanged": [
+      "sample order",
+      "augmentation random seeds",
+      "losses",
+      "effective batch",
+      "optimizer schedule",
+      "deterministic CUDA policy",
+      "partition access",
+      "reported unique training sample identifiers"
+    ],
+    "microbenchmark": {
+      "environment": "local CPU synthetic 1445-frame pool",
+      "microsteps": 1000,
+      "old_seconds": 1.3260844580363482,
+      "optimized_seconds": 1.1331796660088003,
+      "speedup_for_view_and_evidence_section": 1.170233192329494,
+      "saved_milliseconds_per_microstep": 0.19290479202754796,
+      "projected_saved_seconds_for_400000_microsteps": 77.16191681101918,
+      "limitation": "This is a focused CPU microbenchmark, not a claim of whole-training throughput improvement."
+    },
+    "tests": {
+      "command": ".venv/bin/pytest tests/unit/foundation/test_p4_u1_sonar.py tests/unit/foundation/test_p48_promotion.py -q",
+      "result": "21 passed",
+      "duration_seconds": 5.01
+    }
+  },
+  "live_sonar_observation": {
+    "instance": "conrad-l4-p48-use1b",
+    "zone": "us-east1-b",
+    "run_id": "train-osfm_u1_sonar_research-1790534022995482843",
+    "observed_step": 79282,
+    "target_steps": 100000,
+    "process_elapsed": "approximately 8 hours 40 minutes",
+    "gpu": "NVIDIA L4",
+    "gpu_utilization_percent_snapshot": 23,
+    "gpu_memory_mib_snapshot": 1102,
+    "loss_finite": true,
+    "status": "RUNNING"
+  },
+  "formal_launchability": {
+    "U1-SONAR-RESEARCH": {
+      "formal_runner": true,
+      "promotable_config": true,
+      "verified_public_real_payload": true,
+      "state": "RUNNING"
+    },
+    "U1-RGB-RESEARCH": {
+      "formal_runner": false,
+      "promotable_config": false,
+      "verified_public_real_payload": false,
+      "state": "BLOCKED"
+    },
+    "U1-RANGE-RESEARCH": {
+      "formal_runner": false,
+      "promotable_config": false,
+      "verified_public_real_payload": false,
+      "state": "BLOCKED"
+    },
+    "U1-GEOMETRY-RESEARCH": {
+      "formal_runner": false,
+      "promotable_config": false,
+      "verified_public_real_payload": false,
+      "state": "BLOCKED"
+    },
+    "M1-RESEARCH": {
+      "formal_runner": false,
+      "promotable_config": false,
+      "required_promoted_parents_available": false,
+      "state": "BLOCKED"
+    },
+    "T1-RESEARCH": {
+      "formal_runner": false,
+      "promotable_config": false,
+      "required_promoted_parents_available": false,
+      "state": "BLOCKED"
+    },
+    "J1-RESEARCH": {
+      "formal_runner": false,
+      "promotable_config": false,
+      "required_promoted_parents_available": false,
+      "state": "BLOCKED"
+    }
+  },
+  "ten_l4_decision": {
+    "decision": "DO_NOT_LAUNCH_WHOLE_P4",
+    "under_36_hours_proven": false,
+    "under_8500_tl_proven": false,
+    "reason": "Only the Sonar branch is currently formal and promotable. The verified public-real SubPipe payload contains rendered side-scan Sonar, not qualifying RGB, range, geometry, paired multimodal, or temporal training payloads. The remaining research configurations are explicitly non-promotable and have no equivalent formal training entrypoints. Ten GPUs cannot resolve missing data, runners, promotion gates, or sequential parent dependencies.",
+    "cloud_jobs_launched": 0,
+    "cloud_spend_authorized_by_this_decision_tl": 0
+  },
+  "blockers": [
+    {
+      "id": "P4-FORMAL-RUNNERS-NONSONAR",
+      "class": "INTERNAL",
+      "detail": "Formal research runners and promotion reviews are absent for RGB, Range, Geometry, M1, T1, and J1."
+    },
+    {
+      "id": "P4-PUBLIC-REAL-NONSONAR-DATA",
+      "class": "EXTERNAL",
+      "detail": "No verified public-real RGB, range, geometry, paired multimodal, or temporal payload is available in the current DATA-OSFM corpus."
+    },
+    {
+      "id": "P4-PARENT-CHAIN",
+      "class": "INTERNAL_DEPENDENCY",
+      "detail": "M1 requires promoted U1 parents; T1 requires promoted M1; J1 requires the promoted U1, M1, and T1 parent chain."
+    }
+  ],
+  "next_action": "Complete and promote the active formal Sonar branch, preserve its checkpoint evidence, and obtain/verify qualifying non-Sonar research payloads before implementing and benchmarking the remaining formal runners."
+}

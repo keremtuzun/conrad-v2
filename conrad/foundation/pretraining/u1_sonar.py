@@ -652,11 +652,6 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
                 train_stats=train_stats,
                 sample_offset=((step - 1) * accumulation + micro_step) * batch_size,
             )
-            step_evidence = train_pool.evidence(train_stats, train_views.sample_ids)
-            train_evidence = {
-                **train_evidence,
-                "sample_ids": list(dict.fromkeys([*train_evidence["sample_ids"], *step_evidence["sample_ids"]])),
-            }
             train_views = U1SonarViews(
                 train_views.teacher_sonar.to(device),
                 train_views.student_sonar.to(device),
@@ -690,6 +685,10 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
     bundle.eval()
     with torch.no_grad():
         val = bundle(val_views) if val is None else val
+    train_evidence = {
+        **train_evidence,
+        "sample_ids": list(train_sample_ids_seen or dict.fromkeys(train_views.sample_ids)),
+    }
     split_plan = {
         "train_sample_ids": tuple(train_sample_ids_seen or dict.fromkeys(train_views.sample_ids)),
         "validation_sample_ids": val_views.sample_ids,
