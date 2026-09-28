@@ -1,0 +1,39 @@
+{
+  "gate": "P4.8J",
+  "status": "IMPLEMENTED",
+  "source_commit": "b55dfdb3b53c98b6b061c81389743e7ad5e08352",
+  "purpose": "Two-L4 distributed-data-parallel execution path for the governed U1 Sonar runner",
+  "implementation": {
+    "launcher": "torchrun with two local CUDA ranks",
+    "backend": "NCCL",
+    "world_size": 2,
+    "batch_size_per_gpu": 32,
+    "gradient_accumulation": 4,
+    "global_effective_batch": 256,
+    "sample_sharding": "deterministic disjoint rank-specific global microstep offsets",
+    "gradient_sync": "DDP synchronization on the final accumulation microstep only",
+    "validation": "rank zero on the complete held-out validation support with rank barriers",
+    "checkpoint_and_evidence": "rank zero only",
+    "run_directory": "rank-zero creation with broadcast identity and shared local filesystem",
+    "promotion_status": "benchmark only; non-promotable"
+  },
+  "verification": {
+    "focused_tests": "25 passed",
+    "foundation_and_integration_tests": "105 passed",
+    "syntax_and_import_check": "PASS",
+    "two_gpu_nccl_benchmark": "BLOCKED_EXTERNAL_QUOTA"
+  },
+  "cloud_quota": {
+    "current_gpus_all_regions": 1,
+    "requested_gpus_all_regions": 10,
+    "request_result": "RESOURCE_EXHAUSTED",
+    "detail": "Quota Increase Requests per day exhausted for cloudquotas.googleapis.com.",
+    "paid_gpu_started_for_benchmark": false,
+    "next_retry": "Retry the quota preference update after the provider daily request allowance resets."
+  },
+  "limitations": [
+    "IMPLEMENTED does not mean VALIDATED-RUN; the two-L4 NCCL benchmark has not executed.",
+    "Exact two-times speedup is not claimed. The benchmark acceptance target is at least 1.8 times branch throughput relative to the matching one-L4 effective-batch benchmark.",
+    "This implementation covers the formal U1 Sonar runner. RGB, Range, Geometry, M1, T1, and J1 still require their own formal runners and qualifying data before complete-P4 scaling can be claimed."
+  ]
+}
