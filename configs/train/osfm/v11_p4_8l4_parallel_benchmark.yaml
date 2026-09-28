@@ -1,0 +1,79 @@
+stage_id: V1.1-P4-8L4-PARALLEL-BENCHMARK
+plan_id: OSFM-UNIVERSAL-V1.1-P4
+scale: bounded_benchmark
+formal_training_allowed: false
+full_run_allowed: false
+promotable: false
+purpose: measure_real_8_l4_throughput_rank_memory_and_cost_before_any_full_v11_training
+required_branch: osfm-universal-v1.1
+required_compute:
+  accelerator: NVIDIA_L4
+  gpu_count: 8
+  machine_type_preferred: g2-standard-96
+  min_vram_gb_per_gpu: 22
+  distributed_backend: torchrun_ddp
+  capacity_window: after_03_00_local_quota_reset
+required_evidence:
+  local_registry_benchmark: artifacts/gates/V1.1/v11_registry_benchmark_local_strict.json
+  local_pillar_benchmark: artifacts/gates/V1.1/v11_pillar_benchmark_local_strict.json
+  min_registry_coverage: 829
+  min_local_registry_rank: 75.0
+budget_guard:
+  currency: TRY
+  max_wall_clock_hours: 24.0
+  max_total_cost_try: 8500.0
+  usd_try_reference_policy: live_provider_or_market_rate_at_launch_time
+  max_allowed_usd_per_hour_formula: max_total_cost_try / usd_try_rate / max_wall_clock_hours
+  terminate_if_projected_over_budget: true
+  terminate_if_projected_over_time: true
+  terminate_if_spot_preempted_without_checkpoint: true
+pilot:
+  optimizer_steps: 1000
+  warmup_discard_steps: 100
+  validation_every_steps: 250
+  batch_size_per_gpu: 8
+  gradient_accumulation: 4
+  effective_batch_target: 256
+  mixed_precision: bf16_or_fp16_if_stable
+  seed: 2026092903
+  checkpoint_every_steps: 250
+  output_dir: artifacts/gates/V1.1/P4_8L4_parallel_benchmark
+measured_go_rules:
+  min_effective_rank: 75.0
+  min_independent_representations: 75
+  require_finite_metrics: true
+  require_no_collapse: true
+  require_all_15_families_routeable: true
+  require_registry_coverage_complete: true
+  require_gpu_count: 8
+  required_gpu_utilization_mean_min: 0.70
+  required_successful_steps: 1000
+  projection_steps_options:
+    conservative: 800000
+    nominal: 750000
+    lean: 700000
+  projection_must_fit:
+    steps: conservative
+    max_hours: 24.0
+    max_cost_try: 8500.0
+  min_steps_per_second_for_24h:
+    lean_700k: 8.1018518519
+    nominal_750k: 8.6805555556
+    conservative_800k: 9.2592592593
+fail_closed_on:
+  - less_than_8_l4_allocated
+  - rank_below_75
+  - non_finite_loss_or_metric
+  - representation_collapse
+  - oom_or_cuda_error
+  - dataloader_stall
+  - checkpoint_write_failure
+  - projected_runtime_over_24h
+  - projected_cost_over_8500_try
+  - provider_price_above_launch_cap
+  - p4_v1_line_contamination
+notes:
+  - This benchmark does not train or promote V1.1.
+  - A full V1.1 run may start immediately after this benchmark only if every measured_go_rule passes.
+  - If on-demand pricing is above the live max_allowed_usd_per_hour, use spot/preemptible or stop.
+  - Do not modify, merge into, or interrupt the frozen/current V1 P4 line.
