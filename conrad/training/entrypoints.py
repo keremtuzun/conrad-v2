@@ -29,6 +29,7 @@ from conrad.evaluation.core_experiments.tbd_e001 import Harness, make_sequences,
 from conrad.settings import REPO_ROOT
 from conrad.training.checkpoint import load_checkpoint
 from conrad.training.determinism import inspect_compute
+from conrad.training.distributed import DistributedContext
 from conrad.training.run_dir import RunDirectory, RunPurpose, TerminalStatus
 from conrad.training.trainer import Trainer
 from conrad.training.trainer_config import RunIdentity, TrainerConfig
@@ -226,32 +227,56 @@ def run_training(config_path: str | Path, runs_root: str | Path | None = None) -
         raise ComputeBlockedError(
             f"{name}: full-scale run requires {job.get('required_compute', 'a CUDA GPU')}; host has none (EXT-COMPUTE-01)"
         )
+    distributed = DistributedContext.initialize()
+    expected_world_size = int(job.get("distributed", {}).get("expected_world_size", 1))
+    if distributed.world_size != expected_world_size:
+        distributed.close()
+        raise RuntimeError(
+            f"configured distributed world_size={expected_world_size} but runtime has {distributed.world_size}"
+        )
     seed = int(job.get("seed", 2026201))
     root = Path(runs_root) if runs_root else REPO_ROOT / "artifacts" / "runs"
-    run = RunDirectory.create(
-        root,
-        f"train-{name}-{time.time_ns()}",
-        resolved_config=job,
-        manifests={},
-        purpose=RunPurpose.DEVELOPMENT,
-        clock_ns=time.time_ns,
-    )
+    run_id = f"train-{name}-{time.time_ns()}" if distributed.primary else None
+    run_id = distributed.broadcast_object(run_id)
+    if not isinstance(run_id, str):
+        raise RuntimeError("distributed run id broadcast failed")
+    if distributed.primary:
+        run = RunDirectory.create(
+            root,
+            run_id,
+            resolved_config=job,
+            manifests={},
+            purpose=RunPurpose.DEVELOPMENT,
+            clock_ns=time.time_ns,
+        )
+    distributed.barrier()
+    if not distributed.primary:
+        run = RunDirectory.open(root / run_id)
     try:
         result = JOBS[name](job, run, seed)
-        result.update(
-            {
-                "run_id": run.path.name,
-                "run_dir": str(run.path),
-                "seed": seed,
-                "device": "cuda" if compute.cuda_available and job.get("scale") == "full" else "cpu",
-                "compute": compute.model_dump(mode="json"),
-            }
-        )
-        (run.path / "reports" / "training_result.json").write_text(
-            json.dumps(result, indent=2, default=str), encoding="utf-8"
-        )
-        run.seal(TerminalStatus.COMPLETED, time.time_ns())
+        if distributed.primary:
+            result.update(
+                {
+                    "run_id": run.path.name,
+                    "run_dir": str(run.path),
+                    "seed": seed,
+                    "device": "cuda" if compute.cuda_available and job.get("scale") == "full" else "cpu",
+                    "compute": compute.model_dump(mode="json"),
+                    "distributed": {
+                        "world_size": distributed.world_size,
+                        "backend": "nccl" if distributed.enabled else None,
+                    },
+                }
+            )
+            (run.path / "reports" / "training_result.json").write_text(
+                json.dumps(result, indent=2, default=str), encoding="utf-8"
+            )
+            run.seal(TerminalStatus.COMPLETED, time.time_ns())
+        distributed.barrier()
     except Exception:
-        run.seal(TerminalStatus.FAILED, time.time_ns())
+        if distributed.primary and not run.sealed:
+            run.seal(TerminalStatus.FAILED, time.time_ns())
         raise
+    finally:
+        distributed.close()
     return result

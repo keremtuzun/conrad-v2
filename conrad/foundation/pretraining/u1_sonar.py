@@ -8,6 +8,7 @@ import json
 import subprocess
 import tempfile
 import time
+from contextlib import nullcontext
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -17,6 +18,7 @@ import cv2
 import torch
 import torch.nn.functional as F
 from torch import nn
+from torch.nn.parallel import DistributedDataParallel
 
 from conrad.data.adapters.subpipe import SubPipeAdapter
 from conrad.data.manifest import data_root_for, load_manifest, verify_loaded_manifest
@@ -41,6 +43,7 @@ from conrad.settings import REPO_ROOT
 from conrad.training.checkpoint import load_checkpoint, save_checkpoint
 from conrad.training.checkpoint_meta import CompatibilityTuple, config_digest
 from conrad.training.determinism import inspect_compute
+from conrad.training.distributed import DistributedContext
 from conrad.training.run_dir import RunDirectory
 from conrad.training.trainer_config import warmup_cosine
 
@@ -139,7 +142,7 @@ class SubPipeSonarPool:
         }
 
 
-def _formal_training_budget(job: dict[str, Any]) -> tuple[int, int, int]:
+def _formal_training_budget(job: dict[str, Any], *, world_size: int = 1) -> tuple[int, int, int]:
     budget = job.get("budget")
     if not isinstance(budget, dict):
         raise RuntimeError("formal P4.8 requires an explicit training budget")
@@ -148,10 +151,10 @@ def _formal_training_budget(job: dict[str, Any]) -> tuple[int, int, int]:
     effective_target = int(budget.get("effective_batch_target", 0))
     if batch_size <= 0 or accumulation <= 0 or effective_target <= 0:
         raise RuntimeError("formal P4.8 training budget values must be positive")
-    if batch_size * accumulation != effective_target:
+    if batch_size * accumulation * world_size != effective_target:
         raise RuntimeError(
             "formal P4.8 effective batch mismatch: "
-            f"{batch_size} * {accumulation} != {effective_target}"
+            f"{batch_size} * {accumulation} * {world_size} != {effective_target}"
         )
     configured_batch = int(job.get("batch_size", batch_size))
     if configured_batch != batch_size:
@@ -577,6 +580,12 @@ def run_u1_sonar_smoke(run: RunDirectory, job: dict[str, Any], seed: int) -> dic
 
 
 def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> dict[str, Any]:
+    distributed = DistributedContext.initialize()
+    expected_world_size = int(job.get("distributed", {}).get("expected_world_size", 1))
+    if distributed.world_size != expected_world_size:
+        raise RuntimeError(
+            f"configured distributed world_size={expected_world_size} but runtime has {distributed.world_size}"
+        )
     gate = _require_u1_sonar_research_gate(job)
     rehearsal_only = bool(job.get("rehearsal_only", True))
     if not rehearsal_only and job.get("full_run_allowed") is not True:
@@ -586,12 +595,14 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         accumulation = 1
         effective_batch = batch_size
     else:
-        batch_size, accumulation, effective_batch = _formal_training_budget(job)
+        batch_size, accumulation, effective_batch = _formal_training_budget(
+            job, world_size=distributed.world_size
+        )
     t0 = time.perf_counter()
     torch.manual_seed(seed)
     deterministic_backend = _configure_cuda_determinism()
     torch.use_deterministic_algorithms(True, warn_only=bool(job.get("determinism_warn_only", rehearsal_only)))
-    device = torch.device("cuda:0")
+    device = torch.device(f"cuda:{distributed.local_rank}")
     torch.cuda.reset_peak_memory_stats(device)
     config = SonarEncoderConfig(image_size=int(job.get("image_size", 28)))
     train_pool = load_subpipe_sonar_pool(job, partition=CorpusPartition.PRETRAIN_REAL)
@@ -613,6 +624,14 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         SonarViTS14Encoder(config),
         ema_schedule=EMASchedule(start=0.996, end=0.9999, total_steps=int(job.get("optimizer_steps", 2))),
     ).to(device)
+    training_model: nn.Module = bundle
+    if distributed.enabled:
+        training_model = DistributedDataParallel(
+            bundle,
+            device_ids=[distributed.local_rank],
+            output_device=distributed.local_rank,
+            broadcast_buffers=False,
+        )
     train_views = U1SonarViews(
         train_views.teacher_sonar.to(device),
         train_views.student_sonar.to(device),
@@ -646,11 +665,15 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         optimizer.zero_grad(set_to_none=True)
         step_loss = 0.0
         for micro_step in range(accumulation):
+            global_micro_step = (
+                ((step - 1) * accumulation + micro_step) * distributed.world_size
+                + distributed.rank
+            )
             train_views = train_pool.views(
                 job,
-                seed + (step - 1) * accumulation + micro_step,
+                seed + global_micro_step,
                 train_stats=train_stats,
-                sample_offset=((step - 1) * accumulation + micro_step) * batch_size,
+                sample_offset=global_micro_step * batch_size,
             )
             train_views = U1SonarViews(
                 train_views.teacher_sonar.to(device),
@@ -660,8 +683,16 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
                 train_views.corruption_trace,
             )
             bundle.train()
-            out = bundle(train_views)
-            (out.loss / accumulation).backward()
+            sync_context = (
+                training_model.no_sync()
+                if distributed.enabled
+                and micro_step < accumulation - 1
+                and isinstance(training_model, DistributedDataParallel)
+                else nullcontext()
+            )
+            with sync_context:
+                out = training_model(train_views)
+                (out.loss / accumulation).backward()
             step_loss += float(out.loss.detach().cpu())
             last = out
             train_sample_ids_seen.update(dict.fromkeys(train_views.sample_ids))
@@ -669,28 +700,45 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         optimizer.step()
         scheduler.step()
         ema = bundle.update_teacher_after_optimizer(step)
-        run.log_metrics(
-            {
-                "step": step,
-                "train/osfm_u1_sonar_loss": step_loss / accumulation,
-                "ema_momentum": float(ema),
-                "learning_rate": float(scheduler.get_last_lr()[0]),
-            }
-        )
+        if distributed.primary:
+            run.log_metrics(
+                {
+                    "step": step,
+                    "train/osfm_u1_sonar_loss": step_loss / accumulation,
+                    "ema_momentum": float(ema),
+                    "learning_rate": float(scheduler.get_last_lr()[0]),
+                }
+            )
         if not rehearsal_only and step % validation_every == 0:
-            bundle.eval()
-            with torch.no_grad():
-                val = bundle(val_views)
-            run.log_metrics({"step": step, "val/osfm_u1_sonar_loss": float(val.loss.detach().cpu())})
+            distributed.barrier()
+            if distributed.primary:
+                bundle.eval()
+                with torch.no_grad():
+                    val = bundle(val_views)
+                run.log_metrics(
+                    {"step": step, "val/osfm_u1_sonar_loss": float(val.loss.detach().cpu())}
+                )
+            distributed.barrier()
+    gathered_sample_ids = distributed.gather_objects(tuple(train_sample_ids_seen))
+    if not distributed.primary:
+        distributed.barrier()
+        return {
+            "component": "foundation.osfm.u1_sonar",
+            "distributed_worker_rank": distributed.rank,
+            "world_size": distributed.world_size,
+        }
+    merged_sample_ids = tuple(
+        dict.fromkeys(sample_id for rank_ids in gathered_sample_ids for sample_id in rank_ids)
+    )
     bundle.eval()
     with torch.no_grad():
         val = bundle(val_views) if val is None else val
     train_evidence = {
         **train_evidence,
-        "sample_ids": list(train_sample_ids_seen or dict.fromkeys(train_views.sample_ids)),
+        "sample_ids": list(merged_sample_ids or dict.fromkeys(train_views.sample_ids)),
     }
     split_plan = {
-        "train_sample_ids": tuple(train_sample_ids_seen or dict.fromkeys(train_views.sample_ids)),
+        "train_sample_ids": merged_sample_ids or tuple(dict.fromkeys(train_views.sample_ids)),
         "validation_sample_ids": val_views.sample_ids,
         "lineage": train_evidence["lineage_unit"],
         "partition_policy": "PRETRAIN_REAL trains; VALIDATION selects; FINAL_TEST/OOD_TEST forbidden",
@@ -785,6 +833,8 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
             "batch_size_per_gpu": batch_size,
             "gradient_accumulation": accumulation,
             "effective_batch": effective_batch,
+            "distributed_world_size": distributed.world_size,
+            "global_effective_batch": batch_size * accumulation * distributed.world_size,
         },
         "next_gate": "P4.8 full run evidence may promote U1 sonar only after checkpoint/reload and held-out validation review."
         if not rehearsal_only
@@ -807,4 +857,5 @@ def run_u1_sonar_research(run: RunDirectory, job: dict[str, Any], seed: int) -> 
         "checkpoint_index.json",
         json.dumps({"latest": str(ckpt), "checkpoint_id": meta.checkpoint_id}, indent=2),
     )
+    distributed.barrier()
     return result
