@@ -1,12 +1,17 @@
-plan_id: OSFM-UNIVERSAL-V1.1-P4
-stage_id: V1.1-P4-FORMAL-TRAINING-PLAN
-status: PLANNED_FAIL_CLOSED
+plan_id: OSFM-UNIVERSAL-V1.1-P4-FULL
+stage_id: V1.1-P4-FULL-FORMAL-TRAINING-PLAN
+status: PLANNED_FAIL_CLOSED_FULL_V11
 formal_training_allowed: false
 full_run_allowed: false
+summary:
+  intent: full_semantic_v11_pretraining_plan_not_a_budget_capped_candidate
+  budget_capped_candidate_steps: 800000
+  full_v11_steps: 3600000
+  distinction: 800k may produce an initial V1.1 candidate only; full V1.1 requires the 3.6M-step staged plan below.
 may_start_after:
   - V1.1-P4-8L4-PARALLEL-BENCHMARK: GO
-  - projected_conservative_800k_steps_hours_lt_24: true
-  - projected_conservative_800k_steps_cost_try_lt_8500: true
+  - full_plan_cloud_budget_approved: true
+  - measured_phase_projection_exists: true
   - all_registry_items_rank_ge_75: true
   - p4_v1_line_untouched: true
 source_constraints:
@@ -17,108 +22,160 @@ source_constraints:
   encoder_family_count: 15
   registered_modality_count: 829
   min_effective_rank: 75.0
-  exact_evidence_replaces_learned_representation: false
   exact_evidence_parallel_path_required: true
+  learned_representations_may_not_replace_exact_evidence: true
   sample_lab_result_path_required: true
+  registered_modality_coverage_semantics: registry_interface_coverage_is_not_semantic_pretraining
   final_test_or_ood_training_access: forbidden
   p4_v1_line_contamination: forbidden
+families:
+  - visual_image
+  - spectral_photonic
+  - active_acoustic
+  - passive_acoustic_vibration
+  - ultrasonic_ndt
+  - electromagnetic_magnetic
+  - geometry_spatial
+  - mechanical_structural_time_series
+  - physical_oceanographic_time_series
+  - chemical_electrochemical_spectral
+  - biological_molecular
+  - microscopic_particle
+  - geophysical_seismic
+  - radiological
+  - engineering_document_context
 compute_target:
   accelerator: NVIDIA_L4
-  gpu_count: 8
+  gpu_count_minimum: 8
+  gpu_count_preferred: 8
   preferred_machine_type: g2-standard-96
   distributed_backend: torchrun_ddp
-  max_wall_clock_hours: 24.0
-  max_total_cost_try: 8500.0
-  pricing_policy: live_price_checked_at_launch
-  launch_policy: fail_closed_unless_measured_projection_fits_time_and_budget
+  pricing_policy: live_price_checked_at_each_phase_launch
+  launch_policy: fail_closed_unless_current_phase_projection_fits_approved_budget
 training_budget:
-  total_optimizer_steps: 800000
-  total_status: hard_cap_until_revised_by_measured_benchmark
+  total_optimizer_steps: 3600000
+  total_status: full_v11_planned_not_budget_capped
   effective_batch_target: 256
-  selection_metric: validation_effective_rank_then_val_ssl_total
   validation_every_steps: 1000
   checkpoint_every_steps: 5000
+  selection_metric: validation_effective_rank_then_val_ssl_total
   select_best_validation_rank_checkpoint: true
   fail_closed_on_rank_regression: true
+  rank_floor: 75.0
+  continuation_policy: phase_by_phase_go_no_go
+phase_budget_policy:
+  user_budget_cap_try_per_launch_window: 8500.0
+  launch_window_hours: 24.0
+  do_not_compress_full_plan_to_fit_one_window: true
+  allowed_action_under_8500_try: run_one_measured_phase_or_candidate_window_only
+  full_plan_requires_multiple_approved_windows_or_larger_budget: true
+  estimated_minimum_24h_windows_at_800k_steps_per_window: 5
 step_allocation:
-  - stage: V11-P4-A-v1-import-and-sonar-anchor
-    optimizer_steps: 10000
-    purpose: verify V1-compatible sonar/RGB/range/geometry/context imports and keep sonar as initial anchor
+  - stage: V11-P4-A-v1-import-and-anchor
+    optimizer_steps: 50000
+    purpose: verify V1-compatible RGB/sonar/range/geometry/context imports, load selected sonar rank-fix checkpoint, and establish non-contamination boundary
     trainable_scope: adapters_router_small_heads_only
     required_inputs:
-      - final_or_selected_sonar_rankfix_checkpoint
+      - selected_sonar_rankfix_checkpoint
       - v1_compatibility_bank
     gates:
       min_effective_rank: 75.0
       checkpoint_reload_exact_match: true
-  - stage: V11-P4-B-family-local-calibration
-    optimizer_steps: 150000
-    purpose: calibrate all 15 reusable encoder families without claiming every registered modality is pretrained
+      p4_v1_line_untouched: true
+  - stage: V11-P4-B-core-family-pretraining
+    optimizer_steps: 900000
+    purpose: train all 15 reusable encoder families to non-collapsed routeable representations with family-specific tokenizers
     trainable_scope: family_tokenizers_family_encoders_adapters
-    per_family_steps: 10000
+    per_family_nominal_steps: 60000
     family_count: 15
     gates:
       every_family_rank_ge: 75.0
       every_family_routeable: true
-  - stage: V11-P4-C-universal-mixed-modality-pretraining
-    optimizer_steps: 300000
-    purpose: train universal adapters, family fusion, dynamic routing, and global scene fusion on mixed synthetic/public-real manifests
+      every_family_checkpoint_reload_verified: true
+  - stage: V11-P4-C-active-and-high-priority-modality-curriculum
+    optimizer_steps: 700000
+    purpose: semantic training for active/high-priority modalities with available or obtainable data; rare modalities remain registered until data exists
+    trainable_scope: modality_adapters_family_heads_data_specific_normalizers
+    coverage_policy: active_or_data_backed_modalities_only
+    gates:
+      active_modality_batches_rank_ge: 75.0
+      registered_but_inactive_list_generated: true
+      no_claim_that_all_829_modalities_are_semantically_pretrained_without_data: true
+  - stage: V11-P4-D-universal-mixed-modality-pretraining
+    optimizer_steps: 800000
+    purpose: train universal adapters, family fusion, sparse routing, global Perceiver fusion, and mixed-modality dropout behavior
     trainable_scope: universal_adapters_family_fusion_router_global_fusion
     gates:
       all_available_registry_batches_rank_ge: 75.0
-      missing_degraded_unsupported_states_pass: true
-      correspondence_graph_objectives_physically_eligible_only: true
-  - stage: V11-P4-D-async-temporal-evidence-cotraining
-    optimizer_steps: 150000
-    purpose: train async timestamp alignment, temporal memory integration, evidence bypass, and sample/lab-result path behavior
+      missing_degraded_unsupported_failed_states_pass: true
+      invalid_uncalibrated_saturated_stale_states_pass: true
+  - stage: V11-P4-E-async-temporal-evidence-and-lab-cotraining
+    optimizer_steps: 450000
+    purpose: train async alignment, temporal memory integration, exact-evidence bypass, and sample/lab-result path behavior
     trainable_scope: aligner_temporal_memory_evidence_heads_router
     gates:
-      stale_invalid_uncalibrated_saturated_states_pass: true
+      timestamp_skew_tests_pass: true
       exact_evidence_path_numerically_preserved: true
       sample_lab_result_path_preserved: true
-  - stage: V11-P4-E-router-fusion-joint-alignment
-    optimizer_steps: 150000
-    purpose: stabilize sparse routing, family/local fusion, global fusion, and cross-modal eligibility objectives
-    trainable_scope: router_family_fusion_global_fusion_alignment_heads
+      learned_path_does_not_override_typed_measurements: true
+  - stage: V11-P4-F-cross-family-correspondence-alignment
+    optimizer_steps: 400000
+    purpose: train only physically meaningful cross-family/self-supervised relations through the correspondence graph
+    trainable_scope: correspondence_heads_router_family_fusion_global_fusion
+    gates:
+      invalid_relations_skipped_by_correspondence_graph: true
+      positive_relations_have_measurable_alignment_signal: true
+      rank_ge: 75.0
+  - stage: V11-P4-G-joint-stabilization-and-ablation
+    optimizer_steps: 250000
+    purpose: stabilize full V1.1 joint behavior, missing-modality robustness, family balance, and router contribution
+    trainable_scope: full_v11_universal_trainable_set_except_frozen_imported_v1_if_configured
     gates:
       all_15_families_contribute_when_available: true
-      invalid_relations_skipped_by_correspondence_graph: true
-      rank_ge: 75.0
-  - stage: V11-P4-F-stabilization-selection
-    optimizer_steps: 40000
-    purpose: final validation-rank selection, checkpoint reload validation, ablation checks, and promotion package
-    trainable_scope: full_v11_universal_trainable_set_except_frozen_imported_v1_if_configured
+      missing_modality_ablation_pass: true
+      degraded_state_ablation_pass: true
+      router_no_single_family_collapse: true
+  - stage: V11-P4-H-final-selection-package
+    optimizer_steps: 50000
+    purpose: final validation-rank selection, checkpoint reload validation, report generation, cost reconciliation, and promotion package
+    trainable_scope: final_selection_no_new_data_split_access
     gates:
       selected_checkpoint_rank_ge: 75.0
       final_step_rank_ge: 75.0
       checkpoint_reload_exact_match: true
+      full_registry_interface_report_complete: true
+      registered_but_inactive_report_complete: true
       no_formal_v1_branch_changes: true
 promotion:
-  produces: OSFM-UNIVERSAL-V1.1-P4-CANDIDATE
+  produces: OSFM-UNIVERSAL-V1.1-P4-FULL-CANDIDATE
   not_yet_p4_12_final: true
   requires:
-    - completed_800000_steps_or_governed_revised_plan
-    - full_registry_rank_report
+    - completed_3600000_steps_or_governed_revised_full_plan
+    - full_registry_interface_coverage_report
+    - active_modality_semantic_training_report
+    - registered_but_inactive_modality_report
     - all_family_rank_report
     - checkpoint_reload_report
     - exact_evidence_path_report
     - sample_lab_result_path_report
-    - missing_degraded_unsupported_state_report
+    - modality_state_report
     - async_timing_report
     - correspondence_graph_report
     - cost_report
     - p4_v1_noncontamination_report
 do_not_start_if:
   - 8_l4_benchmark_missing
-  - measured_projection_over_24h
-  - measured_projection_over_8500_try
+  - measured_phase_projection_missing
+  - current_phase_projection_over_approved_budget
+  - current_phase_projection_over_approved_time_window
   - rank_below_75
   - registry_coverage_incomplete
   - p4_v1_line_dirty_or_modified_by_v11_run
   - exact_evidence_path_not_verified
   - sample_lab_path_not_verified
   - checkpoint_reload_not_verified
+  - data_manifest_missing_for_claimed_active_modality
 notes:
-  - Step allocation is a governed V1.1 P4 plan, not completed training evidence.
-  - The 800k step cap is conservative and may only be reduced after measured 8-L4 throughput and rank evidence.
-  - Registered-but-inactive modalities stay registered; benchmark coverage proves interface/routing coverage, not semantic pretraining for every rare sensor.
+  - This is the full V1.1 plan. It intentionally exceeds old V1's 750k steps because V1.1 covers 15 families, routing, async alignment, exact evidence, lab/sample paths, and a large registry.
+  - The 829 registry entries are all covered at the interface/routing level; semantic pretraining is claimed only for modalities with actual data/manifests/evidence.
+  - The 8-L4 8500 TRY window can validate throughput or run an initial candidate phase, but it is not enough to certify full V1.1 unless measured evidence proves otherwise across all phases.

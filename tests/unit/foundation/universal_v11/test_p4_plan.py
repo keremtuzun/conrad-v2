@@ -16,13 +16,17 @@ def test_v11_p4_plan_has_exact_step_total_and_budget_gates() -> None:
     plan = _load(PLAN)
     total = sum(int(stage["optimizer_steps"]) for stage in plan["step_allocation"])
 
-    assert total == plan["training_budget"]["total_optimizer_steps"] == 800000
-    assert plan["compute_target"]["gpu_count"] == 8
+    assert total == plan["training_budget"]["total_optimizer_steps"] == 3_600_000
+    assert plan["summary"]["budget_capped_candidate_steps"] == 800000
+    assert plan["summary"]["full_v11_steps"] == 3_600_000
+    assert plan["phase_budget_policy"]["do_not_compress_full_plan_to_fit_one_window"] is True
+    assert plan["compute_target"]["gpu_count_minimum"] == 8
     assert plan["compute_target"]["accelerator"] == "NVIDIA_L4"
-    assert plan["compute_target"]["max_wall_clock_hours"] == 24.0
-    assert plan["compute_target"]["max_total_cost_try"] == 8500.0
+    assert plan["phase_budget_policy"]["launch_window_hours"] == 24.0
+    assert plan["phase_budget_policy"]["user_budget_cap_try_per_launch_window"] == 8500.0
     assert plan["source_constraints"]["min_effective_rank"] == 75.0
     assert plan["source_constraints"]["registered_modality_count"] == 829
+    assert len(plan["families"]) == 15
     assert plan["formal_training_allowed"] is False
     assert plan["full_run_allowed"] is False
 
@@ -32,15 +36,37 @@ def test_v11_p4_plan_requires_parallel_benchmark_before_training() -> None:
     blockers = set(plan["do_not_start_if"])
     required = {
         "8_l4_benchmark_missing",
-        "measured_projection_over_24h",
-        "measured_projection_over_8500_try",
+        "measured_phase_projection_missing",
+        "current_phase_projection_over_approved_budget",
+        "current_phase_projection_over_approved_time_window",
         "rank_below_75",
         "registry_coverage_incomplete",
         "p4_v1_line_dirty_or_modified_by_v11_run",
+        "data_manifest_missing_for_claimed_active_modality",
     }
 
     assert required <= blockers
     assert any("V1.1-P4-8L4-PARALLEL-BENCHMARK" in item for item in plan["may_start_after"])
+
+
+def test_v11_p4_full_plan_does_not_claim_all_registry_items_are_semantically_trained() -> None:
+    plan = _load(PLAN)
+    stages = {stage["stage"]: stage for stage in plan["step_allocation"]}
+
+    assert (
+        plan["source_constraints"]["registered_modality_coverage_semantics"]
+        == "registry_interface_coverage_is_not_semantic_pretraining"
+    )
+    assert (
+        stages["V11-P4-C-active-and-high-priority-modality-curriculum"]["coverage_policy"]
+        == "active_or_data_backed_modalities_only"
+    )
+    assert (
+        stages["V11-P4-C-active-and-high-priority-modality-curriculum"]["gates"][
+            "no_claim_that_all_829_modalities_are_semantically_pretrained_without_data"
+        ]
+        is True
+    )
 
 
 def test_v11_p4_parallel_benchmark_is_bounded_and_fail_closed() -> None:
