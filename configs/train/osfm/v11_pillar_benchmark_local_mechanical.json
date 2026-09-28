@@ -1,10 +1,11 @@
 {
-  "batch_size": 96,
-  "input_dim": 8,
-  "rank_floor": 8.0,
-  "rank_target": 8.0,
+  "batch_size": 128,
+  "input_dim": 192,
+  "rank_floor": 75.0,
+  "rank_target": 75.0,
   "seed": 20260929,
   "fast_probe": true,
+  "registry_scope": "pillars",
   "max_hours": 24.0,
   "max_budget_tl": 9000.0
 }

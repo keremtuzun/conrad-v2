@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Mapping
 
 import torch
@@ -394,6 +394,7 @@ class UniversalOSFMV11(nn.Module):
         self.fusion = SceneFusionTransformer(
             SceneFusionConfig(modalities=tuple(f"{family.value}_family" for family in EncoderFamily))
         )
+        self.global_residual_norm = nn.LayerNorm(D_F)
         self.temporal = TemporalMemoryTransformer()
         self.v1 = V1CompatibilityBank() if include_v1_bank else None
 
@@ -447,6 +448,16 @@ class UniversalOSFMV11(nn.Module):
             if ts.state not in {ModalityState.UNSUPPORTED, ModalityState.FAILED, ModalityState.INVALID}
         )
         fusion = self.fusion(fusion_sets)
+        routed_summary = torch.stack(
+            [
+                (ts.tokens * ts.valid_token_mask.unsqueeze(-1)).sum(dim=1)
+                / ts.valid_token_mask.sum(dim=1).clamp_min(1).unsqueeze(-1)
+                for ts in routed
+                if ts.state not in {ModalityState.UNSUPPORTED, ModalityState.FAILED, ModalityState.INVALID}
+            ],
+            dim=1,
+        ).mean(dim=1)
+        fusion = replace(fusion, global_repr=self.global_residual_norm(fusion.global_repr + routed_summary))
         temporal = None
         if temporal_timestamps_s is not None and temporal_valid_mask is not None:
             temporal = self.temporal(fusion.global_repr.unsqueeze(1), temporal_timestamps_s, temporal_valid_mask)

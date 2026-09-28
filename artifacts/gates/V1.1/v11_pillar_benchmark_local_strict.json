@@ -1,0 +1,137 @@
+{
+  "cloud_budget": {
+    "gpu_count": 8,
+    "gpu_type": "L4",
+    "max_budget_tl": 9000.0,
+    "max_hours": 24.0,
+    "monitoring_policy": "hourly",
+    "terminate_on": [
+      "NO-GO pillar",
+      "non-finite metrics",
+      "rank below floor",
+      "collapse",
+      "runtime projection above budget",
+      "cost projection above budget"
+    ]
+  },
+  "decision": "GO",
+  "family_count": 15,
+  "formal_training_launched": false,
+  "gate_id": "OSFM-V11-PILLAR-BENCH-001",
+  "probes": [
+    {
+      "collapse_score": 1.0000075101852417,
+      "effective_rank": 79.9802474975586,
+      "finite": true,
+      "modalities": [
+        "imaging_sonar"
+      ],
+      "name": "sonar_inherited",
+      "reason": "healthy",
+      "status": "GO"
+    },
+    {
+      "collapse_score": 1.0000077486038208,
+      "effective_rank": 80.00747680664062,
+      "finite": true,
+      "modalities": [
+        "rgb_camera"
+      ],
+      "name": "rgb_path",
+      "reason": "healthy",
+      "status": "GO"
+    },
+    {
+      "collapse_score": 1.0000077486038208,
+      "effective_rank": 81.93355560302734,
+      "finite": true,
+      "modalities": [
+        "structured_light",
+        "tof_optical"
+      ],
+      "name": "range_geometry",
+      "reason": "healthy",
+      "status": "GO"
+    },
+    {
+      "collapse_score": 1.0000076293945312,
+      "effective_rank": 82.13003540039062,
+      "finite": true,
+      "modalities": [
+        "cad",
+        "inspection_history"
+      ],
+      "name": "context_engineering",
+      "reason": "healthy",
+      "status": "GO"
+    },
+    {
+      "collapse_score": 1.0000076293945312,
+      "effective_rank": 83.72055053710938,
+      "finite": true,
+      "modalities": [
+        "paut_scan",
+        "tofd_scan",
+        "tfm_scan"
+      ],
+      "name": "ultrasonic_ndt",
+      "reason": "healthy",
+      "status": "GO"
+    },
+    {
+      "collapse_score": 1.000005841255188,
+      "effective_rank": 87.45548248291016,
+      "finite": true,
+      "modalities": [
+        "ctd_profile",
+        "methane",
+        "ph_probe"
+      ],
+      "name": "chemical_ocean",
+      "reason": "healthy",
+      "status": "GO"
+    },
+    {
+      "collapse_score": 1.0000076293945312,
+      "effective_rank": 82.23587799072266,
+      "finite": true,
+      "modalities": [
+        "edna_sequence",
+        "microbial_filter"
+      ],
+      "name": "biology_sample",
+      "reason": "healthy",
+      "status": "GO"
+    },
+    {
+      "collapse_score": 1.0000077486038208,
+      "effective_rank": 80.40776062011719,
+      "finite": true,
+      "modalities": [
+        "gamma_spectrometer"
+      ],
+      "name": "radiological",
+      "reason": "healthy",
+      "status": "GO"
+    },
+    {
+      "collapse_score": 1.0000052452087402,
+      "effective_rank": 90.71851348876953,
+      "finite": true,
+      "modalities": [
+        "rgb_camera",
+        "imaging_sonar",
+        "paut_scan",
+        "ctd_profile"
+      ],
+      "name": "router_global_temporal",
+      "reason": "healthy",
+      "status": "GO"
+    }
+  ],
+  "rank_floor": 75.0,
+  "rank_target": 75.0,
+  "registry_scope": "pillars",
+  "registry_size": 829,
+  "status": "VALIDATED-RUN"
+}
