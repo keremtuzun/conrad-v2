@@ -132,20 +132,28 @@ def test_v11_p4_parallel_benchmark_is_bounded_and_fail_closed() -> None:
     assert benchmark["required_compute"]["gpu_count"] == 8
     assert benchmark["budget_guard"]["max_wall_clock_hours"] == 24.0
     assert benchmark["budget_guard"]["max_total_cost_try"] == 8500.0
-    assert benchmark["budget_guard"]["preferred_cost_floor_try"] == 7500.0
-    assert benchmark["budget_guard"]["preferred_cost_ceiling_try"] == 8000.0
+    assert benchmark["budget_guard"]["immediate_launch_cost_ceiling_try"] == 8000.0
+    assert benchmark["budget_guard"]["cautious_decision_cost_floor_try"] == 8000.0
+    assert benchmark["budget_guard"]["cautious_decision_cost_ceiling_try"] == 8500.0
     assert benchmark["measured_go_rules"]["min_effective_rank"] == 75.0
     assert benchmark["measured_go_rules"]["projection_must_fit"]["steps"] == "selected_budget_fill_scale"
-    assert benchmark["measured_go_rules"]["projection_steps_options"]["selected_10p"] == 1_200_000
-    assert benchmark["measured_go_rules"]["projection_steps_options"]["scale_2_0x"] == 2_400_000
-    assert benchmark["measured_go_rules"]["projection_must_fit"]["preferred_cost_floor_try"] == 7500.0
-    assert benchmark["measured_go_rules"]["projection_must_fit"]["preferred_cost_ceiling_try"] == 8000.0
+    assert benchmark["measured_go_rules"]["projection_steps_options"] == {
+        "p10": 1_200_000,
+        "p12_5": 1_500_000,
+        "p15": 1_800_000,
+        "p17_5": 2_100_000,
+    }
+    assert benchmark["measured_go_rules"]["projection_must_fit"]["immediate_launch_cost_ceiling_try"] == 8000.0
+    assert benchmark["measured_go_rules"]["projection_must_fit"]["cautious_decision_cost_floor_try"] == 8000.0
+    assert benchmark["measured_go_rules"]["projection_must_fit"]["cautious_decision_cost_ceiling_try"] == 8500.0
     assert benchmark["measured_go_rules"]["projection_must_fit"]["absolute_max_cost_try"] == 8500.0
     assert (
         benchmark["measured_go_rules"]["projection_must_fit"]["selection_rule"]
-        == "choose_largest_scale_with_projected_cost_between_7500_and_8000_try"
+        == "choose_highest_of_10p_12_5p_15p_17_5p_projected_under_8000_try"
     )
-    assert benchmark["measured_go_rules"]["min_steps_per_second_for_24h"]["selected_10p_1_2m"] == 13.8888888889
+    assert benchmark["measured_go_rules"]["projection_must_fit"]["no_go_rule"] == "decline_any_scale_projected_over_8500_try"
+    assert benchmark["measured_go_rules"]["min_steps_per_second_for_24h"]["p10_1_2m"] == 13.8888888889
+    assert benchmark["measured_go_rules"]["min_steps_per_second_for_24h"]["p17_5_2_1m"] == 24.3055555556
     assert {"rank_below_75", "projected_runtime_over_24h", "projected_cost_over_8500_try"} <= fail_closed
 
 
@@ -158,9 +166,15 @@ def test_v11_10p_3am_launch_protocol_is_exact_and_fail_closed() -> None:
     assert protocol["benchmark_config"] == "configs/train/osfm/v11_p4_8l4_parallel_benchmark.yaml"
     assert protocol["hard_limits"]["selected_candidate_steps"] == 1_200_000
     assert protocol["hard_limits"]["base_10p_steps"] == 1_200_000
-    assert protocol["hard_limits"]["preferred_cost_floor_try"] == 7500.0
-    assert protocol["hard_limits"]["preferred_cost_ceiling_try"] == 8000.0
-    assert protocol["hard_limits"]["budget_fill_scale_options"]["2.0x"] == 2_400_000
+    assert protocol["hard_limits"]["immediate_launch_cost_ceiling_try"] == 8000.0
+    assert protocol["hard_limits"]["cautious_decision_cost_floor_try"] == 8000.0
+    assert protocol["hard_limits"]["cautious_decision_cost_ceiling_try"] == 8500.0
+    assert protocol["hard_limits"]["budget_fill_scale_options"] == {
+        "10P": 1_200_000,
+        "12.5P": 1_500_000,
+        "15P": 1_800_000,
+        "17.5P": 2_100_000,
+    }
     assert protocol["hard_limits"]["required_gpu_count"] == 8
     assert protocol["hard_limits"]["max_wall_clock_hours"] == 24.0
     assert protocol["hard_limits"]["max_total_cost_try"] == 8500.0
@@ -168,9 +182,12 @@ def test_v11_10p_3am_launch_protocol_is_exact_and_fail_closed() -> None:
     assert protocol["hard_limits"]["required_selected_steps_per_second_for_24h"] == 13.8888888889
     assert protocol["budget_fill_scaling_policy"]["enabled"] is True
     assert protocol["budget_fill_scaling_policy"]["base_steps"] == 1_200_000
-    assert protocol["budget_fill_scaling_policy"]["cost_floor_try"] == 7500.0
-    assert protocol["budget_fill_scaling_policy"]["cost_ceiling_try"] == 8000.0
-    assert protocol["budget_fill_scaling_policy"]["do_not_select_any_scale_projected_over_8000_try"] is True
+    assert protocol["budget_fill_scaling_policy"]["scale_order"] == ["10P", "12.5P", "15P", "17.5P"]
+    assert protocol["budget_fill_scaling_policy"]["immediate_launch_cost_ceiling_try"] == 8000.0
+    assert protocol["budget_fill_scaling_policy"]["cautious_decision_cost_floor_try"] == 8000.0
+    assert protocol["budget_fill_scaling_policy"]["cautious_decision_cost_ceiling_try"] == 8500.0
+    assert protocol["budget_fill_scaling_policy"]["decline_rule"] == "decline_any_scale_projected_over_8500_try"
+    assert protocol["budget_fill_scaling_policy"]["do_not_consider_scales_outside_10p_to_17_5p"] is True
     assert sequence_ids == [
         "local-preflight",
         "cloud-price-and-quota-preflight",
@@ -180,7 +197,7 @@ def test_v11_10p_3am_launch_protocol_is_exact_and_fail_closed() -> None:
         "launch-budget-fill-candidate",
     ]
     assert "selected_scale_hours_lte_24" in projection["must_pass"]
-    assert "projected_selected_scale_cost_between_7500_and_8000_try_or_declared_underfill_under_8000" in projection["must_pass"]
+    assert "projected_selected_scale_cost_lt_8000_immediate_or_8000_to_8500_cautious_go_or_gt_8500_decline" in projection["must_pass"]
     assert "measured_steps_per_second_gte_13_8888888889" in projection["must_pass"]
     assert "live_hourly_cost_try_lte_max_live_hourly_cost_try" in projection["must_pass"]
     assert "projected_total_cost_try_gt_8500" in protocol["monitoring_policy"]["terminate_immediately_on"]

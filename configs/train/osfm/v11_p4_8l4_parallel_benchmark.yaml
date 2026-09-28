@@ -22,8 +22,9 @@ budget_guard:
   currency: TRY
   max_wall_clock_hours: 24.0
   max_total_cost_try: 8500.0
-  preferred_cost_floor_try: 7500.0
-  preferred_cost_ceiling_try: 8000.0
+  immediate_launch_cost_ceiling_try: 8000.0
+  cautious_decision_cost_floor_try: 8000.0
+  cautious_decision_cost_ceiling_try: 8500.0
   usd_try_reference_policy: live_provider_or_market_rate_at_launch_time
   max_allowed_usd_per_hour_formula: max_total_cost_try / usd_try_rate / max_wall_clock_hours
   terminate_if_projected_over_budget: true
@@ -51,33 +52,25 @@ measured_go_rules:
   required_gpu_utilization_mean_min: 0.70
   required_successful_steps: 1000
   projection_steps_options:
-    lower_10p: 700000
-    selected_10p: 1200000
-    upper_10p: 1600000
-    scale_1_0x_original_10p: 1200000
-    scale_1_25x: 1500000
-    scale_1_5x: 1800000
-    scale_1_75x: 2100000
-    scale_2_0x: 2400000
-    scale_2_5x: 3000000
-    scale_3_0x: 3600000
+    p10: 1200000
+    p12_5: 1500000
+    p15: 1800000
+    p17_5: 2100000
   projection_must_fit:
     steps: selected_budget_fill_scale
     max_hours: 24.0
-    preferred_cost_floor_try: 7500.0
-    preferred_cost_ceiling_try: 8000.0
+    immediate_launch_cost_ceiling_try: 8000.0
+    cautious_decision_cost_floor_try: 8000.0
+    cautious_decision_cost_ceiling_try: 8500.0
     absolute_max_cost_try: 8500.0
-    selection_rule: choose_largest_scale_with_projected_cost_between_7500_and_8000_try
-    fallback_rule: if_no_scale_reaches_7500_try_choose_largest_scale_under_8000_try_and_report_underfill
-    no_go_rule: if_smallest_scale_exceeds_8000_try_do_not_launch
+    selection_rule: choose_highest_of_10p_12_5p_15p_17_5p_projected_under_8000_try
+    cautious_rule: if_highest_available_projection_is_8000_to_8500_try_codex_decides_with_rank_speed_stability_and_cost_margin
+    no_go_rule: decline_any_scale_projected_over_8500_try
   min_steps_per_second_for_24h:
-    lower_10p_700k: 8.1018518519
-    selected_10p_1_2m: 13.8888888889
-    upper_10p_1_6m: 18.5185185185
-    scale_1_5x_1_8m: 20.8333333333
-    scale_2_0x_2_4m: 27.7777777778
-    scale_2_5x_3_0m: 34.7222222222
-    scale_3_0x_3_6m: 41.6666666667
+    p10_1_2m: 13.8888888889
+    p12_5_1_5m: 17.3611111111
+    p15_1_8m: 20.8333333333
+    p17_5_2_1m: 24.3055555556
 fail_closed_on:
   - less_than_8_l4_allocated
   - rank_below_75
