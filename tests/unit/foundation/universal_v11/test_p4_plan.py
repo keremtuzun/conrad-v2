@@ -6,7 +6,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[4]
 PLAN = ROOT / "configs" / "train" / "osfm" / "v11_p4_formal_training_plan.yaml"
 BENCHMARK = ROOT / "configs" / "train" / "osfm" / "v11_p4_8l4_parallel_benchmark.yaml"
-TWENTY_P = ROOT / "configs" / "train" / "osfm" / "v11_p4_20p_candidate.yaml"
+TEN_P = ROOT / "configs" / "train" / "osfm" / "v11_p4_10p_829_semantic_candidate.yaml"
 
 
 def _load(path: Path) -> dict:
@@ -19,7 +19,8 @@ def test_v11_p4_plan_has_exact_step_total_and_budget_gates() -> None:
 
     assert total == plan["training_budget"]["total_optimizer_steps"] == 3_600_000
     assert plan["summary"]["budget_capped_candidate_steps"] == 800000
-    assert plan["summary"]["optimal_20p_candidate_steps"] == 720000
+    assert plan["summary"]["old_20p_candidate_replaced"] is True
+    assert plan["summary"]["optimal_10p_829_semantic_candidate_steps"] == 1_200_000
     assert plan["summary"]["full_v11_steps"] == 3_600_000
     assert plan["phase_budget_policy"]["do_not_compress_full_plan_to_fit_one_window"] is True
     assert plan["compute_target"]["gpu_count_minimum"] == 8
@@ -71,32 +72,41 @@ def test_v11_p4_full_plan_does_not_claim_all_registry_items_are_semantically_tra
     )
 
 
-def test_v11_20p_candidate_is_weighted_720k_not_full_v11() -> None:
-    plan = _load(TWENTY_P)
+def test_v11_10p_829_semantic_candidate_replaces_20p_and_is_in_range() -> None:
+    plan = _load(TEN_P)
     total = sum(int(stage["optimizer_steps"]) for stage in plan["step_allocation"])
 
-    assert plan["plan_id"] == "OSFM-UNIVERSAL-V1.1-20P"
-    assert total == plan["training_budget"]["total_optimizer_steps"] == 720000
-    assert plan["source_constraints"]["full_v11_steps"] == 3_600_000
-    assert plan["source_constraints"]["twenty_percent_steps"] == 720000
-    assert plan["source_constraints"]["compression_policy"] == "weighted_curriculum_not_flat_twenty_percent"
+    assert plan["plan_id"] == "OSFM-UNIVERSAL-V1.1-10P-829-SEMANTIC"
+    assert plan["replaces"] == "configs/train/osfm/v11_p4_20p_candidate.yaml"
+    assert total == plan["training_budget"]["total_optimizer_steps"] == 1_200_000
+    assert plan["source_constraints"]["candidate_steps_min"] == 700000
+    assert plan["source_constraints"]["candidate_steps_selected"] == 1_200_000
+    assert plan["source_constraints"]["candidate_steps_max"] == 1_600_000
+    assert plan["parent_full_semantic_plan"]["min_optimizer_steps"] == 7_000_000
+    assert plan["parent_full_semantic_plan"]["max_optimizer_steps"] == 16_000_000
+    assert plan["source_constraints"]["compression_policy"] == "weighted_semantic_curriculum_not_flat_registry_fraction"
     assert plan["promotion"]["may_be_called_full_v11"] is False
+    assert plan["promotion"]["may_be_called_full_829_semantic_v11"] is False
     assert plan["promotion"]["may_be_used_as_v11_candidate_checkpoint"] is True
     assert len(plan["family_priority"]["high"]) == 7
     assert len(plan["family_priority"]["medium"]) == 4
     assert len(plan["family_priority"]["light"]) == 4
 
 
-def test_v11_20p_candidate_protects_evidence_and_registry_boundaries() -> None:
-    plan = _load(TWENTY_P)
+def test_v11_10p_829_semantic_candidate_protects_evidence_and_semantic_claims() -> None:
+    plan = _load(TEN_P)
     blockers = set(plan["do_not_start_if"])
     stages = {stage["stage"]: stage for stage in plan["step_allocation"]}
 
     assert plan["source_constraints"]["learned_representations_may_not_replace_exact_evidence"] is True
     assert plan["source_constraints"]["registry_interface_coverage_not_semantic_pretraining"] is True
-    assert stages["V11-20P-C-active-modality-curriculum"]["coverage_policy"] == "active_or_data_backed_modalities_only"
+    assert plan["source_constraints"]["semantic_training_claim_requires_data_manifest"] is True
     assert (
-        stages["V11-20P-C-active-modality-curriculum"]["gates"][
+        stages["V11-10P-C-active-modality-semantic-curriculum"]["coverage_policy"]
+        == "data_backed_modalities_only_for_semantic_claims"
+    )
+    assert (
+        stages["V11-10P-C-active-modality-semantic-curriculum"]["gates"][
             "no_claim_that_all_829_modalities_are_semantically_pretrained_without_data"
         ]
         is True
@@ -107,6 +117,7 @@ def test_v11_20p_candidate_protects_evidence_and_registry_boundaries() -> None:
         "measured_projection_over_8500_try",
         "rank_below_75",
         "p4_v1_line_dirty_or_modified_by_v11_run",
+        "semantic_data_manifest_missing_for_claimed_modality",
     } <= blockers
 
 

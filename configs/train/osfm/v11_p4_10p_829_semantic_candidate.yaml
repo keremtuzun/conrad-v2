@@ -1,0 +1,197 @@
+plan_id: OSFM-UNIVERSAL-V1.1-10P-829-SEMANTIC
+stage_id: V1.1-P4-10P-829-SEMANTIC-CANDIDATE
+status: PLANNED_FAIL_CLOSED_10P_829_SEMANTIC
+formal_training_allowed: false
+full_v11_claim_allowed: false
+purpose: optimal_10_percent_candidate_for_the_full_829_modality_semantic_plan
+replaces: configs/train/osfm/v11_p4_20p_candidate.yaml
+parent_full_semantic_plan:
+  status: planned_reference_range
+  min_optimizer_steps: 7000000
+  max_optimizer_steps: 16000000
+  note: full 829-modality semantic training is data-limited; these steps only make sense for modalities with usable data/manifests.
+source_constraints:
+  architecture: OceanSense OS-FM Universal V1.1
+  candidate_steps_min: 700000
+  candidate_steps_selected: 1200000
+  candidate_steps_max: 1600000
+  ten_percent_of_full_semantic_range: 700k_to_1_6m
+  selected_position_in_range: balanced_10p_candidate
+  compression_policy: weighted_semantic_curriculum_not_flat_registry_fraction
+  d_f: 384
+  scene_latents: 64
+  encoder_family_count: 15
+  registered_modality_count: 829
+  min_effective_rank: 75.0
+  exact_evidence_parallel_path_required: true
+  learned_representations_may_not_replace_exact_evidence: true
+  registry_interface_coverage_not_semantic_pretraining: true
+  semantic_training_claim_requires_data_manifest: true
+  p4_v1_line_contamination: forbidden
+compute_target:
+  accelerator: NVIDIA_L4
+  gpu_count_minimum: 8
+  preferred_machine_type: g2-standard-96
+  distributed_backend: torchrun_ddp
+  launch_window_hours: 24.0
+  launch_window_cost_cap_try: 8500.0
+  launch_policy: start_only_if_8l4_benchmark_projects_selected_10p_steps_under_time_and_budget
+training_budget:
+  total_optimizer_steps: 1200000
+  effective_batch_target: 256
+  validation_every_steps: 1000
+  checkpoint_every_steps: 5000
+  selection_metric: validation_effective_rank_then_val_ssl_total
+  select_best_validation_rank_checkpoint: true
+  fail_closed_on_rank_regression: true
+  rank_floor: 75.0
+optimization_strategy:
+  protect_imported_v1_and_selected_sonar_anchor: true
+  prioritize_semantic_data_coverage_over_registry_count: true
+  prioritize_shared_modules: true
+  prioritize_families_with_real_data_and_downstream_value: true
+  keep_no_data_modalities_registered_but_inactive: true
+  curriculum_order:
+    - anchor_import_and_sonar_health
+    - high_data_family_semantics
+    - active_modality_semantic_curriculum
+    - long_tail_adapter_warm_start
+    - mixed_modality_routing_and_fusion
+    - async_evidence_lab_paths
+    - correspondence_alignment
+    - stabilization_selection
+family_priority:
+  high:
+    - active_acoustic
+    - visual_image
+    - geometry_spatial
+    - physical_oceanographic_time_series
+    - chemical_electrochemical_spectral
+    - ultrasonic_ndt
+    - mechanical_structural_time_series
+  medium:
+    - spectral_photonic
+    - electromagnetic_magnetic
+    - passive_acoustic_vibration
+    - engineering_document_context
+  light:
+    - biological_molecular
+    - microscopic_particle
+    - geophysical_seismic
+    - radiological
+semantic_coverage_policy:
+  data_backed_modalities: train_semantically
+  no_data_or_unlicensed_modalities: registered_interface_only
+  rare_modalities_with_synthetic_only_data: adapter_warm_start_no_semantic_mastery_claim
+  reporting_required:
+    - trained_semantic_modality_list
+    - adapter_warm_started_modality_list
+    - registered_but_inactive_modality_list
+    - data_missing_modality_list
+step_allocation:
+  - stage: V11-10P-A-anchor-import-and-rank-health
+    optimizer_steps: 20000
+    purpose: load/verify V1-compatible paths and selected sonar rank-fix anchor without contaminating P4 V1
+    trainable_scope: adapters_router_small_heads_only
+    gates:
+      min_effective_rank: 75.0
+      checkpoint_reload_exact_match: true
+      p4_v1_line_untouched: true
+  - stage: V11-10P-B-high-data-family-semantic-pretraining
+    optimizer_steps: 260000
+    purpose: prioritize semantic learning for high-value/data-backed families while keeping all 15 families routeable
+    trainable_scope: family_tokenizers_family_encoders_adapters
+    gates:
+      all_15_families_routeable: true
+      every_family_rank_ge: 75.0
+      high_priority_family_semantic_metrics_present: true
+      no_family_nan_or_collapse: true
+  - stage: V11-10P-C-active-modality-semantic-curriculum
+    optimizer_steps: 260000
+    purpose: train data-backed active modalities and high-priority sensor classes; do not claim semantics for no-data registry entries
+    trainable_scope: modality_adapters_family_heads_data_specific_normalizers
+    coverage_policy: data_backed_modalities_only_for_semantic_claims
+    gates:
+      active_modality_batches_rank_ge: 75.0
+      semantic_modality_manifest_present: true
+      registered_but_inactive_list_generated: true
+      no_claim_that_all_829_modalities_are_semantically_pretrained_without_data: true
+  - stage: V11-10P-D-long-tail-adapter-warm-start
+    optimizer_steps: 140000
+    purpose: warm-start adapters/tokenizers for long-tail registry modalities without overstating semantic mastery
+    trainable_scope: long_tail_adapters_tokenizers_metadata_embeddings
+    gates:
+      registry_interface_coverage_complete: true
+      adapter_warm_start_report_complete: true
+      no_data_modalities_marked_registered_inactive: true
+  - stage: V11-10P-E-shared-routing-fusion-and-dropout
+    optimizer_steps: 220000
+    purpose: train shared router, family fusion, global Perceiver fusion, mixed-modality dropout, and missing/degraded behavior
+    trainable_scope: universal_adapters_family_fusion_router_global_fusion
+    gates:
+      router_no_single_family_collapse: true
+      all_available_registry_batches_rank_ge: 75.0
+      missing_degraded_unsupported_failed_states_pass: true
+  - stage: V11-10P-F-async-evidence-lab-and-state-paths
+    optimizer_steps: 120000
+    purpose: preserve async alignment, exact-evidence bypass, sample/lab-result path, and all modality-state behavior
+    trainable_scope: aligner_temporal_memory_evidence_heads_router
+    gates:
+      timestamp_skew_tests_pass: true
+      exact_evidence_path_numerically_preserved: true
+      sample_lab_result_path_preserved: true
+      learned_path_does_not_override_typed_measurements: true
+      stale_invalid_uncalibrated_saturated_states_pass: true
+  - stage: V11-10P-G-correspondence-alignment
+    optimizer_steps: 110000
+    purpose: train physically meaningful cross-family/self-supervised alignments only where the correspondence graph permits them
+    trainable_scope: correspondence_heads_router_family_fusion_global_fusion
+    gates:
+      invalid_relations_skipped_by_correspondence_graph: true
+      positive_relations_have_measurable_alignment_signal: true
+      rank_ge: 75.0
+  - stage: V11-10P-H-stabilization-selection-and-package
+    optimizer_steps: 70000
+    purpose: stabilize candidate behavior, router balance, family contribution, checkpoint reload, reports, and promotion package
+    trainable_scope: final_candidate_selection_no_new_data_split_access
+    gates:
+      all_15_families_contribute_when_available: true
+      missing_modality_ablation_pass: true
+      degraded_state_ablation_pass: true
+      selected_checkpoint_rank_ge: 75.0
+      final_step_rank_ge: 75.0
+      checkpoint_reload_exact_match: true
+promotion:
+  produces: OSFM-UNIVERSAL-V1.1-10P-829-SEMANTIC-CANDIDATE
+  may_be_used_as_v11_candidate_checkpoint: true
+  may_be_called_full_v11: false
+  may_be_called_full_829_semantic_v11: false
+  requires:
+    - completed_1200000_steps_or_governed_revised_10p_829_semantic_plan
+    - selected_checkpoint_rank_ge_75
+    - trained_semantic_modality_list
+    - adapter_warm_started_modality_list
+    - registered_but_inactive_modality_list
+    - full_registry_interface_coverage_report
+    - exact_evidence_path_report
+    - sample_lab_result_path_report
+    - modality_state_report
+    - async_timing_report
+    - correspondence_graph_report
+    - cost_report
+    - p4_v1_noncontamination_report
+do_not_start_if:
+  - 8_l4_benchmark_missing
+  - measured_projection_over_24h
+  - measured_projection_over_8500_try
+  - rank_below_75
+  - registry_coverage_incomplete
+  - p4_v1_line_dirty_or_modified_by_v11_run
+  - exact_evidence_path_not_verified
+  - sample_lab_path_not_verified
+  - checkpoint_reload_not_verified
+  - semantic_data_manifest_missing_for_claimed_modality
+notes:
+  - 10P replaces the old 20P candidate. It is based on the realistic 7M-16M full 829-modality semantic plan, so the valid 10P range is 700k-1.6M steps.
+  - The selected 10P target is 1.2M steps: stronger than the old 720k candidate, still below the full semantic plan, and explicitly budget-gated.
+  - This candidate optimizes semantic coverage where data exists; modalities without usable data remain registered/interface-covered, not semantically trained.

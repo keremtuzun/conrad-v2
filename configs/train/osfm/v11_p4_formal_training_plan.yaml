@@ -6,10 +6,12 @@ full_run_allowed: false
 summary:
   intent: full_semantic_v11_pretraining_plan_not_a_budget_capped_candidate
   budget_capped_candidate_steps: 800000
-  optimal_20p_candidate_steps: 720000
-  optimal_20p_candidate_config: configs/train/osfm/v11_p4_20p_candidate.yaml
+  old_20p_candidate_replaced: true
+  optimal_10p_829_semantic_candidate_steps: 1200000
+  optimal_10p_829_semantic_candidate_range: 700k_to_1_6m
+  optimal_10p_829_semantic_candidate_config: configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml
   full_v11_steps: 3600000
-  distinction: 20P may produce an optimized budget-realistic V1.1 candidate only; full V1.1 requires the 3.6M-step staged plan below.
+  distinction: 10P may produce an optimized budget-realistic 829-semantic candidate only; full V1.1 requires the 3.6M foundation plan and full 829-semantic training is a larger 7M-16M data-dependent plan.
 may_start_after:
   - V1.1-P4-8L4-PARALLEL-BENCHMARK: GO
   - full_plan_cloud_budget_approved: true
