@@ -1,0 +1,126 @@
+protocol_id: OSFM-UNIVERSAL-V1.1-10P-3AM-LAUNCH-PROTOCOL
+status: PLANNED_FAIL_CLOSED
+purpose: exact_pre_benchmark_and_launch_sequence_for_v11_10p_829_semantic_candidate
+candidate_config: configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml
+benchmark_config: configs/train/osfm/v11_p4_8l4_parallel_benchmark.yaml
+target_branch: osfm-universal-v1.1
+local_time_window:
+  earliest_start_local: "03:00"
+  timezone: Europe/Istanbul
+  reason: user quota/capacity reset window
+hard_limits:
+  max_wall_clock_hours: 24.0
+  max_total_cost_try: 8500.0
+  required_gpu_type: NVIDIA_L4
+  required_gpu_count: 8
+  required_rank_floor: 75.0
+  required_successful_benchmark_steps: 1000
+  selected_candidate_steps: 1200000
+  lower_report_steps: 700000
+  upper_report_steps: 1600000
+  required_selected_steps_per_second_for_24h: 13.8888888889
+  required_upper_steps_per_second_for_24h: 18.5185185185
+  max_live_hourly_cost_try: 354.1666667
+exact_sequence:
+  - id: local-preflight
+    action: verify_local_branch_configs_and_tests
+    must_pass:
+      - git_branch_is_osfm-universal-v1.1
+      - v11_unit_tests_pass
+      - v11_registry_benchmark_local_strict_go
+      - v11_10p_config_total_steps_eq_1200000
+      - no_source_file_changes_outside_v11_plan_scope
+    output: artifacts/gates/V1.1/10P_3AM/local_preflight.json
+  - id: cloud-price-and-quota-preflight
+    action: verify_live_gcloud_quota_capacity_and_price
+    must_pass:
+      - quota_allows_8_l4
+      - region_or_zone_has_8_l4_capacity
+      - live_or_configured_usd_try_rate_recorded
+      - live_hourly_cost_try_recorded
+      - projected_24h_cost_try_lte_8500
+    output: artifacts/gates/V1.1/10P_3AM/cloud_price_quota_preflight.json
+  - id: create-or-start-8l4-vm
+    action: start_preemptible_or_price_compliant_8_l4_worker
+    preferred_machine_type: g2-standard-96
+    must_pass:
+      - exactly_8_l4_visible_in_nvidia_smi
+      - torch_cuda_device_count_eq_8
+      - repository_checked_out_to_target_branch
+      - no_formal_training_started
+    output: artifacts/gates/V1.1/10P_3AM/vm_start_evidence.json
+  - id: bounded-8l4-benchmark
+    action: run_1000_step_ddp_benchmark
+    config: configs/train/osfm/v11_p4_8l4_parallel_benchmark.yaml
+    must_pass:
+      - successful_steps_eq_1000
+      - mean_gpu_utilization_gte_0_70
+      - effective_rank_gte_75
+      - all_15_families_routeable
+      - registry_coverage_complete
+      - no_nan_no_inf_no_collapse
+      - checkpoint_reload_exact_match
+      - exact_evidence_path_preserved
+      - sample_lab_result_path_preserved
+      - p4_v1_line_untouched
+    output: artifacts/gates/V1.1/10P_3AM/parallel_benchmark_report.json
+  - id: projection-gate
+    action: calculate_projection_from_measured_benchmark
+    formulae:
+      measured_steps_per_second: benchmark_successful_steps / measured_train_seconds_after_warmup
+      selected_10p_hours: 1200000 / measured_steps_per_second / 3600
+      upper_10p_hours: 1600000 / measured_steps_per_second / 3600
+      projected_selected_cost_try: selected_10p_hours * live_hourly_cost_try
+      projected_upper_cost_try: upper_10p_hours * live_hourly_cost_try
+    must_pass:
+      - selected_10p_hours_lte_24
+      - projected_selected_cost_try_lte_8500
+      - live_hourly_cost_try_lte_max_live_hourly_cost_try
+      - measured_steps_per_second_gte_13_8888888889
+    output: artifacts/gates/V1.1/10P_3AM/projection_gate.json
+  - id: launch-10p-candidate
+    action: start_candidate_only_if_projection_gate_passes
+    config: configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml
+    must_pass_before_launch:
+      - local-preflight
+      - cloud-price-and-quota-preflight
+      - create-or-start-8l4-vm
+      - bounded-8l4-benchmark
+      - projection-gate
+    output: artifacts/gates/V1.1/10P_3AM/launch_record.json
+monitoring_policy:
+  cadence: hourly
+  avoid_constant_polling: true
+  check_items:
+    - process_alive
+    - gpu_utilization
+    - current_step
+    - latest_validation_rank
+    - latest_loss_finite
+    - checkpoint_written
+    - projected_remaining_cost_try
+    - projected_total_cost_try
+  terminate_immediately_on:
+    - rank_below_75_after_validation
+    - nan_or_inf
+    - representation_collapse
+    - gpu_count_less_than_8
+    - dataloader_stall
+    - checkpoint_write_failure
+    - projected_total_cost_try_gt_8500
+    - projected_wall_clock_gt_24h
+    - p4_v1_line_modified
+post_run_required_artifacts:
+  - artifacts/gates/V1.1/10P_3AM/final_training_report.json
+  - artifacts/gates/V1.1/10P_3AM/cost_report.json
+  - artifacts/gates/V1.1/10P_3AM/checkpoint_reload_report.json
+  - artifacts/gates/V1.1/10P_3AM/rank_report.json
+  - artifacts/gates/V1.1/10P_3AM/semantic_modality_report.json
+  - artifacts/gates/V1.1/10P_3AM/registered_but_inactive_report.json
+  - artifacts/gates/V1.1/10P_3AM/p4_v1_noncontamination_report.json
+decision_outputs:
+  benchmark_no_go: stop_vm_and_report_exact_failed_gate
+  projection_no_go: stop_vm_and_report_measured_steps_per_second_hours_and_cost
+  launch_go: start_10p_candidate_and_monitor_hourly
+  run_failure: terminate_vm_preserve_logs_and_report
+  run_success: preserve_checkpoint_reports_and_stop_vm

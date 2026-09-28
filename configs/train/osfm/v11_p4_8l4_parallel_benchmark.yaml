@@ -49,17 +49,17 @@ measured_go_rules:
   required_gpu_utilization_mean_min: 0.70
   required_successful_steps: 1000
   projection_steps_options:
-    conservative: 800000
-    nominal: 750000
-    lean: 700000
+    lower_10p: 700000
+    selected_10p: 1200000
+    upper_10p: 1600000
   projection_must_fit:
-    steps: conservative
+    steps: selected_10p
     max_hours: 24.0
     max_cost_try: 8500.0
   min_steps_per_second_for_24h:
-    lean_700k: 8.1018518519
-    nominal_750k: 8.6805555556
-    conservative_800k: 9.2592592593
+    lower_10p_700k: 8.1018518519
+    selected_10p_1_2m: 13.8888888889
+    upper_10p_1_6m: 18.5185185185
 fail_closed_on:
   - less_than_8_l4_allocated
   - rank_below_75
