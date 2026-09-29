@@ -202,14 +202,13 @@ def verify_subpipe_full() -> dict[str, Any]:
 
 
 def _full_index() -> dict[str, list[tuple[int, str]]]:
-    from conrad.data.adapters.subpipe import stamp_to_ns
-
     out: dict[str, list[tuple[int, str]]] = {stream: [] for stream in _FOLDER_STREAM.values()}
     with zipfile.ZipFile(SUBPIPE_FULL_ARCHIVE) as archive:
         for name in archive.namelist():
             match = _FULL_MEMBER.match(name)
             if match:
-                out[_FOLDER_STREAM[match.group(2)]].append((stamp_to_ns(match.group(3)), name))
+                # epoch seconds, with or without a fractional part (the full release has both)
+                out[_FOLDER_STREAM[match.group(2)]].append((int(round(float(match.group(3)) * 1.0e9)), name))
     return {stream: sorted(refs) for stream, refs in out.items()}
 
 
