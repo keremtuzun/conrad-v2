@@ -134,7 +134,7 @@ def _subpipe_frame_refs(stream: str, partition: CorpusPartition, frame_stride: i
 IMAGE_SIZE = 64
 PATCH_GRID = 4
 PATCH_DIM = (IMAGE_SIZE // PATCH_GRID) ** 2
-TRAINER_VARIANT = "kerem_v11_10p_subpipe_full_sonar_camera_cleananchor_v5"
+TRAINER_VARIANT = "kerem_v11_10p_multisource_v6"
 BASE_LR = float(os.environ.get("KEREM_LR", "2e-4"))
 WEIGHT_DECAY = float(os.environ.get("KEREM_WEIGHT_DECAY", "0.05"))
 # The project's V1.1 is FamilyEncoderConfig depth 6 (307.8M). The reviewed trainer used depth 2 (201.3M).
@@ -250,10 +250,6 @@ def _standardize(images: torch.Tensor) -> torch.Tensor:
     return (images - mean) / std
 
 
-def _clean_view(images: torch.Tensor) -> torch.Tensor:
-    return _patchify(_standardize(F.interpolate(images, size=(IMAGE_SIZE, IMAGE_SIZE), mode="area")))
-
-
 def _random_resized_crop(images: torch.Tensor, generator: torch.Generator, scale: tuple[float, float]) -> torch.Tensor:
     """Per-sample random-resized crop + horizontal mirror, on the images' device."""
     batch, device = images.shape[0], images.device
@@ -274,8 +270,16 @@ def _random_resized_crop(images: torch.Tensor, generator: torch.Generator, scale
     return F.grid_sample(images, grid, mode="bilinear", padding_mode="reflection", align_corners=False)
 
 
-def _train_view(images: torch.Tensor, generator: torch.Generator, view: dict[str, Any]) -> torch.Tensor:
-    """Crop -> photometrics (gain, per-channel colour gain, speckle, additive noise) -> standardise -> patch dropout."""
+SONAR_ANCHOR = os.environ.get("KEREM_SONAR_ANCHOR", "0") == "1"
+ANCHOR_IMAGE_SIZE = 28  # the P4.8 sonar encoder's input size
+
+
+def _clean_images(images: torch.Tensor) -> torch.Tensor:
+    return F.interpolate(images, size=(IMAGE_SIZE, IMAGE_SIZE), mode="area")
+
+
+def _view_images(images: torch.Tensor, generator: torch.Generator, view: dict[str, Any]) -> torch.Tensor:
+    """Crop -> photometrics (gain, per-channel colour gain, speckle, additive noise); stays in [0, 1]."""
     crops = _random_resized_crop(images, generator, view["crop_scale"])
     batch, channels, device = crops.shape[0], crops.shape[1], crops.device
     gain = 0.6 + 0.8 * torch.rand((batch, 1, 1, 1), generator=generator, device=device)
@@ -283,11 +287,42 @@ def _train_view(images: torch.Tensor, generator: torch.Generator, view: dict[str
         gain = gain * (1.0 + view["channel_gain"] * torch.randn((batch, channels, 1, 1), generator=generator, device=device))
     speckle = 1.0 + view["speckle"] * torch.randn(crops.shape, generator=generator, device=device)
     noise = view["noise"] * torch.randn(crops.shape, generator=generator, device=device)
-    patches = _patchify(_standardize((crops * gain * speckle + noise).clamp(0.0, 1.0)))
-    if view["patch_dropout"] > 0:
-        keep = torch.rand((batch, patches.shape[1], 1), generator=generator, device=device) >= view["patch_dropout"]
-        patches = patches * keep
-    return patches.float()
+    return (crops * gain * speckle + noise).clamp(0.0, 1.0)
+
+
+def _tokens(
+    modality: str,
+    images: torch.Tensor,
+    model: Any,
+    *,
+    patch_dropout: float = 0.0,
+    generator: torch.Generator | None = None,
+) -> torch.Tensor:
+    """[B, C, IMAGE_SIZE, IMAGE_SIZE] in [0, 1] -> the modality's V1.1 payload tokens.
+
+    Sonar with the anchor: the frozen P4.8 sonar encoder held in V1.1's own V1 compatibility bank turns a
+    28x28 frame (its training distribution: raw /255, no standardisation) into [CLS + 4 patch] 384-d tokens.
+    Otherwise: 16 standardised pixel patches."""
+    if modality == "imaging_sonar" and SONAR_ANCHOR:
+        anchor = model.v1.sonar
+        anchor.eval()
+        with torch.no_grad():
+            out = anchor(F.interpolate(images, size=(ANCHOR_IMAGE_SIZE, ANCHOR_IMAGE_SIZE), mode="area"))
+        tokens = torch.cat([out.modality_repr[:, None], out.patch_tokens], dim=1).float()
+    else:
+        tokens = _patchify(_standardize(images))
+    if patch_dropout > 0 and generator is not None:
+        keep = torch.rand((tokens.shape[0], tokens.shape[1], 1), generator=generator, device=tokens.device) >= patch_dropout
+        tokens = tokens * keep
+    return tokens.float()
+
+
+def _clean_view(images: torch.Tensor, modality: str, model: Any) -> torch.Tensor:
+    return _tokens(modality, _clean_images(images), model)
+
+
+def _train_view(images: torch.Tensor, generator: torch.Generator, view: dict[str, Any], modality: str, model: Any) -> torch.Tensor:
+    return _tokens(modality, _view_images(images, generator, view), model, patch_dropout=view["patch_dropout"], generator=generator)
 
 
 # Asymmetric views: the rank term acts on the light view, so near-clean frames must spread out.
@@ -330,77 +365,202 @@ def _vicreg_terms(z_a: torch.Tensor, z_b: torch.Tensor, rank_floor: float) -> di
     return {"total": total, "invariance": invariance, "variance": variance, "covariance": covariance, "rank": rank_loss}
 
 
-class _SubPipeFullBatcher:
-    """Every usable frame of the full SubPipe release, per modality, partitioned per stream by contiguous
-    time blocks. Frames are decoded once (cached on disk, keyed by the archive hash) and held on the device;
-    validation uses distinct frames only."""
+# Additional camera sources from other sites (both CC-BY-4.0, rights CLEARED, training_allowed in their manifests).
+EXTRA_CAMERA = os.environ.get("KEREM_EXTRA_CAMERA", "1") == "1"
+SEACLEAR_MANIFEST = REPO_ROOT / "datasets/public/seaclear.manifest.yaml"
+SEACLEAR_DIR = REPO_ROOT / "artifacts/data/public.seaclear"
+UVVID_MANIFEST = REPO_ROOT / "datasets/public/uvvid.manifest.yaml"
+UVVID_DIR = REPO_ROOT / "artifacts/data/public.uvvid"
+UVVID_FRAME_STRIDE = 15  # 2 frames/s from 30 fps GoPro video
+_IMAGE_SUFFIXES = (".jpg", ".jpeg", ".png")
+_NON_IMAGE_HINTS = ("mask", "label", "annotation", "segment")
 
-    def __init__(self, *, archive_sha256: str, batch_size: int, device: torch.device, seed: int, smoke: bool = False) -> None:
-        index = _full_index()
+
+def _verify_manifest_files(manifest_path: Path, root: Path) -> dict[str, Any]:
+    manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8")) if manifest_path.is_file() else {}
+    rows = []
+    for entry in manifest.get("files", []):
+        if not str(entry.get("path", "")).startswith("raw/"):
+            continue
+        path = root / entry["path"]
+        actual = _sha256(path) if path.is_file() else None
+        rows.append({"path": entry["path"], "expected_sha256": entry.get("sha256"), "actual_sha256": actual, "ok": actual == entry.get("sha256")})
+    return {"manifest": str(manifest_path.relative_to(REPO_ROOT)), "files": rows, "decision": "PASS" if rows and all(r["ok"] for r in rows) else "FAIL"}
+
+
+def verify_extra_camera() -> dict[str, Any]:
+    report = {"seaclear": _verify_manifest_files(SEACLEAR_MANIFEST, SEACLEAR_DIR), "uvvid": _verify_manifest_files(UVVID_MANIFEST, UVVID_DIR)}
+    report["decision"] = "PASS" if all(r["decision"] == "PASS" for r in report.values()) else "FAIL"
+    return report
+
+
+def _decode_image_path(path: str) -> np.ndarray:
+    import cv2
+
+    image = cv2.imread(path, cv2.IMREAD_COLOR)
+    if image is None:
+        raise RuntimeError(f"{path}: not a readable image")
+    image = cv2.resize(cv2.cvtColor(image, cv2.COLOR_BGR2RGB), (CACHE_SIZE, CACHE_SIZE), interpolation=cv2.INTER_AREA)
+    return np.ascontiguousarray(image.transpose(2, 0, 1), dtype=np.uint8)
+
+
+def _decode_video(job: tuple[str, int]) -> np.ndarray:
+    import cv2
+
+    path, stride = job
+    capture = cv2.VideoCapture(path)
+    frames, index = [], 0
+    while capture.grab():
+        if index % stride == 0:
+            ok, image = capture.retrieve()
+            if ok:
+                image = cv2.resize(cv2.cvtColor(image, cv2.COLOR_BGR2RGB), (CACHE_SIZE, CACHE_SIZE), interpolation=cv2.INTER_AREA)
+                frames.append(image.transpose(2, 0, 1))
+        index += 1
+    capture.release()
+    if not frames:
+        raise RuntimeError(f"{path}: no frames decoded")
+    return np.ascontiguousarray(np.stack(frames), dtype=np.uint8)
+
+
+def _split_groups(groups: dict[str, list[str]]) -> tuple[list[str], list[str], dict[str, dict[str, int]]]:
+    train: list[str] = []
+    val: list[str] = []
+    counts: dict[str, dict[str, int]] = {}
+    for name, refs in sorted(groups.items()):
+        ranges = _partition_ranges(len(refs))
+        t0, t1 = ranges[CorpusPartition.PRETRAIN_REAL]
+        v0, v1 = ranges[CorpusPartition.VALIDATION]
+        train += refs[t0:t1]
+        val += refs[v0:v1]
+        counts[name] = {"all": len(refs), "train": t1 - t0, "validation": v1 - v0}
+    return train, val, counts
+
+
+class _MultiSourceBatcher:
+    """Frames per modality and per source, partitioned per stream/site/video by contiguous time blocks.
+    Frames are decoded once (disk cache keyed by content hashes) and held on the device. Training batches
+    draw equally from every source of a modality; validation uses distinct frames only."""
+
+    def __init__(self, *, archive_sha256: str, extra_camera: dict[str, Any] | None, batch_size: int, device: torch.device, seed: int, smoke: bool = False) -> None:
         self.batch_size = batch_size
         self.device = device
         self.seed = seed
-        self.data: dict[str, dict[str, Any]] = {}
+        self.data: dict[str, dict[str, dict[str, Any]]] = {modality: {} for modality in MODALITIES}
+        index = _full_index()
         for modality, spec in MODALITIES.items():
-            train: list[tuple[str, str]] = []
-            val: list[tuple[str, str]] = []
-            counts: dict[str, dict[str, int]] = {}
-            for stream, stride in spec["streams"].items():
-                refs = index[stream][:: stride * (200 if smoke else 1)]
-                ranges = _partition_ranges(len(refs))
-                t0, t1 = ranges[CorpusPartition.PRETRAIN_REAL]
-                v0, v1 = ranges[CorpusPartition.VALIDATION]
-                train += [(stream, member) for _, member in refs[t0:t1]]
-                val += [(stream, member) for _, member in refs[v0:v1]]
-                counts[stream] = {"all": len(refs), "train": t1 - t0, "validation": v1 - v0, "stride": stride}
-            if not train or not val:
-                raise RuntimeError(f"{modality}: PRETRAIN_REAL and VALIDATION partitions must both be non-empty")
-            self.data[modality] = {"channels": spec["channels"], "train": tuple(train), "val": tuple(val), "counts": counts}
-        self._load_frames(archive_sha256)
+            groups = {stream: [m for _, m in index[stream][:: stride * (200 if smoke else 1)]] for stream, stride in spec["streams"].items()}
+            train, val, counts = _split_groups(groups)
+            self._add(modality, "subpipe", train, val, counts, key=archive_sha256, loader=("zip", spec["channels"]))
+        if extra_camera is not None:
+            images = [
+                p for p in sorted((SEACLEAR_DIR / "extracted").rglob("*"))
+                if p.suffix.lower() in _IMAGE_SUFFIXES and not any(h in str(p).lower() for h in _NON_IMAGE_HINTS)
+            ]
+            site_groups: dict[str, list[str]] = {}
+            for path in images:
+                site_groups.setdefault(str(path.parent.relative_to(SEACLEAR_DIR)), []).append(str(path))
+            train, val, counts = _split_groups(site_groups)
+            seaclear_key = "|".join(r["actual_sha256"] for r in extra_camera["seaclear"]["files"])
+            self._add("rgb_camera", "seaclear", train, val, counts, key=seaclear_key, loader=("image", 3))
+            videos = sorted(str(p) for p in (UVVID_DIR / "raw").glob("ROV_GoPro_*.mp4"))
+            uvvid_key = "|".join(r["actual_sha256"] for r in extra_camera["uvvid"]["files"])
+            self._add_videos("rgb_camera", "uvvid", videos, key=uvvid_key)
 
-    def _load_frames(self, archive_sha256: str) -> None:
+    def _cache_path(self, modality: str, source: str, key: str, members: list[str]) -> Path:
+        digest = hashlib.sha256("\n".join([key, str(CACHE_SIZE), *members]).encode()).hexdigest()[:20]
+        return SUBPIPE_FULL_CACHE_DIR / f"{modality}_{source}_{CACHE_SIZE}_{digest}.npy"
+
+    def _store(self, modality: str, source: str, frames: np.ndarray, train: list[str], val: list[str], counts: dict[str, Any], cache: Path) -> None:
+        self.data[modality][source] = {
+            "train": tuple(train),
+            "val": tuple(val),
+            "counts": counts,
+            "frames": torch.from_numpy(frames).to(self.device),
+            "train_index": torch.arange(len(train), device=self.device),
+            "val_index": torch.arange(len(train), len(train) + len(val), device=self.device),
+            "cache": str(cache.relative_to(REPO_ROOT)),
+        }
+
+    def _add(self, modality: str, source: str, train: list[str], val: list[str], counts: dict[str, Any], *, key: str, loader: tuple[str, int]) -> None:
         from multiprocessing import get_context
 
-        for modality, entry in self.data.items():
-            members = [member for _, member in entry["train"] + entry["val"]]
-            key = hashlib.sha256(("\n".join([archive_sha256, str(CACHE_SIZE), *members])).encode()).hexdigest()[:20]
-            cache = SUBPIPE_FULL_CACHE_DIR / f"{modality}_{CACHE_SIZE}_{key}.npy"
-            if cache.is_file():
-                frames = np.load(cache)
-            else:
-                with get_context("fork").Pool(max(1, (os.cpu_count() or 2) - 1)) as pool:
-                    frames = np.stack(pool.map(_decode_member, [(m, entry["channels"]) for m in members], chunksize=16))
-                SUBPIPE_FULL_CACHE_DIR.mkdir(parents=True, exist_ok=True)
-                np.save(cache, frames)
-            entry["frames"] = torch.from_numpy(frames).to(self.device)
-            entry["train_index"] = torch.arange(len(entry["train"]), device=self.device)
-            entry["val_index"] = torch.arange(len(entry["train"]), len(members), device=self.device)
-            entry["cache"] = str(cache.relative_to(REPO_ROOT))
+        if not train or not val:
+            raise RuntimeError(f"{modality}/{source}: PRETRAIN_REAL and VALIDATION partitions must both be non-empty")
+        members = train + val
+        cache = self._cache_path(modality, source, key, members)
+        if cache.is_file():
+            frames = np.load(cache)
+        else:
+            kind, channels = loader
+            with get_context("fork").Pool(max(1, (os.cpu_count() or 2) - 1)) as pool:
+                if kind == "zip":
+                    frames = np.stack(pool.map(_decode_member, [(m, channels) for m in members], chunksize=16))
+                else:
+                    frames = np.stack(pool.map(_decode_image_path, members, chunksize=16))
+            SUBPIPE_FULL_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+            np.save(cache, frames)
+        self._store(modality, source, frames, train, val, counts, cache)
+
+    def _add_videos(self, modality: str, source: str, videos: list[str], *, key: str) -> None:
+        from multiprocessing import get_context
+
+        if not videos:
+            raise RuntimeError(f"{modality}/{source}: no videos found")
+        cache = self._cache_path(modality, source, key, [*videos, f"stride={UVVID_FRAME_STRIDE}"])
+        meta_path = cache.with_suffix(".json")
+        if cache.is_file() and meta_path.is_file():
+            frames = np.load(cache)
+            meta = json.loads(meta_path.read_text())
+            train, val, counts = meta["train"], meta["val"], meta["counts"]
+        else:
+            with get_context("fork").Pool(min(len(videos), max(1, (os.cpu_count() or 2) - 1))) as pool:
+                decoded = pool.map(_decode_video, [(v, UVVID_FRAME_STRIDE) for v in videos])
+            groups = {Path(v).name: [f"{Path(v).name}#{i * UVVID_FRAME_STRIDE}" for i in range(len(d))] for v, d in zip(videos, decoded, strict=True)}
+            by_id = {ref: frame for v, d in zip(videos, decoded, strict=True) for ref, frame in zip(groups[Path(v).name], d, strict=True)}
+            train, val, counts = _split_groups(groups)
+            frames = np.stack([by_id[ref] for ref in train + val])
+            SUBPIPE_FULL_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+            np.save(cache, frames)
+            meta_path.write_text(json.dumps({"train": train, "val": val, "counts": counts}))
+        if not train or not val:
+            raise RuntimeError(f"{modality}/{source}: PRETRAIN_REAL and VALIDATION partitions must both be non-empty")
+        self._store(modality, source, frames, train, val, counts, cache)
 
     def coverage(self) -> dict[str, Any]:
         return {
             modality: {
-                "streams": entry["counts"],
-                "train_frames": len(entry["train"]),
-                "validation_frames": len(entry["val"]),
-                "frame_cache": entry["cache"],
+                source: {
+                    "groups": entry["counts"],
+                    "train_frames": len(entry["train"]),
+                    "validation_frames": len(entry["val"]),
+                    "frame_cache": entry["cache"],
+                }
+                for source, entry in sources.items()
             }
-            for modality, entry in self.data.items()
+            for modality, sources in self.data.items()
         }
+
+    def sources(self, modality: str) -> tuple[str, ...]:
+        return tuple(self.data[modality])
+
+    def batch(self, modality: str, split: str, step: int, *, distinct: bool = False, source: str | None = None) -> tuple[torch.Tensor, tuple[str, ...]]:
+        names = (source,) if source is not None else self.sources(modality)
+        gen = torch.Generator().manual_seed(self.seed + step)
+        images, ids = [], []
+        for position, name in enumerate(names):
+            entry = self.data[modality][name]
+            refs, index = (entry["train"], entry["train_index"]) if split == "train" else (entry["val"], entry["val_index"])
+            share = self.batch_size // len(names) + (1 if position < self.batch_size % len(names) else 0)
+            order = torch.randperm(len(refs), generator=gen).tolist()
+            size = min(share, len(order)) if distinct else share
+            picks = [order[k % len(order)] for k in range(size)]
+            images.append(entry["frames"][index[torch.tensor(picks, device=self.device)]].float() / 255.0)
+            ids += [f"{name}:{refs[i]}" for i in picks]
+        return torch.cat(images, dim=0), tuple(ids)
 
     def close(self) -> None:
         return None
-
-    def batch(self, modality: str, split: str, step: int, *, distinct: bool = False) -> tuple[torch.Tensor, tuple[str, ...]]:
-        entry = self.data[modality]
-        refs, index = (entry["train"], entry["train_index"]) if split == "train" else (entry["val"], entry["val_index"])
-        gen = torch.Generator().manual_seed(self.seed + step)
-        order = torch.randperm(len(refs), generator=gen).tolist()
-        size = min(self.batch_size, len(order)) if distinct else self.batch_size
-        picks = [order[idx % len(order)] for idx in range(size)]
-        images = entry["frames"][index[torch.tensor(picks, device=self.device)]].float() / 255.0
-        sample_ids = tuple(f"{refs[i][0]}:{refs[i][1]}" for i in picks)
-        return images, sample_ids
 
 
 def _make_input(name: str, payload: torch.Tensor, step: int) -> UniversalModalityInput:
@@ -456,6 +616,9 @@ def run_v11_10p_training(
     full_report = verify_subpipe_full()
     if full_report["decision"] != "PASS" and not allow_cpu_smoke:
         raise RuntimeError(f"full SubPipe archive is not hash-verified against its manifest: {full_report}")
+    extra_report = verify_extra_camera() if EXTRA_CAMERA else None
+    if extra_report is not None and extra_report["decision"] != "PASS" and not allow_cpu_smoke:
+        raise RuntimeError(f"extra camera sources are not hash-verified against their manifests: {extra_report}")
 
     cfg = _load_config(config_path)
     steps = int(max_steps_override or cfg["training_budget"]["total_optimizer_steps"])
@@ -490,6 +653,10 @@ def run_v11_10p_training(
         "views": json.loads(json.dumps(VIEWS)),
         "step_schedule": "odd steps imaging_sonar, even steps rgb_camera",
         "clean_anchor_view": CLEAN_ANCHOR_VIEW,
+        "sonar_anchor_encoder": "P4.8 teacher (OSFM-S-PRETRAIN-V1) frozen in model.v1.sonar, 28x28 input" if SONAR_ANCHOR else None,
+        "extra_camera_sources": ["seaclear", "uvvid ROV_GoPro_1-8"] if EXTRA_CAMERA else [],
+        "uvvid_frame_stride": UVVID_FRAME_STRIDE,
+        "camera_batch_policy": "equal share per source",
         "gate": "every modality's validation rank >= rank_floor (config: every_family_rank_ge)",
         "validation_batch": "distinct_frames",
         "cache_size": CACHE_SIZE,
@@ -508,37 +675,46 @@ def run_v11_10p_training(
             "subpipe_manifest": str(SUBPIPE_MANIFEST.relative_to(REPO_ROOT)),
             "readiness_override": override_record,
             "subpipe_full": full_report,
+            "extra_camera": extra_report,
         },
         purpose=RunPurpose.DEVELOPMENT if allow_cpu_smoke else RunPurpose.ACCEPTANCE,
         clock_ns=time.time_ns,
         environment=env,
     )
     model = UniversalOSFMV11(
-        input_dims={modality: _patch_dim(spec["channels"]) for modality, spec in MODALITIES.items()},
+        input_dims={
+            modality: (384 if modality == "imaging_sonar" and SONAR_ANCHOR else _patch_dim(spec["channels"]))
+            for modality, spec in MODALITIES.items()
+        },
         family_encoder_config=FamilyEncoderConfig(depth=1 if allow_cpu_smoke else FAMILY_DEPTH),
         include_v1_bank=not allow_cpu_smoke,
     ).to(device)
-    # Anchor import: copy every shape-compatible tensor from the qualified upstream checkpoint.
+    # Anchor import (config stage A): the upstream checkpoint is the P4.8 ViT-S sonar encoder, stored under
+    # ck["model"] with student./teacher. prefixes. Its teacher weights match V1.1's V1CompatibilityBank.sonar
+    # tensor for tensor. (load_v1_checkpoint_for_v11 expects a flat state_dict and so loaded 0 tensors.)
     upstream_import: dict[str, Any] = {"attempted": False}
-    if not resume and not allow_cpu_smoke:
-        from conrad.foundation.universal_v11.migration import load_v1_checkpoint_for_v11
-
+    if not resume and not allow_cpu_smoke and model.v1 is not None:
         upstream_path = REPO_ROOT / json.loads(PAYLOAD_MANIFEST.read_text(encoding="utf-8"))["payloads"][0]["path"]
-        try:
-            mig = load_v1_checkpoint_for_v11(model, upstream_path, strict_gate=False)
-            upstream_import = {
-                "attempted": True,
-                "checkpoint_sha256": mig.checkpoint_sha256,
-                "source_label": mig.source_label,
-                "loaded_tensor_count": len(mig.loaded_keys),
-                "skipped_tensor_count": len(mig.skipped_keys),
-                "missing_v11_tensor_count": len(mig.missing_v11_keys),
-                "loaded_tensors": list(mig.loaded_keys),
-            }
-        except Exception as exc:
-            upstream_import = {"attempted": True, "error": f"{type(exc).__name__}: {exc}", "loaded_tensor_count": 0}
+        state = torch.load(upstream_path, map_location="cpu", weights_only=False)["model"]
+        teacher = {k[len("teacher.") :]: v for k, v in state.items() if k.startswith("teacher.")}
+        target = model.v1.sonar.state_dict()
+        matched = {k: v for k, v in teacher.items() if k in target and target[k].shape == v.shape}
+        if len(matched) != len(target):
+            raise RuntimeError(f"P4.8 sonar teacher matches {len(matched)}/{len(target)} V1 bank tensors")
+        model.v1.sonar.load_state_dict(matched)
         model.to(device)
+        upstream_import = {
+            "attempted": True,
+            "checkpoint_sha256": _sha256(upstream_path),
+            "source": "teacher.* -> model.v1.sonar",
+            "loaded_tensor_count": len(matched),
+            "target_tensor_count": len(target),
+            "used_as_sonar_front_end": SONAR_ANCHOR,
+        }
         run.write_artifact("reports", "upstream_import.json", json.dumps(upstream_import, indent=2, sort_keys=True))
+    if model.v1 is not None:
+        for param in model.v1.parameters():  # the V1 bank is a protected anchor (config: protect_imported_v1_and_selected_sonar_anchor)
+            param.requires_grad_(False)
     for name, param in model.named_parameters():
         if name.split(".")[0] in FROZEN_MODULES:
             param.requires_grad_(False)
@@ -575,11 +751,16 @@ def run_v11_10p_training(
             scheduler.load_state_dict(loaded.scheduler_state)
         start_step = int(loaded.trainer_state.get("step", loaded.metadata.step))
 
-    batcher = _SubPipeFullBatcher(
-        archive_sha256=str(full_report["actual_sha256"]), batch_size=batch_size, device=device, seed=seed, smoke=allow_cpu_smoke
+    batcher = _MultiSourceBatcher(
+        archive_sha256=str(full_report["actual_sha256"]),
+        extra_camera=extra_report,
+        batch_size=batch_size,
+        device=device,
+        seed=seed,
+        smoke=allow_cpu_smoke,
     )
     coverage = batcher.coverage()
-    run.write_artifact("reports", "data_coverage.json", json.dumps({"dataset": "public.subpipe_full", "modalities": coverage}, indent=2, sort_keys=True))
+    run.write_artifact("reports", "data_coverage.json", json.dumps({"datasets": ["public.subpipe_full", "public.seaclear", "public.uvvid"], "modalities": coverage}, indent=2, sort_keys=True))
     best_rank = -math.inf
     best_path: str | None = None
     last_path: str | None = None
@@ -589,8 +770,8 @@ def run_v11_10p_training(
     def _two_view_forward(images: torch.Tensor, step: int, modality: str) -> tuple[torch.Tensor, torch.Tensor]:
         # View A is the exact clean view used by validation, so the rank/variance terms act on clean frames
         # (augmented views alone reached train rank >= 75 while clean frames stayed near 45).
-        view_a = _clean_view(images) if CLEAN_ANCHOR_VIEW else _train_view(images, aug_gen, VIEWS[modality]["light"])
-        view_b = _train_view(images, aug_gen, VIEWS[modality]["strong"])
+        view_a = _clean_view(images, modality, model) if CLEAN_ANCHOR_VIEW else _train_view(images, aug_gen, VIEWS[modality]["light"], modality, model)
+        view_b = _train_view(images, aug_gen, VIEWS[modality]["strong"], modality, model)
         both = torch.cat([view_a, view_b], dim=0)
         with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
             out = model(
@@ -631,9 +812,10 @@ def run_v11_10p_training(
                 val_ids: tuple[str, ...] = ()
                 with torch.no_grad():
                     for val_modality in MODALITIES:
+                        # pooled: equal share of distinct held-out frames from every source of the family
                         val_images, ids = batcher.batch(val_modality, "val", step, distinct=True)
                         val_ids += ids
-                        val_payload = _clean_view(val_images)
+                        val_payload = _clean_view(val_images, val_modality, model)
                         with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
                             val_out = model(
                                 (_make_input(val_modality, val_payload, step),),
@@ -642,6 +824,16 @@ def run_v11_10p_training(
                         m_health = _representation_health(val_out.fusion.global_repr.float(), rank_floor)
                         val_za, val_zb = _two_view_forward(val_images, step, val_modality)
                         m_health["loss"] = float(_vicreg_terms(val_za, val_zb, rank_floor)["total"].cpu())
+                        m_health["sources"] = {}
+                        for src in batcher.sources(val_modality):
+                            src_images, _ = batcher.batch(val_modality, "val", step, distinct=True, source=src)
+                            src_payload = _clean_view(src_images, val_modality, model)
+                            with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
+                                src_out = model(
+                                    (_make_input(val_modality, src_payload, step),),
+                                    reference_time_s=torch.full((src_payload.shape[0],), float(step), device=device),
+                                )
+                            m_health["sources"][src] = _representation_health(src_out.fusion.global_repr.float(), rank_floor)["effective_rank"]
                         per_modality[val_modality] = m_health
                 # Gate every family: the run's rank is the weakest modality's rank.
                 health = {
@@ -664,6 +856,7 @@ def run_v11_10p_training(
                     **{f"val/{m}/effective_rank": h["effective_rank"] for m, h in per_modality.items()},
                     **{f"val/{m}/collapse_score": h["collapse_score"] for m, h in per_modality.items()},
                     **{f"val/{m}/loss": h["loss"] for m, h in per_modality.items()},
+                    **{f"val/{m}/{src}/effective_rank": r for m, h in per_modality.items() for src, r in h["sources"].items()},
                     "val/representation_effective_rank": health["effective_rank"],
                     "val/representation_collapse_score": health["collapse_score"],
                     "val/rank_pass": float(health["rank_pass"]),
@@ -729,8 +922,10 @@ def run_v11_10p_training(
             "rank_floor": rank_floor,
             "best_checkpoint": best_path,
             "last_checkpoint": last_path,
-            "data_scope": "full SubPipe release: side-scan sonar (sss_lf + sss_hf) and cameras (cam0 + cam1)",
+            "data_scope": "full SubPipe release (side-scan sonar sss_lf+sss_hf; cameras cam0+cam1) plus camera frames from SeaClear (multi-site) and UVVID ROV_GoPro_1-8",
             "semantic_claim": "data-backed imaging_sonar (active acoustic) and rgb_camera (visual image) only; the other 827 registry entries remain interface coverage",
+            "sonar_anchor_encoder": SONAR_ANCHOR,
+            "upstream_import": {k: v for k, v in upstream_import.items() if k != "loaded_tensors"},
             "data_coverage": coverage,
             "registered_modality_count": len(MODALITY_REGISTRY),
             "family_count": len(EncoderFamily),
