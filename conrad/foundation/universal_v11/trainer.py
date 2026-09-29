@@ -135,6 +135,7 @@ BASE_LR = 2.0e-4
 WARMUP_STEPS = 2000
 VICREG_WEIGHTS = {"invariance": 25.0, "variance": 25.0, "covariance": 1.0, "rank": 1.0}
 TOKEN_MASK_FRACTION = 0.25
+SONAR_STREAMS = ("sss_lf", "sss_hf")
 # Readiness blockers that only say "this is not the reviewed trainer on osfm-universal-v1.1".
 # An explicit owner override may launch past exactly these, and the override is recorded in the run.
 UNREVIEWED_TRAINER_BLOCKER_IDS = frozenset({2, 4, 8})
@@ -206,7 +207,11 @@ def _vicreg_terms(z_a: torch.Tensor, z_b: torch.Tensor, rank_floor: float) -> di
 
 
 class _SubPipeBatcher:
-    def __init__(self, *, stream: str, frame_stride: int, batch_size: int, device: torch.device, seed: int) -> None:
+    """SubPipe side-scan frames. Kerem variant: every frame of every requested stream, partitioned
+    per stream by contiguous time blocks; validation uses distinct frames only (the reviewed trainer's
+    stride 16 left 6 validation frames, so a 256 batch was 6 frames repeated)."""
+
+    def __init__(self, *, streams: tuple[str, ...], frame_stride: int, batch_size: int, device: torch.device, seed: int) -> None:
         self.manifest = load_manifest(SUBPIPE_MANIFEST)
         self.root = data_root_for(self.manifest.dataset_id)
         self.store = ObjectStore(REPO_ROOT / "artifacts/tmp/v11_10p_object_store")
@@ -216,27 +221,26 @@ class _SubPipeBatcher:
             self.store,
             IdFactory(seed=seed),
             UUID("00000000-0000-7000-8000-000000001012"),
-            streams=(stream,),
-            frame_stride=frame_stride,
+            streams=streams,
+            frame_stride=1,
             manifest_path=SUBPIPE_MANIFEST,
         )
-        all_refs = self.adapter.frames(stream)
-        stride = max(1, frame_stride)
-        while True:
-            refs = all_refs[::stride]
+        train: list[tuple[str, Any]] = []
+        val: list[tuple[str, Any]] = []
+        self.stream_counts: dict[str, dict[str, int]] = {}
+        for stream in streams:
+            refs = self.adapter.frames(stream)[:: max(1, frame_stride)]
             ranges = _partition_ranges(len(refs))
-            train_start, train_end = ranges[CorpusPartition.PRETRAIN_REAL]
-            val_start, val_end = ranges[CorpusPartition.VALIDATION]
-            self.train_refs = tuple(refs[train_start:train_end])
-            self.val_refs = tuple(refs[val_start:val_end])
-            if self.train_refs and self.val_refs:
-                break
-            if stride == 1:
-                break
-            stride = max(1, stride // 2)
-        if not self.train_refs or not self.val_refs:
+            t0, t1 = ranges[CorpusPartition.PRETRAIN_REAL]
+            v0, v1 = ranges[CorpusPartition.VALIDATION]
+            train += [(stream, ref) for ref in refs[t0:t1]]
+            val += [(stream, ref) for ref in refs[v0:v1]]
+            self.stream_counts[stream] = {"all": len(refs), "train": t1 - t0, "validation": v1 - v0}
+        if not train or not val:
             raise RuntimeError("SubPipe PRETRAIN_REAL and VALIDATION partitions must both be non-empty")
-        self.stream = stream
+        self.train_refs = tuple(train)
+        self.val_refs = tuple(val)
+        self.streams = streams
         self.batch_size = batch_size
         self.device = device
         self.seed = seed
@@ -250,12 +254,13 @@ class _SubPipeBatcher:
             self._cache[ref.member] = _frame_features(self.adapter, ref)
         return self._cache[ref.member]
 
-    def batch(self, refs: tuple[Any, ...], step: int) -> tuple[torch.Tensor, tuple[str, ...]]:
+    def batch(self, refs: tuple[tuple[str, Any], ...], step: int, *, distinct: bool = False) -> tuple[torch.Tensor, tuple[str, ...]]:
         gen = torch.Generator().manual_seed(self.seed + step)
         order = torch.randperm(len(refs), generator=gen).tolist()
-        picked = tuple(refs[order[idx % len(order)]] for idx in range(self.batch_size))
-        payload = torch.stack([self._features(ref) for ref in picked], dim=0).to(self.device)
-        sample_ids = tuple(f"{self.stream}:{ref.member}" for ref in picked)
+        size = min(self.batch_size, len(order)) if distinct else self.batch_size
+        picked = tuple(refs[order[idx % len(order)]] for idx in range(size))
+        payload = torch.stack([self._features(ref) for _, ref in picked], dim=0).to(self.device)
+        sample_ids = tuple(f"{stream}:{ref.member}" for stream, ref in picked)
         return payload, sample_ids
 
 
@@ -335,6 +340,9 @@ def run_v11_10p_training(
         "warmup_steps": WARMUP_STEPS,
         "vicreg_weights": VICREG_WEIGHTS,
         "token_mask_fraction": TOKEN_MASK_FRACTION,
+        "sonar_streams": list(SONAR_STREAMS),
+        "frame_stride": 1,
+        "validation_batch": "distinct_frames",
         "autocast": "bf16" if use_bf16 else "fp32",
     }
     env = environment_snapshot(device=str(device), precision="bf16-autocast" if use_bf16 else "float32")
@@ -405,7 +413,8 @@ def run_v11_10p_training(
             scheduler.load_state_dict(loaded.scheduler_state)
         start_step = int(loaded.trainer_state.get("step", loaded.metadata.step))
 
-    batcher = _SubPipeBatcher(stream="sss_lf", frame_stride=16 if not allow_cpu_smoke else 512, batch_size=batch_size, device=device, seed=seed)
+    batcher = _SubPipeBatcher(streams=SONAR_STREAMS, frame_stride=1 if not allow_cpu_smoke else 64, batch_size=batch_size, device=device, seed=seed)
+    run.write_artifact("reports", "data_coverage.json", json.dumps({"dataset": SUBPIPE_SOURCE_ID, "streams": batcher.stream_counts, "train_frames": len(batcher.train_refs), "validation_frames": len(batcher.val_refs)}, indent=2, sort_keys=True))
     best_rank = -math.inf
     best_path: str | None = None
     last_path: str | None = None
@@ -451,7 +460,7 @@ def run_v11_10p_training(
             if step == 1 or step % validation_every == 0 or step == steps:
                 model.eval()
                 with torch.no_grad():
-                    val_payload, val_ids = batcher.batch(batcher.val_refs, step)
+                    val_payload, val_ids = batcher.batch(batcher.val_refs, step, distinct=True)
                     with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
                         val_out = model((_make_input("imaging_sonar", val_payload, step),), reference_time_s=torch.full((val_payload.shape[0],), float(step), device=device))
                     health = _representation_health(val_out.fusion.global_repr.float(), rank_floor)
@@ -532,7 +541,7 @@ def run_v11_10p_training(
             "rank_floor": rank_floor,
             "best_checkpoint": best_path,
             "last_checkpoint": last_path,
-            "data_scope": "SubPipe rendered side-scan sonar only",
+            "data_scope": "SubPipe side-scan sonar (sss_lf + sss_hf) only",
             "semantic_claim": "data-backed active acoustic training only; 829 registry remains interface coverage",
             "registered_modality_count": len(MODALITY_REGISTRY),
             "family_count": len(EncoderFamily),
