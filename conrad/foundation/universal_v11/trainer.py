@@ -130,7 +130,7 @@ def _subpipe_frame_refs(stream: str, partition: CorpusPartition, frame_stride: i
 IMAGE_SIZE = 64
 PATCH_GRID = 4
 PATCH_DIM = (IMAGE_SIZE // PATCH_GRID) ** 2
-TRAINER_VARIANT = "kerem_v11_10p_subpipe_patch_vicreg_v1"
+TRAINER_VARIANT = "kerem_v11_10p_subpipe_patch_vicreg_crop_v2"
 BASE_LR = 2.0e-4
 WARMUP_STEPS = 2000
 VICREG_WEIGHTS = {"invariance": 25.0, "variance": 25.0, "covariance": 1.0, "rank": 1.0}
@@ -155,28 +155,66 @@ def readiness_override_record(readiness: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _frame_features(adapter: SubPipeAdapter, ref: Any) -> torch.Tensor:
+CACHE_SIZE = 128  # frames are decoded once and kept on the device at this resolution
+CROP_SCALE = (0.30, 1.0)
+CROP_RATIO = (3.0 / 4.0, 4.0 / 3.0)
+
+
+def _frame_image(adapter: SubPipeAdapter, ref: Any) -> torch.Tensor:
     import cv2
 
     image = adapter.load(ref)
     if image.ndim == 3:
         image = image.mean(axis=2)
-    resized = cv2.resize(image.astype("float32"), (IMAGE_SIZE, IMAGE_SIZE), interpolation=cv2.INTER_AREA)
-    tensor = torch.from_numpy(resized).float() / 255.0
+    resized = cv2.resize(image.astype("float32"), (CACHE_SIZE, CACHE_SIZE), interpolation=cv2.INTER_AREA)
+    return torch.from_numpy(resized.clip(0, 255).astype("uint8"))
+
+
+def _patchify(images: torch.Tensor) -> torch.Tensor:
+    """[B, 1, IMAGE_SIZE, IMAGE_SIZE] -> [B, PATCH_GRID**2, PATCH_DIM]."""
+    batch = images.shape[0]
     side = IMAGE_SIZE // PATCH_GRID
-    patches = tensor.reshape(PATCH_GRID, side, PATCH_GRID, side).permute(0, 2, 1, 3)
-    return patches.reshape(PATCH_GRID * PATCH_GRID, PATCH_DIM).contiguous()
+    patches = images.reshape(batch, PATCH_GRID, side, PATCH_GRID, side).permute(0, 1, 3, 2, 4)
+    return patches.reshape(batch, PATCH_GRID * PATCH_GRID, PATCH_DIM).contiguous()
+
+
+def _clean_view(images: torch.Tensor) -> torch.Tensor:
+    return _patchify(F.interpolate(images, size=(IMAGE_SIZE, IMAGE_SIZE), mode="area"))
+
+
+def _random_resized_crop(images: torch.Tensor, generator: torch.Generator) -> torch.Tensor:
+    """Per-sample random-resized crop + port/starboard mirror, on the images' device."""
+    batch, device = images.shape[0], images.device
+    area = torch.empty(batch, device=device).uniform_(*CROP_SCALE, generator=generator)
+    log_ratio = torch.empty(batch, device=device).uniform_(math.log(CROP_RATIO[0]), math.log(CROP_RATIO[1]), generator=generator)
+    ratio = log_ratio.exp()
+    width = (area * ratio).sqrt().clamp(max=1.0)
+    height = (area / ratio).sqrt().clamp(max=1.0)
+    cx = (torch.rand(batch, device=device, generator=generator) * 2 - 1) * (1 - width)
+    cy = (torch.rand(batch, device=device, generator=generator) * 2 - 1) * (1 - height)
+    flip = torch.where(torch.rand(batch, device=device, generator=generator) < 0.5, -1.0, 1.0)
+    theta = torch.zeros(batch, 2, 3, device=device)
+    theta[:, 0, 0] = width * flip
+    theta[:, 0, 2] = cx
+    theta[:, 1, 1] = height
+    theta[:, 1, 2] = cy
+    grid = F.affine_grid(theta, (batch, 1, IMAGE_SIZE, IMAGE_SIZE), align_corners=False)
+    return F.grid_sample(images, grid, mode="bilinear", padding_mode="reflection", align_corners=False)
 
 
 def _augment(payload: torch.Tensor, generator: torch.Generator) -> torch.Tensor:
-    """Sonar-style view: per-frame gain, speckle noise, and random patch dropout."""
+    """Sonar-style photometric view: per-frame gain, speckle noise, and random patch dropout."""
     batch, tokens, _ = payload.shape
     device = payload.device
-    gain = 0.8 + 0.4 * torch.rand((batch, 1, 1), generator=generator).to(device)
-    speckle = 1.0 + 0.10 * torch.randn(payload.shape, generator=generator).to(device)
-    noise = 0.03 * torch.randn(payload.shape, generator=generator).to(device)
-    keep = (torch.rand((batch, tokens, 1), generator=generator) >= TOKEN_MASK_FRACTION).to(device)
+    gain = 0.8 + 0.4 * torch.rand((batch, 1, 1), generator=generator, device=device)
+    speckle = 1.0 + 0.10 * torch.randn(payload.shape, generator=generator, device=device)
+    noise = 0.03 * torch.randn(payload.shape, generator=generator, device=device)
+    keep = torch.rand((batch, tokens, 1), generator=generator, device=device) >= TOKEN_MASK_FRACTION
     return ((payload * gain * speckle + noise).clamp(0.0, 1.0) * keep).float()
+
+
+def _train_view(images: torch.Tensor, generator: torch.Generator) -> torch.Tensor:
+    return _augment(_patchify(_random_resized_crop(images, generator)), generator)
 
 
 def _vicreg_terms(z_a: torch.Tensor, z_b: torch.Tensor, rank_floor: float) -> dict[str, torch.Tensor]:
@@ -244,24 +282,23 @@ class _SubPipeBatcher:
         self.batch_size = batch_size
         self.device = device
         self.seed = seed
-        self._cache: dict[str, torch.Tensor] = {}
+        # Decode every train/validation frame once; views are cropped on the device each step.
+        self.frames = torch.stack([_frame_image(self.adapter, ref) for _, ref in self.train_refs + self.val_refs]).to(device)
+        self.train_index = torch.arange(len(self.train_refs), device=device)
+        self.val_index = torch.arange(len(self.train_refs), len(self.train_refs) + len(self.val_refs), device=device)
 
     def close(self) -> None:
         self.adapter.close()
 
-    def _features(self, ref: Any) -> torch.Tensor:
-        if ref.member not in self._cache:
-            self._cache[ref.member] = _frame_features(self.adapter, ref)
-        return self._cache[ref.member]
-
-    def batch(self, refs: tuple[tuple[str, Any], ...], step: int, *, distinct: bool = False) -> tuple[torch.Tensor, tuple[str, ...]]:
+    def batch(self, split: str, step: int, *, distinct: bool = False) -> tuple[torch.Tensor, tuple[str, ...]]:
+        refs, index = (self.train_refs, self.train_index) if split == "train" else (self.val_refs, self.val_index)
         gen = torch.Generator().manual_seed(self.seed + step)
         order = torch.randperm(len(refs), generator=gen).tolist()
         size = min(self.batch_size, len(order)) if distinct else self.batch_size
-        picked = tuple(refs[order[idx % len(order)]] for idx in range(size))
-        payload = torch.stack([self._features(ref) for _, ref in picked], dim=0).to(self.device)
-        sample_ids = tuple(f"{stream}:{ref.member}" for stream, ref in picked)
-        return payload, sample_ids
+        picks = [order[idx % len(order)] for idx in range(size)]
+        images = self.frames[index[torch.tensor(picks, device=self.device)]].unsqueeze(1).float() / 255.0
+        sample_ids = tuple(f"{refs[i][0]}:{refs[i][1].member}" for i in picks)
+        return images, sample_ids
 
 
 def _make_input(name: str, payload: torch.Tensor, step: int) -> UniversalModalityInput:
@@ -343,6 +380,10 @@ def run_v11_10p_training(
         "sonar_streams": list(SONAR_STREAMS),
         "frame_stride": 1,
         "validation_batch": "distinct_frames",
+        "cache_size": CACHE_SIZE,
+        "crop_scale": list(CROP_SCALE),
+        "crop_ratio": list(CROP_RATIO),
+        "mirror_flip": True,
         "autocast": "bf16" if use_bf16 else "fp32",
     }
     env = environment_snapshot(device=str(device), precision="bf16-autocast" if use_bf16 else "float32")
@@ -419,11 +460,11 @@ def run_v11_10p_training(
     best_path: str | None = None
     last_path: str | None = None
     train_sample_ids: set[str] = set()
-    aug_gen = torch.Generator().manual_seed(seed + 17)
+    aug_gen = torch.Generator(device=device).manual_seed(seed + 17)
 
-    def _two_view_forward(payload: torch.Tensor, step: int) -> tuple[torch.Tensor, torch.Tensor]:
-        view_a = _augment(payload, aug_gen)
-        view_b = _augment(payload, aug_gen)
+    def _two_view_forward(images: torch.Tensor, step: int) -> tuple[torch.Tensor, torch.Tensor]:
+        view_a = _train_view(images, aug_gen)
+        view_b = _train_view(images, aug_gen)
         both = torch.cat([view_a, view_b], dim=0)
         with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
             out = model(
@@ -431,7 +472,7 @@ def run_v11_10p_training(
                 reference_time_s=torch.full((both.shape[0],), float(step), device=device),
             )
         z = out.fusion.global_repr.float()
-        return z[: payload.shape[0]], z[payload.shape[0] :]
+        return z[: images.shape[0]], z[images.shape[0] :]
 
     t_start = time.time()
     t_last, step_last = t_start, start_step
@@ -445,9 +486,9 @@ def run_v11_10p_training(
     try:
         for step in range(start_step + 1, steps + 1):
             model.train()
-            payload, sample_ids = batcher.batch(batcher.train_refs, step)
+            images, sample_ids = batcher.batch("train", step)
             train_sample_ids.update(sample_ids)
-            z_a, z_b = _two_view_forward(payload, step)
+            z_a, z_b = _two_view_forward(images, step)
             terms = _vicreg_terms(z_a, z_b, rank_floor)
             loss = terms["total"]
             if not torch.isfinite(loss):
@@ -460,11 +501,12 @@ def run_v11_10p_training(
             if step == 1 or step % validation_every == 0 or step == steps:
                 model.eval()
                 with torch.no_grad():
-                    val_payload, val_ids = batcher.batch(batcher.val_refs, step, distinct=True)
+                    val_images, val_ids = batcher.batch("val", step, distinct=True)
+                    val_payload = _clean_view(val_images)
                     with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
                         val_out = model((_make_input("imaging_sonar", val_payload, step),), reference_time_s=torch.full((val_payload.shape[0],), float(step), device=device))
                     health = _representation_health(val_out.fusion.global_repr.float(), rank_floor)
-                    val_za, val_zb = _two_view_forward(val_payload, step)
+                    val_za, val_zb = _two_view_forward(val_images, step)
                     val_terms = _vicreg_terms(val_za, val_zb, rank_floor)
                 now = time.time()
                 metric_record = {
