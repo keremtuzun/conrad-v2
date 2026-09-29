@@ -366,7 +366,7 @@ def _vicreg_terms(z_a: torch.Tensor, z_b: torch.Tensor, rank_floor: float) -> di
 
 
 # Additional camera sources from other sites (both CC-BY-4.0, rights CLEARED, training_allowed in their manifests).
-EXTRA_CAMERA = os.environ.get("KEREM_EXTRA_CAMERA", "1") == "1"
+EXTRA_CAMERA = tuple(x for x in os.environ.get("KEREM_EXTRA_CAMERA", "seaclear,uvvid").split(",") if x)
 SEACLEAR_MANIFEST = REPO_ROOT / "datasets/public/seaclear.manifest.yaml"
 SEACLEAR_DIR = REPO_ROOT / "artifacts/data/public.seaclear"
 UVVID_MANIFEST = REPO_ROOT / "datasets/public/uvvid.manifest.yaml"
@@ -389,7 +389,8 @@ def _verify_manifest_files(manifest_path: Path, root: Path) -> dict[str, Any]:
 
 
 def verify_extra_camera() -> dict[str, Any]:
-    report = {"seaclear": _verify_manifest_files(SEACLEAR_MANIFEST, SEACLEAR_DIR), "uvvid": _verify_manifest_files(UVVID_MANIFEST, UVVID_DIR)}
+    sources = {"seaclear": (SEACLEAR_MANIFEST, SEACLEAR_DIR), "uvvid": (UVVID_MANIFEST, UVVID_DIR)}
+    report: dict[str, Any] = {name: _verify_manifest_files(*sources[name]) for name in EXTRA_CAMERA}
     report["decision"] = "PASS" if all(r["decision"] == "PASS" for r in report.values()) else "FAIL"
     return report
 
@@ -452,7 +453,7 @@ class _MultiSourceBatcher:
             groups = {stream: [m for _, m in index[stream][:: stride * (200 if smoke else 1)]] for stream, stride in spec["streams"].items()}
             train, val, counts = _split_groups(groups)
             self._add(modality, "subpipe", train, val, counts, key=archive_sha256, loader=("zip", spec["channels"]))
-        if extra_camera is not None:
+        if extra_camera is not None and "seaclear" in extra_camera:
             images = [
                 p for p in sorted((SEACLEAR_DIR / "extracted").rglob("*"))
                 if p.suffix.lower() in _IMAGE_SUFFIXES and not any(h in str(p).lower() for h in _NON_IMAGE_HINTS)
@@ -463,6 +464,7 @@ class _MultiSourceBatcher:
             train, val, counts = _split_groups(site_groups)
             seaclear_key = "|".join(r["actual_sha256"] for r in extra_camera["seaclear"]["files"])
             self._add("rgb_camera", "seaclear", train, val, counts, key=seaclear_key, loader=("image", 3))
+        if extra_camera is not None and "uvvid" in extra_camera:
             videos = sorted(str(p) for p in (UVVID_DIR / "raw").glob("ROV_GoPro_*.mp4"))
             uvvid_key = "|".join(r["actual_sha256"] for r in extra_camera["uvvid"]["files"])
             self._add_videos("rgb_camera", "uvvid", videos, key=uvvid_key)
@@ -654,7 +656,7 @@ def run_v11_10p_training(
         "step_schedule": "odd steps imaging_sonar, even steps rgb_camera",
         "clean_anchor_view": CLEAN_ANCHOR_VIEW,
         "sonar_anchor_encoder": "P4.8 teacher (OSFM-S-PRETRAIN-V1) frozen in model.v1.sonar, 28x28 input" if SONAR_ANCHOR else None,
-        "extra_camera_sources": ["seaclear", "uvvid ROV_GoPro_1-8"] if EXTRA_CAMERA else [],
+        "extra_camera_sources": list(EXTRA_CAMERA),
         "uvvid_frame_stride": UVVID_FRAME_STRIDE,
         "camera_batch_policy": "equal share per source",
         "gate": "every modality's validation rank >= rank_floor (config: every_family_rank_ge)",
@@ -760,7 +762,7 @@ def run_v11_10p_training(
         smoke=allow_cpu_smoke,
     )
     coverage = batcher.coverage()
-    run.write_artifact("reports", "data_coverage.json", json.dumps({"datasets": ["public.subpipe_full", "public.seaclear", "public.uvvid"], "modalities": coverage}, indent=2, sort_keys=True))
+    run.write_artifact("reports", "data_coverage.json", json.dumps({"datasets": ["public.subpipe_full", *(f"public.{x}" for x in EXTRA_CAMERA)], "modalities": coverage}, indent=2, sort_keys=True))
     best_rank = -math.inf
     best_path: str | None = None
     last_path: str | None = None

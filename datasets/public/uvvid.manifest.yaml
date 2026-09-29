@@ -1,3 +1,5 @@
+# 2026-09-30: ROV_GoPro_2,3,5,6,7,8 added (same approved visual/ROV_GoPro_* scope) for V1.1 P4 Kerem training;
+# each md5 matched the figshare API supplied_md5 before its sha256 was recorded here.
 # Public-data procurement audit 2026-09-19 (docs/audits/PUBLIC_DATA_PROCUREMENT.md).
 # Every licence/URL below was read from the cited page on that date. Anything not read is OPEN.
 # procurement_status is the rights verdict; status says whether any data is on disk.
@@ -97,6 +99,54 @@ files:
   lineage:
     sequence: uvvid/visual/ROV_GoPro_4
   sequence_index: 1
+- path: raw/ROV_GoPro_2.mp4
+  sha256: af5908fbc7aa44302c83b1b43eba8d2aee3946166473443231978962bac3305b
+  byte_length: 13100077
+  stream: rov_gopro_video
+  modality: RGB
+  lineage:
+    sequence: uvvid/visual/ROV_GoPro_2
+  sequence_index: 2
+- path: raw/ROV_GoPro_3.mp4
+  sha256: d3344becdd434e17e5cd95143fab1a976057c21545307dc8628df810ba087799
+  byte_length: 161446895
+  stream: rov_gopro_video
+  modality: RGB
+  lineage:
+    sequence: uvvid/visual/ROV_GoPro_3
+  sequence_index: 3
+- path: raw/ROV_GoPro_5.mp4
+  sha256: 627d776a5a85e85ef083237b774f8ef38e80f1f48613de6a0cbb9d6e081f1bb5
+  byte_length: 39338456
+  stream: rov_gopro_video
+  modality: RGB
+  lineage:
+    sequence: uvvid/visual/ROV_GoPro_5
+  sequence_index: 4
+- path: raw/ROV_GoPro_6.mp4
+  sha256: 528c474c3e6b300b5ef7f1af04cdf63fbbe17a0b685c20d1a5782ae8b6be2032
+  byte_length: 15753764
+  stream: rov_gopro_video
+  modality: RGB
+  lineage:
+    sequence: uvvid/visual/ROV_GoPro_6
+  sequence_index: 5
+- path: raw/ROV_GoPro_7.mp4
+  sha256: 391f9c05b23dcb29e4fa943d11a16eb6a66bcf45a88a3851e081b1caf763ec41
+  byte_length: 174701207
+  stream: rov_gopro_video
+  modality: RGB
+  lineage:
+    sequence: uvvid/visual/ROV_GoPro_7
+  sequence_index: 6
+- path: raw/ROV_GoPro_8.mp4
+  sha256: f1ffbe6d753770942a71e88165966deea59dbb1cdc03767a65667fcf9ccdf642
+  byte_length: 305380091
+  stream: rov_gopro_video
+  modality: RGB
+  lineage:
+    sequence: uvvid/visual/ROV_GoPro_8
+  sequence_index: 7
 units:
   time: ns (converted from container ms)
   image: uint8 BGR 0-255
