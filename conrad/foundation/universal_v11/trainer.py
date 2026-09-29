@@ -134,7 +134,7 @@ def _subpipe_frame_refs(stream: str, partition: CorpusPartition, frame_stride: i
 IMAGE_SIZE = 64
 PATCH_GRID = 4
 PATCH_DIM = (IMAGE_SIZE // PATCH_GRID) ** 2
-TRAINER_VARIANT = "kerem_v11_10p_subpipe_full_sonar_camera_v4"
+TRAINER_VARIANT = "kerem_v11_10p_subpipe_full_sonar_camera_cleananchor_v5"
 BASE_LR = float(os.environ.get("KEREM_LR", "2e-4"))
 WEIGHT_DECAY = float(os.environ.get("KEREM_WEIGHT_DECAY", "0.05"))
 # The project's V1.1 is FamilyEncoderConfig depth 6 (307.8M). The reviewed trainer used depth 2 (201.3M).
@@ -144,6 +144,7 @@ FROZEN_MODULES = tuple(m for m in os.environ.get("KEREM_FREEZE", "").split(",") 
 WARMUP_STEPS = 2000
 VICREG_WEIGHTS = {"invariance": 25.0, "variance": 25.0, "covariance": 1.0, "rank": 1.0}
 TOKEN_MASK_FRACTION = 0.25
+CLEAN_ANCHOR_VIEW = os.environ.get("KEREM_CLEAN_ANCHOR", "1") == "1"
 # Readiness blockers that only say "this is not the reviewed trainer on osfm-universal-v1.1".
 # An explicit owner override may launch past exactly these, and the override is recorded in the run.
 UNREVIEWED_TRAINER_BLOCKER_IDS = frozenset({2, 4, 8})
@@ -488,6 +489,7 @@ def run_v11_10p_training(
         "modalities": json.loads(json.dumps(MODALITIES)),
         "views": json.loads(json.dumps(VIEWS)),
         "step_schedule": "odd steps imaging_sonar, even steps rgb_camera",
+        "clean_anchor_view": CLEAN_ANCHOR_VIEW,
         "gate": "every modality's validation rank >= rank_floor (config: every_family_rank_ge)",
         "validation_batch": "distinct_frames",
         "cache_size": CACHE_SIZE,
@@ -585,7 +587,9 @@ def run_v11_10p_training(
     aug_gen = torch.Generator(device=device).manual_seed(seed + 17)
 
     def _two_view_forward(images: torch.Tensor, step: int, modality: str) -> tuple[torch.Tensor, torch.Tensor]:
-        view_a = _train_view(images, aug_gen, VIEWS[modality]["light"])
+        # View A is the exact clean view used by validation, so the rank/variance terms act on clean frames
+        # (augmented views alone reached train rank >= 75 while clean frames stayed near 45).
+        view_a = _clean_view(images) if CLEAN_ANCHOR_VIEW else _train_view(images, aug_gen, VIEWS[modality]["light"])
         view_b = _train_view(images, aug_gen, VIEWS[modality]["strong"])
         both = torch.cat([view_a, view_b], dim=0)
         with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
