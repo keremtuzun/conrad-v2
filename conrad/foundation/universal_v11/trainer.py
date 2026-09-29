@@ -539,7 +539,8 @@ def run_v11_10p_training(
                 }
                 t_last, step_last = now, step
                 run.log_metrics(metric_record)
-                if health["effective_rank"] > best_rank:
+                # Never select warm-up weights: an untrained model already scores rank 87-99.
+                if step > WARMUP_STEPS and health["effective_rank"] > best_rank:
                     best_rank = health["effective_rank"]
                     best_path = str(run.path / "checkpoints" / "best.pt")
                     save_checkpoint(
