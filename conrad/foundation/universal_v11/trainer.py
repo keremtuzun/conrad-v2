@@ -130,7 +130,7 @@ def _subpipe_frame_refs(stream: str, partition: CorpusPartition, frame_stride: i
 IMAGE_SIZE = 64
 PATCH_GRID = 4
 PATCH_DIM = (IMAGE_SIZE // PATCH_GRID) ** 2
-TRAINER_VARIANT = "kerem_v11_10p_subpipe_patch_vicreg_crop_v2"
+TRAINER_VARIANT = "kerem_v11_10p_subpipe_patch_vicreg_crop_norm_v3"
 BASE_LR = 2.0e-4
 WARMUP_STEPS = 2000
 VICREG_WEIGHTS = {"invariance": 25.0, "variance": 25.0, "covariance": 1.0, "rank": 1.0}
@@ -156,7 +156,6 @@ def readiness_override_record(readiness: dict[str, Any]) -> dict[str, Any]:
 
 
 CACHE_SIZE = 128  # frames are decoded once and kept on the device at this resolution
-CROP_SCALE = (0.30, 1.0)
 CROP_RATIO = (3.0 / 4.0, 4.0 / 3.0)
 
 
@@ -178,14 +177,22 @@ def _patchify(images: torch.Tensor) -> torch.Tensor:
     return patches.reshape(batch, PATCH_GRID * PATCH_GRID, PATCH_DIM).contiguous()
 
 
+def _standardize(images: torch.Tensor) -> torch.Tensor:
+    """Per-frame brightness/contrast normalisation (sonar gain varies strongly along the mission;
+    the held-out block has ~3x lower pixel contrast than the training block)."""
+    mean = images.mean(dim=(-2, -1), keepdim=True)
+    std = images.std(dim=(-2, -1), keepdim=True).clamp_min(1.0e-3)
+    return (images - mean) / std
+
+
 def _clean_view(images: torch.Tensor) -> torch.Tensor:
-    return _patchify(F.interpolate(images, size=(IMAGE_SIZE, IMAGE_SIZE), mode="area"))
+    return _patchify(_standardize(F.interpolate(images, size=(IMAGE_SIZE, IMAGE_SIZE), mode="area")))
 
 
-def _random_resized_crop(images: torch.Tensor, generator: torch.Generator) -> torch.Tensor:
+def _random_resized_crop(images: torch.Tensor, generator: torch.Generator, scale: tuple[float, float]) -> torch.Tensor:
     """Per-sample random-resized crop + port/starboard mirror, on the images' device."""
     batch, device = images.shape[0], images.device
-    area = torch.empty(batch, device=device).uniform_(*CROP_SCALE, generator=generator)
+    area = torch.empty(batch, device=device).uniform_(*scale, generator=generator)
     log_ratio = torch.empty(batch, device=device).uniform_(math.log(CROP_RATIO[0]), math.log(CROP_RATIO[1]), generator=generator)
     ratio = log_ratio.exp()
     width = (area * ratio).sqrt().clamp(max=1.0)
@@ -202,19 +209,23 @@ def _random_resized_crop(images: torch.Tensor, generator: torch.Generator) -> to
     return F.grid_sample(images, grid, mode="bilinear", padding_mode="reflection", align_corners=False)
 
 
-def _augment(payload: torch.Tensor, generator: torch.Generator) -> torch.Tensor:
-    """Sonar-style photometric view: per-frame gain, speckle noise, and random patch dropout."""
-    batch, tokens, _ = payload.shape
-    device = payload.device
-    gain = 0.8 + 0.4 * torch.rand((batch, 1, 1), generator=generator, device=device)
-    speckle = 1.0 + 0.10 * torch.randn(payload.shape, generator=generator, device=device)
-    noise = 0.03 * torch.randn(payload.shape, generator=generator, device=device)
-    keep = torch.rand((batch, tokens, 1), generator=generator, device=device) >= TOKEN_MASK_FRACTION
-    return ((payload * gain * speckle + noise).clamp(0.0, 1.0) * keep).float()
+def _train_view(images: torch.Tensor, generator: torch.Generator, view: dict[str, Any]) -> torch.Tensor:
+    """Crop -> sonar photometrics (gain, speckle, additive noise) -> per-frame standardisation -> patch dropout."""
+    crops = _random_resized_crop(images, generator, view["crop_scale"])
+    batch, device = crops.shape[0], crops.device
+    gain = 0.6 + 0.8 * torch.rand((batch, 1, 1, 1), generator=generator, device=device)
+    speckle = 1.0 + view["speckle"] * torch.randn(crops.shape, generator=generator, device=device)
+    noise = view["noise"] * torch.randn(crops.shape, generator=generator, device=device)
+    patches = _patchify(_standardize((crops * gain * speckle + noise).clamp(0.0, 1.0)))
+    if view["patch_dropout"] > 0:
+        keep = torch.rand((batch, patches.shape[1], 1), generator=generator, device=device) >= view["patch_dropout"]
+        patches = patches * keep
+    return patches.float()
 
 
-def _train_view(images: torch.Tensor, generator: torch.Generator) -> torch.Tensor:
-    return _augment(_patchify(_random_resized_crop(images, generator)), generator)
+# Asymmetric views: the rank term acts on the light view, so near-clean frames must spread out.
+LIGHT_VIEW = {"crop_scale": (0.60, 1.0), "speckle": 0.05, "noise": 0.01, "patch_dropout": 0.0}
+STRONG_VIEW = {"crop_scale": (0.30, 1.0), "speckle": 0.10, "noise": 0.03, "patch_dropout": TOKEN_MASK_FRACTION}
 
 
 def _vicreg_terms(z_a: torch.Tensor, z_b: torch.Tensor, rank_floor: float) -> dict[str, torch.Tensor]:
@@ -381,7 +392,9 @@ def run_v11_10p_training(
         "frame_stride": 1,
         "validation_batch": "distinct_frames",
         "cache_size": CACHE_SIZE,
-        "crop_scale": list(CROP_SCALE),
+        "per_frame_standardize": True,
+        "light_view": {k: list(v) if isinstance(v, tuple) else v for k, v in LIGHT_VIEW.items()},
+        "strong_view": {k: list(v) if isinstance(v, tuple) else v for k, v in STRONG_VIEW.items()},
         "crop_ratio": list(CROP_RATIO),
         "mirror_flip": True,
         "autocast": "bf16" if use_bf16 else "fp32",
@@ -463,8 +476,8 @@ def run_v11_10p_training(
     aug_gen = torch.Generator(device=device).manual_seed(seed + 17)
 
     def _two_view_forward(images: torch.Tensor, step: int) -> tuple[torch.Tensor, torch.Tensor]:
-        view_a = _train_view(images, aug_gen)
-        view_b = _train_view(images, aug_gen)
+        view_a = _train_view(images, aug_gen, LIGHT_VIEW)
+        view_b = _train_view(images, aug_gen, STRONG_VIEW)
         both = torch.cat([view_a, view_b], dim=0)
         with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
             out = model(
