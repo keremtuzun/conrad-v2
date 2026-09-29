@@ -1,5 +1,5 @@
 {
-  "batch_size": 1,
+  "batch_size": 96,
   "family_depth": 1,
   "hourly_cost_tl": 49.02,
   "input_dim": 8,
