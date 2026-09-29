@@ -37,9 +37,7 @@ from conrad.schemas.ids import IdFactory
 from conrad.settings import REPO_ROOT
 from conrad.training.checkpoint import load_checkpoint, save_checkpoint
 from conrad.training.checkpoint_meta import CompatibilityTuple, config_digest
-from conrad.training.determinism import inspect_compute
 from conrad.training.run_dir import RunDirectory, RunPurpose, TerminalStatus, environment_snapshot
-
 
 PAYLOAD_MANIFEST = REPO_ROOT / "artifacts/gates/V1.1/10P_KEREM_HANDOFF/required_payloads.json"
 
@@ -126,16 +124,68 @@ def _subpipe_frame_refs(stream: str, partition: CorpusPartition, frame_stride: i
     return selected
 
 
-def _frame_features(adapter: SubPipeAdapter, ref: Any, *, tokens: int = 4, dim: int = 8) -> torch.Tensor:
+# Kerem variant: the reviewed trainer reduced each frame to 32 row-band means, which carries almost no
+# frame-to-frame variation and pinned validation rank near 4. Each frame is now a PATCH_GRID x PATCH_GRID
+# grid of real image patches (16 tokens = GenericTokenizer.max_tokens), in the spirit of the P4.8 sonar run.
+IMAGE_SIZE = 64
+PATCH_GRID = 4
+PATCH_DIM = (IMAGE_SIZE // PATCH_GRID) ** 2
+TRAINER_VARIANT = "kerem_v11_10p_subpipe_patch_vicreg_v1"
+BASE_LR = 2.0e-4
+WARMUP_STEPS = 2000
+VICREG_WEIGHTS = {"invariance": 25.0, "variance": 25.0, "covariance": 1.0, "rank": 1.0}
+TOKEN_MASK_FRACTION = 0.25
+
+
+def _frame_features(adapter: SubPipeAdapter, ref: Any) -> torch.Tensor:
+    import cv2
+
     image = adapter.load(ref)
-    tensor = torch.from_numpy(image).float()
-    if tensor.ndim == 3:
-        tensor = tensor.mean(dim=2)
-    tensor = tensor / 255.0
-    flat = tensor.flatten()
-    chunks = torch.chunk(flat, tokens * dim)
-    values = torch.tensor([float(chunk.mean()) if chunk.numel() else 0.0 for chunk in chunks], dtype=torch.float32)
-    return values.reshape(tokens, dim)
+    if image.ndim == 3:
+        image = image.mean(axis=2)
+    resized = cv2.resize(image.astype("float32"), (IMAGE_SIZE, IMAGE_SIZE), interpolation=cv2.INTER_AREA)
+    tensor = torch.from_numpy(resized).float() / 255.0
+    side = IMAGE_SIZE // PATCH_GRID
+    patches = tensor.reshape(PATCH_GRID, side, PATCH_GRID, side).permute(0, 2, 1, 3)
+    return patches.reshape(PATCH_GRID * PATCH_GRID, PATCH_DIM).contiguous()
+
+
+def _augment(payload: torch.Tensor, generator: torch.Generator) -> torch.Tensor:
+    """Sonar-style view: per-frame gain, speckle noise, and random patch dropout."""
+    batch, tokens, _ = payload.shape
+    device = payload.device
+    gain = 0.8 + 0.4 * torch.rand((batch, 1, 1), generator=generator).to(device)
+    speckle = 1.0 + 0.10 * torch.randn(payload.shape, generator=generator).to(device)
+    noise = 0.03 * torch.randn(payload.shape, generator=generator).to(device)
+    keep = (torch.rand((batch, tokens, 1), generator=generator) >= TOKEN_MASK_FRACTION).to(device)
+    return ((payload * gain * speckle + noise).clamp(0.0, 1.0) * keep).float()
+
+
+def _vicreg_terms(z_a: torch.Tensor, z_b: torch.Tensor, rank_floor: float) -> dict[str, torch.Tensor]:
+    z_a = z_a.float()
+    z_b = z_b.float()
+    invariance = F.mse_loss(z_a, z_b)
+
+    def _var(z: torch.Tensor) -> torch.Tensor:
+        return F.relu(1.0 - torch.sqrt(z.var(dim=0) + 1.0e-4)).mean()
+
+    def _cov(z: torch.Tensor) -> torch.Tensor:
+        n, d = z.shape
+        centered = z - z.mean(dim=0, keepdim=True)
+        cov = (centered.T @ centered) / max(n - 1, 1)
+        off = cov - torch.diag(torch.diag(cov))
+        return off.pow(2).sum() / d
+
+    rank_loss, _ = rank_diversity_loss(z_a, target=rank_floor)
+    variance = _var(z_a) + _var(z_b)
+    covariance = _cov(z_a) + _cov(z_b)
+    total = (
+        VICREG_WEIGHTS["invariance"] * invariance
+        + VICREG_WEIGHTS["variance"] * variance
+        + VICREG_WEIGHTS["covariance"] * covariance
+        + VICREG_WEIGHTS["rank"] * rank_loss
+    )
+    return {"total": total, "invariance": invariance, "variance": variance, "covariance": covariance, "rank": rank_loss}
 
 
 class _SubPipeBatcher:
@@ -251,11 +301,26 @@ def run_v11_10p_training(
     device = _device(require_cuda=not allow_cpu_smoke)
 
     run_name = run_id or f"v11-10p-{time.time_ns()}"
-    env = environment_snapshot(device=str(device), precision="float32")
+    use_bf16 = device.type == "cuda" and torch.cuda.is_bf16_supported()
+    if device.type == "cuda":
+        torch.backends.cuda.matmul.allow_tf32 = True
+        torch.backends.cudnn.allow_tf32 = True
+    variant = {
+        "trainer_variant": TRAINER_VARIANT,
+        "image_size": IMAGE_SIZE,
+        "patch_grid": PATCH_GRID,
+        "patch_dim": PATCH_DIM,
+        "base_lr": BASE_LR,
+        "warmup_steps": WARMUP_STEPS,
+        "vicreg_weights": VICREG_WEIGHTS,
+        "token_mask_fraction": TOKEN_MASK_FRACTION,
+        "autocast": "bf16" if use_bf16 else "fp32",
+    }
+    env = environment_snapshot(device=str(device), precision="bf16-autocast" if use_bf16 else "float32")
     run = RunDirectory.create(
         runs_root,
         run_name,
-        resolved_config={**cfg, "max_steps_effective": steps, "allow_cpu_smoke": allow_cpu_smoke},
+        resolved_config={**cfg, "max_steps_effective": steps, "allow_cpu_smoke": allow_cpu_smoke, "kerem_variant": variant},
         manifests={
             "payloads": payload_report,
             "subpipe_manifest": str(SUBPIPE_MANIFEST.relative_to(REPO_ROOT)),
@@ -265,12 +330,40 @@ def run_v11_10p_training(
         environment=env,
     )
     model = UniversalOSFMV11(
-        input_dims={"imaging_sonar": 8},
+        input_dims={"imaging_sonar": PATCH_DIM},
         family_encoder_config=FamilyEncoderConfig(depth=1 if allow_cpu_smoke else 2),
         include_v1_bank=not allow_cpu_smoke,
     ).to(device)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1.0e-4, weight_decay=0.01)
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(steps, 1))
+    # Anchor import: copy every shape-compatible tensor from the qualified upstream checkpoint.
+    upstream_import: dict[str, Any] = {"attempted": False}
+    if not resume and not allow_cpu_smoke:
+        from conrad.foundation.universal_v11.migration import load_v1_checkpoint_for_v11
+
+        upstream_path = REPO_ROOT / json.loads(PAYLOAD_MANIFEST.read_text(encoding="utf-8"))["payloads"][0]["path"]
+        try:
+            mig = load_v1_checkpoint_for_v11(model, upstream_path, strict_gate=False)
+            upstream_import = {
+                "attempted": True,
+                "checkpoint_sha256": mig.checkpoint_sha256,
+                "source_label": mig.source_label,
+                "loaded_tensor_count": len(mig.loaded_keys),
+                "skipped_tensor_count": len(mig.skipped_keys),
+                "missing_v11_tensor_count": len(mig.missing_v11_keys),
+                "loaded_tensors": list(mig.loaded_keys),
+            }
+        except Exception as exc:
+            upstream_import = {"attempted": True, "error": f"{type(exc).__name__}: {exc}", "loaded_tensor_count": 0}
+        model.to(device)
+        run.write_artifact("reports", "upstream_import.json", json.dumps(upstream_import, indent=2, sort_keys=True))
+    optimizer = torch.optim.AdamW(model.parameters(), lr=BASE_LR, weight_decay=0.01)
+
+    def _lr_lambda(step_idx: int) -> float:
+        if step_idx < WARMUP_STEPS:
+            return (step_idx + 1) / WARMUP_STEPS
+        progress = (step_idx - WARMUP_STEPS) / max(1, steps - WARMUP_STEPS)
+        return 0.02 + 0.98 * 0.5 * (1.0 + math.cos(math.pi * min(1.0, progress)))
+
+    scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, _lr_lambda)
     start_step = 0
     manifest_digest = load_manifest(SUBPIPE_MANIFEST).manifest_digest()
     split_hash = split_hash_for_plan({"dataset": SUBPIPE_SOURCE_ID, "policy": "contiguous PRETRAIN_REAL/VALIDATION"})
@@ -280,7 +373,7 @@ def run_v11_10p_training(
         split_hash=split_hash,
         component="foundation.osfm.universal_v11",
         representation_pretraining_id="OSFM-UNIVERSAL-V1.1-10P-CANDIDATE",
-        extra={"trainer": "reviewed_v11_10p_subpipe_v1"},
+        extra={"trainer": TRAINER_VARIANT},
     )
     if resume:
         loaded = load_checkpoint(resume, expected=compatibility, model=model, map_location=str(device))
@@ -295,18 +388,37 @@ def run_v11_10p_training(
     best_path: str | None = None
     last_path: str | None = None
     train_sample_ids: set[str] = set()
+    aug_gen = torch.Generator().manual_seed(seed + 17)
+
+    def _two_view_forward(payload: torch.Tensor, step: int) -> tuple[torch.Tensor, torch.Tensor]:
+        view_a = _augment(payload, aug_gen)
+        view_b = _augment(payload, aug_gen)
+        both = torch.cat([view_a, view_b], dim=0)
+        with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
+            out = model(
+                (_make_input("imaging_sonar", both, step),),
+                reference_time_s=torch.full((both.shape[0],), float(step), device=device),
+            )
+        z = out.fusion.global_repr.float()
+        return z[: payload.shape[0]], z[payload.shape[0] :]
+
+    t_start = time.time()
+    t_last, step_last = t_start, start_step
+
+    def _on_sigterm(signum: int, frame: Any) -> None:  # watchdog stop -> sealed FAILED run, not a torn one
+        raise RuntimeError("terminated by SIGTERM (external watchdog)")
+
+    import signal
+
+    signal.signal(signal.SIGTERM, _on_sigterm)
     try:
         for step in range(start_step + 1, steps + 1):
             model.train()
             payload, sample_ids = batcher.batch(batcher.train_refs, step)
             train_sample_ids.update(sample_ids)
-            student = payload + torch.randn_like(payload) * 0.01
-            out_a = model((_make_input("imaging_sonar", payload, step),), reference_time_s=torch.full((payload.shape[0],), float(step), device=device))
-            out_b = model((_make_input("imaging_sonar", student, step),), reference_time_s=torch.full((payload.shape[0],), float(step), device=device))
-            repr_a = out_a.fusion.global_repr.float()
-            repr_b = out_b.fusion.global_repr.float()
-            rank_loss, _ = rank_diversity_loss(repr_a, target=rank_floor)
-            loss = F.mse_loss(F.normalize(repr_a, dim=-1), F.normalize(repr_b.detach(), dim=-1)) + rank_loss
+            z_a, z_b = _two_view_forward(payload, step)
+            terms = _vicreg_terms(z_a, z_b, rank_floor)
+            loss = terms["total"]
             if not torch.isfinite(loss):
                 raise FloatingPointError(f"non-finite loss at step {step}")
             optimizer.zero_grad(set_to_none=True)
@@ -318,16 +430,28 @@ def run_v11_10p_training(
                 model.eval()
                 with torch.no_grad():
                     val_payload, val_ids = batcher.batch(batcher.val_refs, step)
-                    val_out = model((_make_input("imaging_sonar", val_payload, step),), reference_time_s=torch.full((val_payload.shape[0],), float(step), device=device))
-                    health = _representation_health(val_out.fusion.global_repr, rank_floor)
+                    with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
+                        val_out = model((_make_input("imaging_sonar", val_payload, step),), reference_time_s=torch.full((val_payload.shape[0],), float(step), device=device))
+                    health = _representation_health(val_out.fusion.global_repr.float(), rank_floor)
+                    val_za, val_zb = _two_view_forward(val_payload, step)
+                    val_terms = _vicreg_terms(val_za, val_zb, rank_floor)
+                now = time.time()
                 metric_record = {
                     "step": step,
+                    "time_s": now - t_start,
+                    "steps_per_s": (step - step_last) / max(now - t_last, 1.0e-9),
                     "train/loss": float(loss.detach().cpu()),
+                    "train/invariance": float(terms["invariance"].detach().cpu()),
+                    "train/variance": float(terms["variance"].detach().cpu()),
+                    "train/covariance": float(terms["covariance"].detach().cpu()),
+                    "train/rank_loss": float(terms["rank"].detach().cpu()),
+                    "val/loss": float(val_terms["total"].cpu()),
                     "val/representation_effective_rank": health["effective_rank"],
                     "val/representation_collapse_score": health["collapse_score"],
                     "val/rank_pass": float(health["rank_pass"]),
                     "lr": float(scheduler.get_last_lr()[0]),
                 }
+                t_last, step_last = now, step
                 run.log_metrics(metric_record)
                 if health["effective_rank"] > best_rank:
                     best_rank = health["effective_rank"]
@@ -350,7 +474,7 @@ def run_v11_10p_training(
                         is_encoder=True,
                         representation_pretraining_id="OSFM-UNIVERSAL-V1.1-10P-CANDIDATE",
                         selection_metric="val/representation_effective_rank",
-                        extra_compatibility={"trainer": "reviewed_v11_10p_subpipe_v1"},
+                        extra_compatibility={"trainer": TRAINER_VARIANT},
                         trainer_state={"step": step, "train_sample_ids": sorted(train_sample_ids), "val_sample_ids": list(val_ids)},
                     )
             if step % checkpoint_every == 0 or step == steps:
@@ -373,7 +497,7 @@ def run_v11_10p_training(
                     is_encoder=True,
                     representation_pretraining_id="OSFM-UNIVERSAL-V1.1-10P-CANDIDATE",
                     selection_metric="val/representation_effective_rank",
-                    extra_compatibility={"trainer": "reviewed_v11_10p_subpipe_v1"},
+                    extra_compatibility={"trainer": TRAINER_VARIANT},
                     trainer_state={"step": step, "train_sample_ids": sorted(train_sample_ids)},
                 )
         report = {
@@ -391,6 +515,10 @@ def run_v11_10p_training(
             "registered_modality_count": len(MODALITY_REGISTRY),
             "family_count": len(EncoderFamily),
             "payloads": payload_report,
+            "kerem_variant": variant,
+            "reviewed_trainer": False,
+            "upstream_import_loaded_tensor_count": upstream_import.get("loaded_tensor_count"),
+            "wall_clock_s": time.time() - t_start,
         }
         run.write_artifact("reports", "v11_10p_training_report.json", json.dumps(report, indent=2, sort_keys=True))
         run.seal(TerminalStatus.COMPLETED if report["decision"] != "NO-GO" else TerminalStatus.FAILED, time.time_ns())
