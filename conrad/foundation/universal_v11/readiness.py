@@ -77,6 +77,8 @@ def evaluate_v11_10p_readiness() -> dict[str, Any]:
     fallback_launch = _load_yaml(fallback_launch_path)
 
     subpipe_path = REPO_ROOT / "artifacts/data/public.subpipe/raw/SubPipeMini2.zip"
+    expected_subpipe_sha256 = "a3068be28471786c726cd6100e0b1d92d1c17615a4dcfe7f5544ba758821188f"
+    subpipe_digest_ok = subpipe_path.is_file() and _sha256(subpipe_path) == expected_subpipe_sha256
     uvvid_manifest = REPO_ROOT / "datasets/public/uvvid.manifest.yaml"
     subpipe_manifest = REPO_ROOT / "datasets/public/subpipe.manifest.yaml"
     checkpoint_meta_path = REPO_ROOT / "artifacts/gates/OSFM_S_PRETRAIN_V1/qualified_checkpoint_metadata.json"
@@ -99,6 +101,10 @@ def evaluate_v11_10p_readiness() -> dict[str, Any]:
     training_doc = REPO_ROOT / "docs/TRAINING.md"
     cli_commands = (REPO_ROOT / "conrad/cli/commands.py").read_text(encoding="utf-8")
     launch_command_registered = "osfm-v11-10p-launch" in cli_commands
+    launch_is_preflight_only = "This command is a preflight guard only" in cli_commands
+    reviewed_trainer_registered = "run_v11_10p_training" in cli_commands and "reviewed_v11_10p_subpipe_v1" in (
+        REPO_ROOT / "conrad/foundation/universal_v11/trainer.py"
+    ).read_text(encoding="utf-8")
 
     items = [
         ReadinessItem(
@@ -128,26 +134,35 @@ def evaluate_v11_10p_readiness() -> dict[str, Any]:
             and launch_path.is_file()
             and fallback_launch_path.is_file()
             and tenp.get("training_budget", {}).get("total_optimizer_steps") == 1_200_000
-            and launch_command_registered,
+            and launch_command_registered
+            and reviewed_trainer_registered,
             False,
             4,
             "P4/P4.8/10P training entrypoint and frozen config",
             (
                 f"config={tenp_path.relative_to(REPO_ROOT)}; protocol={launch_path.relative_to(REPO_ROOT)}; "
                 f"formal_training_allowed={tenp.get('formal_training_allowed')}; "
-                f"launch_command_registered={launch_command_registered}"
+                f"launch_command_registered={launch_command_registered}; "
+                f"launch_is_preflight_only={launch_is_preflight_only}; "
+                f"reviewed_trainer_registered={reviewed_trainer_registered}"
             ),
             None
-            if launch_command_registered
-            else "Register the fail-closed osfm-v11-10p-launch command before handoff.",
+            if reviewed_trainer_registered
+            else "Register the reviewed formal V1.1 10P trainer command before paid training; current osfm-v11-10p-launch is a preflight/launch-check surface only.",
         ),
         _status_item(
-            subpipe_path.is_file() and uvvid_manifest.is_file() and subpipe_manifest.is_file(),
-            True,
+            subpipe_digest_ok and uvvid_manifest.is_file() and subpipe_manifest.is_file(),
+            False,
             5,
-            "dataset manifests and paths",
-            f"SubPipeMini2.zip_present={subpipe_path.is_file()}; uvvid_manifest={uvvid_manifest.is_file()}; subpipe_manifest={subpipe_manifest.is_file()}; semantic_claim_all_829={not tenp['source_constraints'].get('semantic_training_claim_requires_data_manifest', True)}",
-            "Keep 829 entries interface-covered only unless each semantic modality has a usable manifest.",
+            "dataset manifests and payload bytes",
+            (
+                f"SubPipeMini2.zip_present={subpipe_path.is_file()}; "
+                f"SubPipeMini2.sha256_ok={subpipe_digest_ok}; "
+                f"SubPipeMini2.expected_sha256={expected_subpipe_sha256}; "
+                f"uvvid_manifest={uvvid_manifest.is_file()}; subpipe_manifest={subpipe_manifest.is_file()}; "
+                f"semantic_claim_all_829={not tenp['source_constraints'].get('semantic_training_claim_requires_data_manifest', True)}"
+            ),
+            "Transfer or mount the ignored SubPipeMini2.zip payload and verify its SHA-256 before paid training.",
         ),
         _status_item(
             checkpoint_digest_ok
@@ -157,7 +172,14 @@ def evaluate_v11_10p_readiness() -> dict[str, Any]:
             False,
             6,
             "valid upstream checkpoint/artifact references",
-            f"metadata={checkpoint_meta_path.relative_to(REPO_ROOT)}; checkpoint_present={checkpoint_path.is_file()}; digest_ok={checkpoint_digest_ok}",
+            (
+                f"metadata={checkpoint_meta_path.relative_to(REPO_ROOT)}; "
+                f"checkpoint_path={checkpoint_meta.get('checkpoint_path')}; "
+                f"checkpoint_present={checkpoint_path.is_file()}; "
+                f"expected_sha256={checkpoint_meta.get('checkpoint_id')}; "
+                f"digest_ok={checkpoint_digest_ok}"
+            ),
+            "Transfer or mount the ignored upstream checkpoint file and verify the SHA-256 before paid training.",
         ),
         _status_item(
             (REPO_ROOT / "conrad/foundation/pretraining/p48_promotion.py").is_file()
@@ -169,8 +191,9 @@ def evaluate_v11_10p_readiness() -> dict[str, Any]:
         ),
         _status_item(
             tenp.get("training_budget", {}).get("checkpoint_every_steps") is not None
-            and "checkpoint_reload_exact_match" in json.dumps(tenp),
-            True,
+            and "checkpoint_reload_exact_match" in json.dumps(tenp)
+            and reviewed_trainer_registered,
+            False,
             8,
             "checkpointing/resume and output directories",
             "10P config declares checkpoint cadence and reload gates, but no formal trainer/resume implementation is registered.",

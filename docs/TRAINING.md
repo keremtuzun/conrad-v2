@@ -49,8 +49,16 @@ uv run conrad train osfm-v11-10p-readiness --output artifacts/gates/V1.1/10P_KER
 ```
 
 The command never trains. It verifies the current branch/commit, 307M-class V1.1 architecture, 829-entry registry,
-candidate configs, upstream checkpoint metadata, local dataset artifacts, gates, dependency files, launch protocols
+candidate configs, upstream checkpoint metadata and payload bytes, local dataset artifacts, gates, dependency files, launch protocols
 and handoff documentation. It exits nonzero until every blocker is gone and prints `READY FOR KEREM`.
+
+Large payloads are intentionally not stored in Git. A clean clone must be supplied with:
+
+- `artifacts/runs/train-osfm_u1_sonar_research-1790575109765916596/checkpoints/osfm_u1_sonar_research_full.pt`, SHA-256 `b2dfc162c1d72e4363643b516b6566eb0f11ca4a874f9674fc5b06f1ddf85696`.
+- `artifacts/data/public.subpipe/raw/SubPipeMini2.zip`, SHA-256 `a3068be28471786c726cd6100e0b1d92d1c17615a4dcfe7f5544ba758821188f`.
+
+The machine-readable payload list is `artifacts/gates/V1.1/10P_KEREM_HANDOFF/required_payloads.json`. The remaining
+open blocker is tracked in `docs/KEREM_P4_10P_OPEN_BLOCKERS.md`.
 
 The original 8-L4 launch protocol remains documented, but the current approved handoff path is the 1-L4 fallback in
 `configs/train/osfm/v11_p4_1l4_10p_fallback_launch_protocol.yaml`, approved by
@@ -66,7 +74,7 @@ The guarded launch command is:
 uv run conrad train osfm-v11-10p-launch --config configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml --readiness artifacts/gates/V1.1/10P_KEREM_HANDOFF/readiness.json
 ```
 
-It refuses unless the readiness output is already `READY FOR KEREM`.
+It refuses unless the readiness output is already `READY FOR KEREM`, then invokes the reviewed V1.1 10P trainer. The trainer is data-backed on verified SubPipe rendered side-scan sonar and must report non-SubPipe modalities as interface-covered/inactive rather than semantically mastered.
 
 ## Other pieces
 

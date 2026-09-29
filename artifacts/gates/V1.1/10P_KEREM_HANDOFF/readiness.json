@@ -28,7 +28,7 @@
   "items": [
     {
       "action": "Hand off a clean committed tree or explicitly include the dirty artifact list.",
-      "evidence": "path=/Users/burakaksu/.codex/.chatgpt-projects/g-p-6a8d5c04f0dc8191b725da34b795a7ca/conrad-v2; branch=osfm-universal-v1.1; commit=c5044270e0474bb5c7a99e7ff9ec83ec60eb2a4a; dirty_entries=14",
+      "evidence": "path=/Users/burakaksu/.codex/.chatgpt-projects/g-p-6a8d5c04f0dc8191b725da34b795a7ca/conrad-v2; branch=osfm-universal-v1.1; commit=366b59ea87827a5b5eca89b0d25a662a446754ab; dirty_entries=23",
       "id": 1,
       "status": "WARNING",
       "title": "repo path and branch/ref/commit"
@@ -49,21 +49,21 @@
     },
     {
       "action": null,
-      "evidence": "config=configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml; protocol=configs/train/osfm/v11_p4_10p_3am_launch_protocol.yaml; formal_training_allowed=False; launch_command_registered=True",
+      "evidence": "config=configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml; protocol=configs/train/osfm/v11_p4_10p_3am_launch_protocol.yaml; formal_training_allowed=False; launch_command_registered=True; launch_is_preflight_only=False; reviewed_trainer_registered=True",
       "id": 4,
       "status": "PASS",
       "title": "P4/P4.8/10P training entrypoint and frozen config"
     },
     {
-      "action": "Keep 829 entries interface-covered only unless each semantic modality has a usable manifest.",
-      "evidence": "SubPipeMini2.zip_present=True; uvvid_manifest=True; subpipe_manifest=True; semantic_claim_all_829=False",
+      "action": "Transfer or mount the ignored SubPipeMini2.zip payload and verify its SHA-256 before paid training.",
+      "evidence": "SubPipeMini2.zip_present=True; SubPipeMini2.sha256_ok=True; SubPipeMini2.expected_sha256=a3068be28471786c726cd6100e0b1d92d1c17615a4dcfe7f5544ba758821188f; uvvid_manifest=True; subpipe_manifest=True; semantic_claim_all_829=False",
       "id": 5,
       "status": "PASS",
-      "title": "dataset manifests and paths"
+      "title": "dataset manifests and payload bytes"
     },
     {
-      "action": null,
-      "evidence": "metadata=artifacts/gates/OSFM_S_PRETRAIN_V1/qualified_checkpoint_metadata.json; checkpoint_present=True; digest_ok=True",
+      "action": "Transfer or mount the ignored upstream checkpoint file and verify the SHA-256 before paid training.",
+      "evidence": "metadata=artifacts/gates/OSFM_S_PRETRAIN_V1/qualified_checkpoint_metadata.json; checkpoint_path=artifacts/runs/train-osfm_u1_sonar_research-1790575109765916596/checkpoints/osfm_u1_sonar_research_full.pt; checkpoint_present=True; expected_sha256=b2dfc162c1d72e4363643b516b6566eb0f11ca4a874f9674fc5b06f1ddf85696; digest_ok=True",
       "id": 6,
       "status": "PASS",
       "title": "valid upstream checkpoint/artifact references"
@@ -98,7 +98,7 @@
     },
     {
       "action": "Run the documented secret scan and clean-tree check before external handoff.",
-      "evidence": "git_dirty_entries=14; cloud_quota_failed_gate=['quota_allows_8_l4']",
+      "evidence": "git_dirty_entries=23; cloud_quota_failed_gate=['quota_allows_8_l4']",
       "id": 11,
       "status": "PASS",
       "title": "hidden old V1/stale symlink/mounted-path dependency scan"
@@ -114,10 +114,16 @@
   "launch_command": "uv run conrad train osfm-v11-10p-launch --config configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml --readiness artifacts/gates/V1.1/10P_KEREM_HANDOFF/readiness.json",
   "repo": {
     "branch": "osfm-universal-v1.1",
-    "commit": "c5044270e0474bb5c7a99e7ff9ec83ec60eb2a4a",
+    "commit": "366b59ea87827a5b5eca89b0d25a662a446754ab",
     "dirty_entries": [
       "M artifacts/gates/P5_P10/requirement_audit.json",
       " M artifacts/gates/P5_P10/status.json",
+      " M artifacts/gates/V1.1/10P_KEREM_HANDOFF/readiness.json",
+      " M conrad/cli/commands.py",
+      " M conrad/foundation/universal_v11/readiness.py",
+      " M docs/HANDOFF_KEREM_V11_10P.md",
+      " M docs/TRAINING.md",
+      " M tests/unit/foundation/universal_v11/test_readiness.py",
       "?? artifacts/gates/P4.8H/formal_sonar_launch.txt",
       "?? artifacts/gates/P4.8H/formal_sonar_python.pid",
       "?? artifacts/gates/P4.8H/formal_sonar_run.out.txt",
@@ -125,10 +131,13 @@
       "?? artifacts/gates/P4.8H/promotion_review_1790534022995482843.json",
       "?? artifacts/gates/P4.8L/",
       "?? artifacts/gates/P5_P10/prestart_upstream_clearance.json",
+      "?? artifacts/gates/V1.1/10P_KEREM_HANDOFF/required_payloads.json",
       "?? artifacts/gates/V1.1/local_fast_pillar_benchmark.json",
       "?? artifacts/gates/V1.1/local_mechanical_pillar_benchmark.json",
       "?? artifacts/gates/V1.1/test_microbenchmark/",
+      "?? conrad/foundation/universal_v11/trainer.py",
       "?? conrad/oceansense/execution.py",
+      "?? docs/KEREM_P4_10P_OPEN_BLOCKERS.md",
       "?? notebooks/"
     ],
     "path": "/Users/burakaksu/.codex/.chatgpt-projects/g-p-6a8d5c04f0dc8191b725da34b795a7ca/conrad-v2"

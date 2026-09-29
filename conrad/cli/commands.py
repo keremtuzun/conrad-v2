@@ -274,8 +274,13 @@ def train_osfm_v11_10p_readiness(
 def train_osfm_v11_10p_launch(
     config: str = typer.Option("configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml", "--config"),
     readiness: str = typer.Option("artifacts/gates/V1.1/10P_KEREM_HANDOFF/readiness.json", "--readiness"),
+    runs_root: str = typer.Option("artifacts/runs", "--runs-root"),
+    run_id: str | None = typer.Option(None, "--run-id"),
+    max_steps: int | None = typer.Option(None, "--max-steps"),
+    resume: str | None = typer.Option(None, "--resume"),
+    allow_cpu_smoke: bool = typer.Option(False, "--allow-cpu-smoke"),
 ) -> None:
-    """Fail-closed formal V1.1 10P launch handoff. Refuses unless readiness is green."""
+    """Fail-closed reviewed V1.1 10P trainer launch."""
     readiness_path = Path(readiness)
     if not readiness_path.is_file():
         typer.echo(
@@ -307,16 +312,18 @@ def train_osfm_v11_10p_launch(
             )
         )
         raise typer.Exit(3)
-    typer.echo(
-        json.dumps(
-            {
-                "decision": "READY_TO_LAUNCH",
-                "config": config,
-                "note": "Formal training implementation must be invoked by the reviewed launch runner for this config.",
-            },
-            indent=2,
-        )
+    from conrad.foundation.universal_v11.trainer import run_v11_10p_training
+
+    result = run_v11_10p_training(
+        config_path=config,
+        readiness_path=readiness,
+        runs_root=runs_root,
+        run_id=run_id,
+        max_steps_override=max_steps,
+        resume=resume,
+        allow_cpu_smoke=allow_cpu_smoke,
     )
+    typer.echo(json.dumps(result, indent=2, sort_keys=True, default=str))
 
 
 @eval_app.command("run")

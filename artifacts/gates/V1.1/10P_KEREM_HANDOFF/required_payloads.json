@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0.0",
+  "gate_id": "OSFM-V11-10P-REQUIRED-PAYLOADS",
+  "status": "TRANSFER_REQUIRED",
+  "payloads": [
+    {
+      "id": "upstream_checkpoint",
+      "path": "artifacts/runs/train-osfm_u1_sonar_research-1790575109765916596/checkpoints/osfm_u1_sonar_research_full.pt",
+      "sha256": "b2dfc162c1d72e4363643b516b6566eb0f11ca4a874f9674fc5b06f1ddf85696",
+      "size_bytes": 345734400,
+      "git_tracked": false,
+      "required_before": "readiness",
+      "purpose": "qualified OSFM-S-PRETRAIN-V1 upstream checkpoint payload"
+    },
+    {
+      "id": "subpipe_dataset",
+      "path": "artifacts/data/public.subpipe/raw/SubPipeMini2.zip",
+      "sha256": "a3068be28471786c726cd6100e0b1d92d1c17615a4dcfe7f5544ba758821188f",
+      "size_bytes": 4924930050,
+      "git_tracked": false,
+      "required_before": "readiness",
+      "purpose": "SubPipeMini2 rendered side-scan dataset payload"
+    }
+  ],
+  "verify_command": "python - <<'PY'\nfrom pathlib import Path\nimport hashlib, json\nm=json.load(open('artifacts/gates/V1.1/10P_KEREM_HANDOFF/required_payloads.json'))\nfor p in m['payloads']:\n    path=Path(p['path'])\n    if not path.is_file():\n        raise SystemExit(f\"MISSING {p['id']}: {path}\")\n    h=hashlib.sha256(path.read_bytes()).hexdigest()\n    if h != p['sha256']:\n        raise SystemExit(f\"HASH MISMATCH {p['id']}: {h} != {p['sha256']}\")\n    print(f\"OK {p['id']} {path} {h}\")\nPY",
+  "notes": [
+    "These files are intentionally ignored by Git because they are large binary payloads.",
+    "A clean clone must receive them through a separate transfer or mounted artifact store.",
+    "Do not claim READY FOR KEREM unless both payloads are present and hash-verified."
+  ]
+}
