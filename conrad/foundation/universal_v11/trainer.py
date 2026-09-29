@@ -208,7 +208,7 @@ def _full_index() -> dict[str, list[tuple[int, str]]]:
             match = _FULL_MEMBER.match(name)
             if match:
                 # epoch seconds, with or without a fractional part (the full release has both)
-                out[_FOLDER_STREAM[match.group(2)]].append((int(round(float(match.group(3)) * 1.0e9)), name))
+                out[_FOLDER_STREAM[match.group(2)]].append((round(float(match.group(3)) * 1.0e9), name))
     return {stream: sorted(refs) for stream, refs in out.items()}
 
 
