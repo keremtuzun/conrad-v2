@@ -135,6 +135,23 @@ BASE_LR = 2.0e-4
 WARMUP_STEPS = 2000
 VICREG_WEIGHTS = {"invariance": 25.0, "variance": 25.0, "covariance": 1.0, "rank": 1.0}
 TOKEN_MASK_FRACTION = 0.25
+# Readiness blockers that only say "this is not the reviewed trainer on osfm-universal-v1.1".
+# An explicit owner override may launch past exactly these, and the override is recorded in the run.
+UNREVIEWED_TRAINER_BLOCKER_IDS = frozenset({2, 4, 8})
+
+
+def readiness_override_record(readiness: dict[str, Any]) -> dict[str, Any]:
+    blockers = [item for item in readiness.get("items", []) if item.get("status") == "BLOCKER"]
+    ids = {int(item["id"]) for item in blockers}
+    if not ids or not ids <= UNREVIEWED_TRAINER_BLOCKER_IDS:
+        raise RuntimeError(f"override only covers unreviewed-trainer blockers {sorted(UNREVIEWED_TRAINER_BLOCKER_IDS)}; got {sorted(ids)}")
+    return {
+        "readiness_decision": readiness.get("decision"),
+        "overridden_blockers": [{"id": b["id"], "title": b["title"], "evidence": b["evidence"]} for b in blockers],
+        "authorized_by": "Kerem (repository owner); reviewer Burak unavailable",
+        "authorized_on": "2026-09-29",
+        "reason": "reviewed trainer benchmarked NO-GO (val rank 4.06 < 75); Kerem variant trainer launched instead",
+    }
 
 
 def _frame_features(adapter: SubPipeAdapter, ref: Any) -> torch.Tensor:
@@ -281,10 +298,14 @@ def run_v11_10p_training(
     max_steps_override: int | None = None,
     resume: str | Path | None = None,
     allow_cpu_smoke: bool = False,
+    readiness_override: bool = False,
 ) -> dict[str, Any]:
     readiness = json.loads((REPO_ROOT / readiness_path if not Path(readiness_path).is_absolute() else Path(readiness_path)).read_text(encoding="utf-8"))
+    override_record: dict[str, Any] | None = None
     if readiness.get("decision") != "READY FOR KEREM":
-        raise RuntimeError("V1.1 10P training requires READY FOR KEREM readiness output")
+        if not readiness_override:
+            raise RuntimeError("V1.1 10P training requires READY FOR KEREM readiness output")
+        override_record = readiness_override_record(readiness)
     payload_report = verify_required_payloads()
     if payload_report["decision"] != "PASS":
         raise RuntimeError(f"required payloads are not verified: {payload_report['blockers']}")
@@ -324,6 +345,7 @@ def run_v11_10p_training(
         manifests={
             "payloads": payload_report,
             "subpipe_manifest": str(SUBPIPE_MANIFEST.relative_to(REPO_ROOT)),
+            "readiness_override": override_record,
         },
         purpose=RunPurpose.DEVELOPMENT if allow_cpu_smoke else RunPurpose.ACCEPTANCE,
         clock_ns=time.time_ns,
@@ -517,6 +539,7 @@ def run_v11_10p_training(
             "payloads": payload_report,
             "kerem_variant": variant,
             "reviewed_trainer": False,
+            "readiness_override": override_record,
             "upstream_import_loaded_tensor_count": upstream_import.get("loaded_tensor_count"),
             "wall_clock_s": time.time() - t_start,
         }

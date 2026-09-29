@@ -279,6 +279,11 @@ def train_osfm_v11_10p_launch(
     max_steps: int | None = typer.Option(None, "--max-steps"),
     resume: str | None = typer.Option(None, "--resume"),
     allow_cpu_smoke: bool = typer.Option(False, "--allow-cpu-smoke"),
+    kerem_override: bool = typer.Option(
+        False,
+        "--kerem-override-unreviewed-trainer",
+        help="Owner override: launch past ONLY the unreviewed-trainer readiness blockers; recorded in the run.",
+    ),
 ) -> None:
     """Fail-closed reviewed V1.1 10P trainer launch."""
     readiness_path = Path(readiness)
@@ -298,7 +303,16 @@ def train_osfm_v11_10p_launch(
         )
         raise typer.Exit(3)
     report = json.loads(readiness_path.read_text(encoding="utf-8"))
-    if report.get("decision") != "READY FOR KEREM":
+    if report.get("decision") != "READY FOR KEREM" and kerem_override:
+        from conrad.foundation.universal_v11.trainer import readiness_override_record
+
+        try:
+            record = readiness_override_record(report)
+        except RuntimeError as exc:
+            typer.echo(json.dumps({"decision": "REFUSED", "reason": str(exc)}, indent=2))
+            raise typer.Exit(3) from exc
+        typer.echo(json.dumps({"decision": "OWNER_OVERRIDE", "override": record}, indent=2))
+    elif report.get("decision") != "READY FOR KEREM":
         typer.echo(
             json.dumps(
                 {
@@ -322,6 +336,7 @@ def train_osfm_v11_10p_launch(
         max_steps_override=max_steps,
         resume=resume,
         allow_cpu_smoke=allow_cpu_smoke,
+        readiness_override=kerem_override,
     )
     typer.echo(json.dumps(result, indent=2, sort_keys=True, default=str))
 
