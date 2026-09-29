@@ -1,0 +1,30 @@
+{
+  "blockers": [
+    "rank_below_75"
+  ],
+  "checkpoint": "artifacts/gates/V1.1/P4_1L4_10P_fallback_benchmark/microbenchmark_checkpoint.pt",
+  "checkpoint_reload_matches": true,
+  "decision": "NO-GO",
+  "device": "cuda",
+  "family_count": 15,
+  "final_effective_rank": 1.0,
+  "finite": true,
+  "formal_training_launched": false,
+  "gate_id": "OSFM-V11-TRAINING-MICROBENCH-001",
+  "gpu_name": "NVIDIA L4",
+  "hourly_cost_tl": 49.02,
+  "loss_first": 1.9866565465927124,
+  "loss_last": 1.9821946620941162,
+  "measured_steps": 900,
+  "projected_cost_tl": 3420.9161364275274,
+  "projected_hours": 69.7861308940744,
+  "rank_floor": 75.0,
+  "registry_size": 829,
+  "routeable_family_count": 15,
+  "status": "VALIDATED-RUN",
+  "steps_per_second": 4.776498267818956,
+  "successful_steps": 1000,
+  "target_steps": 1200000,
+  "timed_seconds": 188.4225534140009,
+  "warmup_discard_steps": 100
+}

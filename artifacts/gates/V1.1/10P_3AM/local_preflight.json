@@ -1,0 +1,29 @@
+{
+  "branch": "osfm-universal-v1.1",
+  "checked_at_utc": "2026-09-29T00:08:05Z",
+  "commit": "88198e4a44a15ad034524e18ae53b6477bc3db9c",
+  "decision": "GO",
+  "formal_training_launched": false,
+  "registry": {
+    "coverage_complete": true,
+    "covered_modalities": 829,
+    "family_count": 15,
+    "minimum_effective_rank": 78.85550689697266,
+    "report": "artifacts/gates/V1.1/v11_registry_benchmark_local_strict.json"
+  },
+  "pillar_benchmark": {
+    "decision": "GO",
+    "minimum_effective_rank": 79.9802474975586,
+    "report": "artifacts/gates/V1.1/v11_pillar_benchmark_local_strict.json"
+  },
+  "tests": {
+    "command": "PYTHONPATH=$PWD .venv/bin/pytest tests/unit/foundation/universal_v11 -q",
+    "passed": 27,
+    "failed": 0
+  },
+  "working_tree": {
+    "tracked_changes": [],
+    "p4_v1_line_modified": false,
+    "untracked_artifacts_preserved": true
+  }
+}

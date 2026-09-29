@@ -39,6 +39,35 @@ raised and the CLI prints `BLOCKED_EXTERNAL: ...` and exits with code 3 (EXT-COM
   checkpoints with reason codes; `verify_checkpoint_metadata` is the doctor check.
 - The smoke job reloads its best checkpoint and reports `reload_matches`.
 
+## Universal V1.1 P4 10P Handoff
+
+Universal V1.1 10P is not launched through the generic `conrad train run` path. Before Kerem or any operator starts
+formal 10P work, run the fail-closed handoff gate:
+
+```
+uv run conrad train osfm-v11-10p-readiness --output artifacts/gates/V1.1/10P_KEREM_HANDOFF/readiness.json
+```
+
+The command never trains. It verifies the current branch/commit, 307M-class V1.1 architecture, 829-entry registry,
+candidate configs, upstream checkpoint metadata, local dataset artifacts, gates, dependency files, launch protocols
+and handoff documentation. It exits nonzero until every blocker is gone and prints `READY FOR KEREM`.
+
+The original 8-L4 launch protocol remains documented, but the current approved handoff path is the 1-L4 fallback in
+`configs/train/osfm/v11_p4_1l4_10p_fallback_launch_protocol.yaml`, approved by
+`artifacts/gates/V1.1/10P_1L4/user_approved_fallback.json`. This is not equivalent to the 8-L4 protocol; the report
+preserves the known 1-L4 benchmark limitations.
+
+The current handoff note is [HANDOFF_KEREM_V11_10P.md](HANDOFF_KEREM_V11_10P.md). That document is subordinate to
+the JSON readiness output; if they disagree, update the document or the gate before launch.
+
+The guarded launch command is:
+
+```
+uv run conrad train osfm-v11-10p-launch --config configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml --readiness artifacts/gates/V1.1/10P_KEREM_HANDOFF/readiness.json
+```
+
+It refuses unless the readiness output is already `READY FOR KEREM`.
+
 ## Other pieces
 
 - `determinism.py`: `seed_everything` (random, numpy, torch, deterministic algorithms), `resolve_device` (CPU

@@ -242,6 +242,83 @@ def train_osfm_v11_training_microbenchmark(
     raise typer.Exit(0 if report["decision"] == "GO" else 1)
 
 
+@train_app.command("osfm-v11-10p-readiness")
+def train_osfm_v11_10p_readiness(
+    output: str = typer.Option("artifacts/gates/V1.1/10P_KEREM_HANDOFF/readiness.json", "--output"),
+) -> None:
+    """Evaluate whether Universal V1.1 10P is ready for Kerem. Never trains."""
+    from conrad.foundation.universal_v11.readiness import (
+        evaluate_v11_10p_readiness,
+        write_v11_10p_readiness,
+    )
+
+    report = evaluate_v11_10p_readiness()
+    written = write_v11_10p_readiness(report, output)
+    typer.echo(
+        json.dumps(
+            {
+                "gate_id": report["gate_id"],
+                "decision": report["decision"],
+                "blocker_count": report["blocker_count"],
+                "warning_count": report["warning_count"],
+                "launch_command": report["launch_command"],
+                "report": str(written),
+            },
+            indent=2,
+        )
+    )
+    raise typer.Exit(0 if report["decision"] == "READY FOR KEREM" else 1)
+
+
+@train_app.command("osfm-v11-10p-launch")
+def train_osfm_v11_10p_launch(
+    config: str = typer.Option("configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml", "--config"),
+    readiness: str = typer.Option("artifacts/gates/V1.1/10P_KEREM_HANDOFF/readiness.json", "--readiness"),
+) -> None:
+    """Fail-closed formal V1.1 10P launch handoff. Refuses unless readiness is green."""
+    readiness_path = Path(readiness)
+    if not readiness_path.is_file():
+        typer.echo(
+            json.dumps(
+                {
+                    "decision": "REFUSED",
+                    "reason": "readiness report missing",
+                    "required_command": (
+                        "uv run conrad train osfm-v11-10p-readiness "
+                        "--output artifacts/gates/V1.1/10P_KEREM_HANDOFF/readiness.json"
+                    ),
+                },
+                indent=2,
+            )
+        )
+        raise typer.Exit(3)
+    report = json.loads(readiness_path.read_text(encoding="utf-8"))
+    if report.get("decision") != "READY FOR KEREM":
+        typer.echo(
+            json.dumps(
+                {
+                    "decision": "REFUSED",
+                    "reason": "readiness gate is not READY FOR KEREM",
+                    "readiness_decision": report.get("decision"),
+                    "blocker_count": report.get("blocker_count"),
+                    "config": config,
+                },
+                indent=2,
+            )
+        )
+        raise typer.Exit(3)
+    typer.echo(
+        json.dumps(
+            {
+                "decision": "READY_TO_LAUNCH",
+                "config": config,
+                "note": "Formal training implementation must be invoked by the reviewed launch runner for this config.",
+            },
+            indent=2,
+        )
+    )
+
+
 @eval_app.command("run")
 def eval_run(
     experiment: str = typer.Option(None, "--experiment", help="experiment ID, e.g. CORE-BUO-E001"),

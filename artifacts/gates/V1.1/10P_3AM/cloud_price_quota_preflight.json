@@ -1,0 +1,55 @@
+{
+  "checked_at_utc": "2026-09-29T00:08:05Z",
+  "decision": "NO-GO",
+  "formal_training_launched": false,
+  "project": "project-41fe08b0-9696-4f8a-928",
+  "required_compute": {
+    "accelerator": "NVIDIA_L4",
+    "gpu_count": 8,
+    "preferred_machine_type": "g2-standard-96"
+  },
+  "machine_type_check": {
+    "zone": "us-central1-a",
+    "available_in_catalog": true,
+    "guest_cpus": 96,
+    "memory_mb": 393216,
+    "accelerator_count": 8,
+    "accelerator_type": "nvidia-l4"
+  },
+  "regional_quota_checks": [
+    {
+      "region": "us-central1",
+      "nvidia_l4_gpu_limit": 1,
+      "preemptible_nvidia_l4_gpu_limit": 1,
+      "required": 8,
+      "passes": false
+    },
+    {
+      "region": "us-east1",
+      "nvidia_l4_gpu_limit": 1,
+      "preemptible_nvidia_l4_gpu_limit": 1,
+      "required": 8,
+      "passes": false
+    },
+    {
+      "region": "europe-west1",
+      "nvidia_l4_gpu_limit": 1,
+      "preemptible_nvidia_l4_gpu_limit": 1,
+      "required": 8,
+      "passes": false
+    }
+  ],
+  "failed_gates": [
+    "quota_allows_8_l4"
+  ],
+  "not_attempted_after_hard_failure": [
+    "8_l4_capacity_allocation",
+    "live_8_l4_price_measurement",
+    "worker_creation",
+    "1000_step_benchmark",
+    "projection_gate",
+    "formal_training_launch"
+  ],
+  "termination_action": "No worker was created, so no worker required termination.",
+  "reason": "Every checked L4 region has a quota of 1 L4, below the required exactly 8 L4 GPUs. The protocol fails closed before any paid resource is created."
+}

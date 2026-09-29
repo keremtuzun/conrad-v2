@@ -1,0 +1,20 @@
+{
+  "approval_id": "OSFM-V11-10P-1L4-USER-FALLBACK-APPROVAL",
+  "approved_at_local": "2026-09-29",
+  "approved_by": "Burak",
+  "decision": "APPROVED_1L4_FALLBACK",
+  "reason": "8 L4 is not viable; proceed with 1 L4 fallback for Kerem handoff.",
+  "scope": {
+    "candidate_config": "configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml",
+    "launch_protocol": "configs/train/osfm/v11_p4_1l4_10p_fallback_launch_protocol.yaml",
+    "gpu_type": "NVIDIA_L4",
+    "gpu_count": 1
+  },
+  "known_limitations": [
+    "Existing 1-L4 microbenchmark evidence is not a clean GO.",
+    "The 1-L4 path is user-approved despite reduced throughput/rank evidence.",
+    "Do not claim this is equivalent to the original 8-L4 protocol.",
+    "Monitor rank, loss, checkpointing, runtime, and cost; terminate on fail-closed conditions in the fallback protocol."
+  ],
+  "formal_training_launched": false
+}

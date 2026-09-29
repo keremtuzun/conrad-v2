@@ -1,0 +1,13 @@
+{
+  "checked_at_utc": "2026-09-29T00:08:05Z",
+  "decision": "DECLINED",
+  "selected_scale": null,
+  "projected_hours": null,
+  "projected_cost_try": null,
+  "benchmark_steps_completed": 0,
+  "formal_training_launched": false,
+  "paid_worker_created": false,
+  "blocking_gate": "cloud-price-and-quota-preflight",
+  "blocking_reason": "Available regional NVIDIA L4 quota is 1, but the protocol requires exactly 8 L4 GPUs.",
+  "p4_v1_line_modified": false
+}

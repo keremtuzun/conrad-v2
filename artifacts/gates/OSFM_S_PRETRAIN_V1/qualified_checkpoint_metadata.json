@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0.0",
+  "checkpoint_label": "OSFM-S-PRETRAIN-V1",
+  "status": "VALIDATED-RUN",
+  "decision": "PROMOTE",
+  "source_commit": "c8dae7b",
+  "source_gate": "P4.8-U1-SONAR-PROMOTION",
+  "source_promotion_report": "artifacts/gates/P4.8L/promotion_review_1790575109765916596.json",
+  "source_run": "artifacts/runs/train-osfm_u1_sonar_research-1790575109765916596",
+  "checkpoint_path": "artifacts/runs/train-osfm_u1_sonar_research-1790575109765916596/checkpoints/osfm_u1_sonar_research_full.pt",
+  "checkpoint_id": "b2dfc162c1d72e4363643b516b6566eb0f11ca4a874f9674fc5b06f1ddf85696",
+  "promotion_record": {
+    "promoted": true,
+    "produces": "U1-SONAR-RESEARCH-CHECKPOINT",
+    "next_stage": "P4.9"
+  },
+  "representation_health": {
+    "finite": true,
+    "collapse_score": 0.0008952021598815918,
+    "effective_rank": 87.22372436523438,
+    "formal_rank_guard": "PASS",
+    "formal_rank_reason": "threshold=64"
+  },
+  "checkpoint_selection": {
+    "policy": "best_validation_rank",
+    "selected_step": 5000,
+    "selected_effective_rank": 87.22372436523438,
+    "selected_formal_rank_guard": "PASS",
+    "final_step_effective_rank_before_selection": 79.24994659423828,
+    "final_step_formal_rank_guard_before_selection": "PASS"
+  },
+  "notes": [
+    "This metadata artifact is a verifier input for the P5-P10 gate.",
+    "The underlying checkpoint bytes were recovered from the P4.8L cloud VM disk and hash-verified locally.",
+    "The official P4.8 promotion gate for the referenced run returned PROMOTE with no blockers."
+  ]
+}
