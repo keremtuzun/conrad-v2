@@ -7,7 +7,8 @@
       "id": "upstream_checkpoint",
       "path": "artifacts/runs/train-osfm_u1_sonar_research-1790575109765916596/checkpoints/osfm_u1_sonar_research_full.pt",
       "sha256": "b2dfc162c1d72e4363643b516b6566eb0f11ca4a874f9674fc5b06f1ddf85696",
-      "size_bytes": 345734400,
+      "size_bytes": 345861129,
+      "public_url": "https://github.com/keremtuzun/conrad-v2/releases/download/osfm-v11-p4-handoff/osfm_u1_sonar_research_full.pt",
       "git_tracked": false,
       "required_before": "readiness",
       "purpose": "qualified OSFM-S-PRETRAIN-V1 upstream checkpoint payload"
