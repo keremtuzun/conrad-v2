@@ -1,0 +1,10 @@
+{
+  "batch_size": 16,
+  "fast_probe": true,
+  "gpu_count": 1,
+  "max_budget_tl": 8000.0,
+  "max_hours": 72.0,
+  "rank_floor": 8.0,
+  "rank_target": 8.0,
+  "registry_scope": "families"
+}

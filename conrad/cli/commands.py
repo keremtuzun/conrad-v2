@@ -205,6 +205,43 @@ def train_osfm_v11_pillar_benchmark(
     raise typer.Exit(0 if report["decision"] == "GO" else 1)
 
 
+@train_app.command("osfm-v11-training-microbenchmark")
+def train_osfm_v11_training_microbenchmark(
+    config: str = typer.Option(None, "--config"),
+    output: str = typer.Option("artifacts/gates/V1.1/training_microbenchmark.json", "--output"),
+) -> None:
+    """Run a bounded Universal V1.1 synthetic optimizer benchmark. Never promotes."""
+    from conrad.foundation.universal_v11.benchmark import (
+        run_v11_training_microbenchmark,
+        write_v11_training_microbenchmark,
+    )
+
+    cfg = {}
+    if config:
+        cfg = json.loads(Path(config).read_text(encoding="utf-8"))
+    report = run_v11_training_microbenchmark(cfg)
+    written = write_v11_training_microbenchmark(report, output)
+    typer.echo(
+        json.dumps(
+            {
+                "gate_id": report["gate_id"],
+                "decision": report["decision"],
+                "device": report["device"],
+                "successful_steps": report["successful_steps"],
+                "steps_per_second": report["steps_per_second"],
+                "projected_hours": report["projected_hours"],
+                "projected_cost_tl": report["projected_cost_tl"],
+                "final_effective_rank": report["final_effective_rank"],
+                "formal_training_launched": report["formal_training_launched"],
+                "blockers": report["blockers"],
+                "report": str(written),
+            },
+            indent=2,
+        )
+    )
+    raise typer.Exit(0 if report["decision"] == "GO" else 1)
+
+
 @eval_app.command("run")
 def eval_run(
     experiment: str = typer.Option(None, "--experiment", help="experiment ID, e.g. CORE-BUO-E001"),

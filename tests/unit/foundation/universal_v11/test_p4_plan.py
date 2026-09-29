@@ -6,8 +6,10 @@ import yaml
 ROOT = Path(__file__).resolve().parents[4]
 PLAN = ROOT / "configs" / "train" / "osfm" / "v11_p4_formal_training_plan.yaml"
 BENCHMARK = ROOT / "configs" / "train" / "osfm" / "v11_p4_8l4_parallel_benchmark.yaml"
+ONE_L4_BENCHMARK = ROOT / "configs" / "train" / "osfm" / "v11_p4_1l4_10p_fallback_benchmark.yaml"
 TEN_P = ROOT / "configs" / "train" / "osfm" / "v11_p4_10p_829_semantic_candidate.yaml"
 LAUNCH = ROOT / "configs" / "train" / "osfm" / "v11_p4_10p_3am_launch_protocol.yaml"
+ONE_L4_LAUNCH = ROOT / "configs" / "train" / "osfm" / "v11_p4_1l4_10p_fallback_launch_protocol.yaml"
 
 
 def _load(path: Path) -> dict:
@@ -158,6 +160,26 @@ def test_v11_p4_parallel_benchmark_is_bounded_and_fail_closed() -> None:
     assert {"rank_below_75", "projected_runtime_over_48h", "projected_cost_over_8500_try"} <= fail_closed
 
 
+def test_v11_p4_one_l4_fallback_benchmark_is_bounded_and_fail_closed() -> None:
+    benchmark = _load(ONE_L4_BENCHMARK)
+    fail_closed = set(benchmark["fail_closed_on"])
+
+    assert benchmark["formal_training_allowed"] is False
+    assert benchmark["full_run_allowed"] is False
+    assert benchmark["pilot"]["optimizer_steps"] == 1000
+    assert benchmark["required_compute"]["gpu_count"] == 1
+    assert benchmark["budget_guard"]["max_wall_clock_hours"] == 72.0
+    assert benchmark["budget_guard"]["max_total_cost_try"] == 8000.0
+    assert benchmark["budget_guard"]["max_live_hourly_cost_try"] == 111.1111111111
+    assert benchmark["measured_go_rules"]["min_effective_rank"] == 75.0
+    assert benchmark["measured_go_rules"]["projection_steps"] == {"p10": 1_200_000}
+    assert benchmark["measured_go_rules"]["projection_must_fit"]["steps"] == 1_200_000
+    assert benchmark["measured_go_rules"]["projection_must_fit"]["max_hours"] == 72.0
+    assert benchmark["measured_go_rules"]["projection_must_fit"]["max_total_cost_try"] == 8000.0
+    assert benchmark["measured_go_rules"]["min_steps_per_second_for_72h"]["p10_1_2m"] == 4.6296296296
+    assert {"rank_below_75", "projected_runtime_over_72h", "projected_cost_over_8000_try"} <= fail_closed
+
+
 def test_v11_10p_3am_launch_protocol_is_exact_and_fail_closed() -> None:
     protocol = _load(LAUNCH)
     sequence_ids = [step["id"] for step in protocol["exact_sequence"]]
@@ -202,3 +224,30 @@ def test_v11_10p_3am_launch_protocol_is_exact_and_fail_closed() -> None:
     assert "measured_steps_per_second_gte_6_9444444444" in projection["must_pass"]
     assert "live_hourly_cost_try_lte_max_live_hourly_cost_try" in projection["must_pass"]
     assert "projected_total_cost_try_gt_8500" in protocol["monitoring_policy"]["terminate_immediately_on"]
+
+
+def test_v11_10p_one_l4_fallback_protocol_is_exact_and_fail_closed() -> None:
+    protocol = _load(ONE_L4_LAUNCH)
+    sequence_ids = [step["id"] for step in protocol["exact_sequence"]]
+    projection = next(step for step in protocol["exact_sequence"] if step["id"] == "projection-gate")
+
+    assert protocol["candidate_config"] == "configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml"
+    assert protocol["benchmark_config"] == "configs/train/osfm/v11_p4_1l4_10p_fallback_benchmark.yaml"
+    assert protocol["hard_limits"]["selected_candidate_steps"] == 1_200_000
+    assert protocol["hard_limits"]["required_gpu_count"] == 1
+    assert protocol["hard_limits"]["max_wall_clock_hours"] == 72.0
+    assert protocol["hard_limits"]["max_total_cost_try"] == 8000.0
+    assert protocol["hard_limits"]["max_live_hourly_cost_try"] == 111.1111111111
+    assert protocol["hard_limits"]["required_selected_steps_per_second_for_72h"] == 4.6296296296
+    assert sequence_ids == [
+        "local-preflight",
+        "cloud-price-and-quota-preflight",
+        "create-or-start-1l4-vm",
+        "bounded-1l4-benchmark",
+        "projection-gate",
+        "launch-1l4-10p-candidate",
+    ]
+    assert "selected_10p_hours_lte_72" in projection["must_pass"]
+    assert "projected_selected_cost_try_lte_8000" in projection["must_pass"]
+    assert "measured_steps_per_second_gte_4_6296296296" in projection["must_pass"]
+    assert "projected_total_cost_try_gt_8000" in protocol["monitoring_policy"]["terminate_immediately_on"]

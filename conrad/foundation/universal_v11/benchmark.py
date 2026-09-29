@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import json
 from pathlib import Path
+import time
 from typing import Any
 
 import torch
@@ -169,7 +170,7 @@ def run_v11_pillar_benchmark(config: dict[str, Any] | None = None) -> dict[str, 
         "family_count": len(EncoderFamily),
         "cloud_budget": {
             "gpu_type": "L4",
-            "gpu_count": 8,
+            "gpu_count": int(cfg.get("gpu_count", 8)),
             "max_hours": float(cfg.get("max_hours", 24.0)),
             "max_budget_tl": float(cfg.get("max_budget_tl", 9000.0)),
             "monitoring_policy": "hourly",
@@ -188,6 +189,159 @@ def run_v11_pillar_benchmark(config: dict[str, Any] | None = None) -> dict[str, 
 
 
 def write_v11_pillar_benchmark(report: dict[str, Any], output: str | Path) -> Path:
+    path = Path(output)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
+    return path
+
+
+def _representative_modalities() -> tuple[str, ...]:
+    names: list[str] = []
+    for family in EncoderFamily:
+        names.append(next(spec.name for spec in MODALITY_REGISTRY if spec.family == family))
+    return tuple(names)
+
+
+def run_v11_training_microbenchmark(config: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Run a bounded synthetic optimizer benchmark; never promotes or launches formal training."""
+
+    cfg = config or {}
+    steps = int(cfg.get("optimizer_steps", 1000))
+    warmup = int(cfg.get("warmup_discard_steps", min(100, max(0, steps // 10))))
+    batch = int(cfg.get("batch_size", 1))
+    input_dim = int(cfg.get("input_dim", 8))
+    seed = int(cfg.get("seed", 2026092911))
+    rank_floor = float(cfg.get("rank_floor", 75.0))
+    target_steps = int(cfg.get("target_steps", 1_200_000))
+    max_hours = float(cfg.get("max_hours", 72.0))
+    max_budget_tl = float(cfg.get("max_budget_tl", 8000.0))
+    hourly_cost_tl = float(cfg.get("hourly_cost_tl", 0.0))
+    require_cuda = bool(cfg.get("require_cuda", False))
+    output_dir = Path(str(cfg.get("output_dir", "artifacts/gates/V1.1/P4_1L4_10P_fallback_benchmark")))
+    checkpoint = output_dir / "microbenchmark_checkpoint.pt"
+
+    if require_cuda and not torch.cuda.is_available():
+        return {
+            "gate_id": "OSFM-V11-TRAINING-MICROBENCH-001",
+            "status": "VALIDATED-RUN",
+            "decision": "NO-GO",
+            "reason": "cuda required but unavailable",
+            "formal_training_launched": False,
+        }
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    torch.manual_seed(seed)
+    if device.type == "cuda":
+        torch.cuda.manual_seed_all(seed)
+    family_config = FamilyEncoderConfig(depth=int(cfg.get("family_depth", 1)))
+    modalities = _representative_modalities()
+    model = UniversalOSFMV11(
+        input_dims={name: input_dim for name in modalities},
+        family_encoder_config=family_config,
+        include_v1_bank=False,
+    ).to(device)
+    model.train()
+    optimizer = torch.optim.AdamW(model.parameters(), lr=float(cfg.get("lr", 1.0e-4)))
+    gen = torch.Generator(device=device).manual_seed(seed)
+    timed_seconds = 0.0
+    finite = True
+    last_repr: torch.Tensor | None = None
+    losses: list[float] = []
+
+    for step in range(steps):
+        inputs = tuple(
+            UniversalModalityInput(
+                name=name,
+                payload=torch.randn(batch, 4, input_dim, generator=gen, device=device),
+                state=ModalityState.AVAILABLE,
+                timestamp_s=torch.zeros(batch, device=device),
+            )
+            for name in modalities
+        )
+        start = time.perf_counter()
+        optimizer.zero_grad(set_to_none=True)
+        out = model(
+            inputs,
+            reference_time_s=torch.zeros(batch, device=device),
+            temporal_timestamps_s=torch.zeros(batch, 1, device=device),
+            temporal_valid_mask=torch.ones(batch, 1, dtype=torch.bool, device=device),
+        )
+        reprs = out.fusion.global_repr
+        rank_loss, _ = rank_diversity_loss(reprs.float(), target=rank_floor)
+        loss = reprs.float().square().mean() + rank_loss
+        if not bool(torch.isfinite(loss).detach().cpu()):
+            finite = False
+            break
+        loss.backward()
+        optimizer.step()
+        if device.type == "cuda":
+            torch.cuda.synchronize()
+        elapsed = time.perf_counter() - start
+        if step >= warmup:
+            timed_seconds += elapsed
+        last_repr = reprs.detach()
+        losses.append(float(loss.detach().cpu()))
+
+    successful_steps = len(losses)
+    measured_steps = max(0, successful_steps - warmup)
+    steps_per_second = measured_steps / timed_seconds if timed_seconds > 0 else 0.0
+    final_rank = _effective_rank(last_repr if last_repr is not None else torch.zeros(batch, D_F, device=device))
+    projected_hours = target_steps / steps_per_second / 3600.0 if steps_per_second > 0 else float("inf")
+    projected_cost_tl = projected_hours * hourly_cost_tl if hourly_cost_tl > 0 else 0.0
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    torch.save({"model": model.state_dict(), "step": successful_steps}, checkpoint)
+    loaded = torch.load(checkpoint, map_location=device)
+    reload_matches = set(loaded["model"].keys()) == set(model.state_dict().keys())
+
+    blockers: list[str] = []
+    if successful_steps != steps:
+        blockers.append("successful_steps_below_requested")
+    if not finite:
+        blockers.append("non_finite_loss")
+    if final_rank < rank_floor:
+        blockers.append("rank_below_75")
+    if len(modalities) != len(EncoderFamily):
+        blockers.append("not_all_15_families_routeable")
+    if projected_hours > max_hours:
+        blockers.append("projected_runtime_over_72h")
+    if hourly_cost_tl > 0 and projected_cost_tl > max_budget_tl:
+        blockers.append("projected_cost_over_8000_try")
+    if not reload_matches:
+        blockers.append("checkpoint_reload_failed")
+    decision = "GO" if not blockers else "NO-GO"
+
+    return {
+        "gate_id": "OSFM-V11-TRAINING-MICROBENCH-001",
+        "status": "VALIDATED-RUN",
+        "decision": decision,
+        "formal_training_launched": False,
+        "device": str(device),
+        "gpu_name": torch.cuda.get_device_name(0) if device.type == "cuda" else None,
+        "successful_steps": successful_steps,
+        "warmup_discard_steps": warmup,
+        "measured_steps": measured_steps,
+        "timed_seconds": timed_seconds,
+        "steps_per_second": steps_per_second,
+        "target_steps": target_steps,
+        "projected_hours": projected_hours,
+        "hourly_cost_tl": hourly_cost_tl,
+        "projected_cost_tl": projected_cost_tl,
+        "rank_floor": rank_floor,
+        "final_effective_rank": final_rank,
+        "finite": finite,
+        "family_count": len(EncoderFamily),
+        "routeable_family_count": len(modalities),
+        "registry_size": len(MODALITY_REGISTRY),
+        "checkpoint": str(checkpoint),
+        "checkpoint_reload_matches": reload_matches,
+        "loss_first": losses[0] if losses else None,
+        "loss_last": losses[-1] if losses else None,
+        "blockers": blockers,
+    }
+
+
+def write_v11_training_microbenchmark(report: dict[str, Any], output: str | Path) -> Path:
     path = Path(output)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
