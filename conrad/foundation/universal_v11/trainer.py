@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import os
 import time
 from pathlib import Path
 from typing import Any
@@ -131,7 +132,12 @@ IMAGE_SIZE = 64
 PATCH_GRID = 4
 PATCH_DIM = (IMAGE_SIZE // PATCH_GRID) ** 2
 TRAINER_VARIANT = "kerem_v11_10p_subpipe_patch_vicreg_crop_norm_v3"
-BASE_LR = 2.0e-4
+BASE_LR = float(os.environ.get("KEREM_LR", "2e-4"))
+WEIGHT_DECAY = float(os.environ.get("KEREM_WEIGHT_DECAY", "0.05"))
+# The project's V1.1 is FamilyEncoderConfig depth 6 (307.8M). The reviewed trainer used depth 2 (201.3M).
+FAMILY_DEPTH = int(os.environ.get("KEREM_FAMILY_DEPTH", "6"))
+# Top-level modules held frozen (config stage A trains adapters/router/small heads only).
+FROZEN_MODULES = tuple(m for m in os.environ.get("KEREM_FREEZE", "").split(",") if m)
 WARMUP_STEPS = 2000
 VICREG_WEIGHTS = {"invariance": 25.0, "variance": 25.0, "covariance": 1.0, "rank": 1.0}
 TOKEN_MASK_FRACTION = 0.25
@@ -385,6 +391,9 @@ def run_v11_10p_training(
         "patch_grid": PATCH_GRID,
         "patch_dim": PATCH_DIM,
         "base_lr": BASE_LR,
+        "weight_decay": WEIGHT_DECAY,
+        "family_depth": FAMILY_DEPTH,
+        "frozen_modules": list(FROZEN_MODULES),
         "warmup_steps": WARMUP_STEPS,
         "vicreg_weights": VICREG_WEIGHTS,
         "token_mask_fraction": TOKEN_MASK_FRACTION,
@@ -415,7 +424,7 @@ def run_v11_10p_training(
     )
     model = UniversalOSFMV11(
         input_dims={"imaging_sonar": PATCH_DIM},
-        family_encoder_config=FamilyEncoderConfig(depth=1 if allow_cpu_smoke else 2),
+        family_encoder_config=FamilyEncoderConfig(depth=1 if allow_cpu_smoke else FAMILY_DEPTH),
         include_v1_bank=not allow_cpu_smoke,
     ).to(device)
     # Anchor import: copy every shape-compatible tensor from the qualified upstream checkpoint.
@@ -439,7 +448,14 @@ def run_v11_10p_training(
             upstream_import = {"attempted": True, "error": f"{type(exc).__name__}: {exc}", "loaded_tensor_count": 0}
         model.to(device)
         run.write_artifact("reports", "upstream_import.json", json.dumps(upstream_import, indent=2, sort_keys=True))
-    optimizer = torch.optim.AdamW(model.parameters(), lr=BASE_LR, weight_decay=0.01)
+    for name, param in model.named_parameters():
+        if name.split(".")[0] in FROZEN_MODULES:
+            param.requires_grad_(False)
+    trainable = [param for param in model.parameters() if param.requires_grad]
+    variant["trainable_parameters"] = sum(param.numel() for param in trainable)
+    variant["total_parameters"] = sum(param.numel() for param in model.parameters())
+    run.write_artifact("reports", "trainer_variant.json", json.dumps(variant, indent=2, sort_keys=True))
+    optimizer = torch.optim.AdamW(trainable, lr=BASE_LR, weight_decay=WEIGHT_DECAY)
 
     def _lr_lambda(step_idx: int) -> float:
         if step_idx < WARMUP_STEPS:
