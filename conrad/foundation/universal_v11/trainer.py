@@ -134,7 +134,7 @@ def _subpipe_frame_refs(stream: str, partition: CorpusPartition, frame_stride: i
 IMAGE_SIZE = 64
 PATCH_GRID = 4
 PATCH_DIM = (IMAGE_SIZE // PATCH_GRID) ** 2
-TRAINER_VARIANT = "kerem_v11_10p_multisource_v6"
+TRAINER_VARIANT = "kerem_v11_10p_multisource_nnguard_v7"
 BASE_LR = float(os.environ.get("KEREM_LR", "2e-4"))
 WEIGHT_DECAY = float(os.environ.get("KEREM_WEIGHT_DECAY", "0.05"))
 # The project's V1.1 is FamilyEncoderConfig depth 6 (307.8M). The reviewed trainer used depth 2 (201.3M).
@@ -142,7 +142,13 @@ FAMILY_DEPTH = int(os.environ.get("KEREM_FAMILY_DEPTH", "6"))
 # Top-level modules held frozen (config stage A trains adapters/router/small heads only).
 FROZEN_MODULES = tuple(m for m in os.environ.get("KEREM_FREEZE", "").split(",") if m)
 WARMUP_STEPS = 2000
-VICREG_WEIGHTS = {"invariance": 25.0, "variance": 25.0, "covariance": 1.0, "rank": 1.0}
+# The explicit rank term was gamed in the first long run (held-out sonar rank 50 -> 154 while temporal
+# nearest-neighbour agreement fell 0.61 -> 0.06, i.e. noise). Default is plain VICReg.
+VICREG_WEIGHTS = {"invariance": 25.0, "variance": 25.0, "covariance": 1.0, "rank": float(os.environ.get("KEREM_RANK_WEIGHT", "0"))}
+# Meaning guard: a checkpoint is only eligible as best when, for every family, the cosine nearest neighbour
+# of a held-out frame is one of its +-NN_WINDOW time neighbours at least NN_FLOOR of the time (chance ~0.05).
+NN_WINDOW = 3
+NN_FLOOR = float(os.environ.get("KEREM_NN_FLOOR", "0.3"))
 TOKEN_MASK_FRACTION = 0.25
 CLEAN_ANCHOR_VIEW = os.environ.get("KEREM_CLEAN_ANCHOR", "1") == "1"
 # Readiness blockers that only say "this is not the reviewed trainer on osfm-universal-v1.1".
@@ -543,6 +549,27 @@ class _MultiSourceBatcher:
             for modality, sources in self.data.items()
         }
 
+    def heldout_sequences(self, modality: str, max_per_source: int = 1000) -> tuple[torch.Tensor, list[str], list[int]]:
+        """Contiguous held-out frames per source with (sequence label, position) for the temporal NN check."""
+        images, labels, positions = [], [], []
+        for source, entry in self.data[modality].items():
+            refs = entry["val"][:max_per_source]
+            images.append(entry["frames"][entry["val_index"][: len(refs)]])
+            counters: dict[str, int] = {}
+            for ref in refs:
+                if source == "subpipe":
+                    match = _FULL_MEMBER.match(ref)
+                    seq = _FOLDER_STREAM[match.group(2)] if match else "subpipe"
+                elif source == "uvvid":
+                    seq = ref.split("#")[0]
+                else:
+                    seq = str(Path(ref).parent)
+                label = f"{source}:{seq}"
+                labels.append(label)
+                positions.append(counters.get(label, 0))
+                counters[label] = counters.get(label, 0) + 1
+        return torch.cat(images).float() / 255.0, labels, positions
+
     def sources(self, modality: str) -> tuple[str, ...]:
         return tuple(self.data[modality])
 
@@ -579,6 +606,15 @@ def _make_input(name: str, payload: torch.Tensor, step: int) -> UniversalModalit
             units="normalized_image_features",
         ),
     )
+
+
+def _temporal_nn_hit(z: torch.Tensor, labels: list[str], positions: list[int], window: int = NN_WINDOW) -> float:
+    z = F.normalize(z.float(), dim=-1)
+    sim = z @ z.T
+    sim.fill_diagonal_(-2.0)
+    nearest = sim.argmax(dim=1).tolist()
+    hits = sum(1 for i, j in enumerate(nearest) if labels[i] == labels[j] and abs(positions[i] - positions[j]) <= window)
+    return hits / max(1, len(nearest))
 
 
 def _representation_health(reprs: torch.Tensor, rank_floor: float) -> dict[str, Any]:
@@ -655,6 +691,7 @@ def run_v11_10p_training(
         "views": json.loads(json.dumps(VIEWS)),
         "step_schedule": "odd steps imaging_sonar, even steps rgb_camera",
         "clean_anchor_view": CLEAN_ANCHOR_VIEW,
+        "nn_guard": {"window": NN_WINDOW, "floor": NN_FLOOR},
         "sonar_anchor_encoder": "P4.8 teacher (OSFM-S-PRETRAIN-V1) frozen in model.v1.sonar, 28x28 input" if SONAR_ANCHOR else None,
         "extra_camera_sources": list(EXTRA_CAMERA),
         "uvvid_frame_stride": UVVID_FRAME_STRIDE,
@@ -762,6 +799,7 @@ def run_v11_10p_training(
         smoke=allow_cpu_smoke,
     )
     coverage = batcher.coverage()
+    heldout = {m: batcher.heldout_sequences(m) for m in MODALITIES}
     run.write_artifact("reports", "data_coverage.json", json.dumps({"datasets": ["public.subpipe_full", *(f"public.{x}" for x in EXTRA_CAMERA)], "modalities": coverage}, indent=2, sort_keys=True))
     best_rank = -math.inf
     best_path: str | None = None
@@ -836,12 +874,25 @@ def run_v11_10p_training(
                                     reference_time_s=torch.full((src_payload.shape[0],), float(step), device=device),
                                 )
                             m_health["sources"][src] = _representation_health(src_out.fusion.global_repr.float(), rank_floor)["effective_rank"]
+                        seq_images, seq_labels, seq_pos = heldout[val_modality]
+                        seq_z = []
+                        for start in range(0, seq_images.shape[0], 256):
+                            chunk = seq_images[start : start + 256]
+                            chunk_payload = _clean_view(chunk, val_modality, model)
+                            with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
+                                chunk_out = model(
+                                    (_make_input(val_modality, chunk_payload, step),),
+                                    reference_time_s=torch.full((chunk.shape[0],), float(step), device=device),
+                                )
+                            seq_z.append(chunk_out.fusion.global_repr.float())
+                        m_health["nn_temporal_hit"] = _temporal_nn_hit(torch.cat(seq_z), seq_labels, seq_pos)
                         per_modality[val_modality] = m_health
                 # Gate every family: the run's rank is the weakest modality's rank.
                 health = {
                     "effective_rank": min(h["effective_rank"] for h in per_modality.values()),
                     "collapse_score": min(h["collapse_score"] for h in per_modality.values()),
                     "rank_pass": all(h["rank_pass"] for h in per_modality.values()),
+                    "nn_min": min(h["nn_temporal_hit"] for h in per_modality.values()),
                 }
                 now = time.time()
                 metric_record = {
@@ -858,6 +909,8 @@ def run_v11_10p_training(
                     **{f"val/{m}/effective_rank": h["effective_rank"] for m, h in per_modality.items()},
                     **{f"val/{m}/collapse_score": h["collapse_score"] for m, h in per_modality.items()},
                     **{f"val/{m}/loss": h["loss"] for m, h in per_modality.items()},
+                    **{f"val/{m}/nn_temporal_hit": h["nn_temporal_hit"] for m, h in per_modality.items()},
+                    "val/nn_temporal_hit_min": health["nn_min"],
                     **{f"val/{m}/{src}/effective_rank": r for m, h in per_modality.items() for src, r in h["sources"].items()},
                     "val/representation_effective_rank": health["effective_rank"],
                     "val/representation_collapse_score": health["collapse_score"],
@@ -866,8 +919,9 @@ def run_v11_10p_training(
                 }
                 t_last, step_last = now, step
                 run.log_metrics(metric_record)
-                # Never select warm-up weights: an untrained model already scores rank 87-99.
-                if step > WARMUP_STEPS and health["effective_rank"] > best_rank:
+                # Never select warm-up weights (an untrained model already scores rank 87-99), and never a
+                # checkpoint whose held-out neighbourhoods have lost their temporal structure (rank gaming).
+                if step > WARMUP_STEPS and health["nn_min"] >= NN_FLOOR and health["effective_rank"] > best_rank:
                     best_rank = health["effective_rank"]
                     best_path = str(run.path / "checkpoints" / "best.pt")
                     save_checkpoint(
@@ -934,6 +988,7 @@ def run_v11_10p_training(
             "payloads": payload_report,
             "kerem_variant": variant,
             "reviewed_trainer": False,
+            "best_selection_rule": f"after warm-up; every family's held-out temporal NN hit >= {NN_FLOOR}; then max weakest-family rank",
             "readiness_override": override_record,
             "upstream_import_loaded_tensor_count": upstream_import.get("loaded_tensor_count"),
             "wall_clock_s": time.time() - t_start,
