@@ -1,0 +1,13 @@
+b2dfc162c1d72e4363643b516b6566eb0f11ca4a874f9674fc5b06f1ddf85696  artifacts/runs/train-osfm_u1_sonar_research-1790575109765916596/checkpoints/osfm_u1_sonar_research_full.pt
+a3068be28471786c726cd6100e0b1d92d1c17615a4dcfe7f5544ba758821188f  artifacts/data/public.subpipe/raw/SubPipeMini2.zip
+OK extracted/config.yaml
+OK extracted/DATA/SSS_LF_images/COCO_Annotation/coco_format.json
+OK extracted/DATA/SSS_HF_images/COCO_Annotation/coco_format.json
+OK extracted/DATA/SSS_LF_images/YOLO_Annotation/classes.txt
+OK extracted/DATA/EstimatedState.csv
+OK extracted/DATA/Altitude.csv
+OK extracted/DATA/Depth.csv
+OK extracted/DATA/ForwardDistance.csv
+verify_problems: []
+NVIDIA L4 1
+SETUP_DONE

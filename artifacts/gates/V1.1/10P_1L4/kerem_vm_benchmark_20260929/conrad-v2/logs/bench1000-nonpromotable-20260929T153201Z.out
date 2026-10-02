@@ -1,0 +1,103 @@
+╭───────────────────── Traceback (most recent call last) ──────────────────────╮
+│ /home/kerem/conrad-v2/conrad/cli/commands.py:317 in                          │
+│ train_osfm_v11_10p_launch                                                    │
+│                                                                              │
+│   314 │   │   raise typer.Exit(3)                                            │
+│   315 │   from conrad.foundation.universal_v11.trainer import                │
+│       run_v11_10p_training                                                   │
+│   316 │                                                                      │
+│ ❱ 317 │   result = run_v11_10p_training(                                     │
+│   318 │   │   config_path=config,                                            │
+│   319 │   │   readiness_path=readiness,                                      │
+│   320 │   │   runs_root=runs_root,                                           │
+│                                                                              │
+│ /home/kerem/conrad-v2/conrad/foundation/universal_v11/trainer.py:293 in      │
+│ run_v11_10p_training                                                         │
+│                                                                              │
+│   290 │   │   │   scheduler.load_state_dict(loaded.scheduler_state)          │
+│   291 │   │   start_step = int(loaded.trainer_state.get("step",              │
+│       loaded.metadata.step))                                                 │
+│   292 │                                                                      │
+│ ❱ 293 │   batcher = _SubPipeBatcher(stream="sss_lf", frame_stride=16 if not  │
+│       allow_cpu_smoke else 512, batch_size=batch_size, device=device,        │
+│       seed=seed)                                                             │
+│   294 │   best_rank = -math.inf                                              │
+│   295 │   best_path: str | None = None                                       │
+│   296 │   last_path: str | None = None                                       │
+│                                                                              │
+│ /home/kerem/conrad-v2/conrad/foundation/universal_v11/trainer.py:156 in      │
+│ __init__                                                                     │
+│                                                                              │
+│   153 │   │   │   frame_stride=frame_stride,                                 │
+│   154 │   │   │   manifest_path=SUBPIPE_MANIFEST,                            │
+│   155 │   │   )                                                              │
+│ ❱ 156 │   │   all_refs = self.adapter.frames(stream)                         │
+│   157 │   │   stride = max(1, frame_stride)                                  │
+│   158 │   │   while True:                                                    │
+│   159 │   │   │   refs = all_refs[::stride]                                  │
+│                                                                              │
+│ /home/kerem/conrad-v2/conrad/data/adapters/subpipe.py:225 in frames          │
+│                                                                              │
+│   222 │                                                                      │
+│   223 │   def frames(self, stream: str) -> list[FrameRef]:                   │
+│   224 │   │   spec = STREAMS[stream]                                         │
+│ ❱ 225 │   │   prefix = self._member(spec.folder) + "/"                       │
+│   226 │   │   out = []                                                       │
+│   227 │   │   for name in self._archive().namelist():                        │
+│   228 │   │   │   if not name.startswith(prefix) or name.endswith("/"):      │
+│                                                                              │
+│ /home/kerem/conrad-v2/conrad/data/adapters/subpipe.py:187 in _member         │
+│                                                                              │
+│   184 │   │   │   self._zip = None                                           │
+│   185 │                                                                      │
+│   186 │   def _member(self, rel: str) -> str:                                │
+│ ❱ 187 │   │   self._archive()                                                │
+│   188 │   │   return f"{self._root}/{rel}"                                   │
+│   189 │                                                                      │
+│   190 │   def read_member(self, rel: str) -> bytes:                          │
+│                                                                              │
+│ /home/kerem/conrad-v2/conrad/data/adapters/subpipe.py:172 in _archive        │
+│                                                                              │
+│   169 │   │   │   )                                                          │
+│   170 │                                                                      │
+│   171 │   def _archive(self) -> zipfile.ZipFile:                             │
+│ ❱ 172 │   │   self._require_available()                                      │
+│   173 │   │   if self._zip is None:                                          │
+│   174 │   │   │   self._zip = zipfile.ZipFile(self.data_root /               │
+│       self.archive.path)                                                     │
+│   175 │   │   │   roots = {n.split("/", 1)[0] for n in self._zip.namelist()  │
+│       if n.endswith("config.yaml")}                                          │
+│                                                                              │
+│ /home/kerem/conrad-v2/conrad/data/adapters/subpipe.py:164 in                 │
+│ _require_available                                                           │
+│                                                                              │
+│   161 │   #                                                                  │
+│       ------------------------------------------------------------------     │
+│       archive access                                                         │
+│   162 │   def _require_available(self) -> None:                              │
+│   163 │   │   if self._problems:                                             │
+│ ❱ 164 │   │   │   raise DatasetNotAvailableError(                            │
+│   165 │   │   │   │   self.manifest.dataset_id,                              │
+│   166 │   │   │   │   self.manifest_path,                                    │
+│   167 │   │   │   │   [p.path for p in self._problems if p.path] or ["a      │
+│       manifest that verifies with no problems"],                             │
+╰──────────────────────────────────────────────────────────────────────────────╯
+DatasetNotAvailableError: dataset 'public.subpipe' is not available. Manifest: 
+/home/kerem/conrad-v2/datasets/public/subpipe.manifest.yaml. Required before 
+use: extracted/config.yaml; 
+extracted/DATA/SSS_LF_images/COCO_Annotation/coco_format.json; 
+extracted/DATA/SSS_HF_images/COCO_Annotation/coco_format.json; 
+extracted/DATA/SSS_LF_images/YOLO_Annotation/classes.txt; 
+extracted/DATA/EstimatedState.csv; extracted/DATA/Altitude.csv; 
+extracted/DATA/Depth.csv; extracted/DATA/ForwardDistance.csv. Verification 
+problems: MISSING_FILE [extracted/config.yaml]: file not found under data root; 
+MISSING_FILE [extracted/DATA/SSS_LF_images/COCO_Annotation/coco_format.json]: 
+file not found under data root; MISSING_FILE 
+[extracted/DATA/SSS_HF_images/COCO_Annotation/coco_format.json]: file not found 
+under data root; MISSING_FILE 
+[extracted/DATA/SSS_LF_images/YOLO_Annotation/classes.txt]: file not found under
+data root; MISSING_FILE [extracted/DATA/EstimatedState.csv]: file not found 
+under data root; MISSING_FILE [extracted/DATA/Altitude.csv]: file not found 
+under data root; MISSING_FILE [extracted/DATA/Depth.csv]: file not found under 
+data root; MISSING_FILE [extracted/DATA/ForwardDistance.csv]: file not found 
+under data root

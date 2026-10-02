@@ -1,0 +1,57 @@
+{
+  "autocast": "bf16",
+  "base_lr": 0.0002,
+  "cache_size": 128,
+  "crop_ratio": [
+    0.75,
+    1.3333333333333333
+  ],
+  "family_depth": 6,
+  "frame_stride": 1,
+  "frozen_modules": [
+    "family_encoders",
+    "family_fusion",
+    "v1",
+    "temporal"
+  ],
+  "image_size": 64,
+  "light_view": {
+    "crop_scale": [
+      0.6,
+      1.0
+    ],
+    "noise": 0.01,
+    "patch_dropout": 0.0,
+    "speckle": 0.05
+  },
+  "mirror_flip": true,
+  "patch_dim": 256,
+  "patch_grid": 4,
+  "per_frame_standardize": true,
+  "sonar_streams": [
+    "sss_lf",
+    "sss_hf"
+  ],
+  "strong_view": {
+    "crop_scale": [
+      0.3,
+      1.0
+    ],
+    "noise": 0.03,
+    "patch_dropout": 0.25,
+    "speckle": 0.1
+  },
+  "token_mask_fraction": 0.25,
+  "total_parameters": 307763969,
+  "trainable_parameters": 19930753,
+  "trainer_variant": "kerem_v11_10p_subpipe_patch_vicreg_crop_norm_v3",
+  "validation_batch": "distinct_frames",
+  "vicreg_weights": {
+    "covariance": 1.0,
+    "invariance": 25.0,
+    "rank": 1.0,
+    "variance": 25.0
+  },
+  "warmup_steps": 2000,
+  "weight_decay": 0.05
+}

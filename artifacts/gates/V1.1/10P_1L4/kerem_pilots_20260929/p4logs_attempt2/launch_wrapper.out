@@ -1,0 +1,8 @@
+2026-09-29T17:24:22Z commit 9b153c5b056d711c4cf7a4ca893add575366b453 branch kerem/v11-p4-patch-vicreg-trainer
+2026-09-29T17:24:42Z readiness NOT READY with only unreviewed-trainer blockers 2,4,8 -> recorded owner override
+2026-09-29T17:24:42Z probe probe600-nonpromotable-20260929T172442Z
+2026-09-29T17:28:42Z probe rows: {"lr": 2.0000000000000002e-07, "step": 1, "steps_per_s": 0.26848881009634235, "time_s": 3.7245500087738037, "train/covariance": 0.0164117980748415, "train/invariance": 0.009887823835015297, "train/loss": 46.60202407836914, "train/rank_loss": 0.15542754530906677, "train/variance": 1.8473196029663086, "val/loss": 47.21056365966797, "val/rank_pass": 0.0, "val/representation_collapse_score": 1.0000025033950806, "val/representation_effective_rank": 4.916762351989746} {"lr": 6.0100000000000004e-05, "step": 600, "steps_per_s": 3.2871252182105626, "time_s": 185.95064735412598, "train/covariance": 8.389435768127441, "train/invariance": 0.08054812997579575, "train/loss": 19.788753509521484, "train/rank_loss": 0.0, "train/variance": 0.3754245936870575, "val/loss": 44.857177734375, "val/rank_pass": 0.0, "val/representation_collapse_score": 1.00324285030365, "val/representation_effective_rank": 4.543
+2026-09-29T17:28:42Z measured steps/s=3.2871252182105626 used_h_since_vm_start=38min selected_steps=775000 (10P=1200000, 12.5P=1500000)
+2026-09-29T17:29:02Z LAUNCHED run=v11-p4-kerem-20260929T172842Z pid=18974 steps=775000 t0=1790702922 spent_before_try=27.12
+2026-09-29T17:29:02Z watchdog pid 19130
+2026-09-29T17:29:02Z DONE

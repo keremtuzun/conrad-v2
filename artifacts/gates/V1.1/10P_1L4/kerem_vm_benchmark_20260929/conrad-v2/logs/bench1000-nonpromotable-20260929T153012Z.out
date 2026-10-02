@@ -1,0 +1,42 @@
+╭───────────────────── Traceback (most recent call last) ──────────────────────╮
+│ /home/kerem/conrad-v2/conrad/cli/commands.py:317 in                          │
+│ train_osfm_v11_10p_launch                                                    │
+│                                                                              │
+│   314 │   │   raise typer.Exit(3)                                            │
+│   315 │   from conrad.foundation.universal_v11.trainer import                │
+│       run_v11_10p_training                                                   │
+│   316 │                                                                      │
+│ ❱ 317 │   result = run_v11_10p_training(                                     │
+│   318 │   │   config_path=config,                                            │
+│   319 │   │   readiness_path=readiness,                                      │
+│   320 │   │   runs_root=runs_root,                                           │
+│                                                                              │
+│ /home/kerem/conrad-v2/conrad/foundation/universal_v11/trainer.py:255 in      │
+│ run_v11_10p_training                                                         │
+│                                                                              │
+│   252 │                                                                      │
+│   253 │   run_name = run_id or f"v11-10p-{time.time_ns()}"                   │
+│   254 │   env = environment_snapshot(device=str(device),                     │
+│       precision="float32")                                                   │
+│ ❱ 255 │   run = RunDirectory.create(                                         │
+│   256 │   │   runs_root,                                                     │
+│   257 │   │   run_name,                                                      │
+│   258 │   │   resolved_config={**cfg, "max_steps_effective": steps,          │
+│       "allow_cpu_smoke": allow_cpu_smoke},                                   │
+│                                                                              │
+│ /home/kerem/conrad-v2/conrad/training/run_dir.py:155 in create               │
+│                                                                              │
+│   152 │   ) -> RunDirectory:                                                 │
+│   153 │   │   git = git_probe()                                              │
+│   154 │   │   if purpose in CLEAN_GIT_REQUIRED and (git.dirty or not         │
+│       git.available or git.commit is None):                                  │
+│ ❱ 155 │   │   │   raise DirtyGitError(                                       │
+│   156 │   │   │   │   f"{purpose.value} runs reject dirty or unknown tracked │
+│       source "                                                               │
+│   157 │   │   │   │   f"(commit={git.commit}, dirty={git.dirty},             │
+│       git_available={git.available})"                                        │
+│   158 │   │   │   )                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+DirtyGitError: acceptance runs reject dirty or unknown tracked source 
+(commit=8885291572591d0a953e9c613caa3f604ca492fb, dirty=True, 
+git_available=True)

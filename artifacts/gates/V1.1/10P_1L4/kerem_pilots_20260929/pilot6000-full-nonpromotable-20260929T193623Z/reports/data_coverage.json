@@ -1,0 +1,43 @@
+{
+  "dataset": "public.subpipe_full",
+  "modalities": {
+    "imaging_sonar": {
+      "frame_cache": "artifacts/tmp/subpipe_full_cache/imaging_sonar_128_3090e01be820998ce2b2.npy",
+      "streams": {
+        "sss_hf": {
+          "all": 4922,
+          "stride": 1,
+          "train": 3445,
+          "validation": 492
+        },
+        "sss_lf": {
+          "all": 4890,
+          "stride": 1,
+          "train": 3423,
+          "validation": 489
+        }
+      },
+      "train_frames": 6868,
+      "validation_frames": 981
+    },
+    "rgb_camera": {
+      "frame_cache": "artifacts/tmp/subpipe_full_cache/rgb_camera_128_167e119c6af776432907.npy",
+      "streams": {
+        "cam0": {
+          "all": 38900,
+          "stride": 2,
+          "train": 27230,
+          "validation": 3890
+        },
+        "cam1": {
+          "all": 7214,
+          "stride": 1,
+          "train": 5049,
+          "validation": 721
+        }
+      },
+      "train_frames": 32279,
+      "validation_frames": 4611
+    }
+  }
+}

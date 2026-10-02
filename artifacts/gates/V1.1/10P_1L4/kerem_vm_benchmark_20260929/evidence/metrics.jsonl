@@ -1,0 +1,2 @@
+{"lr": 9.999975326009292e-05, "step": 1, "train/loss": 0.9643557071685791, "val/rank_pass": 0.0, "val/representation_collapse_score": 1.0000284910202026, "val/representation_effective_rank": 3.8052918910980225}
+{"lr": 0.0, "step": 1000, "train/loss": 0.4006235599517822, "val/rank_pass": 0.0, "val/representation_collapse_score": 1.006322979927063, "val/representation_effective_rank": 4.064913272857666}

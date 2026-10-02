@@ -1,0 +1,3 @@
+bff713372d2cdfbd875b6bd676d00a3ca925c5c52fad3a5719113560903f5123  artifacts/runs/v11-p4-kerem-long-a1-20260930T001158Z/checkpoints/best.pt
+808944a3d48fa93fb2e22ccf232d45ddb48c021b528c798483c261ae368887f8  artifacts/runs/v11-p4-kerem-long-a1-20260930T001158Z/checkpoints/last.pt
+b2dfc162c1d72e4363643b516b6566eb0f11ca4a874f9674fc5b06f1ddf85696  artifacts/runs/train-osfm_u1_sonar_research-1790575109765916596/checkpoints/osfm_u1_sonar_research_full.pt

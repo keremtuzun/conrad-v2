@@ -1,0 +1,24 @@
+{
+  "architecture_id": "conrad_v2_impl_freeze_v0_2",
+  "cuda_available": true,
+  "cuda_runtime": "12.4",
+  "cuda_visible_devices": null,
+  "determinism_flags": {
+    "cublas_workspace_config": null,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "deterministic_algorithms": false
+  },
+  "device": "cuda",
+  "device_fallback": false,
+  "devices": [
+    "NVIDIA L4"
+  ],
+  "effective_precision": "bf16-autocast",
+  "lockfile": "uv.lock",
+  "lockfile_digest": "324e79ffd971b5e0e027e5ba74ce6c0f47be1beafa2c35acb8e6e7e7dfd95b05",
+  "os": "Linux-6.8.0-1069-gcp-x86_64-with-glibc2.35",
+  "python": "3.11.16",
+  "stack_id": "conrad_v2_stack_freeze_v0_2",
+  "torch_version": "2.6.0+cu124"
+}

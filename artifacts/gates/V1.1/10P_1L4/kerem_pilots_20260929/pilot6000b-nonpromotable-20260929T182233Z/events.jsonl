@@ -1,0 +1,2 @@
+{"detail": {"comparability": "COMPARABLE", "purpose": "acceptance"}, "event_type": "RUN_CREATED", "time_ns": 1790706170714843123}
+{"detail": {"status": "FAILED"}, "event_type": "RUN_TERMINAL", "time_ns": 1790707020367237309}
