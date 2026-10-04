@@ -46,12 +46,40 @@ from conrad.training.run_dir import RunDirectory, RunPurpose, TerminalStatus, en
 PAYLOAD_MANIFEST = REPO_ROOT / "artifacts/gates/V1.1/10P_KEREM_HANDOFF/required_payloads.json"
 
 
-def _sha256(path: Path) -> str:
+def _sha256_full(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1 << 20), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+SHA_CACHE = REPO_ROOT / "artifacts/tmp/sha256_cache.json"
+
+
+def _sha256(path: Path) -> str:
+    """sha256 of a payload file. A full hash is cached against (size, mtime_ns), so ~90 GB of archives on a slow data
+    disk are read once, not at every run start; any change of size or mtime forces a fresh full hash."""
+    path = Path(path)
+    st = path.stat()
+    key = str(path.resolve())
+    try:
+        cache = json.loads(SHA_CACHE.read_text())
+    except (OSError, ValueError):
+        cache = {}
+    hit = cache.get(key)
+    if hit and hit.get("size") == st.st_size and hit.get("mtime_ns") == st.st_mtime_ns:
+        return hit["sha256"]
+    digest = _sha256_full(path)
+    cache[key] = {"size": st.st_size, "mtime_ns": st.st_mtime_ns, "sha256": digest}
+    try:
+        SHA_CACHE.parent.mkdir(parents=True, exist_ok=True)
+        tmp = SHA_CACHE.with_suffix(".tmp")
+        tmp.write_text(json.dumps(cache, indent=1, sort_keys=True))
+        tmp.replace(SHA_CACHE)
+    except OSError:
+        pass
+    return digest
 
 
 def verify_required_payloads(manifest_path: str | Path = PAYLOAD_MANIFEST) -> dict[str, Any]:
