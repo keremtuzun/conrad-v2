@@ -134,7 +134,7 @@ def _subpipe_frame_refs(stream: str, partition: CorpusPartition, frame_stride: i
 IMAGE_SIZE = 64
 PATCH_GRID = 4
 PATCH_DIM = (IMAGE_SIZE // PATCH_GRID) ** 2
-TRAINER_VARIANT = "kerem_v11_10p_multisource_nnguard_v7"
+TRAINER_VARIANT = "kerem_v11_10p_multisource_sonar5_v8"
 BASE_LR = float(os.environ.get("KEREM_LR", "2e-4"))
 WEIGHT_DECAY = float(os.environ.get("KEREM_WEIGHT_DECAY", "0.05"))
 # The project's V1.1 is FamilyEncoderConfig depth 6 (307.8M). The reviewed trainer used depth 2 (201.3M).
@@ -378,8 +378,50 @@ SEACLEAR_DIR = REPO_ROOT / "artifacts/data/public.seaclear"
 UVVID_MANIFEST = REPO_ROOT / "datasets/public/uvvid.manifest.yaml"
 UVVID_DIR = REPO_ROOT / "artifacts/data/public.uvvid"
 UVVID_FRAME_STRIDE = 15  # 2 frames/s from 30 fps GoPro video
-_IMAGE_SUFFIXES = (".jpg", ".jpeg", ".png")
+_IMAGE_SUFFIXES = (".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff")
 _NON_IMAGE_HINTS = ("mask", "label", "annotation", "segment")
+
+
+# Additional imaging-sonar sources from other surveys, vehicles and sonars (CC-BY-4.0 or MIT; see their manifests).
+EXTRA_SONAR = tuple(x for x in os.environ.get("KEREM_EXTRA_SONAR", "catalunya,china_offshore,aquascan,uatd").split(",") if x)
+SONAR_SOURCES: dict[str, dict[str, Any]] = {
+    # 434k side-scan patches from Catalan coastal surveys; read from the merged archive, every Nth patch per survey line
+    "catalunya": {"manifest": "datasets/public/sss_catalunya.manifest.yaml", "dir": "artifacts/data/public.sss_catalunya",
+                  "zip": "sss_catalunya_merged.zip", "stride": int(os.environ.get("KEREM_CATALUNYA_STRIDE", "6")), "sequential": True},
+    # side-scan target chips from four Chinese sea regions (not a time sequence)
+    "china_offshore": {"manifest": "datasets/public/china_offshore_sss.manifest.yaml", "dir": "artifacts/data/public.china_offshore_sss",
+                       "images": "extracted", "stride": 1, "sequential": False},
+    # lakebed side-scan screenshots, ordered by capture timestamp
+    "aquascan": {"manifest": "datasets/public/aquascan_1k.manifest.yaml", "dir": "artifacts/data/public.aquascan_1k",
+                 "images": "extracted", "stride": 1, "sequential": False},
+    # multibeam forward-looking sonar (Tritech Gemini 1200ik), lake and shallow-water sessions
+    "uatd": {"manifest": "datasets/public/uatd.manifest.yaml", "dir": "artifacts/data/public.uatd",
+             "images": "extracted", "stride": 1, "sequential": True},
+}
+_CAMERA_SOURCES = {"seaclear": (SEACLEAR_MANIFEST, SEACLEAR_DIR), "uvvid": (UVVID_MANIFEST, UVVID_DIR)}
+
+
+def _natural_key(text: str) -> list[Any]:
+    return [int(t) if t.isdigit() else t for t in re.split(r"(\d+)", text)]
+
+
+def _sonar_group(source: str, ref: str) -> str:
+    name = Path(ref).name
+    if source == "catalunya":  # survey line, e.g. N9_1_211023112600 from N9_1_211023112600_xtf-CH12_batch-5_ch-1_3_1.tiff
+        return name.split("_xtf")[0]
+    parts = Path(ref).parts
+    if source == "china_offshore":  # sea region: .../images/<region>/...
+        return parts[parts.index("images") + 1] if "images" in parts[:-1] else "china_offshore"
+    if source == "uatd":  # session archive: .../extracted/<UATD_Training|UATD_Test_1|...>/...
+        return parts[parts.index("extracted") + 1] if "extracted" in parts[:-1] else "uatd"
+    return source
+
+
+def _sonar_sort_key(source: str, ref: str) -> list[Any]:
+    name = Path(ref).name
+    if source == "aquascan":  # "<uuid>-Screenshot_2025-08-10_23.00.36.png": order by the timestamp
+        return _natural_key(name.split("-", 1)[-1])
+    return _natural_key(name)
 
 
 def _verify_manifest_files(manifest_path: Path, root: Path) -> dict[str, Any]:
@@ -394,21 +436,64 @@ def _verify_manifest_files(manifest_path: Path, root: Path) -> dict[str, Any]:
     return {"manifest": str(manifest_path.relative_to(REPO_ROOT)), "files": rows, "decision": "PASS" if rows and all(r["ok"] for r in rows) else "FAIL"}
 
 
-def verify_extra_camera() -> dict[str, Any]:
-    sources = {"seaclear": (SEACLEAR_MANIFEST, SEACLEAR_DIR), "uvvid": (UVVID_MANIFEST, UVVID_DIR)}
-    report: dict[str, Any] = {name: _verify_manifest_files(*sources[name]) for name in EXTRA_CAMERA}
+def verify_extra_sources() -> dict[str, Any]:
+    report: dict[str, Any] = {name: _verify_manifest_files(*_CAMERA_SOURCES[name]) for name in EXTRA_CAMERA}
+    for name in EXTRA_SONAR:
+        spec = SONAR_SOURCES[name]
+        report[name] = _verify_manifest_files(REPO_ROOT / spec["manifest"], REPO_ROOT / spec["dir"])
     report["decision"] = "PASS" if all(r["decision"] == "PASS" for r in report.values()) else "FAIL"
     return report
 
 
-def _decode_image_path(path: str) -> np.ndarray:
+verify_extra_camera = verify_extra_sources  # backwards-compatible name
+
+
+def _to_uint8(image: np.ndarray) -> np.ndarray:
+    """16-bit / float sonar rasters -> uint8 by robust (0.5..99.5 percentile) scaling; uint8 passes through."""
+    if image.dtype == np.uint8:
+        return image
+    data = image.astype(np.float32)
+    lo, hi = np.percentile(data, (0.5, 99.5))
+    return np.clip((data - lo) / max(hi - lo, 1.0e-6) * 255.0, 0, 255).astype(np.uint8)
+
+
+def _finish(image: np.ndarray | None, channels: int, what: str) -> np.ndarray:
     import cv2
 
-    image = cv2.imread(path, cv2.IMREAD_COLOR)
     if image is None:
-        raise RuntimeError(f"{path}: not a readable image")
-    image = cv2.resize(cv2.cvtColor(image, cv2.COLOR_BGR2RGB), (CACHE_SIZE, CACHE_SIZE), interpolation=cv2.INTER_AREA)
-    return np.ascontiguousarray(image.transpose(2, 0, 1), dtype=np.uint8)
+        raise RuntimeError(f"{what}: not a readable image")
+    image = _to_uint8(image)
+    if channels == 1 and image.ndim == 3:
+        image = cv2.cvtColor(image, cv2.COLOR_BGRA2GRAY if image.shape[2] == 4 else cv2.COLOR_BGR2GRAY)
+    if channels == 3:
+        if image.ndim == 2:
+            image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+        else:
+            image = cv2.cvtColor(image, cv2.COLOR_BGRA2RGB if image.shape[2] == 4 else cv2.COLOR_BGR2RGB)
+    image = cv2.resize(image, (CACHE_SIZE, CACHE_SIZE), interpolation=cv2.INTER_AREA)
+    image = image[None] if channels == 1 else image.transpose(2, 0, 1)
+    return np.ascontiguousarray(image, dtype=np.uint8)
+
+
+def _decode_image_path(job: str | tuple[str, int]) -> np.ndarray:
+    import cv2
+
+    path, channels = (job, 3) if isinstance(job, str) else job
+    return _finish(cv2.imread(path, cv2.IMREAD_UNCHANGED), channels, path)
+
+
+_ZIP_HANDLES: dict[str, zipfile.ZipFile] = {}
+
+
+def _decode_zip_image(job: tuple[str, str, int]) -> np.ndarray:
+    import cv2
+
+    archive, member, channels = job
+    handle = _ZIP_HANDLES.get(archive)
+    if handle is None:
+        handle = _ZIP_HANDLES[archive] = zipfile.ZipFile(archive)
+    raw = np.frombuffer(handle.read(member), dtype=np.uint8)  # CRC-32 checked by zipfile
+    return _finish(cv2.imdecode(raw, cv2.IMREAD_UNCHANGED), channels, member)
 
 
 def _decode_video(job: tuple[str, int]) -> np.ndarray:
@@ -450,6 +535,7 @@ class _MultiSourceBatcher:
     draw equally from every source of a modality; validation uses distinct frames only."""
 
     def __init__(self, *, archive_sha256: str, extra_camera: dict[str, Any] | None, batch_size: int, device: torch.device, seed: int, smoke: bool = False) -> None:
+        extra = extra_camera
         self.batch_size = batch_size
         self.device = device
         self.seed = seed
@@ -459,7 +545,35 @@ class _MultiSourceBatcher:
             groups = {stream: [m for _, m in index[stream][:: stride * (200 if smoke else 1)]] for stream, stride in spec["streams"].items()}
             train, val, counts = _split_groups(groups)
             self._add(modality, "subpipe", train, val, counts, key=archive_sha256, loader=("zip", spec["channels"]))
-        if extra_camera is not None and "seaclear" in extra_camera:
+            self.data[modality]["subpipe"]["sequential"] = True
+        for name in EXTRA_SONAR if extra is not None else ():
+            if name not in extra:
+                continue
+            spec = SONAR_SOURCES[name]
+            root = REPO_ROOT / spec["dir"]
+            if "zip" in spec:
+                archive = str(root / spec["zip"])
+                with zipfile.ZipFile(archive) as handle:
+                    refs = [n for n in handle.namelist() if Path(n).suffix.lower() in _IMAGE_SUFFIXES]
+                loader: tuple[Any, ...] = ("zipimg", 1, archive)
+            else:
+                refs = [
+                    str(p) for p in (root / spec["images"]).rglob("*")
+                    if p.suffix.lower() in _IMAGE_SUFFIXES and not any(h in str(p).lower() for h in _NON_IMAGE_HINTS)
+                ]
+                loader = ("image", 1)
+            groups: dict[str, list[str]] = {}
+            for ref in refs:
+                groups.setdefault(_sonar_group(name, ref), []).append(ref)
+            groups = {g: sorted(v, key=lambda r: _sonar_sort_key(name, r))[:: spec["stride"] * (50 if smoke else 1)] for g, v in groups.items()}
+            groups = {g: v for g, v in groups.items() if len(v) >= 2}
+            train, val, counts = _split_groups(groups)
+            key = "|".join(r["actual_sha256"] or "" for r in extra[name]["files"]) + f"|stride={spec['stride']}"
+            self._add("imaging_sonar", name, train, val, counts, key=key, loader=loader)
+            entry = self.data["imaging_sonar"][name]
+            entry["sequential"] = spec["sequential"]
+            entry["val_groups"] = [_sonar_group(name, r) for r in val]
+        if extra is not None and "seaclear" in extra:
             images = [
                 p for p in sorted((SEACLEAR_DIR / "extracted").rglob("*"))
                 if p.suffix.lower() in _IMAGE_SUFFIXES and not any(h in str(p).lower() for h in _NON_IMAGE_HINTS)
@@ -470,10 +584,12 @@ class _MultiSourceBatcher:
             train, val, counts = _split_groups(site_groups)
             seaclear_key = "|".join(r["actual_sha256"] for r in extra_camera["seaclear"]["files"])
             self._add("rgb_camera", "seaclear", train, val, counts, key=seaclear_key, loader=("image", 3))
-        if extra_camera is not None and "uvvid" in extra_camera:
+            self.data["rgb_camera"]["seaclear"]["sequential"] = True
+        if extra is not None and "uvvid" in extra:
             videos = sorted(str(p) for p in (UVVID_DIR / "raw").glob("ROV_GoPro_*.mp4"))
             uvvid_key = "|".join(r["actual_sha256"] for r in extra_camera["uvvid"]["files"])
             self._add_videos("rgb_camera", "uvvid", videos, key=uvvid_key)
+            self.data["rgb_camera"]["uvvid"]["sequential"] = True
 
     def _cache_path(self, modality: str, source: str, key: str, members: list[str]) -> Path:
         digest = hashlib.sha256("\n".join([key, str(CACHE_SIZE), *members]).encode()).hexdigest()[:20]
@@ -490,7 +606,7 @@ class _MultiSourceBatcher:
             "cache": str(cache.relative_to(REPO_ROOT)),
         }
 
-    def _add(self, modality: str, source: str, train: list[str], val: list[str], counts: dict[str, Any], *, key: str, loader: tuple[str, int]) -> None:
+    def _add(self, modality: str, source: str, train: list[str], val: list[str], counts: dict[str, Any], *, key: str, loader: tuple[Any, ...]) -> None:
         from multiprocessing import get_context
 
         if not train or not val:
@@ -500,12 +616,14 @@ class _MultiSourceBatcher:
         if cache.is_file():
             frames = np.load(cache)
         else:
-            kind, channels = loader
+            kind, channels = loader[0], loader[1]
             with get_context("fork").Pool(max(1, (os.cpu_count() or 2) - 1)) as pool:
                 if kind == "zip":
                     frames = np.stack(pool.map(_decode_member, [(m, channels) for m in members], chunksize=16))
+                elif kind == "zipimg":
+                    frames = np.stack(pool.map(_decode_zip_image, [(loader[2], m, channels) for m in members], chunksize=64))
                 else:
-                    frames = np.stack(pool.map(_decode_image_path, members, chunksize=16))
+                    frames = np.stack(pool.map(_decode_image_path, [(m, channels) for m in members], chunksize=16))
             SUBPIPE_FULL_CACHE_DIR.mkdir(parents=True, exist_ok=True)
             np.save(cache, frames)
         self._store(modality, source, frames, train, val, counts, cache)
@@ -553,11 +671,15 @@ class _MultiSourceBatcher:
         """Contiguous held-out frames per source with (sequence label, position) for the temporal NN check."""
         images, labels, positions = [], [], []
         for source, entry in self.data[modality].items():
+            if not entry.get("sequential", True):
+                continue  # target chips / screenshots are not a time sequence; the temporal check does not apply
             refs = entry["val"][:max_per_source]
             images.append(entry["frames"][entry["val_index"][: len(refs)]])
             counters: dict[str, int] = {}
             for ref in refs:
-                if source == "subpipe":
+                if "val_groups" in entry:
+                    seq = entry["val_groups"][entry["val"].index(ref)] if len(entry["val"]) < 5000 else _sonar_group(source, ref)
+                elif source == "subpipe":
                     match = _FULL_MEMBER.match(ref)
                     seq = _FOLDER_STREAM[match.group(2)] if match else "subpipe"
                 elif source == "uvvid":
@@ -654,9 +776,9 @@ def run_v11_10p_training(
     full_report = verify_subpipe_full()
     if full_report["decision"] != "PASS" and not allow_cpu_smoke:
         raise RuntimeError(f"full SubPipe archive is not hash-verified against its manifest: {full_report}")
-    extra_report = verify_extra_camera() if EXTRA_CAMERA else None
+    extra_report = verify_extra_sources() if (EXTRA_CAMERA or EXTRA_SONAR) else None
     if extra_report is not None and extra_report["decision"] != "PASS" and not allow_cpu_smoke:
-        raise RuntimeError(f"extra camera sources are not hash-verified against their manifests: {extra_report}")
+        raise RuntimeError(f"extra sources are not hash-verified against their manifests: {extra_report}")
 
     cfg = _load_config(config_path)
     steps = int(max_steps_override or cfg["training_budget"]["total_optimizer_steps"])
@@ -694,6 +816,7 @@ def run_v11_10p_training(
         "nn_guard": {"window": NN_WINDOW, "floor": NN_FLOOR},
         "sonar_anchor_encoder": "P4.8 teacher (OSFM-S-PRETRAIN-V1) frozen in model.v1.sonar, 28x28 input" if SONAR_ANCHOR else None,
         "extra_camera_sources": list(EXTRA_CAMERA),
+        "extra_sonar_sources": {name: {k: v for k, v in SONAR_SOURCES[name].items() if k != "manifest"} for name in EXTRA_SONAR},
         "uvvid_frame_stride": UVVID_FRAME_STRIDE,
         "camera_batch_policy": "equal share per source",
         "gate": "every modality's validation rank >= rank_floor (config: every_family_rank_ge)",
@@ -800,7 +923,7 @@ def run_v11_10p_training(
     )
     coverage = batcher.coverage()
     heldout = {m: batcher.heldout_sequences(m) for m in MODALITIES}
-    run.write_artifact("reports", "data_coverage.json", json.dumps({"datasets": ["public.subpipe_full", *(f"public.{x}" for x in EXTRA_CAMERA)], "modalities": coverage}, indent=2, sort_keys=True))
+    run.write_artifact("reports", "data_coverage.json", json.dumps({"datasets": ["public.subpipe_full", *(f"public.{x}" for x in EXTRA_CAMERA), *(Path(SONAR_SOURCES[x]["dir"]).name for x in EXTRA_SONAR)], "modalities": coverage}, indent=2, sort_keys=True))
     best_rank = -math.inf
     best_path: str | None = None
     last_path: str | None = None
