@@ -1,0 +1,89 @@
+# China Offshore SSS-AI: multi-region side-scan sonar image dataset for cross-regional seafloor target recognition
+# Downloaded 2026-10-04 for V1.1 P4 sonar pretraining (Kerem trainer); every file's md5 matched the repository's published checksum before its sha256 was recorded.
+schema_version: 1.0.0
+dataset_id: public.china_offshore_sss
+version: doi:10.5281/zenodo.20048164
+manifest_version: 3
+status: APPROVED
+source_category: PUBLIC_REAL
+source: https://zenodo.org/records/20048164
+release_id: doi:10.5281/zenodo.20048164
+retrieved_at: '2026-10-04'
+license: CC-BY-4.0
+license_evidence_ref: Zenodo record metadata license.id=cc-by-4.0 (https://zenodo.org/api/records/20048164), read
+  2026-10-04
+usage_rights: 'CC-BY-4.0: research, adaptation and training with attribution (no non-commercial or share-alike term)'
+rights_review_status: CLEARED
+rights_by_asset_ref: single record; all files share the licence
+redistribution_allowed: false
+deployment_allowed: false
+training_allowed: true
+checksum: 1542fd40adc94275fca1f09113863c390971f9ec96be68d4f6ae3917598fc5e4
+modalities:
+- SONAR
+labels: []
+label_schema_ref: UNUSED (self-supervised)
+label_quality_report_ref: human annotation per dataset paper; no label-quality report published
+units: {}
+frames: {}
+coordinate_frames_ref: config.yaml gives cam offsets (x, z mm; pitch deg) only; no full extrinsics, no sonar mount
+calibration_ref: 'extracted/config.yaml#cam0 (intrinsics + radtan distortion); cam1 and sonar: none'
+timestamps:
+  clock_domain: subpipe:vehicle_unix
+  units: ns
+  semantics: UNIX epoch time in the image file name (ms resolution); CSV rows carry sub-ms stamps
+  offset_evidence_ref: null
+synchronization: []
+truth_availability: NONE_USED
+missingness_policy: pose None (nav frame undocumented); calibration None except cam0; unlisted images have no label
+split_strategy:
+- sequence
+split_manifest_ref: per-group contiguous PRETRAIN_REAL/VALIDATION blocks (trainer _split_groups)
+duplicate_audit_ref: OPEN
+transformations:
+- transformation_id: subpipe-zip-member-decode-v1
+  kind: TRANSFORM
+  description: zipfile read (CRC-32 checked) + OpenCV imdecode of JPEG / binary PPM members
+  version: 1.0.0
+  config_hash: 4a838fab0507c430c1703ce96dc2c8042db3675bd815869d838b10974ecd87ff
+corruptions: []
+adapter_version: subpipe_zip-1.0.0
+transform_config_hash: d049d9f2172a4aba6816ceefa283b6974903d961602d495877685109ae63e920
+permitted_tasks:
+- self-supervised imaging_sonar representation pretraining (V1.1 P4)
+unsupported_claims:
+- true material loss labels
+- fatigue labels inferred from pipeline segmentation
+intended_role: 3,255 side-scan target chips from four sea regions (Shenzhen, Dongying, Quanzhou, Yantai); images
+  only, labels unused.
+procurement_status: APPROVED
+verified_on: '2026-09-19'
+source_urls:
+- https://zenodo.org/records/12666132
+- https://zenodo.org/api/records/12666132
+- https://zenodo.org/api/records/12666132/files/SubPipeMini2.zip/content
+- https://github.com/remaro-network/SubPipe-dataset
+conrad_tasks:
+- 2S
+- ECMER-SSL (only via an approved manifest)
+- 2T domain-appearance context only
+forbidden_uses:
+- pipeline boxes must not supervise 2T material loss, corrosion or fatigue condition
+- EstimatedState is the vehicle's navigation estimate, not ground truth; never score localization against it as
+  truth
+- 'one mission only: results are not independent-site generalization'
+restrictions:
+- 'attribution required: Alvarez-Tunon, Marnet, Antal, Aubard, Costa, Brodskiy (2024), SubPipe, doi:10.5281/zenodo.12666132'
+- 'user approved download 2026-09-19: SubPipeMini2.zip only (4,945,761,374 bytes); no other SubPipe archive'
+- deployment and redistribution by Conrad not reviewed; flags stay false
+remaining_verification:
+- frame-level duplicate audit
+required_files_note: Only the archives are required; images are read from them by the V1.1 Kerem trainer.
+files:
+- path: raw/China-Offshore-SSS-AI_Zenodo_public_upload.zip
+  sha256: 1542fd40adc94275fca1f09113863c390971f9ec96be68d4f6ae3917598fc5e4
+  byte_length: 967252656
+  stream: archive
+  modality: STRUCTURED
+  lineage:
+    sequence: china_offshore_sss/all
