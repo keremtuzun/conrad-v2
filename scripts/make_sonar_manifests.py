@@ -66,7 +66,7 @@ for key, d in DATASETS.items():
         "rights_by_asset_ref": "single record; all files share the licence", "rights_review_status": "CLEARED",
         "training_allowed": True, "redistribution_allowed": False, "deployment_allowed": False,
         "checksum": files[0]["sha256"], "modalities": d["modalities"], "labels": [], "label_schema_ref": "UNUSED (self-supervised)",
-        "frames": {}, "units": {}, "truth_availability": "NONE_USED", "files": files,
+        "frames": {}, "units": {}, "truth_availability": "NONE", "files": files,
         "intended_role": d["role"], "permitted_tasks": ["self-supervised imaging_sonar representation pretraining (V1.1 P4)"],
         "required_files_note": "Only the archives are required; images are read from them by the V1.1 Kerem trainer.",
         "split_strategy": ["sequence"], "split_manifest_ref": "per-group contiguous PRETRAIN_REAL/VALIDATION blocks (trainer _split_groups)",

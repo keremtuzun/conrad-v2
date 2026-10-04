@@ -34,7 +34,7 @@ timestamps:
   semantics: UNIX epoch time in the image file name (ms resolution); CSV rows carry sub-ms stamps
   offset_evidence_ref: null
 synchronization: []
-truth_availability: NONE_USED
+truth_availability: NONE
 missingness_policy: pose None (nav frame undocumented); calibration None except cam0; unlisted images have no label
 split_strategy:
 - sequence
