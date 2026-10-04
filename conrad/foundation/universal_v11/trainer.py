@@ -387,7 +387,7 @@ EXTRA_SONAR = tuple(x for x in os.environ.get("KEREM_EXTRA_SONAR", "catalunya,ch
 SONAR_SOURCES: dict[str, dict[str, Any]] = {
     # 434k side-scan patches from Catalan coastal surveys; read from the merged archive, every Nth patch per survey line
     "catalunya": {"manifest": "datasets/public/sss_catalunya.manifest.yaml", "dir": "artifacts/data/public.sss_catalunya",
-                  "zip": "sss_catalunya_merged.zip", "stride": int(os.environ.get("KEREM_CATALUNYA_STRIDE", "6")), "sequential": True},
+                  "split_zip": "raw/sss_ssl_dataset_N713_384", "stride": int(os.environ.get("KEREM_CATALUNYA_STRIDE", "6")), "sequential": True},
     # side-scan target chips from four Chinese sea regions (not a time sequence)
     "china_offshore": {"manifest": "datasets/public/china_offshore_sss.manifest.yaml", "dir": "artifacts/data/public.china_offshore_sss",
                        "images": "extracted", "stride": 1, "sequential": False},
@@ -482,7 +482,102 @@ def _decode_image_path(job: str | tuple[str, int]) -> np.ndarray:
     return _finish(cv2.imread(path, cv2.IMREAD_UNCHANGED), channels, path)
 
 
-_ZIP_HANDLES: dict[str, zipfile.ZipFile] = {}
+class _SplitZip:
+    """Read members of a split (spanned) zip archive in place: base.z01, base.z02, ..., base.zip.
+
+    Python's zipfile refuses multi-disk archives; merging this one (52 GB on a 48 MB/s disk) costs about 35 min,
+    so the central directory is parsed here and each member is read across the concatenated parts. Stored and
+    deflated members are supported; every member's CRC-32 is checked, as zipfile would.
+    """
+
+    def __init__(self, base: str) -> None:
+        import struct
+
+        stem = Path(base)
+        self.parts = [*sorted(stem.parent.glob(stem.name + ".z[0-9][0-9]")), stem.parent / (stem.name + ".zip")]
+        self.sizes = [p.stat().st_size for p in self.parts]
+        self.starts = [sum(self.sizes[:i]) for i in range(len(self.sizes))]
+        self._fh: dict[int, Any] = {}
+        tail_len = min(self.sizes[-1], 1 << 20)
+        with open(self.parts[-1], "rb") as fh:
+            fh.seek(self.sizes[-1] - tail_len)
+            tail = fh.read()
+        e = tail.rfind(b"PK\x05\x06")
+        _, cd_disk, _, n_total, cd_size, cd_off = struct.unpack("<HHHHII", tail[e + 4 : e + 20])
+        loc = tail.rfind(b"PK\x06\x07", 0, e)
+        if loc >= 0:  # zip64 end of central directory
+            z64_disk, z64_off, _ = struct.unpack("<IQI", tail[loc + 4 : loc + 20])
+            rec = self._read(self.starts[z64_disk] + z64_off, 56)
+            cd_disk, n_total, cd_size, cd_off = struct.unpack("<I", rec[20:24])[0], *struct.unpack("<QQQ", rec[32:56])
+        cd = self._read(self.starts[cd_disk] + cd_off, cd_size)
+        self.index: dict[str, tuple[int, int, int, int]] = {}
+        pos = 0
+        for _ in range(n_total):
+            (sig, _, _, _, method, _, _, crc, csize, usize, nlen, xlen, clen, disk, _, _, loff) = struct.unpack(
+                "<IHHHHHHIIIHHHHHII", cd[pos : pos + 46])
+            if sig != 0x02014B50:
+                raise RuntimeError(f"{base}: bad central directory entry")
+            name = cd[pos + 46 : pos + 46 + nlen].decode("utf-8", "replace")
+            extra = cd[pos + 46 + nlen : pos + 46 + nlen + xlen]
+            x = 0
+            while x + 4 <= len(extra):  # zip64 extra: fields present only where the 32/16-bit field is saturated
+                hid, hlen = struct.unpack("<HH", extra[x : x + 4])
+                if hid == 0x0001:
+                    vals, q = extra[x + 4 : x + 4 + hlen], 0
+                    if usize == 0xFFFFFFFF:
+                        usize = struct.unpack("<Q", vals[q : q + 8])[0]
+                        q += 8
+                    if csize == 0xFFFFFFFF:
+                        csize = struct.unpack("<Q", vals[q : q + 8])[0]
+                        q += 8
+                    if loff == 0xFFFFFFFF:
+                        loff = struct.unpack("<Q", vals[q : q + 8])[0]
+                        q += 8
+                    if disk == 0xFFFF:
+                        disk = struct.unpack("<I", vals[q : q + 4])[0]
+                x += 4 + hlen
+            self.index[name] = (self.starts[disk] + loff, csize, method, crc)
+            pos += 46 + nlen + xlen + clen
+
+    def _read(self, offset: int, length: int) -> bytes:
+        out = bytearray()
+        while length > 0:
+            i = max(k for k, st in enumerate(self.starts) if st <= offset)
+            fh = self._fh.get(i)
+            if fh is None:
+                fh = self._fh[i] = open(self.parts[i], "rb")  # noqa: SIM115 - kept open for the worker's lifetime
+            fh.seek(offset - self.starts[i])
+            chunk = fh.read(min(length, self.sizes[i] - (offset - self.starts[i])))
+            if not chunk:
+                raise RuntimeError("split zip: read past the end")
+            out += chunk
+            offset += len(chunk)
+            length -= len(chunk)
+        return bytes(out)
+
+    def namelist(self) -> list[str]:
+        return list(self.index)
+
+    def read(self, name: str) -> bytes:
+        import struct
+        import zlib
+
+        off, csize, method, crc = self.index[name]
+        hdr = self._read(off, 30)
+        if hdr[:4] != b"PK\x03\x04":
+            raise RuntimeError(f"{name}: bad local header")
+        nlen, xlen = struct.unpack("<HH", hdr[26:30])
+        data = self._read(off + 30 + nlen + xlen, csize)
+        if method == 8:
+            data = zlib.decompress(data, -15)
+        elif method != 0:
+            raise RuntimeError(f"{name}: unsupported compression method {method}")
+        if zlib.crc32(data) & 0xFFFFFFFF != crc:
+            raise RuntimeError(f"{name}: CRC-32 mismatch")
+        return data
+
+
+_ZIP_HANDLES: dict[str, Any] = {}
 
 
 def _decode_zip_image(job: tuple[str, str, int]) -> np.ndarray:
@@ -491,7 +586,7 @@ def _decode_zip_image(job: tuple[str, str, int]) -> np.ndarray:
     archive, member, channels = job
     handle = _ZIP_HANDLES.get(archive)
     if handle is None:
-        handle = _ZIP_HANDLES[archive] = zipfile.ZipFile(archive)
+        handle = _ZIP_HANDLES[archive] = _SplitZip(archive[6:]) if archive.startswith("split:") else zipfile.ZipFile(archive)
     raw = np.frombuffer(handle.read(member), dtype=np.uint8)  # CRC-32 checked by zipfile
     return _finish(cv2.imdecode(raw, cv2.IMREAD_UNCHANGED), channels, member)
 
@@ -551,11 +646,15 @@ class _MultiSourceBatcher:
                 continue
             spec = SONAR_SOURCES[name]
             root = REPO_ROOT / spec["dir"]
-            if "zip" in spec:
+            if "split_zip" in spec:
+                archive = "split:" + str(root / spec["split_zip"])
+                refs = [n for n in _SplitZip(archive[6:]).namelist() if Path(n).suffix.lower() in _IMAGE_SUFFIXES]
+                loader: tuple[Any, ...] = ("zipimg", 1, archive)
+            elif "zip" in spec:
                 archive = str(root / spec["zip"])
                 with zipfile.ZipFile(archive) as handle:
                     refs = [n for n in handle.namelist() if Path(n).suffix.lower() in _IMAGE_SUFFIXES]
-                loader: tuple[Any, ...] = ("zipimg", 1, archive)
+                loader = ("zipimg", 1, archive)
             else:
                 refs = [
                     str(p) for p in (root / spec["images"]).rglob("*")
