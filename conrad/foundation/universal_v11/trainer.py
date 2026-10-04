@@ -652,6 +652,20 @@ def _split_groups(groups: dict[str, list[str]]) -> tuple[list[str], list[str], d
     return train, val, counts
 
 
+def _decode_image_path_safe(job: Any) -> np.ndarray | None:
+    try:
+        return _decode_image_path(job)
+    except Exception:
+        return None
+
+
+def _decode_zip_image_safe(job: Any) -> np.ndarray | None:
+    try:
+        return _decode_zip_image(job)
+    except Exception:
+        return None
+
+
 class _MultiSourceBatcher:
     """Frames per modality and per source, partitioned per stream/site/video by contiguous time blocks.
     Frames are decoded once (disk cache keyed by content hashes) and held on the device. Training batches
@@ -740,19 +754,31 @@ class _MultiSourceBatcher:
             raise RuntimeError(f"{modality}/{source}: PRETRAIN_REAL and VALIDATION partitions must both be non-empty")
         members = train + val
         cache = self._cache_path(modality, source, key, members)
+        skip_path = cache.with_suffix(".skipped.json")
         if cache.is_file():
             frames = np.load(cache)
+            skipped = json.loads(skip_path.read_text()) if skip_path.is_file() else []
         else:
             kind, channels = loader[0], loader[1]
             with get_context("fork").Pool(max(1, (os.cpu_count() or 2) - 1)) as pool:
-                if kind == "zip":
-                    frames = np.stack(pool.map(_decode_member, [(m, channels) for m in members], chunksize=16))
+                if kind == "zip":  # the verified core archive stays fail-closed
+                    decoded = pool.map(_decode_member, [(m, channels) for m in members], chunksize=16)
                 elif kind == "zipimg":
-                    frames = np.stack(pool.map(_decode_zip_image, [(loader[2], m, channels) for m in members], chunksize=64))
+                    decoded = pool.map(_decode_zip_image_safe, [(loader[2], m, channels) for m in members], chunksize=64)
                 else:
-                    frames = np.stack(pool.map(_decode_image_path, [(m, channels) for m in members], chunksize=16))
+                    decoded = pool.map(_decode_image_path_safe, [(m, channels) for m in members], chunksize=16)
+            skipped = [m for m, f in zip(members, decoded, strict=True) if f is None]
+            if len(skipped) > max(5, 0.01 * len(members)):
+                raise RuntimeError(f"{modality}/{source}: {len(skipped)} of {len(members)} frames unreadable (> max(5, 1 %))")
+            frames = np.stack([f for f in decoded if f is not None])
             SUBPIPE_FULL_CACHE_DIR.mkdir(parents=True, exist_ok=True)
             np.save(cache, frames)
+            skip_path.write_text(json.dumps(skipped))
+        if skipped:
+            bad = set(skipped)
+            train = [m for m in train if m not in bad]
+            val = [m for m in val if m not in bad]
+            counts = {**counts, "skipped_unreadable": [Path(m).name for m in skipped]}
         self._store(modality, source, frames, train, val, counts, cache)
 
     def _add_videos(self, modality: str, source: str, videos: list[str], *, key: str) -> None:
