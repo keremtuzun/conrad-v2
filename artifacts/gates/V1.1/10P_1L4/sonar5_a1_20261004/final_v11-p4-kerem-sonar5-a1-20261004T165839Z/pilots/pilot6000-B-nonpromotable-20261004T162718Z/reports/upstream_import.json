@@ -1,0 +1,8 @@
+{
+  "attempted": true,
+  "checkpoint_sha256": "b2dfc162c1d72e4363643b516b6566eb0f11ca4a874f9674fc5b06f1ddf85696",
+  "loaded_tensor_count": 150,
+  "source": "teacher.* -> model.v1.sonar",
+  "target_tensor_count": 150,
+  "used_as_sonar_front_end": true
+}

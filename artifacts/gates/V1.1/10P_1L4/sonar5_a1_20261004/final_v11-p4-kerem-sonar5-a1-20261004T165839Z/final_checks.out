@@ -1,0 +1,46 @@
+{
+  "best": {
+    "step": 451000,
+    "strict_load": true,
+    "all_weights_finite": true,
+    "parameters": 308055809,
+    "has_optimizer_state": true,
+    "load_seconds": 6.0
+  },
+  "last": {
+    "step": 730000,
+    "strict_load": true,
+    "all_weights_finite": true,
+    "parameters": 308055809,
+    "has_optimizer_state": true,
+    "load_seconds": 5.0
+  }
+}
+{
+  "best/imaging_sonar/pooled_rank": 109.0,
+  "best/imaging_sonar/subpipe/rank": 24.5,
+  "best/imaging_sonar/catalunya/rank": 39.4,
+  "best/imaging_sonar/china_offshore/rank": 96.6,
+  "best/imaging_sonar/aquascan/rank": 46.4,
+  "best/imaging_sonar/uatd/rank": 33.1,
+  "best/imaging_sonar/nn_temporal_hit_sequential": 0.373,
+  "pixels/imaging_sonar/nn_temporal_hit_sequential": 0.357,
+  "best/rgb_camera/pooled_rank": 96.8,
+  "best/rgb_camera/subpipe/rank": 24.3,
+  "best/rgb_camera/seaclear/rank": 70.9,
+  "best/rgb_camera/uvvid/rank": 57.1,
+  "best/rgb_camera/nn_temporal_hit_sequential": 0.695,
+  "pixels/rgb_camera/nn_temporal_hit_sequential": 0.898,
+  "last/imaging_sonar/pooled_rank": 108.9,
+  "last/imaging_sonar/subpipe/rank": 24.2,
+  "last/imaging_sonar/catalunya/rank": 37.6,
+  "last/imaging_sonar/china_offshore/rank": 98.3,
+  "last/imaging_sonar/aquascan/rank": 45.6,
+  "last/imaging_sonar/uatd/rank": 32.5,
+  "last/imaging_sonar/nn_temporal_hit_sequential": 0.372,
+  "last/rgb_camera/pooled_rank": 95.9,
+  "last/rgb_camera/subpipe/rank": 23.7,
+  "last/rgb_camera/seaclear/rank": 68.5,
+  "last/rgb_camera/uvvid/rank": 58.6,
+  "last/rgb_camera/nn_temporal_hit_sequential": 0.682
+}

@@ -1,0 +1,18 @@
+{
+  "best": {
+    "step": 451000,
+    "strict_load": true,
+    "all_weights_finite": true,
+    "parameters": 308055809,
+    "has_optimizer_state": true,
+    "load_seconds": 6.0
+  },
+  "last": {
+    "step": 730000,
+    "strict_load": true,
+    "all_weights_finite": true,
+    "parameters": 308055809,
+    "has_optimizer_state": true,
+    "load_seconds": 5.0
+  }
+}
