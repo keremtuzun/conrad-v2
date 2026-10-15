@@ -189,6 +189,9 @@ SONAR_BATCH = os.environ.get("KEREM_SONAR_BATCH", "mixed")
 STREAM_BATCH_SOURCES = tuple(x for x in os.environ.get("KEREM_STREAM_BATCH_SOURCES", "").split(",") if x)
 # Sonar steps per source in one rotation, e.g. "subpipe:2" (default 1 each).
 SONAR_WEIGHTS = {k: int(v) for k, v in (x.split(":") for x in os.environ.get("KEREM_SONAR_WEIGHTS", "").split(",") if x)}
+# Per-source strong-view override "source=crop_min/speckle", e.g. "subpipe=0.85/0.10". SubPipe follows a pipeline,
+# so where the pipe sits in the frame is content; large crops taught the model to ignore it.
+SOURCE_VIEWS = {k: (float(v.split("/")[0]), float(v.split("/")[1])) for k, v in (x.split("=") for x in os.environ.get("KEREM_SOURCE_VIEWS", "").split(",") if x)}
 # "sonar": milder geometry (crops keep >= 65 % of the frame) and stronger multiplicative speckle for the strong view.
 SONAR_VIEWS = os.environ.get("KEREM_SONAR_VIEWS", "default")
 # > 0: on sequential sonar sources, the strong view is taken from a frame up to this many positions away in the
@@ -198,6 +201,9 @@ TEMPORAL_PAIRS = int(os.environ.get("KEREM_TEMPORAL_PAIRS", "0"))
 INIT_FROM = os.environ.get("KEREM_INIT_FROM", "")
 # "per_source": best.pt is selected by min(every family's pooled rank, every sonar source's own rank).
 SELECT = os.environ.get("KEREM_SELECT", "family")
+# Sonar sources left out of per_source selection because even raw pixels cannot reach the floor on their held-out
+# set (AquaScan: 103 held-out frames, pixel rank 70.2). They are still measured and reported.
+SELECT_EXCLUDE = tuple(x for x in os.environ.get("KEREM_SELECT_EXCLUDE", "").split(",") if x)
 # Readiness blockers that only say "this is not the reviewed trainer on osfm-universal-v1.1".
 # An explicit owner override may launch past exactly these, and the override is recorded in the run.
 UNREVIEWED_TRAINER_BLOCKER_IDS = frozenset({2, 4, 8})
@@ -1044,7 +1050,9 @@ def run_v11_10p_training(
         "temporal_pairs_max_offset": TEMPORAL_PAIRS,
         "stream_batch_sources": list(STREAM_BATCH_SOURCES),
         "sonar_weights": SONAR_WEIGHTS,
+        "source_views": {k: {"crop_scale": [v[0], 1.0], "speckle": v[1]} for k, v in SOURCE_VIEWS.items()},
         "best_selection": SELECT,
+        "best_selection_excludes": list(SELECT_EXCLUDE),
         "gate": "every modality's validation rank >= rank_floor (config: every_family_rank_ge)",
         "validation_batch": "distinct_frames",
         "cache_size": CACHE_SIZE,
@@ -1172,12 +1180,15 @@ def run_v11_10p_training(
     train_sample_ids: set[str] = set()
     aug_gen = torch.Generator(device=device).manual_seed(seed + 17)
 
-    def _two_view_forward(images: torch.Tensor, step: int, modality: str, partner: torch.Tensor | None = None) -> tuple[torch.Tensor, torch.Tensor]:
+    def _two_view_forward(images: torch.Tensor, step: int, modality: str, partner: torch.Tensor | None = None, source: str | None = None) -> tuple[torch.Tensor, torch.Tensor]:
         # View A is the exact clean view used by validation, so the rank/variance terms act on clean frames
         # (augmented views alone reached train rank >= 75 while clean frames stayed near 45).
         # With temporal pairs, view B is the strong view of a nearby frame from the same recording.
         view_a = _clean_view(images, modality, model) if CLEAN_ANCHOR_VIEW else _train_view(images, aug_gen, VIEWS[modality]["light"], modality, model)
-        view_b = _train_view(images if partner is None else partner, aug_gen, VIEWS[modality]["strong"], modality, model)
+        strong = VIEWS[modality]["strong"]
+        if source in SOURCE_VIEWS:
+            strong = {**strong, "crop_scale": (SOURCE_VIEWS[source][0], 1.0), "speckle": SOURCE_VIEWS[source][1]}
+        view_b = _train_view(images if partner is None else partner, aug_gen, strong, modality, model)
         both = torch.cat([view_a, view_b], dim=0)
         with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
             out = model(
@@ -1215,7 +1226,7 @@ def run_v11_10p_training(
             else:
                 images, sample_ids = batcher.batch(modality, "train", step, source=source)
             train_sample_ids.update(sample_ids)
-            z_a, z_b = _two_view_forward(images, step, modality, partner)
+            z_a, z_b = _two_view_forward(images, step, modality, partner, source)
             terms = _vicreg_terms(z_a, z_b, rank_floor)
             loss = terms["total"]
             if not torch.isfinite(loss):
@@ -1273,7 +1284,7 @@ def run_v11_10p_training(
                     "rank_pass": all(h["rank_pass"] for h in per_modality.values()),
                     "nn_min": min(h["nn_temporal_hit"] for h in per_modality.values()),
                 }
-                sonar_source_min = min(per_modality["imaging_sonar"]["sources"].values())
+                sonar_source_min = min(r for src, r in per_modality["imaging_sonar"]["sources"].items() if src not in SELECT_EXCLUDE)
                 selection_rank = min(health["effective_rank"], sonar_source_min) if SELECT == "per_source" else health["effective_rank"]
                 now = time.time()
                 metric_record = {
@@ -1372,7 +1383,8 @@ def run_v11_10p_training(
             "kerem_variant": variant,
             "reviewed_trainer": False,
             "best_selection_rule": f"after warm-up; every family's held-out temporal NN hit >= {NN_FLOOR}; then max "
-            + ("min(weakest-family pooled rank, weakest sonar source's own rank)" if SELECT == "per_source" else "weakest-family rank"),
+            + ("min(weakest-family pooled rank, weakest sonar source's own rank)" if SELECT == "per_source" else "weakest-family rank")
+            + (f" (sources not in selection: {', '.join(SELECT_EXCLUDE)})" if SELECT_EXCLUDE else ""),
             "init_from": init_record,
             "readiness_override": override_record,
             "upstream_import_loaded_tensor_count": upstream_import.get("loaded_tensor_count"),
