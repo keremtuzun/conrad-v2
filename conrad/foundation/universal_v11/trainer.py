@@ -162,14 +162,14 @@ def _subpipe_frame_refs(stream: str, partition: CorpusPartition, frame_stride: i
 IMAGE_SIZE = 64
 PATCH_GRID = 4
 PATCH_DIM = (IMAGE_SIZE // PATCH_GRID) ** 2
-TRAINER_VARIANT = "kerem_v11_10p_multisource_sonar5_v8"
+TRAINER_VARIANT = "kerem_v11_10p_multisource_sonar5_v9_persource"
 BASE_LR = float(os.environ.get("KEREM_LR", "2e-4"))
 WEIGHT_DECAY = float(os.environ.get("KEREM_WEIGHT_DECAY", "0.05"))
 # The project's V1.1 is FamilyEncoderConfig depth 6 (307.8M). The reviewed trainer used depth 2 (201.3M).
 FAMILY_DEPTH = int(os.environ.get("KEREM_FAMILY_DEPTH", "6"))
 # Top-level modules held frozen (config stage A trains adapters/router/small heads only).
 FROZEN_MODULES = tuple(m for m in os.environ.get("KEREM_FREEZE", "").split(",") if m)
-WARMUP_STEPS = 2000
+WARMUP_STEPS = int(os.environ.get("KEREM_WARMUP", "2000"))
 # The explicit rank term was gamed in the first long run (held-out sonar rank 50 -> 154 while temporal
 # nearest-neighbour agreement fell 0.61 -> 0.06, i.e. noise). Default is plain VICReg.
 VICREG_WEIGHTS = {"invariance": 25.0, "variance": 25.0, "covariance": 1.0, "rank": float(os.environ.get("KEREM_RANK_WEIGHT", "0"))}
@@ -179,6 +179,19 @@ NN_WINDOW = 3
 NN_FLOOR = float(os.environ.get("KEREM_NN_FLOOR", "0.3"))
 TOKEN_MASK_FRACTION = 0.25
 CLEAN_ANCHOR_VIEW = os.environ.get("KEREM_CLEAN_ANCHOR", "1") == "1"
+# Per-source sonar (round 4). With batches mixing all five sonar sources, VICReg's variance/covariance terms
+# were met by telling the sources apart: pooled rank 109 while three sources fell below the untrained network.
+# "single": every sonar step draws its whole batch from one source (round robin), so the terms act within a source.
+SONAR_BATCH = os.environ.get("KEREM_SONAR_BATCH", "mixed")
+# "sonar": milder geometry (crops keep >= 65 % of the frame) and stronger multiplicative speckle for the strong view.
+SONAR_VIEWS = os.environ.get("KEREM_SONAR_VIEWS", "default")
+# > 0: on sequential sonar sources, the strong view is taken from a frame up to this many positions away in the
+# same recording (time-contrastive pairs); non-sequential sources keep same-frame views.
+TEMPORAL_PAIRS = int(os.environ.get("KEREM_TEMPORAL_PAIRS", "0"))
+# Warm start: model weights only (fresh optimizer and schedule) from an earlier Kerem-trainer checkpoint.
+INIT_FROM = os.environ.get("KEREM_INIT_FROM", "")
+# "per_source": best.pt is selected by min(every family's pooled rank, every sonar source's own rank).
+SELECT = os.environ.get("KEREM_SELECT", "family")
 # Readiness blockers that only say "this is not the reviewed trainer on osfm-universal-v1.1".
 # An explicit owner override may launch past exactly these, and the override is recorded in the run.
 UNREVIEWED_TRAINER_BLOCKER_IDS = frozenset({2, 4, 8})
@@ -370,6 +383,8 @@ VIEWS: dict[str, dict[str, dict[str, Any]]] = {
         "strong": {"crop_scale": (0.25, 1.0), "speckle": 0.0, "noise": 0.03, "patch_dropout": TOKEN_MASK_FRACTION, "channel_gain": 0.15},
     },
 }
+if SONAR_VIEWS == "sonar":
+    VIEWS["imaging_sonar"]["strong"] = {"crop_scale": (0.65, 1.0), "speckle": 0.20, "noise": 0.03, "patch_dropout": TOKEN_MASK_FRACTION}
 
 
 def _vicreg_terms(z_a: torch.Tensor, z_b: torch.Tensor, rank_floor: float) -> dict[str, torch.Tensor]:
@@ -863,6 +878,41 @@ class _MultiSourceBatcher:
             ids += [f"{name}:{refs[i]}" for i in picks]
         return torch.cat(images, dim=0), tuple(ids)
 
+    def _train_groups(self, modality: str, source: str) -> torch.Tensor:
+        """Recording id of every training frame (CPU); training refs are stored recording by recording in time order."""
+        entry = self.data[modality][source]
+        if "train_gid" not in entry:
+            names: dict[str, int] = {}
+            gids = []
+            for ref in entry["train"]:
+                if source == "subpipe":
+                    match = _FULL_MEMBER.match(ref)
+                    group = _FOLDER_STREAM[match.group(2)] if match else "subpipe"
+                else:
+                    group = _sonar_group(source, ref)
+                gids.append(names.setdefault(group, len(names)))
+            entry["train_gid"] = torch.tensor(gids)
+        return entry["train_gid"]
+
+    def batch_pairs(self, modality: str, source: str, step: int, max_offset: int) -> tuple[torch.Tensor, torch.Tensor, tuple[str, ...]]:
+        """One-source training batch plus, per frame, a partner 1..max_offset positions away in the same recording
+        (falls back to the frame itself at a recording edge)."""
+        entry = self.data[modality][source]
+        gen = torch.Generator().manual_seed(self.seed + step)
+        n = len(entry["train"])
+        order = torch.randperm(n, generator=gen)
+        picks = order[torch.arange(self.batch_size) % n]
+        offsets = torch.randint(1, max_offset + 1, (self.batch_size,), generator=gen)
+        offsets = offsets * torch.where(torch.rand(self.batch_size, generator=gen) < 0.5, -1, 1)
+        gid = self._train_groups(modality, source)
+        partners = (picks + offsets).clamp(0, n - 1)
+        partners = torch.where(gid[partners] == gid[picks], partners, (picks - offsets).clamp(0, n - 1))
+        partners = torch.where(gid[partners] == gid[picks], partners, picks)
+        index, frames = entry["train_index"], entry["frames"]
+        images = frames[index[picks.to(self.device)]].float() / 255.0
+        partner_images = frames[index[partners.to(self.device)]].float() / 255.0
+        return images, partner_images, tuple(f"{source}:{entry['train'][i]}" for i in picks.tolist())
+
     def close(self) -> None:
         return None
 
@@ -972,6 +1022,10 @@ def run_v11_10p_training(
         "extra_sonar_sources": {name: {k: v for k, v in SONAR_SOURCES[name].items() if k != "manifest"} for name in EXTRA_SONAR},
         "uvvid_frame_stride": UVVID_FRAME_STRIDE,
         "camera_batch_policy": "equal share per source",
+        "sonar_batch_policy": "one source per step, round robin" if SONAR_BATCH == "single" else "equal share per source",
+        "sonar_views": SONAR_VIEWS,
+        "temporal_pairs_max_offset": TEMPORAL_PAIRS,
+        "best_selection": SELECT,
         "gate": "every modality's validation rank >= rank_floor (config: every_family_rank_ge)",
         "validation_batch": "distinct_frames",
         "cache_size": CACHE_SIZE,
@@ -1027,6 +1081,22 @@ def run_v11_10p_training(
             "used_as_sonar_front_end": SONAR_ANCHOR,
         }
         run.write_artifact("reports", "upstream_import.json", json.dumps(upstream_import, indent=2, sort_keys=True))
+    init_record: dict[str, Any] | None = None
+    if INIT_FROM and not resume:
+        init_path = Path(INIT_FROM) if Path(INIT_FROM).is_absolute() else REPO_ROOT / INIT_FROM
+        init_ck = torch.load(init_path, map_location="cpu", weights_only=False)
+        model.load_state_dict(init_ck["model"], strict=True)
+        model.to(device)
+        init_record = {
+            "path": str(INIT_FROM),
+            "sha256": _sha256(init_path),
+            "step": int(init_ck.get("trainer_state", {}).get("step", -1)),
+            "trainer": (init_ck.get("metadata") or {}).get("extra_compatibility", {}).get("trainer") if isinstance(init_ck.get("metadata"), dict) else None,
+            "loaded": "model weights only (strict); fresh optimizer and schedule",
+        }
+        del init_ck
+        run.write_artifact("reports", "init_from.json", json.dumps(init_record, indent=2, sort_keys=True))
+    variant["init_from"] = init_record
     if model.v1 is not None:
         for param in model.v1.parameters():  # the V1 bank is a protected anchor (config: protect_imported_v1_and_selected_sonar_anchor)
             param.requires_grad_(False)
@@ -1083,11 +1153,12 @@ def run_v11_10p_training(
     train_sample_ids: set[str] = set()
     aug_gen = torch.Generator(device=device).manual_seed(seed + 17)
 
-    def _two_view_forward(images: torch.Tensor, step: int, modality: str) -> tuple[torch.Tensor, torch.Tensor]:
+    def _two_view_forward(images: torch.Tensor, step: int, modality: str, partner: torch.Tensor | None = None) -> tuple[torch.Tensor, torch.Tensor]:
         # View A is the exact clean view used by validation, so the rank/variance terms act on clean frames
         # (augmented views alone reached train rank >= 75 while clean frames stayed near 45).
+        # With temporal pairs, view B is the strong view of a nearby frame from the same recording.
         view_a = _clean_view(images, modality, model) if CLEAN_ANCHOR_VIEW else _train_view(images, aug_gen, VIEWS[modality]["light"], modality, model)
-        view_b = _train_view(images, aug_gen, VIEWS[modality]["strong"], modality, model)
+        view_b = _train_view(images if partner is None else partner, aug_gen, VIEWS[modality]["strong"], modality, model)
         both = torch.cat([view_a, view_b], dim=0)
         with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
             out = model(
@@ -1110,9 +1181,17 @@ def run_v11_10p_training(
         for step in range(start_step + 1, steps + 1):
             model.train()
             modality = "imaging_sonar" if step % 2 else "rgb_camera"
-            images, sample_ids = batcher.batch(modality, "train", step)
+            source = None
+            if modality == "imaging_sonar" and SONAR_BATCH == "single":
+                sonar_sources = batcher.sources(modality)
+                source = sonar_sources[(step // 2) % len(sonar_sources)]
+            partner = None
+            if source is not None and TEMPORAL_PAIRS > 0 and batcher.data[modality][source].get("sequential", True):
+                images, partner, sample_ids = batcher.batch_pairs(modality, source, step, TEMPORAL_PAIRS)
+            else:
+                images, sample_ids = batcher.batch(modality, "train", step, source=source)
             train_sample_ids.update(sample_ids)
-            z_a, z_b = _two_view_forward(images, step, modality)
+            z_a, z_b = _two_view_forward(images, step, modality, partner)
             terms = _vicreg_terms(z_a, z_b, rank_floor)
             loss = terms["total"]
             if not torch.isfinite(loss):
@@ -1170,6 +1249,8 @@ def run_v11_10p_training(
                     "rank_pass": all(h["rank_pass"] for h in per_modality.values()),
                     "nn_min": min(h["nn_temporal_hit"] for h in per_modality.values()),
                 }
+                sonar_source_min = min(per_modality["imaging_sonar"]["sources"].values())
+                selection_rank = min(health["effective_rank"], sonar_source_min) if SELECT == "per_source" else health["effective_rank"]
                 now = time.time()
                 metric_record = {
                     "step": step,
@@ -1189,6 +1270,8 @@ def run_v11_10p_training(
                     "val/nn_temporal_hit_min": health["nn_min"],
                     **{f"val/{m}/{src}/effective_rank": r for m, h in per_modality.items() for src, r in h["sources"].items()},
                     "val/representation_effective_rank": health["effective_rank"],
+                    "val/imaging_sonar/source_min_rank": sonar_source_min,
+                    "val/selection_rank": selection_rank,
                     "val/representation_collapse_score": health["collapse_score"],
                     "val/rank_pass": float(health["rank_pass"]),
                     "lr": float(scheduler.get_last_lr()[0]),
@@ -1197,8 +1280,8 @@ def run_v11_10p_training(
                 run.log_metrics(metric_record)
                 # Never select warm-up weights (an untrained model already scores rank 87-99), and never a
                 # checkpoint whose held-out neighbourhoods have lost their temporal structure (rank gaming).
-                if step > WARMUP_STEPS and health["nn_min"] >= NN_FLOOR and health["effective_rank"] > best_rank:
-                    best_rank = health["effective_rank"]
+                if step > start_step + WARMUP_STEPS and health["nn_min"] >= NN_FLOOR and selection_rank > best_rank:
+                    best_rank = selection_rank
                     best_path = str(run.path / "checkpoints" / "best.pt")
                     save_checkpoint(
                         best_path,
@@ -1217,7 +1300,7 @@ def run_v11_10p_training(
                         device=str(device),
                         is_encoder=True,
                         representation_pretraining_id="OSFM-UNIVERSAL-V1.1-10P-CANDIDATE",
-                        selection_metric="val/representation_effective_rank",
+                        selection_metric="val/selection_rank",
                         extra_compatibility={"trainer": TRAINER_VARIANT},
                         trainer_state={"step": step, "train_sample_ids": sorted(train_sample_ids), "val_sample_ids": list(val_ids)},
                     )
@@ -1254,7 +1337,7 @@ def run_v11_10p_training(
             "rank_floor": rank_floor,
             "best_checkpoint": best_path,
             "last_checkpoint": last_path,
-            "data_scope": "full SubPipe release (side-scan sonar sss_lf+sss_hf; cameras cam0+cam1) plus camera frames from SeaClear (multi-site) and UVVID ROV_GoPro_1-8",
+            "data_scope": "full SubPipe release (side-scan sonar sss_lf+sss_hf; cameras cam0+cam1), sonar from " + (", ".join(EXTRA_SONAR) or "no other source") + ", camera frames from SeaClear (multi-site) and UVVID ROV_GoPro_1-8",
             "semantic_claim": "data-backed imaging_sonar (active acoustic) and rgb_camera (visual image) only; the other 827 registry entries remain interface coverage",
             "sonar_anchor_encoder": SONAR_ANCHOR,
             "upstream_import": {k: v for k, v in upstream_import.items() if k != "loaded_tensors"},
@@ -1264,7 +1347,9 @@ def run_v11_10p_training(
             "payloads": payload_report,
             "kerem_variant": variant,
             "reviewed_trainer": False,
-            "best_selection_rule": f"after warm-up; every family's held-out temporal NN hit >= {NN_FLOOR}; then max weakest-family rank",
+            "best_selection_rule": f"after warm-up; every family's held-out temporal NN hit >= {NN_FLOOR}; then max "
+            + ("min(weakest-family pooled rank, weakest sonar source's own rank)" if SELECT == "per_source" else "weakest-family rank"),
+            "init_from": init_record,
             "readiness_override": override_record,
             "upstream_import_loaded_tensor_count": upstream_import.get("loaded_tensor_count"),
             "wall_clock_s": time.time() - t_start,
