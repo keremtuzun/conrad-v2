@@ -183,6 +183,12 @@ CLEAN_ANCHOR_VIEW = os.environ.get("KEREM_CLEAN_ANCHOR", "1") == "1"
 # were met by telling the sources apart: pooled rank 109 while three sources fell below the untrained network.
 # "single": every sonar step draws its whole batch from one source (round robin), so the terms act within a source.
 SONAR_BATCH = os.environ.get("KEREM_SONAR_BATCH", "mixed")
+# With "single", these sources draw each batch from one recording/stream at a time (round robin over their
+# recordings). SubPipe holds two sonars (sss_lf, sss_hf): with mixed-stream batches its held-out rank came only
+# from telling LF from HF (within-stream rank 27.5 / 36 vs 51 / 42 untrained).
+STREAM_BATCH_SOURCES = tuple(x for x in os.environ.get("KEREM_STREAM_BATCH_SOURCES", "").split(",") if x)
+# Sonar steps per source in one rotation, e.g. "subpipe:2" (default 1 each).
+SONAR_WEIGHTS = {k: int(v) for k, v in (x.split(":") for x in os.environ.get("KEREM_SONAR_WEIGHTS", "").split(",") if x)}
 # "sonar": milder geometry (crops keep >= 65 % of the frame) and stronger multiplicative speckle for the strong view.
 SONAR_VIEWS = os.environ.get("KEREM_SONAR_VIEWS", "default")
 # > 0: on sequential sonar sources, the strong view is taken from a frame up to this many positions away in the
@@ -894,6 +900,17 @@ class _MultiSourceBatcher:
             entry["train_gid"] = torch.tensor(gids)
         return entry["train_gid"]
 
+    def batch_group(self, modality: str, source: str, step: int, occurrence: int) -> tuple[torch.Tensor, tuple[str, ...]]:
+        """One-source training batch from a single recording/stream, cycling through the source's recordings."""
+        entry = self.data[modality][source]
+        gid = self._train_groups(modality, source)
+        groups = sorted(set(gid.tolist()))
+        members = (gid == groups[occurrence % len(groups)]).nonzero().flatten()
+        gen = torch.Generator().manual_seed(self.seed + step)
+        picks = members[torch.randperm(len(members), generator=gen)[torch.arange(self.batch_size) % len(members)]]
+        images = entry["frames"][entry["train_index"][picks.to(self.device)]].float() / 255.0
+        return images, tuple(f"{source}:{entry['train'][i]}" for i in picks.tolist())
+
     def batch_pairs(self, modality: str, source: str, step: int, max_offset: int) -> tuple[torch.Tensor, torch.Tensor, tuple[str, ...]]:
         """One-source training batch plus, per frame, a partner 1..max_offset positions away in the same recording
         (falls back to the frame itself at a recording edge)."""
@@ -1025,6 +1042,8 @@ def run_v11_10p_training(
         "sonar_batch_policy": "one source per step, round robin" if SONAR_BATCH == "single" else "equal share per source",
         "sonar_views": SONAR_VIEWS,
         "temporal_pairs_max_offset": TEMPORAL_PAIRS,
+        "stream_batch_sources": list(STREAM_BATCH_SOURCES),
+        "sonar_weights": SONAR_WEIGHTS,
         "best_selection": SELECT,
         "gate": "every modality's validation rank >= rank_floor (config: every_family_rank_ge)",
         "validation_batch": "distinct_frames",
@@ -1182,11 +1201,16 @@ def run_v11_10p_training(
             model.train()
             modality = "imaging_sonar" if step % 2 else "rgb_camera"
             source = None
+            occurrence = 0
             if modality == "imaging_sonar" and SONAR_BATCH == "single":
-                sonar_sources = batcher.sources(modality)
-                source = sonar_sources[(step // 2) % len(sonar_sources)]
+                rotation = [s for s in batcher.sources(modality) for _ in range(SONAR_WEIGHTS.get(s, 1))]
+                k = step // 2
+                source = rotation[k % len(rotation)]
+                occurrence = (k // len(rotation)) * rotation.count(source) + rotation[: k % len(rotation)].count(source)
             partner = None
-            if source is not None and TEMPORAL_PAIRS > 0 and batcher.data[modality][source].get("sequential", True):
+            if source is not None and source in STREAM_BATCH_SOURCES:
+                images, sample_ids = batcher.batch_group(modality, source, step, occurrence)
+            elif source is not None and TEMPORAL_PAIRS > 0 and batcher.data[modality][source].get("sequential", True):
                 images, partner, sample_ids = batcher.batch_pairs(modality, source, step, TEMPORAL_PAIRS)
             else:
                 images, sample_ids = batcher.batch(modality, "train", step, source=source)

@@ -69,6 +69,18 @@ for name in reload:
         for src in b.sources(modality):
             si, _ = b.batch(modality, "val", 0, distinct=True, source=src)
             health[f"{name}/{modality}/{src}/rank"] = round(float(rank_diversity_loss(encode(model, modality, si), target=75.0)[1]), 1)
+        if modality == "imaging_sonar":  # SubPipe holds two sonars: rank inside each stream (up to 256 held-out frames)
+            e = b.data[modality]["subpipe"]
+            streams: dict[str, list[int]] = {}
+            for i, ref in enumerate(e["val"]):
+                match = T._FULL_MEMBER.match(ref)
+                streams.setdefault(T._FOLDER_STREAM[match.group(2)] if match else "?", []).append(i)
+            gen = torch.Generator().manual_seed(0)
+            for stream, idx in sorted(streams.items()):
+                pick = [idx[k] for k in torch.randperm(len(idx), generator=gen)[:256].tolist()]
+                xs = e["frames"][e["val_index"][torch.tensor(pick, device=dev)]].float() / 255.0
+                health[f"{name}/{modality}/subpipe_{stream}/rank"] = round(float(rank_diversity_loss(encode(model, modality, xs), target=75.0)[1]), 1)
+                health[f"pixels/{modality}/subpipe_{stream}/rank"] = round(float(rank_diversity_loss(T._standardize(T._clean_images(xs)).flatten(1), target=75.0)[1]), 1)
         x, labels, pos = b.heldout_sequences(modality)
         health[f"{name}/{modality}/nn_temporal_hit_sequential"] = round(T._temporal_nn_hit(encode(model, modality, x), labels, pos), 3)
         pix = T._patchify(T._standardize(T._clean_images(x))).flatten(1)
