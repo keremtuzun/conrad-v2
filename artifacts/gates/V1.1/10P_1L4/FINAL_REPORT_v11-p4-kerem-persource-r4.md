@@ -120,3 +120,31 @@ L4s were stocked out in 14 US, EU and Taiwan zones, so the VM ran in Tokyo.
 - The ceiling checks before and after, the SubPipe diagnostics, the orchestrator log, watchdog logs and GPU samples.
 
 Hourly progress is in `PROGRESS_LOG.md`.
+
+## Review response (2026-10-16)
+
+1. **SubPipe overlaps the H2 evaluation set. This is a blocker, and it is not fixed.**
+   - Every round trained on the full SubPipe release, chunks 0-4.
+   - SubPipeMini2's side-scan frames are a subset of chunks 0-2 (see `duplicate_audit_ref` in `subpipe_full.manifest.yaml`).
+   - So these checkpoints **must not be evaluated on SubPipeMini2 for H2**.
+   - The internal held-out numbers in this report are unaffected, because they use per-recording contiguous splits of the same release.
+   - To clear it, either: (a) retrain with every SubPipeMini2 frame removed from training, after the frame-level duplicate audit; or (b) run H2 on data disjoint from SubPipe.
+2. **NO-GO stands.** SubPipe is at 56.3 against 75 (LF 31.3, HF 38.2). Camera's meaning score (0.682) is below raw pixels (0.898).
+3. **Parameter count: 308,055,809 against the frozen 307,668,737.** The whole difference (387,072) is in the two tokenizer input projections:
+   - `tokenizers.imaging_sonar.proj.weight` is 3072 x 256 + bias.
+   - `tokenizers.rgb_camera.proj.weight` is 3072 x 768 + bias.
+   - Readiness counts the model with placeholder input dims of 8 per modality; this trainer feeds 16x16 pixel patches.
+   - Every other tensor is identical in shape (checked by building both models).
+   - It is still an unreviewed trainer launched past blockers 2/4/8. Treat the checkpoints as a custom V1.1 variant until the gate is reconciled.
+4. **CI.**
+   - The PR's own files are now formatted, lint-clean and type-clean.
+   - `tests/unit/foundation/universal_v11/test_kerem_trainer.py` adds 6 tests:
+     - the override scope (only blockers 2/4/8);
+     - contiguous per-recording splits;
+     - opt-in defaults that reproduce earlier rounds;
+     - the weighted sonar rotation;
+     - temporal pairs never crossing a recording or the window;
+     - SubPipe stream batches.
+   - The base branch `osfm-universal-v1.1` still fails CI on its own: 77 unformatted files, about 54 lint errors and about 73 type errors outside this PR.
+   - 7 tests fail identically on the base branch and on this branch, because large gitignored payloads (DINOv2, J1 parent checkpoints) are absent locally.
+5. **Checkpoints are not in the PR.** Hashes are above. Publishing 1.6 GB weights to a public repo is the owner's decision, so they stay off GitHub until that is made.

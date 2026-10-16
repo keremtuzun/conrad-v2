@@ -172,7 +172,12 @@ FROZEN_MODULES = tuple(m for m in os.environ.get("KEREM_FREEZE", "").split(",") 
 WARMUP_STEPS = int(os.environ.get("KEREM_WARMUP", "2000"))
 # The explicit rank term was gamed in the first long run (held-out sonar rank 50 -> 154 while temporal
 # nearest-neighbour agreement fell 0.61 -> 0.06, i.e. noise). Default is plain VICReg.
-VICREG_WEIGHTS = {"invariance": 25.0, "variance": 25.0, "covariance": 1.0, "rank": float(os.environ.get("KEREM_RANK_WEIGHT", "0"))}
+VICREG_WEIGHTS = {
+    "invariance": 25.0,
+    "variance": 25.0,
+    "covariance": 1.0,
+    "rank": float(os.environ.get("KEREM_RANK_WEIGHT", "0")),
+}
 # Meaning guard: a checkpoint is only eligible as best when, for every family, the cosine nearest neighbour
 # of a held-out frame is one of its +-NN_WINDOW time neighbours at least NN_FLOOR of the time (chance ~0.05).
 NN_WINDOW = 3
@@ -188,10 +193,15 @@ SONAR_BATCH = os.environ.get("KEREM_SONAR_BATCH", "mixed")
 # from telling LF from HF (within-stream rank 27.5 / 36 vs 51 / 42 untrained).
 STREAM_BATCH_SOURCES = tuple(x for x in os.environ.get("KEREM_STREAM_BATCH_SOURCES", "").split(",") if x)
 # Sonar steps per source in one rotation, e.g. "subpipe:2" (default 1 each).
-SONAR_WEIGHTS = {k: int(v) for k, v in (x.split(":") for x in os.environ.get("KEREM_SONAR_WEIGHTS", "").split(",") if x)}
+SONAR_WEIGHTS = {
+    k: int(v) for k, v in (x.split(":") for x in os.environ.get("KEREM_SONAR_WEIGHTS", "").split(",") if x)
+}
 # Per-source strong-view override "source=crop_min/speckle", e.g. "subpipe=0.85/0.10". SubPipe follows a pipeline,
 # so where the pipe sits in the frame is content; large crops taught the model to ignore it.
-SOURCE_VIEWS = {k: (float(v.split("/")[0]), float(v.split("/")[1])) for k, v in (x.split("=") for x in os.environ.get("KEREM_SOURCE_VIEWS", "").split(",") if x)}
+SOURCE_VIEWS = {
+    k: (float(v.split("/")[0]), float(v.split("/")[1]))
+    for k, v in (x.split("=") for x in os.environ.get("KEREM_SOURCE_VIEWS", "").split(",") if x)
+}
 # "sonar": milder geometry (crops keep >= 65 % of the frame) and stronger multiplicative speckle for the strong view.
 SONAR_VIEWS = os.environ.get("KEREM_SONAR_VIEWS", "default")
 # > 0: on sequential sonar sources, the strong view is taken from a frame up to this many positions away in the
@@ -213,10 +223,14 @@ def readiness_override_record(readiness: dict[str, Any]) -> dict[str, Any]:
     blockers = [item for item in readiness.get("items", []) if item.get("status") == "BLOCKER"]
     ids = {int(item["id"]) for item in blockers}
     if not ids or not ids <= UNREVIEWED_TRAINER_BLOCKER_IDS:
-        raise RuntimeError(f"override only covers unreviewed-trainer blockers {sorted(UNREVIEWED_TRAINER_BLOCKER_IDS)}; got {sorted(ids)}")
+        raise RuntimeError(
+            f"override only covers unreviewed-trainer blockers {sorted(UNREVIEWED_TRAINER_BLOCKER_IDS)}; got {sorted(ids)}"
+        )
     return {
         "readiness_decision": readiness.get("decision"),
-        "overridden_blockers": [{"id": b["id"], "title": b["title"], "evidence": b["evidence"]} for b in blockers],
+        "overridden_blockers": [
+            {"id": b["id"], "title": b["title"], "evidence": b["evidence"]} for b in blockers
+        ],
         "authorized_by": "Kerem (repository owner); reviewer Burak unavailable",
         "authorized_on": "2026-09-29",
         "reason": "reviewed trainer benchmarked NO-GO (val rank 4.06 < 75); Kerem variant trainer launched instead",
@@ -233,7 +247,12 @@ SUBPIPE_FULL_CACHE_DIR = REPO_ROOT / "artifacts/tmp/subpipe_full_cache"
 _FULL_MEMBER = re.compile(
     r"^SubPipe/DATA/Chunk(\d+)/(Cam0_images|Cam1_images|SSS_LF_images/Image|SSS_HF_images/Image)/(\d+(?:\.\d+)?)\.(jpg|pbm)$"
 )
-_FOLDER_STREAM = {"Cam0_images": "cam0", "Cam1_images": "cam1", "SSS_LF_images/Image": "sss_lf", "SSS_HF_images/Image": "sss_hf"}
+_FOLDER_STREAM = {
+    "Cam0_images": "cam0",
+    "Cam1_images": "cam1",
+    "SSS_LF_images/Image": "sss_lf",
+    "SSS_HF_images/Image": "sss_hf",
+}
 # modality -> channels and per-stream frame stride (cam0 runs at ~30 fps, so every 2nd frame is kept)
 MODALITIES: dict[str, dict[str, Any]] = {
     "imaging_sonar": {"channels": 1, "streams": {"sss_lf": 1, "sss_hf": 1}},
@@ -246,8 +265,14 @@ def _patch_dim(channels: int) -> int:
 
 
 def verify_subpipe_full() -> dict[str, Any]:
-    manifest = yaml.safe_load(SUBPIPE_FULL_MANIFEST.read_text(encoding="utf-8")) if SUBPIPE_FULL_MANIFEST.is_file() else {}
-    entry = next((f for f in manifest.get("files", []) if f.get("path") == "raw/SubPipe.zip"), {})
+    manifest = (
+        yaml.safe_load(SUBPIPE_FULL_MANIFEST.read_text(encoding="utf-8"))
+        if SUBPIPE_FULL_MANIFEST.is_file()
+        else {}
+    )
+    entry: dict[str, Any] = next(
+        (f for f in manifest.get("files", []) if f.get("path") == "raw/SubPipe.zip"), {}
+    )
     present = SUBPIPE_FULL_ARCHIVE.is_file()
     actual = _sha256(SUBPIPE_FULL_ARCHIVE) if present else None
     ok = bool(entry) and present and actual == entry.get("sha256")
@@ -309,11 +334,15 @@ def _standardize(images: torch.Tensor) -> torch.Tensor:
     return (images - mean) / std
 
 
-def _random_resized_crop(images: torch.Tensor, generator: torch.Generator, scale: tuple[float, float]) -> torch.Tensor:
+def _random_resized_crop(
+    images: torch.Tensor, generator: torch.Generator, scale: tuple[float, float]
+) -> torch.Tensor:
     """Per-sample random-resized crop + horizontal mirror, on the images' device."""
     batch, device = images.shape[0], images.device
     area = torch.empty(batch, device=device).uniform_(*scale, generator=generator)
-    log_ratio = torch.empty(batch, device=device).uniform_(math.log(CROP_RATIO[0]), math.log(CROP_RATIO[1]), generator=generator)
+    log_ratio = torch.empty(batch, device=device).uniform_(
+        math.log(CROP_RATIO[0]), math.log(CROP_RATIO[1]), generator=generator
+    )
     ratio = log_ratio.exp()
     width = (area * ratio).sqrt().clamp(max=1.0)
     height = (area / ratio).sqrt().clamp(max=1.0)
@@ -325,7 +354,7 @@ def _random_resized_crop(images: torch.Tensor, generator: torch.Generator, scale
     theta[:, 0, 2] = cx
     theta[:, 1, 1] = height
     theta[:, 1, 2] = cy
-    grid = F.affine_grid(theta, (batch, images.shape[1], IMAGE_SIZE, IMAGE_SIZE), align_corners=False)
+    grid = F.affine_grid(theta, [batch, images.shape[1], IMAGE_SIZE, IMAGE_SIZE], align_corners=False)
     return F.grid_sample(images, grid, mode="bilinear", padding_mode="reflection", align_corners=False)
 
 
@@ -343,7 +372,10 @@ def _view_images(images: torch.Tensor, generator: torch.Generator, view: dict[st
     batch, channels, device = crops.shape[0], crops.shape[1], crops.device
     gain = 0.6 + 0.8 * torch.rand((batch, 1, 1, 1), generator=generator, device=device)
     if view.get("channel_gain", 0.0) > 0 and channels > 1:
-        gain = gain * (1.0 + view["channel_gain"] * torch.randn((batch, channels, 1, 1), generator=generator, device=device))
+        gain = gain * (
+            1.0
+            + view["channel_gain"] * torch.randn((batch, channels, 1, 1), generator=generator, device=device)
+        )
     speckle = 1.0 + view["speckle"] * torch.randn(crops.shape, generator=generator, device=device)
     noise = view["noise"] * torch.randn(crops.shape, generator=generator, device=device)
     return (crops * gain * speckle + noise).clamp(0.0, 1.0)
@@ -371,7 +403,10 @@ def _tokens(
     else:
         tokens = _patchify(_standardize(images))
     if patch_dropout > 0 and generator is not None:
-        keep = torch.rand((tokens.shape[0], tokens.shape[1], 1), generator=generator, device=tokens.device) >= patch_dropout
+        keep = (
+            torch.rand((tokens.shape[0], tokens.shape[1], 1), generator=generator, device=tokens.device)
+            >= patch_dropout
+        )
         tokens = tokens * keep
     return tokens.float()
 
@@ -380,23 +415,53 @@ def _clean_view(images: torch.Tensor, modality: str, model: Any) -> torch.Tensor
     return _tokens(modality, _clean_images(images), model)
 
 
-def _train_view(images: torch.Tensor, generator: torch.Generator, view: dict[str, Any], modality: str, model: Any) -> torch.Tensor:
-    return _tokens(modality, _view_images(images, generator, view), model, patch_dropout=view["patch_dropout"], generator=generator)
+def _train_view(
+    images: torch.Tensor, generator: torch.Generator, view: dict[str, Any], modality: str, model: Any
+) -> torch.Tensor:
+    return _tokens(
+        modality,
+        _view_images(images, generator, view),
+        model,
+        patch_dropout=view["patch_dropout"],
+        generator=generator,
+    )
 
 
 # Asymmetric views: the rank term acts on the light view, so near-clean frames must spread out.
 VIEWS: dict[str, dict[str, dict[str, Any]]] = {
     "imaging_sonar": {
         "light": {"crop_scale": (0.60, 1.0), "speckle": 0.05, "noise": 0.01, "patch_dropout": 0.0},
-        "strong": {"crop_scale": (0.30, 1.0), "speckle": 0.10, "noise": 0.03, "patch_dropout": TOKEN_MASK_FRACTION},
+        "strong": {
+            "crop_scale": (0.30, 1.0),
+            "speckle": 0.10,
+            "noise": 0.03,
+            "patch_dropout": TOKEN_MASK_FRACTION,
+        },
     },
     "rgb_camera": {
-        "light": {"crop_scale": (0.60, 1.0), "speckle": 0.0, "noise": 0.01, "patch_dropout": 0.0, "channel_gain": 0.05},
-        "strong": {"crop_scale": (0.25, 1.0), "speckle": 0.0, "noise": 0.03, "patch_dropout": TOKEN_MASK_FRACTION, "channel_gain": 0.15},
+        "light": {
+            "crop_scale": (0.60, 1.0),
+            "speckle": 0.0,
+            "noise": 0.01,
+            "patch_dropout": 0.0,
+            "channel_gain": 0.05,
+        },
+        "strong": {
+            "crop_scale": (0.25, 1.0),
+            "speckle": 0.0,
+            "noise": 0.03,
+            "patch_dropout": TOKEN_MASK_FRACTION,
+            "channel_gain": 0.15,
+        },
     },
 }
 if SONAR_VIEWS == "sonar":
-    VIEWS["imaging_sonar"]["strong"] = {"crop_scale": (0.65, 1.0), "speckle": 0.20, "noise": 0.03, "patch_dropout": TOKEN_MASK_FRACTION}
+    VIEWS["imaging_sonar"]["strong"] = {
+        "crop_scale": (0.65, 1.0),
+        "speckle": 0.20,
+        "noise": 0.03,
+        "patch_dropout": TOKEN_MASK_FRACTION,
+    }
 
 
 def _vicreg_terms(z_a: torch.Tensor, z_b: torch.Tensor, rank_floor: float) -> dict[str, torch.Tensor]:
@@ -423,7 +488,13 @@ def _vicreg_terms(z_a: torch.Tensor, z_b: torch.Tensor, rank_floor: float) -> di
         + VICREG_WEIGHTS["covariance"] * covariance
         + VICREG_WEIGHTS["rank"] * rank_loss
     )
-    return {"total": total, "invariance": invariance, "variance": variance, "covariance": covariance, "rank": rank_loss}
+    return {
+        "total": total,
+        "invariance": invariance,
+        "variance": variance,
+        "covariance": covariance,
+        "rank": rank_loss,
+    }
 
 
 # Additional camera sources from other sites (both CC-BY-4.0, rights CLEARED, training_allowed in their manifests).
@@ -438,20 +509,42 @@ _NON_IMAGE_HINTS = ("mask", "label", "annotation", "segment")
 
 
 # Additional imaging-sonar sources from other surveys, vehicles and sonars (CC-BY-4.0 or MIT; see their manifests).
-EXTRA_SONAR = tuple(x for x in os.environ.get("KEREM_EXTRA_SONAR", "catalunya,china_offshore,aquascan,uatd").split(",") if x)
+EXTRA_SONAR = tuple(
+    x for x in os.environ.get("KEREM_EXTRA_SONAR", "catalunya,china_offshore,aquascan,uatd").split(",") if x
+)
 SONAR_SOURCES: dict[str, dict[str, Any]] = {
     # 434k side-scan patches from Catalan coastal surveys; read from the merged archive, every Nth patch per survey line
-    "catalunya": {"manifest": "datasets/public/sss_catalunya.manifest.yaml", "dir": "artifacts/data/public.sss_catalunya",
-                  "split_zip": "raw/sss_ssl_dataset_N713_384", "stride": int(os.environ.get("KEREM_CATALUNYA_STRIDE", "6")), "sequential": True},
+    "catalunya": {
+        "manifest": "datasets/public/sss_catalunya.manifest.yaml",
+        "dir": "artifacts/data/public.sss_catalunya",
+        "split_zip": "raw/sss_ssl_dataset_N713_384",
+        "stride": int(os.environ.get("KEREM_CATALUNYA_STRIDE", "6")),
+        "sequential": True,
+    },
     # side-scan target chips from four Chinese sea regions (not a time sequence)
-    "china_offshore": {"manifest": "datasets/public/china_offshore_sss.manifest.yaml", "dir": "artifacts/data/public.china_offshore_sss",
-                       "images": "extracted", "stride": 1, "sequential": False},
+    "china_offshore": {
+        "manifest": "datasets/public/china_offshore_sss.manifest.yaml",
+        "dir": "artifacts/data/public.china_offshore_sss",
+        "images": "extracted",
+        "stride": 1,
+        "sequential": False,
+    },
     # lakebed side-scan screenshots, ordered by capture timestamp
-    "aquascan": {"manifest": "datasets/public/aquascan_1k.manifest.yaml", "dir": "artifacts/data/public.aquascan_1k",
-                 "images": "extracted", "stride": 1, "sequential": False},
+    "aquascan": {
+        "manifest": "datasets/public/aquascan_1k.manifest.yaml",
+        "dir": "artifacts/data/public.aquascan_1k",
+        "images": "extracted",
+        "stride": 1,
+        "sequential": False,
+    },
     # multibeam forward-looking sonar (Tritech Gemini 1200ik), lake and shallow-water sessions
-    "uatd": {"manifest": "datasets/public/uatd.manifest.yaml", "dir": "artifacts/data/public.uatd",
-             "images": "extracted", "stride": 1, "sequential": True},
+    "uatd": {
+        "manifest": "datasets/public/uatd.manifest.yaml",
+        "dir": "artifacts/data/public.uatd",
+        "images": "extracted",
+        "stride": 1,
+        "sequential": True,
+    },
 }
 _CAMERA_SOURCES = {"seaclear": (SEACLEAR_MANIFEST, SEACLEAR_DIR), "uvvid": (UVVID_MANIFEST, UVVID_DIR)}
 
@@ -462,7 +555,9 @@ def _natural_key(text: str) -> list[Any]:
 
 def _sonar_group(source: str, ref: str) -> str:
     name = Path(ref).name
-    if source == "catalunya":  # survey line, e.g. N9_1_211023112600 from N9_1_211023112600_xtf-CH12_batch-5_ch-1_3_1.tiff
+    if (
+        source == "catalunya"
+    ):  # survey line, e.g. N9_1_211023112600 from N9_1_211023112600_xtf-CH12_batch-5_ch-1_3_1.tiff
         return name.split("_xtf")[0]
     parts = Path(ref).parts
     if source == "china_offshore":  # sea region: .../images/<region>/...
@@ -487,8 +582,19 @@ def _verify_manifest_files(manifest_path: Path, root: Path) -> dict[str, Any]:
             continue
         path = root / entry["path"]
         actual = _sha256(path) if path.is_file() else None
-        rows.append({"path": entry["path"], "expected_sha256": entry.get("sha256"), "actual_sha256": actual, "ok": actual == entry.get("sha256")})
-    return {"manifest": str(manifest_path.relative_to(REPO_ROOT)), "files": rows, "decision": "PASS" if rows and all(r["ok"] for r in rows) else "FAIL"}
+        rows.append(
+            {
+                "path": entry["path"],
+                "expected_sha256": entry.get("sha256"),
+                "actual_sha256": actual,
+                "ok": actual == entry.get("sha256"),
+            }
+        )
+    return {
+        "manifest": str(manifest_path.relative_to(REPO_ROOT)),
+        "files": rows,
+        "decision": "PASS" if rows and all(r["ok"] for r in rows) else "FAIL",
+    }
 
 
 def verify_extra_sources() -> dict[str, Any]:
@@ -549,7 +655,10 @@ class _SplitZip:
         import struct
 
         stem = Path(base)
-        self.parts = [*sorted(stem.parent.glob(stem.name + ".z[0-9][0-9]")), stem.parent / (stem.name + ".zip")]
+        self.parts = [
+            *sorted(stem.parent.glob(stem.name + ".z[0-9][0-9]")),
+            stem.parent / (stem.name + ".zip"),
+        ]
         self.sizes = [p.stat().st_size for p in self.parts]
         self.starts = [sum(self.sizes[:i]) for i in range(len(self.sizes))]
         self._fh: dict[int, Any] = {}
@@ -563,19 +672,25 @@ class _SplitZip:
         if loc >= 0:  # zip64 end of central directory
             z64_disk, z64_off, _ = struct.unpack("<IQI", tail[loc + 4 : loc + 20])
             rec = self._read(self.starts[z64_disk] + z64_off, 56)
-            cd_disk, n_total, cd_size, cd_off = struct.unpack("<I", rec[20:24])[0], *struct.unpack("<QQQ", rec[32:56])
+            cd_disk, n_total, cd_size, cd_off = (
+                struct.unpack("<I", rec[20:24])[0],
+                *struct.unpack("<QQQ", rec[32:56]),
+            )
         cd = self._read(self.starts[cd_disk] + cd_off, cd_size)
         self.index: dict[str, tuple[int, int, int, int]] = {}
         pos = 0
         for _ in range(n_total):
-            (sig, _, _, _, method, _, _, crc, csize, usize, nlen, xlen, clen, disk, _, _, loff) = struct.unpack(
-                "<IHHHHHHIIIHHHHHII", cd[pos : pos + 46])
+            (sig, _, _, _, method, _, _, crc, csize, usize, nlen, xlen, clen, disk, _, _, loff) = (
+                struct.unpack("<IHHHHHHIIIHHHHHII", cd[pos : pos + 46])
+            )
             if sig != 0x02014B50:
                 raise RuntimeError(f"{base}: bad central directory entry")
             name = cd[pos + 46 : pos + 46 + nlen].decode("utf-8", "replace")
             extra = cd[pos + 46 + nlen : pos + 46 + nlen + xlen]
             x = 0
-            while x + 4 <= len(extra):  # zip64 extra: fields present only where the 32/16-bit field is saturated
+            while x + 4 <= len(
+                extra
+            ):  # zip64 extra: fields present only where the 32/16-bit field is saturated
                 hid, hlen = struct.unpack("<HH", extra[x : x + 4])
                 if hid == 0x0001:
                     vals, q = extra[x + 4 : x + 4 + hlen], 0
@@ -641,7 +756,9 @@ def _decode_zip_image(job: tuple[str, str, int]) -> np.ndarray:
     archive, member, channels = job
     handle = _ZIP_HANDLES.get(archive)
     if handle is None:
-        handle = _ZIP_HANDLES[archive] = _SplitZip(archive[6:]) if archive.startswith("split:") else zipfile.ZipFile(archive)
+        handle = _ZIP_HANDLES[archive] = (
+            _SplitZip(archive[6:]) if archive.startswith("split:") else zipfile.ZipFile(archive)
+        )
     raw = np.frombuffer(handle.read(member), dtype=np.uint8)  # CRC-32 checked by zipfile
     return _finish(cv2.imdecode(raw, cv2.IMREAD_UNCHANGED), channels, member)
 
@@ -656,7 +773,11 @@ def _decode_video(job: tuple[str, int]) -> np.ndarray:
         if index % stride == 0:
             ok, image = capture.retrieve()
             if ok:
-                image = cv2.resize(cv2.cvtColor(image, cv2.COLOR_BGR2RGB), (CACHE_SIZE, CACHE_SIZE), interpolation=cv2.INTER_AREA)
+                image = cv2.resize(
+                    cv2.cvtColor(image, cv2.COLOR_BGR2RGB),
+                    (CACHE_SIZE, CACHE_SIZE),
+                    interpolation=cv2.INTER_AREA,
+                )
                 frames.append(image.transpose(2, 0, 1))
         index += 1
     capture.release()
@@ -698,26 +819,42 @@ class _MultiSourceBatcher:
     Frames are decoded once (disk cache keyed by content hashes) and held on the device. Training batches
     draw equally from every source of a modality; validation uses distinct frames only."""
 
-    def __init__(self, *, archive_sha256: str, extra_camera: dict[str, Any] | None, batch_size: int, device: torch.device, seed: int, smoke: bool = False) -> None:
-        extra = extra_camera
+    def __init__(
+        self,
+        *,
+        archive_sha256: str,
+        extra_camera: dict[str, Any] | None,
+        batch_size: int,
+        device: torch.device,
+        seed: int,
+        smoke: bool = False,
+    ) -> None:
+        extra: dict[str, Any] = extra_camera or {}
         self.batch_size = batch_size
         self.device = device
         self.seed = seed
         self.data: dict[str, dict[str, dict[str, Any]]] = {modality: {} for modality in MODALITIES}
         index = _full_index()
         for modality, spec in MODALITIES.items():
-            groups = {stream: [m for _, m in index[stream][:: stride * (200 if smoke else 1)]] for stream, stride in spec["streams"].items()}
+            groups = {
+                stream: [m for _, m in index[stream][:: stride * (200 if smoke else 1)]]
+                for stream, stride in spec["streams"].items()
+            }
             train, val, counts = _split_groups(groups)
-            self._add(modality, "subpipe", train, val, counts, key=archive_sha256, loader=("zip", spec["channels"]))
+            self._add(
+                modality, "subpipe", train, val, counts, key=archive_sha256, loader=("zip", spec["channels"])
+            )
             self.data[modality]["subpipe"]["sequential"] = True
-        for name in EXTRA_SONAR if extra is not None else ():
+        for name in EXTRA_SONAR:
             if name not in extra:
                 continue
             spec = SONAR_SOURCES[name]
             root = REPO_ROOT / spec["dir"]
             if "split_zip" in spec:
                 archive = "split:" + str(root / spec["split_zip"])
-                refs = [n for n in _SplitZip(archive[6:]).namelist() if Path(n).suffix.lower() in _IMAGE_SUFFIXES]
+                refs = [
+                    n for n in _SplitZip(archive[6:]).namelist() if Path(n).suffix.lower() in _IMAGE_SUFFIXES
+                ]
                 loader: tuple[Any, ...] = ("zipimg", 1, archive)
             elif "zip" in spec:
                 archive = str(root / spec["zip"])
@@ -726,36 +863,45 @@ class _MultiSourceBatcher:
                 loader = ("zipimg", 1, archive)
             else:
                 refs = [
-                    str(p) for p in (root / spec["images"]).rglob("*")
-                    if p.suffix.lower() in _IMAGE_SUFFIXES and not any(h in str(p).lower() for h in _NON_IMAGE_HINTS)
+                    str(p)
+                    for p in (root / spec["images"]).rglob("*")
+                    if p.suffix.lower() in _IMAGE_SUFFIXES
+                    and not any(h in str(p).lower() for h in _NON_IMAGE_HINTS)
                 ]
                 loader = ("image", 1)
-            groups: dict[str, list[str]] = {}
+            recordings: dict[str, list[str]] = {}
             for ref in refs:
-                groups.setdefault(_sonar_group(name, ref), []).append(ref)
-            groups = {g: sorted(v, key=lambda r: _sonar_sort_key(name, r))[:: spec["stride"] * (50 if smoke else 1)] for g, v in groups.items()}
-            groups = {g: v for g, v in groups.items() if len(v) >= 2}
-            train, val, counts = _split_groups(groups)
-            key = "|".join(r["actual_sha256"] or "" for r in extra[name]["files"]) + f"|stride={spec['stride']}"
+                recordings.setdefault(_sonar_group(name, ref), []).append(ref)
+            recordings = {
+                g: sorted(v, key=lambda r: _sonar_sort_key(name, r))[:: spec["stride"] * (50 if smoke else 1)]
+                for g, v in recordings.items()
+            }
+            recordings = {g: v for g, v in recordings.items() if len(v) >= 2}
+            train, val, counts = _split_groups(recordings)
+            key = (
+                "|".join(r["actual_sha256"] or "" for r in extra[name]["files"]) + f"|stride={spec['stride']}"
+            )
             self._add("imaging_sonar", name, train, val, counts, key=key, loader=loader)
             entry = self.data["imaging_sonar"][name]
             entry["sequential"] = spec["sequential"]
             entry["val_groups"] = [_sonar_group(name, r) for r in val]
-        if extra is not None and "seaclear" in extra:
+        if "seaclear" in extra:
             images = [
-                p for p in sorted((SEACLEAR_DIR / "extracted").rglob("*"))
-                if p.suffix.lower() in _IMAGE_SUFFIXES and not any(h in str(p).lower() for h in _NON_IMAGE_HINTS)
+                p
+                for p in sorted((SEACLEAR_DIR / "extracted").rglob("*"))
+                if p.suffix.lower() in _IMAGE_SUFFIXES
+                and not any(h in str(p).lower() for h in _NON_IMAGE_HINTS)
             ]
             site_groups: dict[str, list[str]] = {}
             for path in images:
                 site_groups.setdefault(str(path.parent.relative_to(SEACLEAR_DIR)), []).append(str(path))
             train, val, counts = _split_groups(site_groups)
-            seaclear_key = "|".join(r["actual_sha256"] for r in extra_camera["seaclear"]["files"])
+            seaclear_key = "|".join(r["actual_sha256"] for r in extra["seaclear"]["files"])
             self._add("rgb_camera", "seaclear", train, val, counts, key=seaclear_key, loader=("image", 3))
             self.data["rgb_camera"]["seaclear"]["sequential"] = True
-        if extra is not None and "uvvid" in extra:
+        if "uvvid" in extra:
             videos = sorted(str(p) for p in (UVVID_DIR / "raw").glob("ROV_GoPro_*.mp4"))
-            uvvid_key = "|".join(r["actual_sha256"] for r in extra_camera["uvvid"]["files"])
+            uvvid_key = "|".join(r["actual_sha256"] for r in extra["uvvid"]["files"])
             self._add_videos("rgb_camera", "uvvid", videos, key=uvvid_key)
             self.data["rgb_camera"]["uvvid"]["sequential"] = True
 
@@ -763,7 +909,16 @@ class _MultiSourceBatcher:
         digest = hashlib.sha256("\n".join([key, str(CACHE_SIZE), *members]).encode()).hexdigest()[:20]
         return SUBPIPE_FULL_CACHE_DIR / f"{modality}_{source}_{CACHE_SIZE}_{digest}.npy"
 
-    def _store(self, modality: str, source: str, frames: np.ndarray, train: list[str], val: list[str], counts: dict[str, Any], cache: Path) -> None:
+    def _store(
+        self,
+        modality: str,
+        source: str,
+        frames: np.ndarray,
+        train: list[str],
+        val: list[str],
+        counts: dict[str, Any],
+        cache: Path,
+    ) -> None:
         self.data[modality][source] = {
             "train": tuple(train),
             "val": tuple(val),
@@ -774,11 +929,23 @@ class _MultiSourceBatcher:
             "cache": str(cache.relative_to(REPO_ROOT)),
         }
 
-    def _add(self, modality: str, source: str, train: list[str], val: list[str], counts: dict[str, Any], *, key: str, loader: tuple[Any, ...]) -> None:
+    def _add(
+        self,
+        modality: str,
+        source: str,
+        train: list[str],
+        val: list[str],
+        counts: dict[str, Any],
+        *,
+        key: str,
+        loader: tuple[Any, ...],
+    ) -> None:
         from multiprocessing import get_context
 
         if not train or not val:
-            raise RuntimeError(f"{modality}/{source}: PRETRAIN_REAL and VALIDATION partitions must both be non-empty")
+            raise RuntimeError(
+                f"{modality}/{source}: PRETRAIN_REAL and VALIDATION partitions must both be non-empty"
+            )
         members = train + val
         cache = self._cache_path(modality, source, key, members)
         skip_path = cache.with_suffix(".skipped.json")
@@ -787,16 +954,23 @@ class _MultiSourceBatcher:
             skipped = json.loads(skip_path.read_text()) if skip_path.is_file() else []
         else:
             kind, channels = loader[0], loader[1]
+            decoded: list[np.ndarray | None]
             with get_context("fork").Pool(max(1, (os.cpu_count() or 2) - 1)) as pool:
                 if kind == "zip":  # the verified core archive stays fail-closed
                     decoded = pool.map(_decode_member, [(m, channels) for m in members], chunksize=16)
                 elif kind == "zipimg":
-                    decoded = pool.map(_decode_zip_image_safe, [(loader[2], m, channels) for m in members], chunksize=64)
+                    decoded = pool.map(
+                        _decode_zip_image_safe, [(loader[2], m, channels) for m in members], chunksize=64
+                    )
                 else:
-                    decoded = pool.map(_decode_image_path_safe, [(m, channels) for m in members], chunksize=16)
+                    decoded = pool.map(
+                        _decode_image_path_safe, [(m, channels) for m in members], chunksize=16
+                    )
             skipped = [m for m, f in zip(members, decoded, strict=True) if f is None]
             if len(skipped) > max(5, 0.01 * len(members)):
-                raise RuntimeError(f"{modality}/{source}: {len(skipped)} of {len(members)} frames unreadable (> max(5, 1 %))")
+                raise RuntimeError(
+                    f"{modality}/{source}: {len(skipped)} of {len(members)} frames unreadable (> max(5, 1 %))"
+                )
             frames = np.stack([f for f in decoded if f is not None])
             SUBPIPE_FULL_CACHE_DIR.mkdir(parents=True, exist_ok=True)
             np.save(cache, frames)
@@ -822,15 +996,24 @@ class _MultiSourceBatcher:
         else:
             with get_context("fork").Pool(min(len(videos), max(1, (os.cpu_count() or 2) - 1))) as pool:
                 decoded = pool.map(_decode_video, [(v, UVVID_FRAME_STRIDE) for v in videos])
-            groups = {Path(v).name: [f"{Path(v).name}#{i * UVVID_FRAME_STRIDE}" for i in range(len(d))] for v, d in zip(videos, decoded, strict=True)}
-            by_id = {ref: frame for v, d in zip(videos, decoded, strict=True) for ref, frame in zip(groups[Path(v).name], d, strict=True)}
+            groups = {
+                Path(v).name: [f"{Path(v).name}#{i * UVVID_FRAME_STRIDE}" for i in range(len(d))]
+                for v, d in zip(videos, decoded, strict=True)
+            }
+            by_id = {
+                ref: frame
+                for v, d in zip(videos, decoded, strict=True)
+                for ref, frame in zip(groups[Path(v).name], d, strict=True)
+            }
             train, val, counts = _split_groups(groups)
             frames = np.stack([by_id[ref] for ref in train + val])
             SUBPIPE_FULL_CACHE_DIR.mkdir(parents=True, exist_ok=True)
             np.save(cache, frames)
             meta_path.write_text(json.dumps({"train": train, "val": val, "counts": counts}))
         if not train or not val:
-            raise RuntimeError(f"{modality}/{source}: PRETRAIN_REAL and VALIDATION partitions must both be non-empty")
+            raise RuntimeError(
+                f"{modality}/{source}: PRETRAIN_REAL and VALIDATION partitions must both be non-empty"
+            )
         self._store(modality, source, frames, train, val, counts, cache)
 
     def coverage(self) -> dict[str, Any]:
@@ -847,7 +1030,9 @@ class _MultiSourceBatcher:
             for modality, sources in self.data.items()
         }
 
-    def heldout_sequences(self, modality: str, max_per_source: int = 1000) -> tuple[torch.Tensor, list[str], list[int]]:
+    def heldout_sequences(
+        self, modality: str, max_per_source: int = 1000
+    ) -> tuple[torch.Tensor, list[str], list[int]]:
         """Contiguous held-out frames per source with (sequence label, position) for the temporal NN check."""
         images, labels, positions = [], [], []
         for source, entry in self.data[modality].items():
@@ -858,7 +1043,11 @@ class _MultiSourceBatcher:
             counters: dict[str, int] = {}
             for ref in refs:
                 if "val_groups" in entry:
-                    seq = entry["val_groups"][entry["val"].index(ref)] if len(entry["val"]) < 5000 else _sonar_group(source, ref)
+                    seq = (
+                        entry["val_groups"][entry["val"].index(ref)]
+                        if len(entry["val"]) < 5000
+                        else _sonar_group(source, ref)
+                    )
                 elif source == "subpipe":
                     match = _FULL_MEMBER.match(ref)
                     seq = _FOLDER_STREAM[match.group(2)] if match else "subpipe"
@@ -875,13 +1064,19 @@ class _MultiSourceBatcher:
     def sources(self, modality: str) -> tuple[str, ...]:
         return tuple(self.data[modality])
 
-    def batch(self, modality: str, split: str, step: int, *, distinct: bool = False, source: str | None = None) -> tuple[torch.Tensor, tuple[str, ...]]:
+    def batch(
+        self, modality: str, split: str, step: int, *, distinct: bool = False, source: str | None = None
+    ) -> tuple[torch.Tensor, tuple[str, ...]]:
         names = (source,) if source is not None else self.sources(modality)
         gen = torch.Generator().manual_seed(self.seed + step)
         images, ids = [], []
         for position, name in enumerate(names):
             entry = self.data[modality][name]
-            refs, index = (entry["train"], entry["train_index"]) if split == "train" else (entry["val"], entry["val_index"])
+            refs, index = (
+                (entry["train"], entry["train_index"])
+                if split == "train"
+                else (entry["val"], entry["val_index"])
+            )
             share = self.batch_size // len(names) + (1 if position < self.batch_size % len(names) else 0)
             order = torch.randperm(len(refs), generator=gen).tolist()
             size = min(share, len(order)) if distinct else share
@@ -906,18 +1101,24 @@ class _MultiSourceBatcher:
             entry["train_gid"] = torch.tensor(gids)
         return entry["train_gid"]
 
-    def batch_group(self, modality: str, source: str, step: int, occurrence: int) -> tuple[torch.Tensor, tuple[str, ...]]:
+    def batch_group(
+        self, modality: str, source: str, step: int, occurrence: int
+    ) -> tuple[torch.Tensor, tuple[str, ...]]:
         """One-source training batch from a single recording/stream, cycling through the source's recordings."""
         entry = self.data[modality][source]
         gid = self._train_groups(modality, source)
         groups = sorted(set(gid.tolist()))
         members = (gid == groups[occurrence % len(groups)]).nonzero().flatten()
         gen = torch.Generator().manual_seed(self.seed + step)
-        picks = members[torch.randperm(len(members), generator=gen)[torch.arange(self.batch_size) % len(members)]]
+        picks = members[
+            torch.randperm(len(members), generator=gen)[torch.arange(self.batch_size) % len(members)]
+        ]
         images = entry["frames"][entry["train_index"][picks.to(self.device)]].float() / 255.0
         return images, tuple(f"{source}:{entry['train'][i]}" for i in picks.tolist())
 
-    def batch_pairs(self, modality: str, source: str, step: int, max_offset: int) -> tuple[torch.Tensor, torch.Tensor, tuple[str, ...]]:
+    def batch_pairs(
+        self, modality: str, source: str, step: int, max_offset: int
+    ) -> tuple[torch.Tensor, torch.Tensor, tuple[str, ...]]:
         """One-source training batch plus, per frame, a partner 1..max_offset positions away in the same recording
         (falls back to the frame itself at a recording edge)."""
         entry = self.data[modality][source]
@@ -940,6 +1141,15 @@ class _MultiSourceBatcher:
         return None
 
 
+def _sonar_rotation(sources: tuple[str, ...], step: int, weights: dict[str, int]) -> tuple[str, int]:
+    """Source for a sonar step under single-source batching, and how many times that source came before.
+    Sonar runs on odd steps; each rotation holds every source `weights.get(source, 1)` times, in source order."""
+    rotation = [s for s in sources for _ in range(weights.get(s, 1))]
+    k = step // 2
+    source = rotation[k % len(rotation)]
+    return source, (k // len(rotation)) * rotation.count(source) + rotation[: k % len(rotation)].count(source)
+
+
 def _make_input(name: str, payload: torch.Tensor, step: int) -> UniversalModalityInput:
     return UniversalModalityInput(
         name=name,
@@ -956,12 +1166,18 @@ def _make_input(name: str, payload: torch.Tensor, step: int) -> UniversalModalit
     )
 
 
-def _temporal_nn_hit(z: torch.Tensor, labels: list[str], positions: list[int], window: int = NN_WINDOW) -> float:
+def _temporal_nn_hit(
+    z: torch.Tensor, labels: list[str], positions: list[int], window: int = NN_WINDOW
+) -> float:
     z = F.normalize(z.float(), dim=-1)
     sim = z @ z.T
     sim.fill_diagonal_(-2.0)
     nearest = sim.argmax(dim=1).tolist()
-    hits = sum(1 for i, j in enumerate(nearest) if labels[i] == labels[j] and abs(positions[i] - positions[j]) <= window)
+    hits = sum(
+        1
+        for i, j in enumerate(nearest)
+        if labels[i] == labels[j] and abs(positions[i] - positions[j]) <= window
+    )
     return hits / max(1, len(nearest))
 
 
@@ -990,7 +1206,11 @@ def run_v11_10p_training(
     allow_cpu_smoke: bool = False,
     readiness_override: bool = False,
 ) -> dict[str, Any]:
-    readiness = json.loads((REPO_ROOT / readiness_path if not Path(readiness_path).is_absolute() else Path(readiness_path)).read_text(encoding="utf-8"))
+    readiness = json.loads(
+        (
+            REPO_ROOT / readiness_path if not Path(readiness_path).is_absolute() else Path(readiness_path)
+        ).read_text(encoding="utf-8")
+    )
     override_record: dict[str, Any] | None = None
     if readiness.get("decision") != "READY FOR KEREM":
         if not readiness_override:
@@ -1040,12 +1260,18 @@ def run_v11_10p_training(
         "step_schedule": "odd steps imaging_sonar, even steps rgb_camera",
         "clean_anchor_view": CLEAN_ANCHOR_VIEW,
         "nn_guard": {"window": NN_WINDOW, "floor": NN_FLOOR},
-        "sonar_anchor_encoder": "P4.8 teacher (OSFM-S-PRETRAIN-V1) frozen in model.v1.sonar, 28x28 input" if SONAR_ANCHOR else None,
+        "sonar_anchor_encoder": "P4.8 teacher (OSFM-S-PRETRAIN-V1) frozen in model.v1.sonar, 28x28 input"
+        if SONAR_ANCHOR
+        else None,
         "extra_camera_sources": list(EXTRA_CAMERA),
-        "extra_sonar_sources": {name: {k: v for k, v in SONAR_SOURCES[name].items() if k != "manifest"} for name in EXTRA_SONAR},
+        "extra_sonar_sources": {
+            name: {k: v for k, v in SONAR_SOURCES[name].items() if k != "manifest"} for name in EXTRA_SONAR
+        },
         "uvvid_frame_stride": UVVID_FRAME_STRIDE,
         "camera_batch_policy": "equal share per source",
-        "sonar_batch_policy": "one source per step, round robin" if SONAR_BATCH == "single" else "equal share per source",
+        "sonar_batch_policy": "one source per step, round robin"
+        if SONAR_BATCH == "single"
+        else "equal share per source",
         "sonar_views": SONAR_VIEWS,
         "temporal_pairs_max_offset": TEMPORAL_PAIRS,
         "stream_batch_sources": list(STREAM_BATCH_SOURCES),
@@ -1065,7 +1291,12 @@ def run_v11_10p_training(
     run = RunDirectory.create(
         runs_root,
         run_name,
-        resolved_config={**cfg, "max_steps_effective": steps, "allow_cpu_smoke": allow_cpu_smoke, "kerem_variant": variant},
+        resolved_config={
+            **cfg,
+            "max_steps_effective": steps,
+            "allow_cpu_smoke": allow_cpu_smoke,
+            "kerem_variant": variant,
+        },
         manifests={
             "payloads": payload_report,
             "subpipe_manifest": str(SUBPIPE_MANIFEST.relative_to(REPO_ROOT)),
@@ -1090,7 +1321,9 @@ def run_v11_10p_training(
     # tensor for tensor. (load_v1_checkpoint_for_v11 expects a flat state_dict and so loaded 0 tensors.)
     upstream_import: dict[str, Any] = {"attempted": False}
     if not resume and not allow_cpu_smoke and model.v1 is not None:
-        upstream_path = REPO_ROOT / json.loads(PAYLOAD_MANIFEST.read_text(encoding="utf-8"))["payloads"][0]["path"]
+        upstream_path = (
+            REPO_ROOT / json.loads(PAYLOAD_MANIFEST.read_text(encoding="utf-8"))["payloads"][0]["path"]
+        )
         state = torch.load(upstream_path, map_location="cpu", weights_only=False)["model"]
         teacher = {k[len("teacher.") :]: v for k, v in state.items() if k.startswith("teacher.")}
         target = model.v1.sonar.state_dict()
@@ -1107,7 +1340,9 @@ def run_v11_10p_training(
             "target_tensor_count": len(target),
             "used_as_sonar_front_end": SONAR_ANCHOR,
         }
-        run.write_artifact("reports", "upstream_import.json", json.dumps(upstream_import, indent=2, sort_keys=True))
+        run.write_artifact(
+            "reports", "upstream_import.json", json.dumps(upstream_import, indent=2, sort_keys=True)
+        )
     init_record: dict[str, Any] | None = None
     if INIT_FROM and not resume:
         init_path = Path(INIT_FROM) if Path(INIT_FROM).is_absolute() else REPO_ROOT / INIT_FROM
@@ -1118,14 +1353,18 @@ def run_v11_10p_training(
             "path": str(INIT_FROM),
             "sha256": _sha256(init_path),
             "step": int(init_ck.get("trainer_state", {}).get("step", -1)),
-            "trainer": (init_ck.get("metadata") or {}).get("extra_compatibility", {}).get("trainer") if isinstance(init_ck.get("metadata"), dict) else None,
+            "trainer": (init_ck.get("metadata") or {}).get("extra_compatibility", {}).get("trainer")
+            if isinstance(init_ck.get("metadata"), dict)
+            else None,
             "loaded": "model weights only (strict); fresh optimizer and schedule",
         }
         del init_ck
         run.write_artifact("reports", "init_from.json", json.dumps(init_record, indent=2, sort_keys=True))
     variant["init_from"] = init_record
     if model.v1 is not None:
-        for param in model.v1.parameters():  # the V1 bank is a protected anchor (config: protect_imported_v1_and_selected_sonar_anchor)
+        for param in (
+            model.v1.parameters()
+        ):  # the V1 bank is a protected anchor (config: protect_imported_v1_and_selected_sonar_anchor)
             param.requires_grad_(False)
     for name, param in model.named_parameters():
         if name.split(".")[0] in FROZEN_MODULES:
@@ -1145,10 +1384,18 @@ def run_v11_10p_training(
     scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, _lr_lambda)
     start_step = 0
     manifest_digest = load_manifest(SUBPIPE_MANIFEST).manifest_digest()
-    full_manifest_digest = hashlib.sha256(SUBPIPE_FULL_MANIFEST.read_bytes()).hexdigest() if SUBPIPE_FULL_MANIFEST.is_file() else "absent"
-    split_hash = split_hash_for_plan({"dataset": "public.subpipe_full", "policy": "per-stream contiguous PRETRAIN_REAL/VALIDATION"})
+    full_manifest_digest = (
+        hashlib.sha256(SUBPIPE_FULL_MANIFEST.read_bytes()).hexdigest()
+        if SUBPIPE_FULL_MANIFEST.is_file()
+        else "absent"
+    )
+    split_hash = split_hash_for_plan(
+        {"dataset": "public.subpipe_full", "policy": "per-stream contiguous PRETRAIN_REAL/VALIDATION"}
+    )
     compatibility = CompatibilityTuple(
-        config_digest=config_digest({**cfg, "max_steps_effective": steps, "allow_cpu_smoke": allow_cpu_smoke}),
+        config_digest=config_digest(
+            {**cfg, "max_steps_effective": steps, "allow_cpu_smoke": allow_cpu_smoke}
+        ),
         manifest_digests=(manifest_digest, full_manifest_digest),
         split_hash=split_hash,
         component="foundation.osfm.universal_v11",
@@ -1173,21 +1420,50 @@ def run_v11_10p_training(
     )
     coverage = batcher.coverage()
     heldout = {m: batcher.heldout_sequences(m) for m in MODALITIES}
-    run.write_artifact("reports", "data_coverage.json", json.dumps({"datasets": ["public.subpipe_full", *(f"public.{x}" for x in EXTRA_CAMERA), *(Path(SONAR_SOURCES[x]["dir"]).name for x in EXTRA_SONAR)], "modalities": coverage}, indent=2, sort_keys=True))
+    run.write_artifact(
+        "reports",
+        "data_coverage.json",
+        json.dumps(
+            {
+                "datasets": [
+                    "public.subpipe_full",
+                    *(f"public.{x}" for x in EXTRA_CAMERA),
+                    *(Path(SONAR_SOURCES[x]["dir"]).name for x in EXTRA_SONAR),
+                ],
+                "modalities": coverage,
+            },
+            indent=2,
+            sort_keys=True,
+        ),
+    )
     best_rank = -math.inf
     best_path: str | None = None
     last_path: str | None = None
     train_sample_ids: set[str] = set()
     aug_gen = torch.Generator(device=device).manual_seed(seed + 17)
 
-    def _two_view_forward(images: torch.Tensor, step: int, modality: str, partner: torch.Tensor | None = None, source: str | None = None) -> tuple[torch.Tensor, torch.Tensor]:
+    def _two_view_forward(
+        images: torch.Tensor,
+        step: int,
+        modality: str,
+        partner: torch.Tensor | None = None,
+        source: str | None = None,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
         # View A is the exact clean view used by validation, so the rank/variance terms act on clean frames
         # (augmented views alone reached train rank >= 75 while clean frames stayed near 45).
         # With temporal pairs, view B is the strong view of a nearby frame from the same recording.
-        view_a = _clean_view(images, modality, model) if CLEAN_ANCHOR_VIEW else _train_view(images, aug_gen, VIEWS[modality]["light"], modality, model)
+        view_a = (
+            _clean_view(images, modality, model)
+            if CLEAN_ANCHOR_VIEW
+            else _train_view(images, aug_gen, VIEWS[modality]["light"], modality, model)
+        )
         strong = VIEWS[modality]["strong"]
         if source in SOURCE_VIEWS:
-            strong = {**strong, "crop_scale": (SOURCE_VIEWS[source][0], 1.0), "speckle": SOURCE_VIEWS[source][1]}
+            strong = {
+                **strong,
+                "crop_scale": (SOURCE_VIEWS[source][0], 1.0),
+                "speckle": SOURCE_VIEWS[source][1],
+            }
         view_b = _train_view(images if partner is None else partner, aug_gen, strong, modality, model)
         both = torch.cat([view_a, view_b], dim=0)
         with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
@@ -1214,14 +1490,15 @@ def run_v11_10p_training(
             source = None
             occurrence = 0
             if modality == "imaging_sonar" and SONAR_BATCH == "single":
-                rotation = [s for s in batcher.sources(modality) for _ in range(SONAR_WEIGHTS.get(s, 1))]
-                k = step // 2
-                source = rotation[k % len(rotation)]
-                occurrence = (k // len(rotation)) * rotation.count(source) + rotation[: k % len(rotation)].count(source)
+                source, occurrence = _sonar_rotation(batcher.sources(modality), step, SONAR_WEIGHTS)
             partner = None
             if source is not None and source in STREAM_BATCH_SOURCES:
                 images, sample_ids = batcher.batch_group(modality, source, step, occurrence)
-            elif source is not None and TEMPORAL_PAIRS > 0 and batcher.data[modality][source].get("sequential", True):
+            elif (
+                source is not None
+                and TEMPORAL_PAIRS > 0
+                and batcher.data[modality][source].get("sequential", True)
+            ):
                 images, partner, sample_ids = batcher.batch_pairs(modality, source, step, TEMPORAL_PAIRS)
             else:
                 images, sample_ids = batcher.batch(modality, "train", step, source=source)
@@ -1249,30 +1526,44 @@ def run_v11_10p_training(
                         with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
                             val_out = model(
                                 (_make_input(val_modality, val_payload, step),),
-                                reference_time_s=torch.full((val_payload.shape[0],), float(step), device=device),
+                                reference_time_s=torch.full(
+                                    (val_payload.shape[0],), float(step), device=device
+                                ),
                             )
                         m_health = _representation_health(val_out.fusion.global_repr.float(), rank_floor)
                         val_za, val_zb = _two_view_forward(val_images, step, val_modality)
                         m_health["loss"] = float(_vicreg_terms(val_za, val_zb, rank_floor)["total"].cpu())
                         m_health["sources"] = {}
                         for src in batcher.sources(val_modality):
-                            src_images, _ = batcher.batch(val_modality, "val", step, distinct=True, source=src)
+                            src_images, _ = batcher.batch(
+                                val_modality, "val", step, distinct=True, source=src
+                            )
                             src_payload = _clean_view(src_images, val_modality, model)
-                            with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
+                            with torch.autocast(
+                                device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16
+                            ):
                                 src_out = model(
                                     (_make_input(val_modality, src_payload, step),),
-                                    reference_time_s=torch.full((src_payload.shape[0],), float(step), device=device),
+                                    reference_time_s=torch.full(
+                                        (src_payload.shape[0],), float(step), device=device
+                                    ),
                                 )
-                            m_health["sources"][src] = _representation_health(src_out.fusion.global_repr.float(), rank_floor)["effective_rank"]
+                            m_health["sources"][src] = _representation_health(
+                                src_out.fusion.global_repr.float(), rank_floor
+                            )["effective_rank"]
                         seq_images, seq_labels, seq_pos = heldout[val_modality]
                         seq_z = []
                         for start in range(0, seq_images.shape[0], 256):
                             chunk = seq_images[start : start + 256]
                             chunk_payload = _clean_view(chunk, val_modality, model)
-                            with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
+                            with torch.autocast(
+                                device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16
+                            ):
                                 chunk_out = model(
                                     (_make_input(val_modality, chunk_payload, step),),
-                                    reference_time_s=torch.full((chunk.shape[0],), float(step), device=device),
+                                    reference_time_s=torch.full(
+                                        (chunk.shape[0],), float(step), device=device
+                                    ),
                                 )
                             seq_z.append(chunk_out.fusion.global_repr.float())
                         m_health["nn_temporal_hit"] = _temporal_nn_hit(torch.cat(seq_z), seq_labels, seq_pos)
@@ -1284,8 +1575,16 @@ def run_v11_10p_training(
                     "rank_pass": all(h["rank_pass"] for h in per_modality.values()),
                     "nn_min": min(h["nn_temporal_hit"] for h in per_modality.values()),
                 }
-                sonar_source_min = min(r for src, r in per_modality["imaging_sonar"]["sources"].items() if src not in SELECT_EXCLUDE)
-                selection_rank = min(health["effective_rank"], sonar_source_min) if SELECT == "per_source" else health["effective_rank"]
+                sonar_source_min = min(
+                    r
+                    for src, r in per_modality["imaging_sonar"]["sources"].items()
+                    if src not in SELECT_EXCLUDE
+                )
+                selection_rank = (
+                    min(health["effective_rank"], sonar_source_min)
+                    if SELECT == "per_source"
+                    else health["effective_rank"]
+                )
                 now = time.time()
                 metric_record = {
                     "step": step,
@@ -1303,7 +1602,11 @@ def run_v11_10p_training(
                     **{f"val/{m}/loss": h["loss"] for m, h in per_modality.items()},
                     **{f"val/{m}/nn_temporal_hit": h["nn_temporal_hit"] for m, h in per_modality.items()},
                     "val/nn_temporal_hit_min": health["nn_min"],
-                    **{f"val/{m}/{src}/effective_rank": r for m, h in per_modality.items() for src, r in h["sources"].items()},
+                    **{
+                        f"val/{m}/{src}/effective_rank": r
+                        for m, h in per_modality.items()
+                        for src, r in h["sources"].items()
+                    },
                     "val/representation_effective_rank": health["effective_rank"],
                     "val/imaging_sonar/source_min_rank": sonar_source_min,
                     "val/selection_rank": selection_rank,
@@ -1315,7 +1618,11 @@ def run_v11_10p_training(
                 run.log_metrics(metric_record)
                 # Never select warm-up weights (an untrained model already scores rank 87-99), and never a
                 # checkpoint whose held-out neighbourhoods have lost their temporal structure (rank gaming).
-                if step > start_step + WARMUP_STEPS and health["nn_min"] >= NN_FLOOR and selection_rank > best_rank:
+                if (
+                    step > start_step + WARMUP_STEPS
+                    and health["nn_min"] >= NN_FLOOR
+                    and selection_rank > best_rank
+                ):
                     best_rank = selection_rank
                     best_path = str(run.path / "checkpoints" / "best.pt")
                     save_checkpoint(
@@ -1328,7 +1635,9 @@ def run_v11_10p_training(
                         manifest_digests=(manifest_digest, full_manifest_digest),
                         split_hash=split_hash,
                         seeds={"torch": seed},
-                        metrics={k: float(v) for k, v in metric_record.items() if isinstance(v, (int, float))},
+                        metrics={
+                            k: float(v) for k, v in metric_record.items() if isinstance(v, (int, float))
+                        },
                         epoch=0,
                         step=step,
                         created_time_ns=time.time_ns(),
@@ -1337,7 +1646,11 @@ def run_v11_10p_training(
                         representation_pretraining_id="OSFM-UNIVERSAL-V1.1-10P-CANDIDATE",
                         selection_metric="val/selection_rank",
                         extra_compatibility={"trainer": TRAINER_VARIANT},
-                        trainer_state={"step": step, "train_sample_ids": sorted(train_sample_ids), "val_sample_ids": list(val_ids)},
+                        trainer_state={
+                            "step": step,
+                            "train_sample_ids": sorted(train_sample_ids),
+                            "val_sample_ids": list(val_ids),
+                        },
                     )
             if step % checkpoint_every == 0 or step == steps:
                 last_path = str(run.path / "checkpoints" / "last.pt")
@@ -1372,7 +1685,9 @@ def run_v11_10p_training(
             "rank_floor": rank_floor,
             "best_checkpoint": best_path,
             "last_checkpoint": last_path,
-            "data_scope": "full SubPipe release (side-scan sonar sss_lf+sss_hf; cameras cam0+cam1), sonar from " + (", ".join(EXTRA_SONAR) or "no other source") + ", camera frames from SeaClear (multi-site) and UVVID ROV_GoPro_1-8",
+            "data_scope": "full SubPipe release (side-scan sonar sss_lf+sss_hf; cameras cam0+cam1), sonar from "
+            + (", ".join(EXTRA_SONAR) or "no other source")
+            + ", camera frames from SeaClear (multi-site) and UVVID ROV_GoPro_1-8",
             "semantic_claim": "data-backed imaging_sonar (active acoustic) and rgb_camera (visual image) only; the other 827 registry entries remain interface coverage",
             "sonar_anchor_encoder": SONAR_ANCHOR,
             "upstream_import": {k: v for k, v in upstream_import.items() if k != "loaded_tensors"},
@@ -1383,15 +1698,24 @@ def run_v11_10p_training(
             "kerem_variant": variant,
             "reviewed_trainer": False,
             "best_selection_rule": f"after warm-up; every family's held-out temporal NN hit >= {NN_FLOOR}; then max "
-            + ("min(weakest-family pooled rank, weakest sonar source's own rank)" if SELECT == "per_source" else "weakest-family rank")
+            + (
+                "min(weakest-family pooled rank, weakest sonar source's own rank)"
+                if SELECT == "per_source"
+                else "weakest-family rank"
+            )
             + (f" (sources not in selection: {', '.join(SELECT_EXCLUDE)})" if SELECT_EXCLUDE else ""),
             "init_from": init_record,
             "readiness_override": override_record,
             "upstream_import_loaded_tensor_count": upstream_import.get("loaded_tensor_count"),
             "wall_clock_s": time.time() - t_start,
         }
-        run.write_artifact("reports", "v11_10p_training_report.json", json.dumps(report, indent=2, sort_keys=True))
-        run.seal(TerminalStatus.COMPLETED if report["decision"] != "NO-GO" else TerminalStatus.FAILED, time.time_ns())
+        run.write_artifact(
+            "reports", "v11_10p_training_report.json", json.dumps(report, indent=2, sort_keys=True)
+        )
+        run.seal(
+            TerminalStatus.COMPLETED if report["decision"] != "NO-GO" else TerminalStatus.FAILED,
+            time.time_ns(),
+        )
         return report
     except Exception:
         run.seal(TerminalStatus.FAILED, time.time_ns())

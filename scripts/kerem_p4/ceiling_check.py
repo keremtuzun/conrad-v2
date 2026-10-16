@@ -4,6 +4,7 @@ plus the same at a fixed n=100 frames so sources with few held-out frames can be
 
 Usage (inside conrad-v2): uv run python scripts/kerem_p4/ceiling_check.py <out.json> [name=checkpoint.pt ...]
 """
+
 import json
 import sys
 
@@ -26,7 +27,9 @@ def rank(z: torch.Tensor) -> float:
 
 def build(path: str | None) -> UniversalOSFMV11:
     torch.manual_seed(0)
-    model = UniversalOSFMV11(input_dims=dims, family_encoder_config=FamilyEncoderConfig(depth=T.FAMILY_DEPTH), include_v1_bank=True)
+    model = UniversalOSFMV11(
+        input_dims=dims, family_encoder_config=FamilyEncoderConfig(depth=T.FAMILY_DEPTH), include_v1_bank=True
+    )
     if path:
         model.load_state_dict(torch.load(path, map_location="cpu", weights_only=False)["model"], strict=True)
     return model.to(dev).eval()
@@ -39,7 +42,13 @@ def encode(model: UniversalOSFMV11, modality: str, x: torch.Tensor) -> torch.Ten
     return o.fusion.global_repr.float()
 
 
-b = T._MultiSourceBatcher(archive_sha256=T.verify_subpipe_full()["actual_sha256"], extra_camera=T.verify_extra_sources(), batch_size=256, device=dev, seed=1)
+b = T._MultiSourceBatcher(
+    archive_sha256=T.verify_subpipe_full()["actual_sha256"],
+    extra_camera=T.verify_extra_sources(),
+    batch_size=256,
+    device=dev,
+    seed=1,
+)
 frames = {}
 for modality in T.MODALITIES:
     frames[(modality, "pooled")] = b.batch(modality, "val", 0, distinct=True)[0]

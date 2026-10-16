@@ -1,5 +1,6 @@
 """Seed artifacts/tmp/sha256_cache.json from a hashes file (md5 sha256 size path per line, paths relative to
 artifacts/data, as written by the single-pass hasher), using each file's current size and mtime."""
+
 import json
 import sys
 from pathlib import Path
