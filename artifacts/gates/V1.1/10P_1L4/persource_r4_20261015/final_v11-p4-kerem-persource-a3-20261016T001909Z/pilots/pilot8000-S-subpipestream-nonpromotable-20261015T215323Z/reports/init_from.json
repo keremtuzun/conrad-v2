@@ -1,0 +1,7 @@
+{
+  "loaded": "model weights only (strict); fresh optimizer and schedule",
+  "path": "artifacts/runs/v11-p4-kerem-persource-a1-20261015T203837Z/checkpoints/best.pt",
+  "sha256": "5ee25b5912bec9aa4f819183c50e62945685aad771b6c736541384d9aca3c6bf",
+  "step": 8000,
+  "trainer": null
+}

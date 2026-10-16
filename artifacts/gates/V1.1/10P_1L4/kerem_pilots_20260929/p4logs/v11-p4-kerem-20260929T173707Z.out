@@ -1,0 +1,91 @@
+{
+  "decision": "OWNER_OVERRIDE",
+  "override": {
+    "readiness_decision": "NOT READY FOR KEREM",
+    "overridden_blockers": [
+      {
+        "id": 2,
+        "title": "current V1.1 is 307M-class architecture",
+        "evidence": "UniversalOSFMV11 parameter_count.total=307668737; branch=kerem/v11-p4-patch-vicreg-trainer"
+      },
+      {
+        "id": 4,
+        "title": "P4/P4.8/10P training entrypoint and frozen config",
+        "evidence": "config=configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml; protocol=configs/train/osfm/v11_p4_10p_3am_launch_protocol.yaml; formal_training_allowed=False; launch_command_registered=True; launch_is_preflight_only=False; reviewed_trainer_registered=False"
+      },
+      {
+        "id": 8,
+        "title": "checkpointing/resume and output directories",
+        "evidence": "10P config declares checkpoint cadence and reload gates, but no formal trainer/resume implementation is registered."
+      }
+    ],
+    "authorized_by": "Kerem (repository owner); reviewer Burak unavailable",
+    "authorized_on": "2026-09-29",
+    "reason": "reviewed trainer benchmarked NO-GO (val rank 4.06 < 75); Kerem variant trainer launched instead"
+  }
+}
+╭───────────────────── Traceback (most recent call last) ──────────────────────╮
+│ /home/kerem/conrad-v2/conrad/cli/commands.py:331 in                          │
+│ train_osfm_v11_10p_launch                                                    │
+│                                                                              │
+│   328 │   │   raise typer.Exit(3)                                            │
+│   329 │   from conrad.foundation.universal_v11.trainer import                │
+│       run_v11_10p_training                                                   │
+│   330 │                                                                      │
+│ ❱ 331 │   result = run_v11_10p_training(                                     │
+│   332 │   │   config_path=config,                                            │
+│   333 │   │   readiness_path=readiness,                                      │
+│   334 │   │   runs_root=runs_root,                                           │
+│                                                                              │
+│ /home/kerem/conrad-v2/conrad/foundation/universal_v11/trainer.py:451 in      │
+│ run_v11_10p_training                                                         │
+│                                                                              │
+│   448 │   │   │   payload, sample_ids = batcher.batch(batcher.train_refs,    │
+│       step)                                                                  │
+│   449 │   │   │   train_sample_ids.update(sample_ids)                        │
+│   450 │   │   │   z_a, z_b = _two_view_forward(payload, step)                │
+│ ❱ 451 │   │   │   terms = _vicreg_terms(z_a, z_b, rank_floor)                │
+│   452 │   │   │   loss = terms["total"]                                      │
+│   453 │   │   │   if not torch.isfinite(loss):                               │
+│   454 │   │   │   │   raise FloatingPointError(f"non-finite loss at step     │
+│       {step}")                                                               │
+│                                                                              │
+│ /home/kerem/conrad-v2/conrad/foundation/universal_v11/trainer.py:197 in      │
+│ _vicreg_terms                                                                │
+│                                                                              │
+│   194 │   │   off = cov - torch.diag(torch.diag(cov))                        │
+│   195 │   │   return off.pow(2).sum() / d                                    │
+│   196 │                                                                      │
+│ ❱ 197 │   rank_loss, _ = rank_diversity_loss(z_a, target=rank_floor)         │
+│   198 │   variance = _var(z_a) + _var(z_b)                                   │
+│   199 │   covariance = _cov(z_a) + _cov(z_b)                                 │
+│   200 │   total = (                                                          │
+│                                                                              │
+│ /home/kerem/conrad-v2/conrad/foundation/pretraining/u1_rgb.py:65 in          │
+│ rank_diversity_loss                                                          │
+│                                                                              │
+│    62 │   representations: torch.Tensor, *, target: float = 64.0             │
+│    63 ) -> tuple[torch.Tensor, torch.Tensor]:                                │
+│    64 │   centered = representations.float() -                               │
+│       representations.float().mean(dim=0, keepdim=True)                      │
+│ ❱  65 │   singular = torch.linalg.svdvals(centered)                          │
+│    66 │   probs = singular / singular.sum().clamp_min(1e-12)                 │
+│    67 │   entropy_rank = torch.exp(-(probs *                                 │
+│       probs.clamp_min(1e-12).log()).sum())                                   │
+│    68 │   target_tensor = torch.tensor(float(target),                        │
+│       device=representations.device, dtype=entropy_rank.dtype)               │
+│                                                                              │
+│ /home/kerem/conrad-v2/conrad/foundation/universal_v11/trainer.py:440 in      │
+│ _on_sigterm                                                                  │
+│                                                                              │
+│   437 │   t_last, step_last = t_start, start_step                            │
+│   438 │                                                                      │
+│   439 │   def _on_sigterm(signum: int, frame: Any) -> None:  # watchdog stop │
+│       -> sealed FAILED run, not a torn one                                   │
+│ ❱ 440 │   │   raise RuntimeError("terminated by SIGTERM (external            │
+│       watchdog)")                                                            │
+│   441 │                                                                      │
+│   442 │   import signal                                                      │
+│   443                                                                        │
+╰──────────────────────────────────────────────────────────────────────────────╯
+RuntimeError: terminated by SIGTERM (external watchdog)

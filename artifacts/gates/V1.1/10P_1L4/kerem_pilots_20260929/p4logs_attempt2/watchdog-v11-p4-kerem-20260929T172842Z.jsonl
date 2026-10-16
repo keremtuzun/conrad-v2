@@ -1,0 +1,1 @@
+{"collapse": null, "elapsed_h": 0.006, "gpu": {"count": 1, "rows": ["NVIDIA L4, 0, 3"]}, "last_ckpt_mtime": null, "loss": null, "proj_cost_try": null, "proj_total_h": null, "spent_try_so_far": 27.361598917675018, "step": 0, "steps_per_s": null, "t": 1790702942.688775, "total_steps": 775000, "trainer_alive": true, "val_rank": null}

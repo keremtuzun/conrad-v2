@@ -1,0 +1,7 @@
+{
+  "loaded": "model weights only (strict); fresh optimizer and schedule",
+  "path": "artifacts/runs/pilot8000-S-subpipestream-nonpromotable-20261015T215323Z/checkpoints/best.pt",
+  "sha256": "bd1c0a3aeffb873128af8a624f67961df8b49c873e0be60bb75d702e4a976253",
+  "step": 8000,
+  "trainer": null
+}

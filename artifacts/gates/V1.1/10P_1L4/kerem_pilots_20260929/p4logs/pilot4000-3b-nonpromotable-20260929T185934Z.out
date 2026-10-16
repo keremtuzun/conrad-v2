@@ -1,0 +1,101 @@
+{
+  "decision": "OWNER_OVERRIDE",
+  "override": {
+    "readiness_decision": "NOT READY FOR KEREM",
+    "overridden_blockers": [
+      {
+        "id": 2,
+        "title": "current V1.1 is 307M-class architecture",
+        "evidence": "UniversalOSFMV11 parameter_count.total=307668737; branch=kerem/v11-p4-patch-vicreg-trainer"
+      },
+      {
+        "id": 4,
+        "title": "P4/P4.8/10P training entrypoint and frozen config",
+        "evidence": "config=configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml; protocol=configs/train/osfm/v11_p4_10p_3am_launch_protocol.yaml; formal_training_allowed=False; launch_command_registered=True; launch_is_preflight_only=False; reviewed_trainer_registered=False"
+      },
+      {
+        "id": 8,
+        "title": "checkpointing/resume and output directories",
+        "evidence": "10P config declares checkpoint cadence and reload gates, but no formal trainer/resume implementation is registered."
+      }
+    ],
+    "authorized_by": "Kerem (repository owner); reviewer Burak unavailable",
+    "authorized_on": "2026-09-29",
+    "reason": "reviewed trainer benchmarked NO-GO (val rank 4.06 < 75); Kerem variant trainer launched instead"
+  }
+}
+╭───────────────────── Traceback (most recent call last) ──────────────────────╮
+│ /home/kerem/conrad-v2/conrad/cli/commands.py:331 in                          │
+│ train_osfm_v11_10p_launch                                                    │
+│                                                                              │
+│   328 │   │   raise typer.Exit(3)                                            │
+│   329 │   from conrad.foundation.universal_v11.trainer import                │
+│       run_v11_10p_training                                                   │
+│   330 │                                                                      │
+│ ❱ 331 │   result = run_v11_10p_training(                                     │
+│   332 │   │   config_path=config,                                            │
+│   333 │   │   readiness_path=readiness,                                      │
+│   334 │   │   runs_root=runs_root,                                           │
+│                                                                              │
+│ /home/kerem/conrad-v2/conrad/foundation/universal_v11/trainer.py:526 in      │
+│ run_v11_10p_training                                                         │
+│                                                                              │
+│   523 │   │   │   if not torch.isfinite(loss):                               │
+│   524 │   │   │   │   raise FloatingPointError(f"non-finite loss at step     │
+│       {step}")                                                               │
+│   525 │   │   │   optimizer.zero_grad(set_to_none=True)                      │
+│ ❱ 526 │   │   │   loss.backward()                                            │
+│   527 │   │   │   torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)    │
+│   528 │   │   │   optimizer.step()                                           │
+│   529 │   │   │   scheduler.step()                                           │
+│                                                                              │
+│ /home/kerem/conrad-v2/.venv/lib/python3.11/site-packages/torch/_tensor.py:62 │
+│ 6 in backward                                                                │
+│                                                                              │
+│    623 │   │   │   │   create_graph=create_graph,                            │
+│    624 │   │   │   │   inputs=inputs,                                        │
+│    625 │   │   │   )                                                         │
+│ ❱  626 │   │   torch.autograd.backward(                                      │
+│    627 │   │   │   self, gradient, retain_graph, create_graph, inputs=inputs │
+│    628 │   │   )                                                             │
+│    629                                                                       │
+│                                                                              │
+│ /home/kerem/conrad-v2/.venv/lib/python3.11/site-packages/torch/autograd/__in │
+│ it__.py:347 in backward                                                      │
+│                                                                              │
+│   344 │   # The reason we repeat the same comment below is that              │
+│   345 │   # some Python versions print out the first line of a multi-line    │
+│       function                                                               │
+│   346 │   # calls in the traceback and some print out the last line          │
+│ ❱ 347 │   _engine_run_backward(                                              │
+│   348 │   │   tensors,                                                       │
+│   349 │   │   grad_tensors_,                                                 │
+│   350 │   │   retain_graph,                                                  │
+│                                                                              │
+│ /home/kerem/conrad-v2/.venv/lib/python3.11/site-packages/torch/autograd/grap │
+│ h.py:823 in _engine_run_backward                                             │
+│                                                                              │
+│   820 │   if attach_logging_hooks:                                           │
+│   821 │   │   unregister_hooks =                                             │
+│       _register_logging_hooks_on_whole_graph(t_outputs)                      │
+│   822 │   try:                                                               │
+│ ❱ 823 │   │   return Variable._execution_engine.run_backward(  # Calls into  │
+│       the C++ engine to run the backward pass                                │
+│   824 │   │   │   t_outputs, *args, **kwargs                                 │
+│   825 │   │   )  # Calls into the C++ engine to run the backward pass        │
+│   826 │   finally:                                                           │
+│                                                                              │
+│ /home/kerem/conrad-v2/conrad/foundation/universal_v11/trainer.py:510 in      │
+│ _on_sigterm                                                                  │
+│                                                                              │
+│   507 │   t_last, step_last = t_start, start_step                            │
+│   508 │                                                                      │
+│   509 │   def _on_sigterm(signum: int, frame: Any) -> None:  # watchdog stop │
+│       -> sealed FAILED run, not a torn one                                   │
+│ ❱ 510 │   │   raise RuntimeError("terminated by SIGTERM (external            │
+│       watchdog)")                                                            │
+│   511 │                                                                      │
+│   512 │   import signal                                                      │
+│   513                                                                        │
+╰──────────────────────────────────────────────────────────────────────────────╯
+RuntimeError: terminated by SIGTERM (external watchdog)

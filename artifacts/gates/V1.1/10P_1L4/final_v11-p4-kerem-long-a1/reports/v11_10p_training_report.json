@@ -1,0 +1,327 @@
+{
+  "best_checkpoint": "artifacts/runs/v11-p4-kerem-long-a1-20260930T001158Z/checkpoints/best.pt",
+  "best_rank": 61.43830108642578,
+  "best_selection_rule": "after warm-up; every family's held-out temporal NN hit >= 0.3; then max weakest-family rank",
+  "data_coverage": {
+    "imaging_sonar": {
+      "subpipe": {
+        "frame_cache": "artifacts/tmp/subpipe_full_cache/imaging_sonar_subpipe_128_e2f3d9f3fa50a4945abb.npy",
+        "groups": {
+          "sss_hf": {
+            "all": 4922,
+            "train": 3445,
+            "validation": 492
+          },
+          "sss_lf": {
+            "all": 4890,
+            "train": 3423,
+            "validation": 489
+          }
+        },
+        "train_frames": 6868,
+        "validation_frames": 981
+      }
+    },
+    "rgb_camera": {
+      "seaclear": {
+        "frame_cache": "artifacts/tmp/subpipe_full_cache/rgb_camera_seaclear_128_6bfcc47ca1aec552a519.npy",
+        "groups": {
+          "extracted/Bistrina/Bluerobotics HD": {
+            "all": 1390,
+            "train": 972,
+            "validation": 139
+          },
+          "extracted/Bistrina/Paralenz Vaquita Gen 2": {
+            "all": 2069,
+            "train": 1448,
+            "validation": 206
+          },
+          "extracted/Bistrina/SIP-E323CV": {
+            "all": 193,
+            "train": 135,
+            "validation": 19
+          },
+          "extracted/Jakljan/Bluerobotics HD": {
+            "all": 241,
+            "train": 168,
+            "validation": 24
+          },
+          "extracted/Jakljan/Paralenz Vaquita": {
+            "all": 65,
+            "train": 45,
+            "validation": 6
+          },
+          "extracted/Lokrum/Bluerobotics HD": {
+            "all": 556,
+            "train": 389,
+            "validation": 55
+          },
+          "extracted/Lokrum/Paralenz Vaquita Gen 2": {
+            "all": 77,
+            "train": 53,
+            "validation": 7
+          },
+          "extracted/Lokrum/SIP-E323CV": {
+            "all": 339,
+            "train": 237,
+            "validation": 33
+          },
+          "extracted/Marseille/SIP-E323CV": {
+            "all": 3441,
+            "train": 2408,
+            "validation": 344
+          },
+          "extracted/Slano/Bluerobotics HD": {
+            "all": 168,
+            "train": 117,
+            "validation": 16
+          },
+          "extracted/Slano/Paralenz Vaquita": {
+            "all": 71,
+            "train": 49,
+            "validation": 7
+          }
+        },
+        "train_frames": 6021,
+        "validation_frames": 856
+      },
+      "subpipe": {
+        "frame_cache": "artifacts/tmp/subpipe_full_cache/rgb_camera_subpipe_128_167e119c6af776432907.npy",
+        "groups": {
+          "cam0": {
+            "all": 38900,
+            "train": 27230,
+            "validation": 3890
+          },
+          "cam1": {
+            "all": 7214,
+            "train": 5049,
+            "validation": 721
+          }
+        },
+        "train_frames": 32279,
+        "validation_frames": 4611
+      },
+      "uvvid": {
+        "frame_cache": "artifacts/tmp/subpipe_full_cache/rgb_camera_uvvid_128_a0660392ea5766421b21.npy",
+        "groups": {
+          "ROV_GoPro_1.mp4": {
+            "all": 75,
+            "train": 52,
+            "validation": 7
+          },
+          "ROV_GoPro_2.mp4": {
+            "all": 150,
+            "train": 105,
+            "validation": 15
+          },
+          "ROV_GoPro_3.mp4": {
+            "all": 74,
+            "train": 51,
+            "validation": 7
+          },
+          "ROV_GoPro_4.mp4": {
+            "all": 49,
+            "train": 34,
+            "validation": 4
+          },
+          "ROV_GoPro_5.mp4": {
+            "all": 450,
+            "train": 315,
+            "validation": 45
+          },
+          "ROV_GoPro_6.mp4": {
+            "all": 180,
+            "train": 125,
+            "validation": 18
+          },
+          "ROV_GoPro_7.mp4": {
+            "all": 80,
+            "train": 56,
+            "validation": 8
+          },
+          "ROV_GoPro_8.mp4": {
+            "all": 140,
+            "train": 98,
+            "validation": 14
+          }
+        },
+        "train_frames": 836,
+        "validation_frames": 118
+      }
+    }
+  },
+  "data_scope": "full SubPipe release (side-scan sonar sss_lf+sss_hf; cameras cam0+cam1) plus camera frames from SeaClear (multi-site) and UVVID ROV_GoPro_1-8",
+  "decision": "NO-GO",
+  "family_count": 15,
+  "gate_id": "OSFM-V11-10P-FORMAL-TRAINER",
+  "kerem_variant": {
+    "autocast": "bf16",
+    "base_lr": 5e-05,
+    "cache_size": 128,
+    "camera_batch_policy": "equal share per source",
+    "clean_anchor_view": true,
+    "crop_ratio": [
+      0.75,
+      1.3333333333333333
+    ],
+    "dataset": "SubPipe full release (Zenodo 12666132 v3.0.1, CC-BY-4.0), chunks 0-4",
+    "extra_camera_sources": [
+      "seaclear",
+      "uvvid"
+    ],
+    "family_depth": 6,
+    "frozen_modules": [],
+    "gate": "every modality's validation rank >= rank_floor (config: every_family_rank_ge)",
+    "image_size": 64,
+    "mirror_flip": true,
+    "modalities": {
+      "imaging_sonar": {
+        "channels": 1,
+        "streams": {
+          "sss_hf": 1,
+          "sss_lf": 1
+        }
+      },
+      "rgb_camera": {
+        "channels": 3,
+        "streams": {
+          "cam0": 2,
+          "cam1": 1
+        }
+      }
+    },
+    "nn_guard": {
+      "floor": 0.3,
+      "window": 3
+    },
+    "patch_dim": 256,
+    "patch_grid": 4,
+    "per_frame_standardize": true,
+    "sonar_anchor_encoder": "P4.8 teacher (OSFM-S-PRETRAIN-V1) frozen in model.v1.sonar, 28x28 input",
+    "step_schedule": "odd steps imaging_sonar, even steps rgb_camera",
+    "token_mask_fraction": 0.25,
+    "total_parameters": 308104961,
+    "trainable_parameters": 253668481,
+    "trainer_variant": "kerem_v11_10p_multisource_nnguard_v7",
+    "uvvid_frame_stride": 15,
+    "validation_batch": "distinct_frames",
+    "vicreg_weights": {
+      "covariance": 1.0,
+      "invariance": 25.0,
+      "rank": 0.0,
+      "variance": 25.0
+    },
+    "views": {
+      "imaging_sonar": {
+        "light": {
+          "crop_scale": [
+            0.6,
+            1.0
+          ],
+          "noise": 0.01,
+          "patch_dropout": 0.0,
+          "speckle": 0.05
+        },
+        "strong": {
+          "crop_scale": [
+            0.3,
+            1.0
+          ],
+          "noise": 0.03,
+          "patch_dropout": 0.25,
+          "speckle": 0.1
+        }
+      },
+      "rgb_camera": {
+        "light": {
+          "channel_gain": 0.05,
+          "crop_scale": [
+            0.6,
+            1.0
+          ],
+          "noise": 0.01,
+          "patch_dropout": 0.0,
+          "speckle": 0.0
+        },
+        "strong": {
+          "channel_gain": 0.15,
+          "crop_scale": [
+            0.25,
+            1.0
+          ],
+          "noise": 0.03,
+          "patch_dropout": 0.25,
+          "speckle": 0.0
+        }
+      }
+    },
+    "warmup_steps": 2000,
+    "weight_decay": 0.05
+  },
+  "last_checkpoint": "artifacts/runs/v11-p4-kerem-long-a1-20260930T001158Z/checkpoints/last.pt",
+  "payloads": {
+    "blockers": [],
+    "decision": "PASS",
+    "gate_id": "OSFM-V11-10P-PAYLOAD-PREFLIGHT",
+    "payloads": [
+      {
+        "actual_sha256": "b2dfc162c1d72e4363643b516b6566eb0f11ca4a874f9674fc5b06f1ddf85696",
+        "expected_sha256": "b2dfc162c1d72e4363643b516b6566eb0f11ca4a874f9674fc5b06f1ddf85696",
+        "id": "upstream_checkpoint",
+        "path": "artifacts/runs/train-osfm_u1_sonar_research-1790575109765916596/checkpoints/osfm_u1_sonar_research_full.pt",
+        "present": true,
+        "sha256_ok": true
+      },
+      {
+        "actual_sha256": "a3068be28471786c726cd6100e0b1d92d1c17615a4dcfe7f5544ba758821188f",
+        "expected_sha256": "a3068be28471786c726cd6100e0b1d92d1c17615a4dcfe7f5544ba758821188f",
+        "id": "subpipe_dataset",
+        "path": "artifacts/data/public.subpipe/raw/SubPipeMini2.zip",
+        "present": true,
+        "sha256_ok": true
+      }
+    ]
+  },
+  "rank_floor": 75.0,
+  "readiness_override": {
+    "authorized_by": "Kerem (repository owner); reviewer Burak unavailable",
+    "authorized_on": "2026-09-29",
+    "overridden_blockers": [
+      {
+        "evidence": "UniversalOSFMV11 parameter_count.total=307668737; branch=kerem/v11-p4-patch-vicreg-trainer",
+        "id": 2,
+        "title": "current V1.1 is 307M-class architecture"
+      },
+      {
+        "evidence": "config=configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml; protocol=configs/train/osfm/v11_p4_10p_3am_launch_protocol.yaml; formal_training_allowed=False; launch_command_registered=True; launch_is_preflight_only=False; reviewed_trainer_registered=False",
+        "id": 4,
+        "title": "P4/P4.8/10P training entrypoint and frozen config"
+      },
+      {
+        "evidence": "10P config declares checkpoint cadence and reload gates, but no formal trainer/resume implementation is registered.",
+        "id": 8,
+        "title": "checkpointing/resume and output directories"
+      }
+    ],
+    "readiness_decision": "NOT READY FOR KEREM",
+    "reason": "reviewed trainer benchmarked NO-GO (val rank 4.06 < 75); Kerem variant trainer launched instead"
+  },
+  "registered_modality_count": 829,
+  "reviewed_trainer": false,
+  "run_dir": "artifacts/runs/v11-p4-kerem-long-a1-20260930T001158Z",
+  "semantic_claim": "data-backed imaging_sonar (active acoustic) and rgb_camera (visual image) only; the other 827 registry entries remain interface coverage",
+  "sonar_anchor_encoder": true,
+  "status": "VALIDATED-RUN",
+  "steps_completed": 775000,
+  "upstream_import": {
+    "attempted": true,
+    "checkpoint_sha256": "b2dfc162c1d72e4363643b516b6566eb0f11ca4a874f9674fc5b06f1ddf85696",
+    "loaded_tensor_count": 150,
+    "source": "teacher.* -> model.v1.sonar",
+    "target_tensor_count": 150,
+    "used_as_sonar_front_end": true
+  },
+  "upstream_import_loaded_tensor_count": 150,
+  "wall_clock_s": 228595.21150684357
+}

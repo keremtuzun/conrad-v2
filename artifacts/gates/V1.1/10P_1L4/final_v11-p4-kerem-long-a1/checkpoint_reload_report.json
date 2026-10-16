@@ -1,0 +1,20 @@
+{
+  "best": {
+    "step": 416000,
+    "strict_load": true,
+    "tensors_identical_after_load": true,
+    "all_weights_finite": true,
+    "parameters": 308104961,
+    "has_optimizer_state": true,
+    "load_seconds": 4.5
+  },
+  "last": {
+    "step": 775000,
+    "strict_load": true,
+    "tensors_identical_after_load": true,
+    "all_weights_finite": true,
+    "parameters": 308104961,
+    "has_optimizer_state": true,
+    "load_seconds": 3.6
+  }
+}

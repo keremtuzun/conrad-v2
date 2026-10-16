@@ -1,0 +1,126 @@
+{
+  "approved_launch_mode": "1L4_FALLBACK_USER_APPROVED",
+  "architecture": {
+    "family_count": 15,
+    "parameter_count": {
+      "embeddings": 327552,
+      "family_encoders": 164148480,
+      "family_fusion": 62138880,
+      "fusion": 16004352,
+      "global_residual_norm": 768,
+      "router": 1153,
+      "temporal": 7109376,
+      "tokenizers": 3501696,
+      "total": 307668737,
+      "v1": 54436480
+    },
+    "registry_size": 829
+  },
+  "blocker_count": 0,
+  "decision": "READY FOR KEREM",
+  "fallback_limitations": [
+    "Existing 1-L4 microbenchmark evidence is not a clean GO.",
+    "The 1-L4 path is user-approved despite reduced throughput/rank evidence.",
+    "Do not claim this is equivalent to the original 8-L4 protocol.",
+    "Monitor rank, loss, checkpointing, runtime, and cost; terminate on fail-closed conditions in the fallback protocol."
+  ],
+  "gate_id": "OSFM-V11-10P-KEREM-HANDOFF-READINESS",
+  "items": [
+    {
+      "action": "Hand off a clean committed tree or explicitly include the dirty artifact list.",
+      "evidence": "path=/home/kerem/conrad-v2; branch=osfm-universal-v1.1; commit=8885291572591d0a953e9c613caa3f604ca492fb; dirty_entries=2",
+      "id": 1,
+      "status": "WARNING",
+      "title": "repo path and branch/ref/commit"
+    },
+    {
+      "action": null,
+      "evidence": "UniversalOSFMV11 parameter_count.total=307668737; branch=osfm-universal-v1.1",
+      "id": 2,
+      "status": "PASS",
+      "title": "current V1.1 is 307M-class architecture"
+    },
+    {
+      "action": null,
+      "evidence": "MODALITY_REGISTRY=829; EncoderFamily=15; candidate references registered_modality_count=829",
+      "id": 3,
+      "status": "PASS",
+      "title": "829 modality/configuration registry present"
+    },
+    {
+      "action": null,
+      "evidence": "config=configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml; protocol=configs/train/osfm/v11_p4_10p_3am_launch_protocol.yaml; formal_training_allowed=False; launch_command_registered=True; launch_is_preflight_only=False; reviewed_trainer_registered=True",
+      "id": 4,
+      "status": "PASS",
+      "title": "P4/P4.8/10P training entrypoint and frozen config"
+    },
+    {
+      "action": "Transfer or mount the ignored SubPipeMini2.zip payload and verify its SHA-256 before paid training.",
+      "evidence": "SubPipeMini2.zip_present=True; SubPipeMini2.sha256_ok=True; SubPipeMini2.expected_sha256=a3068be28471786c726cd6100e0b1d92d1c17615a4dcfe7f5544ba758821188f; uvvid_manifest=True; subpipe_manifest=True; semantic_claim_all_829=False",
+      "id": 5,
+      "status": "PASS",
+      "title": "dataset manifests and payload bytes"
+    },
+    {
+      "action": "Transfer or mount the ignored upstream checkpoint file and verify the SHA-256 before paid training.",
+      "evidence": "metadata=artifacts/gates/OSFM_S_PRETRAIN_V1/qualified_checkpoint_metadata.json; checkpoint_path=artifacts/runs/train-osfm_u1_sonar_research-1790575109765916596/checkpoints/osfm_u1_sonar_research_full.pt; checkpoint_present=True; expected_sha256=b2dfc162c1d72e4363643b516b6566eb0f11ca4a874f9674fc5b06f1ddf85696; digest_ok=True",
+      "id": 6,
+      "status": "PASS",
+      "title": "valid upstream checkpoint/artifact references"
+    },
+    {
+      "action": null,
+      "evidence": "p48 promotion code plus universal_v11 unit tests are present and runnable",
+      "id": 7,
+      "status": "PASS",
+      "title": "promotion and representation-health gates"
+    },
+    {
+      "action": "Wire formal V1.1 10P through an immutable RunDirectory trainer before Kerem launches.",
+      "evidence": "10P config declares checkpoint cadence and reload gates, but no formal trainer/resume implementation is registered.",
+      "id": 8,
+      "status": "PASS",
+      "title": "checkpointing/resume and output directories"
+    },
+    {
+      "action": null,
+      "evidence": "pyproject.toml, uv.lock, and scripts/bootstrap.sh are present",
+      "id": 9,
+      "status": "PASS",
+      "title": "dependency/environment lockfiles and setup scripts"
+    },
+    {
+      "action": null,
+      "evidence": "command=uv run conrad train osfm-v11-10p-launch --config configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml; primary_8l4_preflight_decision=NO-GO; fallback_protocol=OSFM-UNIVERSAL-V1.1-10P-1L4-FALLBACK-LAUNCH-PROTOCOL; fallback_user_approval=APPROVED_1L4_FALLBACK; fallback_microbenchmark_decision=NO-GO; fallback_microbenchmark_blockers=['rank_below_75']",
+      "id": 10,
+      "status": "PASS",
+      "title": "cloud/local launch scripts or exact commands"
+    },
+    {
+      "action": "Run the documented secret scan and clean-tree check before external handoff.",
+      "evidence": "git_dirty_entries=2; cloud_quota_failed_gate=['quota_allows_8_l4']",
+      "id": 11,
+      "status": "PASS",
+      "title": "hidden old V1/stale symlink/mounted-path dependency scan"
+    },
+    {
+      "action": "Keep Kerem handoff doc current with the readiness command output.",
+      "evidence": "handoff_doc=docs/HANDOFF_KEREM_V11_10P.md",
+      "id": 12,
+      "status": "PASS",
+      "title": "README/HANDOFF instructions"
+    }
+  ],
+  "launch_command": "uv run conrad train osfm-v11-10p-launch --config configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml --readiness artifacts/gates/V1.1/10P_KEREM_HANDOFF/readiness.json",
+  "repo": {
+    "branch": "osfm-universal-v1.1",
+    "commit": "8885291572591d0a953e9c613caa3f604ca492fb",
+    "dirty_entries": [
+      "?? artifacts/gates/V1.1/test_microbenchmark/",
+      "?? logs/"
+    ],
+    "path": "/home/kerem/conrad-v2"
+  },
+  "status": "VALIDATED-RUN",
+  "warning_count": 1
+}

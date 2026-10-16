@@ -1,0 +1,80 @@
+{
+  "best_checkpoint": "artifacts/runs/probe600-nonpromotable-20260929T172442Z/checkpoints/best.pt",
+  "best_rank": 4.916762351989746,
+  "data_scope": "SubPipe rendered side-scan sonar only",
+  "decision": "NO-GO",
+  "family_count": 15,
+  "gate_id": "OSFM-V11-10P-FORMAL-TRAINER",
+  "kerem_variant": {
+    "autocast": "bf16",
+    "base_lr": 0.0002,
+    "image_size": 64,
+    "patch_dim": 256,
+    "patch_grid": 4,
+    "token_mask_fraction": 0.25,
+    "trainer_variant": "kerem_v11_10p_subpipe_patch_vicreg_v1",
+    "vicreg_weights": {
+      "covariance": 1.0,
+      "invariance": 25.0,
+      "rank": 1.0,
+      "variance": 25.0
+    },
+    "warmup_steps": 2000
+  },
+  "last_checkpoint": "artifacts/runs/probe600-nonpromotable-20260929T172442Z/checkpoints/last.pt",
+  "payloads": {
+    "blockers": [],
+    "decision": "PASS",
+    "gate_id": "OSFM-V11-10P-PAYLOAD-PREFLIGHT",
+    "payloads": [
+      {
+        "actual_sha256": "b2dfc162c1d72e4363643b516b6566eb0f11ca4a874f9674fc5b06f1ddf85696",
+        "expected_sha256": "b2dfc162c1d72e4363643b516b6566eb0f11ca4a874f9674fc5b06f1ddf85696",
+        "id": "upstream_checkpoint",
+        "path": "artifacts/runs/train-osfm_u1_sonar_research-1790575109765916596/checkpoints/osfm_u1_sonar_research_full.pt",
+        "present": true,
+        "sha256_ok": true
+      },
+      {
+        "actual_sha256": "a3068be28471786c726cd6100e0b1d92d1c17615a4dcfe7f5544ba758821188f",
+        "expected_sha256": "a3068be28471786c726cd6100e0b1d92d1c17615a4dcfe7f5544ba758821188f",
+        "id": "subpipe_dataset",
+        "path": "artifacts/data/public.subpipe/raw/SubPipeMini2.zip",
+        "present": true,
+        "sha256_ok": true
+      }
+    ]
+  },
+  "rank_floor": 75.0,
+  "readiness_override": {
+    "authorized_by": "Kerem (repository owner); reviewer Burak unavailable",
+    "authorized_on": "2026-09-29",
+    "overridden_blockers": [
+      {
+        "evidence": "UniversalOSFMV11 parameter_count.total=307668737; branch=kerem/v11-p4-patch-vicreg-trainer",
+        "id": 2,
+        "title": "current V1.1 is 307M-class architecture"
+      },
+      {
+        "evidence": "config=configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml; protocol=configs/train/osfm/v11_p4_10p_3am_launch_protocol.yaml; formal_training_allowed=False; launch_command_registered=True; launch_is_preflight_only=False; reviewed_trainer_registered=False",
+        "id": 4,
+        "title": "P4/P4.8/10P training entrypoint and frozen config"
+      },
+      {
+        "evidence": "10P config declares checkpoint cadence and reload gates, but no formal trainer/resume implementation is registered.",
+        "id": 8,
+        "title": "checkpointing/resume and output directories"
+      }
+    ],
+    "readiness_decision": "NOT READY FOR KEREM",
+    "reason": "reviewed trainer benchmarked NO-GO (val rank 4.06 < 75); Kerem variant trainer launched instead"
+  },
+  "registered_modality_count": 829,
+  "reviewed_trainer": false,
+  "run_dir": "artifacts/runs/probe600-nonpromotable-20260929T172442Z",
+  "semantic_claim": "data-backed active acoustic training only; 829 registry remains interface coverage",
+  "status": "VALIDATED-RUN",
+  "steps_completed": 600,
+  "upstream_import_loaded_tensor_count": 0,
+  "wall_clock_s": 191.1389343738556
+}

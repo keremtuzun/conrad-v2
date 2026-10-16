@@ -105,7 +105,10 @@ def train_osfm_p48_cloud_budget(
     output: str = typer.Option("artifacts/gates/P4.8C/cloud_budget_preflight.json", "--output"),
 ) -> None:
     """Estimate cloud GPU cost before launching P4.8. Does not start training."""
-    from conrad.foundation.pretraining.cloud_budget import estimate_p48_cloud_budget, write_cloud_budget_report
+    from conrad.foundation.pretraining.cloud_budget import (
+        estimate_p48_cloud_budget,
+        write_cloud_budget_report,
+    )
 
     report = estimate_p48_cloud_budget(
         config_path=config,
@@ -174,7 +177,9 @@ def train_osfm_p48_promote(
 def train_osfm_v11_pillar_benchmark(
     config: str = typer.Option(None, "--config"),
     output: str = typer.Option("artifacts/gates/V1.1/pillar_benchmark.json", "--output"),
-    fast_probe: bool = typer.Option(False, "--fast-probe", help="Use shallow encoders for local CPU validation only"),
+    fast_probe: bool = typer.Option(
+        False, "--fast-probe", help="Use shallow encoders for local CPU validation only"
+    ),
 ) -> None:
     """Run tiny Universal V1.1 pillar probes before any expensive cloud training."""
     from conrad.foundation.universal_v11.benchmark import (
@@ -279,6 +284,11 @@ def train_osfm_v11_10p_launch(
     max_steps: int | None = typer.Option(None, "--max-steps"),
     resume: str | None = typer.Option(None, "--resume"),
     allow_cpu_smoke: bool = typer.Option(False, "--allow-cpu-smoke"),
+    kerem_override: bool = typer.Option(
+        False,
+        "--kerem-override-unreviewed-trainer",
+        help="Owner override: launch past ONLY the unreviewed-trainer readiness blockers; recorded in the run.",
+    ),
 ) -> None:
     """Fail-closed reviewed V1.1 10P trainer launch."""
     readiness_path = Path(readiness)
@@ -298,7 +308,16 @@ def train_osfm_v11_10p_launch(
         )
         raise typer.Exit(3)
     report = json.loads(readiness_path.read_text(encoding="utf-8"))
-    if report.get("decision") != "READY FOR KEREM":
+    if report.get("decision") != "READY FOR KEREM" and kerem_override:
+        from conrad.foundation.universal_v11.trainer import readiness_override_record
+
+        try:
+            record = readiness_override_record(report)
+        except RuntimeError as exc:
+            typer.echo(json.dumps({"decision": "REFUSED", "reason": str(exc)}, indent=2))
+            raise typer.Exit(3) from exc
+        typer.echo(json.dumps({"decision": "OWNER_OVERRIDE", "override": record}, indent=2))
+    elif report.get("decision") != "READY FOR KEREM":
         typer.echo(
             json.dumps(
                 {
@@ -322,6 +341,7 @@ def train_osfm_v11_10p_launch(
         max_steps_override=max_steps,
         resume=resume,
         allow_cpu_smoke=allow_cpu_smoke,
+        readiness_override=kerem_override,
     )
     typer.echo(json.dumps(result, indent=2, sort_keys=True, default=str))
 
@@ -359,7 +379,9 @@ def eval_list() -> None:
 
 @eval_app.command("oceansense-p5-p10-status")
 def eval_oceansense_p5_p10_status(
-    test_result: str = typer.Option("PASS", "--test-result", help="PASS only after the P5-P10 contract tests pass"),
+    test_result: str = typer.Option(
+        "PASS", "--test-result", help="PASS only after the P5-P10 contract tests pass"
+    ),
     qualified_checkpoint_metadata: str = typer.Option(None, "--qualified-checkpoint-metadata"),
     output: str = typer.Option("artifacts/gates/P5_P10/status.json", "--output"),
 ) -> None:

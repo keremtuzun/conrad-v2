@@ -1,0 +1,5 @@
+a2992555f01538250aade9c0c4658bae01a6b66451c679eeb1727b5afb5f2ab3  artifacts/runs/v11-p4-kerem-persource-a3-20261016T001909Z/checkpoints/best.pt
+47a747e96ab0eb20f2dfc5cf1ff8008931635b6ce1e82720488f269bfbe17db6  artifacts/runs/v11-p4-kerem-persource-a3-20261016T001909Z/checkpoints/last.pt
+0ec3e51816ada05561ec7d0a61efd9c2476e9b1397a4b19a32dcb3f1079a6b08  artifacts/runs/v11-p4-kerem-persource-a2-20261015T223457Z/checkpoints/best.pt
+edf74d95782e67e897cd6e60b26b4ac3f55a93ad0b609db6f0f7488117f16638  artifacts/runs/v11-p4-kerem-sonar5-a1-20261004T165839Z/checkpoints/best.pt
+b2dfc162c1d72e4363643b516b6566eb0f11ca4a874f9674fc5b06f1ddf85696  artifacts/runs/train-osfm_u1_sonar_research-1790575109765916596/checkpoints/osfm_u1_sonar_research_full.pt

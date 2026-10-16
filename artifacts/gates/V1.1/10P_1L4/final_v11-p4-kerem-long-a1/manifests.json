@@ -1,0 +1,126 @@
+{
+  "extra_camera": {
+    "decision": "PASS",
+    "seaclear": {
+      "decision": "PASS",
+      "files": [
+        {
+          "actual_sha256": "2a053f748d6bdc5df8d776e87b72832f2908316f0f419f6a8d562df6df086c13",
+          "expected_sha256": "2a053f748d6bdc5df8d776e87b72832f2908316f0f419f6a8d562df6df086c13",
+          "ok": true,
+          "path": "raw/Seaclear Marine Debris Dataset.rar"
+        }
+      ],
+      "manifest": "datasets/public/seaclear.manifest.yaml"
+    },
+    "uvvid": {
+      "decision": "PASS",
+      "files": [
+        {
+          "actual_sha256": "fbdfbc39d7c2dc42e0ebf07b4298b5ccd01508bc0a3c9ff221f15c0462d810a2",
+          "expected_sha256": "fbdfbc39d7c2dc42e0ebf07b4298b5ccd01508bc0a3c9ff221f15c0462d810a2",
+          "ok": true,
+          "path": "raw/ROV_GoPro_1.mp4"
+        },
+        {
+          "actual_sha256": "e364f2faf8c2cc1ed3798fd00e69b8d23548e912e2f90f2d6dd39e0f88b62ace",
+          "expected_sha256": "e364f2faf8c2cc1ed3798fd00e69b8d23548e912e2f90f2d6dd39e0f88b62ace",
+          "ok": true,
+          "path": "raw/ROV_GoPro_4.mp4"
+        },
+        {
+          "actual_sha256": "af5908fbc7aa44302c83b1b43eba8d2aee3946166473443231978962bac3305b",
+          "expected_sha256": "af5908fbc7aa44302c83b1b43eba8d2aee3946166473443231978962bac3305b",
+          "ok": true,
+          "path": "raw/ROV_GoPro_2.mp4"
+        },
+        {
+          "actual_sha256": "d3344becdd434e17e5cd95143fab1a976057c21545307dc8628df810ba087799",
+          "expected_sha256": "d3344becdd434e17e5cd95143fab1a976057c21545307dc8628df810ba087799",
+          "ok": true,
+          "path": "raw/ROV_GoPro_3.mp4"
+        },
+        {
+          "actual_sha256": "627d776a5a85e85ef083237b774f8ef38e80f1f48613de6a0cbb9d6e081f1bb5",
+          "expected_sha256": "627d776a5a85e85ef083237b774f8ef38e80f1f48613de6a0cbb9d6e081f1bb5",
+          "ok": true,
+          "path": "raw/ROV_GoPro_5.mp4"
+        },
+        {
+          "actual_sha256": "528c474c3e6b300b5ef7f1af04cdf63fbbe17a0b685c20d1a5782ae8b6be2032",
+          "expected_sha256": "528c474c3e6b300b5ef7f1af04cdf63fbbe17a0b685c20d1a5782ae8b6be2032",
+          "ok": true,
+          "path": "raw/ROV_GoPro_6.mp4"
+        },
+        {
+          "actual_sha256": "391f9c05b23dcb29e4fa943d11a16eb6a66bcf45a88a3851e081b1caf763ec41",
+          "expected_sha256": "391f9c05b23dcb29e4fa943d11a16eb6a66bcf45a88a3851e081b1caf763ec41",
+          "ok": true,
+          "path": "raw/ROV_GoPro_7.mp4"
+        },
+        {
+          "actual_sha256": "f1ffbe6d753770942a71e88165966deea59dbb1cdc03767a65667fcf9ccdf642",
+          "expected_sha256": "f1ffbe6d753770942a71e88165966deea59dbb1cdc03767a65667fcf9ccdf642",
+          "ok": true,
+          "path": "raw/ROV_GoPro_8.mp4"
+        }
+      ],
+      "manifest": "datasets/public/uvvid.manifest.yaml"
+    }
+  },
+  "payloads": {
+    "blockers": [],
+    "decision": "PASS",
+    "gate_id": "OSFM-V11-10P-PAYLOAD-PREFLIGHT",
+    "payloads": [
+      {
+        "actual_sha256": "b2dfc162c1d72e4363643b516b6566eb0f11ca4a874f9674fc5b06f1ddf85696",
+        "expected_sha256": "b2dfc162c1d72e4363643b516b6566eb0f11ca4a874f9674fc5b06f1ddf85696",
+        "id": "upstream_checkpoint",
+        "path": "artifacts/runs/train-osfm_u1_sonar_research-1790575109765916596/checkpoints/osfm_u1_sonar_research_full.pt",
+        "present": true,
+        "sha256_ok": true
+      },
+      {
+        "actual_sha256": "a3068be28471786c726cd6100e0b1d92d1c17615a4dcfe7f5544ba758821188f",
+        "expected_sha256": "a3068be28471786c726cd6100e0b1d92d1c17615a4dcfe7f5544ba758821188f",
+        "id": "subpipe_dataset",
+        "path": "artifacts/data/public.subpipe/raw/SubPipeMini2.zip",
+        "present": true,
+        "sha256_ok": true
+      }
+    ]
+  },
+  "readiness_override": {
+    "authorized_by": "Kerem (repository owner); reviewer Burak unavailable",
+    "authorized_on": "2026-09-29",
+    "overridden_blockers": [
+      {
+        "evidence": "UniversalOSFMV11 parameter_count.total=307668737; branch=kerem/v11-p4-patch-vicreg-trainer",
+        "id": 2,
+        "title": "current V1.1 is 307M-class architecture"
+      },
+      {
+        "evidence": "config=configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml; protocol=configs/train/osfm/v11_p4_10p_3am_launch_protocol.yaml; formal_training_allowed=False; launch_command_registered=True; launch_is_preflight_only=False; reviewed_trainer_registered=False",
+        "id": 4,
+        "title": "P4/P4.8/10P training entrypoint and frozen config"
+      },
+      {
+        "evidence": "10P config declares checkpoint cadence and reload gates, but no formal trainer/resume implementation is registered.",
+        "id": 8,
+        "title": "checkpointing/resume and output directories"
+      }
+    ],
+    "readiness_decision": "NOT READY FOR KEREM",
+    "reason": "reviewed trainer benchmarked NO-GO (val rank 4.06 < 75); Kerem variant trainer launched instead"
+  },
+  "subpipe_full": {
+    "actual_sha256": "7723d93d71a8eca8cdd354fc07f95f433a7cdbd42143d38ca3e362ceab85ae3e",
+    "decision": "PASS",
+    "expected_sha256": "7723d93d71a8eca8cdd354fc07f95f433a7cdbd42143d38ca3e362ceab85ae3e",
+    "gate_id": "OSFM-V11-10P-SUBPIPE-FULL-PREFLIGHT",
+    "manifest": "datasets/public/subpipe_full.manifest.yaml",
+    "path": "artifacts/data/public.subpipe_full/raw/SubPipe.zip"
+  },
+  "subpipe_manifest": "datasets/public/subpipe.manifest.yaml"
+}

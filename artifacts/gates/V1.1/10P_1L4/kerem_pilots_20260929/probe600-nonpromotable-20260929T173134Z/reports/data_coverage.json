@@ -1,0 +1,17 @@
+{
+  "dataset": "public.subpipe@zenodo-12666132-v3.0.1-SubPipeMini2",
+  "streams": {
+    "sss_hf": {
+      "all": 1011,
+      "train": 707,
+      "validation": 101
+    },
+    "sss_lf": {
+      "all": 1055,
+      "train": 738,
+      "validation": 105
+    }
+  },
+  "train_frames": 1445,
+  "validation_frames": 206
+}

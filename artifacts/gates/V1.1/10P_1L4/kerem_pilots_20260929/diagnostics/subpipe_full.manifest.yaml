@@ -1,0 +1,105 @@
+# Full SubPipe release, same Zenodo record and licence as public.subpipe (SubPipeMini2).
+# SubPipe.zip downloaded 2026-09-29 on Kerem's explicit approval for V1.1 P4 training (Kerem variant trainer).
+# Zenodo md5 0af8d8231a4c09b2b3303e44765ae8d6; the sha256 below is computed from the downloaded archive.
+schema_version: 1.0.0
+dataset_id: public.subpipe_full
+version: zenodo-12666132-v3.0.1-SubPipe-full
+manifest_version: 3
+status: APPROVED
+source_category: PUBLIC_REAL
+source: https://zenodo.org/records/12666132
+release_id: doi:10.5281/zenodo.12666132 (version 3.0.1, published 2024-07-05)
+retrieved_at: '2026-09-29'
+license: CC-BY-4.0
+license_evidence_ref: Zenodo record metadata license.id=cc-by-4.0 (https://zenodo.org/api/records/12666132), same
+  record as public.subpipe; SubPipe.zip md5 checked against the Zenodo file checksum on download
+usage_rights: 'CC-BY-4.0: research, adaptation and training with attribution to Alvarez-Tunon et al. (2024) and
+  doi:10.5281/zenodo.12666132; data property of Oceanscan-MST (REMARO H2020)'
+rights_review_status: CLEARED
+rights_by_asset_ref: single CC-BY-4.0 Zenodo record; all members share it (same record as public.subpipe)
+redistribution_allowed: false
+deployment_allowed: false
+training_allowed: true
+checksum: 7723d93d71a8eca8cdd354fc07f95f433a7cdbd42143d38ca3e362ceab85ae3e
+modalities:
+- STRUCTURED
+- RGB
+- SONAR
+labels:
+- pipeline_present
+- pipeline_box_count
+label_schema_ref: COCO coco_format.json per side-scan frequency, one category 'Pipeline' (bbox only)
+label_quality_report_ref: human annotation per dataset paper; no label-quality report published
+units:
+  time: ns (from epoch-second file names, ms resolution)
+  config offsets: mm, degrees
+frames:
+  cam0: subpipe.cam0_optical
+  cam1: subpipe.cam1_optical
+  sss_lf: subpipe.sss_lf
+  sss_hf: subpipe.sss_hf
+coordinate_frames_ref: config.yaml gives cam offsets (x, z mm; pitch deg) only; no full extrinsics, no sonar mount
+calibration_ref: 'extracted/config.yaml#cam0 (intrinsics + radtan distortion); cam1 and sonar: none'
+timestamps:
+  clock_domain: subpipe:vehicle_unix
+  units: ns
+  semantics: UNIX epoch time in the image file name (ms resolution); CSV rows carry sub-ms stamps
+  offset_evidence_ref: null
+synchronization: []
+truth_availability: PARTIAL_LABELS
+missingness_policy: pose None (nav frame undocumented); calibration None except cam0; unlisted images have no label
+split_strategy:
+- sequence
+split_manifest_ref: per-stream contiguous time blocks over chunks 0-4 (conrad.foundation.data.osfm_public_real._partition_ranges)
+duplicate_audit_ref: 'OPEN: SubPipeMini2 SSS frames are a subset of chunk 0-2 here; do not evaluate on one after
+  training on the other'
+transformations:
+- transformation_id: subpipe-zip-member-decode-v1
+  kind: TRANSFORM
+  description: zipfile read (CRC-32 checked) + OpenCV imdecode of JPEG / binary PPM members
+  version: 1.0.0
+  config_hash: 4a838fab0507c430c1703ce96dc2c8042db3675bd815869d838b10974ecd87ff
+corruptions: []
+adapter_version: subpipe_zip-1.0.0
+transform_config_hash: d049d9f2172a4aba6816ceefa283b6974903d961602d495877685109ae63e920
+permitted_tasks:
+- ECMER quality features and encoding on cam0/cam1/side-scan
+- side-scan pipeline presence probing against COCO boxes
+unsupported_claims:
+- true material loss labels
+- fatigue labels inferred from pipeline segmentation
+intended_role: 'SubPipe: underwater pipeline segmentation, visual-inertial localization and sonar perception; candidate
+  2S/ECMER data.'
+procurement_status: APPROVED
+verified_on: '2026-09-19'
+source_urls:
+- https://zenodo.org/records/12666132
+- https://zenodo.org/api/records/12666132
+- https://zenodo.org/api/records/12666132/files/SubPipeMini2.zip/content
+- https://github.com/remaro-network/SubPipe-dataset
+conrad_tasks:
+- 2S
+- ECMER-SSL (only via an approved manifest)
+- 2T domain-appearance context only
+forbidden_uses:
+- pipeline boxes must not supervise 2T material loss, corrosion or fatigue condition
+- EstimatedState is the vehicle's navigation estimate, not ground truth; never score localization against it as
+  truth
+- 'one mission only: results are not independent-site generalization'
+restrictions:
+- 'attribution required: Alvarez-Tunon, Marnet, Antal, Aubard, Costa, Brodskiy (2024), SubPipe, doi:10.5281/zenodo.12666132'
+- 'user approved download 2026-09-19: SubPipeMini2.zip only (4,945,761,374 bytes); no other SubPipe archive'
+- deployment and redistribution by Conrad not reviewed; flags stay false
+remaining_verification:
+- frame-level duplicate audit across chunks
+- Cam1 is grayscale; it is replicated to 3 channels for rgb_camera
+required_files_note: Only the archive is required; frames are read from it by the V1.1 Kerem trainer (zipfile CRC-32
+  + OpenCV decode).
+files:
+- path: raw/SubPipe.zip
+  sha256: 7723d93d71a8eca8cdd354fc07f95f433a7cdbd42143d38ca3e362ceab85ae3e
+  byte_length: 28011923314
+  stream: archive
+  modality: STRUCTURED
+  lineage:
+    sequence: subpipe/full

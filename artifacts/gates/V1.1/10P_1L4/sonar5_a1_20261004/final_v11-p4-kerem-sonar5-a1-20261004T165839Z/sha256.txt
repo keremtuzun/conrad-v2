@@ -1,0 +1,3 @@
+edf74d95782e67e897cd6e60b26b4ac3f55a93ad0b609db6f0f7488117f16638  artifacts/runs/v11-p4-kerem-sonar5-a1-20261004T165839Z/checkpoints/best.pt
+b7b99a3d938b65af6e7f380e6f7b3d92db0c773372e2952cc8bb3eb066d16a7d  artifacts/runs/v11-p4-kerem-sonar5-a1-20261004T165839Z/checkpoints/last.pt
+b2dfc162c1d72e4363643b516b6566eb0f11ca4a874f9674fc5b06f1ddf85696  artifacts/runs/train-osfm_u1_sonar_research-1790575109765916596/checkpoints/osfm_u1_sonar_research_full.pt

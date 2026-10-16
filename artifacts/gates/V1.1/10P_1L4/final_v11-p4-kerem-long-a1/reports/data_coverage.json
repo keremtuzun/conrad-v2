@@ -1,0 +1,156 @@
+{
+  "datasets": [
+    "public.subpipe_full",
+    "public.seaclear",
+    "public.uvvid"
+  ],
+  "modalities": {
+    "imaging_sonar": {
+      "subpipe": {
+        "frame_cache": "artifacts/tmp/subpipe_full_cache/imaging_sonar_subpipe_128_e2f3d9f3fa50a4945abb.npy",
+        "groups": {
+          "sss_hf": {
+            "all": 4922,
+            "train": 3445,
+            "validation": 492
+          },
+          "sss_lf": {
+            "all": 4890,
+            "train": 3423,
+            "validation": 489
+          }
+        },
+        "train_frames": 6868,
+        "validation_frames": 981
+      }
+    },
+    "rgb_camera": {
+      "seaclear": {
+        "frame_cache": "artifacts/tmp/subpipe_full_cache/rgb_camera_seaclear_128_6bfcc47ca1aec552a519.npy",
+        "groups": {
+          "extracted/Bistrina/Bluerobotics HD": {
+            "all": 1390,
+            "train": 972,
+            "validation": 139
+          },
+          "extracted/Bistrina/Paralenz Vaquita Gen 2": {
+            "all": 2069,
+            "train": 1448,
+            "validation": 206
+          },
+          "extracted/Bistrina/SIP-E323CV": {
+            "all": 193,
+            "train": 135,
+            "validation": 19
+          },
+          "extracted/Jakljan/Bluerobotics HD": {
+            "all": 241,
+            "train": 168,
+            "validation": 24
+          },
+          "extracted/Jakljan/Paralenz Vaquita": {
+            "all": 65,
+            "train": 45,
+            "validation": 6
+          },
+          "extracted/Lokrum/Bluerobotics HD": {
+            "all": 556,
+            "train": 389,
+            "validation": 55
+          },
+          "extracted/Lokrum/Paralenz Vaquita Gen 2": {
+            "all": 77,
+            "train": 53,
+            "validation": 7
+          },
+          "extracted/Lokrum/SIP-E323CV": {
+            "all": 339,
+            "train": 237,
+            "validation": 33
+          },
+          "extracted/Marseille/SIP-E323CV": {
+            "all": 3441,
+            "train": 2408,
+            "validation": 344
+          },
+          "extracted/Slano/Bluerobotics HD": {
+            "all": 168,
+            "train": 117,
+            "validation": 16
+          },
+          "extracted/Slano/Paralenz Vaquita": {
+            "all": 71,
+            "train": 49,
+            "validation": 7
+          }
+        },
+        "train_frames": 6021,
+        "validation_frames": 856
+      },
+      "subpipe": {
+        "frame_cache": "artifacts/tmp/subpipe_full_cache/rgb_camera_subpipe_128_167e119c6af776432907.npy",
+        "groups": {
+          "cam0": {
+            "all": 38900,
+            "train": 27230,
+            "validation": 3890
+          },
+          "cam1": {
+            "all": 7214,
+            "train": 5049,
+            "validation": 721
+          }
+        },
+        "train_frames": 32279,
+        "validation_frames": 4611
+      },
+      "uvvid": {
+        "frame_cache": "artifacts/tmp/subpipe_full_cache/rgb_camera_uvvid_128_a0660392ea5766421b21.npy",
+        "groups": {
+          "ROV_GoPro_1.mp4": {
+            "all": 75,
+            "train": 52,
+            "validation": 7
+          },
+          "ROV_GoPro_2.mp4": {
+            "all": 150,
+            "train": 105,
+            "validation": 15
+          },
+          "ROV_GoPro_3.mp4": {
+            "all": 74,
+            "train": 51,
+            "validation": 7
+          },
+          "ROV_GoPro_4.mp4": {
+            "all": 49,
+            "train": 34,
+            "validation": 4
+          },
+          "ROV_GoPro_5.mp4": {
+            "all": 450,
+            "train": 315,
+            "validation": 45
+          },
+          "ROV_GoPro_6.mp4": {
+            "all": 180,
+            "train": 125,
+            "validation": 18
+          },
+          "ROV_GoPro_7.mp4": {
+            "all": 80,
+            "train": 56,
+            "validation": 8
+          },
+          "ROV_GoPro_8.mp4": {
+            "all": 140,
+            "train": 98,
+            "validation": 14
+          }
+        },
+        "train_frames": 836,
+        "validation_frames": 118
+      }
+    }
+  }
+}

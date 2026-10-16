@@ -1,0 +1,151 @@
+{
+  "autocast": "bf16",
+  "base_lr": 5e-05,
+  "best_selection": "per_source",
+  "best_selection_excludes": [
+    "aquascan"
+  ],
+  "cache_size": 128,
+  "camera_batch_policy": "equal share per source",
+  "clean_anchor_view": true,
+  "crop_ratio": [
+    0.75,
+    1.3333333333333333
+  ],
+  "dataset": "SubPipe full release (Zenodo 12666132 v3.0.1, CC-BY-4.0), chunks 0-4",
+  "extra_camera_sources": [
+    "seaclear",
+    "uvvid"
+  ],
+  "extra_sonar_sources": {
+    "aquascan": {
+      "dir": "artifacts/data/public.aquascan_1k",
+      "images": "extracted",
+      "sequential": false,
+      "stride": 1
+    },
+    "catalunya": {
+      "dir": "artifacts/data/public.sss_catalunya",
+      "sequential": true,
+      "split_zip": "raw/sss_ssl_dataset_N713_384",
+      "stride": 6
+    },
+    "china_offshore": {
+      "dir": "artifacts/data/public.china_offshore_sss",
+      "images": "extracted",
+      "sequential": false,
+      "stride": 1
+    },
+    "uatd": {
+      "dir": "artifacts/data/public.uatd",
+      "images": "extracted",
+      "sequential": true,
+      "stride": 1
+    }
+  },
+  "family_depth": 6,
+  "frozen_modules": [],
+  "gate": "every modality's validation rank >= rank_floor (config: every_family_rank_ge)",
+  "image_size": 64,
+  "init_from": {
+    "loaded": "model weights only (strict); fresh optimizer and schedule",
+    "path": "artifacts/runs/v11-p4-kerem-persource-a2-20261015T223457Z/checkpoints/best.pt",
+    "sha256": "0ec3e51816ada05561ec7d0a61efd9c2476e9b1397a4b19a32dcb3f1079a6b08",
+    "step": 3000,
+    "trainer": null
+  },
+  "mirror_flip": true,
+  "modalities": {
+    "imaging_sonar": {
+      "channels": 1,
+      "streams": {
+        "sss_hf": 1,
+        "sss_lf": 1
+      }
+    },
+    "rgb_camera": {
+      "channels": 3,
+      "streams": {
+        "cam0": 2,
+        "cam1": 1
+      }
+    }
+  },
+  "nn_guard": {
+    "floor": 0.3,
+    "window": 3
+  },
+  "patch_dim": 256,
+  "patch_grid": 4,
+  "per_frame_standardize": true,
+  "sonar_anchor_encoder": null,
+  "sonar_batch_policy": "one source per step, round robin",
+  "sonar_views": "sonar",
+  "sonar_weights": {
+    "subpipe": 2
+  },
+  "source_views": {},
+  "step_schedule": "odd steps imaging_sonar, even steps rgb_camera",
+  "stream_batch_sources": [
+    "subpipe"
+  ],
+  "temporal_pairs_max_offset": 0,
+  "token_mask_fraction": 0.25,
+  "total_parameters": 308055809,
+  "trainable_parameters": 253619329,
+  "trainer_variant": "kerem_v11_10p_multisource_sonar5_v9_persource",
+  "uvvid_frame_stride": 15,
+  "validation_batch": "distinct_frames",
+  "vicreg_weights": {
+    "covariance": 1.0,
+    "invariance": 25.0,
+    "rank": 0.0,
+    "variance": 25.0
+  },
+  "views": {
+    "imaging_sonar": {
+      "light": {
+        "crop_scale": [
+          0.6,
+          1.0
+        ],
+        "noise": 0.01,
+        "patch_dropout": 0.0,
+        "speckle": 0.05
+      },
+      "strong": {
+        "crop_scale": [
+          0.65,
+          1.0
+        ],
+        "noise": 0.03,
+        "patch_dropout": 0.25,
+        "speckle": 0.2
+      }
+    },
+    "rgb_camera": {
+      "light": {
+        "channel_gain": 0.05,
+        "crop_scale": [
+          0.6,
+          1.0
+        ],
+        "noise": 0.01,
+        "patch_dropout": 0.0,
+        "speckle": 0.0
+      },
+      "strong": {
+        "channel_gain": 0.15,
+        "crop_scale": [
+          0.25,
+          1.0
+        ],
+        "noise": 0.03,
+        "patch_dropout": 0.25,
+        "speckle": 0.0
+      }
+    }
+  },
+  "warmup_steps": 500,
+  "weight_decay": 0.05
+}

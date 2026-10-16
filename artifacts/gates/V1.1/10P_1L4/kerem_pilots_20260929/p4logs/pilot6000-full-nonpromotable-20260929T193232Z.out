@@ -1,0 +1,90 @@
+{
+  "decision": "OWNER_OVERRIDE",
+  "override": {
+    "readiness_decision": "NOT READY FOR KEREM",
+    "overridden_blockers": [
+      {
+        "id": 2,
+        "title": "current V1.1 is 307M-class architecture",
+        "evidence": "UniversalOSFMV11 parameter_count.total=307668737; branch=kerem/v11-p4-patch-vicreg-trainer"
+      },
+      {
+        "id": 4,
+        "title": "P4/P4.8/10P training entrypoint and frozen config",
+        "evidence": "config=configs/train/osfm/v11_p4_10p_829_semantic_candidate.yaml; protocol=configs/train/osfm/v11_p4_10p_3am_launch_protocol.yaml; formal_training_allowed=False; launch_command_registered=True; launch_is_preflight_only=False; reviewed_trainer_registered=False"
+      },
+      {
+        "id": 8,
+        "title": "checkpointing/resume and output directories",
+        "evidence": "10P config declares checkpoint cadence and reload gates, but no formal trainer/resume implementation is registered."
+      }
+    ],
+    "authorized_by": "Kerem (repository owner); reviewer Burak unavailable",
+    "authorized_on": "2026-09-29",
+    "reason": "reviewed trainer benchmarked NO-GO (val rank 4.06 < 75); Kerem variant trainer launched instead"
+  }
+}
+╭───────────────────── Traceback (most recent call last) ──────────────────────╮
+│ /home/kerem/conrad-v2/conrad/cli/commands.py:331 in                          │
+│ train_osfm_v11_10p_launch                                                    │
+│                                                                              │
+│   328 │   │   raise typer.Exit(3)                                            │
+│   329 │   from conrad.foundation.universal_v11.trainer import                │
+│       run_v11_10p_training                                                   │
+│   330 │                                                                      │
+│ ❱ 331 │   result = run_v11_10p_training(                                     │
+│   332 │   │   config_path=config,                                            │
+│   333 │   │   readiness_path=readiness,                                      │
+│   334 │   │   runs_root=runs_root,                                           │
+│                                                                              │
+│ /home/kerem/conrad-v2/conrad/foundation/universal_v11/trainer.py:577 in      │
+│ run_v11_10p_training                                                         │
+│                                                                              │
+│   574 │   │   │   scheduler.load_state_dict(loaded.scheduler_state)          │
+│   575 │   │   start_step = int(loaded.trainer_state.get("step",              │
+│       loaded.metadata.step))                                                 │
+│   576 │                                                                      │
+│ ❱ 577 │   batcher = _SubPipeFullBatcher(                                     │
+│   578 │   │   archive_sha256=str(full_report["actual_sha256"]),              │
+│       batch_size=batch_size, device=device, seed=seed, smoke=allow_cpu_smoke │
+│   579 │   )                                                                  │
+│   580 │   coverage = batcher.coverage()                                      │
+│                                                                              │
+│ /home/kerem/conrad-v2/conrad/foundation/universal_v11/trainer.py:339 in      │
+│ __init__                                                                     │
+│                                                                              │
+│   336 │   validation uses distinct frames only."""                           │
+│   337 │                                                                      │
+│   338 │   def __init__(self, *, archive_sha256: str, batch_size: int,        │
+│       device: torch.device, seed: int, smoke: bool = False) -> None:         │
+│ ❱ 339 │   │   index = _full_index()                                          │
+│   340 │   │   self.batch_size = batch_size                                   │
+│   341 │   │   self.device = device                                           │
+│   342 │   │   self.seed = seed                                               │
+│                                                                              │
+│ /home/kerem/conrad-v2/conrad/foundation/universal_v11/trainer.py:212 in      │
+│ _full_index                                                                  │
+│                                                                              │
+│   209 │   │   for name in archive.namelist():                                │
+│   210 │   │   │   match = _FULL_MEMBER.match(name)                           │
+│   211 │   │   │   if match:                                                  │
+│ ❱ 212 │   │   │   │                                                          │
+│       out[_FOLDER_STREAM[match.group(2)]].append((stamp_to_ns(match.group(3) │
+│       ), name))                                                              │
+│   213 │   return {stream: sorted(refs) for stream, refs in out.items()}      │
+│   214                                                                        │
+│   215                                                                        │
+│                                                                              │
+│ /home/kerem/conrad-v2/conrad/data/adapters/subpipe.py:92 in stamp_to_ns      │
+│                                                                              │
+│    89 def stamp_to_ns(stem: str) -> int:                                     │
+│    90 │   """``"1693572852.904"`` -> 1693572852904000000 (exact decimal      │
+│       arithmetic, no float rounding)."""                                     │
+│    91 │   if not _STAMP.match(stem):                                         │
+│ ❱  92 │   │   raise DatasetContractError(f"file name {stem!r} is not an      │
+│       epoch-seconds stamp")                                                  │
+│    93 │   return int(Decimal(stem) * 1_000_000_000)                          │
+│    94                                                                        │
+│    95                                                                        │
+╰──────────────────────────────────────────────────────────────────────────────╯
+DatasetContractError: file name '1693574280' is not an epoch-seconds stamp

@@ -1,0 +1,92 @@
+{
+  "autocast": "bf16",
+  "base_lr": 0.0001,
+  "cache_size": 128,
+  "crop_ratio": [
+    0.75,
+    1.3333333333333333
+  ],
+  "dataset": "SubPipe full release (Zenodo 12666132 v3.0.1, CC-BY-4.0), chunks 0-4",
+  "family_depth": 6,
+  "frozen_modules": [],
+  "gate": "every modality's validation rank >= rank_floor (config: every_family_rank_ge)",
+  "image_size": 64,
+  "mirror_flip": true,
+  "modalities": {
+    "imaging_sonar": {
+      "channels": 1,
+      "streams": {
+        "sss_hf": 1,
+        "sss_lf": 1
+      }
+    },
+    "rgb_camera": {
+      "channels": 3,
+      "streams": {
+        "cam0": 2,
+        "cam1": 1
+      }
+    }
+  },
+  "patch_dim": 256,
+  "patch_grid": 4,
+  "per_frame_standardize": true,
+  "step_schedule": "odd steps imaging_sonar, even steps rgb_camera",
+  "token_mask_fraction": 0.25,
+  "total_parameters": 308055809,
+  "trainable_parameters": 308055809,
+  "trainer_variant": "kerem_v11_10p_subpipe_full_sonar_camera_v4",
+  "validation_batch": "distinct_frames",
+  "vicreg_weights": {
+    "covariance": 1.0,
+    "invariance": 25.0,
+    "rank": 1.0,
+    "variance": 25.0
+  },
+  "views": {
+    "imaging_sonar": {
+      "light": {
+        "crop_scale": [
+          0.6,
+          1.0
+        ],
+        "noise": 0.01,
+        "patch_dropout": 0.0,
+        "speckle": 0.05
+      },
+      "strong": {
+        "crop_scale": [
+          0.3,
+          1.0
+        ],
+        "noise": 0.03,
+        "patch_dropout": 0.25,
+        "speckle": 0.1
+      }
+    },
+    "rgb_camera": {
+      "light": {
+        "channel_gain": 0.05,
+        "crop_scale": [
+          0.6,
+          1.0
+        ],
+        "noise": 0.01,
+        "patch_dropout": 0.0,
+        "speckle": 0.0
+      },
+      "strong": {
+        "channel_gain": 0.15,
+        "crop_scale": [
+          0.25,
+          1.0
+        ],
+        "noise": 0.03,
+        "patch_dropout": 0.25,
+        "speckle": 0.0
+      }
+    }
+  },
+  "warmup_steps": 2000,
+  "weight_decay": 0.05
+}

@@ -1,0 +1,29 @@
+{
+ "imaging_sonar/n_frames": 981,
+ "imaging_sonar/pixels": {
+  "nn_temporal_hit": 0.807
+ },
+ "imaging_sonar/p48_anchor_cls": {
+  "nn_temporal_hit": 0.839
+ },
+ "imaging_sonar/best.pt": {
+  "nn_temporal_hit": 0.688,
+  "rank_256": 59.1
+ },
+ "imaging_sonar/last.pt": {
+  "nn_temporal_hit": 0.694,
+  "rank_256": 59.0
+ },
+ "rgb_camera/n_frames": 5585,
+ "rgb_camera/pixels": {
+  "nn_temporal_hit": 0.793
+ },
+ "rgb_camera/best.pt": {
+  "nn_temporal_hit": 0.411,
+  "rank_256": 48.6
+ },
+ "rgb_camera/last.pt": {
+  "nn_temporal_hit": 0.411,
+  "rank_256": 52.2
+ }
+}

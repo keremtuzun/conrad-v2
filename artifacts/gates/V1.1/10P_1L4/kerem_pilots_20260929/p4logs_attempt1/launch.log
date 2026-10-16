@@ -1,0 +1,10 @@
+2026-09-29T17:21:46Z commit b86c314b27b260daa915aeaaca8c44bc554c357e branch kerem/v11-p4-patch-vicreg-trainer
+2026-09-29T17:22:07Z ABORT readiness not READY
+{
+  "gate_id": "OSFM-V11-10P-KEREM-HANDOFF-READINESS",
+  "decision": "NOT READY FOR KEREM",
+  "blocker_count": 3,
+  "warning_count": 0,
+  "launch_command": null,
+  "report": "artifacts/gates/V1.1/10P_KEREM_HANDOFF/readiness_kerem_run.json"
+}

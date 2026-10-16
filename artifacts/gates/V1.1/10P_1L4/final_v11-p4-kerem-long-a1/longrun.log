@@ -1,0 +1,4 @@
+2026-09-30T00:11:58Z commit 8d82f01f2b419e38ad9558ecc13139dd3b365508 readiness NOT READY FOR KEREM|2,4,8
+2026-09-30T00:12:43Z attempt 1 LAUNCHED run=v11-p4-kerem-long-a1-20260930T001158Z pid=20189 steps=775000 lr=5e-5 spent_before_try=145.92
+2026-10-02T15:46:20Z attempt 1 ended reason=none {"lr": 1.0000000000000002e-06, "step": 775000, "steps_per_s": 3.4343301256514756, "time_s": 228580.2424571514, "train/covariance": 3.828416347503662, "train/invariance": 0.030817106366157532, "train/loss": 4.954867362976074, "train/modality": "rgb_camera", "train/rank_loss": 0.0, "train/variance": 0
+2026-10-02T15:46:20Z ALL_DONE; powering off in 10 minutes
