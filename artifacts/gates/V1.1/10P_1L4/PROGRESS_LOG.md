@@ -61,3 +61,21 @@ Cost: TRY spent on this machine so far / projected total for this machine. About
 | Tue 06 Oct 22:20 | 605,000 (82.9%) | 3.38 | 109.0 / 0.36 | 101.2 / 0.67 | aquascan 46 catalunya 41 china_offshore 97 subpipe 25 uatd 30 | Wed 07 Oct 08:45 | 2374 / 2835 | training |
 | Tue 06 Oct 23:20 | 617,000 (84.5%) | 3.39 | 107.6 / 0.36 | 99.9 / 0.67 | aquascan 43 catalunya 38 china_offshore 97 subpipe 23 uatd 33 | Wed 07 Oct 08:45 | 2418 / 2835 | training |
 | Wed 07 Oct 08:46 | 730,000 (100%) | 3.38 | 106.8 / 0.36 | 101.1 / 0.66 | aquascan 46 catalunya 38 china_offshore 98 subpipe 24 uatd 35 | finished | about 2,836 / 2,836 | finished: pooled gate PASSED (best.pt step 451k: sonar 109.4, camera 111.0); per-source sonar not passed, see FINAL_REPORT_v11-p4-kerem-sonar5-a1.md |
+
+## Round 4: v11-p4-kerem-persource-a1-20261015T203837Z (120,000 steps from pilot P2, Tokyo L4)
+
+Pilots (16k steps each, warm-started from round 3 best.pt), final sonar ranks per source: P1 single-source batches: SubPipe 40, Catalunya 126, China 120, UATD 62, AquaScan 57. P2 + sonar views: 46 / 134 / 122 / 69 / 60 (chosen, peak selection 47.2). P3 + temporal pairs: 45 / 114 / 118 / 62 / 59 (meaning 0.42).
+
+| Time (TR) | Step | it/s | Sonar rank / nn (pooled) | Camera rank / nn | Sonar rank per source | ETA | Spent / projected TRY | State |
+|---|---|---|---|---|---|---|---|---|
+| Fri 16 Oct 00:17 | 7,000 (5.8%) | 3.40 | 149.0 / 0.38 | 104.3 / 0.67 | aquascan 56 catalunya 131 china_offshore 133 subpipe 42 uatd 72 | Fri 16 Oct 09:40 | 367 / 857 | training |
+| Fri 16 Oct 01:38 | 1 (0.0%) | 0.41 | 149.7 / 0.38 | 98.3 / 0.66 | aquascan 60 catalunya 138 china_offshore 132 subpipe 53 uatd 68 | ? | 438 / 0 | training |
+| Fri 16 Oct 02:34 | 11,000 (11.0%) | 3.22 | 153.8 / 0.38 | 102.2 / 0.69 | aquascan 65 catalunya 138 china_offshore 130 subpipe 53 uatd 72 | Fri 16 Oct 09:56 | 485 / 871 | training |
+| Fri 16 Oct 03:28 | 1,000 (1.2%) | 3.40 | 157.8 / 0.38 | 97.8 / 0.66 | aquascan 62 catalunya 135 china_offshore 128 subpipe 49 uatd 75 | ? | 532 / 0 | training |
+| Fri 16 Oct 04:28 | 13,000 (16.2%) | 3.40 | 157.6 / 0.37 | 102.6 / 0.68 | aquascan 62 catalunya 141 china_offshore 136 subpipe 47 uatd 76 | Fri 16 Oct 10:00 | 584 / 875 | training |
+| Fri 16 Oct 05:28 | 25,000 (31.2%) | 3.22 | 154.1 / 0.38 | 99.7 / 0.70 | aquascan 54 catalunya 145 china_offshore 130 subpipe 55 uatd 79 | Fri 16 Oct 10:00 | 636 / 875 | training |
+| Fri 16 Oct 06:28 | 37,000 (46.2%) | 3.40 | 158.1 / 0.38 | 100.2 / 0.67 | aquascan 63 catalunya 140 china_offshore 134 subpipe 51 uatd 79 | Fri 16 Oct 10:00 | 688 / 875 | training |
+| Fri 16 Oct 07:28 | 50,000 (62.5%) | 3.40 | 156.7 / 0.37 | 99.9 / 0.66 | aquascan 65 catalunya 143 china_offshore 134 subpipe 52 uatd 87 | Fri 16 Oct 10:00 | 740 / 875 | training |
+| Fri 16 Oct 08:28 | 62,000 (77.5%) | 3.40 | 163.7 / 0.37 | 102.2 / 0.67 | aquascan 62 catalunya 142 china_offshore 137 subpipe 54 uatd 81 | Fri 16 Oct 10:00 | 792 / 875 | training |
+| Fri 16 Oct 09:28 | 74,000 (92.5%) | 3.40 | 164.0 / 0.37 | 106.1 / 0.67 | aquascan 62 catalunya 146 china_offshore 136 subpipe 55 uatd 80 | Fri 16 Oct 10:00 | 844 / 875 | training |
+| Fri 16 Oct 10:00 | 80,000 (100%) | 3.40 | 162.1 / 0.38 | 95.5 / 0.68 | aquascan 65 catalunya 142 china_offshore 136 subpipe 57 uatd 78 | finished | about 950 (round 4) | finished: best.pt step 24k: Catalunya 134, China 129, UATD 79 pass; AquaScan 59 (ceiling 70); SubPipe 56 does not pass. See FINAL_REPORT_v11-p4-kerem-persource-r4.md |

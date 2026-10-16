@@ -1,0 +1,112 @@
+{
+  "imaging_sonar/pooled": {
+    "n": 256,
+    "pixels": 161.9,
+    "pixels@n100": 58.6,
+    "untrained": 61.0,
+    "untrained@n100": 34.0,
+    "round3_best": 109.0,
+    "round3_best@n100": 36.9,
+    "final_best": 152.6,
+    "final_best@n100": 64.3
+  },
+  "imaging_sonar/subpipe": {
+    "n": 256,
+    "pixels": 155.3,
+    "pixels@n100": 63.9,
+    "untrained": 45.8,
+    "untrained@n100": 27.5,
+    "round3_best": 24.5,
+    "round3_best@n100": 20.5,
+    "final_best": 56.3,
+    "final_best@n100": 37.6
+  },
+  "imaging_sonar/catalunya": {
+    "n": 256,
+    "pixels": 184.2,
+    "pixels@n100": 73.0,
+    "untrained": 77.8,
+    "untrained@n100": 51.2,
+    "round3_best": 39.4,
+    "round3_best@n100": 27.5,
+    "final_best": 133.9,
+    "final_best@n100": 69.3
+  },
+  "imaging_sonar/china_offshore": {
+    "n": 256,
+    "pixels": 233.6,
+    "pixels@n100": 94.1,
+    "untrained": 91.9,
+    "untrained@n100": 60.6,
+    "round3_best": 96.6,
+    "round3_best@n100": 53.8,
+    "final_best": 128.5,
+    "final_best@n100": 62.8
+  },
+  "imaging_sonar/aquascan": {
+    "n": 103,
+    "pixels": 70.2,
+    "pixels@n100": 68.4,
+    "untrained": 38.8,
+    "untrained@n100": 38.2,
+    "round3_best": 46.4,
+    "round3_best@n100": 45.8,
+    "final_best": 58.7,
+    "final_best@n100": 57.3
+  },
+  "imaging_sonar/uatd": {
+    "n": 256,
+    "pixels": 155.2,
+    "pixels@n100": 67.3,
+    "untrained": 58.3,
+    "untrained@n100": 37.1,
+    "round3_best": 33.1,
+    "round3_best@n100": 25.5,
+    "final_best": 78.8,
+    "final_best@n100": 49.3
+  },
+  "rgb_camera/pooled": {
+    "n": 256,
+    "pixels": 77.7,
+    "pixels@n100": 21.8,
+    "untrained": 16.7,
+    "untrained@n100": 10.1,
+    "round3_best": 96.8,
+    "round3_best@n100": 28.1,
+    "final_best": 97.5,
+    "final_best@n100": 28.6
+  },
+  "rgb_camera/subpipe": {
+    "n": 256,
+    "pixels": 33.2,
+    "pixels@n100": 15.9,
+    "untrained": 12.7,
+    "untrained@n100": 7.9,
+    "round3_best": 24.3,
+    "round3_best@n100": 17.6,
+    "final_best": 24.4,
+    "final_best@n100": 18.3
+  },
+  "rgb_camera/seaclear": {
+    "n": 256,
+    "pixels": 110.8,
+    "pixels@n100": 49.9,
+    "untrained": 35.9,
+    "untrained@n100": 21.9,
+    "round3_best": 70.9,
+    "round3_best@n100": 44.3,
+    "final_best": 68.3,
+    "final_best@n100": 42.3
+  },
+  "rgb_camera/uvvid": {
+    "n": 118,
+    "pixels": 69.5,
+    "pixels@n100": 59.5,
+    "untrained": 25.2,
+    "untrained@n100": 22.8,
+    "round3_best": 57.1,
+    "round3_best@n100": 52.5,
+    "final_best": 57.0,
+    "final_best@n100": 52.2
+  }
+}

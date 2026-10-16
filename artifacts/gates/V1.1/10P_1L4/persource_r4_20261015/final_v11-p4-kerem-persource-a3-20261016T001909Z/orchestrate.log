@@ -1,0 +1,39 @@
+2026-10-15T16:08:56Z commit d05258df0d6aef828f8162a97be2650234140734 readiness NOT READY FOR KEREM|2,4,8 r3_best edf74d95782e67e8
+2026-10-15T16:31:36Z ceiling check exit 0 spent 121.5
+libpng error: Read Error
+source                                         n          pixels     pixels@n100       untrained  untrained@n100     round3_bestround3_best@n100
+imaging_sonar/pooled                         256           161.9            58.6            61.0            34.0           109.0            36.9
+imaging_sonar/subpipe                        256           155.3            63.9            45.8            27.5            24.5            20.5
+imaging_sonar/catalunya                      256           184.2            73.0            77.8            51.2            39.4            27.5
+imaging_sonar/china_offshore                 256           233.6            94.1            91.9            60.6            96.6            53.8
+imaging_sonar/aquascan                       103            70.2            68.4            38.8            38.2            46.4            45.8
+imaging_sonar/uatd                           256           155.2            67.3            58.3            37.1            33.1            25.5
+rgb_camera/pooled                            256            77.7            21.8            16.7            10.1            96.8            28.1
+rgb_camera/subpipe                           256            33.2            15.9            12.7             7.9            24.3            17.6
+rgb_camera/seaclear                          256           110.8            49.9            35.9            21.9            70.9            44.3
+rgb_camera/uvvid                             118            69.5            59.5            25.2            22.8            57.1            52.5
+2026-10-15T16:31:36Z pilot P1 start pilot16000-P1-persource-nonpromotable-20261015T163136Z (KEREM_SONAR_BATCH=single)
+2026-10-15T17:54:29Z pilot P1 exit 0 spent 193.4 {'val/imaging_sonar/aquascan/effective_rank': 56.67, 'val/imaging_sonar/catalunya/effective_rank': 126.07, 'val/imaging_sonar/china_offshore/effective_rank': 120.42, 'val/imaging_sonar/effective_rank': 138.41, 'val/imaging_sonar/source_min_rank': 40.37, 'val/imaging_sonar/subpipe/effective_rank': 40.37, 'val/imaging_sonar/uatd/effective_rank': 62.15, 'val/nn_temporal_hit_min': 0.38, 'val/representation_effective_rank': 104.44, 'val/rgb_camera/effective_rank': 104.44, 'val/rgb_camera/seaclear/effective_rank': 72.24, 'val/rgb_camera/subpipe/effective_rank': 21.15, 'val/rgb_camera/uvvid/effective_rank': 58.55}
+2026-10-15T17:54:29Z pilot P2 start pilot16000-P2-persource-nonpromotable-20261015T175429Z (KEREM_SONAR_BATCH=single KEREM_SONAR_VIEWS=sonar)
+2026-10-15T19:16:19Z pilot P2 exit 0 spent 264.3 {'val/imaging_sonar/aquascan/effective_rank': 60.3, 'val/imaging_sonar/catalunya/effective_rank': 134.5, 'val/imaging_sonar/china_offshore/effective_rank': 121.8, 'val/imaging_sonar/effective_rank': 144.76, 'val/imaging_sonar/source_min_rank': 45.85, 'val/imaging_sonar/subpipe/effective_rank': 45.85, 'val/imaging_sonar/uatd/effective_rank': 68.61, 'val/nn_temporal_hit_min': 0.39, 'val/representation_effective_rank': 105.16, 'val/rgb_camera/effective_rank': 105.16, 'val/rgb_camera/seaclear/effective_rank': 73.88, 'val/rgb_camera/subpipe/effective_rank': 21.17, 'val/rgb_camera/uvvid/effective_rank': 58.56}
+2026-10-15T19:16:19Z pilot P3 start pilot16000-P3-persource-nonpromotable-20261015T191619Z (KEREM_SONAR_BATCH=single KEREM_SONAR_VIEWS=sonar KEREM_TEMPORAL_PAIRS=3)
+2026-10-15T20:38:37Z pilot P3 exit 0 spent 335.6 {'val/imaging_sonar/aquascan/effective_rank': 58.68, 'val/imaging_sonar/catalunya/effective_rank': 113.53, 'val/imaging_sonar/china_offshore/effective_rank': 117.98, 'val/imaging_sonar/effective_rank': 134.7, 'val/imaging_sonar/source_min_rank': 45.15, 'val/imaging_sonar/subpipe/effective_rank': 45.15, 'val/imaging_sonar/uatd/effective_rank': 61.67, 'val/nn_temporal_hit_min': 0.42, 'val/representation_effective_rank': 105.8, 'val/rgb_camera/effective_rank': 105.8, 'val/rgb_camera/seaclear/effective_rank': 74.97, 'val/rgb_camera/subpipe/effective_rank': 21.3, 'val/rgb_camera/uvvid/effective_rank': 58.62}
+2026-10-15T20:38:37Z choice P2 (pilot16000-P2-persource-nonpromotable-20261015T175429Z) selection rank 47.2 vs round-3 weakest source 24.5
+2026-10-15T20:40:07Z long run LAUNCHED v11-p4-kerem-persource-a1-20261015T203837Z pid=15184 steps=120000 from P2 best.pt spent_before=335.6
+2026-10-15T21:53:08Z stage 1 long run stopped by Kerem's request (SubPipe per-stream fix); trainer pid 15184; last {"lr": 4.8473122716342826e-05, "step": 14000, "steps_per_s": 3.4040774312726185, "time_s": 4200.537750720978, "train/cov
+2026-10-15T21:53:22Z code fbc86bf
+2026-10-15T21:53:23Z stage 2 commit fbc86bf init artifacts/runs/v11-p4-kerem-persource-a1-20261015T203837Z/checkpoints/best.pt baseline selection 48.2 spent 400.4
+2026-10-15T21:53:23Z pilot S start pilot8000-S-subpipestream-nonpromotable-20261015T215323Z (KEREM_STREAM_BATCH_SOURCES=subpipe KEREM_SONAR_WEIGHTS=subpipe:2)
+2026-10-15T22:34:57Z pilot S exit 0 best selection 54.3 spent 436.4 {'aquascan': 60, 'catalunya': 136, 'china_offshore': 129, 'subpipe': 54, 'uatd': 70} nn 0.38
+2026-10-15T22:34:57Z long run uses stage-2 settings
+2026-10-15T22:36:27Z long run LAUNCHED v11-p4-kerem-persource-a2-20261015T223457Z pid=17053 steps=100000 init=artifacts/runs/pilot8000-S-subpipestream-nonpromotable-20261015T215323Z/checkpoints/best.pt spent_before=436.4
+2026-10-15T23:37:45Z stage 2 long run stopped on purpose (SubPipe flat at ~53 for 11k steps); trainer pid 17053; last step 12000
+2026-10-15T23:38:04Z code a7b3d66
+2026-10-15T23:38:04Z stage 2 commit a7b3d66 init artifacts/runs/v11-p4-kerem-persource-a2-20261015T223457Z/checkpoints/best.pt baseline selection 55.4 spent 491.1
+2026-10-15T23:38:04Z pilot T start pilot8000-T-subpipe-nonpromotable-20261015T233804Z (KEREM_STREAM_BATCH_SOURCES=subpipe KEREM_SONAR_WEIGHTS=subpipe:4 KEREM_SOURCE_VIEWS=subpipe=0.85/0.10)
+2026-10-16T00:19:09Z pilot T exit 0 best selection 57.9 spent 526.7 {'aquascan': 61, 'catalunya': 137, 'china_offshore': 130, 'subpipe': 56, 'uatd': 70} nn 0.39
+2026-10-16T00:19:09Z pilot T did not beat the baseline by 3; long run continues from INIT with: KEREM_STREAM_BATCH_SOURCES=subpipe KEREM_SONAR_WEIGHTS=subpipe:2
+2026-10-16T00:20:39Z long run LAUNCHED v11-p4-kerem-persource-a3-20261016T001909Z pid=19111 steps=80000 init=artifacts/runs/v11-p4-kerem-persource-a2-20261015T223457Z/checkpoints/best.pt spent_before=526.7
+2026-10-16T06:59:09Z long run ended spent 873.4 {"lr": 1.0000000000000002e-06, "step": 80000, "steps_per_s": 3.398072764975712, "time_s": 23875.333047151566, "train/covariance": 4.789333343505859, "train/invariance": 0.02390548400580883, "train/loss": 5.487607955932617, "train/modality": "rgb_camera", "train/rank_loss": 0.0, "train/variance": 0.0
+2026-10-16T07:00:15Z final checks exit 0
+2026-10-16T07:00:45Z ceiling after exit 0

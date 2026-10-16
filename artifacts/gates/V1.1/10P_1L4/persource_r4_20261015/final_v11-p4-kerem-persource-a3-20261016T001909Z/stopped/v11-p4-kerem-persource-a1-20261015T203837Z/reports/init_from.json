@@ -1,0 +1,7 @@
+{
+  "loaded": "model weights only (strict); fresh optimizer and schedule",
+  "path": "artifacts/runs/pilot16000-P2-persource-nonpromotable-20261015T175429Z/checkpoints/best.pt",
+  "sha256": "d70796d5a4a1f763e933ac21383b6d7c6891a8df13854d9997961a1a482ecff3",
+  "step": 10000,
+  "trainer": null
+}
